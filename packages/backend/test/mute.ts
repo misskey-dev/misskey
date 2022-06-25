@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, react, connectStream, startServer, shutdownServer } from './utils.js';
+import { async, signup, request, post, react, connectStream, startServer, shutdownServer, sleep } from './utils.js';
 
 describe('Mute', () => {
 	let p: childProcess.ChildProcess;
@@ -55,7 +55,7 @@ describe('Mute', () => {
 		assert.strictEqual(res.body.hasUnreadMentions, false);
 	}));
 
-	it('ミュートしているユーザーからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise(async done => {
+	it('ミュートしているユーザーからメンションされても、ストリームに unreadMention イベントが流れてこない', async(async () => {
 		// 状態リセット
 		await request('/i/read-all-unread-notes', {}, alice);
 
@@ -67,16 +67,14 @@ describe('Mute', () => {
 			}
 		});
 
-		post(carol, { text: '@alice hi' });
+		await post(carol, { text: '@alice hi' });
 
-		setTimeout(() => {
-			assert.strictEqual(fired, false);
-			ws.close();
-			done();
-		}, 5000);
+		await sleep(5000);
+		assert.strictEqual(fired, false);
+		ws.close();
 	}));
 
-	it('ミュートしているユーザーからメンションされても、ストリームに unreadNotification イベントが流れてこない', () => new Promise(async done => {
+	it('ミュートしているユーザーからメンションされても、ストリームに unreadNotification イベントが流れてこない', async(async () => {
 		// 状態リセット
 		await request('/i/read-all-unread-notes', {}, alice);
 		await request('/notifications/mark-all-as-read', {}, alice);
@@ -89,13 +87,11 @@ describe('Mute', () => {
 			}
 		});
 
-		post(carol, { text: '@alice hi' });
+		await post(carol, { text: '@alice hi' });
 
-		setTimeout(() => {
-			assert.strictEqual(fired, false);
-			ws.close();
-			done();
-		}, 5000);
+		await sleep(5000);
+		assert.strictEqual(fired, false);
+		ws.close();
 	}));
 
 	describe('Timeline', () => {

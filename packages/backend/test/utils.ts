@@ -4,7 +4,7 @@ import { dirname } from 'node:path';
 import * as childProcess from 'child_process';
 import * as http from 'node:http';
 import { SIGKILL } from 'constants';
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
@@ -176,7 +176,7 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	return db;
 }
 
-export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProcess> {
+export function startServer(timeout = 60 * 1000): Promise<childProcess.ChildProcess> {
 	return new Promise((res, rej) => {
 		const t = setTimeout(() => {
 			p.kill(SIGKILL);
@@ -212,5 +212,13 @@ export function shutdownServer(p: childProcess.ChildProcess, timeout = 20 * 1000
 		});
 
 		p.kill();
+	});
+}
+
+export function sleep(msec: number) {
+	return new Promise<void>(res => {
+		setTimeout(() => {
+			res();
+		}, msec);
 	});
 }
