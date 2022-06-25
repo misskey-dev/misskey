@@ -30,7 +30,7 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 	};
 
 	// Authentication
-	authenticate((ctx.req as any)['i']).then(([user, app]) => {
+	authenticate((ctx.req as any).body['i']).then(([user, app]) => {
 		// API invoking
 		call(endpoint.name, user, app, body, ctx).then((res: any) => {
 			reply(res);
