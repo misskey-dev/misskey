@@ -225,10 +225,11 @@ const getFeed = async (acct: string, threadDepth:string, historyCount:string, no
 		isSuspended: false,
 	});
 	let thread = parseInt(threadDepth, 10);
-	if (isNaN(thread) || thread <= 0 || thread > 30) {
+	if (isNaN(thread) || thread < 0 || thread > 30) {
 		thread = 3;
 	}
 	let history = parseInt(historyCount, 10);
+	//cant be 0 here or it will get all posts
 	if (isNaN(history) || history <= 0 || history > 30) {
 		history = 20;
 	}
