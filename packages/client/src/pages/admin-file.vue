@@ -40,7 +40,8 @@
 			</div>
 		</div>
 		<div v-else-if="tab === 'ip' && info" class="_formRoot">
-			<MkKeyValue class="_formBlock _monospace" :copy="info.requestIp" oneline>
+			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+			<MkKeyValue v-if="info.requestIp" class="_formBlock _monospace" :copy="info.requestIp" oneline>
 				<template #key>IP</template>
 				<template #value>{{ info.requestIp }}</template>
 			</MkKeyValue>
@@ -69,12 +70,13 @@ import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import FormSection from '@/components/form/section.vue';
 import MkUserCardMini from '@/components/user-card-mini.vue';
+import MkInfo from '@/components/ui/info.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { acct } from '@/filters/user';
-import { iAmModerator } from '@/account';
+import { iAmAdmin, iAmModerator } from '@/account';
 
 let tab = $ref('overview');
 let file: any = $ref(null);
