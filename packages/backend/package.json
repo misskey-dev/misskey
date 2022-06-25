@@ -172,7 +172,6 @@
 		"eslint": "8.17.0",
 		"eslint-plugin-import": "2.26.0",
 		"cross-env": "7.0.3",
-		"execa": "6.1.0",
-		"form-data": "4.0.0"
+		"execa": "6.1.0"
 	}
 }
