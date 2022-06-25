@@ -4,7 +4,6 @@ import { IEndpoint } from './endpoints.js';
 import authenticate, { AuthenticationError } from './authenticate.js';
 import call from './call.js';
 import { ApiError } from './error.js';
-import { inspect } from 'util';
 
 export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
 	const body = ctx.request.body;
@@ -29,7 +28,6 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 		}
 		res();
 	};
-	console.log('body', inspect(body));
 
 	// Authentication
 	authenticate(body['i']).then(([user, app]) => {
