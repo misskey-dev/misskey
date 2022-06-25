@@ -21,10 +21,8 @@ describe('users/notes', () => {
 		p = await startServer();
 		console.log(`signup alice`);
 		alice = await signup({ username: 'alice' });
-		console.log('alice', alice);
 		console.log(`jpg`);
 		const jpg = await uploadFile(alice, _dirname + '/resources/Lenna.jpg');
-		console.log('jpg', jpg);
 		console.log(`png`);
 		const png = await uploadFile(alice, _dirname + '/resources/Lenna.png');
 		console.log(`jpgNote`);
