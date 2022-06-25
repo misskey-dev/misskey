@@ -21,14 +21,14 @@
 			<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
 			<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 			<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
-			<MkSwitch v-for="type in notificationTypes" :key="type" v-model="typesMap[type]">{{ i18n.t(`_notification._types.${type}`) }}</MkSwitch>
+			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype]">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
 		</div>
 	</div>
 </XModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue';
+import { } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkSwitch from './form/switch.vue';
 import MkInfo from './ui/info.vue';
@@ -42,21 +42,22 @@ const emit = defineEmits<{
 }>();
 
 const props = withDefaults(defineProps<{
-	// TODO: これで型に合わないものを弾いてくれるのかどうか要調査
-	includingTypes?: typeof notificationTypes[number][];
+	includingTypes?: typeof notificationTypes[number][] | null;
 	showGlobalToggle?: boolean;
 }>(), {
 	includingTypes: () => [],
 	showGlobalToggle: true,
 });
 
+let includingTypes = $computed(() => props.includingTypes || []);
+
 const dialog = $ref<InstanceType<typeof XModalWindow>>();
 
 let typesMap = $ref<Record<typeof notificationTypes[number], boolean>>({});
-let useGlobalSetting = $ref(props.includingTypes === [] && props.showGlobalToggle);
+let useGlobalSetting = $ref((includingTypes === null || includingTypes.length === 0) && props.showGlobalToggle);
 
-for (const type of notificationTypes) {
-	typesMap[type] = props.includingTypes.includes(type);
+for (const ntype of notificationTypes) {
+	typesMap[ntype] = includingTypes.includes(ntype);
 }
 
 function ok() {
