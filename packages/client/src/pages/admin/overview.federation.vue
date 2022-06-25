@@ -2,14 +2,14 @@
 <div class="wbrkwale">
 	<MkLoading v-if="fetching"/>
 	<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="instances">
-		<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
+		<MkA v-for="(instance, i) in instances" :key="instance.id" :to="`/instance-info/${instance.host}`" class="instance">
 			<img v-if="instance.iconUrl" :src="instance.iconUrl" alt=""/>
 			<div class="body">
-				<a class="a" :href="'https://' + instance.host" target="_blank" :title="instance.host">{{ instance.name ?? instance.host }}</a>
-				<p>{{ instance.host }}</p>
+				<div class="name">{{ instance.name ?? instance.host }}</div>
+				<div class="host">{{ instance.host }}</div>
 			</div>
 			<MkMiniChart class="chart" :src="charts[i].requests.received"/>
-		</div>
+		</MkA>
 	</transition-group>
 </div>
 </template>
@@ -78,7 +78,7 @@ onUnmounted(() => {
 				color: var(--fg);
 				padding-right: 8px;
 
-				> .a {
+				> .name {
 					display: block;
 					width: 100%;
 					white-space: nowrap;
@@ -86,7 +86,7 @@ onUnmounted(() => {
 					text-overflow: ellipsis;
 				}
 
-				> p {
+				> .host {
 					margin: 0;
 					font-size: 75%;
 					opacity: 0.7;

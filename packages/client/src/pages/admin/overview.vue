@@ -34,6 +34,13 @@
 				</div>
 			</div>
 
+			<div class="container users">
+				<div class="title">New users</div>
+				<div v-if="newUsers" class="body">
+					<XUser v-for="user in newUsers" :key="user.id" class="user" :user="user"/>
+				</div>
+			</div>
+
 			<!--<XMetrics/>-->
 
 			<div class="container env">
@@ -75,6 +82,30 @@
 					<XFederation/>
 				</div>
 			</div>
+			<div v-if="stats" class="container federationStats">
+				<div class="title">Federation</div>
+				<div class="body">
+					<div class="number _panel">
+						<div class="label">Sub</div>
+						<div class="value _monospace">
+							{{ number(federationSubActive) }}
+							<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationSubActiveDiff"><template #before>(</template><template #after>)</template></MkNumberDiff>
+						</div>
+					</div>
+					<div class="number _panel">
+						<div class="label">Pub</div>
+						<div class="value _monospace">
+							{{ number(federationPubActive) }}
+							<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationPubActiveDiff"><template #before>(</template><template #after>)</template></MkNumberDiff>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container files">
+				<div class="title">Recent files</div>
+				<div class="body">
+				</div>
+			</div>
 		</div>
 	</div>
 </MkSpacer>
@@ -105,6 +136,7 @@ import MagicGrid from 'magic-grid';
 import XMetrics from './metrics.vue';
 import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
+import XUser from './overview.user.vue';
 import MkInstanceStats from '@/components/instance-stats.vue';
 import MkNumberDiff from '@/components/number-diff.vue';
 import { version, url } from '@/config';
@@ -141,6 +173,11 @@ let stats: any = $ref(null);
 let serverInfo: any = $ref(null);
 let usersComparedToThePrevDay: any = $ref(null);
 let notesComparedToThePrevDay: any = $ref(null);
+let federationPubActive = $ref<number | null>(null);
+let federationPubActiveDiff = $ref<number | null>(null);
+let federationSubActive = $ref<number | null>(null);
+let federationSubActiveDiff = $ref<number | null>(null);
+let newUsers = $ref(null);
 const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
 const now = new Date();
 let chartInstance: Chart = null;
@@ -325,8 +362,22 @@ onMounted(async () => {
 		});
 	});
 
+	os.apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
+		federationPubActive = chart.pubActive[0];
+		federationPubActiveDiff = chart.pubActive[0] - chart.pubActive[1];
+		federationSubActive = chart.subActive[0];
+		federationSubActiveDiff = chart.subActive[0] - chart.subActive[1];
+	});
+
 	os.api('admin/server-info').then(serverInfoResponse => {
 		serverInfo = serverInfoResponse;
+	});
+
+	os.api('admin/show-users', {
+		limit: 5,
+		sort: '+createdAt',
+	}).then(res => {
+		newUsers = res;
 	});
 
 	nextTick(() => {
@@ -364,12 +415,12 @@ definePageMetadata({
 			margin: 32px 0;
 
 			> .title {
-				font-size: 1.2em;
+				font-size: 1.1em;
 				font-weight: bold;
 				margin-bottom: 16px;
 			}
 
-			&.stats {
+			&.stats, &.federationStats {
 				> .body {
 					display: grid;
 					grid-gap: 16px;
@@ -388,7 +439,7 @@ definePageMetadata({
 							font-size: 1.5em;
 
 							> .diff {
-								font-size: 0.8em;
+								font-size: 0.7em;
 							}
 						}
 					}
@@ -410,7 +461,7 @@ definePageMetadata({
 						}
 
 						> .value {
-							font-size: 1.2em;
+							font-size: 1.1em;
 						}
 					}
 				}
@@ -424,6 +475,21 @@ definePageMetadata({
 				}
 			}
 
+			&.users {
+				> .body {
+					background: var(--panel);
+					border-radius: var(--radius);
+
+					> .user {
+						padding: 16px 20px;
+
+						&:not(:last-child) {
+							border-bottom: solid 0.5px var(--divider);
+						}
+					}
+				}
+			}
+
 			&.federation {
 				> .body {
 					background: var(--panel);
@@ -434,7 +500,8 @@ definePageMetadata({
 
 			&.queue {
 				> .body {
-					padding: 32px;
+					position: relative;
+					padding: 24px;
 					background: var(--panel);
 					border-radius: var(--radius);
 
@@ -443,7 +510,9 @@ definePageMetadata({
 					}
 
 					> .title {
-
+						position: absolute;
+						top: 24px;
+						left: 24px;
 					}
 				}
 			}

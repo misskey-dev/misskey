@@ -146,7 +146,7 @@ onMounted(() => {
 			}],
 		},
 		options: {
-			aspectRatio: 2.5,
+			aspectRatio: 3,
 			layout: {
 				padding: {
 					left: 0,
