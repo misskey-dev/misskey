@@ -13,7 +13,7 @@ export default async function(user: User, threadDepth = 5, history = 20, noteint
 
 	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
-	let searchCriteria = {
+	const searchCriteria = {
 		userId: user.id,
 		visibility: In(['public', 'home']),
 	};
