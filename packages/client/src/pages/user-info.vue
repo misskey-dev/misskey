@@ -26,10 +26,12 @@
 						<template #value><span class="_monospace">{{ user.id }}</span></template>
 					</MkKeyValue>
 
+					<!-- 要る？
 					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline style="margin: 1em 0;">
 						<template #key>IP (recent)</template>
 						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
 					</MkKeyValue>
+					-->
 				</div>
 
 				<FormSection v-if="iAmModerator">
