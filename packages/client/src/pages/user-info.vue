@@ -30,22 +30,23 @@
 				<FormSection v-if="iAmModerator">
 					<template #label>Moderation</template>
 
-					<div style="display: flex;">
-						<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline type="number">
-							<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
-							<template #suffix>MB</template>
-							<template #caption>
-								{{ i18n.ts.driveCapOverrideCaption }}
-								<FormButton v-if="user.host == null" primary @click="applyDriveCapacityOverride"><i class="fas fa-check"></i></FormButton>
-							</template>
-						</FormInput>
-					</div>
-
-					<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
-					<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
-					<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
+					<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:model-value="toggleModerator">{{ $ts.moderator }}</FormSwitch>
+					<FormSwitch v-model="silenced" class="_formBlock" @update:model-value="toggleSilence">{{ $ts.silence }}</FormSwitch>
+					<FormSwitch v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
 					{{ $ts.reflectMayTakeTime }}
 					<FormButton v-if="user.host == null && iAmModerator" class="_formBlock" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+				</FormSection>
+
+				<FormSection v-if="iAmModerator">
+					<template #label>Drive Capacity Override</template>
+
+					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" @update:model-value="applyDriveCapacityOverride">
+						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
+						<template #suffix>MB</template>
+						<template #caption>
+							{{ i18n.ts.driveCapOverrideCaption }}
+						</template>
+					</FormInput>
 				</FormSection>
 
 				<FormSection>
@@ -108,7 +109,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, watch, ref } from 'vue';
+import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
@@ -139,7 +140,7 @@ const props = defineProps<{
 let tab = $ref('overview');
 let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
-let init = $ref();
+let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
 let ap = $ref(null);
 let moderator = $ref(false);
@@ -270,7 +271,7 @@ watch(() => props.userId, () => {
 	immediate: true,
 });
 
-watch(() => user, () => {
+watch($$(user), () => {
 	os.api('ap/get', {
 		uri: user.uri ?? `${url}/users/${user.id}`,
 	}).then(res => {
