@@ -113,30 +113,22 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 	}, user);
 };
 
-/**
- * Upload file
- * @param user User
- * @param _path Optional, absolute path or relative from ./resources/
- */
-export const uploadFile = async (user: any, _path?: string): Promise<any> => {
-	const absPath = _path == null ? `${_dirname}/resources/Lenna.jpg` : path.isAbsolute(_path) ? _path : `${_dirname}/resources/${_path}`;
-
-	const formData = new FormData() as any;
+export const uploadFile = (user: any, path?: string): Promise<any> => {
+	const formData = new FormData();
 	formData.append('i', user.token);
-	formData.append('file', fs.createReadStream(absPath));
-	formData.append('force', 'true');
+	formData.append('file', fs.createReadStream(path || _dirname + '/resources/Lenna.png'));
 
-	const res = await got<string>(`http://localhost:${port}/api/drive/files/create`, {
-		method: 'POST',
+	return fetch(`http://localhost:${port}/api/drive/files/create`, {
+		method: 'post',
 		body: formData,
-		retry: {
-			limit: 0,
-		},
+		timeout: 30 * 1000,
+	}).then(res => {
+		if (!res.ok) {
+			throw `${res.status} ${res.statusText}`;
+		} else {
+			return res.json();
+		}
 	});
-
-	const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
-
-	return body;
 };
 
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
