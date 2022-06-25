@@ -52,6 +52,39 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 	return promise;
 }) as typeof apiClient.request;
 
+export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
+	pendingApiRequestsCount.value++;
+
+	const onFinally = () => {
+		pendingApiRequestsCount.value--;
+	};
+
+	const query = new URLSearchParams(data);
+
+	const promise = new Promise((resolve, reject) => {
+		// Send request
+		fetch(`${apiUrl}/${endpoint}?${query}`, {
+			method: 'GET',
+			credentials: 'omit',
+			cache: 'default',
+		}).then(async (res) => {
+			const body = res.status === 204 ? null : await res.json();
+
+			if (res.status === 200) {
+				resolve(body);
+			} else if (res.status === 204) {
+				resolve();
+			} else {
+				reject(body.error);
+			}
+		}).catch(reject);
+	});
+
+	promise.then(onFinally, onFinally);
+
+	return promise;
+}) as typeof apiClient.request;
+
 export const apiWithDialog = ((
 	endpoint: string,
 	data: Record<string, any> = {},

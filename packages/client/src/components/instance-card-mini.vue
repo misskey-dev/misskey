@@ -20,7 +20,7 @@ const props = defineProps<{
 
 const chart = $ref(null);
 
-os.api('charts/instance', { host: props.instance.host, limit: 16, span: 'day' }).then(res => {
+os.apiGet('charts/instance', { host: props.instance.host, limit: 16, span: 'day' }).then(res => {
 	chart = res;
 });
 </script>

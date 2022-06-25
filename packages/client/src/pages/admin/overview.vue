@@ -90,11 +90,11 @@ onMounted(async () => {
 	os.api('stats', {}).then(statsResponse => {
 		stats = statsResponse;
 
-		os.api('charts/users', { limit: 2, span: 'day' }).then(chart => {
+		os.apiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
 			usersComparedToThePrevDay = stats.originalUsersCount - chart.local.total[1];
 		});
 
-		os.api('charts/notes', { limit: 2, span: 'day' }).then(chart => {
+		os.apiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
 			notesComparedToThePrevDay = stats.originalNotesCount - chart.local.total[1];
 		});
 	});

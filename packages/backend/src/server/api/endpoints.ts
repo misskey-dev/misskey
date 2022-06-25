@@ -701,6 +701,16 @@ export interface IEndpointMeta {
 	readonly kind?: string;
 
 	readonly description?: string;
+
+	/**
+	 * GETでのリクエストを許容するか否か
+	 */
+	readonly allowGet?: boolean;
+
+	/**
+	 * 正常応答をキャッシュ (Cache-Control: public) する秒数
+	 */
+	readonly cacheSec?: number;
 }
 
 export interface IEndpoint {

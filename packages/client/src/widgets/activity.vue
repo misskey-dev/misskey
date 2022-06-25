@@ -15,12 +15,12 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
+import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
+import MkContainer from '@/components/ui/container.vue';
 import { $i } from '@/account';
 
 const name = 'activity';
@@ -67,7 +67,7 @@ const toggleView = () => {
 	save();
 };
 
-os.api('charts/user/notes', {
+os.apiGet('charts/user/notes', {
 	userId: $i.id,
 	span: 'day',
 	limit: 7 * 21,
@@ -76,7 +76,7 @@ os.api('charts/user/notes', {
 		total: res.diffs.normal[i] + res.diffs.reply[i] + res.diffs.renote[i],
 		notes: res.diffs.normal[i],
 		replies: res.diffs.reply[i],
-		renotes: res.diffs.renote[i]
+		renotes: res.diffs.renote[i],
 	}));
 	fetching.value = false;
 });

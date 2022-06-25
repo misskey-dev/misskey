@@ -8,6 +8,8 @@ import multer from '@koa/multer';
 import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
 
+import { Instances, AccessTokens, Users } from '@/models/index.js';
+import config from '@/config/index.js';
 import endpoints from './endpoints.js';
 import handler from './api-handler.js';
 import signup from './private/signup.js';
@@ -16,8 +18,6 @@ import signupPending from './private/signup-pending.js';
 import discord from './service/discord.js';
 import github from './service/github.js';
 import twitter from './service/twitter.js';
-import { Instances, AccessTokens, Users } from '@/models/index.js';
-import config from '@/config/index.js';
 
 // Init app
 const app = new Koa();
@@ -56,11 +56,24 @@ for (const endpoint of endpoints) {
 	if (endpoint.meta.requireFile) {
 		router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint));
 	} else {
+		// 後方互換性のため
 		if (endpoint.name.includes('-')) {
-			// 後方互換性のため
 			router.post(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint));
+
+			if (endpoint.meta.allowGet) {
+				router.get(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint));
+			} else {
+				router.get(`/${endpoint.name.replace(/-/g, '_')}`, async ctx => { ctx.status = 405; });
+			}
 		}
+
 		router.post(`/${endpoint.name}`, handler.bind(null, endpoint));
+
+		if (endpoint.meta.allowGet) {
+			router.get(`/${endpoint.name}`, handler.bind(null, endpoint));
+		} else {
+			router.get(`/${endpoint.name}`, async ctx => { ctx.status = 405; });
+		}
 	}
 }
 
