@@ -13,7 +13,6 @@ import { DataSource } from 'typeorm';
 import loadConfig from '../src/config/load.js';
 import { entities } from '../src/db/postgre.js';
 import got from 'got';
-import { inspect } from 'node:util';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -122,11 +121,10 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 export const uploadFile = async (user: any, _path?: string): Promise<any> => {
 	const absPath = _path == null ? `${_dirname}/resources/Lenna.jpg` : path.isAbsolute(_path) ? _path : `${_dirname}/resources/${_path}`;
 
-	const formData = new FormData();
+	const formData = new FormData() as any;
 	formData.append('i', user.token);
 	formData.append('file', fs.createReadStream(absPath));
 	formData.append('force', 'true');
-	console.log(inspect(formData));
 
 	const res = await got<string>(`http://localhost:${port}/api/drive/files/create`, {
 		method: 'POST',
