@@ -39,7 +39,7 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 //import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import MkChartTooltip from '@/components/chart-tooltip.vue';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 
 const props = defineProps({
 	src: {
@@ -160,42 +160,7 @@ const format = (arr) => {
 	}));
 };
 
-const tooltipShowing = ref(false);
-const tooltipX = ref(0);
-const tooltipY = ref(0);
-const tooltipTitle = ref(null);
-const tooltipSeries = ref(null);
-let disposeTooltipComponent;
-
-os.popup(MkChartTooltip, {
-	showing: tooltipShowing,
-	x: tooltipX,
-	y: tooltipY,
-	title: tooltipTitle,
-	series: tooltipSeries,
-}, {}).then(({ dispose }) => {
-	disposeTooltipComponent = dispose;
-});
-
-function externalTooltipHandler(context) {
-	if (context.tooltip.opacity === 0) {
-		tooltipShowing.value = false;
-		return;
-	}
-
-	tooltipTitle.value = context.tooltip.title[0];
-	tooltipSeries.value = context.tooltip.body.map((b, i) => ({
-		backgroundColor: context.tooltip.labelColors[i].backgroundColor,
-		borderColor: context.tooltip.labelColors[i].borderColor,
-		text: b.lines[0],
-	}));
-
-	const rect = context.chart.canvas.getBoundingClientRect();
-
-	tooltipShowing.value = true;
-	tooltipX.value = rect.left + window.pageXOffset + context.tooltip.caretX;
-	tooltipY.value = rect.top + window.pageYOffset + context.tooltip.caretY;
-}
+const { handler: externalTooltipHandler } = useChartTooltip();
 
 const render = () => {
 	if (chartInstance) {
@@ -890,10 +855,6 @@ watch(() => [props.src, props.span], fetchAndRender);
 
 onMounted(() => {
 	fetchAndRender();
-});
-
-onUnmounted(() => {
-	if (disposeTooltipComponent) disposeTooltipComponent();
 });
 /* eslint-enable id-denylist */
 </script>
