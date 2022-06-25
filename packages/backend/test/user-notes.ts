@@ -19,21 +19,15 @@ describe('users/notes', () => {
 
 	before(async () => {
 		p = await startServer();
-		console.log(`signup alice`);
 		alice = await signup({ username: 'alice' });
-		console.log(`jpg`);
 		const jpg = await uploadFile(alice, _dirname + '/resources/Lenna.jpg');
-		console.log(`png`);
 		const png = await uploadFile(alice, _dirname + '/resources/Lenna.png');
-		console.log(`jpgNote`);
 		jpgNote = await post(alice, {
 			fileIds: [jpg.id],
 		});
-		console.log(`pngNote`);
 		pngNote = await post(alice, {
 			fileIds: [png.id],
 		});
-		console.log(`jpgPngNote`);
 		jpgPngNote = await post(alice, {
 			fileIds: [jpg.id, png.id],
 		});
