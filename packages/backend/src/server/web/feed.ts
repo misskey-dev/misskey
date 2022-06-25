@@ -4,7 +4,7 @@ import config from '@/config/index.js';
 import { User } from '@/models/entities/user.js';
 import { Notes, DriveFiles, UserProfiles, Users } from '@/models/index.js';
 
-export default async function(user: User, history = 5, noteintitle = false) {
+export default async function(user: User, threadDepth = 5, history = 20, noteintitle = false, renotes = true, replies = true) {
 	const author = {
 		link: `${config.url}/@${user.username}`,
 		email: `${user.username}@${config.host}`,
@@ -13,13 +13,23 @@ export default async function(user: User, history = 5, noteintitle = false) {
 
 	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
+	let searchCriteria = {
+		userId: user.id,
+		visibility: In(['public', 'home']),
+	};
+
+	if (!renotes) {
+		searchCriteria.renoteId = IsNull();
+	}
+
+	if (!replies) {
+		searchCriteria.replyId = IsNull();
+	}
+
 	const notes = await Notes.find({
-		where: {
-			userId: user.id,
-			visibility: In(['public', 'home']),
-		},
+		where: searchCriteria,
 		order: { createdAt: -1 },
-		take: 20,
+		take: history,
 	});
 
 	const feed = new Feed({
@@ -41,7 +51,7 @@ export default async function(user: User, history = 5, noteintitle = false) {
 	for (const note of notes) {
 		let contentStr = await noteToString(note, true);
 		let next = note.renoteId ? note.renoteId : note.replyId;
-		let depth = history;
+		let depth = threadDepth;
 		while (depth > 0 && next) {
 			const finding = await findById(next);
 			contentStr += finding.text;
