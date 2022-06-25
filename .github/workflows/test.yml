@@ -9,7 +9,7 @@ on:
 
 jobs:
   mocha:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -52,7 +52,7 @@ jobs:
       run: yarn mocha
 
   e2e:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
