@@ -116,7 +116,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, token, ctx?.file).catch((e: Error) => {
+	return await ep.exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
