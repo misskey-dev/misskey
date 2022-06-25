@@ -1,100 +1,326 @@
 <template>
-<div v-size="{ max: [740] }" class="edbbcaef">
-	<div v-if="stats" class="cfcdecdf" style="margin: var(--margin)">
-		<div class="number _panel">
-			<div class="label">Users</div>
-			<div class="value _monospace">
-				{{ number(stats.originalUsersCount) }}
-				<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+<MkSpacer :content-max="900">
+	<div ref="rootEl" v-size="{ max: [740] }" class="edbbcaef">
+		<div class="left">
+			<div v-if="stats" class="container stats">
+				<div class="title">Stats</div>
+				<div class="body">
+					<div class="number _panel">
+						<div class="label">Users</div>
+						<div class="value _monospace">
+							{{ number(stats.originalUsersCount) }}
+							<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+						</div>
+					</div>
+					<div class="number _panel">
+						<div class="label">Notes</div>
+						<div class="value _monospace">
+							{{ number(stats.originalNotesCount) }}
+							<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container queue">
+				<div class="title">Job queue</div>
+				<div class="body deliver">
+					<div class="title">Deliver</div>
+					<XQueueChart :connection="queueStatsConnection" domain="deliver"/>
+				</div>
+				<div class="body inbox">
+					<div class="title">Inbox</div>
+					<XQueueChart :connection="queueStatsConnection" domain="inbox"/>
+				</div>
+			</div>
+
+			<!--<XMetrics/>-->
+
+			<div class="container env">
+				<div class="title">Enviroment</div>
+				<div class="body">
+					<div class="number _panel">
+						<div class="label">Misskey</div>
+						<div class="value _monospace">{{ version }}</div>
+					</div>
+					<div v-if="serverInfo" class="number _panel">
+						<div class="label">Node.js</div>
+						<div class="value _monospace">{{ serverInfo.node }}</div>
+					</div>
+					<div v-if="serverInfo" class="number _panel">
+						<div class="label">PostgreSQL</div>
+						<div class="value _monospace">{{ serverInfo.psql }}</div>
+					</div>
+					<div v-if="serverInfo" class="number _panel">
+						<div class="label">Redis</div>
+						<div class="value _monospace">{{ serverInfo.redis }}</div>
+					</div>
+					<div class="number _panel">
+						<div class="label">Vue</div>
+						<div class="value _monospace">{{ vueVersion }}</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="number _panel">
-			<div class="label">Notes</div>
-			<div class="value _monospace">
-				{{ number(stats.originalNotesCount) }}
-				<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"><template #before>(</template><template #after>)</template></MkNumberDiff>
+		<div class="right">
+			<div class="container charts">
+				<div class="title">Active users</div>
+				<div class="body">
+					<canvas ref="chartEl"></canvas>
+				</div>
+			</div>
+			<div class="container federation">
+				<div class="title">Active instances</div>
+				<div class="body">
+					<XFederation/>
+				</div>
 			</div>
 		</div>
 	</div>
-
-	<MkContainer :foldable="true" class="charts">
-		<template #header><i class="fas fa-chart-bar"></i>{{ i18n.ts.charts }}</template>
-		<div style="padding: 12px;">
-			<MkInstanceStats :chart-limit="500" :detailed="true"/>
-		</div>
-	</MkContainer>
-
-	<div class="queue">
-		<MkContainer :foldable="true" :thin="true" class="deliver">
-			<template #header>Queue: deliver</template>
-			<MkQueueChart :connection="queueStatsConnection" domain="deliver"/>
-		</MkContainer>
-		<MkContainer :foldable="true" :thin="true" class="inbox">
-			<template #header>Queue: inbox</template>
-			<MkQueueChart :connection="queueStatsConnection" domain="inbox"/>
-		</MkContainer>
-	</div>
-
-	<!--<XMetrics/>-->
-
-	<MkFolder style="margin: var(--margin)">
-		<template #header><i class="fas fa-info-circle"></i> {{ i18n.ts.info }}</template>
-		<div class="cfcdecdf">
-			<div class="number _panel">
-				<div class="label">Misskey</div>
-				<div class="value _monospace">{{ version }}</div>
-			</div>
-			<div v-if="serverInfo" class="number _panel">
-				<div class="label">Node.js</div>
-				<div class="value _monospace">{{ serverInfo.node }}</div>
-			</div>
-			<div v-if="serverInfo" class="number _panel">
-				<div class="label">PostgreSQL</div>
-				<div class="value _monospace">{{ serverInfo.psql }}</div>
-			</div>
-			<div v-if="serverInfo" class="number _panel">
-				<div class="label">Redis</div>
-				<div class="value _monospace">{{ serverInfo.redis }}</div>
-			</div>
-			<div class="number _panel">
-				<div class="label">Vue</div>
-				<div class="value _monospace">{{ vueVersion }}</div>
-			</div>
-		</div>
-	</MkFolder>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import {
+	Chart,
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	TimeScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
+	Filler,
+} from 'chart.js';
+import { enUS } from 'date-fns/locale';
+import tinycolor from 'tinycolor2';
+import MagicGrid from 'magic-grid';
 import XMetrics from './metrics.vue';
+import XFederation from './overview.federation.vue';
+import XQueueChart from './overview.queue-chart.vue';
 import MkInstanceStats from '@/components/instance-stats.vue';
 import MkNumberDiff from '@/components/number-diff.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import MkQueueChart from '@/components/queue-chart.vue';
 import { version, url } from '@/config';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import 'chartjs-adapter-date-fns';
+import { defaultStore } from '@/store';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 
+Chart.register(
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	TimeScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
+	Filler,
+	//gradient,
+);
+
+const rootEl = $ref<HTMLElement>();
+const chartEl = $ref<HTMLCanvasElement>(null);
 let stats: any = $ref(null);
 let serverInfo: any = $ref(null);
 let usersComparedToThePrevDay: any = $ref(null);
 let notesComparedToThePrevDay: any = $ref(null);
 const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
+const now = new Date();
+let chartInstance: Chart = null;
+const chartLimit = 30;
 
-onMounted(async () => {	
+const { handler: externalTooltipHandler } = useChartTooltip();
+
+async function renderChart() {
+	if (chartInstance) {
+		chartInstance.destroy();
+	}
+
+	const getDate = (ago: number) => {
+		const y = now.getFullYear();
+		const m = now.getMonth();
+		const d = now.getDate();
+
+		return new Date(y, m, d - ago);
+	};
+
+	const format = (arr) => {
+		return arr.map((v, i) => ({
+			x: getDate(i).getTime(),
+			y: v,
+		}));
+	};
+
+	const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
+
+	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+
+	// フォントカラー
+	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+
+	const color = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
+
+	chartInstance = new Chart(chartEl, {
+		type: 'bar',
+		data: {
+			//labels: new Array(props.limit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
+			datasets: [{
+				parsing: false,
+				label: 'a',
+				data: format(raw.readWrite).slice().reverse(),
+				tension: 0.3,
+				pointRadius: 0,
+				borderWidth: 0,
+				borderJoinStyle: 'round',
+				borderRadius: 3,
+				backgroundColor: color,
+				/*gradient: props.bar ? undefined : {
+					backgroundColor: {
+						axis: 'y',
+						colors: {
+							0: alpha(x.color ? x.color : getColor(i), 0),
+							[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.2),
+						},
+					},
+				},*/
+				barPercentage: 0.9,
+				categoryPercentage: 0.9,
+				clip: 8,
+			}],
+		},
+		options: {
+			aspectRatio: 2.5,
+			layout: {
+				padding: {
+					left: 0,
+					right: 8,
+					top: 0,
+					bottom: 0,
+				},
+			},
+			scales: {
+				x: {
+					type: 'time',
+					stacked: true,
+					offset: false,
+					time: {
+						stepSize: 1,
+						unit: 'month',
+					},
+					grid: {
+						display: false,
+					},
+					ticks: {
+						display: false,
+					},
+					adapters: {
+						date: {
+							locale: enUS,
+						},
+					},
+					min: getDate(chartLimit).getTime(),
+				},
+				y: {
+					position: 'left',
+					stacked: true,
+					grid: {
+						display: false,
+					},
+					ticks: {
+						display: false,
+						//mirror: true,
+					},
+				},
+			},
+			interaction: {
+				intersect: false,
+				mode: 'index',
+			},
+			elements: {
+				point: {
+					hoverRadius: 5,
+					hoverBorderWidth: 2,
+				},
+			},
+			animation: false,
+			plugins: {
+				legend: {
+					display: false,
+				},
+				tooltip: {
+					enabled: false,
+					mode: 'index',
+					animation: {
+						duration: 0,
+					},
+					external: externalTooltipHandler,
+				},
+				//gradient,
+			},
+		},
+		plugins: [{
+			id: 'vLine',
+			beforeDraw(chart, args, options) {
+				if (chart.tooltip._active && chart.tooltip._active.length) {
+					const activePoint = chart.tooltip._active[0];
+					const ctx = chart.ctx;
+					const x = activePoint.element.x;
+					const topY = chart.scales.y.top;
+					const bottomY = chart.scales.y.bottom;
+
+					ctx.save();
+					ctx.beginPath();
+					ctx.moveTo(x, bottomY);
+					ctx.lineTo(x, topY);
+					ctx.lineWidth = 1;
+					ctx.strokeStyle = vLineColor;
+					ctx.stroke();
+					ctx.restore();
+				}
+			},
+		}],
+	});
+}
+
+onMounted(async () => {
+	/*
+	const magicGrid = new MagicGrid({
+		container: rootEl,
+		static: true,
+		animate: true,
+	});
+
+	magicGrid.listen();
+	*/
+
+	renderChart();
+
 	os.api('stats', {}).then(statsResponse => {
 		stats = statsResponse;
 
-		os.api('charts/users', { limit: 2, span: 'day' }).then(chart => {
+		os.apiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
 			usersComparedToThePrevDay = stats.originalUsersCount - chart.local.total[1];
 		});
 
-		os.api('charts/notes', { limit: 2, span: 'day' }).then(chart => {
+		os.apiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
 			notesComparedToThePrevDay = stats.originalNotesCount - chart.local.total[1];
 		});
 	});
@@ -128,63 +354,108 @@ definePageMetadata({
 
 <style lang="scss" scoped>
 .edbbcaef {
-	.cfcdecdf {
-		display: grid;
-		grid-gap: 8px;
-		grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
+	display: flex;
 
-		> .number {
-			padding: 12px 16px;
+	> .left, > .right {
+		box-sizing: border-box;
+		width: 50%;
 
-			> .label {
-				opacity: 0.7;
-				font-size: 0.8em;
-			}
+		> .container {
+			margin: 32px 0;
 
-			> .value {
-				font-weight: bold;
+			> .title {
 				font-size: 1.2em;
+				font-weight: bold;
+				margin-bottom: 16px;
+			}
 
-				> .diff {
-					font-size: 0.8em;
+			&.stats {
+				> .body {
+					display: grid;
+					grid-gap: 16px;
+					grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+					> .number {
+						padding: 14px 20px;
+
+						> .label {
+							opacity: 0.7;
+							font-size: 0.8em;
+						}
+
+						> .value {
+							font-weight: bold;
+							font-size: 1.5em;
+
+							> .diff {
+								font-size: 0.8em;
+							}
+						}
+					}
+				}
+			}
+
+			&.env {
+				> .body {
+					display: grid;
+					grid-gap: 16px;
+					grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+					> .number {
+						padding: 14px 20px;
+
+						> .label {
+							opacity: 0.7;
+							font-size: 0.8em;
+						}
+
+						> .value {
+							font-size: 1.2em;
+						}
+					}
+				}
+			}
+
+			&.charts {
+				> .body {
+					padding: 32px;
+					background: var(--panel);
+					border-radius: var(--radius);
+				}
+			}
+
+			&.federation {
+				> .body {
+					background: var(--panel);
+					border-radius: var(--radius);
+					overflow: clip;
+				}
+			}
+
+			&.queue {
+				> .body {
+					padding: 32px;
+					background: var(--panel);
+					border-radius: var(--radius);
+
+					&:not(:last-child) {
+						margin-bottom: 16px;
+					}
+
+					> .title {
+
+					}
 				}
 			}
 		}
 	}
 
-	> .charts {
-		margin: var(--margin);
+	> .left {
+		padding-right: 16px;
 	}
 
-	> .queue {
-		margin: var(--margin);
-		display: flex;
-
-		> .deliver,
-		> .inbox {
-			flex: 1;
-			width: 50%;
-
-			&:not(:first-child) {
-				margin-left: var(--margin);
-			}
-		}
-	}
-
-	&.max-width_740px {
-		> .queue {
-			display: block;
-
-			> .deliver,
-			> .inbox {
-				width: 100%;
-
-				&:not(:first-child) {
-					margin-top: var(--margin);
-					margin-left: 0;
-				}
-			}
-		}
+	> .right {
+		padding-left: 16px;
 	}
 }
 </style>

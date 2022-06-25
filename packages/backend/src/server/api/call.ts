@@ -94,7 +94,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 	}
 
 	// Cast non JSON input
-	if (ep.meta.requireFile && ep.params.properties) {
+	if ((ep.meta.requireFile || ctx?.method === 'GET') && ep.params.properties) {
 		for (const k of Object.keys(ep.params.properties)) {
 			const param = ep.params.properties![k];
 			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {

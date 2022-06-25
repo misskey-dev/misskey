@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Server: Allow GET method for some endpoints @syuilo
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
