@@ -29,6 +29,8 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 		}
 		res();
 	};
+
+	console.log('ctx.request', inspect(ctx.request));
 	console.log('body', inspect(body));
 
 	// Authentication
