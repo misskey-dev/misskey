@@ -24,13 +24,15 @@
 
 			<div class="container queue">
 				<div class="title">Job queue</div>
-				<div class="body deliver">
-					<div class="title">Deliver</div>
-					<XQueueChart :connection="queueStatsConnection" domain="deliver"/>
-				</div>
-				<div class="body inbox">
-					<div class="title">Inbox</div>
-					<XQueueChart :connection="queueStatsConnection" domain="inbox"/>
+				<div class="body">
+					<div class="chart deliver">
+						<div class="title">Deliver</div>
+						<XQueueChart :connection="queueStatsConnection" domain="deliver"/>
+					</div>
+					<div class="chart inbox">
+						<div class="title">Inbox</div>
+						<XQueueChart :connection="queueStatsConnection" domain="inbox"/>
+					</div>
 				</div>
 			</div>
 
@@ -104,6 +106,7 @@
 			<div class="container files">
 				<div class="title">Recent files</div>
 				<div class="body">
+					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</div>
 			</div>
 		</div>
@@ -148,6 +151,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
 
 Chart.register(
 	ArcElement,
@@ -182,6 +186,11 @@ const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;
+const filesPagination = {
+	endpoint: 'admin/drive/files' as const,
+	limit: 9,
+	noPaging: true,
+};
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
@@ -256,6 +265,7 @@ async function renderChart() {
 			scales: {
 				x: {
 					type: 'time',
+					display: false,
 					stacked: true,
 					offset: false,
 					time: {
@@ -276,6 +286,7 @@ async function renderChart() {
 					min: getDate(chartLimit).getTime(),
 				},
 				y: {
+					display: false,
 					position: 'left',
 					stacked: true,
 					grid: {
@@ -383,7 +394,7 @@ onMounted(async () => {
 	nextTick(() => {
 		queueStatsConnection.send('requestLog', {
 			id: Math.random().toString().substr(2, 8),
-			length: 200,
+			length: 100,
 		});
 	});
 });
@@ -415,7 +426,6 @@ definePageMetadata({
 			margin: 32px 0;
 
 			> .title {
-				font-size: 1.1em;
 				font-weight: bold;
 				margin-bottom: 16px;
 			}
@@ -424,7 +434,7 @@ definePageMetadata({
 				> .body {
 					display: grid;
 					grid-gap: 16px;
-					grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 
 					> .number {
 						padding: 14px 20px;
@@ -450,7 +460,7 @@ definePageMetadata({
 				> .body {
 					display: grid;
 					grid-gap: 16px;
-					grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 
 					> .number {
 						padding: 14px 20px;
@@ -500,19 +510,22 @@ definePageMetadata({
 
 			&.queue {
 				> .body {
-					position: relative;
-					padding: 24px;
-					background: var(--panel);
-					border-radius: var(--radius);
+					display: grid;
+					grid-gap: 16px;
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 
-					&:not(:last-child) {
-						margin-bottom: 16px;
-					}
+					> .chart {
+						position: relative;
+						padding: 20px;
+						background: var(--panel);
+						border-radius: var(--radius);
 
-					> .title {
-						position: absolute;
-						top: 24px;
-						left: 24px;
+						> .title {
+							position: absolute;
+							top: 20px;
+							left: 20px;
+							font-size: 90%;
+						}
 					}
 				}
 			}
