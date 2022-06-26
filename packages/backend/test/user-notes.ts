@@ -15,8 +15,8 @@ describe('users/notes', () => {
 	before(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
-		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg'); 
-		const png = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.png'); 
+		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
+		const png = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.png');
 		jpgNote = await post(alice, {
 			fileIds: [jpg.id],
 		});
