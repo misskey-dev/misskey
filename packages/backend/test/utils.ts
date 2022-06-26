@@ -186,6 +186,33 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 	});
 }
 
+export const waitFire = async (user: any, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean) => {
+	return new Promise<boolean>(async (res, rej) => {
+		let timer: NodeJS.Timeout;
+
+		const ws = await connectStream(user, channel, msg => {
+			if (cond(msg)) {
+				ws.close();
+				if (timer) clearTimeout(timer);
+				res(true);
+			}
+		});
+
+		timer = setTimeout(() => {
+			ws.close();
+			res(false);
+		}, 5000);
+
+		try {
+			await trgr();
+		} catch (e) {
+			ws.close();
+			if (timer) clearTimeout(timer);
+			rej(e);
+		}
+	})
+};
+
 export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?: number, type?: string, location?: string }> => {
 	// node-fetchだと3xxを取れない
 	return await new Promise((resolve, reject) => {
