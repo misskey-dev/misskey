@@ -190,13 +190,18 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	return new Promise<boolean>(async (res, rej) => {
 		let timer: NodeJS.Timeout;
 
-		const ws = await connectStream(user, channel, msg => {
-			if (cond(msg)) {
-				ws.close();
-				if (timer) clearTimeout(timer);
-				res(true);
-			}
-		});
+		let ws: WebSocket;
+		try {
+			ws = await connectStream(user, channel, msg => {
+				if (cond(msg)) {
+					ws.close();
+					if (timer) clearTimeout(timer);
+					res(true);
+				}
+			});
+		} catch (e) {
+			rej(e);
+		}
 
 		timer = setTimeout(() => {
 			ws.close();
