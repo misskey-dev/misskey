@@ -1,6 +1,11 @@
 name: Test
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
 
 jobs:
   mocha:
