@@ -19,7 +19,7 @@ const props = defineProps<{
 	user: misskey.entities.User;
 }>();
 
-let chartValues = $ref<number | null>(null);
+let chartValues = $ref<number[] | null>(null);
 
 os.apiGet('charts/user/notes', { userId: props.user.id, limit: 16 + 1, span: 'day' }).then(res => {
 	// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
