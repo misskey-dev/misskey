@@ -854,6 +854,7 @@ noEmailServerWarning: "Es ist kein Email-Server konfiguriert."
 thereIsUnresolvedAbuseReportWarning: "Es liegen ungelöste Meldungen vor."
 recommended: "Empfehlung"
 check: "Check"
+isSystemAccount: "Ein Benutzerkonto, dass durch das System erstellt und automatisch kontrolliert wird."
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
