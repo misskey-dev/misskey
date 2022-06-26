@@ -203,6 +203,8 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 			rej(e);
 		}
 
+		if (!ws!) return;
+
 		timer = setTimeout(() => {
 			ws.close();
 			res(false);
