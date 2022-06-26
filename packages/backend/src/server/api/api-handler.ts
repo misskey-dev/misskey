@@ -7,7 +7,7 @@ import { ApiError } from './error.js';
 
 export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
 	const body = ctx.is('multipart/form-data')
-		? (ctx.req as any).body
+		? (ctx.request as any).body
 		: ctx.method === 'GET'
 			? ctx.query
 			: ctx.request.body;
