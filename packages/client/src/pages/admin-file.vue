@@ -28,7 +28,7 @@
 					<template #value><span class="_monospace"><MkTime :time="file.createdAt" mode="detail" style="display: block;"/></span></template>
 				</MkKeyValue>
 			</div>
-			<MkA class="user" :to="`/user-info/${file.user.id}`">
+			<MkA v-if="file.user" class="user" :to="`/user-info/${file.user.id}`">
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
 			<div class="_formBlock">
