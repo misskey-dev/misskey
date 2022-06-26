@@ -77,17 +77,18 @@ export const paramDef = {
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
-		fields: { type: 'array',
-												minItems: 0,
-												maxItems: 16,
-												items: {
-													type: 'object',
-													properties: {
-														name: { type: 'string' },
-														value: { type: 'string' },
-													},
-													required: ['name', 'value'],
-												},
+		fields: {
+			type: 'array',
+			minItems: 0,
+			maxItems: 16,
+			items: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					value: { type: 'string' },
+				},
+				required: ['name', 'value'],
+			},
 		},
 		isLocked: { type: 'boolean' },
 		isExplorable: { type: 'boolean' },
