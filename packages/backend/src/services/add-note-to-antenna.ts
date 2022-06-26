@@ -2,7 +2,7 @@ import { Antenna } from '@/models/entities/antenna.js';
 import { Note } from '@/models/entities/note.js';
 import { AntennaNotes, Mutings, Notes } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { publishAntennaStream, publishMainStream } from '@/services/stream.js';
 import { User } from '@/models/entities/user.js';
 
@@ -39,7 +39,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: {
 			_note.renote = await Notes.findOneByOrFail({ id: note.renoteId });
 		}
 
-		if (isMutedUserRelated(_note, new Set<string>(mutings.map(x => x.muteeId)))) {
+		if (isUserRelated(_note, new Set<string>(mutings.map(x => x.muteeId)))) {
 			return;
 		}
 
