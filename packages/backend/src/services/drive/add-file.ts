@@ -449,19 +449,18 @@ export async function addFile({
 	file.properties = properties;
 	file.blurhash = info.blurhash || null;
 	file.isLink = isLink;
-	
-	if (info.sensitive) {
-		file.predictedIsSensitive = true;
-		file.forceIsSensitive = instance.forceIsSensitiveWhenPredicted;
-		file.isSensitive = true;
-	} else {
-		file.isSensitive = user
-			? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
-			(sensitive !== null && sensitive !== undefined)
-				? sensitive
-				: false
-			: false;
-	}
+	file.maybeSensitive = info.sensitive;
+	file.maybePorn = info.porn;
+
+	file.isSensitive = user
+		? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
+		(sensitive !== null && sensitive !== undefined)
+			? sensitive
+			: false
+		: false;
+
+	if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
+	if (info.sensitive && instance.setSensitiveFlagAutomatically) file.isSensitive = true;
 
 	if (url !== null) {
 		file.src = url;

@@ -77,13 +77,7 @@ export default define(meta, paramDef, async (ps, user) => {
 
 	if (ps.comment !== undefined) file.comment = ps.comment;
 
-	if (ps.isSensitive !== undefined) {
-		if (file.forceIsSensitive) {
-			if (ps.isSensitive) file.isSensitive = true;
-		} else {
-			file.isSensitive = ps.isSensitive;
-		}
-	}
+	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
 
 	if (ps.folderId !== undefined) {
 		if (ps.folderId === null) {

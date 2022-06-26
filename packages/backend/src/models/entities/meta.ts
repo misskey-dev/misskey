@@ -201,14 +201,9 @@ export class Meta {
 	public sensitiveMediaDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
 
 	@Column('boolean', {
-		default: true,
-	})
-	public forceIsSensitiveWhenPredicted: boolean;
-
-	@Column('boolean', {
 		default: false,
 	})
-	public disallowUploadWhenPredictedAsPorn: boolean;
+	public setSensitiveFlagAutomatically: boolean;
 
 	@Column('integer', {
 		default: 1024,

@@ -14,45 +14,46 @@
 					<XBotProtection/>
 				</FormFolder>
 
-        <FormFolder class="_formBlock">
-          <template #icon><i class="fas fa-eye-slash"></i></template>
-          <template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
-          <template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
-          <template v-else-if="sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
-          <template v-else-if="sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
-          <template v-else #suffix>{{ i18n.ts.none }}</template>
+				<FormFolder class="_formBlock">
+					<template #icon><i class="fas fa-eye-slash"></i></template>
+					<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
+					<template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
+					<template v-else-if="sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
+					<template v-else-if="sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
+					<template v-else #suffix>{{ i18n.ts.none }}</template>
 
-          <div class="_formRoot">
-            <span class="_formBlock">{{ i18n.ts._sensitiveMediaDetection.description }}</span>
+					<div class="_formRoot">
+						<span class="_formBlock">{{ i18n.ts._sensitiveMediaDetection.description }}</span>
 
-            <FormRadios v-model="sensitiveMediaDetection" class="_formBlock">
-              <option value="none">{{ i18n.ts.none }}</option>
-              <option value="all">{{ i18n.ts.all }}</option>
-              <option value="local">{{ i18n.ts.localOnly }}</option>
-              <option value="remote">{{ i18n.ts.remoteOnly }}</option>
-            </FormRadios>
+						<FormRadios v-model="sensitiveMediaDetection" class="_formBlock">
+							<option value="none">{{ i18n.ts.none }}</option>
+							<option value="all">{{ i18n.ts.all }}</option>
+							<option value="local">{{ i18n.ts.localOnly }}</option>
+							<option value="remote">{{ i18n.ts.remoteOnly }}</option>
+						</FormRadios>
 
-            <FormRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`" class="_formBlock">
-              <template #label>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</template>
-              <template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
-            </FormRange>
+						<FormRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`" class="_formBlock">
+							<template #label>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</template>
+							<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
+						</FormRange>
 
-            <FormSwitch v-model="forceIsSensitiveWhenPredicted" class="_formBlock">
-              <template #label>{{ i18n.ts._sensitiveMediaDetection.forceIsSensitiveWhenPredicted }}</template>
-            </FormSwitch>
+						<FormSwitch v-model="setSensitiveFlagAutomatically" class="_formBlock">
+							<template #label>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }}</template>
+							<template #caption>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</template>
+						</FormSwitch>
 
-            <!-- 現状 false positive が多すぎて実用に耐えない
-            <FormSwitch v-model="disallowUploadWhenPredictedAsPorn" class="_formBlock">
-              <template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
-            </FormSwitch>
-            -->
+						<!-- 現状 false positive が多すぎて実用に耐えない
+						<FormSwitch v-model="disallowUploadWhenPredictedAsPorn" class="_formBlock">
+							<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
+						</FormSwitch>
+						-->
 
-            <FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
-          </div>
-        </FormFolder>
+						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+					</div>
+				</FormFolder>
 
-        <FormFolder class="_formBlock">
-				<template #label>Summaly Proxy</template>
+				<FormFolder class="_formBlock">
+					<template #label>Summaly Proxy</template>
 
 					<div class="_formRoot">
 						<FormInput v-model="summalyProxy" class="_formBlock">
@@ -91,8 +92,7 @@ let enableHcaptcha: boolean = $ref(false);
 let enableRecaptcha: boolean = $ref(false);
 let sensitiveMediaDetection: string = $ref('none');
 let sensitiveMediaDetectionSensitivity: number = $ref(0);
-let forceIsSensitiveWhenPredicted: boolean = $ref(false);
-let disallowUploadWhenPredictedAsPorn: boolean = $ref(false);
+let setSensitiveFlagAutomatically: boolean = $ref(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -106,15 +106,13 @@ async function init() {
 		meta.sensitiveMediaDetectionSensitivity === 'medium' ? 2 :
 		meta.sensitiveMediaDetectionSensitivity === 'high' ? 3 :
 		meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 4 : 0;
-	forceIsSensitiveWhenPredicted = meta.forceIsSensitiveWhenPredicted;
-	disallowUploadWhenPredictedAsPorn = meta.disallowUploadWhenPredictedAsPorn;
+	setSensitiveFlagAutomatically = meta.setSensitiveFlagAutomatically;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		summalyProxy,
 		sensitiveMediaDetection,
-		forceIsSensitiveWhenPredicted,
 		sensitiveMediaDetectionSensitivity:
 			sensitiveMediaDetectionSensitivity === 0 ? 'veryLow' :
 			sensitiveMediaDetectionSensitivity === 1 ? 'low' :
@@ -122,7 +120,7 @@ function save() {
 			sensitiveMediaDetectionSensitivity === 3 ? 'high' :
 			sensitiveMediaDetectionSensitivity === 4 ? 'veryHigh' :
 			0,
-		disallowUploadWhenPredictedAsPorn,
+		setSensitiveFlagAutomatically,
 	}).then(() => {
 		fetchInstance();
 	});

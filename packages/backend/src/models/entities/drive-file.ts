@@ -156,17 +156,18 @@ export class DriveFile {
 	})
 	public isSensitive: boolean;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public forceIsSensitive: boolean;
-
 	@Index()
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the DriveFile is NSFW. (predict)',
 	})
-	public predictedIsSensitive: boolean;
+	public maybeSensitive: boolean;
+
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public maybePorn: boolean;
 
 	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か

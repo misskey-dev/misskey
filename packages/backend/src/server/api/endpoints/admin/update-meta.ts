@@ -50,8 +50,7 @@ export const paramDef = {
 		recaptchaSecretKey: { type: 'string', nullable: true },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
-		forceIsSensitiveWhenPredicted: { type: 'boolean' },
-		disallowUploadWhenPredictedAsPorn: { type: 'boolean' },
+		setSensitiveFlagAutomatically: { type: 'boolean' },
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
@@ -224,12 +223,8 @@ export default define(meta, paramDef, async (ps, me) => {
 		set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
 	}
 
-	if (ps.forceIsSensitiveWhenPredicted !== undefined) {
-		set.forceIsSensitiveWhenPredicted = ps.forceIsSensitiveWhenPredicted;
-	}
-
-	if (ps.disallowUploadWhenPredictedAsPorn !== undefined) {
-		set.disallowUploadWhenPredictedAsPorn = ps.disallowUploadWhenPredictedAsPorn;
+	if (ps.setSensitiveFlagAutomatically !== undefined) {
+		set.setSensitiveFlagAutomatically = ps.setSensitiveFlagAutomatically;
 	}
 
 	if (ps.proxyAccountId !== undefined) {

@@ -203,11 +203,7 @@ export const meta = {
 				type: 'string',
 				optional: true, nullable: false,
 			},
-			forceIsSensitiveWhenPredicted: {
-				type: 'boolean',
-				optional: true, nullable: false,
-			},
-			disallowUploadWhenPredictedAsPorn: {
+			setSensitiveFlagAutomatically: {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
@@ -385,8 +381,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		recaptchaSecretKey: instance.recaptchaSecretKey,
 		sensitiveMediaDetection: instance.sensitiveMediaDetection,
 		sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
-		forceIsSensitiveWhenPredicted: instance.forceIsSensitiveWhenPredicted,
-		disallowUploadWhenPredictedAsPorn: instance.disallowUploadWhenPredictedAsPorn,
+		setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
 		proxyAccountId: instance.proxyAccountId,
 		twitterConsumerKey: instance.twitterConsumerKey,
 		twitterConsumerSecret: instance.twitterConsumerSecret,

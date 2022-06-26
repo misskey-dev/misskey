@@ -861,13 +861,15 @@ remoteOnly: "リモートのみ"
 failedToUpload: "アップロード失敗"
 cannotUploadBecauseInappropriate: "不適切な内容を含む可能性があると判定されたためアップロードできません。"
 cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
+enableAutoSensitive: "自動NSFW判定"
+enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにNSFWフラグを設定します。この機能をオフにしても、インスタンスによっては自動で設定されることがあります。"
 
 _sensitiveMediaDetection:
-  description: "機械学習を使ってセンシティブなメディアを検出し、自動でNSFWフラグを設定したり、投稿を拒否することができます。サーバーの負荷が少し増えます。"
+  description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
   sensitivity: "検出感度"
-  sensitivityDescription: "感度を低くすると、誤検知(偽陽性)を減らすことができます。感度を高くすると、検知漏れ(偽陰性)を減らすことができます。"
-  forceIsSensitiveWhenPredicted: "センシティブ判定されたメディアのNSFW解除を不可にする"
-  disallowUploadWhenPredictedAsPorn: "ポルノの可能性の高いものは投稿不可にする"
+  sensitivityDescription: "感度を低くすると、誤検知(偽陽性)が減ります。感度を高くすると、検知漏れ(偽陰性)が減ります。"
+  setSensitiveFlagAutomatically: "NSFWフラグを設定する"
+  setSensitiveFlagAutomaticallyDescription: "この設定をオフにしても内部的に判定結果は保持されます。"
 
 _emailUnavailable:
   used: "既に使用されています"
