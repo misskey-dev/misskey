@@ -14,10 +14,10 @@
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
 	window.onerror = (e) => {
-		renderError('SOMETHING_HAPPENED', e.toString());
+		renderError('SOMETHING_HAPPENED', e);
 	};
 	window.onunhandledrejection = (e) => {
-		renderError('SOMETHING_HAPPENED_IN_PROMISE', e.toString());
+		renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
 	};
 
 	const v = localStorage.getItem('v') || VERSION;
@@ -57,7 +57,7 @@
 	import(`/assets/${CLIENT_ENTRY}`)
 		.catch(async e => {
 			await checkUpdate();
-			renderError('APP_FETCH_FAILED', JSON.stringify(e));
+			renderError('APP_FETCH_FAILED', e);
 		})
 	//#endregion
 
@@ -104,20 +104,27 @@
 
 	// eslint-disable-next-line no-inner-declarations
 	function renderError(code, details) {
-		document.documentElement.innerHTML = `
-			<h1>⚠エラーが発生しました</h1>
-			<p>問題が解決しない場合は管理者までお問い合わせください。以下のオプションを試すこともできます:</p>
+		let errorsElement = document.getElementById('errors');
+		if (!errorsElement) {
+			document.documentElement.innerHTML = `
+			<h1>⚠ An error has occurred. ⚠</h1>
+			<p>If the problem persists, please contact the administrator. You may also try the following options:</p>
 			<ul>
-				<li><a href="/cli">簡易クライアント</a>を起動</li>
-				<li><a href="/bios">BIOS</a>で修復を試みる</li>
-				<li><a href="/flush">キャッシュをクリア</a>する</li>
+				<li>Start <a href="/cli">the simple client</a></li>
+				<li>Attempt to repair in <a href="/bios">BIOS</a></li>
+				<li><a href="/flush">Flush preferences and cache</a></li>
 			</ul>
 			<hr>
-			<code>ERROR CODE: ${code}</code>
-			<details>
-				${details}
-			</details>
-		`;
+			<div id="errors"></div>
+			`;
+
+			errorsElement = document.getElementById('errors');
+		}
+
+		const detailsElement = document.createElement('details');
+		detailsElement.innerHTML = `<summary><code>ERROR CODE: ${code}</code></summary>${JSON.stringify(details)}`;
+
+		errorsElement.appendChild(detailsElement);
 	}
 
 	// eslint-disable-next-line no-inner-declarations

@@ -24,13 +24,22 @@
 
 			<div class="container queue">
 				<div class="title">Job queue</div>
-				<div class="body deliver">
-					<div class="title">Deliver</div>
-					<XQueueChart :connection="queueStatsConnection" domain="deliver"/>
+				<div class="body">
+					<div class="chart deliver">
+						<div class="title">Deliver</div>
+						<XQueueChart :connection="queueStatsConnection" domain="deliver"/>
+					</div>
+					<div class="chart inbox">
+						<div class="title">Inbox</div>
+						<XQueueChart :connection="queueStatsConnection" domain="inbox"/>
+					</div>
 				</div>
-				<div class="body inbox">
-					<div class="title">Inbox</div>
-					<XQueueChart :connection="queueStatsConnection" domain="inbox"/>
+			</div>
+
+			<div class="container users">
+				<div class="title">New users</div>
+				<div v-if="newUsers" class="body">
+					<XUser v-for="user in newUsers" :key="user.id" class="user" :user="user"/>
 				</div>
 			</div>
 
@@ -75,6 +84,31 @@
 					<XFederation/>
 				</div>
 			</div>
+			<div v-if="stats" class="container federationStats">
+				<div class="title">Federation</div>
+				<div class="body">
+					<div class="number _panel">
+						<div class="label">Sub</div>
+						<div class="value _monospace">
+							{{ number(federationSubActive) }}
+							<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationSubActiveDiff"><template #before>(</template><template #after>)</template></MkNumberDiff>
+						</div>
+					</div>
+					<div class="number _panel">
+						<div class="label">Pub</div>
+						<div class="value _monospace">
+							{{ number(federationPubActive) }}
+							<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationPubActiveDiff"><template #before>(</template><template #after>)</template></MkNumberDiff>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container files">
+				<div class="title">Recent files</div>
+				<div class="body">
+					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+				</div>
+			</div>
 		</div>
 	</div>
 </MkSpacer>
@@ -105,6 +139,7 @@ import MagicGrid from 'magic-grid';
 import XMetrics from './metrics.vue';
 import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
+import XUser from './overview.user.vue';
 import MkInstanceStats from '@/components/instance-stats.vue';
 import MkNumberDiff from '@/components/number-diff.vue';
 import { version, url } from '@/config';
@@ -116,6 +151,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
 
 Chart.register(
 	ArcElement,
@@ -141,10 +177,20 @@ let stats: any = $ref(null);
 let serverInfo: any = $ref(null);
 let usersComparedToThePrevDay: any = $ref(null);
 let notesComparedToThePrevDay: any = $ref(null);
+let federationPubActive = $ref<number | null>(null);
+let federationPubActiveDiff = $ref<number | null>(null);
+let federationSubActive = $ref<number | null>(null);
+let federationSubActiveDiff = $ref<number | null>(null);
+let newUsers = $ref(null);
 const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;
+const filesPagination = {
+	endpoint: 'admin/drive/files' as const,
+	limit: 9,
+	noPaging: true,
+};
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
@@ -219,6 +265,7 @@ async function renderChart() {
 			scales: {
 				x: {
 					type: 'time',
+					display: false,
 					stacked: true,
 					offset: false,
 					time: {
@@ -239,6 +286,7 @@ async function renderChart() {
 					min: getDate(chartLimit).getTime(),
 				},
 				y: {
+					display: false,
 					position: 'left',
 					stacked: true,
 					grid: {
@@ -325,14 +373,28 @@ onMounted(async () => {
 		});
 	});
 
+	os.apiGet('charts/federation', { limit: 2, span: 'day' }).then(chart => {
+		federationPubActive = chart.pubActive[0];
+		federationPubActiveDiff = chart.pubActive[0] - chart.pubActive[1];
+		federationSubActive = chart.subActive[0];
+		federationSubActiveDiff = chart.subActive[0] - chart.subActive[1];
+	});
+
 	os.api('admin/server-info').then(serverInfoResponse => {
 		serverInfo = serverInfoResponse;
+	});
+
+	os.api('admin/show-users', {
+		limit: 5,
+		sort: '+createdAt',
+	}).then(res => {
+		newUsers = res;
 	});
 
 	nextTick(() => {
 		queueStatsConnection.send('requestLog', {
 			id: Math.random().toString().substr(2, 8),
-			length: 200,
+			length: 100,
 		});
 	});
 });
@@ -364,16 +426,15 @@ definePageMetadata({
 			margin: 32px 0;
 
 			> .title {
-				font-size: 1.2em;
 				font-weight: bold;
 				margin-bottom: 16px;
 			}
 
-			&.stats {
+			&.stats, &.federationStats {
 				> .body {
 					display: grid;
 					grid-gap: 16px;
-					grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 
 					> .number {
 						padding: 14px 20px;
@@ -388,7 +449,7 @@ definePageMetadata({
 							font-size: 1.5em;
 
 							> .diff {
-								font-size: 0.8em;
+								font-size: 0.7em;
 							}
 						}
 					}
@@ -399,7 +460,7 @@ definePageMetadata({
 				> .body {
 					display: grid;
 					grid-gap: 16px;
-					grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 
 					> .number {
 						padding: 14px 20px;
@@ -410,7 +471,7 @@ definePageMetadata({
 						}
 
 						> .value {
-							font-size: 1.2em;
+							font-size: 1.1em;
 						}
 					}
 				}
@@ -424,6 +485,21 @@ definePageMetadata({
 				}
 			}
 
+			&.users {
+				> .body {
+					background: var(--panel);
+					border-radius: var(--radius);
+
+					> .user {
+						padding: 16px 20px;
+
+						&:not(:last-child) {
+							border-bottom: solid 0.5px var(--divider);
+						}
+					}
+				}
+			}
+
 			&.federation {
 				> .body {
 					background: var(--panel);
@@ -434,16 +510,22 @@ definePageMetadata({
 
 			&.queue {
 				> .body {
-					padding: 32px;
-					background: var(--panel);
-					border-radius: var(--radius);
+					display: grid;
+					grid-gap: 16px;
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 
-					&:not(:last-child) {
-						margin-bottom: 16px;
-					}
+					> .chart {
+						position: relative;
+						padding: 20px;
+						background: var(--panel);
+						border-radius: var(--radius);
 
-					> .title {
-
+						> .title {
+							position: absolute;
+							top: 20px;
+							left: 20px;
+							font-size: 90%;
+						}
 					}
 				}
 			}

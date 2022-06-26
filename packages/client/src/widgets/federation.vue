@@ -25,6 +25,7 @@ import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/ui/container.vue';
 import MkMiniChart from '@/components/mini-chart.vue';
 import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
 
 const name = 'federation';
 
@@ -64,12 +65,9 @@ const fetch = async () => {
 	fetching.value = false;
 };
 
-onMounted(() => {
-	fetch();
-	const intervalId = window.setInterval(fetch, 1000 * 60);
-	onUnmounted(() => {
-		window.clearInterval(intervalId);
-	});
+useInterval(fetch, 1000 * 60, {
+	immediate: true,
+	afterMounted: true,
 });
 
 defineExpose<WidgetComponentExpose>({

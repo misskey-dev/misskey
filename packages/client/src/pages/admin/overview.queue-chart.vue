@@ -73,7 +73,7 @@ const onStats = (stats) => {
 	chartInstance.data.datasets[1].data.push(stats[props.domain].active);
 	chartInstance.data.datasets[2].data.push(stats[props.domain].waiting);
 	chartInstance.data.datasets[3].data.push(stats[props.domain].delayed);
-	if (chartInstance.data.datasets[0].data.length > 200) {
+	if (chartInstance.data.datasets[0].data.length > 100) {
 		chartInstance.data.labels.shift();
 		chartInstance.data.datasets[0].data.shift();
 		chartInstance.data.datasets[1].data.shift();
@@ -90,7 +90,7 @@ const onStatsLog = (statsLog) => {
 		chartInstance.data.datasets[1].data.push(stats[props.domain].active);
 		chartInstance.data.datasets[2].data.push(stats[props.domain].waiting);
 		chartInstance.data.datasets[3].data.push(stats[props.domain].delayed);
-		if (chartInstance.data.datasets[0].data.length > 200) {
+		if (chartInstance.data.datasets[0].data.length > 100) {
 			chartInstance.data.labels.shift();
 			chartInstance.data.datasets[0].data.shift();
 			chartInstance.data.datasets[1].data.shift();
@@ -157,6 +157,7 @@ onMounted(() => {
 			},
 			scales: {
 				x: {
+					display: false,
 					grid: {
 						display: false,
 					},
@@ -166,6 +167,7 @@ onMounted(() => {
 					},
 				},
 				y: {
+					display: false,
 					min: 0,
 					grid: {
 						display: false,
@@ -196,10 +198,6 @@ onMounted(() => {
 
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
-
-	props.connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
-	});
 });
 
 onUnmounted(() => {
