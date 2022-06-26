@@ -5,18 +5,11 @@
 		<div v-if="tab === 'overview'" class="_formRoot">
 			<div class="fnfelxur">
 				<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
+				<span class="name">{{ instance.name || `(${$ts.unknown})` }}</span>
 			</div>
 			<MkKeyValue :copy="host" oneline style="margin: 1em 0;">
 				<template #key>Host</template>
 				<template #value><span class="_monospace"><MkLink :url="`https://${host}`">{{ host }}</MkLink></span></template>
-			</MkKeyValue>
-			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>Name</template>
-				<template #value>{{ instance.name || `(${$ts.unknown})` }}</template>
-			</MkKeyValue>
-			<MkKeyValue>
-				<template #key>{{ $ts.description }}</template>
-				<template #value>{{ instance.description }}</template>
 			</MkKeyValue>
 			<MkKeyValue oneline style="margin: 1em 0;">
 				<template #key>{{ $ts.software }}</template>
@@ -25,6 +18,10 @@
 			<MkKeyValue oneline style="margin: 1em 0;">
 				<template #key>{{ $ts.administrator }}</template>
 				<template #value>{{ instance.maintainerName || `(${$ts.unknown})` }} ({{ instance.maintainerEmail || `(${$ts.unknown})` }})</template>
+			</MkKeyValue>
+			<MkKeyValue>
+				<template #key>{{ $ts.description }}</template>
+				<template #value>{{ instance.description }}</template>
 			</MkKeyValue>
 
 			<FormSection v-if="iAmModerator">
@@ -205,11 +202,18 @@ definePageMetadata({
 
 <style lang="scss" scoped>
 .fnfelxur {
+	display: flex;
+	align-items: center;
+
 	> .icon {
 		display: block;
-		margin: 0;
+		margin: 0 16px 0 0;
 		height: 64px;
 		border-radius: 8px;
+	}
+
+	> .name {
+		word-break: break-all;
 	}
 }
 
