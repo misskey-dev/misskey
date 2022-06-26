@@ -91,14 +91,18 @@ export default defineComponent({
 			}
 		};
 		watch([steppedValue, containerEl], calcThumbPosition);
+
+		let ro: ResizeObserver | undefined;
+
 		onMounted(() => {
-			const ro = new ResizeObserver((entries, observer) => {
+			ro = new ResizeObserver((entries, observer) => {
 				calcThumbPosition();
 			});
 			ro.observe(containerEl.value);
-			onUnmounted(() => {
-				ro.disconnect();
-			});
+		});
+		
+		onUnmounted(() => {
+			if (ro) ro.disconnect();
 		});
 
 		const steps = computed(() => {

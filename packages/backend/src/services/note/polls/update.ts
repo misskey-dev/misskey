@@ -14,7 +14,6 @@ export async function deliverQuestionUpdate(noteId: Note['id']) {
 	if (user == null) throw new Error('note not found');
 
 	if (Users.isLocalUser(user)) {
-
 		const content = renderActivity(renderUpdate(await renderNote(note, false), user));
 		deliverToFollowers(user, content);
 		deliverToRelays(user, content);

@@ -41,25 +41,9 @@
 					</div>
 
 					<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination" class="users">
-						<button v-for="user in items" :key="user.id" class="user _panel _button _gap" @click="show(user)">
-							<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
-							<div class="body">
-								<header>
-									<MkUserName class="name" :user="user"/>
-									<span class="acct">@{{ acct(user) }}</span>
-									<span v-if="user.isAdmin" class="staff"><i class="fas fa-bookmark"></i></span>
-									<span v-if="user.isModerator" class="staff"><i class="far fa-bookmark"></i></span>
-									<span v-if="user.isSilenced" class="punished"><i class="fas fa-microphone-slash"></i></span>
-									<span v-if="user.isSuspended" class="punished"><i class="fas fa-snowflake"></i></span>
-								</header>
-								<div>
-									<span>{{ $ts.lastUsed }}: <MkTime v-if="user.updatedAt" :time="user.updatedAt" mode="detail"/></span>
-								</div>
-								<div>
-									<span>{{ $ts.registeredDate }}: <MkTime :time="user.createdAt" mode="detail"/></span>
-								</div>
-							</div>
-						</button>
+						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${new Date(user.updatedAt).toLocaleString()}`" class="user" :to="`/user-info/${user.id}`">
+							<MkUserCardMini :user="user"/>
+						</MkA>
 					</MkPagination>
 				</div>
 			</div>
@@ -74,11 +58,11 @@ import XHeader from './_header_.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
-import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkUserCardMini from '@/components/user-card-mini.vue';
 
 let paginationComponent = $ref<InstanceType<typeof MkPagination>>();
 
@@ -174,54 +158,12 @@ definePageMetadata(computed(() => ({
 	
 		> .users {
 			margin-top: var(--margin);
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+			grid-gap: 12px;
 
-			> .user {
-				display: flex;
-				width: 100%;
-				box-sizing: border-box;
-				text-align: left;
-				align-items: center;
-				padding: 16px;
-
-				&:hover {
-					color: var(--accent);
-				}
-
-				> .avatar {
-					width: 60px;
-					height: 60px;
-				}
-
-				> .body {
-					margin-left: 0.3em;
-					padding: 0 8px;
-					flex: 1;
-
-					@media (max-width: 500px) {
-						font-size: 14px;
-					}
-
-					> header {
-						> .name {
-							font-weight: bold;
-						}
-
-						> .acct {
-							margin-left: 8px;
-							opacity: 0.7;
-						}
-
-						> .staff {
-							margin-left: 0.5em;
-							color: var(--badge);
-						}
-
-						> .punished {
-							margin-left: 0.5em;
-							color: #4dabf7;
-						}
-					}
-				}
+			> .user:hover {
+				text-decoration: none;
 			}
 		}
 	}

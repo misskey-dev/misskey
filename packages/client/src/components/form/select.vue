@@ -3,7 +3,8 @@
 	<div class="label" @click="focus"><slot name="label"></slot></div>
 	<div ref="container" class="input" :class="{ inline, disabled, focused }" @click.prevent="onClick">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
-		<select ref="inputEl"
+		<select
+			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
 			class="select"
@@ -29,6 +30,7 @@
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, VNode } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
 
 export default defineComponent({
 	components: {
@@ -37,38 +39,38 @@ export default defineComponent({
 
 	props: {
 		modelValue: {
-			required: true
+			required: true,
 		},
 		required: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		readonly: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		disabled: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		placeholder: {
 			type: String,
-			required: false
+			required: false,
 		},
 		autofocus: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		inline: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		manualSave: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 	},
 
@@ -109,30 +111,29 @@ export default defineComponent({
 			invalid.value = inputEl.value.validity.badInput;
 		});
 
+		// このコンポーネントが作成された時、非表示状態である場合がある
+		// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
+		useInterval(() => {
+			if (prefixEl.value) {
+				if (prefixEl.value.offsetWidth) {
+					inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+				}
+			}
+			if (suffixEl.value) {
+				if (suffixEl.value.offsetWidth) {
+					inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
+				}
+			}
+		}, 100, {
+			immediate: true,
+			afterMounted: true,
+		});
+
 		onMounted(() => {
 			nextTick(() => {
 				if (autofocus.value) {
 					focus();
 				}
-
-				// このコンポーネントが作成された時、非表示状態である場合がある
-				// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-				const clock = window.setInterval(() => {
-					if (prefixEl.value) {
-						if (prefixEl.value.offsetWidth) {
-							inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
-						}
-					}
-					if (suffixEl.value) {
-						if (suffixEl.value.offsetWidth) {
-							inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-						}
-					}
-				}, 100);
-
-				onUnmounted(() => {
-					window.clearInterval(clock);
-				});
 			});
 		});
 

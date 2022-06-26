@@ -35,7 +35,7 @@ function parsePath(path: string): ParsedPath {
 				wildcard,
 				optional,
 			});
-		} else {
+		} else if (part.length !== 0) {
 			res.push(part);
 		}
 	}
@@ -85,9 +85,11 @@ export class Router extends EventEmitter<{
 
 		if (_DEV_) console.log('Routing: ', path, queryString);
 
+		const _parts = path.split('/').filter(part => part.length !== 0);
+
 		forEachRouteLoop:
 		for (const route of this.routes) {
-			let parts = path.split('/');
+			let parts = [ ..._parts ];
 			const props = new Map<string, string>();
 
 			pathMatchLoop:

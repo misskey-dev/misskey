@@ -6,7 +6,13 @@
 			<div v-if="tab === 'overview'" class="_formRoot">
 				<div class="_formBlock aeakzknw">
 					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
+					<div class="body">
+						<span class="name"><MkUserName class="name" :user="user"/></span>
+						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
+					</div>
 				</div>
+
+				<MkInfo v-if="user.username.includes('.')" class="_formBlock">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
 				<div v-if="user.url" class="_formLinksGrid _formBlock">
 					<FormLink :to="userPage(user)">Profile</FormLink>
@@ -17,11 +23,6 @@
 				<FormLink v-if="user.host" class="_formBlock" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
 
 				<div class="_formBlock">
-					<MkKeyValue :copy="acct(user)" oneline style="margin: 1em 0;">
-						<template #key>Acct</template>
-						<template #value><span class="_monospace">{{ acct(user) }}</span></template>
-					</MkKeyValue>
-
 					<MkKeyValue :copy="user.id" oneline style="margin: 1em 0;">
 						<template #key>ID</template>
 						<template #value><span class="_monospace">{{ user.id }}</span></template>
@@ -77,6 +78,13 @@
 					</div>
 				</div>
 			</div>
+			<div v-else-if="tab === 'files'" class="_formRoot">
+				<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+			</div>
+			<div v-else-if="tab === 'ap'" class="_formRoot">
+				<MkObjectView v-if="ap" tall :value="user">
+				</MkObjectView>
+			</div>
 			<div v-else-if="tab === 'raw'" class="_formRoot">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
@@ -102,6 +110,7 @@ import FormButton from '@/components/ui/button.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
+import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
@@ -124,6 +133,13 @@ let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
+const filesPagination = {
+	endpoint: 'admin/drive/files' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.userId,
+	})),
+};
 
 function createFetcher() {
 	if (iAmModerator) {
@@ -225,7 +241,7 @@ watch(() => props.userId, () => {
 
 watch(() => user, () => {
 	os.api('ap/get', {
-		uri: user.uri || `${url}/users/${user.id}`,
+		uri: user.uri ?? `${url}/users/${user.id}`,
 	}).then(res => {
 		ap = res;
 	});
@@ -241,11 +257,19 @@ const headerTabs = $computed(() => [{
 	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
+}, iAmModerator ? {
+	key: 'files',
+	title: i18n.ts.files,
+	icon: 'fas fa-cloud',
+} : null, {
+	key: 'ap',
+	title: 'AP',
+	icon: 'fas fa-share-alt',
 }, {
 	key: 'raw',
 	title: 'Raw data',
 	icon: 'fas fa-code',
-}]);
+}].filter(x => x != null));
 
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
@@ -256,10 +280,37 @@ definePageMetadata(computed(() => ({
 
 <style lang="scss" scoped>
 .aeakzknw {
+	display: flex;
+	align-items: center;
+
 	> .avatar {
 		display: block;
 		width: 64px;
 		height: 64px;
+		margin-right: 16px;
+	}
+
+	> .body {
+		flex: 1;
+		overflow: hidden;
+
+		> .name {
+			display: block;
+			width: 100%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		> .sub {
+			display: block;
+			width: 100%;
+			font-size: 85%;
+			opacity: 0.7;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 	}
 }
 

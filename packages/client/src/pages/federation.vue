@@ -41,8 +41,8 @@
 
 			<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
 				<div class="dqokceoi">
-					<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Last communicated: ${new Date(instance.lastCommunicatedAt).toLocaleString()}\nStatus: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`" :behavior="'window'">
-						<MkInstanceInfo :instance="instance"/>
+					<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Last communicated: ${new Date(instance.lastCommunicatedAt).toLocaleString()}\nStatus: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
+						<MkInstanceCardMini :instance="instance"/>
 					</MkA>
 				</div>
 			</MkPagination>
@@ -57,7 +57,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
-import MkInstanceInfo from '@/components/instance-info.vue';
+import MkInstanceCardMini from '@/components/instance-card-mini.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

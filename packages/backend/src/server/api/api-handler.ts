@@ -6,7 +6,11 @@ import call from './call.js';
 import { ApiError } from './error.js';
 
 export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
-	const body = ctx.request.body;
+	const body = ctx.is('multipart/form-data')
+		? (ctx.request as any).body
+		: ctx.method === 'GET'
+			? ctx.query
+			: ctx.request.body;
 
 	const reply = (x?: any, y?: ApiError) => {
 		if (x == null) {
@@ -33,6 +37,9 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 	authenticate(body['i']).then(([user, app]) => {
 		// API invoking
 		call(endpoint.name, user, app, body, ctx).then((res: any) => {
+			if (ctx.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
+				ctx.set('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
+			}
 			reply(res);
 		}).catch((e: ApiError) => {
 			reply(e.httpStatusCode ? e.httpStatusCode : e.kind === 'client' ? 400 : 500, e);
