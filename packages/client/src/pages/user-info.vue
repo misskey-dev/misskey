@@ -12,6 +12,8 @@
 					</div>
 				</div>
 
+				<MkInfo v-if="user.username.includes('.')" class="_formBlock">{{ i18n.ts.isSystemAccount }}</MkInfo>
+
 				<div v-if="user.url" class="_formLinksGrid _formBlock">
 					<FormLink :to="userPage(user)">Profile</FormLink>
 					<FormLink :to="user.url" :external="true">Profile (remote)</FormLink>
