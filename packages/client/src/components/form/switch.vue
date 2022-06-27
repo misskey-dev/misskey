@@ -78,6 +78,7 @@ const toggle = () => {
 		border-radius: 999px;
 		cursor: pointer;
 		transition: inherit;
+		user-select: none;
 
 		> .knob {
 			position: absolute;
