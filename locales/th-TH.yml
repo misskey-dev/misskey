@@ -49,6 +49,11 @@ addToList: "เพิ่มในลิสต์"
 sendMessage: "ส่งข้อความ"
 copyUsername: "คัดลอกชื่อผู้ใช้"
 searchUser: "ค้นหาผู้ใช้งาน"
+reply: "ตอบกลับ"
+loadMore: "โหลดเพิ่มเติม"
+showMore: "แสดงเพิ่มเติม"
+youGotNewFollower: "ได้ติดตามคุณ"
+receiveFollowRequest: "คำขอผู้ติดตามที่ได้รับ"
 pinnedNote: "โน้ตที่ปักหมุดเอาไว้"
 pinned: "ปักหมุดไปยังโปรไฟล์"
 you: "ตัวเอง"
@@ -108,6 +113,9 @@ smtpUser: "ชื่อผู้ใช้"
 smtpPass: "รหัสผ่าน"
 user: "ผู้ใช้งาน"
 searchByGoogle: "ค้นหา"
+_email:
+  _follow:
+    title: "ได้ติดตามคุณ"
 _mfm:
   emoji: "กำหนดอีโมจิเอง"
   search: "ค้นหา"
@@ -116,14 +124,19 @@ _sfx:
 _widgets:
   notifications: "การเเจ้งเตือน"
   timeline: "ไทม์ไลน์"
+_cw:
+  show: "โหลดเพิ่มเติม"
 _profile:
   username: "ชื่อผู้ใช้"
 _exportOrImport:
   muteList: "ปิดเสียง"
   blockingList: "บล็อค"
 _notification:
+  youWereFollowed: "ได้ติดตามคุณ"
   _types:
     reaction: "รีแอคชั่น"
+  _actions:
+    reply: "ตอบกลับ"
 _deck:
   _columns:
     notifications: "การเเจ้งเตือน"
