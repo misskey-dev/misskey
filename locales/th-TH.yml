@@ -54,6 +54,18 @@ loadMore: "โหลดเพิ่มเติม"
 showMore: "แสดงเพิ่มเติม"
 youGotNewFollower: "ได้ติดตามคุณ"
 receiveFollowRequest: "คำขอผู้ติดตามที่ได้รับ"
+followRequestAccepted: "ผู้ติดตามได้ตอบรับคำขอร้องของคุณแล้ว"
+mention: "กล่าวถึง"
+mentions: "พูดถึง"
+directNotes: "ไดเร็คโน้ต"
+importAndExport: "นำเข้า / ส่งออก"
+import: "การนำเข้า"
+export: "การนำออก"
+files: "ไฟล์"
+download: "ดาวน์โหลด"
+driveFileDeleteConfirm: "นายแน่ใจแล้วหรอ? ว่าต้องการลบไฟล์ \"{name}\" โน้ตย่อที่แนบมากับไฟล์นี้ก็จะถูกลบด้วยนะ"
+unfollowConfirm: "นายแน่ใจแล้วหรอว่าต้องการเลิกติดตาม {name}?"
+exportRequested: "เมื่อคุณได้ร้องขอการส่งออก อาจจะต้องใช้เวลาสักครู่ และจะถูกเพิ่มในไดรฟ์ของคุณเมื่อเสร็จสิ้นแล้ว"
 pinnedNote: "โน้ตที่ปักหมุดเอาไว้"
 pinned: "ปักหมุดไปยังโปรไฟล์"
 you: "ตัวเอง"
@@ -113,12 +125,17 @@ smtpUser: "ชื่อผู้ใช้"
 smtpPass: "รหัสผ่าน"
 user: "ผู้ใช้งาน"
 searchByGoogle: "ค้นหา"
+file: "ไฟล์"
 _email:
   _follow:
     title: "ได้ติดตามคุณ"
 _mfm:
+  mention: "กล่าวถึง"
   emoji: "กำหนดอีโมจิเอง"
   search: "ค้นหา"
+_theme:
+  keys:
+    mention: "กล่าวถึง"
 _sfx:
   notification: "การเเจ้งเตือน"
 _widgets:
@@ -134,6 +151,7 @@ _exportOrImport:
 _notification:
   youWereFollowed: "ได้ติดตามคุณ"
   _types:
+    mention: "กล่าวถึง"
     reaction: "รีแอคชั่น"
   _actions:
     reply: "ตอบกลับ"
@@ -141,3 +159,4 @@ _deck:
   _columns:
     notifications: "การเเจ้งเตือน"
     tl: "ไทม์ไลน์"
+    mentions: "พูดถึง"
