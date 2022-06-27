@@ -66,6 +66,23 @@ download: "ดาวน์โหลด"
 driveFileDeleteConfirm: "นายแน่ใจแล้วหรอ? ว่าต้องการลบไฟล์ \"{name}\" โน้ตย่อที่แนบมากับไฟล์นี้ก็จะถูกลบด้วยนะ"
 unfollowConfirm: "นายแน่ใจแล้วหรอว่าต้องการเลิกติดตาม {name}?"
 exportRequested: "เมื่อคุณได้ร้องขอการส่งออก อาจจะต้องใช้เวลาสักครู่ และจะถูกเพิ่มในไดรฟ์ของคุณเมื่อเสร็จสิ้นแล้ว"
+importRequested: "เมื่อคุณได้ร้องขอการนำเข้า อาจจะต้องใช้เวลาสักครู่นะ"
+lists: "รายการ"
+noLists: "คุณไม่มีลิสต์ใดๆนะ"
+note: "ตัวโน้ต"
+notes: "หมายเหตุ"
+following: "กำลังติดตาม"
+followers: "ผู้ติดตาม"
+followsYou: "ติดตามคุณ"
+createList: "สร้างลิสต์"
+manageLists: "จัดการลิสต์"
+error: "ผิดพลาด!"
+somethingHappened: "อุ๊ย ! มีอะไรบางอย่างผิดพลาด"
+retry: "ลองใหม่อีกครั้ง"
+pageLoadError: "เกิดข้อผิดพลาดในการโหลดหน้านี้"
+pageLoadErrorDescription: "โดยปกติแล้วมักจะเกิดจากข้อผิดพลาดของเครือข่ายหรือแคชของเบราว์เซอร์ ลองล้างแคชแล้วลองใหม่อีกครั้งหลังจากรอสักครู่ "
+serverIsDead: "เซิร์ฟเวอร์นี้ไม่มีการตอบสนอง ได้โปรดกรุณารอสักครู่แล้วลองใหม่อีกครั้งนะ"
+follow: "กำลังติดตาม"
 pinnedNote: "โน้ตที่ปักหมุดเอาไว้"
 pinned: "ปักหมุดไปยังโปรไฟล์"
 you: "ตัวเอง"
@@ -121,6 +138,7 @@ instances: "ตัวอย่าง"
 remove: "ลบ"
 nsfw: "เนื้อหาที่ละเอียดอ่อน NSFW"
 pinnedNotes: "โน้ตที่ปักหมุดเอาไว้"
+userList: "รายการ"
 smtpUser: "ชื่อผู้ใช้"
 smtpPass: "รหัสผ่าน"
 user: "ผู้ใช้งาน"
@@ -137,20 +155,45 @@ _theme:
   keys:
     mention: "กล่าวถึง"
 _sfx:
+  note: "หมายเหตุ"
   notification: "การเเจ้งเตือน"
 _widgets:
   notifications: "การเเจ้งเตือน"
   timeline: "ไทม์ไลน์"
 _cw:
   show: "โหลดเพิ่มเติม"
+_visibility:
+  followers: "ผู้ติดตาม"
 _profile:
   username: "ชื่อผู้ใช้"
 _exportOrImport:
+  followingList: "กำลังติดตาม"
   muteList: "ปิดเสียง"
   blockingList: "บล็อค"
+  userLists: "รายการ"
+_pages:
+  script:
+    categories:
+      list: "รายการ"
+    blocks:
+      _join:
+        arg1: "รายการ"
+      _randomPick:
+        arg1: "รายการ"
+      _dailyRandomPick:
+        arg1: "รายการ"
+      _seedRandomPick:
+        arg2: "รายการ"
+      _pick:
+        arg1: "รายการ"
+      _listLen:
+        arg1: "รายการ"
+    types:
+      array: "รายการ"
 _notification:
   youWereFollowed: "ได้ติดตามคุณ"
   _types:
+    follow: "กำลังติดตาม"
     mention: "กล่าวถึง"
     reaction: "รีแอคชั่น"
   _actions:
@@ -159,4 +202,5 @@ _deck:
   _columns:
     notifications: "การเเจ้งเตือน"
     tl: "ไทม์ไลน์"
+    list: "รายการ"
     mentions: "พูดถึง"
