@@ -82,7 +82,23 @@ retry: "ลองใหม่อีกครั้ง"
 pageLoadError: "เกิดข้อผิดพลาดในการโหลดหน้านี้"
 pageLoadErrorDescription: "โดยปกติแล้วมักจะเกิดจากข้อผิดพลาดของเครือข่ายหรือแคชของเบราว์เซอร์ ลองล้างแคชแล้วลองใหม่อีกครั้งหลังจากรอสักครู่ "
 serverIsDead: "เซิร์ฟเวอร์นี้ไม่มีการตอบสนอง ได้โปรดกรุณารอสักครู่แล้วลองใหม่อีกครั้งนะ"
+youShouldUpgradeClient: "หากต้องการดูหน้านี้ได้โปรดกรุณา รีเซ็ตเพื่ออัปเดตไคลเอ็นต์ของคุณนะ"
+enterListName: "ใส่ชื่อสำหรับรายการลิสต์"
+privacy: "ความเป็นส่วนตัว"
+makeFollowManuallyApprove: "ติดตามคำขอที่ต้องได้รับการอนุมัติ"
+defaultNoteVisibility: "การมองเห็นที่เป็นค่าเริ่มต้น"
 follow: "กำลังติดตาม"
+followRequest: "ส่งคำขอติดตาม"
+followRequests: "ติดตามการร้องขอ"
+unfollow: "เลิกติดตาม"
+followRequestPending: "กำลังรอดำเนินการร้องขอติดตาม"
+enterEmoji: "ใส่อีโมจิ"
+renote: "รีโน้ต"
+unrenote: "เลิกรีโน้ต"
+renoted: "รีโน้ตเอาไว้"
+cantRenote: "โพสต์นี้ไม่สามารถรีโน้ตไว้ใหม่ได้นะ"
+cantReRenote: "ไม่สามารถรีโน้ตเอาไว้ใหม่ได้นะ"
+quote: "อ้างคำพูด"
 pinnedNote: "โน้ตที่ปักหมุดเอาไว้"
 pinned: "ปักหมุดไปยังโปรไฟล์"
 you: "ตัวเอง"
@@ -149,11 +165,13 @@ _email:
     title: "ได้ติดตามคุณ"
 _mfm:
   mention: "กล่าวถึง"
+  quote: "อ้างคำพูด"
   emoji: "กำหนดอีโมจิเอง"
   search: "ค้นหา"
 _theme:
   keys:
     mention: "กล่าวถึง"
+    renote: "รีโน้ต"
 _sfx:
   note: "หมายเหตุ"
   notification: "การเเจ้งเตือน"
@@ -195,9 +213,12 @@ _notification:
   _types:
     follow: "กำลังติดตาม"
     mention: "กล่าวถึง"
+    renote: "รีโน้ต"
+    quote: "อ้างคำพูด"
     reaction: "รีแอคชั่น"
   _actions:
     reply: "ตอบกลับ"
+    renote: "รีโน้ต"
 _deck:
   _columns:
     notifications: "การเเจ้งเตือน"
