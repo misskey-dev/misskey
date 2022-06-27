@@ -855,6 +855,8 @@ thereIsUnresolvedAbuseReportWarning: "There are unsolved reports."
 recommended: "Recommended"
 check: "Check"
 isSystemAccount: "An account created and automatically operated by the system."
+typeToConfirm: "Please enter {x} to confirm"
+deleteAccount: "Delete account"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
