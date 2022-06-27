@@ -1,7 +1,7 @@
 import config from '@/config/index.js';
-import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -304,6 +304,10 @@ export const meta = {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
+			enableIpLogging: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -360,7 +364,6 @@ export default define(meta, paramDef, async (ps, me) => {
 		pinnedPages: instance.pinnedPages,
 		pinnedClipId: instance.pinnedClipId,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
-
 		useStarForReactionFallback: instance.useStarForReactionFallback,
 		pinnedUsers: instance.pinnedUsers,
 		hiddenTags: instance.hiddenTags,
@@ -397,5 +400,6 @@ export default define(meta, paramDef, async (ps, me) => {
 		objectStorageS3ForcePathStyle: instance.objectStorageS3ForcePathStyle,
 		deeplAuthKey: instance.deeplAuthKey,
 		deeplIsPro: instance.deeplIsPro,
+		enableIpLogging: instance.enableIpLogging,
 	};
 });

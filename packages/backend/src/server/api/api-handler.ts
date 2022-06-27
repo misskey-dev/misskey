@@ -2,6 +2,7 @@ import Koa from 'koa';
 
 import { User } from '@/models/entities/user.js';
 import { UserIps } from '@/models/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 import { IEndpoint } from './endpoints.js';
 import authenticate, { AuthenticationError } from './authenticate.js';
 import call from './call.js';
@@ -59,14 +60,17 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 				} else {
 					ips.add(ip);
 				}
-				try {
-					UserIps.insert({
-						createdAt: new Date(),
-						userId: user.id,
-						ip: ip,
-					});
-				} catch {
-				}
+				fetchMeta().then(meta => {
+					if (!meta.enableIpLogging) return;
+					try {
+						UserIps.insert({
+							createdAt: new Date(),
+							userId: user.id,
+							ip: ip,
+						});
+					} catch {
+					}
+				});
 			}
 		}
 	}).catch(e => {

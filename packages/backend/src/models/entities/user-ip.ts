@@ -17,12 +17,6 @@ export class UserIp {
 	@Column(id())
 	public userId: User['id'];
 
-	@ManyToOne(type => User, {
-		onDelete: 'NO ACTION',
-	})
-	@JoinColumn()
-	public user: User | null;
-
 	@Column('varchar', {
 		length: 128,
 	})
