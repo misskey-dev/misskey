@@ -111,10 +111,8 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		...apemojis,
 	];
 
-	const attachment = files.map(renderDocument);
-
 	if (quote) {
-		attachment.push({
+		tag.push({
 			type: 'Link',
 			rel: 'https://misskey-hub.net/ns#_misskey_quote',
 			mediaType: 'application/activity+json',
@@ -160,7 +158,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		to,
 		cc,
 		inReplyTo,
-		attachment,
+		attachment: files.map(renderDocument),
 		sensitive: note.cw != null || files.some(file => file.isSensitive),
 		tag,
 		...asPoll,
