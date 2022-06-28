@@ -60,6 +60,7 @@ import * as ep___admin_unsilenceUser from './endpoints/admin/unsilence-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_vacuum from './endpoints/admin/vacuum.js';
+import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -135,6 +136,7 @@ import * as ep___federation_instances from './endpoints/federation/instances.js'
 import * as ep___federation_showInstance from './endpoints/federation/show-instance.js';
 import * as ep___federation_updateRemoteUser from './endpoints/federation/update-remote-user.js';
 import * as ep___federation_users from './endpoints/federation/users.js';
+import * as ep___federation_stats from './endpoints/federation/stats.js';
 import * as ep___following_create from './endpoints/following/create.js';
 import * as ep___following_delete from './endpoints/following/delete.js';
 import * as ep___following_invalidate from './endpoints/following/invalidate.js';
@@ -372,6 +374,7 @@ const eps = [
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/vacuum', ep___admin_vacuum],
+	['admin/delete-account', ep___admin_deleteAccount],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -447,6 +450,7 @@ const eps = [
 	['federation/show-instance', ep___federation_showInstance],
 	['federation/update-remote-user', ep___federation_updateRemoteUser],
 	['federation/users', ep___federation_users],
+	['federation/stats', ep___federation_stats],
 	['following/create', ep___following_create],
 	['following/delete', ep___following_delete],
 	['following/invalidate', ep___following_invalidate],
