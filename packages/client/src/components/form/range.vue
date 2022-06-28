@@ -1,7 +1,7 @@
 <template>
 <div class="timctyfi" :class="{ disabled }">
 	<div class="label"><slot name="label"></slot></div>
-	<div v-panel class="body">
+	<div v-adaptive-border class="body">
 		<div ref="containerEl" class="container">
 			<div class="track">
 				<div class="highlight" :style="{ width: (steppedValue * 100) + '%' }"></div>
@@ -24,31 +24,31 @@ export default defineComponent({
 		modelValue: {
 			type: Number,
 			required: false,
-			default: 0
+			default: 0,
 		},
 		disabled: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		min: {
 			type: Number,
 			required: false,
-			default: 0
+			default: 0,
 		},
 		max: {
 			type: Number,
 			required: false,
-			default: 100
+			default: 100,
 		},
 		step: {
 			type: Number,
 			required: false,
-			default: 1
+			default: 1,
 		},
 		autofocus: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		textConverter: {
 			type: Function,
@@ -90,14 +90,18 @@ export default defineComponent({
 			}
 		};
 		watch([steppedValue, containerEl], calcThumbPosition);
+
+		let ro: ResizeObserver | undefined;
+
 		onMounted(() => {
-			const ro = new ResizeObserver((entries, observer) => {
+			ro = new ResizeObserver((entries, observer) => {
 				calcThumbPosition();
 			});
 			ro.observe(containerEl.value);
-			onUnmounted(() => {
-				ro.disconnect();
-			});
+		});
+		
+		onUnmounted(() => {
+			if (ro) ro.disconnect();
 		});
 
 		const steps = computed(() => {
@@ -192,6 +196,8 @@ export default defineComponent({
 
 	> .body {
 		padding: 12px;
+		background: var(--panel);
+		border: solid 1px var(--panel);
 		border-radius: 6px;
 
 		> .container {

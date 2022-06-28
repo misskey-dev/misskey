@@ -1,67 +1,70 @@
 <template>
-<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
-	<div class="cwepdizn _formRoot">
-		<FormFolder :default-open="true" class="_formBlock">
-			<template #label>{{ i18n.ts.backgroundColor }}</template>
-			<div class="cwepdizn-colors">
-				<div class="row">
-					<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
-						<div class="preview" :style="{ background: color.forPreview }"></div>
-					</button>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+		<div class="cwepdizn _formRoot">
+			<FormFolder :default-open="true" class="_formBlock">
+				<template #label>{{ i18n.ts.backgroundColor }}</template>
+				<div class="cwepdizn-colors">
+					<div class="row">
+						<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
+							<div class="preview" :style="{ background: color.forPreview }"></div>
+						</button>
+					</div>
+					<div class="row">
+						<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
+							<div class="preview" :style="{ background: color.forPreview }"></div>
+						</button>
+					</div>
 				</div>
-				<div class="row">
-					<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" class="color _button" :class="{ active: theme.props.bg === color.color }" @click="setBgColor(color)">
-						<div class="preview" :style="{ background: color.forPreview }"></div>
-					</button>
+			</FormFolder>
+
+			<FormFolder :default-open="true" class="_formBlock">
+				<template #label>{{ i18n.ts.accentColor }}</template>
+				<div class="cwepdizn-colors">
+					<div class="row">
+						<button v-for="color in accentColors" :key="color" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
+							<div class="preview" :style="{ background: color }"></div>
+						</button>
+					</div>
 				</div>
-			</div>
-		</FormFolder>
+			</FormFolder>
 
-		<FormFolder :default-open="true" class="_formBlock">
-			<template #label>{{ i18n.ts.accentColor }}</template>
-			<div class="cwepdizn-colors">
-				<div class="row">
-					<button v-for="color in accentColors" :key="color" class="color rounded _button" :class="{ active: theme.props.accent === color }" @click="setAccentColor(color)">
-						<div class="preview" :style="{ background: color }"></div>
-					</button>
+			<FormFolder :default-open="true" class="_formBlock">
+				<template #label>{{ i18n.ts.textColor }}</template>
+				<div class="cwepdizn-colors">
+					<div class="row">
+						<button v-for="color in fgColors" :key="color" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
+							<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
+						</button>
+					</div>
 				</div>
-			</div>
-		</FormFolder>
+			</FormFolder>
 
-		<FormFolder :default-open="true" class="_formBlock">
-			<template #label>{{ i18n.ts.textColor }}</template>
-			<div class="cwepdizn-colors">
-				<div class="row">
-					<button v-for="color in fgColors" :key="color" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }" @click="setFgColor(color)">
-						<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
-					</button>
+			<FormFolder :default-open="false" class="_formBlock">
+				<template #icon><i class="fas fa-code"></i></template>
+				<template #label>{{ i18n.ts.editCode }}</template>
+
+				<div class="_formRoot">
+					<FormTextarea v-model="themeCode" tall class="_formBlock">
+						<template #label>{{ i18n.ts._theme.code }}</template>
+					</FormTextarea>
+					<FormButton primary class="_formBlock" @click="applyThemeCode">{{ i18n.ts.apply }}</FormButton>
 				</div>
-			</div>
-		</FormFolder>
+			</FormFolder>
 
-		<FormFolder :default-open="false" class="_formBlock">
-			<template #icon><i class="fas fa-code"></i></template>
-			<template #label>{{ i18n.ts.editCode }}</template>
+			<FormFolder :default-open="false" class="_formBlock">
+				<template #label>{{ i18n.ts.addDescription }}</template>
 
-			<div class="_formRoot">
-				<FormTextarea v-model="themeCode" tall class="_formBlock">
-					<template #label>{{ i18n.ts._theme.code }}</template>
-				</FormTextarea>
-				<FormButton primary class="_formBlock" @click="applyThemeCode">{{ i18n.ts.apply }}</FormButton>
-			</div>
-		</FormFolder>
-
-		<FormFolder :default-open="false" class="_formBlock">
-			<template #label>{{ i18n.ts.addDescription }}</template>
-
-			<div class="_formRoot">
-				<FormTextarea v-model="description">
-					<template #label>{{ i18n.ts._theme.description }}</template>
-				</FormTextarea>
-			</div>
-		</FormFolder>
-	</div>
-</MkSpacer>
+				<div class="_formRoot">
+					<FormTextarea v-model="description">
+						<template #label>{{ i18n.ts._theme.description }}</template>
+					</FormTextarea>
+				</div>
+			</FormFolder>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -82,9 +85,9 @@ import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { addTheme } from '@/theme-store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { useLeaveGuard } from '@/scripts/use-leave-guard';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const bgColors = [
 	{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },
@@ -204,23 +207,24 @@ async function saveAs() {
 
 watch($$(theme), apply, { deep: true });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.themeEditor,
-		icon: 'fas fa-palette',
-		bg: 'var(--bg)',
-		actions: [{
-			asFullButton: true,
-			icon: 'fas fa-eye',
-			text: i18n.ts.preview,
-			handler: showPreview,
-		}, {
-			asFullButton: true,
-			icon: 'fas fa-check',
-			text: i18n.ts.saveAs,
-			handler: saveAs,
-		}],
-	},
+const headerActions = $computed(() => [{
+	asFullButton: true,
+	icon: 'fas fa-eye',
+	text: i18n.ts.preview,
+	handler: showPreview,
+}, {
+	asFullButton: true,
+	icon: 'fas fa-check',
+	text: i18n.ts.saveAs,
+	handler: saveAs,
+}]);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.themeEditor,
+	icon: 'fas fa-palette',
+	bg: 'var(--bg)',
 });
 </script>
 

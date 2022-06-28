@@ -2,25 +2,14 @@
 <div class="dkgtipfy" :class="{ wallpaper }">
 	<XSidebar v-if="!isMobile" class="sidebar"/>
 
-	<div class="contents" :style="{ background: pageInfo?.bg }" @contextmenu.stop="onContextmenu">
+	<div class="contents" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
 		<main>
 			<div class="content">
-				<MkStickyContainer>
-					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-					<router-view v-slot="{ Component }">
-						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-							<keep-alive :include="['MkTimelinePage']">
-								<component :is="Component" :ref="changePage"/>
-							</keep-alive>
-						</transition>
-					</router-view>
-				</MkStickyContainer>
+				<RouterView/>
 			</div>
 			<div class="spacer"></div>
 		</main>
 	</div>
-
-	<XSideView v-if="isDesktop" ref="sideEl" class="side"/>
 
 	<div v-if="isDesktop" ref="widgetsEl" class="widgets">
 		<XWidgets @mounted="attachSticky"/>
@@ -30,14 +19,15 @@
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button home _button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i class="fas fa-home"></i></button>
+		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
 	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
-		<div v-if="drawerMenuShowing"
+		<div
+			v-if="drawerMenuShowing"
 			class="menuDrawer-back _modalBg"
 			@click="drawerMenuShowing = false"
 			@touchstart.passive="drawerMenuShowing = false"
@@ -49,7 +39,8 @@
 	</transition>
 
 	<transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
-		<div v-if="widgetsShowing"
+		<div
+			v-if="widgetsShowing"
 			class="widgetsDrawer-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
@@ -65,19 +56,19 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, watch } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, watch, ComputedRef } from 'vue';
+import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
-import XCommon from './_common_/common.vue';
-import XSideView from './classic.side.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import { menuDef } from '@/menu';
-import { useRoute } from 'vue-router';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { Router } from '@/nirax';
+import { mainRouter } from '@/router';
+import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
 
@@ -90,15 +81,18 @@ window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= MOBILE_THRESHOLD;
 });
 
-const pageInfo = ref();
+let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 const widgetsEl = $ref<HTMLElement>();
-const widgetsShowing = ref(false);
+const widgetsShowing = $ref(false);
 
-let sideEl = $ref<InstanceType<typeof XSideView>>();
-
-provide('sideViewHook', isDesktop.value ? (url) => {
-	sideEl.navigate(url);
-} : null);
+provide('router', mainRouter);
+provideMetadataReceiver((info) => {
+	console.log(info);
+	pageMetadata = info;
+	if (pageMetadata.value) {
+		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+	}
+});
 
 const menuIndicated = computed(() => {
 	for (const def in menuDef) {
@@ -110,8 +104,7 @@ const menuIndicated = computed(() => {
 
 const drawerMenuShowing = ref(false);
 
-const route = useRoute();
-watch(route, () => {
+mainRouter.on('change', () => {
 	drawerMenuShowing.value = false;
 });
 
@@ -120,13 +113,13 @@ document.documentElement.style.overflowY = 'scroll';
 if (defaultStore.state.widgets.length === 0) {
 	defaultStore.set('widgets', [{
 		name: 'calendar',
-		id: 'a', place: 'right', data: {}
+		id: 'a', place: 'right', data: {},
 	}, {
 		name: 'notifications',
-		id: 'b', place: 'right', data: {}
+		id: 'b', place: 'right', data: {},
 	}, {
 		name: 'trends',
-		id: 'c', place: 'right', data: {}
+		id: 'c', place: 'right', data: {},
 	}]);
 }
 
@@ -138,14 +131,6 @@ onMounted(() => {
 	}
 });
 
-const changePage = (page) => {
-	if (page == null) return;
-	if (page[symbols.PAGE_INFO]) {
-		pageInfo.value = page[symbols.PAGE_INFO];
-		document.title = `${pageInfo.value.title} | ${instanceName}`;
-	}
-};
-
 const onContextmenu = (ev) => {
 	const isLink = (el: HTMLElement) => {
 		if (el.tagName === 'A') return true;
@@ -156,22 +141,16 @@ const onContextmenu = (ev) => {
 	if (isLink(ev.target)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 	if (window.getSelection()?.toString() !== '') return;
-	const path = route.path;
+	const path = mainRouter.getCurrentPath();
 	os.contextMenu([{
 		type: 'label',
 		text: path,
-	}, {
-		icon: 'fas fa-columns',
-		text: i18n.ts.openInSideView,
-		action: () => {
-			sideEl.navigate(path);
-		}
 	}, {
 		icon: 'fas fa-window-maximize',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(path);
-		}
+		},
 	}], ev);
 };
 
@@ -184,10 +163,6 @@ const attachSticky = (el) => {
 
 function top() {
 	window.scroll({ top: 0, behavior: 'smooth' });
-}
-
-function onTransition() {
-	if (window._scroll) window._scroll();
 }
 
 const wallpaper = localStorage.getItem('wallpaper') != null;
@@ -272,12 +247,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 				}
 			}
 		}
-	}
-
-	> .side {
-		min-width: 370px;
-		max-width: 370px;
-		border-left: solid 0.5px var(--divider);
 	}
 
 	> .widgets {

@@ -9,31 +9,17 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer
-	},
-
-	props: {
-		value: {
-			required: true
-		},
-	},
-
-	data() {
-		return {
-		};
-	},
-
-	created() {
-		if (this.value.text == null) this.value.text = '';
-	},
+withDefaults(defineProps<{
+	value: any
+}>(), {
+	value: {
+		text: ''
+	}
 });
 </script>
 

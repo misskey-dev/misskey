@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -32,9 +32,9 @@ import MkContainer from '@/components/ui/container.vue';
 import MkButton from '@/components/ui/button.vue';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const code = ref('');
 const logs = ref<any[]>([]);
@@ -67,7 +67,7 @@ async function run() {
 			logs.value.push({
 				id: Math.random(),
 				text: value.type === 'str' ? value.value : utils.valToString(value),
-				print: true
+				print: true,
 			});
 		},
 		log: (type, params) => {
@@ -75,11 +75,11 @@ async function run() {
 				case 'end': logs.value.push({
 					id: Math.random(),
 					text: utils.valToString(params.val, true),
-					print: false
+					print: false,
 				}); break;
 				default: break;
 			}
-		}
+		},
 	});
 
 	let ast;
@@ -88,7 +88,7 @@ async function run() {
 	} catch (error) {
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :('
+			text: 'Syntax error :(',
 		});
 		return;
 	}
@@ -97,7 +97,7 @@ async function run() {
 	} catch (error: any) {
 		os.alert({
 			type: 'error',
-			text: error.message
+			text: error.message,
 		});
 	}
 }
@@ -106,11 +106,13 @@ function highlighter(code) {
 	return highlight(code, languages.js, 'javascript');
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.scratchpad,
-		icon: 'fas fa-terminal',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.scratchpad,
+	icon: 'fas fa-terminal',
 });
 </script>
 

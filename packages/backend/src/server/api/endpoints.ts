@@ -59,6 +59,7 @@ import * as ep___admin_unsilenceUser from './endpoints/admin/unsilence-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_vacuum from './endpoints/admin/vacuum.js';
+import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -99,6 +100,7 @@ import * as ep___charts_user_notes from './endpoints/charts/user/notes.js';
 import * as ep___charts_user_reactions from './endpoints/charts/user/reactions.js';
 import * as ep___charts_users from './endpoints/charts/users.js';
 import * as ep___clips_addNote from './endpoints/clips/add-note.js';
+import * as ep___clips_removeNote from './endpoints/clips/remove-note.js';
 import * as ep___clips_create from './endpoints/clips/create.js';
 import * as ep___clips_delete from './endpoints/clips/delete.js';
 import * as ep___clips_list from './endpoints/clips/list.js';
@@ -133,6 +135,7 @@ import * as ep___federation_instances from './endpoints/federation/instances.js'
 import * as ep___federation_showInstance from './endpoints/federation/show-instance.js';
 import * as ep___federation_updateRemoteUser from './endpoints/federation/update-remote-user.js';
 import * as ep___federation_users from './endpoints/federation/users.js';
+import * as ep___federation_stats from './endpoints/federation/stats.js';
 import * as ep___following_create from './endpoints/following/create.js';
 import * as ep___following_delete from './endpoints/following/delete.js';
 import * as ep___following_invalidate from './endpoints/following/invalidate.js';
@@ -369,6 +372,7 @@ const eps = [
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/vacuum', ep___admin_vacuum],
+	['admin/delete-account', ep___admin_deleteAccount],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -409,6 +413,7 @@ const eps = [
 	['charts/user/reactions', ep___charts_user_reactions],
 	['charts/users', ep___charts_users],
 	['clips/add-note', ep___clips_addNote],
+	['clips/remove-note', ep___clips_removeNote],
 	['clips/create', ep___clips_create],
 	['clips/delete', ep___clips_delete],
 	['clips/list', ep___clips_list],
@@ -443,6 +448,7 @@ const eps = [
 	['federation/show-instance', ep___federation_showInstance],
 	['federation/update-remote-user', ep___federation_updateRemoteUser],
 	['federation/users', ep___federation_users],
+	['federation/stats', ep___federation_stats],
 	['following/create', ep___following_create],
 	['following/delete', ep___following_delete],
 	['following/invalidate', ep___following_invalidate],
@@ -699,6 +705,16 @@ export interface IEndpointMeta {
 	readonly kind?: string;
 
 	readonly description?: string;
+
+	/**
+	 * GETでのリクエストを許容するか否か
+	 */
+	readonly allowGet?: boolean;
+
+	/**
+	 * 正常応答をキャッシュ (Cache-Control: public) する秒数
+	 */
+	readonly cacheSec?: number;
 }
 
 export interface IEndpoint {

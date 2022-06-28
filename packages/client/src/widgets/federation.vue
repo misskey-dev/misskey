@@ -20,11 +20,12 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/ui/container.vue';
 import MkMiniChart from '@/components/mini-chart.vue';
 import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
 
 const name = 'federation';
 
@@ -56,20 +57,17 @@ const fetching = ref(true);
 const fetch = async () => {
 	const fetchedInstances = await os.api('federation/instances', {
 		sort: '+lastCommunicatedAt',
-		limit: 5
+		limit: 5,
 	});
-	const fetchedCharts = await Promise.all(fetchedInstances.map(i => os.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
+	const fetchedCharts = await Promise.all(fetchedInstances.map(i => os.apiGet('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
 	instances.value = fetchedInstances;
 	charts.value = fetchedCharts;
 	fetching.value = false;
 };
 
-onMounted(() => {
-	fetch();
-	const intervalId = window.setInterval(fetch, 1000 * 60);
-	onUnmounted(() => {
-		window.clearInterval(intervalId);
-	});
+useInterval(fetch, 1000 * 60, {
+	immediate: true,
+	afterMounted: true,
 });
 
 defineExpose<WidgetComponentExpose>({

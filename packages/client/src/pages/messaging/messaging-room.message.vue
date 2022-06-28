@@ -35,45 +35,28 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import * as mfm from 'mfm-js';
+import * as Misskey from 'misskey-js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 import MkUrlPreview from '@/components/url-preview.vue';
 import * as os from '@/os';
+import { $i } from '@/account';
 
-export default defineComponent({
-	components: {
-		MkUrlPreview
-	},
-	props: {
-		message: {
-			required: true
-		},
-		isGroup: {
-			required: false
-		}
-	},
-	computed: {
-		isMe(): boolean {
-			return this.message.userId === this.$i.id;
-		},
-		urls(): string[] {
-			if (this.message.text) {
-				return extractUrlFromMfm(mfm.parse(this.message.text));
-			} else {
-				return [];
-			}
-		}
-	},
-	methods: {
-		del() {
-			os.api('messaging/messages/delete', {
-				messageId: this.message.id
-			});
-		}
-	}
-});
+const props = defineProps<{
+	message: Misskey.entities.MessagingMessage;
+	isGroup?: boolean;
+}>();
+
+const isMe = $computed(() => props.message.userId === $i?.id);
+const urls = $computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
+
+function del(): void {
+	os.api('messaging/messages/delete', {
+		messageId: props.message.id,
+	});
+}
 </script>
 
 <style lang="scss" scoped>
@@ -266,6 +249,7 @@ export default defineComponent({
 	&.isMe {
 		flex-direction: row-reverse;
 		padding-right: var(--margin);
+		right: var(--margin); // 削除時にposition: absoluteになったときに使う
 
 		> .content {
 			padding-right: 16px;

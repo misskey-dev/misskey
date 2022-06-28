@@ -16,11 +16,13 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 	if (me && (note.userId === me.id)) return false;
 
 	if (mutedWords.length > 0) {
-		if (note.text == null) return false;
+		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+
+		if (text === '') return false;
 
 		const matched = mutedWords.some(filter => {
 			if (Array.isArray(filter)) {
-				return filter.every(keyword => note.text!.includes(keyword));
+				return filter.every(keyword => text.includes(keyword));
 			} else {
 				// represents RegExp
 				const regexp = filter.match(/^\/(.+)\/(.*)$/);
@@ -29,7 +31,7 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 				if (!regexp) return false;
 
 				try {
-					return new RE2(regexp[1], regexp[2]).test(note.text!);
+					return new RE2(regexp[1], regexp[2]).test(text);
 				} catch (err) {
 					// This should never happen due to input sanitisation.
 					return false;

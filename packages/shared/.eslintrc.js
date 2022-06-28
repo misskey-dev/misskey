@@ -31,6 +31,11 @@ module.exports = {
 			'beforeColon': false,
 			'afterColon': true,
 		}],
+		'arrow-spacing': ['error', {
+			'before': true,
+			'after': true,
+		}],
+		'padded-blocks': ['error', 'never'],
 		/* TODO: path aliasを使わないとwarnする
 		'no-restricted-imports': ['warn', {
 			'patterns': [
