@@ -195,7 +195,7 @@ export default defineComponent({
 	$thumbWidth: 20px;
 
 	> .body {
-		padding: 12px;
+		padding: 10px 12px;
 		background: var(--panel);
 		border: solid 1px var(--panel);
 		border-radius: 6px;
