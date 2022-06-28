@@ -135,6 +135,7 @@ import * as ep___federation_instances from './endpoints/federation/instances.js'
 import * as ep___federation_showInstance from './endpoints/federation/show-instance.js';
 import * as ep___federation_updateRemoteUser from './endpoints/federation/update-remote-user.js';
 import * as ep___federation_users from './endpoints/federation/users.js';
+import * as ep___federation_stats from './endpoints/federation/stats.js';
 import * as ep___following_create from './endpoints/following/create.js';
 import * as ep___following_delete from './endpoints/following/delete.js';
 import * as ep___following_invalidate from './endpoints/following/invalidate.js';
@@ -447,6 +448,7 @@ const eps = [
 	['federation/show-instance', ep___federation_showInstance],
 	['federation/update-remote-user', ep___federation_updateRemoteUser],
 	['federation/users', ep___federation_users],
+	['federation/stats', ep___federation_stats],
 	['following/create', ep___following_create],
 	['following/delete', ep___following_delete],
 	['following/invalidate', ep___following_invalidate],
