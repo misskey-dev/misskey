@@ -388,7 +388,7 @@ definePageMetadata({
 .root {
 	> .selects {
 		display: flex;
-		gap: var(--margin);
+		gap: 1.5em var(--margin);
 		flex-wrap: wrap;
 
 		> .select {
