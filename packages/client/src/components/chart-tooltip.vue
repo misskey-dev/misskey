@@ -20,8 +20,8 @@ const props = defineProps<{
 	showing: boolean;
 	x: number;
 	y: number;
-	title: string;
-	series: {
+	title?: string;
+	series?: {
 		backgroundColor: string;
 		borderColor: string;
 		text: string;
