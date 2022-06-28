@@ -37,8 +37,13 @@
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
 						</FormRange>
 
+						<FormSwitch v-model="enableSensitiveMediaDetectionForVideos" class="_formBlock">
+							<template #label>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
+							<template #caption>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</template>
+						</FormSwitch>
+
 						<FormSwitch v-model="setSensitiveFlagAutomatically" class="_formBlock">
-							<template #label>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }}</template>
+							<template #label>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }} ({{ i18n.ts.notRecommended }})</template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</template>
 						</FormSwitch>
 
@@ -93,6 +98,7 @@ let enableRecaptcha: boolean = $ref(false);
 let sensitiveMediaDetection: string = $ref('none');
 let sensitiveMediaDetectionSensitivity: number = $ref(0);
 let setSensitiveFlagAutomatically: boolean = $ref(false);
+let enableSensitiveMediaDetectionForVideos: boolean = $ref(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -107,6 +113,7 @@ async function init() {
 		meta.sensitiveMediaDetectionSensitivity === 'high' ? 3 :
 		meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 4 : 0;
 	setSensitiveFlagAutomatically = meta.setSensitiveFlagAutomatically;
+	enableSensitiveMediaDetectionForVideos = meta.enableSensitiveMediaDetectionForVideos;
 }
 
 function save() {
@@ -121,6 +128,7 @@ function save() {
 			sensitiveMediaDetectionSensitivity === 4 ? 'veryHigh' :
 			0,
 		setSensitiveFlagAutomatically,
+		enableSensitiveMediaDetectionForVideos,
 	}).then(() => {
 		fetchInstance();
 	});

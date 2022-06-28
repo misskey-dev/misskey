@@ -49,6 +49,7 @@ export async function getFileInfo(path: string, opts: {
 	skipSensitiveDetection: boolean;
 	sensitiveThreshold?: number;
 	sensitiveThresholdForPorn?: number;
+	enableSensitiveMediaDetectionForVideos?: boolean;
 }): Promise<FileInfo> {
 	const warnings = [] as string[];
 
@@ -105,6 +106,7 @@ export async function getFileInfo(path: string, opts: {
 			type.mime,
 			opts.sensitiveThreshold ?? 0.5,
 			opts.sensitiveThresholdForPorn ?? 0.75,
+			opts.enableSensitiveMediaDetectionForVideos ?? false,
 		);
 	}
 
@@ -122,7 +124,7 @@ export async function getFileInfo(path: string, opts: {
 	};
 }
 
-async function detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number): Promise<[sensitive: boolean, porn: boolean]> {
+async function detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number, analyzeVideo: boolean): Promise<[sensitive: boolean, porn: boolean]> {
 	let sensitive = false;
 	let porn = false;
 
@@ -144,8 +146,7 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 		if (result) {
 			[sensitive, porn] = judgePrediction(result);
 		}
-	} else if (mime === 'image/apng' || mime.startsWith('video/')) {
-		/* 現状モデルの精度が高くないため大抵の動画はNSFW判定されてしまう あとゲロ重いから動画の1/4地点、2/4地点、3/4地点みたいに数枚にサンプリングした上で判定するとかしないとダメそう
+	} else if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
 		const [outDir, disposeOutDir] = await createTempDir();
 		try {
 			const command = FFmpeg()
@@ -213,7 +214,6 @@ async function detectSensitivity(source: string, mime: string, sensitiveThreshol
 		} finally {
 			disposeOutDir();
 		}
-		*/
 	}
 
 	return [sensitive, porn];

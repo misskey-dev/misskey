@@ -361,6 +361,7 @@ export async function addFile({
 			instance.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0.9 :
 			0.5,
 		sensitiveThresholdForPorn: 0.75,
+		enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 	});
 	logger.info(`${JSON.stringify(info)}`);
 

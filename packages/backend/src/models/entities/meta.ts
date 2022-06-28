@@ -205,6 +205,11 @@ export class Meta {
 	})
 	public setSensitiveFlagAutomatically: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public enableSensitiveMediaDetectionForVideos: boolean;
+
 	@Column('integer', {
 		default: 1024,
 		comment: 'Drive capacity of a local user (MB)',
