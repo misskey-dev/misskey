@@ -134,16 +134,11 @@ let suspended = $ref(false);
 let isBlocked = $ref(false);
 
 async function fetch() {
-	if (iAmModerator) {
-		// suspended and blocked information is only displayed to moderators.
-		// otherwise the API will error anyway
-
-		instance = await os.api('federation/show-instance', {
-			host: props.host,
-		});
-		suspended = instance.isSuspended;
-		isBlocked = instance.isBlocked;
-	}
+	instance = await os.api('federation/show-instance', {
+		host: props.host,
+	});
+	suspended = instance.isSuspended;
+	isBlocked = instance.isBlocked;
 }
 
 async function toggleBlock(ev) {
