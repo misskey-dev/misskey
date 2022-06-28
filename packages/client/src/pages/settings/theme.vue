@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_formRoot root">
 	<div v-adaptive-border class="rfqxtzch _panel _formBlock">
 		<div class="toggle">
 			<div class="toggleWrapper">
@@ -26,18 +26,8 @@
 		</div>
 	</div>
 
-	<template v-if="darkMode">
-		<FormSelect v-model="darkThemeId" class="_formBlock">
-			<template #label>{{ $ts.themeForDarkMode }}</template>
-			<template #prefix><i class="fas fa-moon"></i></template>
-			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</FormSelect>
-		<FormSelect v-model="lightThemeId" class="_formBlock">
+	<div class="selects _formBlock">
+		<FormSelect v-model="lightThemeId" large class="select">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<template #prefix><i class="fas fa-sun"></i></template>
 			<optgroup :label="$ts.lightThemes">
@@ -47,19 +37,7 @@
 				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-	</template>
-	<template v-else>
-		<FormSelect v-model="lightThemeId" class="_formBlock">
-			<template #label>{{ $ts.themeForLightMode }}</template>
-			<template #prefix><i class="fas fa-sun"></i></template>
-			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</FormSelect>
-		<FormSelect v-model="darkThemeId" class="_formBlock">
+		<FormSelect v-model="darkThemeId" large class="select">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<template #prefix><i class="fas fa-moon"></i></template>
 			<optgroup :label="$ts.darkThemes">
@@ -69,7 +47,7 @@
 				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-	</template>
+	</div>
 
 	<FormSection>
 		<div class="_formLinksGrid">
@@ -404,6 +382,19 @@ definePageMetadata({
 	> .sync {
 		padding: 14px 16px;
 		border-top: solid 0.5px var(--divider);
+	}
+}
+
+.root {
+	> .selects {
+		display: flex;
+		gap: var(--margin);
+		flex-wrap: wrap;
+
+		> .select {
+			flex: 1;
+			min-width: 280px;
+		}
 	}
 }
 </style>
