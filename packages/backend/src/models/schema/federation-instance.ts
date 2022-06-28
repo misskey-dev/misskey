@@ -97,6 +97,10 @@ export const packedFederationInstanceSchema = {
 			optional: false, nullable: true,
 			format: 'url',
 		},
+		themeColor: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		infoUpdatedAt: {
 			type: 'string',
 			optional: false, nullable: true,
