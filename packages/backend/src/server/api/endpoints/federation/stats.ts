@@ -1,5 +1,5 @@
-import { MoreThan } from 'typeorm';
-import { Instances } from '@/models/index.js';
+import { IsNull, MoreThan, Not } from 'typeorm';
+import { Followings, Instances } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import define from '../../define.js';
 
@@ -21,7 +21,7 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps) => {
-	const [topSubInstances, topPubInstances] = await Promise.all([
+	const [topSubInstances, topPubInstances, allSubCount, allPubCount] = await Promise.all([
 		Instances.find({
 			where: {
 				followersCount: MoreThan(0),
@@ -40,10 +40,25 @@ export default define(meta, paramDef, async (ps) => {
 			},
 			take: 10,
 		}),
+		Followings.count({
+			where: {
+				followeeHost: Not(IsNull()),
+			},
+		}),
+		Followings.count({
+			where: {
+				followerHost: Not(IsNull()),
+			},
+		}),
 	]);
+
+	const gotSubCount = topSubInstances.map(x => x.followersCount).reduce((a, b) => a + b, 0);
+	const gotPubCount = topSubInstances.map(x => x.followingCount).reduce((a, b) => a + b, 0);
 
 	return await awaitAll({
 		topSubInstances: Instances.packMany(topSubInstances),
+		otherFollowersCount: Math.max(0, allSubCount - gotSubCount),
 		topPubInstances: Instances.packMany(topPubInstances),
+		otherFollowingCount: Math.max(0, allPubCount - gotPubCount),
 	});
 });

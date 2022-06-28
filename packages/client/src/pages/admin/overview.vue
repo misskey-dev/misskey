@@ -112,12 +112,12 @@
 				<div class="body">
 					<div class="chart deliver">
 						<div class="title">Sub</div>
-						<XPie :data="fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount }))"/>
+						<XPie :data="fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowersCount }])"/>
 						<div class="subTitle">Top 10</div>
 					</div>
 					<div class="chart inbox">
 						<div class="title">Pub</div>
-						<XPie :data="fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount }))"/>
+						<XPie :data="fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowingCount }])"/>
 						<div class="subTitle">Top 10</div>
 					</div>
 				</div>
