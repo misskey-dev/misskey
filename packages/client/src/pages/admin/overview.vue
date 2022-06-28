@@ -43,7 +43,12 @@
 				</div>
 			</div>
 
-			<!--<XMetrics/>-->
+			<div class="container files">
+				<div class="title">Recent files</div>
+				<div class="body">
+					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+				</div>
+			</div>
 
 			<div class="container env">
 				<div class="title">Enviroment</div>
@@ -103,10 +108,18 @@
 					</div>
 				</div>
 			</div>
-			<div class="container files">
-				<div class="title">Recent files</div>
+			<div v-if="fedStats" class="container federationPies">
 				<div class="body">
-					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+					<div class="chart deliver">
+						<div class="title">Sub</div>
+						<XPie :data="fedStats.topSubInstances.map(x => ({ name: x.host, value: x.followersCount }))"/>
+						<div class="subTitle">Top 10</div>
+					</div>
+					<div class="chart inbox">
+						<div class="title">Pub</div>
+						<XPie :data="fedStats.topPubInstances.map(x => ({ name: x.host, value: x.followingCount }))"/>
+						<div class="subTitle">Top 10</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -140,6 +153,7 @@ import XMetrics from './metrics.vue';
 import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';
+import XPie from './overview.pie.vue';
 import MkInstanceStats from '@/components/instance-stats.vue';
 import MkNumberDiff from '@/components/number-diff.vue';
 import { version, url } from '@/config';
@@ -175,6 +189,7 @@ const rootEl = $ref<HTMLElement>();
 const chartEl = $ref<HTMLCanvasElement>(null);
 let stats: any = $ref(null);
 let serverInfo: any = $ref(null);
+let fedStats: any = $ref(null);
 let usersComparedToThePrevDay: any = $ref(null);
 let notesComparedToThePrevDay: any = $ref(null);
 let federationPubActive = $ref<number | null>(null);
@@ -257,7 +272,7 @@ async function renderChart() {
 			layout: {
 				padding: {
 					left: 0,
-					right: 8,
+					right: 0,
 					top: 0,
 					bottom: 0,
 				},
@@ -378,6 +393,10 @@ onMounted(async () => {
 		federationPubActiveDiff = chart.pubActive[0] - chart.pubActive[1];
 		federationSubActive = chart.subActive[0];
 		federationSubActiveDiff = chart.subActive[0] - chart.subActive[1];
+	});
+
+	os.apiGet('federation/stats').then(res => {
+		fedStats = res;
 	});
 
 	os.api('admin/server-info').then(serverInfoResponse => {
@@ -525,6 +544,35 @@ definePageMetadata({
 							top: 20px;
 							left: 20px;
 							font-size: 90%;
+						}
+					}
+				}
+			}
+
+			&.federationPies {
+				> .body {
+					display: grid;
+					grid-gap: 16px;
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+
+					> .chart {
+						position: relative;
+						padding: 20px;
+						background: var(--panel);
+						border-radius: var(--radius);
+
+						> .title {
+							position: absolute;
+							top: 20px;
+							left: 20px;
+							font-size: 90%;
+						}
+
+						> .subTitle {
+							position: absolute;
+							bottom: 20px;
+							right: 20px;
+							font-size: 85%;
 						}
 					}
 				}

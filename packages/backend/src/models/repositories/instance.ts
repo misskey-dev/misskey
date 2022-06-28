@@ -30,6 +30,7 @@ export const InstanceRepository = db.getRepository(Instance).extend({
 			maintainerEmail: instance.maintainerEmail,
 			iconUrl: instance.iconUrl,
 			faviconUrl: instance.faviconUrl,
+			themeColor: instance.themeColor,
 			infoUpdatedAt: instance.infoUpdatedAt ? instance.infoUpdatedAt.toISOString() : null,
 		};
 	},
