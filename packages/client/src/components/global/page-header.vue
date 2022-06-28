@@ -181,7 +181,7 @@ onUnmounted(() => {
 	border-bottom: solid 0.5px var(--divider);
 
 	&.thin {
-		--height: 50px;
+		--height: 45px;
 
 		> .buttons {
 			> .button {
