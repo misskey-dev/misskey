@@ -14,10 +14,11 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import MkContainer from '@/components/ui/container.vue';
+import { useInterval } from '@/scripts/use-interval';
 
 const name = 'rss';
 
@@ -60,12 +61,9 @@ const tick = () => {
 
 watch(() => widgetProps.url, tick);
 
-onMounted(() => {
-	tick();
-	const intervalId = window.setInterval(tick, 60000);
-	onUnmounted(() => {
-		window.clearInterval(intervalId);
-	});
+useInterval(tick, 60000, {
+	immediate: true,
+	afterMounted: true,
 });
 
 defineExpose<WidgetComponentExpose>({

@@ -49,123 +49,108 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineComponent, inject, watch } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import MkContainer from '@/components/ui/container.vue';
 import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
 import MkFollowButton from '@/components/follow-button.vue';
 import { url } from '@/config';
+import { useRouter } from '@/router';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		MkContainer,
-		ImgWithBlurhash,
-		MkPagination,
-		MkGalleryPostPreview,
-		MkButton,
-		MkFollowButton,
+const router = useRouter();
+
+const props = defineProps<{
+	postId: string;
+}>();
+
+const post = $ref(null);
+const error = $ref(null);
+const otherPostsPagination = {
+	endpoint: 'users/gallery/posts' as const,
+	limit: 6,
+	params: computed(() => ({
+		userId: post.user.id,
+	})),
+};
+
+function fetchPost() {
+	post = null;
+	os.api('gallery/posts/show', {
+		postId: props.postId,
+	}).then(_post => {
+		post = _post;
+	}).catch(_error => {
+		error = _error;
+	});
+}
+
+function share() {
+	navigator.share({
+		title: post.title,
+		text: post.description,
+		url: `${url}/gallery/${post.id}`,
+	});
+}
+
+function shareWithNote() {
+	os.post({
+		initialText: `${post.title} ${url}/gallery/${post.id}`,
+	});
+}
+
+function like() {
+	os.apiWithDialog('gallery/posts/like', {
+		postId: props.postId,
+	}).then(() => {
+		post.isLiked = true;
+		post.likedCount++;
+	});
+}
+
+async function unlike() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unlikeConfirm,
+	});
+	if (confirm.canceled) return;
+	os.apiWithDialog('gallery/posts/unlike', {
+		postId: props.postId,
+	}).then(() => {
+		post.isLiked = false;
+		post.likedCount--;
+	});
+}
+
+function edit() {
+	router.push(`/gallery/${post.id}/edit`);
+}
+
+watch(() => props.postId, fetchPost, { immediate: true });
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => post ? {
+	title: post.title,
+	avatar: post.user,
+	path: `/gallery/${post.id}`,
+	share: {
+		title: post.title,
+		text: post.description,
 	},
-	props: {
-		postId: {
-			type: String,
-			required: true
-		}
-	},
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.post ? {
-				title: this.post.title,
-				avatar: this.post.user,
-				path: `/gallery/${this.post.id}`,
-				share: {
-					title: this.post.title,
-					text: this.post.description,
-				},
-				actions: [{
-					icon: 'fas fa-pencil-alt',
-					text: this.$ts.edit,
-					handler: this.edit
-				}]
-			} : null),
-			otherPostsPagination: {
-				endpoint: 'users/gallery/posts' as const,
-				limit: 6,
-				params: computed(() => ({
-					userId: this.post.user.id
-				})),
-			},
-			post: null,
-			error: null,
-		};
-	},
-
-	watch: {
-		postId: 'fetch'
-	},
-
-	created() {
-		this.fetch();
-	},
-
-	methods: {
-		fetch() {
-			this.post = null;
-			os.api('gallery/posts/show', {
-				postId: this.postId
-			}).then(post => {
-				this.post = post;
-			}).catch(err => {
-				this.error = err;
-			});
-		},
-
-		share() {
-			navigator.share({
-				title: this.post.title,
-				text: this.post.description,
-				url: `${url}/gallery/${this.post.id}`
-			});
-		},
-
-		shareWithNote() {
-			os.post({
-				initialText: `${this.post.title} ${url}/gallery/${this.post.id}`
-			});
-		},
-
-		like() {
-			os.apiWithDialog('gallery/posts/like', {
-				postId: this.postId,
-			}).then(() => {
-				this.post.isLiked = true;
-				this.post.likedCount++;
-			});
-		},
-
-		async unlike() {
-			const confirm = await os.confirm({
-				type: 'warning',
-				text: this.$ts.unlikeConfirm,
-			});
-			if (confirm.canceled) return;
-			os.apiWithDialog('gallery/posts/unlike', {
-				postId: this.postId,
-			}).then(() => {
-				this.post.isLiked = false;
-				this.post.likedCount--;
-			});
-		},
-
-		edit() {
-			this.$router.push(`/gallery/${this.post.id}/edit`);
-		}
-	}
-});
+	actions: [{
+		icon: 'fas fa-pencil-alt',
+		text: i18n.ts.edit,
+		handler: edit,
+	}],
+} : null));
 </script>
 
 <style lang="scss" scoped>

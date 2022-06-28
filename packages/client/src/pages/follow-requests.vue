@@ -7,7 +7,7 @@
 				<div>{{ $ts.noFollowRequests }}</div>
 			</div>
 		</template>
-		<template v-slot="{items}">
+		<template #default="{items}">
 			<div class="mk-follow-requests">
 				<div v-for="req in items" :key="req.id" class="user _panel">
 					<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
@@ -36,8 +36,8 @@ import { ref, computed } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const paginationComponent = ref<InstanceType<typeof MkPagination>>();
 
@@ -58,13 +58,15 @@ function reject(user) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.ts.followRequests,
-		icon: 'fas fa-user-clock',
-		bg: 'var(--bg)',
-	})),
-});
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => ({
+	title: i18n.ts.followRequests,
+	icon: 'fas fa-user-clock',
+	bg: 'var(--bg)',
+})));
 </script>
 
 <style lang="scss" scoped>

@@ -6,6 +6,9 @@ export const meta = {
 	tags: ['charts', 'users', 'following'],
 
 	res: getJsonSchema(perUserFollowingChart.schema),
+
+	allowGet: true,
+	cacheSec: 60 * 60,
 } as const;
 
 export const paramDef = {

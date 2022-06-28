@@ -1901,13 +1901,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-api@npm:^6.0.0":
-  version: 6.1.4
-  resolution: "@vue/devtools-api@npm:6.1.4"
-  checksum: 027bb138b03ec7147dd15e5d0ef28d5b72c822530396cc8a86bc6fdb049dc6850314b9e897e497064e3ed47fad229a18141f56b8b8ca3d41092a576dc5b6538d
-  languageName: node
-  linkType: hard
-
 "@vue/reactivity-transform@npm:3.2.37":
   version: 3.2.37
   resolution: "@vue/reactivity-transform@npm:3.2.37"
@@ -2788,6 +2781,7 @@ __metadata:
     form-data: ^4.0.0
     got: 12.1.0
     hpagent: 0.1.2
+    ioredis: 4.28.5
     ip-cidr: 3.0.10
     is-svg: 4.3.2
     js-yaml: 4.1.0
@@ -2795,7 +2789,7 @@ __metadata:
     json5: 2.2.1
     json5-loader: 4.0.1
     jsonld: 6.0.0
-    jsrsasign: 10.5.24
+    jsrsasign: 10.5.25
     koa: 2.13.4
     koa-bodyparser: 4.3.0
     koa-favicon: 2.1.0
@@ -2828,7 +2822,6 @@ __metadata:
     random-seed: 0.3.0
     ratelimiter: 3.4.1
     re2: 1.17.4
-    redis: 3.1.2
     redis-lock: 0.1.4
     reflect-metadata: 0.1.13
     rename: 1.0.4
@@ -2842,7 +2835,7 @@ __metadata:
     strict-event-emitter-types: 2.0.0
     stringz: 2.1.0
     style-loader: 3.3.1
-    summaly: 2.5.1
+    summaly: 2.6.0
     syslog-pro: 1.0.0
     systeminformation: 5.11.16
     tinycolor2: 1.4.2
@@ -3832,7 +3825,6 @@ __metadata:
     vite: 2.9.10
     vue: 3.2.37
     vue-prism-editor: 2.0.0-alpha.2
-    vue-router: 4.0.16
     vuedraggable: 4.0.1
     websocket: 1.0.34
     ws: 8.8.0
@@ -4835,7 +4827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"denque@npm:^1.1.0, denque@npm:^1.5.0":
+"denque@npm:^1.1.0":
   version: 1.5.1
   resolution: "denque@npm:1.5.1"
   checksum: 4375ad19d5cea99f90effa82a8cecdaa10f4eb261fbcd7e47cd753ff2737f037aac8f7f4e031cc77f3966314c491c86a0d3b20c128aeee57f791b4662c45108e
@@ -7617,7 +7609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ioredis@npm:^4.28.5":
+"ioredis@npm:4.28.5, ioredis@npm:^4.28.5":
   version: 4.28.5
   resolution: "ioredis@npm:4.28.5"
   dependencies:
@@ -8548,10 +8540,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsrsasign@npm:10.5.24":
-  version: 10.5.24
-  resolution: "jsrsasign@npm:10.5.24"
-  checksum: 745d7945fe72d15ef4310bf77c3537439f53f355febd481d978aa4a2e677206e7eb40df018f756498a3532aeb4232eabb8c9491fe0dd35c8a4de4f5e648313d8
+"jsrsasign@npm:10.5.25":
+  version: 10.5.25
+  resolution: "jsrsasign@npm:10.5.25"
+  checksum: e789cd6d5e6e236edebe91936279cdef886aafaab8d4ebc7d40b8ba0c7b7cd0d6d3c53fba26ea96eb33cc77a05368b369ef31fc9182662bce2344143ad50ea0f
   languageName: node
   linkType: hard
 
@@ -11980,7 +11972,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redis-commands@npm:1.7.0, redis-commands@npm:^1.7.0":
+"redis-commands@npm:1.7.0":
   version: 1.7.0
   resolution: "redis-commands@npm:1.7.0"
   checksum: d1ff7fbcb5e54768c77f731f1d49679d2a62c3899522c28addb4e2e5813aea8bcac3f22519d71d330224c3f2937f935dfc3d8dc65e90db0f5fe22dc2c1515aa7
@@ -12030,18 +12022,6 @@ __metadata:
     "@redis/search": 1.0.6
     "@redis/time-series": 1.0.3
   checksum: e3cc90a05a3ea9ada3d771145a0865cd85340a9b54cbeda768f127d86df13beb56ec505b978c464a092ad33ff39b1850101c102842d51b84a1ff6b1f9790901b
-  languageName: node
-  linkType: hard
-
-"redis@npm:3.1.2":
-  version: 3.1.2
-  resolution: "redis@npm:3.1.2"
-  dependencies:
-    denque: ^1.5.0
-    redis-commands: ^1.7.0
-    redis-errors: ^1.2.0
-    redis-parser: ^3.0.0
-  checksum: baec42198626b22d2dfc063b6a6f30394daee994c21f380e58ecf91c3edee333c4e32907c30f082fe66d2177695f7b2567902eef399ecb22da3e199ea6363a30
   languageName: node
   linkType: hard
 
@@ -13301,9 +13281,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"summaly@npm:2.5.1":
-  version: 2.5.1
-  resolution: "summaly@npm:2.5.1"
+"summaly@npm:2.6.0":
+  version: 2.6.0
+  resolution: "summaly@npm:2.6.0"
   dependencies:
     cheerio: 0.22.0
     debug: 4.3.3
@@ -13316,7 +13296,7 @@ __metadata:
     private-ip: 2.3.3
     require-all: 3.0.0
     trace-redirect: 1.0.6
-  checksum: d8fcfafd61e54b80bb49d1c467782c68fea98e9fa953cd48f9bf65dd1e60c9fde84c65704018eed12abc278fc77c4ffe065dc19eecdc81b0126b6168212699b0
+  checksum: 5eff928fc66dc9c2845b43f4242e1f5d37666ef829a6c0bd1ac6467ab91ff92e90eb53f4166c67c573c136a6f512310e34ab6a1acb866418dba8c2c6590dd139
   languageName: node
   linkType: hard
 
@@ -14581,17 +14561,6 @@ __metadata:
   peerDependencies:
     vue: ^3.0.0
   checksum: 6a873483698abbfd0ae7d92e29c77f29dbdfebfb046bc5899451328ebc975d650771552875352b2e9a898717c0ec3791aba9419594dccdf2eb41486075412ca4
-  languageName: node
-  linkType: hard
-
-"vue-router@npm:4.0.16":
-  version: 4.0.16
-  resolution: "vue-router@npm:4.0.16"
-  dependencies:
-    "@vue/devtools-api": ^6.0.0
-  peerDependencies:
-    vue: ^3.2.0
-  checksum: 4b8e417c96404d4f4c69539112dfafc52f3b2427db3663d5129413a9b65aafdb95889d756af4c6d08a84d7f9e80cc0ae4667383f2c090f27c27ea4b5d83c4cec
   languageName: node
   linkType: hard
 

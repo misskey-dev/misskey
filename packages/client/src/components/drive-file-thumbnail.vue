@@ -57,7 +57,7 @@ const isThumbnailAvailable = computed(() => {
 .zdjebgpv {
 	position: relative;
 	display: flex;
-	background: #e1e1e1;
+	background: var(--panel);
 	border-radius: 8px;
 	overflow: clip;
 
