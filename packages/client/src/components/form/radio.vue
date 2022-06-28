@@ -55,6 +55,7 @@ export default defineComponent({
 	text-align: left;
 	cursor: pointer;
 	padding: 9px 12px;
+	min-width: 60px;
 	background-color: var(--panel);
 	background-clip: padding-box !important;
 	border: solid 1px var(--panel);
