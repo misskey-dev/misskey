@@ -201,7 +201,7 @@ const component = $computed(() => {
 		case 'overview': return defineAsyncComponent(() => import('./overview.vue'));
 		case 'users': return defineAsyncComponent(() => import('./users.vue'));
 		case 'emojis': return defineAsyncComponent(() => import('./emojis.vue'));
-		case 'federation': return defineAsyncComponent(() => import('../federation.vue'));
+		//case 'federation': return defineAsyncComponent(() => import('../federation.vue'));
 		case 'queue': return defineAsyncComponent(() => import('./queue.vue'));
 		case 'files': return defineAsyncComponent(() => import('./files.vue'));
 		case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));

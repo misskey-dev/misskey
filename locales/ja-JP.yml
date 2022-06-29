@@ -857,6 +857,7 @@ check: "チェック"
 isSystemAccount: "システムにより自動で作成・管理されているアカウントです。"
 typeToConfirm: "この操作を行うには {x} と入力してください"
 deleteAccount: "アカウント削除"
+document: "ドキュメント"
 
 _emailUnavailable:
   used: "既に使用されています"
