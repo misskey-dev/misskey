@@ -1,7 +1,7 @@
 <template>
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjcg">
-		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+		<img src="/static-assets/badges/error.jpg" class="_ghost" alt="Error"/>
 		<p><i class="fas fa-exclamation-triangle"></i> {{ $ts.somethingHappened }}</p>
 		<MkButton class="button" @click="() => $emit('retry')">{{ $ts.retry }}</MkButton>
 	</div>

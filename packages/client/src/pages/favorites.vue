@@ -5,7 +5,7 @@
 		<MkPagination ref="pagingComponent" :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<img src="/static-assets/badges/info.jpg" class="_ghost" alt="Info"/>
 					<div>{{ $ts.noNotes }}</div>
 				</div>
 			</template>
