@@ -1216,6 +1216,7 @@ _widgets:
   photos: "Photos"
   digitalClock: "Digital clock"
   federation: "Federation"
+  instanceCloud: "Instance cloud"
   postForm: "Posting form"
   slideshow: "Slideshow"
   button: "Button"
