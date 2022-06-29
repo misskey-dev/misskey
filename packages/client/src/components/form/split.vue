@@ -6,9 +6,9 @@
 
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
-	minWidth: number;
+	minWidth?: number;
 }>(), {
-  minWidth: 210,
+	minWidth: 210,
 });
 
 const minWidth = props.minWidth + 'px';
