@@ -38,6 +38,7 @@ export const routes = [{
 	name: 'settings',
 	path: '/settings/:initialPage(*)?',
 	component: page(() => import('./pages/settings/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/reset-password/:token?',
 	component: page(() => import('./pages/reset-password.vue')),
@@ -60,6 +61,7 @@ export const routes = [{
 }, {
 	path: '/theme-editor',
 	component: page(() => import('./pages/theme-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/explore/tags/:tag',
 	component: page(() => import('./pages/explore.vue')),
@@ -76,12 +78,15 @@ export const routes = [{
 }, {
 	path: '/authorize-follow',
 	component: page(() => import('./pages/follow.vue')),
+	loginRequired: true,
 }, {
 	path: '/share',
 	component: page(() => import('./pages/share.vue')),
+	loginRequired: true,
 }, {
 	path: '/api-console',
 	component: page(() => import('./pages/api-console.vue')),
+	loginRequired: true,
 }, {
 	path: '/mfm-cheat-sheet',
 	component: page(() => import('./pages/mfm-cheat-sheet.vue')),
@@ -109,18 +114,22 @@ export const routes = [{
 }, {
 	path: '/pages/new',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/pages/edit/:initPageId',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/pages',
 	component: page(() => import('./pages/pages.vue')),
 }, {
 	path: '/gallery/:postId/edit',
 	component: page(() => import('./pages/gallery/edit.vue')),
+	loginRequired: true,
 }, {
 	path: '/gallery/new',
 	component: page(() => import('./pages/gallery/edit.vue')),
+	loginRequired: true,
 }, {
 	path: '/gallery/:postId',
 	component: page(() => import('./pages/gallery/post.vue')),
@@ -130,9 +139,11 @@ export const routes = [{
 }, {
 	path: '/channels/:channelId/edit',
 	component: page(() => import('./pages/channel-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/channels/new',
 	component: page(() => import('./pages/channel-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/channels/:channelId',
 	component: page(() => import('./pages/channel.vue')),
@@ -148,52 +159,68 @@ export const routes = [{
 }, {
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/favorites',
 	component: page(() => import('./pages/favorites.vue')),
+	loginRequired: true,
 }, {
 	name: 'messaging',
 	path: '/my/messaging',
 	component: page(() => import('./pages/messaging/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/messaging/:userAcct',
 	component: page(() => import('./pages/messaging/messaging-room.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/messaging/group/:groupId',
 	component: page(() => import('./pages/messaging/messaging-room.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/drive/folder/:folder',
 	component: page(() => import('./pages/drive.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/drive',
 	component: page(() => import('./pages/drive.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/follow-requests',
 	component: page(() => import('./pages/follow-requests.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/lists/:listId',
 	component: page(() => import('./pages/my-lists/list.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/lists',
 	component: page(() => import('./pages/my-lists/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/clips',
 	component: page(() => import('./pages/my-clips/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/antennas/create',
 	component: page(() => import('./pages/my-antennas/create.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/antennas/:antennaId',
 	component: page(() => import('./pages/my-antennas/edit.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/antennas',
 	component: page(() => import('./pages/my-antennas/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/timeline/list/:listId',
 	component: page(() => import('./pages/user-list-timeline.vue')),
+	loginRequired: true,
 }, {
 	path: '/timeline/antenna/:antennaId',
 	component: page(() => import('./pages/antenna-timeline.vue')),
+	loginRequired: true,
 }, {
 	name: 'index',
 	path: '/',

@@ -2,11 +2,13 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
+import { pleaseLogin } from '@/scripts/please-login';
 
 type RouteDef = {
 	path: string;
 	component: Component;
 	query?: Record<string, string>;
+	loginRequired?: boolean;
 	name?: string;
 	hash?: string;
 	globalCacheKey?: string;
@@ -167,6 +169,10 @@ export class Router extends EventEmitter<{
 
 		if (res == null) {
 			throw new Error('no route found for: ' + path);
+		}
+
+		if (res.route.loginRequired) {
+			pleaseLogin('/');
 		}
 
 		const isSamePath = beforePath === path;
