@@ -320,7 +320,7 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-bars-staggered',
 } : null, {
 	key: 'raw',
-	title: 'Raw data',
+	title: 'Raw',
 	icon: 'fas fa-code',
 }].filter(x => x != null));
 

@@ -112,20 +112,6 @@ export const menuDef = reactive({
 			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
 	},
-	mentions: {
-		title: 'mentions',
-		icon: 'fas fa-at',
-		show: computed(() => $i != null),
-		indicated: computed(() => $i != null && $i.hasUnreadMentions),
-		to: '/my/mentions',
-	},
-	messages: {
-		title: 'directNotes',
-		icon: 'fas fa-envelope',
-		show: computed(() => $i != null),
-		indicated: computed(() => $i != null && $i.hasUnreadSpecifiedNotes),
-		to: '/my/messages',
-	},
 	favorites: {
 		title: 'favorites',
 		icon: 'fas fa-star',
@@ -152,21 +138,6 @@ export const menuDef = reactive({
 		title: 'channel',
 		icon: 'fas fa-satellite-dish',
 		to: '/channels',
-	},
-	federation: {
-		title: 'federation',
-		icon: 'fas fa-globe',
-		to: '/federation',
-	},
-	emojis: {
-		title: 'emojis',
-		icon: 'fas fa-laugh',
-		to: '/emojis',
-	},
-	scratchpad: {
-		title: 'scratchpad',
-		icon: 'fas fa-terminal',
-		to: '/scratchpad',
 	},
 	ui: {
 		title: 'switchUi',

@@ -16,13 +16,13 @@
 			</template>
 		</div>
 		<div class="sub">
-			<a v-click-anime href="https://misskey-hub.net/help.html" target="_blank" @click.passive="close()">
+			<button v-click-anime class="_button" @click="help">
 				<i class="fas fa-question-circle icon"></i>
 				<div class="text">{{ $ts.help }}</div>
-			</a>
+			</button>
 			<MkA v-click-anime to="/about" @click.passive="close()">
 				<i class="fas fa-info-circle icon"></i>
-				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>
+				<div class="text">{{ $ts.instanceInfo }}</div>
 			</MkA>
 			<MkA v-click-anime to="/about-misskey" @click.passive="close()">
 				<img src="/static-assets/favicon.png" class="icon"/>
@@ -34,13 +34,14 @@
 </template>
 
 <script lang="ts" setup>
-import {  } from 'vue';
+import { } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
 import { menuDef } from '@/menu';
 import { instanceName } from '@/config';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { deviceKind } from '@/scripts/device-kind';
+import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
@@ -72,6 +73,28 @@ const items = Object.keys(menuDef).filter(k => !menu.includes(k)).map(k => menuD
 
 function close() {
 	modal.close();
+}
+
+function help(ev: MouseEvent) {
+	os.popupMenu([{
+		type: 'link',
+		to: '/mfm-cheat-sheet',
+		text: i18n.ts._mfm.cheatSheet,
+		icon: 'fas fa-code',
+	}, {
+		type: 'link',
+		to: '/scratchpad',
+		text: i18n.ts.scratchpad,
+		icon: 'fas fa-terminal',
+	}, null, {
+		text: i18n.ts.document,
+		icon: 'fas fa-question-circle',
+		action: () => {
+			window.open('https://misskey-hub.net/help.html', '_blank');
+		},
+	}], ev.currentTarget ?? ev.target);
+
+	close();
 }
 </script>
 

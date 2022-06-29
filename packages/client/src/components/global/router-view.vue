@@ -21,7 +21,7 @@ if (router == null) {
 	throw new Error('no router provided');
 }
 
-let currentPageComponent = $ref(router.getCurrentComponent());
+let currentPageComponent = $shallowRef(router.getCurrentComponent());
 let currentPageProps = $ref(router.getCurrentProps());
 let key = $ref(router.getCurrentKey());
 
