@@ -150,11 +150,23 @@ showOnRemote: "ดูบนอินสแตนซ์ระยะไกล"
 general: "ทั่วไป"
 wallpaper: "วอลล์เปเปอร์"
 setWallpaper: "ตั้งวอลเปเปอร์"
+removeWallpaper: "นำวอลเปเปอร์ออก"
+searchWith: "ค้นหา: {q}"
+youHaveNoLists: "รายการนี้ว่างเปล่า"
+followConfirm: "คุณแน่ใจแล้วหรอว่าต้องการที่จะติดตาม {name}?"
+proxyAccount: "บัญชี พร็อกซี่"
+proxyAccountDescription: "บัญชีพร็อกซี่ คือ บัญชีที่จะทำหน้าที่เป็นผู้ติดตามระยะไกลสำหรับผู้ใช้งานที่อยู่ภายใต้ด้วยเงื่อนไขบางอย่าง ยกตัวอย่าง เช่น เมื่อมีผู้ใช้งานนั้นได้เพิ่มผู้ใช้งานจากระยะไกลลงในรายการ แต่กิจกรรมของผู้ใช้ในระยะไกลนั้นจะไม่ถูกส่งไปยังอินสแตนซ์หากไม่มีผู้ใช้งานในพื้นที่ติดตามผู้ใช้รายนั้น ดังนั้นบัญชีพร็อกซีนี้จะติดตามแทน"
+host: "โฮสต์"
+selectUser: "เลือกผู้ใช้งาน"
+recipient: "ผู้รับ"
+annotation: "ความคิดเห็น"
+federation: "สหพันธ์"
 instances: "ตัวอย่าง"
 remove: "ลบ"
 nsfw: "เนื้อหาที่ละเอียดอ่อน NSFW"
 pinnedNotes: "โน้ตที่ปักหมุดเอาไว้"
 userList: "รายการ"
+smtpHost: "โฮสต์"
 smtpUser: "ชื่อผู้ใช้"
 smtpPass: "รหัสผ่าน"
 user: "ผู้ใช้งาน"
@@ -178,6 +190,7 @@ _sfx:
 _widgets:
   notifications: "การเเจ้งเตือน"
   timeline: "ไทม์ไลน์"
+  federation: "สหพันธ์"
 _cw:
   show: "โหลดเพิ่มเติม"
 _visibility:
@@ -189,6 +202,8 @@ _exportOrImport:
   muteList: "ปิดเสียง"
   blockingList: "บล็อค"
   userLists: "รายการ"
+_charts:
+  federation: "สหพันธ์"
 _pages:
   script:
     categories:
