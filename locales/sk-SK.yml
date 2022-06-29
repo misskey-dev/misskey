@@ -855,6 +855,7 @@ recommended: "Odporúčané"
 isSystemAccount: "Tieto účty automaticky vytvoril a spravuje systém."
 typeToConfirm: "Ak chcete vykonať túto operáciu, napíšte {x}"
 deleteAccount: "Vymazať účet"
+document: "Dokument"
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"
