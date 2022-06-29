@@ -4,26 +4,13 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import XValue from './object-view.value.vue';
 
-export default defineComponent({
-	components: {
-		XValue
-	},
-
-	props: {
-		value: {
-			type: Object,
-			required: true,
-		},
-	},
-
-	setup(props) {
-
-	}
-});
+const props = defineProps<{
+	value: Record<string, unknown>;
+}>();
 </script>
 
 <style lang="scss" scoped>

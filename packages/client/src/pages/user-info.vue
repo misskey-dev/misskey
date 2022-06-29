@@ -294,7 +294,7 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-share-alt',
 }, {
 	key: 'raw',
-	title: 'Raw data',
+	title: 'Raw',
 	icon: 'fas fa-code',
 }].filter(x => x != null));
 

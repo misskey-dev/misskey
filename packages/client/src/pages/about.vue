@@ -73,7 +73,7 @@
 	<MkSpacer v-else-if="tab === 'federation'" :content-max="1000" :margin-min="20">
 		<XFederation/>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'charts'" :content-max="1200" :margin-min="20">
+	<MkSpacer v-else-if="tab === 'charts'" :content-max="1000" :margin-min="20">
 		<MkInstanceStats :chart-limit="500" :detailed="true"/>
 	</MkSpacer>
 </MkStickyContainer>
