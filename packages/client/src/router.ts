@@ -50,6 +50,7 @@ export const routes = [{
 }, {
 	path: '/about',
 	component: page(() => import('./pages/about.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/about-misskey',
 	component: page(() => import('./pages/about-misskey.vue')),
@@ -203,7 +204,7 @@ export const routes = [{
 	component: page(() => import('./pages/not-found.vue')),
 }];
 
-export const mainRouter = new Router(routes, location.pathname + location.search);
+export const mainRouter = new Router(routes, location.pathname + location.search + location.hash);
 
 window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
 
@@ -228,7 +229,7 @@ mainRouter.addListener('push', ctx => {
 });
 
 window.addEventListener('popstate', (event) => {
-	mainRouter.change(location.pathname + location.search, event.state?.key);
+	mainRouter.change(location.pathname + location.search + location.hash, event.state?.key);
 	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
 	window.scroll({ top: scrollPos, behavior: 'instant' });
 	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール

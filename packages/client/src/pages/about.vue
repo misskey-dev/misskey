@@ -95,8 +95,14 @@ import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const props = withDefaults(defineProps<{
+	initialTab?: string;
+}>(), {
+	initialTab: 'overview',
+});
+
 let stats = $ref(null);
-let tab = $ref('overview');
+let tab = $ref(props.initialTab);
 
 const initStats = () => os.api('stats', {
 }).then((res) => {

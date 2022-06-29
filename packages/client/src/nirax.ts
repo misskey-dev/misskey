@@ -8,6 +8,7 @@ type RouteDef = {
 	component: Component;
 	query?: Record<string, string>;
 	name?: string;
+	hash?: string;
 	globalCacheKey?: string;
 };
 
@@ -78,7 +79,12 @@ export class Router extends EventEmitter<{
 
 	public resolve(path: string): { route: RouteDef; props: Map<string, string>; } | null {
 		let queryString: string | null = null;
+		let hash: string | null = null;
 		if (path[0] === '/') path = path.substring(1);
+		if (path.includes('#')) {
+			hash = path.substring(path.indexOf('#') + 1);
+			path = path.substring(0, path.indexOf('#'));
+		}
 		if (path.includes('?')) {
 			queryString = path.substring(path.indexOf('?') + 1);
 			path = path.substring(0, path.indexOf('?'));
@@ -127,6 +133,10 @@ export class Router extends EventEmitter<{
 
 			if (parts.length !== 0) continue forEachRouteLoop;
 
+			if (route.hash != null && hash != null) {
+				props.set(route.hash, hash);
+			}
+
 			if (route.query != null && queryString != null) {
 				const queryObject = [...new URLSearchParams(queryString).entries()]
 					.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
@@ -138,6 +148,7 @@ export class Router extends EventEmitter<{
 					}
 				}
 			}
+
 			return {
 				route,
 				props,
