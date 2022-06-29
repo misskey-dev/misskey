@@ -24,7 +24,18 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-let tab = $ref('all');
+const props = withDefaults(defineProps<{
+	initialTab?: string;
+}>(), {
+	initialTab: 'all',
+});
+
+// check if it is an existing tab
+if (!['all', 'unread', 'mentions', 'directNotes'].includes(props.initialTab)) {
+	props.initialTab = 'all';
+}
+
+let tab = $ref(props.initialTab);
 let includeTypes = $ref<string[] | null>(null);
 let unreadOnly = $computed(() => tab === 'unread');
 
