@@ -95,6 +95,13 @@
 				</div>
 			</div>
 		</div>
+		<div v-else-if="tab === 'users'" class="_formRoot">
+			<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
+				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${new Date(user.updatedAt).toLocaleString()}`" class="user" :to="`/user-info/${user.id}`">
+					<MkUserCardMini :user="user"/>
+				</MkA>
+			</MkPagination>
+		</div>
 		<div v-else-if="tab === 'raw'" class="_formRoot">
 			<MkObjectView tall :value="instance">
 			</MkObjectView>
@@ -121,6 +128,8 @@ import bytes from '@/filters/bytes';
 import { iAmModerator } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import MkUserCardMini from '@/components/user-card-mini.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 
 const props = defineProps<{
 	host: string;
@@ -133,17 +142,24 @@ let instance = $ref<misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
 
-async function fetch() {
-	if (iAmModerator) {
-		// suspended and blocked information is only displayed to moderators.
-		// otherwise the API will error anyway
+const usersPagination = {
+	endpoint: 'admin/show-users' as const,
+	limit: 10,
+	params: {
+		sort: '+updatedAt',
+		state: 'all',
+		origin: 'remote',
+		hostname: props.host,
+	},
+	offsetMode: true,
+};
 
-		instance = await os.api('federation/show-instance', {
-			host: props.host,
-		});
-		suspended = instance.isSuspended;
-		isBlocked = instance.isBlocked;
-	}
+async function fetch() {
+	instance = await os.api('federation/show-instance', {
+		host: props.host,
+	});
+	suspended = instance.isSuspended;
+	isBlocked = instance.isBlocked;
 }
 
 async function toggleBlock(ev) {
@@ -188,8 +204,12 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
 }, {
+	key: 'users',
+	title: i18n.ts.users,
+	icon: 'fas fa-users',
+}, {
 	key: 'raw',
-	title: 'Raw data',
+	title: 'Raw',
 	icon: 'fas fa-code',
 }]);
 

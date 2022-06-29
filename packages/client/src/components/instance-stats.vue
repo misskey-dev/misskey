@@ -1,81 +1,188 @@
 <template>
 <div class="zbcjwnqg">
-	<div class="selects" style="display: flex;">
-		<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
-			<optgroup :label="$ts.federation">
-				<option value="federation">{{ $ts._charts.federation }}</option>
-				<option value="ap-request">{{ $ts._charts.apRequest }}</option>
-			</optgroup>
-			<optgroup :label="$ts.users">
-				<option value="users">{{ $ts._charts.usersIncDec }}</option>
-				<option value="users-total">{{ $ts._charts.usersTotal }}</option>
-				<option value="active-users">{{ $ts._charts.activeUsers }}</option>
-			</optgroup>
-			<optgroup :label="$ts.notes">
-				<option value="notes">{{ $ts._charts.notesIncDec }}</option>
-				<option value="local-notes">{{ $ts._charts.localNotesIncDec }}</option>
-				<option value="remote-notes">{{ $ts._charts.remoteNotesIncDec }}</option>
-				<option value="notes-total">{{ $ts._charts.notesTotal }}</option>
-			</optgroup>
-			<optgroup :label="$ts.drive">
-				<option value="drive-files">{{ $ts._charts.filesIncDec }}</option>
-				<option value="drive">{{ $ts._charts.storageUsageIncDec }}</option>
-			</optgroup>
-		</MkSelect>
-		<MkSelect v-model="chartSpan" style="margin: 0 0 0 10px;">
-			<option value="hour">{{ $ts.perHour }}</option>
-			<option value="day">{{ $ts.perDay }}</option>
-		</MkSelect>
+	<div class="main">
+		<div class="body">
+			<div class="selects" style="display: flex;">
+				<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
+					<optgroup :label="$ts.federation">
+						<option value="federation">{{ $ts._charts.federation }}</option>
+						<option value="ap-request">{{ $ts._charts.apRequest }}</option>
+					</optgroup>
+					<optgroup :label="$ts.users">
+						<option value="users">{{ $ts._charts.usersIncDec }}</option>
+						<option value="users-total">{{ $ts._charts.usersTotal }}</option>
+						<option value="active-users">{{ $ts._charts.activeUsers }}</option>
+					</optgroup>
+					<optgroup :label="$ts.notes">
+						<option value="notes">{{ $ts._charts.notesIncDec }}</option>
+						<option value="local-notes">{{ $ts._charts.localNotesIncDec }}</option>
+						<option value="remote-notes">{{ $ts._charts.remoteNotesIncDec }}</option>
+						<option value="notes-total">{{ $ts._charts.notesTotal }}</option>
+					</optgroup>
+					<optgroup :label="$ts.drive">
+						<option value="drive-files">{{ $ts._charts.filesIncDec }}</option>
+						<option value="drive">{{ $ts._charts.storageUsageIncDec }}</option>
+					</optgroup>
+				</MkSelect>
+				<MkSelect v-model="chartSpan" style="margin: 0 0 0 10px;">
+					<option value="hour">{{ $ts.perHour }}</option>
+					<option value="day">{{ $ts.perDay }}</option>
+				</MkSelect>
+			</div>
+			<div class="chart">
+				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="detailed"></MkChart>
+			</div>
+		</div>
 	</div>
-	<div class="chart">
-		<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="detailed"></MkChart>
+	<div class="subpub">
+		<div class="sub">
+			<div class="title">Sub</div>
+			<canvas ref="subDoughnutEl"></canvas>
+		</div>
+		<div class="pub">
+			<div class="title">Pub</div>
+			<canvas ref="pubDoughnutEl"></canvas>
+		</div>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
+import {
+	Chart,
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	TimeScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
+	Filler,
+	DoughnutController,
+} from 'chart.js';
 import MkSelect from '@/components/form/select.vue';
 import MkChart from '@/components/chart.vue';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		MkSelect,
-		MkChart,
-	},
+Chart.register(
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	DoughnutController,
+	CategoryScale,
+	LinearScale,
+	TimeScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
+	Filler,
+);
 
-	props: {
-		chartLimit: {
-			type: Number,
-			required: false,
-			default: 90
+const props = withDefaults(defineProps<{
+	chartLimit?: number;
+	detailed?: boolean;
+}>(), {
+	chartLimit: 90,
+});
+
+const chartSpan = $ref<'hour' | 'day'>('hour');
+const chartSrc = $ref('active-users');
+let subDoughnutEl = $ref<HTMLCanvasElement>();
+let pubDoughnutEl = $ref<HTMLCanvasElement>();
+
+const { handler: externalTooltipHandler1 } = useChartTooltip();
+const { handler: externalTooltipHandler2 } = useChartTooltip();
+
+function createDoughnut(chartEl, tooltip, data) {
+	return new Chart(chartEl, {
+		type: 'doughnut',
+		data: {
+			labels: data.map(x => x.name),
+			datasets: [{
+				backgroundColor: data.map(x => x.color),
+				data: data.map(x => x.value),
+			}],
 		},
-		detailed: {
-			type: Boolean,
-			required: false,
-			default: false
+		options: {
+			layout: {
+				padding: {
+					left: 8,
+					right: 8,
+					top: 8,
+					bottom: 8,
+				},
+			},
+			interaction: {
+				intersect: false,
+			},
+			plugins: {
+				legend: {
+					display: false,
+				},
+				tooltip: {
+					enabled: false,
+					mode: 'index',
+					animation: {
+						duration: 0,
+					},
+					external: tooltip,
+				},
+			},
 		},
-	},
+	});
+}
 
-	setup() {
-		const chartSpan = ref<'hour' | 'day'>('hour');
-		const chartSrc = ref('active-users');
-
-		return {
-			chartSrc,
-			chartSpan,
-		};
-	},
+onMounted(() => {
+	os.apiGet('federation/stats').then(fedStats => {
+		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowersCount }]));
+		createDoughnut(pubDoughnutEl, externalTooltipHandler1, fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowingCount }]));
+	});
 });
 </script>
 
 <style lang="scss" scoped>
 .zbcjwnqg {
-	> .selects {
+	> .main {
+		background: var(--panel);
+		border-radius: var(--radius);
+		padding: 24px;
+		margin-bottom: 16px;
+
+		> .body {
+			> .chart {
+				padding: 8px 0 0 0;
+			}
+		}
 	}
 
-	> .chart {
-		padding: 8px 0 0 0;
+	> .subpub {
+		display: flex;
+		gap: 16px;
+
+		> .sub, > .pub {
+			position: relative;
+			background: var(--panel);
+			border-radius: var(--radius);
+			padding: 24px;
+
+			> .title {
+				position: absolute;
+				top: 24px;
+				left: 24px;
+			}
+		}
 	}
 }
 </style>
