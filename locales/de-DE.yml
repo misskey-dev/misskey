@@ -1216,6 +1216,7 @@ _widgets:
   photos: "Fotos"
   digitalClock: "Digitaluhr"
   federation: "Föderation"
+  instanceCloud: "Instanzwolke"
   postForm: "Notizfenster"
   slideshow: "Diashow"
   button: "Knopf"
