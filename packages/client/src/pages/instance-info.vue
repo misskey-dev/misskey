@@ -209,7 +209,7 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-users',
 }, {
 	key: 'raw',
-	title: 'Raw data',
+	title: 'Raw',
 	icon: 'fas fa-code',
 }]);
 

@@ -410,6 +410,7 @@ export default defineComponent({
 			backdrop-filter: var(--blur, blur(15px));
 			//border-bottom: solid 1px var(--divider);
 			font-size: 95%;
+			font-weight: bold;
 
 			> .left, > .right {
 				> .button {

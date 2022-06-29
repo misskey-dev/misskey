@@ -16,8 +16,8 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
-	copy: string | null;
-	oneline: boolean;
+	copy?: string | null;
+	oneline?: boolean;
 }>(), {
 	copy: null,
 	oneline: false,
