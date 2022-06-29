@@ -1214,6 +1214,7 @@ _widgets:
   photos: "Fotky"
   digitalClock: "Digitálne hodiny"
   federation: "Federácia"
+  instanceCloud: "Cloud serverov"
   postForm: "Napísať poznámku"
   slideshow: "Prezentácia"
   button: "Tlačidlo"
