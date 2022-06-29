@@ -108,6 +108,17 @@
 					</div>
 				</div>
 			</div>
+			<div class="container tagCloud">
+				<div class="body">
+					<MkTagCloud v-if="activeInstances">
+						<li v-for="instance in activeInstances">
+							<a @click.prevent="onInstanceClick(instance)">
+								<img style="width: 32px;" :src="instance.iconUrl">
+							</a>
+						</li>
+					</MkTagCloud>
+				</div>
+			</div>
 			<div v-if="fedStats" class="container federationPies">
 				<div class="body">
 					<div class="chart deliver">
@@ -154,8 +165,8 @@ import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';
 import XPie from './overview.pie.vue';
-import MkInstanceStats from '@/components/instance-stats.vue';
 import MkNumberDiff from '@/components/number-diff.vue';
+import MkTagCloud from '@/components/tag-cloud.vue';
 import { version, url } from '@/config';
 import number from '@/filters/number';
 import * as os from '@/os';
@@ -197,6 +208,7 @@ let federationPubActiveDiff = $ref<number | null>(null);
 let federationSubActive = $ref<number | null>(null);
 let federationSubActiveDiff = $ref<number | null>(null);
 let newUsers = $ref(null);
+let activeInstances = $shallowRef(null);
 const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
 const now = new Date();
 let chartInstance: Chart = null;
@@ -363,6 +375,10 @@ async function renderChart() {
 	});
 }
 
+function onInstanceClick(i) {
+	os.pageWindow(`/instance-info/${i.host}`);
+}
+
 onMounted(async () => {
 	/*
 	const magicGrid = new MagicGrid({
@@ -408,6 +424,13 @@ onMounted(async () => {
 		sort: '+createdAt',
 	}).then(res => {
 		newUsers = res;
+	});
+
+	os.api('federation/instances', {
+		sort: '+lastCommunicatedAt',
+		limit: 25,
+	}).then(res => {
+		activeInstances = res;
 	});
 
 	nextTick(() => {
@@ -575,6 +598,14 @@ definePageMetadata({
 							font-size: 85%;
 						}
 					}
+				}
+			}
+
+			&.tagCloud {
+				> .body {
+					background: var(--panel);
+					border-radius: var(--radius);
+					overflow: clip;
 				}
 			}
 		}
