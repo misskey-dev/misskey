@@ -78,9 +78,6 @@ export default defineComponent({
 				return (steppedRawValue.value * (props.max - props.min)) + props.min;
 			}
 		});
-		watch(finalValue, () => {
-			context.emit('update:modelValue', finalValue.value);
-		});
 
 		const thumbWidth = computed(() => {
 			if (thumbEl.value == null) return 0;
@@ -141,6 +138,8 @@ export default defineComponent({
 				rawValue.value = Math.min(1, Math.max(0, pointerPositionOnContainer / (containerEl.value!.offsetWidth - thumbWidth.value)));
 			};
 
+			let beforeValue = finalValue.value;
+
 			const onMouseup = () => {
 				document.head.removeChild(style);
 				tooltipShowing.value = false;
@@ -148,6 +147,11 @@ export default defineComponent({
 				window.removeEventListener('touchmove', onDrag);
 				window.removeEventListener('mouseup', onMouseup);
 				window.removeEventListener('touchend', onMouseup);
+
+				// 値が変わってたら通知
+				if (beforeValue !== finalValue.value) {
+					context.emit('update:modelValue', finalValue.value);
+				}
 			};
 
 			window.addEventListener('mousemove', onDrag);
