@@ -51,26 +51,7 @@ export function generateMutedUserQueryForUsers(q: SelectQueryBuilder<any>, me: {
 		.select('muting.muteeId')
 		.where('muting.muterId = :muterId', { muterId: me.id });
 
-	const mutingInstanceQuery = UserProfiles.createQueryBuilder('user_profile')
-		.select('user_profile.mutedInstances')
-		.where('user_profile.userId = :muterId', { muterId: me.id });
-
-	q
-		.andWhere(`user.id NOT IN (${ mutingQuery.getQuery() })`)
-		// mute instances
-		.andWhere(new Brackets(qb => { qb
-			.andWhere('note.userHost IS NULL')
-			.orWhere(`NOT ((${ mutingInstanceQuery.getQuery() })::jsonb ? note.userHost)`);
-		}))
-		.andWhere(new Brackets(qb => { qb
-			.where('note.replyUserHost IS NULL')
-			.orWhere(`NOT ((${ mutingInstanceQuery.getQuery() })::jsonb ? note.replyUserHost)`);
-		}))
-		.andWhere(new Brackets(qb => { qb
-			.where('note.renoteUserHost IS NULL')
-			.orWhere(`NOT ((${ mutingInstanceQuery.getQuery() })::jsonb ? note.renoteUserHost)`);
-		}));
+	q.andWhere(`user.id NOT IN (${ mutingQuery.getQuery() })`);
 
 	q.setParameters(mutingQuery.getParameters());
-	q.setParameters(mutingInstanceQuery.getParameters());
 }
