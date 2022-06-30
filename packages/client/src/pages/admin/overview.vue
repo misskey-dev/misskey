@@ -413,22 +413,22 @@ onMounted(async () => {
 	});
 
 	os.apiGet('federation/stats', { limit: 10 }).then(res => {
-		topSubInstancesForPie = fedStats.topSubInstances.map(x => ({
+		topSubInstancesForPie = res.topSubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followersCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
 			},
-		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]);
-		topPubInstancesForPie = fedStats.topPubInstances.map(x => ({
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowersCount }]);
+		topPubInstancesForPie = res.topPubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followingCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
 			},
-		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowingCount }]);
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowingCount }]);
 	});
 
 	os.api('admin/server-info').then(serverInfoResponse => {
