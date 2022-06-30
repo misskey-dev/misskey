@@ -62,7 +62,7 @@ const modal = $ref<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 
-const items = Object.keys(menuDef).filter(k => !menu.includes(k)).map(k => menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
+const items = Object.keys(menuDef).filter(k => !menu.includes(k)).map(k => menuDef[k]).filter(def => (def.show ?? true) && !(def.optional ?? false)).map(def => ({
 	type: def.to ? 'link' : 'button',
 	text: i18n.ts[def.title],
 	icon: def.icon,

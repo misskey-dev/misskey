@@ -118,6 +118,7 @@ export const menuDef = reactive({
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadMentions),
 		to: '/my/notifications#mentions',
+		optional: true,
 	},
 	messages: {
 		title: 'directNotes',
@@ -125,6 +126,7 @@ export const menuDef = reactive({
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadSpecifiedNotes),
 		to: '/my/notifications#directNotes',
+		optional: true,
 	},
 	favorites: {
 		title: 'favorites',
@@ -157,16 +159,19 @@ export const menuDef = reactive({
 		title: 'federation',
 		icon: 'fas fa-globe',
 		to: '/about#federation',
+		optional: true,
 	},
 	emojis: {
 		title: 'emojis',
 		icon: 'fas fa-laugh',
 		to: '/about#emojis',
+		optional: true,
 	},
 	scratchpad: {
 		title: 'scratchpad',
 		icon: 'fas fa-terminal',
 		to: '/scratchpad',
+		optional: true,
 	},
 	ui: {
 		title: 'switchUi',
