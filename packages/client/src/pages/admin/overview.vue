@@ -43,7 +43,12 @@
 				</div>
 			</div>
 
-			<!--<XMetrics/>-->
+			<div class="container files">
+				<div class="title">Recent files</div>
+				<div class="body">
+					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+				</div>
+			</div>
 
 			<div class="container env">
 				<div class="title">Enviroment</div>
@@ -103,10 +108,29 @@
 					</div>
 				</div>
 			</div>
-			<div class="container files">
-				<div class="title">Recent files</div>
+			<div class="container tagCloud">
 				<div class="body">
-					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+					<MkTagCloud v-if="activeInstances">
+						<li v-for="instance in activeInstances">
+							<a @click.prevent="onInstanceClick(instance)">
+								<img style="width: 32px;" :src="instance.iconUrl">
+							</a>
+						</li>
+					</MkTagCloud>
+				</div>
+			</div>
+			<div v-if="topSubInstancesForPie && topPubInstancesForPie" class="container federationPies">
+				<div class="body">
+					<div class="chart deliver">
+						<div class="title">Sub</div>
+						<XPie :data="topSubInstancesForPie"/>
+						<div class="subTitle">Top 10</div>
+					</div>
+					<div class="chart inbox">
+						<div class="title">Pub</div>
+						<XPie :data="topPubInstancesForPie"/>
+						<div class="subTitle">Top 10</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -140,8 +164,9 @@ import XMetrics from './metrics.vue';
 import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';
-import MkInstanceStats from '@/components/instance-stats.vue';
+import XPie from './overview.pie.vue';
 import MkNumberDiff from '@/components/number-diff.vue';
+import MkTagCloud from '@/components/tag-cloud.vue';
 import { version, url } from '@/config';
 import number from '@/filters/number';
 import * as os from '@/os';
@@ -175,6 +200,8 @@ const rootEl = $ref<HTMLElement>();
 const chartEl = $ref<HTMLCanvasElement>(null);
 let stats: any = $ref(null);
 let serverInfo: any = $ref(null);
+let topSubInstancesForPie: any = $ref(null);
+let topPubInstancesForPie: any = $ref(null);
 let usersComparedToThePrevDay: any = $ref(null);
 let notesComparedToThePrevDay: any = $ref(null);
 let federationPubActive = $ref<number | null>(null);
@@ -182,6 +209,7 @@ let federationPubActiveDiff = $ref<number | null>(null);
 let federationSubActive = $ref<number | null>(null);
 let federationSubActiveDiff = $ref<number | null>(null);
 let newUsers = $ref(null);
+let activeInstances = $shallowRef(null);
 const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
 const now = new Date();
 let chartInstance: Chart = null;
@@ -257,7 +285,7 @@ async function renderChart() {
 			layout: {
 				padding: {
 					left: 0,
-					right: 8,
+					right: 0,
 					top: 0,
 					bottom: 0,
 				},
@@ -348,6 +376,10 @@ async function renderChart() {
 	});
 }
 
+function onInstanceClick(i) {
+	os.pageWindow(`/instance-info/${i.host}`);
+}
+
 onMounted(async () => {
 	/*
 	const magicGrid = new MagicGrid({
@@ -380,6 +412,25 @@ onMounted(async () => {
 		federationSubActiveDiff = chart.subActive[0] - chart.subActive[1];
 	});
 
+	os.apiGet('federation/stats', { limit: 10 }).then(res => {
+		topSubInstancesForPie = res.topSubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followersCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowersCount }]);
+		topPubInstancesForPie = res.topPubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followingCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowingCount }]);
+	});
+
 	os.api('admin/server-info').then(serverInfoResponse => {
 		serverInfo = serverInfoResponse;
 	});
@@ -389,6 +440,13 @@ onMounted(async () => {
 		sort: '+createdAt',
 	}).then(res => {
 		newUsers = res;
+	});
+
+	os.api('federation/instances', {
+		sort: '+lastCommunicatedAt',
+		limit: 25,
+	}).then(res => {
+		activeInstances = res;
 	});
 
 	nextTick(() => {
@@ -527,6 +585,43 @@ definePageMetadata({
 							font-size: 90%;
 						}
 					}
+				}
+			}
+
+			&.federationPies {
+				> .body {
+					display: grid;
+					grid-gap: 16px;
+					grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+
+					> .chart {
+						position: relative;
+						padding: 20px;
+						background: var(--panel);
+						border-radius: var(--radius);
+
+						> .title {
+							position: absolute;
+							top: 20px;
+							left: 20px;
+							font-size: 90%;
+						}
+
+						> .subTitle {
+							position: absolute;
+							bottom: 20px;
+							right: 20px;
+							font-size: 85%;
+						}
+					}
+				}
+			}
+
+			&.tagCloud {
+				> .body {
+					background: var(--panel);
+					border-radius: var(--radius);
+					overflow: clip;
 				}
 			}
 		}

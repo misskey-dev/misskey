@@ -65,6 +65,13 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 
+if (deckStore.state.navWindow) {
+	mainRouter.navHook = (path) => {
+		os.pageWindow(path);
+		return true;
+	};
+}
+
 const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;

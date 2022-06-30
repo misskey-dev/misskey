@@ -38,6 +38,7 @@ export const routes = [{
 	name: 'settings',
 	path: '/settings/:initialPage(*)?',
 	component: page(() => import('./pages/settings/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/reset-password/:token?',
 	component: page(() => import('./pages/reset-password.vue')),
@@ -50,6 +51,7 @@ export const routes = [{
 }, {
 	path: '/about',
 	component: page(() => import('./pages/about.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/about-misskey',
 	component: page(() => import('./pages/about-misskey.vue')),
@@ -59,18 +61,13 @@ export const routes = [{
 }, {
 	path: '/theme-editor',
 	component: page(() => import('./pages/theme-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/explore/tags/:tag',
 	component: page(() => import('./pages/explore.vue')),
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
-}, {
-	path: '/federation',
-	component: page(() => import('./pages/federation.vue')),
-}, {
-	path: '/emojis',
-	component: page(() => import('./pages/emojis.vue')),
 }, {
 	path: '/search',
 	component: page(() => import('./pages/search.vue')),
@@ -81,12 +78,15 @@ export const routes = [{
 }, {
 	path: '/authorize-follow',
 	component: page(() => import('./pages/follow.vue')),
+	loginRequired: true,
 }, {
 	path: '/share',
 	component: page(() => import('./pages/share.vue')),
+	loginRequired: true,
 }, {
 	path: '/api-console',
 	component: page(() => import('./pages/api-console.vue')),
+	loginRequired: true,
 }, {
 	path: '/mfm-cheat-sheet',
 	component: page(() => import('./pages/mfm-cheat-sheet.vue')),
@@ -114,18 +114,22 @@ export const routes = [{
 }, {
 	path: '/pages/new',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/pages/edit/:initPageId',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/pages',
 	component: page(() => import('./pages/pages.vue')),
 }, {
 	path: '/gallery/:postId/edit',
 	component: page(() => import('./pages/gallery/edit.vue')),
+	loginRequired: true,
 }, {
 	path: '/gallery/new',
 	component: page(() => import('./pages/gallery/edit.vue')),
+	loginRequired: true,
 }, {
 	path: '/gallery/:postId',
 	component: page(() => import('./pages/gallery/post.vue')),
@@ -135,9 +139,11 @@ export const routes = [{
 }, {
 	path: '/channels/:channelId/edit',
 	component: page(() => import('./pages/channel-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/channels/new',
 	component: page(() => import('./pages/channel-editor.vue')),
+	loginRequired: true,
 }, {
 	path: '/channels/:channelId',
 	component: page(() => import('./pages/channel.vue')),
@@ -153,69 +159,79 @@ export const routes = [{
 }, {
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/favorites',
 	component: page(() => import('./pages/favorites.vue')),
-}, {
-	path: '/my/messages',
-	component: page(() => import('./pages/messages.vue')),
-}, {
-	path: '/my/mentions',
-	component: page(() => import('./pages/mentions.vue')),
+	loginRequired: true,
 }, {
 	name: 'messaging',
 	path: '/my/messaging',
 	component: page(() => import('./pages/messaging/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/messaging/:userAcct',
 	component: page(() => import('./pages/messaging/messaging-room.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/messaging/group/:groupId',
 	component: page(() => import('./pages/messaging/messaging-room.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/drive/folder/:folder',
 	component: page(() => import('./pages/drive.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/drive',
 	component: page(() => import('./pages/drive.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/follow-requests',
 	component: page(() => import('./pages/follow-requests.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/lists/:listId',
 	component: page(() => import('./pages/my-lists/list.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/lists',
 	component: page(() => import('./pages/my-lists/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/clips',
 	component: page(() => import('./pages/my-clips/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/antennas/create',
 	component: page(() => import('./pages/my-antennas/create.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/antennas/:antennaId',
 	component: page(() => import('./pages/my-antennas/edit.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/antennas',
 	component: page(() => import('./pages/my-antennas/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/timeline/list/:listId',
 	component: page(() => import('./pages/user-list-timeline.vue')),
+	loginRequired: true,
 }, {
 	path: '/timeline/antenna/:antennaId',
 	component: page(() => import('./pages/antenna-timeline.vue')),
+	loginRequired: true,
 }, {
 	name: 'index',
 	path: '/',
 	component: $i ? page(() => import('./pages/timeline.vue')) : page(() => import('./pages/welcome.vue')),
 	globalCacheKey: 'index',
 }, {
-	path: '/(*)',
+	path: '/:(*)',
 	component: page(() => import('./pages/not-found.vue')),
 }];
 
-export const mainRouter = new Router(routes, location.pathname + location.search);
+export const mainRouter = new Router(routes, location.pathname + location.search + location.hash);
 
 window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
 
@@ -240,7 +256,7 @@ mainRouter.addListener('push', ctx => {
 });
 
 window.addEventListener('popstate', (event) => {
-	mainRouter.change(location.pathname + location.search, event.state?.key);
+	mainRouter.change(location.pathname + location.search + location.hash, event.state?.key);
 	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
 	window.scroll({ top: scrollPos, behavior: 'instant' });
 	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール

@@ -1,14 +1,8 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="1400">
 		<div class="_root">
-			<MkTab v-if="$i" v-model="tab">
-				<option value="explore"><i class="fas fa-icons"></i> {{ $ts.gallery }}</option>
-				<option value="liked"><i class="fas fa-heart"></i> {{ $ts._gallery.liked }}</option>
-				<option value="my"><i class="fas fa-edit"></i> {{ $ts._gallery.my }}</option>
-			</MkTab>
-
 			<div v-if="tab === 'explore'">
 				<MkFolder class="_gap">
 					<template #header><i class="fas fa-clock"></i>{{ $ts.recentPosts }}</template>
@@ -60,6 +54,9 @@ import number from '@/filters/number';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import { useRouter } from '@/router';
+
+const router = useRouter();
 
 const props = defineProps<{
 	tag?: string;
@@ -100,9 +97,27 @@ watch(() => props.tag, () => {
 	if (tagsRef) tagsRef.tags.toggleContent(props.tag == null);
 });
 
-const headerActions = $computed(() => []);
+const headerActions = $computed(() => [{
+	icon: 'fas fa-plus',
+	text: i18n.ts.create,
+	handler: () => {
+		router.push('/gallery/new');
+	},
+}]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	key: 'explore',
+	title: i18n.ts.gallery,
+	icon: 'fas fa-icons',
+}, {
+	key: 'liked',
+	title: i18n.ts._gallery.liked,
+	icon: 'fas fa-heart',
+}, {
+	key: 'my',
+	title: i18n.ts._gallery.my,
+	icon: 'fas fa-edit',
+}]);
 
 definePageMetadata({
 	title: i18n.ts.gallery,

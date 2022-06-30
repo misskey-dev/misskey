@@ -1,8 +1,8 @@
-import * as parse5 from 'parse5';
-import treeAdapter from 'parse5/lib/tree-adapters/default.js';
 import { URL } from 'node:url';
+import * as parse5 from 'parse5';
+import { adapter as treeAdapter } from 'parse5-htmlparser2-tree-adapter';
 
-const urlRegex     = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
+const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
 const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
 
 export function fromHtml(html: string, hashtagNames?: string[]): string {
@@ -170,7 +170,7 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 				const t = getText(node);
 				if (t) {
 					text += '\n> ';
-					text += t.split('\n').join(`\n> `);
+					text += t.split('\n').join('\n> ');
 				}
 				break;
 			}

@@ -57,7 +57,7 @@ const XWidgets = defineAsyncComponent(() => import('./classic.widgets.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 
-const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
+let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 const widgetsShowing = $ref(false);

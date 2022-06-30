@@ -1,7 +1,6 @@
 import Channel from '../channel.js';
 import { Notes } from '@/models/index.js';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { StreamMessages } from '../types.js';
 
 export default class extends Channel {
@@ -27,9 +26,9 @@ export default class extends Channel {
 			const note = await Notes.pack(data.body.id, this.user, { detail: true });
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-			if (isMutedUserRelated(note, this.muting)) return;
+			if (isUserRelated(note, this.muting)) return;
 			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-			if (isBlockerUserRelated(note, this.blocking)) return;
+			if (isUserRelated(note, this.blocking)) return;
 
 			this.connection.cacheNote(note);
 
