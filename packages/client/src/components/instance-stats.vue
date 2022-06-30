@@ -112,20 +112,20 @@ function createDoughnut(chartEl, tooltip, data) {
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
+				borderWidth: 0,
+				spacing: 4,
+				hoverOffset: 4,
 				data: data.map(x => x.value),
 			}],
 		},
 		options: {
 			layout: {
 				padding: {
-					left: 8,
-					right: 8,
-					top: 8,
-					bottom: 8,
+					left: 16,
+					right: 16,
+					top: 16,
+					bottom: 16,
 				},
-			},
-			interaction: {
-				intersect: false,
 			},
 			plugins: {
 				legend: {
@@ -145,9 +145,9 @@ function createDoughnut(chartEl, tooltip, data) {
 }
 
 onMounted(() => {
-	os.apiGet('federation/stats').then(fedStats => {
-		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowersCount }]));
-		createDoughnut(pubDoughnutEl, externalTooltipHandler1, fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowingCount }]));
+	os.apiGet('federation/stats', { limit: 15 }).then(fedStats => {
+		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount })).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]));
+		createDoughnut(pubDoughnutEl, externalTooltipHandler1, fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount })).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowingCount }]));
 	});
 });
 </script>
