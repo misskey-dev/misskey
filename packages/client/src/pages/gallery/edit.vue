@@ -1,30 +1,33 @@
 <template>
-<div>
-	<FormSuspense :p="init">
-		<FormInput v-model="title">
-			<template #label>{{ $ts.title }}</template>
-		</FormInput>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+		<FormSuspense :p="init">
+			<FormInput v-model="title">
+				<template #label>{{ $ts.title }}</template>
+			</FormInput>
 
-		<FormTextarea v-model="description" :max="500">
-			<template #label>{{ $ts.description }}</template>
-		</FormTextarea>
+			<FormTextarea v-model="description" :max="500">
+				<template #label>{{ $ts.description }}</template>
+			</FormTextarea>
 
-		<div class="">
-			<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
-				<div class="name">{{ file.name }}</div>
-				<button v-tooltip="$ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
+			<div class="">
+				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+					<div class="name">{{ file.name }}</div>
+					<button v-tooltip="$ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
+				</div>
+				<FormButton primary @click="selectFile"><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
 			</div>
-			<FormButton primary @click="selectFile"><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
-		</div>
 
-		<FormSwitch v-model="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
+			<FormSwitch v-model="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
 
-		<FormButton v-if="postId" primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-		<FormButton v-else primary @click="save"><i class="fas fa-save"></i> {{ $ts.publish }}</FormButton>
+			<FormButton v-if="postId" primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+			<FormButton v-else primary @click="save"><i class="fas fa-save"></i> {{ $ts.publish }}</FormButton>
 
-		<FormButton v-if="postId" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</FormButton>
-	</FormSuspense>
-</div>
+			<FormButton v-if="postId" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</FormButton>
+		</FormSuspense>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -71,7 +74,7 @@ async function save() {
 			fileIds: files.map(file => file.id),
 			isSensitive: isSensitive,
 		});
-		mainRouter.push(`/gallery/${props.postId}`);
+		router.push(`/gallery/${props.postId}`);
 	} else {
 		const created = await os.apiWithDialog('gallery/posts/create', {
 			title: title,
@@ -92,7 +95,7 @@ async function del() {
 	await os.apiWithDialog('gallery/posts/delete', {
 		postId: props.postId,
 	});
-	mainRouter.push('/gallery');
+	router.push('/gallery');
 }
 
 watch(() => props.postId, () => {
@@ -113,9 +116,11 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => props.postId ? {
 	title: i18n.ts.edit,
 	icon: 'fas fa-pencil-alt',
+	bg: 'var(--bg)',
 } : {
 	title: i18n.ts.postToGallery,
 	icon: 'fas fa-pencil-alt',
+	bg: 'var(--bg)',
 }));
 </script>
 

@@ -45,7 +45,7 @@ Chart.register(
 );
 
 const props = defineProps<{
-	data: { name: string; value: number; color: string; }[];
+	data: { name: string; value: number; color: string; onClick?: () => void }[];
 }>();
 
 const chartEl = ref<HTMLCanvasElement>(null);
@@ -64,9 +64,9 @@ onMounted(() => {
 			labels: props.data.map(x => x.name),
 			datasets: [{
 				backgroundColor: props.data.map(x => x.color),
-				borderWidth: 0,
-				spacing: 4,
-				hoverOffset: 4,
+				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--panel'),
+				borderWidth: 2,
+				hoverOffset: 0,
 				data: props.data.map(x => x.value),
 			}],
 		},
@@ -78,6 +78,12 @@ onMounted(() => {
 					top: 16,
 					bottom: 16,
 				},
+			},
+			onClick: (ev) => {
+				const hit = chartInstance.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false)[0];
+				if (hit && props.data[hit.index].onClick) {
+					props.data[hit.index].onClick();
+				}
 			},
 			plugins: {
 				legend: {

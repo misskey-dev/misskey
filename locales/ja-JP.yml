@@ -1247,6 +1247,7 @@ _widgets:
   trends: "トレンド"
   clock: "時計"
   rss: "RSSリーダー"
+  rssMarquee: "RSSリーダー(マーキー)"
   activity: "アクティビティ"
   photos: "フォト"
   digitalClock: "デジタル時計"

@@ -17,10 +17,12 @@ You should also include the user name that made the change.
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
 - Client: Add instance-cloud widget @syuilo
+- Client: Add rss-marquee widget @syuilo
+- Client: Removing entries from a clip @futchitwo
 - Make possible to delete an account by admin @syuilo
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
-- Client: Removing entries from a clip @futchitwo
+- Server: Improve performance
 - Server: Supports IPv6 on Redis transport. @mei23  
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 
