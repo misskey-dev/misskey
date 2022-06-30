@@ -858,6 +858,8 @@ isSystemAccount: "An account created and automatically operated by the system."
 typeToConfirm: "Please enter {x} to confirm"
 deleteAccount: "Delete account"
 document: "Document"
+numberOfPageCache: "Number of cached pages"
+numberOfPageCacheDescription: "Increasing this number will improve convenience for users but cause more server load as well as more memory to be used."
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
