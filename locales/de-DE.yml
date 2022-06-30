@@ -860,6 +860,7 @@ deleteAccount: "Benutzerkonto löschen"
 document: "Dokument"
 numberOfPageCache: "Seitencachegröße"
 numberOfPageCacheDescription: "Das Erhöhen dieses Caches führt zu einer angenehmerern Benutzererfahrung, erhöht aber Serverlast und Arbeitsspeicherauslastung."
+logoutConfirm: "Wirklich abmelden?"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
