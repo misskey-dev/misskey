@@ -858,6 +858,9 @@ isSystemAccount: "Đã tạo một tài khoản và tự động vận hành b�
 typeToConfirm: "Nhấn {x} để xác nhận"
 deleteAccount: "Xóa tài khoản"
 document: "Tài liệu"
+numberOfPageCache: "Số lượng trang bộ nhớ đệm"
+numberOfPageCacheDescription: "Việc tăng con số này sẽ cải thiện sự thuận tiện cho người dùng nhưng gây ra nhiều áp lực hơn cho máy chủ cũng như sử dụng nhiều bộ nhớ hơn."
+logoutConfirm: "Bạn có chắc muốn đăng xuất?"
 _emailUnavailable:
   used: "Địa chỉ email đã được sử dụng"
   format: "Địa chỉ email không hợp lệ"
