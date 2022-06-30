@@ -6,7 +6,7 @@
 	<div class="ekmkgxbk">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<MarqueeText :duration="widgetProps.speed" :reverse="widgetProps.reverse">
+			<MarqueeText :key="key" :duration="widgetProps.speed" :reverse="widgetProps.reverse">
 				<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 			</MarqueeText>
 		</div>
@@ -75,12 +75,14 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const items = ref([]);
 const fetching = ref(true);
+let key = $ref(0);
 
 const tick = () => {
 	fetch(`https://api.rss2json.com/v1/api.json?rss_url=${widgetProps.url}`, {}).then(res => {
 		res.json().then(feed => {
 			items.value = feed.items;
 			fetching.value = false;
+			key++;
 		});
 	});
 };
