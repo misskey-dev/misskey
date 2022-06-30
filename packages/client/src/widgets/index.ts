@@ -17,6 +17,7 @@ export default function(app: App) {
 	app.component('MkwServerMetric', defineAsyncComponent(() => import('./server-metric/index.vue')));
 	app.component('MkwOnlineUsers', defineAsyncComponent(() => import('./online-users.vue')));
 	app.component('MkwJobQueue', defineAsyncComponent(() => import('./job-queue.vue')));
+	app.component('MkwInstanceCloud', defineAsyncComponent(() => import('./instance-cloud.vue')));
 	app.component('MkwButton', defineAsyncComponent(() => import('./button.vue')));
 	app.component('MkwAiscript', defineAsyncComponent(() => import('./aiscript.vue')));
 	app.component('MkwAichan', defineAsyncComponent(() => import('./aichan.vue')));
@@ -34,6 +35,7 @@ export const widgets = [
 	'photos',
 	'digitalClock',
 	'federation',
+	'instance-cloud',
 	'postForm',
 	'slideshow',
 	'serverMetric',

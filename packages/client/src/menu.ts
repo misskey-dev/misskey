@@ -81,12 +81,14 @@ export const menuDef = reactive({
 			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
 	},
+	/*
 	groups: {
 		title: 'groups',
 		icon: 'fas fa-users',
 		show: computed(() => $i != null),
 		to: '/my/groups',
 	},
+	*/
 	antennas: {
 		title: 'antennas',
 		icon: 'fas fa-satellite',
