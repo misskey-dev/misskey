@@ -860,6 +860,7 @@ deleteAccount: "Delete account"
 document: "Document"
 numberOfPageCache: "Number of cached pages"
 numberOfPageCacheDescription: "Increasing this number will improve convenience for users but cause more server load as well as more memory to be used."
+logoutConfirm: "Really log out?"
 _emailUnavailable:
   used: "This email address is already being used"
   format: "The format of this email address is invalid"
