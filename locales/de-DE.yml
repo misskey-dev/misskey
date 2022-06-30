@@ -858,6 +858,8 @@ isSystemAccount: "Ein Benutzerkonto, dass durch das System erstellt und automati
 typeToConfirm: "Bitte gib zur Bestätigung {x} ein"
 deleteAccount: "Benutzerkonto löschen"
 document: "Dokument"
+numberOfPageCache: "Seitencachegröße"
+numberOfPageCacheDescription: "Das Erhöhen dieses Caches führt zu einer angenehmerern Benutzererfahrung, erhöht aber Serverlast und Arbeitsspeicherauslastung."
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
