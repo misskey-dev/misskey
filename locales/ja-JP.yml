@@ -860,6 +860,7 @@ deleteAccount: "アカウント削除"
 document: "ドキュメント"
 numberOfPageCache: "ページキャッシュ数"
 numberOfPageCacheDescription: "多くすると利便性が向上しますが、負荷とメモリ使用量が増えます。"
+logoutConfirm: "ログアウトしますか？"
 
 _emailUnavailable:
   used: "既に使用されています"
