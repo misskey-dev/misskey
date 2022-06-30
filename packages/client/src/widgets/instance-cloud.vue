@@ -1,5 +1,5 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-instance-cloud">
+<MkContainer :naked="widgetProps.transparent" class="mkw-instance-cloud">
 	<div class="">
 		<MkTagCloud v-if="activeInstances">
 			<li v-for="instance in activeInstances">
@@ -27,10 +27,6 @@ const widgetPropsDef = {
 	transparent: {
 		type: 'boolean' as const,
 		default: false,
-	},
-	showHeader: {
-		type: 'boolean' as const,
-		default: true,
 	},
 };
 

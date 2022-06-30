@@ -1,6 +1,6 @@
 <template>
-<div class="root">
-	<canvas :id="idForCanvas" ref="canvasEl" class="canvas" width="300" height="300"></canvas>
+<div ref="rootEl" class="root">
+	<canvas :id="idForCanvas" ref="canvasEl" class="canvas" :width="width" height="300" @contextmenu.prevent="() => {}"></canvas>
 	<div :id="idForTags" ref="tagsEl" class="tags">
 		<ul>
 			<slot></slot>
@@ -21,8 +21,10 @@ const computedStyle = getComputedStyle(document.documentElement);
 const idForCanvas = Array.from(Array(16)).map(() => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 const idForTags = Array.from(Array(16)).map(() => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 let available = $ref(false);
+let rootEl = $ref<HTMLElement | null>(null);
 let canvasEl = $ref<HTMLCanvasElement | null>(null);
 let tagsEl = $ref<HTMLElement | null>(null);
+let width = $ref(300);
 
 watch($$(available), () => {
 	window.TagCanvas.Start(idForCanvas, idForTags, {
@@ -45,6 +47,8 @@ watch($$(available), () => {
 });
 
 onMounted(() => {
+	width = rootEl.offsetWidth;
+
 	if (loaded) {
 		available = true;
 	} else {
@@ -57,6 +61,12 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
 	window.TagCanvas.Delete(idForCanvas);
+});
+
+defineExpose({
+	update: () => {
+		window.TagCanvas.Update(idForCanvas);
+	},
 });
 </script>
 
