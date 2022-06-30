@@ -10,6 +10,10 @@ import { ApiError } from './error.js';
 
 const userIpHistories = new Map<User['id'], Set<string>>();
 
+setInterval(() => {
+	userIpHistories.clear();
+}, 1000 * 60 * 60);
+
 export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
 	const body = ctx.is('multipart/form-data')
 		? (ctx.request as any).body
@@ -52,16 +56,17 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 
 		// Log IP
 		if (user) {
-			const ip = ctx.ip;
-			const ips = userIpHistories.get(user.id);
-			if (ips == null || !ips.has(ip)) {
-				if (ips == null) {
-					userIpHistories.set(user.id, new Set([ip]));
-				} else {
-					ips.add(ip);
-				}
-				fetchMeta().then(meta => {
-					if (!meta.enableIpLogging) return;
+			fetchMeta().then(meta => {
+				if (!meta.enableIpLogging) return;
+				const ip = ctx.ip;
+				const ips = userIpHistories.get(user.id);
+				if (ips == null || !ips.has(ip)) {
+					if (ips == null) {
+						userIpHistories.set(user.id, new Set([ip]));
+					} else {
+						ips.add(ip);
+					}
+
 					try {
 						UserIps.insert({
 							createdAt: new Date(),
@@ -70,8 +75,8 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 						});
 					} catch {
 					}
-				});
-			}
+				}
+			});
 		}
 	}).catch(e => {
 		if (e instanceof AuthenticationError) {
