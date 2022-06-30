@@ -856,6 +856,8 @@ isSystemAccount: "Tieto účty automaticky vytvoril a spravuje systém."
 typeToConfirm: "Ak chcete vykonať túto operáciu, napíšte {x}"
 deleteAccount: "Vymazať účet"
 document: "Dokument"
+numberOfPageCache: "Počet cachí pre stránky"
+numberOfPageCacheDescription: "Zvýši rýchlosť ale tiež nároky na pamäť."
 _emailUnavailable:
   used: "Táto emailová adresa sa už používa"
   format: "Formát emailovej adresy je nesprávny"
