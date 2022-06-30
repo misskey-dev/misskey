@@ -214,6 +214,7 @@ const onClick = (ev: MouseEvent) => {
 			cursor: pointer;
 			transition: border-color 0.1s ease-out;
 			pointer-events: none;
+			user-select: none;
 		}
 
 		> .prefix,
