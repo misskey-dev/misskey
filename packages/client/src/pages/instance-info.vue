@@ -143,12 +143,11 @@ let suspended = $ref(false);
 let isBlocked = $ref(false);
 
 const usersPagination = {
-	endpoint: 'admin/show-users' as const,
+	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
 	limit: 10,
 	params: {
 		sort: '+updatedAt',
 		state: 'all',
-		origin: 'remote',
 		hostname: props.host,
 	},
 	offsetMode: true,

@@ -64,20 +64,20 @@ onMounted(() => {
 			labels: props.data.map(x => x.name),
 			datasets: [{
 				backgroundColor: props.data.map(x => x.color),
+				borderWidth: 0,
+				spacing: 4,
+				hoverOffset: 4,
 				data: props.data.map(x => x.value),
 			}],
 		},
 		options: {
 			layout: {
 				padding: {
-					left: 8,
-					right: 8,
-					top: 8,
-					bottom: 8,
+					left: 16,
+					right: 16,
+					top: 16,
+					bottom: 16,
 				},
-			},
-			interaction: {
-				intersect: false,
 			},
 			plugins: {
 				legend: {
