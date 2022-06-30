@@ -858,6 +858,8 @@ isSystemAccount: "システムにより自動で作成・管理されている�
 typeToConfirm: "この操作を行うには {x} と入力してください"
 deleteAccount: "アカウント削除"
 document: "ドキュメント"
+numberOfPageCache: "ページキャッシュ数"
+numberOfPageCacheDescription: "多くすると利便性が向上しますが、負荷とメモリ使用量が増えます。"
 
 _emailUnavailable:
   used: "既に使用されています"

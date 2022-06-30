@@ -9,13 +9,13 @@
 			<template #label>{{ $ts.description }}</template>
 		</FormTextarea>
 
-		<FormGroup>
-			<div v-for="file in files" :key="file.id" class="_formGroup wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+		<div class="">
+			<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 				<div class="name">{{ file.name }}</div>
 				<button v-tooltip="$ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
 			</div>
 			<FormButton primary @click="selectFile"><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
-		</FormGroup>
+		</div>
 
 		<FormSwitch v-model="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
 
@@ -33,7 +33,6 @@ import FormButton from '@/components/ui/button.vue';
 import FormInput from '@/components/form/input.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormGroup from '@/components/form/group.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';

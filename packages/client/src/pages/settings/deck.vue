@@ -1,9 +1,6 @@
 <template>
 <div class="_formRoot">
-	<FormGroup>
-		<template #label>{{ i18n.ts.defaultNavigationBehaviour }}</template>
-		<FormSwitch v-model="navWindow">{{ i18n.ts.openInWindow }}</FormSwitch>
-	</FormGroup>
+	<FormSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</FormSwitch>
 
 	<FormSwitch v-model="alwaysShowMainColumn" class="_formBlock">{{ i18n.ts._deck.alwaysShowMainColumn }}</FormSwitch>
 
@@ -35,7 +32,6 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormInput from '@/components/form/input.vue';
-import FormGroup from '@/components/form/group.vue';
 import { deckStore } from '@/ui/deck/deck-store';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';

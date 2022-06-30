@@ -4,7 +4,7 @@
 	<div v-adaptive-border class="body">
 		<div ref="containerEl" class="container">
 			<div class="track">
-				<div class="highlight" :style="{ width: (steppedValue * 100) + '%' }"></div>
+				<div class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
 			</div>
 			<div v-if="steps" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
@@ -12,6 +12,7 @@
 			<div ref="thumbEl" v-tooltip="textConverter(finalValue)" class="thumb" :style="{ left: thumbPosition + 'px' }" @mousedown="onMousedown" @touchstart="onMousedown"></div>
 		</div>
 	</div>
+	<div class="caption"><slot name="caption"></slot></div>
 </div>
 </template>
 
@@ -62,7 +63,7 @@ export default defineComponent({
 		const thumbEl = ref<HTMLElement>();
 
 		const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
-		const steppedValue = computed(() => {
+		const steppedRawValue = computed(() => {
 			if (props.step) {
 				const step = props.step / (props.max - props.min);
 				return (step * Math.round(rawValue.value / step));
@@ -71,7 +72,11 @@ export default defineComponent({
 			}
 		});
 		const finalValue = computed(() => {
-			return (steppedValue.value * (props.max - props.min)) + props.min;
+			if (Number.isInteger(props.step)) {
+				return Math.round((steppedRawValue.value * (props.max - props.min)) + props.min);
+			} else {
+				return (steppedRawValue.value * (props.max - props.min)) + props.min;
+			}
 		});
 		watch(finalValue, () => {
 			context.emit('update:modelValue', finalValue.value);
@@ -86,10 +91,10 @@ export default defineComponent({
 			if (containerEl.value == null) {
 				thumbPosition.value = 0;
 			} else {
-				thumbPosition.value = (containerEl.value.offsetWidth - thumbWidth.value) * steppedValue.value;
+				thumbPosition.value = (containerEl.value.offsetWidth - thumbWidth.value) * steppedRawValue.value;
 			}
 		};
-		watch([steppedValue, containerEl], calcThumbPosition);
+		watch([steppedRawValue, containerEl], calcThumbPosition);
 
 		let ro: ResizeObserver | undefined;
 
@@ -154,7 +159,7 @@ export default defineComponent({
 		return {
 			rawValue,
 			finalValue,
-			steppedValue,
+			steppedRawValue,
 			onMousedown,
 			containerEl,
 			thumbEl,

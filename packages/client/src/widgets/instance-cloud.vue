@@ -1,5 +1,5 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" class="mkw-instance-cloud">
+<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-instance-cloud">
 	<div class="">
 		<MkTagCloud v-if="activeInstances">
 			<li v-for="instance in activeInstances">
