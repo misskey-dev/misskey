@@ -112,9 +112,9 @@ function createDoughnut(chartEl, tooltip, data) {
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
-				borderWidth: 0,
-				spacing: 4,
-				hoverOffset: 4,
+				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--panel'),
+				borderWidth: 2,
+				hoverOffset: 0,
 				data: data.map(x => x.value),
 			}],
 		},

@@ -64,9 +64,9 @@ onMounted(() => {
 			labels: props.data.map(x => x.name),
 			datasets: [{
 				backgroundColor: props.data.map(x => x.color),
-				borderWidth: 0,
-				spacing: 4,
-				hoverOffset: 4,
+				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--panel'),
+				borderWidth: 2,
+				hoverOffset: 0,
 				data: props.data.map(x => x.value),
 			}],
 		},
