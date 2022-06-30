@@ -1,12 +1,14 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-rss">
+<MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-marquee">
 	<template #header><i class="fas fa-rss-square"></i>RSS</template>
 	<template #func><button class="_button" @click="configure"><i class="fas fa-cog"></i></button></template>
 
-	<div class="ekmkgxbj">
+	<div class="ekmkgxbk">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
+			<MarqueeText :duration="widgetProps.speed" :reverse="widgetProps.reverse">
+				<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
+			</MarqueeText>
 		</div>
 	</div>
 </MkContainer>
@@ -14,13 +16,14 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import MarqueeText from 'vue-marquee-text-component';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import MkContainer from '@/components/ui/container.vue';
 import { useInterval } from '@/scripts/use-interval';
 
-const name = 'rss';
+const name = 'rssMarquee';
 
 const widgetPropsDef = {
 	url: {
@@ -29,7 +32,30 @@ const widgetPropsDef = {
 	},
 	showHeader: {
 		type: 'boolean' as const,
-		default: true,
+		default: false,
+	},
+	transparent: {
+		type: 'boolean' as const,
+		default: false,
+	},
+	speed: {
+		type: 'radio' as const,
+		default: 70,
+		options: [{
+			value: 170, label: 'very slow',
+		}, {
+			value: 100, label: 'slow',
+		}, {
+			value: 70, label: 'medium',
+		}, {
+			value: 40, label: 'fast',
+		}, {
+			value: 20, label: 'very fast',
+		}],
+	},
+	reverse: {
+		type: 'boolean' as const,
+		default: false,
 	},
 };
 
@@ -74,22 +100,15 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" scoped>
-.ekmkgxbj {
+.ekmkgxbk {
 	> .feed {
 		padding: 0;
 		font-size: 0.9em;
 
-		> .item {
-			display: block;
-			padding: 8px 16px;
+		::v-deep(.item) {
+			display: inline-block;
 			color: var(--fg);
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-
-			&:nth-child(even) {
-				background: rgba(#000, 0.05);
-			}
+			margin: 12px 3em 12px 0;
 		}
 	}
 }
