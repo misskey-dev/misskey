@@ -45,7 +45,7 @@ Chart.register(
 );
 
 const props = defineProps<{
-	data: { name: string; value: number; color: string; }[];
+	data: { name: string; value: number; color: string; onClick?: () => void }[];
 }>();
 
 const chartEl = ref<HTMLCanvasElement>(null);
@@ -78,6 +78,12 @@ onMounted(() => {
 					top: 16,
 					bottom: 16,
 				},
+			},
+			onClick: (ev) => {
+				const hit = chartInstance.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false)[0];
+				if (hit && props.data[hit.index].onClick) {
+					props.data[hit.index].onClick();
+				}
 			},
 			plugins: {
 				legend: {

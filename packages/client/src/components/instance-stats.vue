@@ -106,7 +106,7 @@ const { handler: externalTooltipHandler1 } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();
 
 function createDoughnut(chartEl, tooltip, data) {
-	return new Chart(chartEl, {
+	const chartInstance = new Chart(chartEl, {
 		type: 'doughnut',
 		data: {
 			labels: data.map(x => x.name),
@@ -127,6 +127,12 @@ function createDoughnut(chartEl, tooltip, data) {
 					bottom: 16,
 				},
 			},
+			onClick: (ev) => {
+				const hit = chartInstance.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false)[0];
+				if (hit && data[hit.index].onClick) {
+					data[hit.index].onClick();
+				}
+			},
 			plugins: {
 				legend: {
 					display: false,
@@ -142,12 +148,29 @@ function createDoughnut(chartEl, tooltip, data) {
 			},
 		},
 	});
+
+	return chartInstance;
 }
 
 onMounted(() => {
 	os.apiGet('federation/stats', { limit: 15 }).then(fedStats => {
-		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount })).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]));
-		createDoughnut(pubDoughnutEl, externalTooltipHandler1, fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount })).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowingCount }]));
+		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followersCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]));
+
+		createDoughnut(pubDoughnutEl, externalTooltipHandler2, fedStats.topPubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followingCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowingCount }]));
 	});
 });
 </script>
