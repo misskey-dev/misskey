@@ -28,6 +28,7 @@
 				<div class="action">
 					<MkButton inline rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.signup }}</MkButton>
 					<MkButton inline rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
+					<MkButton inline rounded style="margin-left: 12px;" onclick="window.location.href='/featured'">Guest</MkButton>
 				</div>
 			</div>
 		</div>
