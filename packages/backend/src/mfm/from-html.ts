@@ -1,6 +1,6 @@
 import { URL } from 'node:url';
 import * as parse5 from 'parse5';
-import { adapter as treeAdapter } from 'parse5-htmlparser2-tree-adapter';
+import treeAdapter from 'parse5/lib/tree-adapters/default.js';
 
 const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
 const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
