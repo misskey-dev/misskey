@@ -51,7 +51,7 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (iUserRelated(note, this.muting)) return;
+		if (isUserRelated(note, this.muting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.blocking)) return;
 
