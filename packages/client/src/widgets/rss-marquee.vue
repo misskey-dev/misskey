@@ -7,7 +7,9 @@
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
 			<MarqueeText :key="key" :duration="widgetProps.speed" :reverse="widgetProps.reverse">
-				<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
+				<span v-for="item in items" class="item">
+					<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
+				</span>
 			</MarqueeText>
 		</div>
 	</div>
@@ -108,9 +110,19 @@ defineExpose<WidgetComponentExpose>({
 		font-size: 0.9em;
 
 		::v-deep(.item) {
-			display: inline-block;
+			display: inline-flex;
+			align-items: center;
+			vertical-align: bottom;
 			color: var(--fg);
-			margin: 12px 3em 12px 0;
+			margin: 12px 0;
+
+			> .divider {
+				display: inline-block;
+				width: 0.5px;
+				height: 16px;
+				margin: 0 1em;
+				background: var(--divider);
+			}
 		}
 	}
 }
