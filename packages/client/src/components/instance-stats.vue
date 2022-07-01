@@ -106,26 +106,33 @@ const { handler: externalTooltipHandler1 } = useChartTooltip();
 const { handler: externalTooltipHandler2 } = useChartTooltip();
 
 function createDoughnut(chartEl, tooltip, data) {
-	return new Chart(chartEl, {
+	const chartInstance = new Chart(chartEl, {
 		type: 'doughnut',
 		data: {
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
+				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--panel'),
+				borderWidth: 2,
+				hoverOffset: 0,
 				data: data.map(x => x.value),
 			}],
 		},
 		options: {
+			maintainAspectRatio: false,
 			layout: {
 				padding: {
-					left: 8,
-					right: 8,
-					top: 8,
-					bottom: 8,
+					left: 16,
+					right: 16,
+					top: 16,
+					bottom: 16,
 				},
 			},
-			interaction: {
-				intersect: false,
+			onClick: (ev) => {
+				const hit = chartInstance.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false)[0];
+				if (hit && data[hit.index].onClick) {
+					data[hit.index].onClick();
+				}
 			},
 			plugins: {
 				legend: {
@@ -142,12 +149,29 @@ function createDoughnut(chartEl, tooltip, data) {
 			},
 		},
 	});
+
+	return chartInstance;
 }
 
 onMounted(() => {
-	os.apiGet('federation/stats').then(fedStats => {
-		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowersCount }]));
-		createDoughnut(pubDoughnutEl, externalTooltipHandler1, fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowingCount }]));
+	os.apiGet('federation/stats', { limit: 15 }).then(fedStats => {
+		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followersCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]));
+
+		createDoughnut(pubDoughnutEl, externalTooltipHandler2, fedStats.topPubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followingCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowingCount }]));
 	});
 });
 </script>
@@ -172,16 +196,23 @@ onMounted(() => {
 		gap: 16px;
 
 		> .sub, > .pub {
+			flex: 1;
+			min-width: 0;
 			position: relative;
 			background: var(--panel);
 			border-radius: var(--radius);
 			padding: 24px;
+			max-height: 300px;
 
 			> .title {
 				position: absolute;
 				top: 24px;
 				left: 24px;
 			}
+		}
+
+		@media (max-width: 600px) {
+			flex-direction: column;
 		}
 	}
 }

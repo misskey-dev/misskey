@@ -116,6 +116,10 @@ onMounted(() => {
 		}, { passive: true });
 	}
 });
+
+defineExpose({
+	showMenu: $$(showMenu),
+});
 </script>
 
 <style>

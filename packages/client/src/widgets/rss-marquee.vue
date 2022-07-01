@@ -1,12 +1,16 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-rss">
+<MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-marquee">
 	<template #header><i class="fas fa-rss-square"></i>RSS</template>
 	<template #func><button class="_button" @click="configure"><i class="fas fa-cog"></i></button></template>
 
-	<div class="ekmkgxbj">
+	<div class="ekmkgxbk">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
+			<MarqueeText :key="key" :duration="widgetProps.speed" :reverse="widgetProps.reverse">
+				<span v-for="item in items" class="item">
+					<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
+				</span>
+			</MarqueeText>
 		</div>
 	</div>
 </MkContainer>
@@ -14,13 +18,14 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import MarqueeText from 'vue-marquee-text-component';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import MkContainer from '@/components/ui/container.vue';
 import { useInterval } from '@/scripts/use-interval';
 
-const name = 'rss';
+const name = 'rssMarquee';
 
 const widgetPropsDef = {
 	url: {
@@ -29,7 +34,30 @@ const widgetPropsDef = {
 	},
 	showHeader: {
 		type: 'boolean' as const,
-		default: true,
+		default: false,
+	},
+	transparent: {
+		type: 'boolean' as const,
+		default: false,
+	},
+	speed: {
+		type: 'radio' as const,
+		default: 70,
+		options: [{
+			value: 170, label: 'very slow',
+		}, {
+			value: 100, label: 'slow',
+		}, {
+			value: 70, label: 'medium',
+		}, {
+			value: 40, label: 'fast',
+		}, {
+			value: 20, label: 'very fast',
+		}],
+	},
+	reverse: {
+		type: 'boolean' as const,
+		default: false,
 	},
 };
 
@@ -49,12 +77,14 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const items = ref([]);
 const fetching = ref(true);
+let key = $ref(0);
 
 const tick = () => {
 	fetch(`https://api.rss2json.com/v1/api.json?rss_url=${widgetProps.url}`, {}).then(res => {
 		res.json().then(feed => {
 			items.value = feed.items;
 			fetching.value = false;
+			key++;
 		});
 	});
 };
@@ -74,21 +104,24 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" scoped>
-.ekmkgxbj {
+.ekmkgxbk {
 	> .feed {
 		padding: 0;
 		font-size: 0.9em;
 
-		> .item {
-			display: block;
-			padding: 8px 16px;
+		::v-deep(.item) {
+			display: inline-flex;
+			align-items: center;
+			vertical-align: bottom;
 			color: var(--fg);
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
+			margin: 12px 0;
 
-			&:nth-child(even) {
-				background: rgba(#000, 0.05);
+			> .divider {
+				display: inline-block;
+				width: 0.5px;
+				height: 16px;
+				margin: 0 1em;
+				background: var(--divider);
 			}
 		}
 	}

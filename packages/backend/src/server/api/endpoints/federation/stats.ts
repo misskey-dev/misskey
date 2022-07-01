@@ -15,6 +15,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 	},
 	required: [],
 } as const;
@@ -29,7 +30,7 @@ export default define(meta, paramDef, async (ps) => {
 			order: {
 				followersCount: 'DESC',
 			},
-			take: 10,
+			take: ps.limit,
 		}),
 		Instances.find({
 			where: {
@@ -38,7 +39,7 @@ export default define(meta, paramDef, async (ps) => {
 			order: {
 				followingCount: 'DESC',
 			},
-			take: 10,
+			take: ps.limit,
 		}),
 		Followings.count({
 			where: {

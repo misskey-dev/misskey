@@ -119,16 +119,16 @@
 					</MkTagCloud>
 				</div>
 			</div>
-			<div v-if="fedStats" class="container federationPies">
+			<div v-if="topSubInstancesForPie && topPubInstancesForPie" class="container federationPies">
 				<div class="body">
 					<div class="chart deliver">
 						<div class="title">Sub</div>
-						<XPie :data="fedStats.topSubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followersCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowersCount }])"/>
+						<XPie :data="topSubInstancesForPie"/>
 						<div class="subTitle">Top 10</div>
 					</div>
 					<div class="chart inbox">
 						<div class="title">Pub</div>
-						<XPie :data="fedStats.topPubInstances.map(x => ({ name: x.host, color: x.themeColor, value: x.followingCount })).concat([{ name: '(other)', color: '#808080', value: fedStats.otherFollowingCount }])"/>
+						<XPie :data="topPubInstancesForPie"/>
 						<div class="subTitle">Top 10</div>
 					</div>
 				</div>
@@ -200,7 +200,8 @@ const rootEl = $ref<HTMLElement>();
 const chartEl = $ref<HTMLCanvasElement>(null);
 let stats: any = $ref(null);
 let serverInfo: any = $ref(null);
-let fedStats: any = $ref(null);
+let topSubInstancesForPie: any = $ref(null);
+let topPubInstancesForPie: any = $ref(null);
 let usersComparedToThePrevDay: any = $ref(null);
 let notesComparedToThePrevDay: any = $ref(null);
 let federationPubActive = $ref<number | null>(null);
@@ -411,8 +412,23 @@ onMounted(async () => {
 		federationSubActiveDiff = chart.subActive[0] - chart.subActive[1];
 	});
 
-	os.apiGet('federation/stats').then(res => {
-		fedStats = res;
+	os.apiGet('federation/stats', { limit: 10 }).then(res => {
+		topSubInstancesForPie = res.topSubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followersCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowersCount }]);
+		topPubInstancesForPie = res.topPubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followingCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowingCount }]);
 	});
 
 	os.api('admin/server-info').then(serverInfoResponse => {
