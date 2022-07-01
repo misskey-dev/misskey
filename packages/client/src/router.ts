@@ -12,15 +12,21 @@ const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 });
 
 export const routes = [{
-	name: 'user',
-	path: '/@:acct/:page?',
-	component: page(() => import('./pages/user/index.vue')),
-}, {
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
 }, {
 	path: '/@:username/pages/:pageName',
 	component: page(() => import('./pages/page.vue')),
+}, {
+	path: '/@:acct/following',
+	component: page(() => import('./pages/user/following.vue')),
+}, {
+	path: '/@:acct/followers',
+	component: page(() => import('./pages/user/followers.vue')),
+}, {
+	name: 'user',
+	path: '/@:acct/:page?',
+	component: page(() => import('./pages/user/index.vue')),
 }, {
 	name: 'note',
 	path: '/notes/:noteId',
