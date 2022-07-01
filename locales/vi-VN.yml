@@ -1215,6 +1215,7 @@ _widgets:
   trends: "Xu hướng"
   clock: "Đồng hồ"
   rss: "Trình đọc RSS"
+  rssMarquee: "Trình đọc RSS (Marquee)"
   activity: "Hoạt động"
   photos: "Kho ảnh"
   digitalClock: "Đồng hồ số"
