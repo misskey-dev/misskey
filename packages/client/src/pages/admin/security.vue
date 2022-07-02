@@ -15,6 +15,18 @@
 				</FormFolder>
 
 				<FormFolder class="_formBlock">
+					<template #label>Log IP address</template>
+					<template v-if="enableIpLogging" #suffix>Enabled</template>
+					<template v-else #suffix>Disabled</template>
+
+					<div class="_formRoot">
+						<FormSwitch v-model="enableIpLogging" class="_formBlock" @update:modelValue="save">
+							<template #label>Enable</template>
+						</FormSwitch>
+					</div>
+				</FormFolder>
+
+				<FormFolder class="_formBlock">
 					<template #label>Summaly Proxy</template>
 
 					<div class="_formRoot">
@@ -51,17 +63,20 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 let summalyProxy: string = $ref('');
 let enableHcaptcha: boolean = $ref(false);
 let enableRecaptcha: boolean = $ref(false);
+let enableIpLogging: boolean = $ref(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
 	summalyProxy = meta.summalyProxy;
 	enableHcaptcha = meta.enableHcaptcha;
 	enableRecaptcha = meta.enableRecaptcha;
+	enableIpLogging = meta.enableIpLogging;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		summalyProxy,
+		enableIpLogging,
 	}).then(() => {
 		fetchInstance();
 	});

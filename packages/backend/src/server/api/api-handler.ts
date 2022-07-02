@@ -1,9 +1,18 @@
 import Koa from 'koa';
 
+import { User } from '@/models/entities/user.js';
+import { UserIps } from '@/models/index.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 import { IEndpoint } from './endpoints.js';
 import authenticate, { AuthenticationError } from './authenticate.js';
 import call from './call.js';
 import { ApiError } from './error.js';
+
+const userIpHistories = new Map<User['id'], Set<string>>();
+
+setInterval(() => {
+	userIpHistories.clear();
+}, 1000 * 60 * 60);
 
 export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
 	const body = ctx.is('multipart/form-data')
@@ -44,6 +53,31 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 		}).catch((e: ApiError) => {
 			reply(e.httpStatusCode ? e.httpStatusCode : e.kind === 'client' ? 400 : 500, e);
 		});
+
+		// Log IP
+		if (user) {
+			fetchMeta().then(meta => {
+				if (!meta.enableIpLogging) return;
+				const ip = ctx.ip;
+				const ips = userIpHistories.get(user.id);
+				if (ips == null || !ips.has(ip)) {
+					if (ips == null) {
+						userIpHistories.set(user.id, new Set([ip]));
+					} else {
+						ips.add(ip);
+					}
+
+					try {
+						UserIps.insert({
+							createdAt: new Date(),
+							userId: user.id,
+							ip: ip,
+						});
+					} catch {
+					}
+				}
+			});
+		}
 	}).catch(e => {
 		if (e instanceof AuthenticationError) {
 			reply(403, new ApiError({
