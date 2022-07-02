@@ -174,9 +174,6 @@ onUnmounted(() => {
 .fdidabkb {
 	--height: 60px;
 	display: flex;
-	position: sticky;
-	top: var(--stickyTop, 0);
-	z-index: 1000;
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
