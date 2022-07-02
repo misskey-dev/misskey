@@ -1,11 +1,14 @@
-import define from '../../define.js';
 import { getJsonSchema } from '@/services/chart/core.js';
 import { notesChart } from '@/services/chart/index.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['charts', 'notes'],
 
 	res: getJsonSchema(notesChart.schema),
+
+	allowGet: true,
+	cacheSec: 60 * 60,
 } as const;
 
 export const paramDef = {

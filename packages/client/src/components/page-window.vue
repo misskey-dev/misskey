@@ -48,7 +48,10 @@ const router = new Router(routes, props.initialPath);
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let windowEl = $ref<InstanceType<typeof XWindow>>();
-const history = $ref<string[]>([props.initialPath]);
+const history = $ref<{ path: string; key: any; }[]>([{
+	path: router.getCurrentPath(),
+	key: router.getCurrentKey(),
+}]);
 const buttonsLeft = $computed(() => {
 	const buttons = [];
 
@@ -72,7 +75,7 @@ const buttonsRight = $computed(() => {
 });
 
 router.addListener('push', ctx => {
-	history.push(router.getCurrentPath());
+	history.push({ path: ctx.path, key: ctx.key });
 });
 
 provide('router', router);
@@ -111,7 +114,7 @@ function menu(ev) {
 
 function back() {
 	history.pop();
-	router.change(history[history.length - 1]);
+	router.change(history[history.length - 1].path, history[history.length - 1].key);
 }
 
 function close() {
@@ -136,5 +139,6 @@ defineExpose({
 <style lang="scss" scoped>
 .yrolvcoq {
 	min-height: 100%;
+	background: var(--bg);
 }
 </style>

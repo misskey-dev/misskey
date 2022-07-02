@@ -1,7 +1,7 @@
 <template>
 <transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div v-if="showing" class="ebkgocck">
-		<div class="body _window _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
+		<div class="body _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
 					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
@@ -14,12 +14,7 @@
 					<button v-if="closeButton" class="button _button" @click="close()"><i class="fas fa-times"></i></button>
 				</span>
 			</div>
-			<div v-if="padding" class="body">
-				<div class="_section">
-					<slot></slot>
-				</div>
-			</div>
-			<div v-else class="body">
+			<div class="body">
 				<slot></slot>
 			</div>
 		</div>
@@ -67,11 +62,6 @@ export default defineComponent({
 	},
 
 	props: {
-		padding: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
 		initialWidth: {
 			type: Number,
 			required: false,
@@ -399,7 +389,8 @@ export default defineComponent({
 		flex-direction: column;
 		contain: content;
 		width: 100%;
-    height: 100%;
+		height: 100%;
+		border-radius: var(--radius);
 
 		> .header {
 			--height: 45px;
@@ -414,8 +405,12 @@ export default defineComponent({
 			flex-shrink: 0;
 			user-select: none;
 			height: var(--height);
-			border-bottom: solid 1px var(--divider);
+			background: var(--windowHeader);
+			-webkit-backdrop-filter: var(--blur, blur(15px));
+			backdrop-filter: var(--blur, blur(15px));
+			//border-bottom: solid 1px var(--divider);
 			font-size: 95%;
+			font-weight: bold;
 
 			> .left, > .right {
 				> .button {
@@ -454,6 +449,7 @@ export default defineComponent({
 		> .body {
 			flex: 1;
 			overflow: auto;
+			background: var(--panel);
 		}
 	}
 

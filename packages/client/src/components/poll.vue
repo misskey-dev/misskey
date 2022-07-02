@@ -24,20 +24,22 @@
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref, toRef } from 'vue';
 import { sum } from '@/scripts/array';
+import { pleaseLogin } from '@/scripts/please-login';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { useInterval } from '@/scripts/use-interval';
 
 export default defineComponent({
 	props: {
 		note: {
 			type: Object,
-			required: true
+			required: true,
 		},
 		readOnly: {
 			type: Boolean,
 			required: false,
 			default: false,
-		}
+		},
 	},
 
 	setup(props) {
@@ -53,7 +55,7 @@ export default defineComponent({
 				s: Math.floor(remaining.value % 60),
 				m: Math.floor(remaining.value / 60) % 60,
 				h: Math.floor(remaining.value / 3600) % 24,
-				d: Math.floor(remaining.value / 86400)
+				d: Math.floor(remaining.value / 86400),
 			}));
 
 		const showResult = ref(props.readOnly || isVoted.value);
@@ -67,14 +69,15 @@ export default defineComponent({
 				}
 			};
 
-			tick();
-			const intevalId = window.setInterval(tick, 3000);
-			onUnmounted(() => {
-				window.clearInterval(intevalId);
+			useInterval(tick, 3000, {
+				immediate: true,
+				afterMounted: false,
 			});
 		}
 
 		const vote = async (id) => {
+			pleaseLogin();
+
 			if (props.readOnly || closed.value || isVoted.value) return;
 
 			const { canceled } = await os.confirm({

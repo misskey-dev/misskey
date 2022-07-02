@@ -35,11 +35,6 @@ export const menuDef = reactive({
 		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
 	},
-	featured: {
-		title: 'featured',
-		icon: 'fas fa-fire-alt',
-		to: '/featured',
-	},
 	explore: {
 		title: 'explore',
 		icon: 'fas fa-hashtag',
@@ -81,12 +76,14 @@ export const menuDef = reactive({
 			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
 	},
+	/*
 	groups: {
 		title: 'groups',
 		icon: 'fas fa-users',
 		show: computed(() => $i != null),
 		to: '/my/groups',
 	},
+	*/
 	antennas: {
 		title: 'antennas',
 		icon: 'fas fa-satellite',
@@ -111,20 +108,6 @@ export const menuDef = reactive({
 			});
 			os.popupMenu(items, ev.currentTarget ?? ev.target);
 		},
-	},
-	mentions: {
-		title: 'mentions',
-		icon: 'fas fa-at',
-		show: computed(() => $i != null),
-		indicated: computed(() => $i != null && $i.hasUnreadMentions),
-		to: '/my/mentions',
-	},
-	messages: {
-		title: 'directNotes',
-		icon: 'fas fa-envelope',
-		show: computed(() => $i != null),
-		indicated: computed(() => $i != null && $i.hasUnreadSpecifiedNotes),
-		to: '/my/messages',
 	},
 	favorites: {
 		title: 'favorites',
@@ -152,21 +135,6 @@ export const menuDef = reactive({
 		title: 'channel',
 		icon: 'fas fa-satellite-dish',
 		to: '/channels',
-	},
-	federation: {
-		title: 'federation',
-		icon: 'fas fa-globe',
-		to: '/federation',
-	},
-	emojis: {
-		title: 'emojis',
-		icon: 'fas fa-laugh',
-		to: '/emojis',
-	},
-	scratchpad: {
-		title: 'scratchpad',
-		icon: 'fas fa-terminal',
-		to: '/scratchpad',
 	},
 	ui: {
 		title: 'switchUi',

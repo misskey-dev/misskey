@@ -2,37 +2,69 @@
 <div class="_formRoot">
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.allNotes }}</template>
-		<MkButton :class="$style.button" inline @click="exportNotes()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		<FormFolder>
+			<template #label>{{ $ts.export }}</template>
+			<template #icon><i class="fas fa-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		</FormFolder>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.followingList }}</template>
-		<FormGroup>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.export }}</template>
+			<template #icon><i class="fas fa-download"></i></template>
 			<FormSwitch v-model="excludeMutingUsers" class="_formBlock">
 				{{ $ts._exportOrImport.excludeMutingUsers }}
 			</FormSwitch>
 			<FormSwitch v-model="excludeInactiveUsers" class="_formBlock">
 				{{ $ts._exportOrImport.excludeInactiveUsers }}
 			</FormSwitch>
-			<MkButton :class="$style.button" inline @click="exportFollowing()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		</FormGroup>
-		<FormGroup>
-			<MkButton :class="$style.button" inline @click="importFollowing($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
-		</FormGroup>
+			<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		</FormFolder>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.import }}</template>
+			<template #icon><i class="fas fa-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		</FormFolder>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.userLists }}</template>
-		<MkButton :class="$style.button" inline @click="exportUserLists()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		<MkButton :class="$style.button" inline @click="importUserLists($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.export }}</template>
+			<template #icon><i class="fas fa-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		</FormFolder>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.import }}</template>
+			<template #icon><i class="fas fa-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		</FormFolder>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.muteList }}</template>
-		<MkButton :class="$style.button" inline @click="exportMuting()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		<MkButton :class="$style.button" inline @click="importMuting($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.export }}</template>
+			<template #icon><i class="fas fa-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		</FormFolder>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.import }}</template>
+			<template #icon><i class="fas fa-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		</FormFolder>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ $ts._exportOrImport.blockingList }}</template>
-		<MkButton :class="$style.button" inline @click="exportBlocking()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
-		<MkButton :class="$style.button" inline @click="importBlocking($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.export }}</template>
+			<template #icon><i class="fas fa-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="fas fa-download"></i> {{ $ts.export }}</MkButton>
+		</FormFolder>
+		<FormFolder class="_formBlock">
+			<template #label>{{ $ts.import }}</template>
+			<template #icon><i class="fas fa-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="fas fa-upload"></i> {{ $ts.import }}</MkButton>
+		</FormFolder>
 	</FormSection>
 </div>
 </template>
@@ -41,7 +73,7 @@
 import { ref } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import FormSection from '@/components/form/section.vue';
-import FormGroup from '@/components/form/group.vue';
+import FormFolder from '@/components/form/folder.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
@@ -123,7 +155,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.importAndExport,
 	icon: 'fas fa-boxes',
-	bg: 'var(--bg)',
 });
 </script>
 

@@ -5,7 +5,7 @@
 		<span class="host">{{ instance.name ?? instance.host }}</span>
 		<span class="sub _monospace"><b>{{ instance.host }}</b> / {{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</span>
 	</div>
-	<MkMiniChart v-if="chart" class="chart" :src="chart.requests.received"/>
+	<MkMiniChart v-if="chartValues" class="chart" :src="chartValues"/>
 </div>
 </template>
 
@@ -18,10 +18,12 @@ const props = defineProps<{
 	instance: misskey.entities.Instance;
 }>();
 
-const chart = $ref(null);
+let chartValues = $ref<number[] | null>(null);
 
-os.api('charts/instance', { host: props.instance.host, limit: 16, span: 'day' }).then(res => {
-	chart = res;
+os.apiGet('charts/instance', { host: props.instance.host, limit: 16 + 1, span: 'day' }).then(res => {
+	// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
+	res.requests.received.splice(0, 1);
+	chartValues = res.requests.received;
 });
 </script>
 

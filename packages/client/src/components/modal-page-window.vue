@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
-	<div ref="rootEl" class="hrmcaedk _window _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
+	<div ref="rootEl" class="hrmcaedk _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
 			<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
 			<span v-else style="display: inline-block; width: 20px"></span>
@@ -121,6 +121,7 @@ function onContextmenu(ev: MouseEvent) {
 	display: flex;
 	flex-direction: column;
 	contain: content;
+	border-radius: var(--radius);
 
 	--root-margin: 24px;
 
@@ -139,7 +140,9 @@ function onContextmenu(ev: MouseEvent) {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		box-shadow: 0px 1px var(--divider);
+		background: var(--windowHeader);
+		-webkit-backdrop-filter: var(--blur, blur(15px));
+		backdrop-filter: var(--blur, blur(15px));
 
 		> button {
 			height: $height;

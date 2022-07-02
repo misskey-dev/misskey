@@ -122,6 +122,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.emailServer,
 	icon: 'fas fa-envelope',
-	bg: 'var(--bg)',
 });
 </script>

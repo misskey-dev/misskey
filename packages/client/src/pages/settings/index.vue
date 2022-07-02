@@ -32,6 +32,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
   initialPage?: string;
@@ -41,7 +42,6 @@ const props = withDefaults(defineProps<{
 const indexInfo = {
 	title: i18n.ts.settings,
 	icon: 'fas fa-cog',
-	bg: 'var(--bg)',
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
@@ -181,7 +181,12 @@ const menuDef = computed(() => [{
 		type: 'button',
 		icon: 'fas fa-sign-in-alt fa-flip-horizontal',
 		text: i18n.ts.logout,
-		action: () => {
+		action: async () => {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: i18n.ts.logoutConfirm,
+			});
+			if (canceled) return;
 			signout();
 		},
 		danger: true,

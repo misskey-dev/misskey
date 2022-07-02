@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="file" :content-max="500" :margin-min="16" :margin-max="32">
+	<MkSpacer v-if="file" :content-max="600" :margin-min="16" :margin-max="32">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _formRoot">
 			<a class="_formBlock thumbnail" :href="file.url" target="_blank">
 				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
@@ -28,15 +28,30 @@
 					<template #value><span class="_monospace"><MkTime :time="file.createdAt" mode="detail" style="display: block;"/></span></template>
 				</MkKeyValue>
 			</div>
+			<MkA v-if="file.user" class="user" :to="`/user-info/${file.user.id}`">
+				<MkUserCardMini :user="file.user"/>
+			</MkA>
 			<div class="_formBlock">
 				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
 			</div>
-			<FormLink class="_formBlock" :to="file.url" :external="true">Open</FormLink>
-			<FormLink class="_formBlock" :to="`/user-info/${file.userId}`">{{ $ts.user }} ({{ acct(file.user) }})</FormLink>
 
 			<div class="_formBlock">
-				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+				<MkButton danger @click="del"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
+		</div>
+		<div v-else-if="tab === 'ip' && info" class="_formRoot">
+			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+			<MkKeyValue v-if="info.requestIp" class="_formBlock _monospace" :copy="info.requestIp" oneline>
+				<template #key>IP</template>
+				<template #value>{{ info.requestIp }}</template>
+			</MkKeyValue>
+			<FormSection v-if="info.requestHeaders">
+				<template #label>Headers</template>
+				<MkKeyValue v-for="(v, k) in info.requestHeaders" :key="k" class="_formBlock _monospace">
+					<template #key>{{ k }}</template>
+					<template #value>{{ v }}</template>
+				</MkKeyValue>
+			</FormSection>
 		</div>
 		<div v-else-if="tab === 'raw'" class="_formRoot">
 			<MkObjectView v-if="info" tall :value="info">
@@ -53,12 +68,15 @@ import MkSwitch from '@/components/form/switch.vue';
 import MkObjectView from '@/components/object-view.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import MkKeyValue from '@/components/key-value.vue';
-import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import MkUserCardMini from '@/components/user-card-mini.vue';
+import MkInfo from '@/components/ui/info.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { acct } from '@/filters/user';
+import { iAmAdmin, iAmModerator } from '@/account';
 
 let tab = $ref('overview');
 let file: any = $ref(null);
@@ -106,7 +124,11 @@ const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'fas fa-info-circle',
-}, {
+}, iAmModerator ? {
+	key: 'ip',
+	title: 'IP',
+	icon: 'fas fa-bars-staggered',
+} : null, {
 	key: 'raw',
 	title: 'Raw data',
 	icon: 'fas fa-code',
@@ -115,7 +137,6 @@ const headerTabs = $computed(() => [{
 definePageMetadata(computed(() => ({
 	title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
 	icon: 'fas fa-file',
-	bg: 'var(--bg)',
 })));
 </script>
 
@@ -127,6 +148,12 @@ definePageMetadata(computed(() => ({
 		> .thumbnail {
 			height: 300px;
 			max-width: 100%;
+		}
+	}
+
+	> .user {
+		&:hover {
+			text-decoration: none;
 		}
 	}
 }
