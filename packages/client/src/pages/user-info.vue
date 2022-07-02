@@ -85,7 +85,7 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_formRoot">
-				<FormSection v-if="iAmModerator">
+				<FormSection>
 					<template #label>Drive Capacity Override</template>
 
 					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" @update:model-value="applyDriveCapacityOverride">
@@ -152,7 +152,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, watch, ref } from 'vue';
+import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
@@ -185,7 +185,7 @@ const props = defineProps<{
 let tab = $ref('overview');
 let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
-let init = $ref();
+let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
 let ips = $ref(null);
 let ap = $ref(null);
@@ -350,7 +350,7 @@ watch(() => props.userId, () => {
 	immediate: true,
 });
 
-watch(() => user, () => {
+watch($$(user), () => {
 	os.api('ap/get', {
 		uri: user.uri ?? `${url}/users/${user.id}`,
 	}).then(res => {
