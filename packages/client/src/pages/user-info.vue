@@ -9,6 +9,11 @@
 					<div class="body">
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
+						<span class="state">
+							<span v-if="suspended" class="suspended">Suspended</span>
+							<span v-if="silenced" class="silenced">Silenced</span>
+							<span v-if="moderator" class="moderator">Moderator</span>
+						</span>
 					</div>
 				</div>
 
@@ -41,19 +46,11 @@
 						<template #key>{{ i18n.ts.lastActiveDate }}</template>
 						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
 					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.email }}</template>
+						<template #value><span class="_monospace">{{ info.email }}</span></template>
+					</MkKeyValue>
 				</div>
-
-				<FormSection v-if="iAmModerator">
-					<template #label>Moderation</template>
-					<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
-					<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
-					<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
-					{{ $ts.reflectMayTakeTime }}
-					<div class="_formBlock">
-						<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
-						<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ $ts.deleteAccount }}</FormButton>
-					</div>
-				</FormSection>
 
 				<FormSection>
 					<template #label>ActivityPub</template>
@@ -78,7 +75,43 @@
 					</div>
 
 					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
+
+					<FormFolder class="_formBlock">
+						<template #label>Raw</template>
+
+						<MkObjectView v-if="ap" tall :value="ap">
+						</MkObjectView>
+					</FormFolder>
 				</FormSection>
+			</div>
+			<div v-else-if="tab === 'moderation'" class="_formRoot">
+				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
+				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
+				{{ $ts.reflectMayTakeTime }}
+				<div class="_formBlock">
+					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+					<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ $ts.deleteAccount }}</FormButton>
+				</div>
+				<FormTextarea v-model="moderationNote" manual-save class="_formBlock">
+					<template #label>Moderation note</template>
+				</FormTextarea>
+				<FormFolder class="_formBlock">
+					<template #label>IP</template>
+					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+					<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
+					<template v-if="iAmAdmin && ips">
+						<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
+							<span class="date">{{ record.createdAt }}</span>
+							<span class="ip">{{ record.ip }}</span>
+						</div>
+					</template>
+				</FormFolder>
+				<FormFolder class="_formBlock">
+					<template #label>{{ i18n.ts.files }}</template>
+
+					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+				</FormFolder>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_formRoot">
 				<div class="cmhjzshm">
@@ -94,23 +127,6 @@
 						<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ user, withoutAll: true }" :detailed="true"></MkChart>
 					</div>
 				</div>
-			</div>
-			<div v-else-if="tab === 'files'" class="_formRoot">
-				<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
-			</div>
-			<div v-else-if="tab === 'ip'" class="_formRoot">
-				<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
-				<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
-				<template v-if="iAmAdmin && ips">
-					<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
-						<span class="date">{{ record.createdAt }}</span>
-						<span class="ip">{{ record.ip }}</span>
-					</div>
-				</template>
-			</div>
-			<div v-else-if="tab === 'ap'" class="_formRoot">
-				<MkObjectView v-if="ap" tall :value="ap">
-				</MkObjectView>
 			</div>
 			<div v-else-if="tab === 'raw'" class="_formRoot">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
@@ -134,6 +150,7 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/ui/button.vue';
+import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -162,6 +179,7 @@ let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
+let moderationNote = $ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -185,6 +203,12 @@ function createFetcher() {
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
+			moderationNote = info.moderationNote;
+
+			watch($$(moderationNote), async () => {
+				await os.api('admin/update-user-note', { userId: user.id, text: moderationNote });
+				await refreshUser();
+			});
 		});
 	} else {
 		return () => os.api('users/show', {
@@ -309,23 +333,15 @@ const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'fas fa-info-circle',
-}, {
+}, iAmModerator ? {
+	key: 'moderation',
+	title: i18n.ts.moderation,
+	icon: 'fas fa-shield-halved',
+} : null, {
 	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
-}, iAmModerator ? {
-	key: 'files',
-	title: i18n.ts.files,
-	icon: 'fas fa-cloud',
-} : null, {
-	key: 'ap',
-	title: 'AP',
-	icon: 'fas fa-share-alt',
-}, iAmModerator ? {
-	key: 'ip',
-	title: 'IP',
-	icon: 'fas fa-bars-staggered',
-} : null, {
+}, {
 	key: 'raw',
 	title: 'Raw',
 	icon: 'fas fa-code',
@@ -369,6 +385,40 @@ definePageMetadata(computed(() => ({
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+		}
+
+		> .state {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin-top: 4px;
+
+			&:empty {
+				display: none;
+			}
+
+			> .suspended, > .silenced, > .moderator {
+				display: inline-block;
+				border: solid 1px;
+				border-radius: 6px;
+				padding: 2px 6px;
+				font-size: 85%;
+			}
+
+			> .suspended {
+				color: var(--error);
+				border-color: var(--error);
+			}
+
+			> .silenced {
+				color: var(--warn);
+				border-color: var(--warn);
+			}
+
+			> .moderator {
+				color: var(--success);
+				border-color: var(--success);
+			}
 		}
 	}
 }

@@ -117,6 +117,11 @@ export class UserProfile {
 	})
 	public password: string | null;
 
+	@Column('varchar', {
+		length: 8192, default: '',
+	})
+	public moderationNote: string | null;
+
 	// TODO: そのうち消す
 	@Column('jsonb', {
 		default: {},

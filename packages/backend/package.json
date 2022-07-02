@@ -95,6 +95,7 @@
 		"rename": "1.0.4",
 		"require-all": "3.0.0",
 		"rndstr": "1.0.0",
+		"rss-parser": "3.12.0",
 		"s-age": "1.1.2",
 		"sanitize-html": "2.7.0",
 		"semver": "7.3.7",
