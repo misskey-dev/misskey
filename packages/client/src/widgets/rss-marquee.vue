@@ -6,11 +6,13 @@
 	<div class="ekmkgxbk">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<MarqueeText :key="key" :duration="widgetProps.speed" :reverse="widgetProps.reverse">
-				<span v-for="item in items" class="item">
-					<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
-				</span>
-			</MarqueeText>
+			<transition name="change" mode="default">
+				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
+					<span v-for="item in items" class="item">
+						<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
+					</span>
+				</MarqueeText>
+			</transition>
 		</div>
 	</div>
 </MkContainer>
@@ -32,30 +34,26 @@ const widgetPropsDef = {
 		type: 'string' as const,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 	},
+	refreshIntervalSec: {
+		type: 'number' as const,
+		default: 60,
+	},
+	duration: {
+		type: 'range' as const,
+		default: 70,
+		step: 1,
+		min: 5,
+		max: 200,
+	},
+	reverse: {
+		type: 'boolean' as const,
+		default: false,
+	},
 	showHeader: {
 		type: 'boolean' as const,
 		default: false,
 	},
 	transparent: {
-		type: 'boolean' as const,
-		default: false,
-	},
-	speed: {
-		type: 'radio' as const,
-		default: 70,
-		options: [{
-			value: 170, label: 'very slow',
-		}, {
-			value: 100, label: 'slow',
-		}, {
-			value: 70, label: 'medium',
-		}, {
-			value: 40, label: 'fast',
-		}, {
-			value: 20, label: 'very fast',
-		}],
-	},
-	reverse: {
 		type: 'boolean' as const,
 		default: false,
 	},
@@ -91,7 +89,7 @@ const tick = () => {
 
 watch(() => widgetProps.url, tick);
 
-useInterval(tick, 60000, {
+useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
 	immediate: true,
 	afterMounted: true,
 });
@@ -104,17 +102,32 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" scoped>
+.change-enter-active, .change-leave-active {
+	position: absolute;
+	top: 0;
+  transition: all 1s ease;
+}
+.change-enter-from {
+  opacity: 0;
+	transform: translateY(-100%);
+}
+.change-leave-to {
+  opacity: 0;
+	transform: translateY(100%);
+}
+
 .ekmkgxbk {
 	> .feed {
 		padding: 0;
 		font-size: 0.9em;
+		line-height: 42px;
+		height: 42px;
 
 		::v-deep(.item) {
 			display: inline-flex;
 			align-items: center;
 			vertical-align: bottom;
 			color: var(--fg);
-			margin: 12px 0;
 
 			> .divider {
 				display: inline-block;

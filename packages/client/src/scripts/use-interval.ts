@@ -4,6 +4,8 @@ export function useInterval(fn: () => void, interval: number, options: {
 	immediate: boolean;
 	afterMounted: boolean;
 }): void {
+	if (Number.isNaN(interval)) return;
+
 	let intervalId: number | null = null;
 
 	if (options.afterMounted) {

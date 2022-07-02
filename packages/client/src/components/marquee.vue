@@ -1,5 +1,5 @@
 <script lang="ts">
-import { h, onMounted, onUnmounted, ref } from 'vue';
+import { h, onMounted, onUnmounted, ref, watch } from 'vue';
 
 export default {
 	name: 'MarqueeText',
@@ -31,6 +31,8 @@ export default {
 
 			contentEl.value.style.animationDuration = `${duration}s`;
 		}
+
+		watch(() => props.duration, calc);
 
 		onMounted(() => {
 			calc();
