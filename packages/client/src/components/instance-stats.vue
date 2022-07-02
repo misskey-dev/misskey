@@ -119,6 +119,7 @@ function createDoughnut(chartEl, tooltip, data) {
 			}],
 		},
 		options: {
+			maintainAspectRatio: false,
 			layout: {
 				padding: {
 					left: 16,
@@ -195,16 +196,23 @@ onMounted(() => {
 		gap: 16px;
 
 		> .sub, > .pub {
+			flex: 1;
+			min-width: 0;
 			position: relative;
 			background: var(--panel);
 			border-radius: var(--radius);
 			padding: 24px;
+			max-height: 300px;
 
 			> .title {
 				position: absolute;
 				top: 24px;
 				left: 24px;
 			}
+		}
+
+		@media (max-width: 600px) {
+			flex-direction: column;
 		}
 	}
 }

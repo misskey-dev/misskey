@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
+	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_formRoot">
 				<div class="_formBlock aeakzknw">
@@ -26,6 +26,14 @@
 					<MkKeyValue :copy="user.id" oneline style="margin: 1em 0;">
 						<template #key>ID</template>
 						<template #value><span class="_monospace">{{ user.id }}</span></template>
+					</MkKeyValue>
+					<MkKeyValue oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.createdAt }}</template>
+						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.lastActiveDate }}</template>
+						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
 					</MkKeyValue>
 				</div>
 
