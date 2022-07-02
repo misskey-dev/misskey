@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
-			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+			<XTutorial v-if="$i && $store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
 			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
 			<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
@@ -45,7 +45,8 @@ const tlComponent = $ref<InstanceType<typeof XTimeline>>();
 const rootEl = $ref<HTMLElement>();
 
 let queue = $ref(0);
-const src = $computed({ get: () => defaultStore.reactiveState.tl.value.src, set: (x) => saveSrc(x) });
+const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : logoutSrc), set: (x) => saveSrc(x) });
+let logoutSrc = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 
 watch ($$(src), () => queue = 0);
 
@@ -94,6 +95,7 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
 		...defaultStore.state.tl,
 		src: newSrc,
 	});
+	logoutSrc = newSrc ;
 }
 
 async function timetravel(): Promise<void> {
@@ -116,6 +118,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._timelines.home,
 	icon: 'fas fa-home',
 	iconOnly: true,
+	loginRequired: true,
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
@@ -126,6 +129,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._timelines.social,
 	icon: 'fas fa-share-alt',
 	iconOnly: true,
+	loginRequired: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
@@ -135,16 +139,19 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-list-ul',
 	title: i18n.ts.lists,
 	iconOnly: true,
+	loginRequired: true,
 	onClick: chooseList,
 }, {
 	icon: 'fas fa-satellite',
 	title: i18n.ts.antennas,
 	iconOnly: true,
+	loginRequired: true,
 	onClick: chooseAntenna,
 }, {
 	icon: 'fas fa-satellite-dish',
 	title: i18n.ts.channel,
 	iconOnly: true,
+	loginRequired: true,
 	onClick: chooseChannel,
 }]);
 

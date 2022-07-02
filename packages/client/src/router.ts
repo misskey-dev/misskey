@@ -225,6 +225,9 @@ export const routes = [{
 	component: page(() => import('./pages/antenna-timeline.vue')),
 	loginRequired: true,
 }, {
+	path: '/timeline',
+	component: page(() => import('./pages/timeline.vue')),
+}, {
 	name: 'index',
 	path: '/',
 	component: $i ? page(() => import('./pages/timeline.vue')) : page(() => import('./pages/welcome.vue')),
