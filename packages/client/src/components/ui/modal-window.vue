@@ -105,7 +105,6 @@ defineExpose({
 		background: var(--windowHeader);
 		-webkit-backdrop-filter: var(--blur, blur(15px));
 		backdrop-filter: var(--blur, blur(15px));
-		box-shadow: 0px 1px var(--divider);
 
 		> button {
 			height: $height;
