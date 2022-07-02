@@ -861,6 +861,7 @@ document: "ドキュメント"
 numberOfPageCache: "ページキャッシュ数"
 numberOfPageCacheDescription: "多くすると利便性が向上しますが、負荷とメモリ使用量が増えます。"
 logoutConfirm: "ログアウトしますか？"
+lastActiveDate: "最終利用日時"
 
 _emailUnavailable:
   used: "既に使用されています"
