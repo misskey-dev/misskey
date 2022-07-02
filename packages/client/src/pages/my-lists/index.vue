@@ -46,7 +46,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.manageLists,
 	icon: 'fas fa-list-ul',
-	bg: 'var(--bg)',
 	action: {
 		icon: 'fas fa-plus',
 		handler: create,

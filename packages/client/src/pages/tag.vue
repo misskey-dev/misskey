@@ -28,6 +28,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => ({
 	title: props.tag,
 	icon: 'fas fa-hashtag',
-	bg: 'var(--bg)',
 })));
 </script>

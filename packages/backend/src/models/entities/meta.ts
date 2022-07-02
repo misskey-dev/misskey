@@ -449,4 +449,9 @@ export class Meta {
 		default: true,
 	})
 	public objectStorageS3ForcePathStyle: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableIpLogging: boolean;
 }

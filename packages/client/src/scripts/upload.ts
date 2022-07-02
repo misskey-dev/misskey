@@ -109,7 +109,7 @@ export function uploadFile(
 						alert({
 							type: 'error',
 							title: 'Failed to upload',
-							text: `${ev.target?.response}, ${xhr.response}`,
+							text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`,
 						});
 					}
 

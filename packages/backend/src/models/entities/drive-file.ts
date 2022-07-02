@@ -178,4 +178,15 @@ export class DriveFile {
 		comment: 'Whether the DriveFile is direct link to remote server.',
 	})
 	public isLink: boolean;
+
+	@Column('jsonb', {
+		default: {},
+		nullable: true,
+	})
+	public requestHeaders: Record<string, string> | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public requestIp: string | null;
 }

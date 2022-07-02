@@ -100,6 +100,7 @@ export const paramDef = {
 		objectStorageUseProxy: { type: 'boolean' },
 		objectStorageSetPublicRead: { type: 'boolean' },
 		objectStorageS3ForcePathStyle: { type: 'boolean' },
+		enableIpLogging: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -414,6 +415,10 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.deeplIsPro !== undefined) {
 		set.deeplIsPro = ps.deeplIsPro;
+	}
+
+	if (ps.enableIpLogging !== undefined) {
+		set.enableIpLogging = ps.enableIpLogging;
 	}
 
 	await db.transaction(async transactionalEntityManager => {

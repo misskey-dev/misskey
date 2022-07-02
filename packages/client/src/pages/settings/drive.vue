@@ -121,7 +121,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.drive,
 	icon: 'fas fa-cloud',
-	bg: 'var(--bg)',
 });
 </script>
 

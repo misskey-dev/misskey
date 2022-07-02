@@ -3,6 +3,7 @@ import { addFile } from '@/services/drive/add-file.js';
 import { DriveFiles } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 import define from '../../../define.js';
 import { apiLogger } from '../../../logger.js';
 import { ApiError } from '../../../error.js';
@@ -63,7 +64,7 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user, _, file, cleanup) => {
+export default define(meta, paramDef, async (ps, user, _, file, cleanup, ip, headers) => {
 	// Get 'name' parameter
 	let name = ps.name || file.originalname;
 	if (name !== undefined && name !== null) {
@@ -79,9 +80,21 @@ export default define(meta, paramDef, async (ps, user, _, file, cleanup) => {
 		name = null;
 	}
 
+	const meta = await fetchMeta();
+
 	try {
 		// Create file
-		const driveFile = await addFile({ user, path: file.path, name, comment: ps.comment, folderId: ps.folderId, force: ps.force, sensitive: ps.isSensitive });
+		const driveFile = await addFile({
+			user,
+			path: file.path,
+			name,
+			comment: ps.comment,
+			folderId: ps.folderId,
+			force: ps.force,
+			sensitive: ps.isSensitive,
+			requestIp: meta.enableIpLogging ? ip : null,
+			requestHeaders: meta.enableIpLogging ? headers : null,
+		});
 		return await DriveFiles.pack(driveFile, { self: true });
 	} catch (e) {
 		if (e instanceof Error || typeof e === 'string') {

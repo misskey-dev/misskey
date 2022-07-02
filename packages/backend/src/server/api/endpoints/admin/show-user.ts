@@ -69,6 +69,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		isModerator: user.isModerator,
 		isSilenced: user.isSilenced,
 		isSuspended: user.isSuspended,
+		lastActiveDate: user.lastActiveDate,
 		signins,
 	};
 });

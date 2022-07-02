@@ -35,11 +35,6 @@ export const menuDef = reactive({
 		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
 	},
-	featured: {
-		title: 'featured',
-		icon: 'fas fa-fire-alt',
-		to: '/featured',
-	},
 	explore: {
 		title: 'explore',
 		icon: 'fas fa-hashtag',

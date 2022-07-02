@@ -116,11 +116,9 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => props.postId ? {
 	title: i18n.ts.edit,
 	icon: 'fas fa-pencil-alt',
-	bg: 'var(--bg)',
 } : {
 	title: i18n.ts.postToGallery,
 	icon: 'fas fa-pencil-alt',
-	bg: 'var(--bg)',
 }));
 </script>
 

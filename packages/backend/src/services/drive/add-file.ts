@@ -327,6 +327,9 @@ type AddFileArgs = {
 	uri?: string | null;
 	/** Mark file as sensitive */
 	sensitive?: boolean | null;
+
+	requestIp?: string | null;
+	requestHeaders?: Record<string, string> | null;
 };
 
 /**
@@ -344,6 +347,8 @@ export async function addFile({
 	url = null,
 	uri = null,
 	sensitive = null,
+	requestIp = null,
+	requestHeaders = null,
 }: AddFileArgs): Promise<DriveFile> {
 	let skipNsfwCheck = false;
 	const instance = await fetchMeta();
@@ -450,9 +455,10 @@ export async function addFile({
 	file.properties = properties;
 	file.blurhash = info.blurhash || null;
 	file.isLink = isLink;
+	file.requestIp = requestIp;
+	file.requestHeaders = requestHeaders;
 	file.maybeSensitive = info.sensitive;
 	file.maybePorn = info.porn;
-
 	file.isSensitive = user
 		? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
 		(sensitive !== null && sensitive !== undefined)

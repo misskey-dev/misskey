@@ -58,6 +58,18 @@
 				</FormFolder>
 
 				<FormFolder class="_formBlock">
+					<template #label>Log IP address</template>
+					<template v-if="enableIpLogging" #suffix>Enabled</template>
+					<template v-else #suffix>Disabled</template>
+
+					<div class="_formRoot">
+						<FormSwitch v-model="enableIpLogging" class="_formBlock" @update:modelValue="save">
+							<template #label>Enable</template>
+						</FormSwitch>
+					</div>
+				</FormFolder>
+
+				<FormFolder class="_formBlock">
 					<template #label>Summaly Proxy</template>
 
 					<div class="_formRoot">
@@ -99,6 +111,7 @@ let sensitiveMediaDetection: string = $ref('none');
 let sensitiveMediaDetectionSensitivity: number = $ref(0);
 let setSensitiveFlagAutomatically: boolean = $ref(false);
 let enableSensitiveMediaDetectionForVideos: boolean = $ref(false);
+let enableIpLogging: boolean = $ref(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -114,6 +127,7 @@ async function init() {
 		meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 4 : 0;
 	setSensitiveFlagAutomatically = meta.setSensitiveFlagAutomatically;
 	enableSensitiveMediaDetectionForVideos = meta.enableSensitiveMediaDetectionForVideos;
+	enableIpLogging = meta.enableIpLogging;
 }
 
 function save() {
@@ -129,6 +143,7 @@ function save() {
 			0,
 		setSensitiveFlagAutomatically,
 		enableSensitiveMediaDetectionForVideos,
+		enableIpLogging,
 	}).then(() => {
 		fetchInstance();
 	});
@@ -141,6 +156,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.security,
 	icon: 'fas fa-lock',
-	bg: 'var(--bg)',
 });
 </script>

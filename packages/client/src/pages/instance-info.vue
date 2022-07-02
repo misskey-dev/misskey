@@ -215,7 +215,6 @@ const headerTabs = $computed(() => [{
 definePageMetadata({
 	title: props.host,
 	icon: 'fas fa-server',
-	bg: 'var(--bg)',
 });
 </script>
 
