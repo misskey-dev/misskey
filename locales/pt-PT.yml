@@ -1,9 +1,9 @@
 ---
 _lang_: "Português"
-headlineMisskey: "Rede conectada por notas"
+headlineMisskey: "Uma rede ligada por notas"
 introMisskey: "Bem-vindo! Misskey é um serviço de microblogue descentralizado de código aberto.\nCria \"notas\" e partilha o que te ocorre com todos à tua volta. 📡\nCom \"reações\" podes também expressar logo o que sentes às notas de todos. 👍\nExploremos um novo mundo! 🚀"
 monthAndDay: "{day}/{month}"
-search: "Pesquisar"
+search: "Buscar"
 notifications: "Notificações"
 username: "Nome de usuário"
 password: "Senha"
@@ -466,7 +466,7 @@ smtpPass: "Senha"
 clearCache: "Limpar memória transitória"
 info: "Informações"
 user: "Usuários"
-searchByGoogle: "Pesquisar"
+searchByGoogle: "Buscar"
 file: "Ficheiros"
 _email:
   _follow:
@@ -475,7 +475,7 @@ _mfm:
   mention: "Menção"
   quote: "Citar"
   emoji: "Emoji personalizado"
-  search: "Pesquisar"
+  search: "Buscar"
 _theme:
   keys:
     mention: "Menção"
