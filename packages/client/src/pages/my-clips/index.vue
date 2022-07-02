@@ -69,7 +69,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.clip,
 	icon: 'fas fa-paperclip',
-	bg: 'var(--bg)',
 	action: {
 		icon: 'fas fa-plus',
 		handler: create,

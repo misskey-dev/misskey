@@ -87,6 +87,5 @@ const headerTabs = $computed(() => [{
 definePageMetadata(computed(() => ({
 	title: i18n.ts.explore,
 	icon: 'fas fa-hashtag',
-	bg: 'var(--bg)',
 })));
 </script>

@@ -139,5 +139,6 @@ defineExpose({
 <style lang="scss" scoped>
 .yrolvcoq {
 	min-height: 100%;
+	background: var(--bg);
 }
 </style>

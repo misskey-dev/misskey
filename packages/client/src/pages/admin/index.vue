@@ -41,7 +41,6 @@ const router = useRouter();
 const indexInfo = {
 	title: i18n.ts.controlPanel,
 	icon: 'fas fa-cog',
-	bg: 'var(--bg)',
 	hideHeader: true,
 };
 

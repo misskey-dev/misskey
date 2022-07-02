@@ -111,11 +111,9 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => props.channelId ? {
 	title: i18n.ts._channel.edit,
 	icon: 'fas fa-satellite-dish',
-	bg: 'var(--bg)',
 } : {
 	title: i18n.ts._channel.create,
 	icon: 'fas fa-satellite-dish',
-	bg: 'var(--bg)',
 }));
 </script>
 

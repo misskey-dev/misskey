@@ -234,7 +234,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 	> .contents {
 		width: 100%;
 		min-width: 0;
-		background: var(--panel);
+		background: var(--bg);
 
 		> main {
 			min-width: 0;

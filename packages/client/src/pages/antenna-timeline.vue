@@ -1,17 +1,20 @@
 <template>
-<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
-	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<div class="tl _block">
-		<XTimeline
-			ref="tlEl" :key="antennaId"
-			class="tl"
-			src="antenna"
-			:antenna="antennaId"
-			:sound="true"
-			@queue="queueUpdated"
-		/>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
+		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+		<div class="tl _block">
+			<XTimeline
+				ref="tlEl" :key="antennaId"
+				class="tl"
+				src="antenna"
+				:antenna="antennaId"
+				:sound="true"
+				@queue="queueUpdated"
+			/>
+		</div>
 	</div>
-</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -68,23 +71,21 @@ watch(() => props.antennaId, async () => {
 	});
 }, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = $computed(() => antenna ? [{
+	icon: 'fas fa-calendar-alt',
+	text: i18n.ts.jumpToSpecifiedDate,
+	handler: timetravel,
+}, {
+	icon: 'fas fa-cog',
+	text: i18n.ts.settings,
+	handler: settings,
+}] : []);
 
 const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => antenna ? {
 	title: antenna.name,
 	icon: 'fas fa-satellite',
-	bg: 'var(--bg)',
-	actions: [{
-		icon: 'fas fa-calendar-alt',
-		text: i18n.ts.jumpToSpecifiedDate,
-		handler: timetravel,
-	}, {
-		icon: 'fas fa-cog',
-		text: i18n.ts.settings,
-		handler: settings,
-	}],
 } : null));
 </script>
 

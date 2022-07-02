@@ -42,7 +42,6 @@ const props = withDefaults(defineProps<{
 const indexInfo = {
 	title: i18n.ts.settings,
 	icon: 'fas fa-cog',
-	bg: 'var(--bg)',
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);

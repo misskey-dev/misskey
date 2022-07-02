@@ -132,7 +132,6 @@ definePageMetadata(computed(() => note ? {
 		title: i18n.t('noteOf', { user: note.user.name }),
 		text: note.text,
 	},
-	bg: 'var(--bg)',
 } : null));
 </script>
 

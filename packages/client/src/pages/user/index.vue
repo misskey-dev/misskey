@@ -103,7 +103,6 @@ definePageMetadata(computed(() => user ? {
 	share: {
 		title: user.name,
 	},
-	bg: 'var(--bg)',
 } : null));
 </script>
 

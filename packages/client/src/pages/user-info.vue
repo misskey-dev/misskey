@@ -309,7 +309,6 @@ const headerTabs = $computed(() => [{
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
 	icon: 'fas fa-info-circle',
-	bg: 'var(--bg)',
 })));
 </script>
 

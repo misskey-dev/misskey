@@ -131,7 +131,6 @@ definePageMetadata({
 		icon: 'fas fa-eye',
 		handler: preview,
 	},
-	bg: 'var(--bg)',
 });
 </script>
 

@@ -122,7 +122,6 @@ const headerTabs = $computed(() => [{
 definePageMetadata({
 	title: i18n.ts.gallery,
 	icon: 'fas fa-icons',
-	bg: 'var(--bg)',
 });
 </script>
 
