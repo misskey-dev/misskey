@@ -33,9 +33,11 @@
 	<transition :name="$store.state.animation ? 'tray' : ''">
 		<div v-if="showMenu" class="menu">
 			<MkA to="/" class="link" active-class="active"><i class="fas fa-home icon"></i>{{ $ts.home }}</MkA>
+			<MkA to="/timeline" class="link" active-class="active"><i class="fas fa-comments icon"></i>{{ $ts.timeline }}</MkA>
 			<MkA to="/explore" class="link" active-class="active"><i class="fas fa-hashtag icon"></i>{{ $ts.explore }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><i class="fas fa-fire-alt icon"></i>{{ $ts.featured }}</MkA>
 			<MkA to="/channels" class="link" active-class="active"><i class="fas fa-satellite-dish icon"></i>{{ $ts.channel }}</MkA>
+			<MkA to="/pages" class="link" active-class="active"><i class="fas fa-file-alt icon"></i>{{ $ts.pages }}</MkA>
+			<MkA to="/gallery" class="link" active-class="active"><i class="fas fa-icons icon"></i>{{ $ts.gallery }}</MkA>
 			<div class="action">
 				<button class="_buttonPrimary" @click="signup()">{{ $ts.signup }}</button>
 				<button class="_button" @click="signin()">{{ $ts.login }}</button>
