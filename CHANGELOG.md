@@ -25,6 +25,7 @@ You should also include the user name that made the change.
 - Client: Add rss-marquee widget @syuilo
 - Client: Removing entries from a clip @futchitwo
 - Client: Poll highlights in explore page @syuilo
+- Client: Add timeline page that can be viewed when not logged in @futchitwo
 - Make possible to delete an account by admin @syuilo
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
