@@ -1,5 +1,5 @@
 <template>
-<div ref="rootEl" class="root">
+<div ref="rootEl" class="meijqfqm">
 	<canvas :id="idForCanvas" ref="canvasEl" class="canvas" :width="width" height="300" @contextmenu.prevent="() => {}"></canvas>
 	<div :id="idForTags" ref="tagsEl" class="tags">
 		<ul>
@@ -71,7 +71,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.root {
+.meijqfqm {
 	position: relative;
 	overflow: clip;
 	display: grid;
