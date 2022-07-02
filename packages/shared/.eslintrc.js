@@ -21,6 +21,7 @@ module.exports = {
 		}],
 		'eol-last': ['error', 'always'],
 		'semi': ['error', 'always'],
+		'semi-spacing': ['error', { 'before': false, 'after': true }],
 		'quotes': ['warn', 'single'],
 		'comma-dangle': ['warn', 'always-multiline'],
 		'keyword-spacing': ['error', {
