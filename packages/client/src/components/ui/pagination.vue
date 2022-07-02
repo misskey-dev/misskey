@@ -133,8 +133,10 @@ const fetchMore = async (): Promise<void> => {
 		limit: SECOND_FETCH_LIMIT + 1,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
+		} : props.pagination.reversed ? {
+			sinceId: items.value[0].id,
 		} : {
-			untilId: props.pagination.reversed ? items.value[0].id : items.value[items.value.length - 1].id,
+			untilId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
@@ -169,8 +171,10 @@ const fetchMoreAhead = async (): Promise<void> => {
 		limit: SECOND_FETCH_LIMIT + 1,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
+		} : props.pagination.reversed ? {
+			untilId: items.value[0].id,
 		} : {
-			sinceId: props.pagination.reversed ? items.value[0].id : items.value[items.value.length - 1].id,
+			sinceId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
 		if (res.length > SECOND_FETCH_LIMIT) {
