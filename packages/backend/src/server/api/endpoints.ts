@@ -312,6 +312,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___fetchRss from './endpoints/fetch-rss.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -626,6 +627,7 @@ const eps = [
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
+	['fetch-rss', ep___fetchRss],
 ];
 
 export interface IEndpointMeta {
