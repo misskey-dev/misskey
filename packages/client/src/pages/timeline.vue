@@ -45,8 +45,8 @@ const tlComponent = $ref<InstanceType<typeof XTimeline>>();
 const rootEl = $ref<HTMLElement>();
 
 let queue = $ref(0);
-const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : logoutSrc), set: (x) => saveSrc(x) });
-let logoutSrc = $ref(isLocalTimelineAvailable ? 'local' : 'global');
+let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
+const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 
 watch ($$(src), () => queue = 0);
 
@@ -95,7 +95,7 @@ function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
 		...defaultStore.state.tl,
 		src: newSrc,
 	});
-	logoutSrc = newSrc ;
+	srcWhenNotSignin = newSrc ;
 }
 
 async function timetravel(): Promise<void> {
