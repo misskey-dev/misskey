@@ -1,13 +1,12 @@
 <template>
 <div
 	class="mk-deck" :class="[{ isMobile }, `${deckStore.reactiveState.columnAlign.value}`]" :style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
-	@contextmenu.self.prevent="onContextmenu"
 >
 	<XSidebar v-if="!isMobile"/>
 
 	<div class="main">
 		<XStatusBars class="statusbars"/>
-		<div ref="columnsEl" class="columns">
+		<div ref="columnsEl" class="columns" @contextmenu.self.prevent="onContextmenu">
 			<template v-for="ids in layout">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
