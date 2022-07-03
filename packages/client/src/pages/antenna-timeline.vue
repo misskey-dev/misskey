@@ -24,7 +24,7 @@ import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import i18n from '@/components/global/i18n';
+import i18n from '@/i18n';
 
 const router = useRouter();
 
