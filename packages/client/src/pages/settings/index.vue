@@ -115,6 +115,11 @@ const menuDef = computed(() => [{
 		active: props.initialPage === 'theme',
 	}, {
 		icon: 'fas fa-list-ul',
+		text: i18n.ts.statusbar,
+		to: '/settings/statusbars',
+		active: props.initialPage === 'statusbars',
+	}, {
+		icon: 'fas fa-list-ul',
 		text: i18n.ts.menu,
 		to: '/settings/menu',
 		active: props.initialPage === 'menu',
@@ -221,6 +226,7 @@ const component = computed(() => {
 		case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 		case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
 		case 'menu': return defineAsyncComponent(() => import('./menu.vue'));
+		case 'statusbars': return defineAsyncComponent(() => import('./statusbars.vue'));
 		case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
 		case 'custom-css': return defineAsyncComponent(() => import('./custom-css.vue'));
 		case 'deck': return defineAsyncComponent(() => import('./deck.vue'));

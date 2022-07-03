@@ -88,6 +88,19 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: false,
 	},
+	statusbars: {
+		where: 'deviceAccount',
+		default: [] as {
+			name: string;
+			id: string;
+			type: string;
+			props: Record<string, any>;
+		}[],
+	},
+	statusbarSize: {
+		where: 'deviceAccount',
+		default: 'medium',
+	},
 	widgets: {
 		where: 'deviceAccount',
 		default: [] as {
