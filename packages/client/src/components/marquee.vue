@@ -76,7 +76,7 @@ export default {
 
 <style lang="scss" module>
 .wrap {
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 }
 .content {
 	display: inline-block;

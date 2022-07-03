@@ -177,7 +177,7 @@ definePageMetadata(computed(() => ({
 	> .tl {
 		background: var(--bg);
 		border-radius: var(--radius);
-		overflow: clip;
+		overflow: hidden; overflow: clip;
 	}
 }
 </style>
