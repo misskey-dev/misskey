@@ -10,18 +10,6 @@
 		<option value="center">{{ i18n.ts.center }}</option>
 	</FormRadios>
 
-	<FormRadios v-model="columnHeaderHeight" class="_formBlock">
-		<template #label>{{ i18n.ts._deck.columnHeaderHeight }}</template>
-		<option :value="42">{{ i18n.ts.narrow }}</option>
-		<option :value="45">{{ i18n.ts.medium }}</option>
-		<option :value="48">{{ i18n.ts.wide }}</option>
-	</FormRadios>
-
-	<FormInput v-model="columnMargin" type="number" class="_formBlock">
-		<template #label>{{ i18n.ts._deck.columnMargin }}</template>
-		<template #suffix>px</template>
-	</FormInput>
-
 	<FormLink class="_formBlock" @click="setProfile">{{ i18n.ts._deck.profile }}<template #suffix>{{ profile }}</template></FormLink>
 </div>
 </template>
@@ -41,8 +29,6 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 const navWindow = computed(deckStore.makeGetterSetter('navWindow'));
 const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMainColumn'));
 const columnAlign = computed(deckStore.makeGetterSetter('columnAlign'));
-const columnMargin = computed(deckStore.makeGetterSetter('columnMargin'));
-const columnHeaderHeight = computed(deckStore.makeGetterSetter('columnHeaderHeight'));
 const profile = computed(deckStore.makeGetterSetter('profile'));
 
 watch(navWindow, async () => {

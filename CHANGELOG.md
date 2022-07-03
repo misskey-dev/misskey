@@ -26,6 +26,7 @@ You should also include the user name that made the change.
 - Client: Add rss-ticker widget @syuilo
 - Client: Removing entries from a clip @futchitwo
 - Client: Poll highlights in explore page @syuilo
+- Client: Improve deck UI @syuilo
 - ユーザーにモデレーションメモを残せる機能 @syuilo
 - Make possible to delete an account by admin @syuilo
 - Improve player detection in URL preview @mei23

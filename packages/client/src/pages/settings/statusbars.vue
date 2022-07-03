@@ -12,6 +12,7 @@
 		<option value="small">{{ i18n.ts.small }}</option>
 		<option value="medium">{{ i18n.ts.medium }}</option>
 		<option value="large">{{ i18n.ts.large }}</option>
+		<option value="veryLarge">{{ i18n.ts.large }}+</option>
 	</FormRadios>
 </div>
 </template>
