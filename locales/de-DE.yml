@@ -1671,6 +1671,8 @@ _deck:
   stackLeft: "Auf linke Spalte stapeln"
   popRight: "Nach rechts vom Stapel nehmen"
   profile: "Profil"
+  introduction: "Erstelle eine auf dich zugeschneiderte Benutzeroberfläche durch das Aneinanderreihen von Spalten!"
+  introduction2: "Klicke auf das + rechts um wann immer du möchtest neue Spalten hinzuzufügen."
   _columns:
     main: "Hauptspalte"
     widgets: "Widgets"
