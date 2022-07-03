@@ -714,8 +714,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Sempre mostrar a coluna principal"
   columnAlign: "Alinhar colunas"
-  columnMargin: "Margem entre colunas"
-  columnHeaderHeight: "Altura do cabeçalho de coluna"
   addColumn: "Adicionar coluna"
   swapLeft: "Trocar de posição com a coluna à esquerda"
   swapRight: "Trocar de posição com a coluna à direita"
