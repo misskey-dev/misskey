@@ -1657,8 +1657,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Luôn hiện cột chính"
   columnAlign: "Căn cột"
-  columnMargin: "Căn lề giữa các cột"
-  columnHeaderHeight: "Chiều rộng cột ảnh bìa"
   addColumn: "Thêm cột"
   swapLeft: "Hoán đổi với cột bên trái"
   swapRight: "Hoán đổi với cột bên phải"
