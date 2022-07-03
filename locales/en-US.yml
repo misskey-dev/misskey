@@ -1663,8 +1663,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
-  columnMargin: "Margin between columns"
-  columnHeaderHeight: "Column header height"
   addColumn: "Add column"
   swapLeft: "Swap with the left column"
   swapRight: "Swap with the right column"
