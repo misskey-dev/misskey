@@ -5,26 +5,31 @@
 >
 	<XSidebar v-if="!isMobile"/>
 
-	<template v-for="ids in layout">
-		<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-		<section
-			v-if="ids.length > 1"
-			class="folder column"
-			:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
-		>
-			<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
-		</section>
-		<DeckColumnCore
-			v-else
-			:ref="ids[0]"
-			:key="ids[0]"
-			class="column"
-			:column="columns.find(c => c.id === ids[0])"
-			:is-stacked="false"
-			:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
-			@parent-focus="moveFocus(ids[0], $event)"
-		/>
-	</template>
+	<div class="main">
+		<XStatusBars class="statusbars"/>
+		<div ref="columnsEl" class="columns">
+			<template v-for="ids in layout">
+				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
+				<section
+					v-if="ids.length > 1"
+					class="folder column"
+					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
+				>
+					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
+				</section>
+				<DeckColumnCore
+					v-else
+					:ref="ids[0]"
+					:key="ids[0]"
+					class="column"
+					:column="columns.find(c => c.id === ids[0])"
+					:is-stacked="false"
+					:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
+					@parent-focus="moveFocus(ids[0], $event)"
+				/>
+			</template>
+		</div>
+	</div>
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
@@ -51,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, provide, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn as addColumnToStore, loadDeck } from './deck/deck-store';
@@ -64,6 +69,7 @@ import { menuDef } from '@/menu';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
+const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 if (deckStore.state.navWindow) {
 	mainRouter.navHook = (path) => {
@@ -93,6 +99,8 @@ const menuIndicated = computed(() => {
 	}
 	return false;
 });
+
+let columnsEl = $ref<HTMLElement>();
 
 const addColumn = async (ev) => {
 	const columns = [
@@ -134,8 +142,10 @@ provide('shouldSpacerMin', true);
 document.documentElement.style.overflowY = 'hidden';
 document.documentElement.style.scrollBehavior = 'auto';
 window.addEventListener('wheel', (ev) => {
-	if (getScrollContainer(ev.target as HTMLElement) == null && ev.deltaX === 0) {
-		document.documentElement.scrollLeft += ev.deltaY;
+	if (ev.target === columnsEl && ev.deltaX === 0) {
+		columnsEl.scrollLeft += ev.deltaY;
+	} else if (getScrollContainer(ev.target as HTMLElement) == null && ev.deltaX === 0) {
+		columnsEl.scrollLeft += ev.deltaY;
 	}
 });
 loadDeck();
@@ -179,7 +189,6 @@ function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
 	height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
 	flex: 1;
-	padding: var(--deckMargin);
 
 	&.center {
 		> .column:first-of-type {
@@ -195,16 +204,31 @@ function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
 		padding-bottom: 100px;
 	}
 
-	> .column {
-		flex-shrink: 0;
-		margin-right: var(--deckMargin);
+	> .main {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
 
-		&.folder {
+		> .columns {
 			display: flex;
-			flex-direction: column;
+			flex: 1;
+			padding: var(--deckMargin);
+			overflow-x: auto;
+			overflow-y: clip;
 
-			> *:not(:last-child) {
-				margin-bottom: var(--deckMargin);
+			> .column {
+				flex-shrink: 0;
+				margin-right: var(--deckMargin);
+
+				&.folder {
+					display: flex;
+					flex-direction: column;
+
+					> *:not(:last-child) {
+						margin-bottom: var(--deckMargin);
+					}
+				}
 			}
 		}
 	}
