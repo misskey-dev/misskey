@@ -1184,7 +1184,6 @@ _widgets:
   trends: "Актуальное"
   clock: "Часы"
   rss: "Просмотр RSS"
-  rssMarquee: "RSS-читалка (в шапке)"
   activity: "Активность"
   photos: "Фото"
   digitalClock: "Цифровые часы"
