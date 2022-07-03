@@ -1655,8 +1655,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Vždy zobraziť v hlavnom stĺpci"
   columnAlign: "Zarovnať stĺpce"
-  columnMargin: "Rozostup medzi stĺpcami"
-  columnHeaderHeight: "Výška hlavičky stĺpca"
   addColumn: "Pridať stĺpec"
   swapLeft: "Vymeniť vľavo"
   swapRight: "Vymeniť vpravo"
