@@ -1663,8 +1663,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
   columnAlign: "Spaltenausrichtung"
-  columnMargin: "Spaltenabstand"
-  columnHeaderHeight: "Spaltenkopfhöhe"
   addColumn: "Spalte hinzufügen"
   swapLeft: "Mit linker Spalte tauschen"
   swapRight: "Mit rechter Spalte tauschen"
