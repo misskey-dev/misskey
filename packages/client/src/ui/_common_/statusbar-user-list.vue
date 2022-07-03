@@ -6,7 +6,7 @@
 				<span v-for="note in notes" :key="note.id" class="item">
 					<img class="avatar" :src="note.user.avatarUrl" decoding="async"/>
 					<MkA class="text" :to="notePage(note)">
-						<Mfm :text="getNoteSummary(note)" :plain="true" :nowrap="true" :custom-emojis="note.emojis"/>
+						<Mfm class="text" :text="getNoteSummary(note)" :plain="true" :nowrap="true" :custom-emojis="note.emojis"/>
 					</MkA>
 					<span class="divider"></span>
 				</span>
@@ -91,11 +91,18 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 			margin-right: 8px;
 		}
 
+		> .text {
+			> .text {
+				display: inline-block;
+				vertical-align: bottom;
+			}
+		}
+
 		> .divider {
 			display: inline-block;
 			width: 0.5px;
 			height: 16px;
-			margin: 0 1em;
+			margin: 0 2em;
 			background: currentColor;
 			opacity: 0;
 		}

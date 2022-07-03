@@ -29,25 +29,30 @@ const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue')
 <style lang="scss" scoped>
 .dlrsnxqu {
 	--height: 24px;
+	--nameMargin: 10px;
 	background: var(--panel);
 	font-size: 0.85em;
 
 	&.verySmall {
+		--nameMargin: 7px;
 		--height: 16px;
 		font-size: 0.75em;
 	}
 
 	&.small {
+		--nameMargin: 8px;
 		--height: 20px;
 		font-size: 0.8em;
 	}
 
 	&.large {
+		--nameMargin: 12px;
 		--height: 26px;
 		font-size: 0.875em;
 	}
 
 	&.veryLarge {
+		--nameMargin: 14px;
 		--height: 30px;
 		font-size: 0.9em;
 	}
@@ -62,7 +67,7 @@ const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue')
 		contain: strict;
 
 		> .name {
-			padding: 0 6px;
+			padding: 0 var(--nameMargin);
 			font-weight: bold;
 			color: var(--accent);
 		}
