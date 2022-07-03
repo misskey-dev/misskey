@@ -42,7 +42,6 @@ const props = withDefaults(defineProps<{
 const indexInfo = {
 	title: i18n.ts.settings,
 	icon: 'fas fa-cog',
-	bg: 'var(--bg)',
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
@@ -114,6 +113,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.theme,
 		to: '/settings/theme',
 		active: props.initialPage === 'theme',
+	}, {
+		icon: 'fas fa-list-ul',
+		text: i18n.ts.statusbar,
+		to: '/settings/statusbars',
+		active: props.initialPage === 'statusbars',
 	}, {
 		icon: 'fas fa-list-ul',
 		text: i18n.ts.menu,
@@ -222,6 +226,7 @@ const component = computed(() => {
 		case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 		case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
 		case 'menu': return defineAsyncComponent(() => import('./menu.vue'));
+		case 'statusbars': return defineAsyncComponent(() => import('./statusbars.vue'));
 		case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
 		case 'custom-css': return defineAsyncComponent(() => import('./custom-css.vue'));
 		case 'deck': return defineAsyncComponent(() => import('./deck.vue'));

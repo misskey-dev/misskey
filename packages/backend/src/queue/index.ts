@@ -2,6 +2,9 @@ import httpSignature from '@peertube/http-signature';
 import { v4 as uuid } from 'uuid';
 
 import config from '@/config/index.js';
+import { DriveFile } from '@/models/entities/drive-file.js';
+import { IActivity } from '@/remote/activitypub/type.js';
+import { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';
 import { envOption } from '../env.js';
 
 import processDeliver from './processors/deliver.js';
@@ -12,18 +15,15 @@ import processSystemQueue from './processors/system/index.js';
 import processWebhookDeliver from './processors/webhook-deliver.js';
 import { endedPollNotification } from './processors/ended-poll-notification.js';
 import { queueLogger } from './logger.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
 import { getJobInfo } from './get-job-info.js';
 import { systemQueue, dbQueue, deliverQueue, inboxQueue, objectStorageQueue, endedPollNotificationQueue, webhookDeliverQueue } from './queues.js';
 import { ThinUser } from './types.js';
-import { IActivity } from '@/remote/activitypub/type.js';
-import { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';
 
 function renderError(e: Error): any {
 	return {
-		stack: e?.stack,
-		message: e?.message,
-		name: e?.name,
+		stack: e.stack,
+		message: e.message,
+		name: e.name,
 	};
 }
 
@@ -309,6 +309,12 @@ export default function() {
 	});
 
 	systemQueue.add('cleanCharts', {
+	}, {
+		repeat: { cron: '0 0 * * *' },
+		removeOnComplete: true,
+	});
+
+	systemQueue.add('clean', {
 	}, {
 		repeat: { cron: '0 0 * * *' },
 		removeOnComplete: true,

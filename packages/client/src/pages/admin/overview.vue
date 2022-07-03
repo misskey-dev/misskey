@@ -468,7 +468,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.dashboard,
 	icon: 'fas fa-tachometer-alt',
-	bg: 'var(--bg)',
 });
 </script>
 
@@ -562,7 +561,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
-					overflow: clip;
+					overflow: hidden; overflow: clip;
 				}
 			}
 
@@ -621,7 +620,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
-					overflow: clip;
+					overflow: hidden; overflow: clip;
 				}
 			}
 		}

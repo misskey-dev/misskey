@@ -47,8 +47,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { toUnicode } from 'punycode/';
-import MarqueeText from 'vue-marquee-text-component';
 import XTimeline from './welcome.timeline.vue';
+import MarqueeText from '@/components/marquee.vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -275,7 +275,7 @@ function showMenu(ev) {
 			-webkit-backdrop-filter: var(--blur, blur(15px));
 			backdrop-filter: var(--blur, blur(15px));
 			border-radius: 999px;
-			overflow: clip;
+			overflow: hidden; overflow: clip;
 			width: 800px;
 			padding: 8px 0;
 

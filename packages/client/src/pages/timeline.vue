@@ -151,7 +151,6 @@ const headerTabs = $computed(() => [{
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
 	icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
-	bg: 'var(--bg)',
 })));
 </script>
 
@@ -178,7 +177,7 @@ definePageMetadata(computed(() => ({
 	> .tl {
 		background: var(--bg);
 		border-radius: var(--radius);
-		overflow: clip;
+		overflow: hidden; overflow: clip;
 	}
 }
 </style>

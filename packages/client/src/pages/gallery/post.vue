@@ -149,7 +149,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => post ? {
 	title: post.title,
 	avatar: post.user,
-	bg: 'var(--bg)',
 } : null));
 </script>
 

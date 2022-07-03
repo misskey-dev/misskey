@@ -60,12 +60,21 @@ export default define(meta, paramDef, async (ps, user) => {
 	query.setParameters(mutingQuery.getParameters());
 	//#endregion
 
-	const polls = await query.take(ps.limit).skip(ps.offset).getMany();
+	const polls = await query
+		.orderBy('poll.noteId', 'DESC')
+		.take(ps.limit)
+		.skip(ps.offset)
+		.getMany();
 
 	if (polls.length === 0) return [];
 
-	const notes = await Notes.findBy({
-		id: In(polls.map(poll => poll.noteId)),
+	const notes = await Notes.find({
+		where: {
+			id: In(polls.map(poll => poll.noteId)),
+		},
+		order: {
+			createdAt: 'DESC',
+		},
 	});
 
 	return await Notes.packMany(notes, user, {

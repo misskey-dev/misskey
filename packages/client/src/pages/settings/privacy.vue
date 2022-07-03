@@ -96,6 +96,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.privacy,
 	icon: 'fas fa-lock-open',
-	bg: 'var(--bg)',
 });
 </script>

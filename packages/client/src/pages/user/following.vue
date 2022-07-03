@@ -54,7 +54,6 @@ definePageMetadata(computed(() => user ? {
 	subtitle: i18n.ts.following,
 	userName: user,
 	avatar: user,
-	bg: 'var(--bg)',
 } : null));
 </script>
 

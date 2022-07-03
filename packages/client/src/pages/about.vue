@@ -131,7 +131,6 @@ const headerTabs = $computed(() => [{
 definePageMetadata(computed(() => ({
 	title: i18n.ts.instanceInfo,
 	icon: 'fas fa-info-circle',
-	bg: 'var(--bg)',
 })));
 </script>
 
@@ -139,7 +138,7 @@ definePageMetadata(computed(() => ({
 .fwhjspax {
 	text-align: center;
 	border-radius: 10px;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 	background-size: cover;
 	background-position: center center;
 

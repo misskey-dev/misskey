@@ -186,7 +186,7 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 	});
 }
 
-export const waitFire = async (user: any, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean) => {
+export const waitFire = async (user: any, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: any) => {
 	return new Promise<boolean>(async (res, rej) => {
 		let timer: NodeJS.Timeout;
 
@@ -198,7 +198,7 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 					if (timer) clearTimeout(timer);
 					res(true);
 				}
-			});
+			}, params);
 		} catch (e) {
 			rej(e);
 		}
@@ -208,7 +208,7 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 		timer = setTimeout(() => {
 			ws.close();
 			res(false);
-		}, 5000);
+		}, 3000);
 
 		try {
 			await trgr();
