@@ -1,5 +1,5 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-marquee">
+<MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-ticker">
 	<template #header><i class="fas fa-rss-square"></i>RSS</template>
 	<template #func><button class="_button" @click="configure"><i class="fas fa-cog"></i></button></template>
 
@@ -27,7 +27,7 @@ import * as os from '@/os';
 import MkContainer from '@/components/ui/container.vue';
 import { useInterval } from '@/scripts/use-interval';
 
-const name = 'rssMarquee';
+const name = 'rssTicker';
 
 const widgetPropsDef = {
 	url: {
