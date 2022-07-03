@@ -118,10 +118,12 @@ defineExpose<WidgetComponentExpose>({
 
 .ekmkgxbk {
 	> .feed {
+		--height: 42px;
 		padding: 0;
 		font-size: 0.9em;
-		line-height: 42px;
-		height: 42px;
+		line-height: var(--height);
+		height: var(--height);
+		contain: strict;
 
 		::v-deep(.item) {
 			display: inline-flex;
