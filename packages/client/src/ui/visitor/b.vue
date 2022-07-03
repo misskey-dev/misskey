@@ -33,7 +33,7 @@
 	<transition :name="$store.state.animation ? 'tray' : ''">
 		<div v-if="showMenu" class="menu">
 			<MkA to="/" class="link" active-class="active"><i class="fas fa-home icon"></i>{{ $ts.home }}</MkA>
-			<MkA to="/timeline" class="link" active-class="active"><i class="fas fa-comments icon"></i>{{ $ts.timeline }}</MkA>
+			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="fas fa-comments icon"></i>{{ $ts.timeline }}</MkA>
 			<MkA to="/explore" class="link" active-class="active"><i class="fas fa-hashtag icon"></i>{{ $ts.explore }}</MkA>
 			<MkA to="/channels" class="link" active-class="active"><i class="fas fa-satellite-dish icon"></i>{{ $ts.channel }}</MkA>
 			<MkA to="/pages" class="link" active-class="active"><i class="fas fa-file-alt icon"></i>{{ $ts.pages }}</MkA>
@@ -54,6 +54,7 @@ import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
+import { instance } from '@/instance';
 import MkPagination from '@/components/ui/pagination.vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
@@ -78,6 +79,7 @@ const announcements = {
 	endpoint: 'announcements',
 	limit: 10,
 };
+const isTimelineAvailable = !instance.disableLocalTimeline || !instance.disableGlobalTimeline;
 let showMenu = $ref(false);
 let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
 let narrow = $ref(window.innerWidth < 1280);

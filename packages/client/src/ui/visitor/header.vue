@@ -3,7 +3,7 @@
 	<div v-if="narrow === false" class="wide">
 		<div class="content">
 			<MkA to="/" class="link" active-class="active"><i class="fas fa-home icon"></i>{{ $ts.home }}</MkA>
-			<MkA to="/timeline" class="link" active-class="active"><i class="fas fa-comments icon"></i>{{ $ts.timeline }}</MkA>
+			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="fas fa-comments icon"></i>{{ $ts.timeline }}</MkA>
 			<MkA to="/explore" class="link" active-class="active"><i class="fas fa-hashtag icon"></i>{{ $ts.explore }}</MkA>
 			<MkA to="/channels" class="link" active-class="active"><i class="fas fa-satellite-dish icon"></i>{{ $ts.channel }}</MkA>
 			<MkA to="/pages" class="link" active-class="active"><i class="fas fa-file-alt icon"></i>{{ $ts.pages }}</MkA>
@@ -46,6 +46,7 @@ import { defineComponent } from 'vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import * as os from '@/os';
+import { instance } from '@/instance';
 import { search } from '@/scripts/search';
 
 export default defineComponent({
@@ -59,6 +60,7 @@ export default defineComponent({
 		return {
 			narrow: null,
 			showMenu: false,
+			isTimelineAvailable = !instance.disableLocalTimeline || !instance.disableGlobalTimeline,
 		};
 	},
 
