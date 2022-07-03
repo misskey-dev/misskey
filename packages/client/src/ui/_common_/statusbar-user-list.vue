@@ -52,6 +52,8 @@ const tick = () => {
 	});
 };
 
+watch(() => props.userListId, tick);
+
 useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 	immediate: true,
 	afterMounted: true,

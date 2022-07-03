@@ -7,7 +7,7 @@
 		<option value="userList">User list timeline</option>
 	</FormSelect>
 
-	<MkInput v-model="statusbar.name" class="_formBlock">
+	<MkInput v-model="statusbar.name" manual-save class="_formBlock">
 		<template #label>Name</template>
 	</MkInput>
 
@@ -15,14 +15,23 @@
 		<template #label>Black</template>
 	</MkSwitch>
 
+	<FormRadios v-model="statusbar.size" class="_formBlock">
+		<template #label>Size</template>
+		<option value="verySmall">{{ i18n.ts.small }}+</option>
+		<option value="small">{{ i18n.ts.small }}</option>
+		<option value="medium">{{ i18n.ts.medium }}</option>
+		<option value="large">{{ i18n.ts.large }}</option>
+		<option value="veryLarge">{{ i18n.ts.large }}+</option>
+	</FormRadios>
+
 	<template v-if="statusbar.type === 'rss'">
-		<MkInput v-model="statusbar.props.url" class="_formBlock" type="url">
+		<MkInput v-model="statusbar.props.url" manual-save class="_formBlock" type="url">
 			<template #label>URL</template>
 		</MkInput>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" class="_formBlock" type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
 			<template #label>Refresh interval</template>
 		</MkInput>
-		<MkInput v-model="statusbar.props.marqueeDuration" class="_formBlock" type="number">
+		<MkInput v-model="statusbar.props.marqueeDuration" manual-save class="_formBlock" type="number">
 			<template #label>Duration</template>
 		</MkInput>
 		<MkSwitch v-model="statusbar.props.marqueeReverse" class="_formBlock">
@@ -30,10 +39,10 @@
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
-		<MkInput v-model="statusbar.props.refreshIntervalSec" class="_formBlock" type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
 			<template #label>Refresh interval</template>
 		</MkInput>
-		<MkInput v-model="statusbar.props.marqueeDuration" class="_formBlock" type="number">
+		<MkInput v-model="statusbar.props.marqueeDuration" manual-save class="_formBlock" type="number">
 			<template #label>Duration</template>
 		</MkInput>
 		<MkSwitch v-model="statusbar.props.marqueeReverse" class="_formBlock">
@@ -48,10 +57,10 @@
 			<template #label>{{ i18n.ts.userList }}</template>
 			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
 		</FormSelect>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" class="_formBlock" type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
 			<template #label>Refresh interval</template>
 		</MkInput>
-		<MkInput v-model="statusbar.props.marqueeDuration" class="_formBlock" type="number">
+		<MkInput v-model="statusbar.props.marqueeDuration" manual-save class="_formBlock" type="number">
 			<template #label>Duration</template>
 		</MkInput>
 		<MkSwitch v-model="statusbar.props.marqueeReverse" class="_formBlock">
@@ -60,7 +69,6 @@
 	</template>
 
 	<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton @click="save">save</FormButton>
 		<FormButton danger @click="del">Delete</FormButton>
 	</div>
 </div>
@@ -108,6 +116,8 @@ watch(() => statusbar.type, () => {
 		statusbar.props.marqueeReverse = false;
 	}
 });
+
+watch(statusbar, save);
 
 async function save() {
 	const i = defaultStore.state.statusbars.findIndex(x => x.id === props._id);

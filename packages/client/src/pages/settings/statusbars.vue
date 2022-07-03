@@ -6,14 +6,6 @@
 		<XStatusbar :_id="x.id" :user-lists="userLists"/>
 	</FormFolder>
 	<FormButton @click="add">add</FormButton>
-	<FormRadios v-model="statusbarSize" class="_formBlock">
-		<template #label>Size</template>
-		<option value="verySmall">{{ i18n.ts.small }}+</option>
-		<option value="small">{{ i18n.ts.small }}</option>
-		<option value="medium">{{ i18n.ts.medium }}</option>
-		<option value="large">{{ i18n.ts.large }}</option>
-		<option value="veryLarge">{{ i18n.ts.large }}+</option>
-	</FormRadios>
 </div>
 </template>
 
@@ -30,7 +22,6 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const statusbarSize = computed(defaultStore.makeGetterSetter('statusbarSize'));
 const statusbars = defaultStore.reactiveState.statusbars;
 
 let userLists = $ref();
@@ -46,6 +37,7 @@ async function add() {
 		id: uuid(),
 		type: null,
 		black: false,
+		size: 'medium',
 		props: {},
 	});
 }

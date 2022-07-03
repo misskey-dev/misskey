@@ -1,14 +1,14 @@
 <template>
-<div
-	class="dlrsnxqu" :class="{
-		verySmall: defaultStore.reactiveState.statusbarSize.value === 'verySmall',
-		small: defaultStore.reactiveState.statusbarSize.value === 'small',
-		medium: defaultStore.reactiveState.statusbarSize.value === 'medium',
-		large: defaultStore.reactiveState.statusbarSize.value === 'large',
-		veryLarge: defaultStore.reactiveState.statusbarSize.value === 'veryLarge',
-	}"
->
-	<div v-for="x in defaultStore.reactiveState.statusbars.value" :key="x.id" class="item" :class="{ black: x.black }">
+<div class="dlrsnxqu">
+	<div
+		v-for="x in defaultStore.reactiveState.statusbars.value" :key="x.id" class="item" :class="[{ black: x.black }, {
+			verySmall: x.size === 'verySmall',
+			small: x.size === 'small',
+			medium: x.size === 'medium',
+			large: x.size === 'large',
+			veryLarge: x.size === 'veryLarge',
+		}]"
+	>
 		<span class="name">{{ x.name }}</span>
 		<XRss v-if="x.type === 'rss'" class="body" :refresh-interval-sec="x.props.refreshIntervalSec" :marquee-duration="x.props.marqueeDuration" :marquee-reverse="x.props.marqueeReverse" :display="x.props.display" :url="x.props.url"/>
 		<XFederation v-else-if="x.type === 'federation'" class="body" :refresh-interval-sec="x.props.refreshIntervalSec" :marquee-duration="x.props.marqueeDuration" :marquee-reverse="x.props.marqueeReverse" :display="x.props.display" :colored="x.props.colored"/>
@@ -28,37 +28,38 @@ const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue')
 
 <style lang="scss" scoped>
 .dlrsnxqu {
-	--height: 24px;
-	--nameMargin: 10px;
 	background: var(--panel);
-	font-size: 0.85em;
-
-	&.verySmall {
-		--nameMargin: 7px;
-		--height: 16px;
-		font-size: 0.75em;
-	}
-
-	&.small {
-		--nameMargin: 8px;
-		--height: 20px;
-		font-size: 0.8em;
-	}
-
-	&.large {
-		--nameMargin: 12px;
-		--height: 26px;
-		font-size: 0.875em;
-	}
-
-	&.veryLarge {
-		--nameMargin: 14px;
-		--height: 30px;
-		font-size: 0.9em;
-	}
 
 	> .item {
-		display: inline-flex;
+		--height: 24px;
+		--nameMargin: 10px;
+		font-size: 0.85em;
+
+		&.verySmall {
+			--nameMargin: 7px;
+			--height: 16px;
+			font-size: 0.75em;
+		}
+
+		&.small {
+			--nameMargin: 8px;
+			--height: 20px;
+			font-size: 0.8em;
+		}
+
+		&.large {
+			--nameMargin: 12px;
+			--height: 26px;
+			font-size: 0.875em;
+		}
+
+		&.veryLarge {
+			--nameMargin: 14px;
+			--height: 30px;
+			font-size: 0.9em;
+		}
+
+		display: flex;
 		vertical-align: bottom;
 		width: 100%;
 		line-height: var(--height);
