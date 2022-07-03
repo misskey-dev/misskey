@@ -1643,8 +1643,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Selalu tampilkan kolom utama"
   columnAlign: "Luruskan kolom"
-  columnMargin: "Batas antar kolom"
-  columnHeaderHeight: "Tinggi kolom header"
   addColumn: "Tambahkan kolom"
   swapLeft: "Pindah ke kiri"
   swapRight: "Pindah ke kanan"
