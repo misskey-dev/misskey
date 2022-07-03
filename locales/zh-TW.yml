@@ -1216,7 +1216,6 @@ _widgets:
   trends: "發燒貼文"
   clock: "時鐘"
   rss: "RSS閱讀器"
-  rssMarquee: "RSS閱讀器 (Marquee)"
   activity: "動態"
   photos: "照片"
   digitalClock: "電子時鐘"
