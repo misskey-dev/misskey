@@ -4,7 +4,8 @@
 		verySmall: defaultStore.reactiveState.statusbarSize.value === 'verySmall',
 		small: defaultStore.reactiveState.statusbarSize.value === 'small',
 		medium: defaultStore.reactiveState.statusbarSize.value === 'medium',
-		large: defaultStore.reactiveState.statusbarSize.value === 'large'
+		large: defaultStore.reactiveState.statusbarSize.value === 'large',
+		veryLarge: defaultStore.reactiveState.statusbarSize.value === 'veryLarge',
 	}"
 >
 	<div v-for="x in defaultStore.reactiveState.statusbars.value" :key="x.id" class="item" :class="{ black: x.black }">
@@ -44,6 +45,11 @@ const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue')
 	&.large {
 		--height: 26px;
 		font-size: 0.875em;
+	}
+
+	&.veryLarge {
+		--height: 30px;
+		font-size: 0.9em;
 	}
 
 	> .item {
