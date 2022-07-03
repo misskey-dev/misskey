@@ -1631,8 +1631,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"
-  columnMargin: "Marge entre les colonnes"
-  columnHeaderHeight: "Taille de l'en-tête de colonne"
   addColumn: "Ajouter une colonne"
   swapLeft: "Déplacer à gauche"
   swapRight: "Déplacer à droite"
