@@ -1639,8 +1639,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "সর্বদা মেইন কলাম দেখান"
   columnAlign: "কলাম সাজান"
-  columnMargin: "কলামের মধ্যবর্তী মার্জিন"
-  columnHeaderHeight: "কলামের হেডারের উচ্চতা"
   addColumn: "কলাম যুক্ত করুন"
   swapLeft: "বামে সরান"
   swapRight: "ডানে সরান"
