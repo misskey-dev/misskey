@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="1000">
 		<transition name="fade" mode="out-in">
 			<div v-if="user">
-				<XFollowList :user="user" type="following"/>
+				<XFollowList :user="user" type="followers"/>
 			</div>
 			<MkError v-else-if="error" @retry="fetch()"/>
 			<MkLoading v-else/>
