@@ -1652,8 +1652,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "메인 칼럼 항상 표시"
   columnAlign: "칼럼 정렬"
-  columnMargin: "칼럼 간 여백"
-  columnHeaderHeight: "칼럼 헤더 폭"
   addColumn: "칼럼 추가"
   swapLeft: "왼쪽으로 이동"
   swapRight: "오른쪽으로 이동"
