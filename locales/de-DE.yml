@@ -864,6 +864,8 @@ numberOfPageCache: "Seitencachegröße"
 numberOfPageCacheDescription: "Das Erhöhen dieses Caches führt zu einer angenehmerern Benutzererfahrung, erhöht aber Serverlast und Arbeitsspeicherauslastung."
 logoutConfirm: "Wirklich abmelden?"
 lastActiveDate: "Zuletzt verwendet am"
+statusbar: "Statusleiste"
+pleaseSelect: "Wähle eine Option"
 _emailUnavailable:
   used: "Diese Email-Adresse wird bereits verwendet"
   format: "Das Format dieser Email-Adresse ist ungültig"
