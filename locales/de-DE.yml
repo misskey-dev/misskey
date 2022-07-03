@@ -1220,7 +1220,7 @@ _widgets:
   trends: "Trends"
   clock: "Uhr"
   rss: "RSS-Reader"
-  rssMarquee: "RSS-Reader (Laufschrift)"
+  rssTicker: "RSS-Ticker"
   activity: "Aktivität"
   photos: "Fotos"
   digitalClock: "Digitaluhr"
