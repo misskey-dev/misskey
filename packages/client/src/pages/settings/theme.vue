@@ -175,7 +175,7 @@ definePageMetadata({
 		> .toggleWrapper {
 			display: inline-block;
 			text-align: left;
-			overflow: clip;
+			overflow: hidden; overflow: clip;
 			padding: 0 100px;
 
 			input {

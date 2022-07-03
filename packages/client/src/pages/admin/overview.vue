@@ -561,7 +561,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
-					overflow: clip;
+					overflow: hidden; overflow: clip;
 				}
 			}
 
@@ -620,7 +620,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
-					overflow: clip;
+					overflow: hidden; overflow: clip;
 				}
 			}
 		}

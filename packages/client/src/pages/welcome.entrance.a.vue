@@ -275,7 +275,7 @@ function showMenu(ev) {
 			-webkit-backdrop-filter: var(--blur, blur(15px));
 			backdrop-filter: var(--blur, blur(15px));
 			border-radius: 999px;
-			overflow: clip;
+			overflow: hidden; overflow: clip;
 			width: 800px;
 			padding: 8px 0;
 

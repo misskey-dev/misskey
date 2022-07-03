@@ -73,7 +73,7 @@ defineExpose({
 <style lang="scss" scoped>
 .meijqfqm {
 	position: relative;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 	display: grid;
 	place-items: center;
 

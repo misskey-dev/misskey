@@ -389,7 +389,7 @@ defineExpose({
 		left: 0;
 		width: 100%;
 		height: 100%;
-		overflow: clip;
+		overflow: hidden; overflow: clip;
 
 		> .content {
 			position: fixed;

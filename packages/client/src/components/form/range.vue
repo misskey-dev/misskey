@@ -189,7 +189,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 				height: 3px;
 				background: rgba(0, 0, 0, 0.1);
 				border-radius: 999px;
-				overflow: clip;
+				overflow: hidden; overflow: clip;
 
 				> .highlight {
 					position: absolute;
