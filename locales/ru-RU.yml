@@ -1621,8 +1621,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Всегда показывать главную колонку"
   columnAlign: "Выравнивание колонок"
-  columnMargin: "Расстояние между колонками"
-  columnHeaderHeight: "Высота заголовка колонки"
   addColumn: "Добавить колонку"
   swapLeft: "Переставить левее"
   swapRight: "Переставить правее"
