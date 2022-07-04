@@ -1731,6 +1731,7 @@ _deck:
   profile: "プロファイル"
   introduction: "カラムを組み合わせて自分だけのインターフェイスを作りましょう！"
   introduction2: "画面の右にある + を押して、いつでもカラムを追加できます。"
+  widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選択してウィジェットを追加してください"
 
   _columns:
     main: "メイン"
