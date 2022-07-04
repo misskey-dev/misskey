@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs" v-model:tab="tab"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div class="jqqmcavi">
 			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
@@ -35,7 +35,7 @@
 				<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 				<div class="eyeCatch">
-					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
+					<MkButton v-if="eyeCatchingImageId === null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
 						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, defineAsyncComponent, computed, provide, watch } from 'vue';
+import { defineAsyncComponent, computed, provide, watch } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -93,7 +93,6 @@ import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
 import MkTextarea from '@/components/form/textarea.vue';
-import MkContainer from '@/components/ui/container.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkSwitch from '@/components/form/switch.vue';
@@ -140,7 +139,7 @@ provide('getScriptBlockList', getScriptBlockList);
 provide('getPageBlockList', getPageBlockList);
 
 watch($$(eyeCatchingImageId), async () => {
-	if (eyeCatchingImageId == null) {
+	if (eyeCatchingImageId === null) {
 		eyeCatchingImage = null;
 	} else {
 		eyeCatchingImage = await os.api('drive/files/show', {
@@ -168,15 +167,15 @@ function save() {
 	const options = getSaveOptions();
 
 	const onError = err => {
-		if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
-			if (err.info.param == 'name') {
+		if (err.id === '3d81ceae-475f-4600-b2a8-2bc116157532') {
+			if (err.info.param === 'name') {
 				os.alert({
 					type: 'error',
 					title: i18n.ts._pages.invalidNameTitle,
 					text: i18n.ts._pages.invalidNameText,
 				});
 			}
-		} else if (err.code == 'NAME_ALREADY_EXISTS') {
+		} else if (err.code === 'NAME_ALREADY_EXISTS') {
 			os.alert({
 				type: 'error',
 				text: i18n.ts._pages.nameAlreadyExists,
@@ -345,8 +344,8 @@ function getScriptBlockList(type: string = null) {
 	return list;
 }
 
-function setEyeCatchingImage(e) {
-	selectFile(e.currentTarget ?? e.target, null).then(file => {
+function setEyeCatchingImage(img) {
+	selectFile(img.currentTarget ?? img.target, null).then(file => {
 		eyeCatchingImageId = file.id;
 	});
 }

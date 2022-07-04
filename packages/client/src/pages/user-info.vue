@@ -313,10 +313,10 @@ async function applyDriveCapacityOverride() {
 	try {
 		await os.apiWithDialog('admin/drive-capacity-override', { userId: user.id, overrideMb: driveCapOrMb });
 		await refreshUser();
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: e.toString(),
+			text: err.toString(),
 		});
 	}
 }
