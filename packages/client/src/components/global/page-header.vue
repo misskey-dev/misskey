@@ -172,7 +172,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .fdidabkb {
-	--height: 60px;
+	--height: 55px;
 	display: flex;
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));

@@ -148,7 +148,7 @@ export default defineComponent({
 	text-decoration: none;
 	background: var(--buttonBg);
 	border-radius: 5px;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 	box-sizing: border-box;
 	transition: background 0.1s ease;
 

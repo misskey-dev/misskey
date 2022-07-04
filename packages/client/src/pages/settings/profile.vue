@@ -192,7 +192,7 @@ definePageMetadata({
 	background-size: cover;
 	background-position: center;
 	border-radius: 10px;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 
 	> .avatar {
 		display: inline-block;

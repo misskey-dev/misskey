@@ -116,8 +116,11 @@ function get() {
 		let base = parseInt(after.value);
 		switch (unit.value) {
 			case 'day': base *= 24;
+				// fallthrough
 			case 'hour': base *= 60;
+				// fallthrough
 			case 'minute': base *= 60;
+				// fallthrough
 			case 'second': return base *= 1000;
 			default: return null;
 		}

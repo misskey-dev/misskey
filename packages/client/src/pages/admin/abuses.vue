@@ -27,10 +27,10 @@
 					</div>
 					<!-- TODO
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false">
+				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" :spellcheck="false">
 					<span>{{ $ts.username }}</span>
 				</MkInput>
-				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" :disabled="pagination.params().origin === 'local'">
+				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params().origin === 'local'">
 					<span>{{ $ts.host }}</span>
 				</MkInput>
 			</div>

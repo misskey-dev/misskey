@@ -170,7 +170,6 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 };
 
 export function initHpmlLib(expr: Expr, scope: HpmlScope, randomSeed: string, visitor?: any) {
-
 	const date = new Date();
 	const day = `${visitor ? visitor.id : ''} ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 

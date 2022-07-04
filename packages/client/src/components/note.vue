@@ -297,7 +297,7 @@ function readPromo() {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 	contain: content;
 
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、

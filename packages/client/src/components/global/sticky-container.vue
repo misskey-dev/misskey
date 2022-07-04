@@ -9,10 +9,14 @@
 </div>
 </template>
 
+<script lang="ts">
+// なんか動かない
+//const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
+const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
+</script>
+
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
-
-const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
 
 const rootEl = $ref<HTMLElement>();
 const headerEl = $ref<HTMLElement>();

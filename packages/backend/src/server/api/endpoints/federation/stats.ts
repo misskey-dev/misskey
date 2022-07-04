@@ -54,7 +54,7 @@ export default define(meta, paramDef, async (ps) => {
 	]);
 
 	const gotSubCount = topSubInstances.map(x => x.followersCount).reduce((a, b) => a + b, 0);
-	const gotPubCount = topSubInstances.map(x => x.followingCount).reduce((a, b) => a + b, 0);
+	const gotPubCount = topPubInstances.map(x => x.followingCount).reduce((a, b) => a + b, 0);
 
 	return await awaitAll({
 		topSubInstances: Instances.packMany(topSubInstances),

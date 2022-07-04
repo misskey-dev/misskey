@@ -2,14 +2,15 @@
 <div class="dkgtipfy" :class="{ wallpaper }">
 	<XSidebar v-if="!isMobile" class="sidebar"/>
 
-	<div class="contents" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
-		<main>
-			<div class="content">
+	<MkStickyContainer class="contents">
+		<template #header><XStatusBars :class="$style.statusbars"/></template>
+		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
+			<div :class="$style.content">
 				<RouterView/>
 			</div>
-			<div class="spacer"></div>
+			<div :class="$style.spacer"></div>
 		</main>
-	</div>
+	</MkStickyContainer>
 
 	<div v-if="isDesktop" ref="widgetsEl" class="widgets">
 		<XWidgets @mounted="attachSticky"/>
@@ -71,6 +72,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
+const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
@@ -235,18 +237,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		width: 100%;
 		min-width: 0;
 		background: var(--bg);
-
-		> main {
-			min-width: 0;
-
-			> .spacer {
-				height: calc(env(safe-area-inset-bottom, 0px) + 96px);
-
-				@media (min-width: ($widgets-hide-threshold + 1px)) {
-					display: none;
-				}
-			}
-		}
 	}
 
 	> .widgets {
@@ -396,5 +386,20 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" module>
+.statusbars {
+	position: sticky;
+	top: 0;
+	left: 0;
+}
+
+.spacer {
+	$widgets-hide-threshold: 1090px;
+
+	height: calc(env(safe-area-inset-bottom, 0px) + 96px);
+
+	@media (min-width: ($widgets-hide-threshold + 1px)) {
+		display: none;
+	}
+}
 </style>
