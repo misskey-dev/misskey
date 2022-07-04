@@ -118,7 +118,7 @@ const fgColors = [
 	{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 ];
 
-const theme = $ref<Partial<Theme>>({
+let theme = $ref<Partial<Theme>>({
 	base: 'light',
 	props: lightTheme.props,
 });
