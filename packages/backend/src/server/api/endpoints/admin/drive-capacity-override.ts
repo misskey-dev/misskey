@@ -44,5 +44,4 @@ export default define(meta, paramDef, async (ps, me) => {
 	insertModerationLog(me, 'change-drive-capacity-override', {
 		targetId: user.id,
 	});
-
 });
