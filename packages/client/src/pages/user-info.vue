@@ -88,7 +88,7 @@
 				<FormSection>
 					<template #label>Drive Capacity Override</template>
 
-					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" @update:model-value="applyDriveCapacityOverride">
+					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
 						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
 						<template #suffix>MB</template>
 						<template #caption>
@@ -177,6 +177,7 @@ import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { iAmAdmin, iAmModerator } from '@/account';
+import { instance } from '@/instance';
 
 const props = defineProps<{
 	userId: string;

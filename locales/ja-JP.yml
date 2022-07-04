@@ -1066,6 +1066,7 @@ _theme:
   addConstant: "定数を追加"
   constant: "定数"
   defaultValue: "デフォルト値"
+  defaultValueIs: "デフォルト: {value}"
   color: "色"
   refProp: "プロパティを参照"
   refConst: "定数を参照"
