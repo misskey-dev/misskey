@@ -5,7 +5,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import 'prismjs';
+import { Prism } from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 
 const props = defineProps<{

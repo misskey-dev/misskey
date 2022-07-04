@@ -41,6 +41,7 @@ import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	listId: string;
