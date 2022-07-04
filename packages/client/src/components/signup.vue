@@ -1,11 +1,11 @@
 <template>
 <form class="qlvuhzng _formRoot" autocomplete="new-password" @submit.prevent="onSubmit">
 	<template v-if="meta">
-		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" spellcheck="false" required>
+		<MkInput v-if="meta.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" :spellcheck="false" required>
 			<template #label>{{ $ts.invitationCode }}</template>
 			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
-		<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
+		<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
 			<template #label>{{ $ts.username }} <div v-tooltip:dialog="$ts.usernameInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
@@ -19,7 +19,7 @@
 				<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
-		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+		<MkInput v-if="meta.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
 			<template #label>{{ $ts.emailAddress }} <div v-tooltip:dialog="$ts._signup.emailAddressInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 			<template #prefix><i class="fas fa-envelope"></i></template>
 			<template #caption>
