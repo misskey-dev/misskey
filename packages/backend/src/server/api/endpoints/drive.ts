@@ -39,7 +39,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	const usage = await DriveFiles.calcDriveUsageOf(user.id);
 
 	return {
-		capacity: 1024 * 1024 * instance.localDriveCapacityMb,
+		capacity: 1024 * 1024 * (user.driveCapacityOverrideMb || instance.localDriveCapacityMb),
 		usage: usage,
 	};
 });

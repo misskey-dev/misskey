@@ -307,7 +307,7 @@ async function deleteOldFile(user: IRemoteUser) {
 
 type AddFileArgs = {
 	/** User who wish to add file */
-	user: { id: User['id']; host: User['host'] } | null;
+	user: { id: User['id']; host: User['host']; driveCapacityOverrideMb: User['driveCapacityOverrideMb'] } | null;
 	/** File path */
 	path: string;
 	/** Name */
@@ -371,9 +371,16 @@ export async function addFile({
 	//#region Check drive usage
 	if (user && !isLink) {
 		const usage = await DriveFiles.calcDriveUsageOf(user);
+		const u = await Users.findOneBy({ id: user.id });
 
 		const instance = await fetchMeta();
-		const driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+		let driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+
+		if (Users.isLocalUser(user) && u?.driveCapacityOverrideMb != null) {
+			driveCapacity = 1024 * 1024 * u.driveCapacityOverrideMb;
+			logger.debug('drive capacity override applied');
+			logger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
+		}
 
 		logger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
