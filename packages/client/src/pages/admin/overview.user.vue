@@ -19,7 +19,7 @@ const props = defineProps<{
 	user: misskey.entities.User;
 }>();
 
-const chart = $ref(null);
+let chart = $ref(null);
 
 os.apiGet('charts/user/notes', { userId: props.user.id, limit: 16, span: 'day' }).then(res => {
 	chart = res;
