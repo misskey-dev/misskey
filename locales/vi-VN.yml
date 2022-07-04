@@ -1673,6 +1673,7 @@ _deck:
   profile: "Hồ sơ"
   introduction: "Kết hợp các cột để tạo giao diện của riêng bạn!"
   introduction2: "Bạn có thể thêm cột bất kỳ lúc nào bằng cách nhấn + ở bên phải màn hình."
+  widgetsIntroduction: "Chọn \"Sửa widget\" trong menu cột và thêm một widget."
   _columns:
     main: "Chính"
     widgets: "Tiện ích"
