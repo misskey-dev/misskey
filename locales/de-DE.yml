@@ -1673,6 +1673,7 @@ _deck:
   profile: "Profil"
   introduction: "Erstelle eine auf dich zugeschneiderte Benutzeroberfläche durch das Aneinanderreihen von Spalten!"
   introduction2: "Klicke auf das + rechts um wann immer du möchtest neue Spalten hinzuzufügen."
+  widgetsIntroduction: "Drücke bitte \"Widgets bearbeiten\" im Spaltenmenü und füge ein Widget hinzu."
   _columns:
     main: "Hauptspalte"
     widgets: "Widgets"
