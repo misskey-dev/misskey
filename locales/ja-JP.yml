@@ -856,7 +856,7 @@ noEmailServerWarning: "メールサーバーの設定がされていません。
 thereIsUnresolvedAbuseReportWarning: "未対応の通報があります。"
 recommended: "推奨"
 check: "チェック"
-driveCapOverrideLabel: "このユーザーのドライブ容量上限を変更:"
+driveCapOverrideLabel: "このユーザーのドライブ容量上限を変更"
 driveCapOverrideCaption: "0以下を指定すると解除されます。"
 requireAdminForView: "閲覧するには管理者アカウントでログインしている必要があります。"
 isSystemAccount: "システムにより自動で作成・管理されているアカウントです。"
