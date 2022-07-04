@@ -13,9 +13,6 @@ const props = defineProps<{
 	router?: Router;
 }>();
 
-const emit = defineEmits<{
-}>();
-
 const router = props.router ?? inject('router');
 
 if (router == null) {

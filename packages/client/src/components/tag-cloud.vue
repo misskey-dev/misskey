@@ -13,8 +13,6 @@
 import { onMounted, ref, watch, PropType, onBeforeUnmount } from 'vue';
 import tinycolor from 'tinycolor2';
 
-const props = defineProps<{}>();
-
 const loaded = !!window.TagCanvas;
 const SAFE_FOR_HTML_ID = 'abcdefghijklmnopqrstuvwxyz';
 const computedStyle = getComputedStyle(document.documentElement);
