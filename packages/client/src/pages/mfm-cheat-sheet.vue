@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<div class="mwysmxbg">
-		<div class="_isolated">{{ $ts._mfm.intro }}</div>
+		<div>{{ $ts._mfm.intro }}</div>
 		<div class="section _block">
 			<div class="title">{{ $ts._mfm.mention }}</div>
 			<div class="content">

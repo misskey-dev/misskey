@@ -803,6 +803,7 @@ oneHour: "ساعة"
 oneDay: "يوم"
 oneWeek: "أسبوع"
 failedToFetchAccountInformation: "تعذر جلب معلومات الحساب"
+file: "الملفات"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"
