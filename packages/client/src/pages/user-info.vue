@@ -85,17 +85,6 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_formRoot">
-				<FormSection>
-					<template #label>Drive Capacity Override</template>
-
-					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
-						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
-						<template #suffix>MB</template>
-						<template #caption>
-							{{ i18n.ts.driveCapOverrideCaption }}
-						</template>
-					</FormInput>
-				</FormSection>
 				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
 				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
 				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
@@ -123,6 +112,17 @@
 
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</FormFolder>
+				<FormSection>
+					<template #label>Drive Capacity Override</template>
+
+					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
+						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
+						<template #suffix>MB</template>
+						<template #caption>
+							{{ i18n.ts.driveCapOverrideCaption }}
+						</template>
+					</FormInput>
+				</FormSection>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_formRoot">
 				<div class="cmhjzshm">
