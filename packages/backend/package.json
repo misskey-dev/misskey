@@ -13,10 +13,6 @@
 		"mocha": "NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" mocha",
 		"test": "yarn mocha"
 	},
-	"resolutions": {
-		"chokidar": "^3.3.1",
-		"lodash": "^4.17.21"
-	},
 	"dependencies": {
 		"@bull-board/api": "4.0.0",
 		"@bull-board/koa": "4.0.0",

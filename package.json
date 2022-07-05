@@ -34,6 +34,10 @@
 		"clean-all": "node ./scripts/clean-all.js",
 		"cleanall": "yarn clean-all"
 	},
+	"resolutions": {
+		"chokidar": "^3.3.1",
+		"lodash": "^4.17.21"
+	},
 	"dependencies": {
 		"eslint": "^8.16.0",
 		"execa": "5.1.1",
