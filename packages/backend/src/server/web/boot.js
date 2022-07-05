@@ -139,7 +139,6 @@
         </button>
       </a>
 			<br>
-			<hr>
 			<div id="errors"></div>
 			`;
 
