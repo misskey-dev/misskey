@@ -12,19 +12,21 @@
 			<XUsers origin="remote"/>
 		</div>
 		<div v-else-if="tab === 'search'">
-			<div class="_isolated">
-				<MkInput v-model="searchQuery" :debounce="true" type="search">
-					<template #prefix><i class="fas fa-search"></i></template>
-					<template #label>{{ $ts.searchUser }}</template>
-				</MkInput>
-				<MkRadios v-model="searchOrigin">
-					<option value="combined">{{ $ts.all }}</option>
-					<option value="local">{{ $ts.local }}</option>
-					<option value="remote">{{ $ts.remote }}</option>
-				</MkRadios>
-			</div>
+			<MkSpacer :content-max="1200">
+				<div>
+					<MkInput v-model="searchQuery" :debounce="true" type="search" class="_formBlock">
+						<template #prefix><i class="fas fa-search"></i></template>
+						<template #label>{{ $ts.searchUser }}</template>
+					</MkInput>
+					<MkRadios v-model="searchOrigin" class="_formBlock">
+						<option value="combined">{{ $ts.all }}</option>
+						<option value="local">{{ $ts.local }}</option>
+						<option value="remote">{{ $ts.remote }}</option>
+					</MkRadios>
+				</div>
 
-			<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
+				<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
+			</MkSpacer>
 		</div>
 	</div>
 </MkStickyContainer>
