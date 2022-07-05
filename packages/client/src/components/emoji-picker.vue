@@ -59,11 +59,11 @@
 				</div>
 			</section>
 		</div>
-		<div class="group">
+		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
 			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')" @chosen="chosen">{{ category || i18n.ts.other }}</XSection>
 		</div>
-		<div class="group">
+		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
 			<XSection v-for="category in categories" :key="category" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)" @chosen="chosen">{{ category }}</XSection>
 		</div>
