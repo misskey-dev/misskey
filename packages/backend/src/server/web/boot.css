@@ -62,7 +62,8 @@ li {
 	font-size: 16px;
 }
 
-.dont-worry {
+.dont-worry,
+#msg {
 	font-size: 18px;
 }
 
