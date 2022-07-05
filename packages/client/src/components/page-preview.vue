@@ -7,8 +7,8 @@
 		</header>
 		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
-			<img class="icon" :src="page.user.avatarUrl"/>
-			<p>{{ userName(page.user) }}</p>
+			<img class="icon" :src="page.user.avatarUrl" aria-label="none"/>
+			<Mfm :text="userName(page.user)" :is-note="false"></Mfm>
 		</footer>
 	</article>
 </MkA>
