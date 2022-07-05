@@ -72,7 +72,6 @@ export const defaultStore = markRaw(new Storage('base', {
 			'drive',
 			'followRequests',
 			'-',
-			'featured',
 			'explore',
 			'announcements',
 			'search',
@@ -94,12 +93,10 @@ export const defaultStore = markRaw(new Storage('base', {
 			name: string;
 			id: string;
 			type: string;
+			size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
+			black: boolean;
 			props: Record<string, any>;
 		}[],
-	},
-	statusbarSize: {
-		where: 'deviceAccount',
-		default: 'medium',
 	},
 	widgets: {
 		where: 'deviceAccount',

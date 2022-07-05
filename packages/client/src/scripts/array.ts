@@ -98,7 +98,7 @@ export function groupOn<T, S>(f: (x: T) => S, xs: T[]): T[][] {
 export function groupByX<T>(collections: T[], keySelector: (x: T) => string) {
 	return collections.reduce((obj: Record<string, T[]>, item: T) => {
 		const key = keySelector(item);
-		if (!obj.hasOwnProperty(key)) {
+		if (typeof obj[key] === 'undefined') {
 			obj[key] = [];
 		}
 

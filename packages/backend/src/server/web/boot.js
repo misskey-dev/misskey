@@ -106,15 +106,39 @@
 	function renderError(code, details) {
 		let errorsElement = document.getElementById('errors');
 		if (!errorsElement) {
+			document.getElementsByTagName("head")[0].insertAdjacentHTML(
+				"beforeend",
+				`<link rel="stylesheet" href="../error.css" />`);
 			document.documentElement.innerHTML = `
-			<h1>⚠ An error has occurred. ⚠</h1>
-			<p>If the problem persists, please contact the administrator. You may also try the following options:</p>
-			<ul>
-				<li>Start <a href="/cli">the simple client</a></li>
-				<li>Attempt to repair in <a href="/bios">BIOS</a></li>
-				<li><a href="/flush">Flush preferences and cache</a></li>
-			</ul>
-			<hr>
+			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   			<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   			<path d="M12 9v2m0 4v.01"></path>
+   			<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
+			</svg>
+			<h1>An error has occurred!</h1>
+			<button class="button-big" onclick="location.reload(true);">
+				<span class="button-label-big">Refresh</span>
+			</button>
+      <p class="dont-worry">Don't worry, it's (probably) not your fault.</p>
+			<p>If the problem persists after refreshing, please contact your instance's administrator.<br>You may also try the following options:</p>
+      <a href="/flush">
+      <button class="button-small">
+        <span class="button-label-small">Flush preferences and cache</span>
+      </button>
+      </a>
+			<br>
+      <a href="/cli">
+        <button class="button-small">
+          <span class="button-label-small">Start the simple client</span>
+        </button>
+      </a>
+			<br>
+      <a href="/bios">
+        <button class="button-small">
+          <span class="button-label-small">Attempt to repair in Repair Tool</span>
+        </button>
+      </a>
+			<br>
 			<div id="errors"></div>
 			`;
 
@@ -122,8 +146,7 @@
 		}
 
 		const detailsElement = document.createElement('details');
-		detailsElement.innerHTML = `<summary><code>ERROR CODE: ${code}</code></summary>${JSON.stringify(details)}`;
-
+		detailsElement.innerHTML = `<br><summary><code>ERROR CODE: ${code}</code></summary>${JSON.stringify(details)}`;
 		errorsElement.appendChild(detailsElement);
 	}
 

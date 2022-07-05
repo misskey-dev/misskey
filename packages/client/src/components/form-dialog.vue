@@ -98,7 +98,7 @@ export default defineComponent({
 
 	created() {
 		for (const item in this.form) {
-			this.values[item] = this.form[item].hasOwnProperty('default') ? this.form[item].default : null;
+			this.values[item] = this.form[item].default ?? null;
 		}
 	},
 

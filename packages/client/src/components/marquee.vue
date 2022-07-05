@@ -77,10 +77,16 @@ export default {
 <style lang="scss" module>
 .wrap {
 	overflow: hidden; overflow: clip;
+	animation-play-state: running;
+
+	&:hover {
+		animation-play-state: paused;
+	}
 }
 .content {
 	display: inline-block;
 	white-space: nowrap;
+	animation-play-state: inherit;
 }
 .text {
 	display: inline-block;
@@ -88,6 +94,7 @@ export default {
 	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 	animation-duration: inherit;
+	animation-play-state: inherit;
 }
 .paused .text {
 	animation-play-state: paused;
