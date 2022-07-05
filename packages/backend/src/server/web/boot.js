@@ -102,13 +102,112 @@
 		document.head.appendChild(style);
 	}
 
-	// eslint-disable-next-line no-inner-declarations
 	function renderError(code, details) {
 		let errorsElement = document.getElementById('errors');
+
 		if (!errorsElement) {
-			document.getElementsByTagName("head")[0].insertAdjacentHTML(
-				"beforeend",
-				`<link rel="stylesheet" href="../error.css" />`);
+			document.head.insertAdjacentHTML("beforeend", `
+			<style>
+			* {
+				font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
+			}
+
+			body,
+			html {
+				background-color: #222;
+				color: #dfddcc;
+				justify-content: center;
+				margin: auto;
+				width: 80%;
+				padding: 10px;
+				text-align: center;
+			}
+
+			button {
+				border-radius: 999px;
+				padding: 0px 12px 0px 12px;
+				border: none;
+				cursor: pointer;
+				margin-bottom: 12px;
+			}
+
+			.button-big {
+				background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
+				line-height: 50px;
+			}
+
+			.button-big:hover {
+				background: rgb(153, 204, 0);
+			}
+
+			.button-small {
+				background: #444;
+				line-height: 40px;
+			}
+
+			.button-small:hover {
+				background: #555;
+			}
+
+			.button-label-big {
+				color: #222;
+				font-weight: bold;
+				font-size: 20px;
+				padding: 12px;
+			}
+
+			.button-label-small {
+				color: rgb(153, 204, 0);
+				font-size: 16px;
+				padding: 12px;
+			}
+
+			a {
+				color: rgb(134, 179, 0);
+				text-decoration: none;
+			}
+
+			p,
+			li {
+				font-size: 16px;
+			}
+
+			.dont-worry,
+			#msg {
+				font-size: 18px;
+			}
+
+			.icon-warning {
+				color: #dec340;
+				height: 4rem;
+			}
+
+			h1 {
+				font-size: 32px;
+			}
+
+			code {
+				font-family: Fira, FiraCode, monospace;
+			}
+
+			details {
+				background: #333;
+				margin-bottom: 2rem;
+				padding: 0.5rem 1rem;
+				border-radius: 5px;
+				justify-content: center;
+				margin: auto;
+			}
+
+			summary {
+				cursor: pointer;
+			}
+
+			summary > * {
+				display: inline;
+			}
+			</style>
+			`)
 			document.documentElement.innerHTML = `
 			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
    			<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -141,7 +240,6 @@
 			<br>
 			<div id="errors"></div>
 			`;
-
 			errorsElement = document.getElementById('errors');
 		}
 
