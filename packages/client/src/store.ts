@@ -304,6 +304,14 @@ export class ColdDeviceStorage {
 	}
 
 	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
+		// 呼び出し側のバグ等で undefined が来ることがある
+		// undefined を文字列として localStorage に入れると参照する際の JSON.parse でコケて不具合の元になるため無視
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (value === undefined) {
+			console.error(`attempt to store undefined value for key '${key}'`);
+			return;
+		}
+
 		localStorage.setItem(PREFIX + key, JSON.stringify(value));
 
 		for (const watcher of this.watchers) {
