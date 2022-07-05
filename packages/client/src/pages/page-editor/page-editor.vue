@@ -35,7 +35,7 @@
 				<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 				<div class="eyeCatch">
-					<MkButton v-if="eyeCatchingImageId === null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
 						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
@@ -139,7 +139,7 @@ provide('getScriptBlockList', getScriptBlockList);
 provide('getPageBlockList', getPageBlockList);
 
 watch($$(eyeCatchingImageId), async () => {
-	if (eyeCatchingImageId === null) {
+	if (eyeCatchingImageId == null) {
 		eyeCatchingImage = null;
 	} else {
 		eyeCatchingImage = await os.api('drive/files/show', {
@@ -309,7 +309,7 @@ function getPageBlockList() {
 function getScriptBlockList(type: string = null) {
 	const list = [];
 
-	const blocks = blockDefs.filter(block => type === null || block.out === null || block.out === type || typeof block.out === 'number');
+	const blocks = blockDefs.filter(block => type == null || block.out == null || block.out === type || typeof block.out === 'number');
 
 	for (const block of blocks) {
 		const category = list.find(x => x.category === block.category);
