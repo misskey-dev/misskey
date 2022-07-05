@@ -2,9 +2,7 @@
 <div class="mk-toast">
 	<transition :name="$store.state.animation ? 'toast' : ''" appear @after-leave="emit('closed')">
 		<div v-if="showing" class="body _acrylic" :style="{ zIndex }">
-			<div class="message">
-				{{ message }}
-			</div>
+				<Mfm class="message" :text="message" :is-note="false"></Mfm>
 		</div>
 	</transition>
 </div>
