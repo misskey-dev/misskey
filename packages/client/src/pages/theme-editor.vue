@@ -78,6 +78,7 @@ import FormButton from '@/components/ui/button.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormFolder from '@/components/form/folder.vue';
 
+import { $i } from '@/account';
 import { Theme, applyTheme } from '@/scripts/theme';
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
@@ -118,7 +119,7 @@ const fgColors = [
 	{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 ];
 
-const theme = $ref<Partial<Theme>>({
+let theme = $ref<Partial<Theme>>({
 	base: 'light',
 	props: lightTheme.props,
 });

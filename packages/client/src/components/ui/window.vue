@@ -99,12 +99,12 @@ export default defineComponent({
 		buttonsLeft: {
 			type: Array,
 			required: false,
-			default: [],
+			default: () => [],
 		},
 		buttonsRight: {
 			type: Array,
 			required: false,
-			default: [],
+			default: () => [],
 		},
 	},
 

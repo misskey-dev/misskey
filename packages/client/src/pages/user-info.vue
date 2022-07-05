@@ -112,6 +112,17 @@
 
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</FormFolder>
+				<FormSection>
+					<template #label>Drive Capacity Override</template>
+
+					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
+						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
+						<template #suffix>MB</template>
+						<template #caption>
+							{{ i18n.ts.driveCapOverrideCaption }}
+						</template>
+					</FormInput>
+				</FormSection>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_formRoot">
 				<div class="cmhjzshm">
@@ -141,7 +152,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, watch } from 'vue';
+import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
@@ -150,6 +161,8 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/ui/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -164,6 +177,7 @@ import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { iAmAdmin, iAmModerator } from '@/account';
+import { instance } from '@/instance';
 
 const props = defineProps<{
 	userId: string;
@@ -172,13 +186,14 @@ const props = defineProps<{
 let tab = $ref('overview');
 let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
-let init = $ref();
+let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
 let ips = $ref(null);
 let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
+let driveCapacityOverrideMb: number | null = $ref(0);
 let moderationNote = $ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
@@ -203,6 +218,7 @@ function createFetcher() {
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
+			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
 			moderationNote = info.moderationNote;
 
 			watch($$(moderationNote), async () => {
@@ -289,6 +305,22 @@ async function deleteAllFiles() {
 	await refreshUser();
 }
 
+async function applyDriveCapacityOverride() {
+	let driveCapOrMb = driveCapacityOverrideMb;
+	if (driveCapacityOverrideMb && driveCapacityOverrideMb < 0) {
+		driveCapOrMb = null;
+	}
+	try {
+		await os.apiWithDialog('admin/drive-capacity-override', { userId: user.id, overrideMb: driveCapOrMb });
+		await refreshUser();
+	} catch (err) {
+		os.alert({
+			type: 'error',
+			text: err.toString(),
+		});
+	}
+}
+
 async function deleteAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -319,7 +351,7 @@ watch(() => props.userId, () => {
 	immediate: true,
 });
 
-watch(() => user, () => {
+watch($$(user), () => {
 	os.api('ap/get', {
 		uri: user.uri ?? `${url}/users/${user.id}`,
 	}).then(res => {

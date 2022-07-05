@@ -75,7 +75,6 @@ const hasTabs = computed(() => {
 
 const showTabsPopup = (ev: MouseEvent) => {
 	if (!hasTabs.value) return;
-	if (!narrow.value) return;
 	ev.preventDefault();
 	ev.stopPropagation();
 	const menu = props.tabs.map(tab => ({
