@@ -4,6 +4,7 @@
 		<div>
 			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div v-if="meta" class="about">
+				<!-- eslint-disable-next-line vue/no-v-html -->
 				<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
 			</div>
 			<div class="action">
@@ -101,13 +102,18 @@ export default defineComponent({
 	},
 
 	methods: {
-		setParallax(el) {
-			//new simpleParallax(el);
-		},
+		// @ThatOneCalculator: Are these methods even used?
+		// I can't find references to them anywhere else in the code...
+
+		// setParallax(el) {
+		// 	new simpleParallax(el);
+		// },
 
 		changePage(page) {
 			if (page == null) return;
+			// eslint-disable-next-line no-undef
 			if (page[symbols.PAGE_INFO]) {
+				// eslint-disable-next-line no-undef
 				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},

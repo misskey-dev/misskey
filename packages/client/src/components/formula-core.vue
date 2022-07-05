@@ -1,4 +1,4 @@
-
+<!-- eslint-disable vue/no-v-html -->
 <template>
 <div v-if="block" v-html="compiledFormula"></div>
 <span v-else v-html="compiledFormula"></span>
