@@ -120,6 +120,7 @@ smtpUser: "Nom d'usuari"
 smtpPass: "Contrasenya"
 user: "Usuaris"
 searchByGoogle: "Cercar"
+file: "Fitxers"
 _email:
   _follow:
     title: "t'ha seguit"

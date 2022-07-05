@@ -247,6 +247,7 @@ smtpPass: "Lösenord"
 clearCache: "Rensa cache"
 user: "Användare"
 searchByGoogle: "Sök"
+file: "Filer"
 _email:
   _follow:
     title: "följde dig"
