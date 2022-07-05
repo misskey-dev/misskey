@@ -1,17 +1,16 @@
 <template>
-<!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
 <section>
 	<header class="_acrylic" @click="shown = !shown">
 		<i class="toggle fa-fw" :class="shown ? 'fas fa-chevron-down' : 'fas fa-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
 	</header>
-	<div v-if="shown" class="body">
+	<div v-if="shown">
 		<button
 			v-for="emoji in emojis"
 			:key="emoji"
-			class="_button item"
+			class="_button"
 			@click="emit('chosen', emoji, $event)"
 		>
-			<MkEmoji class="emoji" :emoji="emoji" :normal="true"/>
+			<MkEmoji :emoji="emoji" :normal="true"/>
 		</button>
 	</div>
 </section>
