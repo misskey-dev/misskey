@@ -79,12 +79,14 @@ import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
-if (deckStore.state.navWindow) {
-	mainRouter.navHook = (path) => {
+mainRouter.navHook = (path): boolean => {
+	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
+	if (deckStore.state.navWindow || noMainColumn) {
 		os.pageWindow(path);
 		return true;
-	};
-}
+	}
+	return false;
+};
 
 const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {
