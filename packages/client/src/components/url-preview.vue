@@ -1,14 +1,14 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
 	<button class="disablePlayer" :title="$ts.disablePlayer" @click="playerEnabled = false"><i class="fas fa-times"></i></button>
-	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
+	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 </div>
 <div v-else-if="tweetId && tweetExpanded" ref="twitter" class="twitter">
 	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
 <div v-else v-size="{ max: [400, 350] }" class="mk-url-preview">
 	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
-		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
+		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
 				<button v-if="!playerEnabled && player.url" class="_button" :title="$ts.enablePlayer" @click.prevent="playerEnabled = true"><i class="fas fa-play-circle"></i></button>
 			</div>
@@ -57,7 +57,7 @@ let sitename = $ref<string | null>(null);
 let player = $ref({
 	url: null,
 	width: null,
-	height: null
+	height: null,
 });
 let playerEnabled = $ref(false);
 let tweetId = $ref<string | null>(null);
@@ -143,7 +143,7 @@ onUnmounted(() => {
 
 .mk-url-preview {
 	&.max-width_400px {
-		> a {
+		> .link {
 			font-size: 12px;
 
 			> .thumbnail {
@@ -157,7 +157,7 @@ onUnmounted(() => {
 	}
 
 	&.max-width_350px {
-		> a {
+		> .link {
 			font-size: 10px;
 
 			> .thumbnail {
@@ -205,7 +205,7 @@ onUnmounted(() => {
 		}
 	}
 
-	> a {
+	> .link {
 		position: relative;
 		display: block;
 		font-size: 14px;
