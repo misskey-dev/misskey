@@ -35,6 +35,7 @@ You should also include the user name that made the change.
 - Server: Supports IPv6 on Redis transport. @mei23  
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
+- Add additional drive capacity change support @CyberRex0
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23

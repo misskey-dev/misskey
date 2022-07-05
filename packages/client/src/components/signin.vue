@@ -6,7 +6,7 @@
 			{{ message }}
 		</MkInfo>
 		<div v-if="!totpLogin" class="normal-signin">
-			<MkInput v-model="username" class="_formBlock" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
+			<MkInput v-model="username" class="_formBlock" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
@@ -32,7 +32,7 @@
 					<template #label>{{ i18n.ts.password }}</template>
 					<template #prefix><i class="fas fa-lock"></i></template>
 				</MkInput>
-				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
+				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" :spellcheck="false" required>
 					<template #label>{{ i18n.ts.token }}</template>
 					<template #prefix><i class="fas fa-gavel"></i></template>
 				</MkInput>

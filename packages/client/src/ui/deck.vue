@@ -33,7 +33,8 @@
 				<div>{{ i18n.ts._deck.introduction2 }}</div>
 			</div>
 			<div class="sideMenu">
-				<button v-tooltip="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="fas fa-plus"></i></button>
+				<button v-tooltip.left="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="fas fa-plus"></i></button>
+				<button v-tooltip.left="i18n.ts.settings" class="_button button settings" @click="showSettings"><i class="fas fa-cog"></i></button>
 			</div>
 		</div>
 	</div>
@@ -79,12 +80,14 @@ import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
-if (deckStore.state.navWindow) {
-	mainRouter.navHook = (path) => {
+mainRouter.navHook = (path): boolean => {
+	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
+	if (deckStore.state.navWindow || noMainColumn) {
 		os.pageWindow(path);
 		return true;
-	};
-}
+	}
+	return false;
+};
 
 const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {
@@ -107,6 +110,10 @@ const menuIndicated = computed(() => {
 	}
 	return false;
 });
+
+function showSettings() {
+	os.pageWindow('/settings/deck');
+}
 
 let columnsEl = $ref<HTMLElement>();
 

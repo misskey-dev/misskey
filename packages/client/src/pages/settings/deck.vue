@@ -31,16 +31,6 @@ const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMain
 const columnAlign = computed(deckStore.makeGetterSetter('columnAlign'));
 const profile = computed(deckStore.makeGetterSetter('profile'));
 
-watch(navWindow, async () => {
-	const { canceled } = await os.confirm({
-		type: 'info',
-		text: i18n.ts.reloadToApplySetting,
-	});
-	if (canceled) return;
-
-	unisonReload();
-});
-
 async function setProfile() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts._deck.profile,
