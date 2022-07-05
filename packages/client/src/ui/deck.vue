@@ -33,7 +33,8 @@
 				<div>{{ i18n.ts._deck.introduction2 }}</div>
 			</div>
 			<div class="sideMenu">
-				<button v-tooltip="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="fas fa-plus"></i></button>
+				<button v-tooltip.left="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="fas fa-plus"></i></button>
+				<button v-tooltip.left="i18n.ts.settings" class="_button button settings" @click="showSettings"><i class="fas fa-cog"></i></button>
 			</div>
 		</div>
 	</div>
@@ -109,6 +110,10 @@ const menuIndicated = computed(() => {
 	}
 	return false;
 });
+
+function showSettings() {
+	os.pageWindow('/settings/deck');
+}
 
 let columnsEl = $ref<HTMLElement>();
 
