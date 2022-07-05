@@ -70,10 +70,11 @@ onMounted(() => {
 });
 
 useTooltip(buttonRef, async (showing) => {
-	const reactions = await os.api('notes/reactions', {
+	const reactions = await os.apiGet('notes/reactions', {
 		noteId: props.note.id,
 		type: props.reaction,
 		limit: 11,
+		_cacheKey_: props.count,
 	});
 
 	const users = reactions.map(x => x.user);

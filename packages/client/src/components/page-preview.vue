@@ -1,5 +1,5 @@
 <template>
-<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj _block _isolated" tabindex="-1">
+<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj _block" tabindex="-1">
 	<div v-if="page.eyeCatchingImage" class="thumbnail" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
 	<article>
 		<header>
@@ -23,12 +23,12 @@ export default defineComponent({
 	props: {
 		page: {
 			type: Object,
-			required: true
+			required: true,
 		},
 	},
 	methods: {
-		userName
-	}
+		userName,
+	},
 });
 </script>
 

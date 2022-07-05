@@ -258,6 +258,10 @@ mainRouter.addListener('push', ctx => {
 	}
 });
 
+mainRouter.addListener('same', () => {
+	window.scroll({ top: 0, behavior: 'smooth' });
+});
+
 window.addEventListener('popstate', (event) => {
 	mainRouter.change(location.pathname + location.search + location.hash, event.state?.key);
 	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;

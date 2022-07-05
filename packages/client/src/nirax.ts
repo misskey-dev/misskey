@@ -61,6 +61,7 @@ export class Router extends EventEmitter<{
 		props: Map<string, string> | null;
 		key: string;
 	}) => void;
+	same: () => void;
 }> {
 	private routes: RouteDef[];
 	private currentPath: string;
@@ -210,11 +211,15 @@ export class Router extends EventEmitter<{
 	}
 
 	public push(path: string) {
+		const beforePath = this.currentPath;
+		if (path === beforePath) {
+			this.emit('same');
+			return;
+		}
 		if (this.navHook) {
 			const cancel = this.navHook(path);
 			if (cancel) return;
 		}
-		const beforePath = this.currentPath;
 		this.navigate(path, null);
 		this.emit('push', {
 			beforePath,

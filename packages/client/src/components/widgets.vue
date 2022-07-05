@@ -113,6 +113,7 @@ export default defineComponent({
 	}
 
 	> .widget, .customize-container {
+		contain: content;
 		margin: var(--margin) 0;
 
 		&:first-of-type {
