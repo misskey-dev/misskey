@@ -8,7 +8,7 @@ export class Autocomplete {
 		x: Ref<number>;
 		y: Ref<number>;
 		q: Ref<string | null>;
-		close: Function;
+		close: () => void;
 	} | null;
 	private textarea: HTMLInputElement | HTMLTextAreaElement;
 	private currentType: string;

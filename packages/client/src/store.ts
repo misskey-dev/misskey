@@ -88,6 +88,17 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: false,
 	},
+	statusbars: {
+		where: 'deviceAccount',
+		default: [] as {
+			name: string;
+			id: string;
+			type: string;
+			size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
+			black: boolean;
+			props: Record<string, any>;
+		}[],
+	},
 	widgets: {
 		where: 'deviceAccount',
 		default: [] as {
@@ -232,6 +243,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	themeInitial: {
 		where: 'device',
 		default: true,
+	},
+	numberOfPageCache: {
+		where: 'device',
+		default: 5,
 	},
 	aiChanMode: {
 		where: 'device',

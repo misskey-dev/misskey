@@ -65,6 +65,7 @@ import { PasswordResetRequest } from './entities/password-reset-request.js';
 import { UserPending } from './entities/user-pending.js';
 import { InstanceRepository } from './repositories/instance.js';
 import { Webhook } from './entities/webhook.js';
+import { UserIp } from './entities/user-ip.js';
 
 export const Announcements = db.getRepository(Announcement);
 export const AnnouncementReads = db.getRepository(AnnouncementRead);
@@ -90,6 +91,7 @@ export const UserGroups = (UserGroupRepository);
 export const UserGroupJoinings = db.getRepository(UserGroupJoining);
 export const UserGroupInvitations = (UserGroupInvitationRepository);
 export const UserNotePinings = db.getRepository(UserNotePining);
+export const UserIps = db.getRepository(UserIp);
 export const UsedUsernames = db.getRepository(UsedUsername);
 export const Followings = (FollowingRepository);
 export const FollowRequests = (FollowRequestRepository);

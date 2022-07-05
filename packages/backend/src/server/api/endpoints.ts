@@ -35,6 +35,7 @@ import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/fed
 import * as ep___admin_federation_updateInstance from './endpoints/admin/federation/update-instance.js';
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
+import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
 import * as ep___admin_invite from './endpoints/admin/invite.js';
 import * as ep___admin_moderators_add from './endpoints/admin/moderators/add.js';
 import * as ep___admin_moderators_remove from './endpoints/admin/moderators/remove.js';
@@ -60,6 +61,7 @@ import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_vacuum from './endpoints/admin/vacuum.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
+import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -311,6 +313,8 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___fetchRss from './endpoints/fetch-rss.js';
+import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -348,6 +352,7 @@ const eps = [
 	['admin/federation/update-instance', ep___admin_federation_updateInstance],
 	['admin/get-index-stats', ep___admin_getIndexStats],
 	['admin/get-table-stats', ep___admin_getTableStats],
+	['admin/get-user-ips', ep___admin_getUserIps],
 	['admin/invite', ep___admin_invite],
 	['admin/moderators/add', ep___admin_moderators_add],
 	['admin/moderators/remove', ep___admin_moderators_remove],
@@ -373,6 +378,7 @@ const eps = [
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/vacuum', ep___admin_vacuum],
 	['admin/delete-account', ep___admin_deleteAccount],
+	['admin/update-user-note', ep___admin_updateUserNote],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -624,6 +630,8 @@ const eps = [
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
+	['admin/drive-capacity-override', ep___admin_driveCapOverride],
+	['fetch-rss', ep___fetchRss],
 ];
 
 export interface IEndpointMeta {

@@ -79,7 +79,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => list ? {
 	title: list.name,
 	icon: 'fas fa-list-ul',
-	bg: 'var(--bg)',
 } : null));
 </script>
 
@@ -104,7 +103,7 @@ definePageMetadata(computed(() => list ? {
 	> .tl {
 		background: var(--bg);
 		border-radius: var(--radius);
-		overflow: clip;
+		overflow: hidden; overflow: clip;
 	}
 
 	&.min-width_800px {

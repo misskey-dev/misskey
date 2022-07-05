@@ -131,6 +131,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.sounds,
 	icon: 'fas fa-music',
-	bg: 'var(--bg)',
 });
 </script>

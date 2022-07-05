@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './user.js';
 import { id } from '../id.js';
+import { User } from './user.js';
 import { Clip } from './clip.js';
 
 @Entity()
@@ -427,4 +427,9 @@ export class Meta {
 		default: true,
 	})
 	public objectStorageS3ForcePathStyle: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableIpLogging: boolean;
 }

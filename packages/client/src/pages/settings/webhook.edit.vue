@@ -86,6 +86,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: 'Edit webhook',
 	icon: 'fas fa-bolt',
-	bg: 'var(--bg)',
 });
 </script>

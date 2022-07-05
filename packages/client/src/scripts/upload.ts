@@ -1,9 +1,9 @@
 import { reactive, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { readAndCompressImage } from 'browser-image-resizer';
 import { defaultStore } from '@/store';
 import { apiUrl } from '@/config';
-import * as Misskey from 'misskey-js';
 import { $i } from '@/account';
-import { readAndCompressImage } from 'browser-image-resizer';
 import { alert } from '@/os';
 
 type Uploading = {
@@ -31,7 +31,7 @@ export function uploadFile(
 	file: File,
 	folder?: any,
 	name?: string,
-	keepOriginal: boolean = defaultStore.state.keepOriginalUploading
+	keepOriginal: boolean = defaultStore.state.keepOriginalUploading,
 ): Promise<Misskey.entities.DriveFile> {
 	if (folder && typeof folder === 'object') folder = folder.id;
 
@@ -45,7 +45,7 @@ export function uploadFile(
 				name: name || file.name || 'untitled',
 				progressMax: undefined,
 				progressValue: undefined,
-				img: window.URL.createObjectURL(file)
+				img: window.URL.createObjectURL(file),
 			});
 
 			uploads.value.push(ctx);
@@ -86,7 +86,7 @@ export function uploadFile(
 					alert({
 						type: 'error',
 						title: 'Failed to upload',
-						text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`
+						text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`,
 					});
 
 					reject();

@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, inject, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, inject, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { url } from '@/config';
@@ -75,7 +75,6 @@ const hasTabs = computed(() => {
 
 const showTabsPopup = (ev: MouseEvent) => {
 	if (!hasTabs.value) return;
-	if (!narrow.value) return;
 	ev.preventDefault();
 	ev.stopPropagation();
 	const menu = props.tabs.map(tab => ({
@@ -126,16 +125,18 @@ onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
 
-	watch(() => props.tab, () => {
-		const tabEl = tabRefs[props.tab];
-		if (tabEl && tabHighlightEl) {
-			// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
-			// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
-			const parentRect = tabEl.parentElement.getBoundingClientRect();
-			const rect = tabEl.getBoundingClientRect();
-			tabHighlightEl.style.width = rect.width + 'px';
-			tabHighlightEl.style.left = (rect.left - parentRect.left) + 'px';
-		}
+	watch(() => [props.tab, props.tabs], () => {
+		nextTick(() => {
+			const tabEl = tabRefs[props.tab];
+			if (tabEl && tabHighlightEl) {
+				// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
+				// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
+				const parentRect = tabEl.parentElement.getBoundingClientRect();
+				const rect = tabEl.getBoundingClientRect();
+				tabHighlightEl.style.width = rect.width + 'px';
+				tabHighlightEl.style.left = (rect.left - parentRect.left) + 'px';
+			}
+		});
 	}, {
 		immediate: true,
 	});
@@ -150,9 +151,6 @@ onUnmounted(() => {
 .fdidabkc {
 	--height: 60px;
 	display: flex;
-	position: sticky;
-	top: var(--stickyTop, 0);
-	z-index: 1000;
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));

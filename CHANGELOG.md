@@ -11,17 +11,31 @@ You should also include the user name that made the change.
 
 ## 12.x.x (unreleased)
 
+### Changes
+- ハイライトがみつけるに統合されました
+- カスタム絵文字ページはインスタンス情報ページに統合されました
+- 連合ページはインスタンス情報ページに統合されました
+
 ### Improvements
 - Server: Allow GET method for some endpoints @syuilo
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
+- Client: Add instance-cloud widget @syuilo
+- Client: Add rss-ticker widget @syuilo
+- Client: Removing entries from a clip @futchitwo
+- Client: Poll highlights in explore page @syuilo
+- Client: Improve deck UI @syuilo
+- Client: Word mute also checks content warnings @Johann150
+- ユーザーにモデレーションメモを残せる機能 @syuilo
 - Make possible to delete an account by admin @syuilo
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
-- Client: Removing entries from a clip @futchitwo
+- Server: Improve performance
 - Server: Supports IPv6 on Redis transport. @mei23  
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
+- Server: Add possibility to log IP addresses of users @syuilo
+- Add additional drive capacity change support @CyberRex0
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
@@ -30,6 +44,10 @@ You should also include the user name that made the change.
 - Server: Ensure temp directory cleanup @Johann150
 - favicons of federated instances not showing @syuilo
 - Admin: The checkbox for blocking an instance works again @Johann150
+- Client: Prevent access to user pages when not logged in @pixeldesu @Johann150
+- Client: Disable some hotkeys (e.g. for creating a post) for not logged in users @pixeldesu
+- Client: Ask users that are not logged in to log in when trying to vote in a poll @Johann150
+- Instance mutes also apply in antennas etc. @Johann150
 
 ## 12.111.1 (2022/06/13)
 

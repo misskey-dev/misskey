@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="500" :margin-min="16" :margin-max="32">
+	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_formRoot">
 				<div class="_formBlock aeakzknw">
@@ -9,6 +9,11 @@
 					<div class="body">
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
+						<span class="state">
+							<span v-if="suspended" class="suspended">Suspended</span>
+							<span v-if="silenced" class="silenced">Silenced</span>
+							<span v-if="moderator" class="moderator">Moderator</span>
+						</span>
 					</div>
 				</div>
 
@@ -27,19 +32,25 @@
 						<template #key>ID</template>
 						<template #value><span class="_monospace">{{ user.id }}</span></template>
 					</MkKeyValue>
+					<!-- 要る？
+					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline style="margin: 1em 0;">
+						<template #key>IP (recent)</template>
+						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
+					</MkKeyValue>
+					-->
+					<MkKeyValue oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.createdAt }}</template>
+						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.lastActiveDate }}</template>
+						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
+					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline style="margin: 1em 0;">
+						<template #key>{{ i18n.ts.email }}</template>
+						<template #value><span class="_monospace">{{ info.email }}</span></template>
+					</MkKeyValue>
 				</div>
-
-				<FormSection v-if="iAmModerator">
-					<template #label>Moderation</template>
-					<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
-					<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
-					<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
-					{{ $ts.reflectMayTakeTime }}
-					<div class="_formBlock">
-						<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
-						<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ $ts.deleteAccount }}</FormButton>
-					</div>
-				</FormSection>
 
 				<FormSection>
 					<template #label>ActivityPub</template>
@@ -64,6 +75,53 @@
 					</div>
 
 					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
+
+					<FormFolder class="_formBlock">
+						<template #label>Raw</template>
+
+						<MkObjectView v-if="ap" tall :value="ap">
+						</MkObjectView>
+					</FormFolder>
+				</FormSection>
+			</div>
+			<div v-else-if="tab === 'moderation'" class="_formRoot">
+				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ $ts.moderator }}</FormSwitch>
+				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ $ts.silence }}</FormSwitch>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.suspend }}</FormSwitch>
+				{{ $ts.reflectMayTakeTime }}
+				<div class="_formBlock">
+					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+					<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ $ts.deleteAccount }}</FormButton>
+				</div>
+				<FormTextarea v-model="moderationNote" manual-save class="_formBlock">
+					<template #label>Moderation note</template>
+				</FormTextarea>
+				<FormFolder class="_formBlock">
+					<template #label>IP</template>
+					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+					<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
+					<template v-if="iAmAdmin && ips">
+						<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
+							<span class="date">{{ record.createdAt }}</span>
+							<span class="ip">{{ record.ip }}</span>
+						</div>
+					</template>
+				</FormFolder>
+				<FormFolder class="_formBlock">
+					<template #label>{{ i18n.ts.files }}</template>
+
+					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+				</FormFolder>
+				<FormSection>
+					<template #label>Drive Capacity Override</template>
+
+					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
+						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
+						<template #suffix>MB</template>
+						<template #caption>
+							{{ i18n.ts.driveCapOverrideCaption }}
+						</template>
+					</FormInput>
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_formRoot">
@@ -81,13 +139,6 @@
 					</div>
 				</div>
 			</div>
-			<div v-else-if="tab === 'files'" class="_formRoot">
-				<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
-			</div>
-			<div v-else-if="tab === 'ap'" class="_formRoot">
-				<MkObjectView v-if="ap" tall :value="user">
-				</MkObjectView>
-			</div>
 			<div v-else-if="tab === 'raw'" class="_formRoot">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
@@ -101,7 +152,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, watch } from 'vue';
+import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/chart.vue';
 import MkObjectView from '@/components/object-view.vue';
@@ -110,10 +161,14 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/ui/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormSplit from '@/components/form/split.vue';
+import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/key-value.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
+import MkInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
@@ -121,7 +176,8 @@ import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { iAmModerator } from '@/account';
+import { iAmAdmin, iAmModerator } from '@/account';
+import { instance } from '@/instance';
 
 const props = defineProps<{
 	userId: string;
@@ -130,12 +186,15 @@ const props = defineProps<{
 let tab = $ref('overview');
 let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
-let init = $ref();
+let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
+let ips = $ref(null);
 let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
+let driveCapacityOverrideMb: number | null = $ref(0);
+let moderationNote = $ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -150,12 +209,22 @@ function createFetcher() {
 			userId: props.userId,
 		}), os.api('admin/show-user', {
 			userId: props.userId,
-		})]).then(([_user, _info]) => {
+		}), iAmAdmin ? os.api('admin/get-user-ips', {
+			userId: props.userId,
+		}) : Promise.resolve(null)]).then(([_user, _info, _ips]) => {
 			user = _user;
 			info = _info;
+			ips = _ips;
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
+			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
+			moderationNote = info.moderationNote;
+
+			watch($$(moderationNote), async () => {
+				await os.api('admin/update-user-note', { userId: user.id, text: moderationNote });
+				await refreshUser();
+			});
 		});
 	} else {
 		return () => os.api('users/show', {
@@ -236,6 +305,22 @@ async function deleteAllFiles() {
 	await refreshUser();
 }
 
+async function applyDriveCapacityOverride() {
+	let driveCapOrMb = driveCapacityOverrideMb;
+	if (driveCapacityOverrideMb && driveCapacityOverrideMb < 0) {
+		driveCapOrMb = null;
+	}
+	try {
+		await os.apiWithDialog('admin/drive-capacity-override', { userId: user.id, overrideMb: driveCapOrMb });
+		await refreshUser();
+	} catch (err) {
+		os.alert({
+			type: 'error',
+			text: err.toString(),
+		});
+	}
+}
+
 async function deleteAccount() {
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -266,7 +351,7 @@ watch(() => props.userId, () => {
 	immediate: true,
 });
 
-watch(() => user, () => {
+watch($$(user), () => {
 	os.api('ap/get', {
 		uri: user.uri ?? `${url}/users/${user.id}`,
 	}).then(res => {
@@ -280,28 +365,23 @@ const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'fas fa-info-circle',
-}, {
+}, iAmModerator ? {
+	key: 'moderation',
+	title: i18n.ts.moderation,
+	icon: 'fas fa-shield-halved',
+} : null, {
 	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'fas fa-chart-simple',
-}, iAmModerator ? {
-	key: 'files',
-	title: i18n.ts.files,
-	icon: 'fas fa-cloud',
-} : null, {
-	key: 'ap',
-	title: 'AP',
-	icon: 'fas fa-share-alt',
 }, {
 	key: 'raw',
-	title: 'Raw data',
+	title: 'Raw',
 	icon: 'fas fa-code',
 }].filter(x => x != null));
 
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
 	icon: 'fas fa-info-circle',
-	bg: 'var(--bg)',
 })));
 </script>
 
@@ -338,6 +418,40 @@ definePageMetadata(computed(() => ({
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
+
+		> .state {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin-top: 4px;
+
+			&:empty {
+				display: none;
+			}
+
+			> .suspended, > .silenced, > .moderator {
+				display: inline-block;
+				border: solid 1px;
+				border-radius: 6px;
+				padding: 2px 6px;
+				font-size: 85%;
+			}
+
+			> .suspended {
+				color: var(--error);
+				border-color: var(--error);
+			}
+
+			> .silenced {
+				color: var(--warn);
+				border-color: var(--warn);
+			}
+
+			> .moderator {
+				color: var(--success);
+				border-color: var(--success);
+			}
+		}
 	}
 }
 
@@ -352,6 +466,20 @@ definePageMetadata(computed(() => ({
 			margin-bottom: 12px;
 			font-weight: bold;
 		}
+	}
+}
+</style>
+
+<style lang="scss" module>
+.ip {
+	display: flex;
+
+	> :global(.date) {
+		opacity: 0.7;
+	}
+
+	> :global(.ip) {
+		margin-left: auto;
 	}
 }
 </style>

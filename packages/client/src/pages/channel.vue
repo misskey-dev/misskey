@@ -80,7 +80,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => channel ? {
 	title: channel.name,
 	icon: 'fas fa-satellite-dish',
-	bg: 'var(--bg)',
 } : null));
 </script>
 

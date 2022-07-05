@@ -27,6 +27,12 @@ export const paramDef = {
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
 		state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: 'all' },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
+		hostname: {
+			type: 'string',
+			nullable: true,
+			default: null,
+			description: 'The local host is represented with `null`.',
+		},
 	},
 	required: [],
 } as const;
@@ -46,6 +52,10 @@ export default define(meta, paramDef, async (ps, me) => {
 	switch (ps.origin) {
 		case 'local': query.andWhere('user.host IS NULL'); break;
 		case 'remote': query.andWhere('user.host IS NOT NULL'); break;
+	}
+
+	if (ps.hostname) {
+		query.andWhere('user.host = :hostname', { hostname: ps.hostname.toLowerCase() });
 	}
 
 	switch (ps.sort) {

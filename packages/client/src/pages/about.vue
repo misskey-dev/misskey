@@ -67,7 +67,13 @@
 			</FormSection>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'charts'" :content-max="1200" :margin-min="20">
+	<MkSpacer v-else-if="tab === 'emojis'" :content-max="1000" :margin-min="20">
+		<XEmojis/>
+	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'federation'" :content-max="1000" :margin-min="20">
+		<XFederation/>
+	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'charts'" :content-max="1000" :margin-min="20">
 		<MkInstanceStats :chart-limit="500" :detailed="true"/>
 	</MkSpacer>
 </MkStickyContainer>
@@ -75,6 +81,8 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import XEmojis from './about.emojis.vue';
+import XFederation from './about.federation.vue';
 import { version, instanceName , host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -87,8 +95,14 @@ import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const props = withDefaults(defineProps<{
+	initialTab?: string;
+}>(), {
+	initialTab: 'overview',
+});
+
 let stats = $ref(null);
-let tab = $ref('overview');
+let tab = $ref(props.initialTab);
 
 const initStats = () => os.api('stats', {
 }).then((res) => {
@@ -101,15 +115,22 @@ const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 }, {
+	key: 'emojis',
+	title: i18n.ts.customEmojis,
+	icon: 'fas fa-laugh',
+}, {
+	key: 'federation',
+	title: i18n.ts.federation,
+	icon: 'fas fa-globe',
+}, {
 	key: 'charts',
 	title: i18n.ts.charts,
-	icon: 'fas fa-chart-bar',
+	icon: 'fas fa-chart-simple',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.instanceInfo,
 	icon: 'fas fa-info-circle',
-	bg: 'var(--bg)',
 })));
 </script>
 
@@ -117,7 +138,7 @@ definePageMetadata(computed(() => ({
 .fwhjspax {
 	text-align: center;
 	border-radius: 10px;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 	background-size: cover;
 	background-position: center center;
 
