@@ -292,6 +292,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 <style lang="scss" scoped>
 .mk-messaging-room {
 	position: relative;
+	overflow: scroll;
 
 	> .body {
 		.more {
