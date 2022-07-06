@@ -147,7 +147,12 @@
 			errorsElement = document.getElementById('errors');
 		}
 		const detailsElement = document.createElement('details');
-		detailsElement.innerHTML = `<br><summary><code>ERROR CODE: ${code}</code></summary>${JSON.stringify(details)}`;
+		detailsElement.innerHTML = `
+		<br>
+		<summary>
+			<code>ERROR CODE: ${code}</code>
+		</summary>
+		<code>${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
 		await addStyle(`
 		* {
