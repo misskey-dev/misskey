@@ -1,4 +1,5 @@
 import * as sanitizeHtml from 'sanitize-html';
+import config from '@/config/index.js';
 import { publishAdminStream } from '@/services/stream.js';
 import { AbuseUserReports, Users } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
@@ -62,8 +63,9 @@ export default define(meta, paramDef, async (ps, me) => {
 		throw new ApiError(meta.errors.cannotReportAdmin);
 	}
 
-	if (!ps.urls.includes(user.uri)) {
-		ps.urls.push(user.uri);
+	const uri = user.host == null ? `${config.url}/users/${user.id}` : user.uri;
+	if (!ps.urls.includes(uri)) {
+		ps.urls.push(uri);
 	}
 
 	const report = await AbuseUserReports.insert({
