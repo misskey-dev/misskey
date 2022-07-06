@@ -14,10 +14,10 @@
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
 	window.onerror = (e) => {
-		await renderError('SOMETHING_HAPPENED', e);
+		renderError('SOMETHING_HAPPENED', e);
 	};
 	window.onunhandledrejection = (e) => {
-		await renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
+		renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
 	};
 
 	const v = localStorage.getItem('v') || VERSION;
@@ -47,7 +47,7 @@
 			localStorage.setItem('localeVersion', v);
 		} else {
 			await checkUpdate();
-			await renderError('LOCALE_FETCH_FAILED');
+			renderError('LOCALE_FETCH_FAILED');
 			return;
 		}
 	}
@@ -57,7 +57,7 @@
 	import(`/assets/${CLIENT_ENTRY}`)
 		.catch(async e => {
 			await checkUpdate();
-			await renderError('APP_FETCH_FAILED', e);
+			renderError('APP_FETCH_FAILED', e);
 		})
 	//#endregion
 
@@ -108,7 +108,7 @@
 		document.head.appendChild(css);
 	}
 
-	async function renderError(code, details) {
+	function renderError(code, details) {
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
@@ -154,7 +154,7 @@
 		</summary>
 		<code>${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
-		await addStyle(`
+		addStyle(`
 		* {
 			font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
 		}
