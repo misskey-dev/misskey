@@ -1,19 +1,81 @@
-* {
-	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
-}
-
 html {
-	background: #ffb4e1;
+	background: #222;
 }
-
 main {
-	background: #dedede;
+	background: #333;
+	border-radius: 10px;
 }
-
 #tl > div {
 	padding: 16px;
-	border-bottom: solid 1px #c3c3c3;
+	border-bottom: 1px solid #c3c3c3;
 }
 #tl > div > header {
+	font-weight: 700;
+}
+
+* {
+	font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
+}
+#misskey_app {
+	display: none !important;
+}
+body,
+html {
+	background-color: #222;
+	color: #dfddcc;
+	justify-content: center;
+	margin: auto;
+	padding: 10px;
+	text-align: center;
+}
+button {
+	border-radius: 999px;
+	padding: 0px 12px 0px 12px;
+	border: none;
+	cursor: pointer;
+	margin-bottom: 12px;
+	background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
+	line-height: 50px;
+	color: #222;
 	font-weight: bold;
+	font-size: 20px;
+	padding: 12px;
+}
+button:hover {
+	background: rgb(153, 204, 0);
+}
+
+.button-label-small {
+	color: rgb(153, 204, 0);
+	font-size: 16px;
+	padding: 12px;
+}
+a {
+	color: rgb(134, 179, 0);
+	text-decoration: none;
+}
+p,
+li {
+	font-size: 16px;
+}
+
+h1 {
+	font-size: 32px;
+}
+code {
+	font-family: Fira, FiraCode, monospace;
+}
+#text {
+	background-color: #444;
+	border: solid #aaa;
+	border-radius: 10px;
+	color: #dfddcc;
+	margin-top: 3rem;
+	width: 20rem;
+	height: 5rem;
+	padding: 0.5rem;
+}
+
+#text:focus {
+	border: solid #eee;
 }
