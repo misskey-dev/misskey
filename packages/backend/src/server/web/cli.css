@@ -73,3 +73,9 @@ code {
 #text:focus {
 	border: solid #eee;
 }
+
+@media screen and (max-width: 500px) {
+  #text {
+    width: 80%
+  }
+}
