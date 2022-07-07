@@ -1,70 +1,47 @@
 doctype html
 
 html
+	#msg
+	script.
+		const msg = document.getElementById('msg');
+		const successText = `\nSuccess Flush! <a href="/">Back to Misskey</a>\n成功しました。<a href="/">Misskeyを開き直してください。</a>`;
 
-	head
-		meta(charset='utf-8')
-		meta(name='application-name' content='Misskey')
-		title Misskey Repair Tool
-		style.
-			* {
-				font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
-				font-size: 16px;
-				color: #dfddcc;
-			}
+		message('Start flushing.');
 
-			body,
-			html {
-				background-color: #222;
-				justify-content: center;
-				margin: auto;
-				padding: 10px;
-				text-align: center;
-			}
+		(async function() {
+			try {
+				localStorage.clear();
+				message('localStorage cleared.');
 
-		script.
-			const msg = document.getElementById('msg');
-			const successText = `\nSuccess Flush! <a href="/">Back to Misskey</a>\n成功しました。<a href="/">Misskeyを開き直してください。</a>`;
+				const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise((res, rej) => {
+					const delidb = indexedDB.deleteDatabase(name);
+					delidb.onsuccess = () => res(message(`indexedDB "${name}" cleared. (${i + 1}/${arr.length})`));
+					delidb.onerror = e => rej(e)
+				}));
 
-			message('Start flushing.');
+				await Promise.all(idbPromises);
 
-			(async function() {
-				try {
-					localStorage.clear();
-					message('localStorage cleared.');
-
-					const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise((res, rej) => {
-						const delidb = indexedDB.deleteDatabase(name);
-						delidb.onsuccess = () => res(message(`indexedDB "${name}" cleared. (${i + 1}/${arr.length})`));
-						delidb.onerror = e => rej(e)
-					}));
-
-					await Promise.all(idbPromises);
-
-					if (navigator.serviceWorker.controller) {
-						navigator.serviceWorker.controller.postMessage('clear');
-						await navigator.serviceWorker.getRegistrations()
-							.then(registrations => {
-								return Promise.all(registrations.map(registration => registration.unregister()));
-							})
-							.catch(e => { throw Error(e) });
-					}
-
-					message(successText);
-				} catch (e) {
-					message(`\n${e}\n\nFlush Failed. <a href="/flush">Please retry.</a>\n失敗しました。<a href="/flush">もう一度試してみてください。</a>`);
-					message(`\nIf you retry more than 3 times, clear the browser cache or contact to instance admin.\n3回以上試しても失敗する場合、ブラウザのキャッシュを消去し、それでもだめならインスタンス管理者に連絡してみてください。\n`)
-
-					console.error(e);
-					setTimeout(() => {
-						location = '/';
-					}, 10000)
+				if (navigator.serviceWorker.controller) {
+					navigator.serviceWorker.controller.postMessage('clear');
+					await navigator.serviceWorker.getRegistrations()
+						.then(registrations => {
+							return Promise.all(registrations.map(registration => registration.unregister()));
+						})
+						.catch(e => { throw Error(e) });
 				}
-			})();
 
-			function message(text) {
-				msg.insertAdjacentHTML('beforeend', `<p>[${(new Date()).toString()}] ${text.replace(/\n/g,'<br>')}</p>`)
+				message(successText);
+			} catch (e) {
+				message(`\n${e}\n\nFlush Failed. <a href="/flush">Please retry.</a>\n失敗しました。<a href="/flush">もう一度試してみてください。</a>`);
+				message(`\nIf you retry more than 3 times, clear the browser cache or contact to instance admin.\n3回以上試しても失敗する場合、ブラウザのキャッシュを消去し、それでもだめならインスタンス管理者に連絡してみてください。\n`)
+
+				console.error(e);
+				setTimeout(() => {
+					location = '/';
+				}, 10000)
 			}
+		})();
 
-	body
-		#msg
+		function message(text) {
+			msg.insertAdjacentHTML('beforeend', `<p>[${(new Date()).toString()}] ${text.replace(/\n/g,'<br>')}</p>`)
+		}
