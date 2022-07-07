@@ -1,0 +1,16 @@
+* {
+	font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
+}
+body,
+html {
+	background-color: #222;
+	color: #dfddcc;
+	justify-content: center;
+	margin: auto;
+	padding: 10px;
+	text-align: center;
+}
+a {
+	color: rgb(134, 179, 0);
+	text-decoration: none;
+}
