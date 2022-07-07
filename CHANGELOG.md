@@ -9,6 +9,9 @@
 You should also include the user name that made the change.
 -->
 
+## 12.112.1 (2022/07/07)
+same as 12.112.0
+
 ## 12.112.0 (2022/07/07)
 
 ### Known issues
