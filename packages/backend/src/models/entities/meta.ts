@@ -188,6 +188,28 @@ export class Meta {
 	})
 	public recaptchaSecretKey: string | null;
 
+	@Column('enum', {
+		enum: ['none', 'all', 'local', 'remote'],
+		default: 'none',
+	})
+	public sensitiveMediaDetection: 'none' | 'all' | 'local' | 'remote';
+
+	@Column('enum', {
+		enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'],
+		default: 'medium',
+	})
+	public sensitiveMediaDetectionSensitivity: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
+
+	@Column('boolean', {
+		default: false,
+	})
+	public setSensitiveFlagAutomatically: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableSensitiveMediaDetectionForVideos: boolean;
+
 	@Column('integer', {
 		default: 1024,
 		comment: 'Drive capacity of a local user (MB)',
