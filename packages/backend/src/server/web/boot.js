@@ -126,7 +126,7 @@
 			<p>If the problem persists after refreshing, please contact your instance's administrator.<br>You may also try the following options:</p>
       <a href="/flush">
       <button class="button-small">
-        <span class="button-label-small">Flush preferences and cache</span>
+        <span class="button-label-small">Clear preferences and cache</span>
       </button>
       </a>
 			<br>
