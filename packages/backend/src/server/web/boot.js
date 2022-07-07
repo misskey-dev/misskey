@@ -230,6 +230,7 @@
 		.icon-warning {
 			color: #dec340;
 			height: 4rem;
+			padding-top: 2rem;
 		}
 
 		h1 {
@@ -244,7 +245,8 @@
 			background: #333;
 			margin-bottom: 2rem;
 			padding: 0.5rem 1rem;
-			border-radius: 5px;
+			width: 40rem;
+			border-radius: 10px;
 			justify-content: center;
 			margin: auto;
 		}
