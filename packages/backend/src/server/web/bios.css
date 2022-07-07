@@ -82,17 +82,20 @@ button {
 	line-height: 40px;
 	color: rgb(153, 204, 0);
 	font-size: 16px;
-	padding: 12px;
+  padding: 0 20px;
+  margin-right: 5px;
+  margin-left: 5px;
+  
 }
 button:hover {
 	background: #555;
 }
 #ls {
 	background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
-	line-height: 50px;
+	line-height: 30px;
 	color: #222;
 	font-weight: bold;
-	font-size: 20px;
+	font-size: 18px;
 	padding: 12px;
 }
 #ls:hover {
@@ -121,7 +124,7 @@ textarea {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
 	width: 20rem;
-	height: 5rem;
+	height: 7.5rem;
 	padding: 0.5rem;
 }
 
