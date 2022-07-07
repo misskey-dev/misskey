@@ -102,29 +102,169 @@
 		document.head.appendChild(style);
 	}
 
-	// eslint-disable-next-line no-inner-declarations
+	async function addStyle(styleText) {
+		let css = document.createElement('style');
+		css.appendChild(document.createTextNode(styleText));
+		document.head.appendChild(css);
+	}
+
 	function renderError(code, details) {
 		let errorsElement = document.getElementById('errors');
+
 		if (!errorsElement) {
 			document.documentElement.innerHTML = `
-			<h1>⚠ An error has occurred. ⚠</h1>
-			<p>If the problem persists, please contact the administrator. You may also try the following options:</p>
-			<ul>
-				<li>Start <a href="/cli">the simple client</a></li>
-				<li>Attempt to repair in <a href="/bios">BIOS</a></li>
-				<li><a href="/flush">Flush preferences and cache</a></li>
-			</ul>
-			<hr>
+			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   			<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   			<path d="M12 9v2m0 4v.01"></path>
+   			<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
+			</svg>
+			<h1>An error has occurred!</h1>
+			<button class="button-big" onclick="location.reload(true);">
+				<span class="button-label-big">Refresh</span>
+			</button>
+      <p class="dont-worry">Don't worry, it's (probably) not your fault.</p>
+			<p>If the problem persists after refreshing, please contact your instance's administrator.<br>You may also try the following options:</p>
+      <a href="/flush">
+      <button class="button-small">
+        <span class="button-label-small">Clear preferences and cache</span>
+      </button>
+      </a>
+			<br>
+      <a href="/cli">
+        <button class="button-small">
+          <span class="button-label-small">Start the simple client</span>
+        </button>
+      </a>
+			<br>
+      <a href="/bios">
+        <button class="button-small">
+          <span class="button-label-small">Start the repair tool</span>
+        </button>
+      </a>
+			<br>
 			<div id="errors"></div>
 			`;
-
 			errorsElement = document.getElementById('errors');
 		}
-
 		const detailsElement = document.createElement('details');
-		detailsElement.innerHTML = `<summary><code>ERROR CODE: ${code}</code></summary>${JSON.stringify(details)}`;
-
+		detailsElement.innerHTML = `
+		<br>
+		<summary>
+			<code>ERROR CODE: ${code}</code>
+		</summary>
+		<code>${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
+		addStyle(`
+		* {
+			font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
+		}
+
+		#misskey_app,
+		#splash {
+			display: none !important;
+		}
+
+		body,
+		html {
+			background-color: #222;
+			color: #dfddcc;
+			justify-content: center;
+			margin: auto;
+			padding: 10px;
+			text-align: center;
+		}
+
+		button {
+			border-radius: 999px;
+			padding: 0px 12px 0px 12px;
+			border: none;
+			cursor: pointer;
+			margin-bottom: 12px;
+		}
+
+		.button-big {
+			background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
+			line-height: 50px;
+		}
+
+		.button-big:hover {
+			background: rgb(153, 204, 0);
+		}
+
+		.button-small {
+			background: #444;
+			line-height: 40px;
+		}
+
+		.button-small:hover {
+			background: #555;
+		}
+
+		.button-label-big {
+			color: #222;
+			font-weight: bold;
+			font-size: 20px;
+			padding: 12px;
+		}
+
+		.button-label-small {
+			color: rgb(153, 204, 0);
+			font-size: 16px;
+			padding: 12px;
+		}
+
+		a {
+			color: rgb(134, 179, 0);
+			text-decoration: none;
+		}
+
+		p,
+		li {
+			font-size: 16px;
+		}
+
+		.dont-worry,
+		#msg {
+			font-size: 18px;
+		}
+
+		.icon-warning {
+			color: #dec340;
+			height: 4rem;
+			padding-top: 2rem;
+		}
+
+		h1 {
+			font-size: 32px;
+		}
+
+		code {
+			font-family: Fira, FiraCode, monospace;
+		}
+
+		details {
+			background: #333;
+			margin-bottom: 2rem;
+			padding: 0.5rem 1rem;
+			width: 40rem;
+			border-radius: 10px;
+			justify-content: center;
+			margin: auto;
+		}
+
+		summary {
+			cursor: pointer;
+		}
+
+		summary > * {
+			display: inline;
+		}
+
+		@media screen and (max-width: 500px) {
+			details {
+				width: 50%;
+			}
+		`)
 	}
 
 	// eslint-disable-next-line no-inner-declarations
