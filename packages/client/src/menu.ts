@@ -1,6 +1,5 @@
 import { computed, ref, reactive } from 'vue';
 import { $i } from './account';
-import { mainRouter } from '@/router';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -55,26 +54,7 @@ export const menuDef = reactive({
 		title: 'lists',
 		icon: 'fas fa-list-ul',
 		show: computed(() => $i != null),
-		active: computed(() => mainRouter.currentRoute.value.path.startsWith('/timeline/list/') || mainRouter.currentRoute.value.path === '/my/lists' || mainRouter.currentRoute.value.path.startsWith('/my/lists/')),
-		action: (ev) => {
-			const items = ref([{
-				type: 'pending',
-			}]);
-			os.api('users/lists/list').then(lists => {
-				const _items = [...lists.map(list => ({
-					type: 'link',
-					text: list.name,
-					to: `/timeline/list/${list.id}`,
-				})), null, {
-					type: 'link',
-					to: '/my/lists',
-					text: i18n.ts.manageLists,
-					icon: 'fas fa-cog',
-				}];
-				items.value = _items;
-			});
-			os.popupMenu(items, ev.currentTarget ?? ev.target);
-		},
+		to: '/my/lists',
 	},
 	/*
 	groups: {
@@ -88,26 +68,7 @@ export const menuDef = reactive({
 		title: 'antennas',
 		icon: 'fas fa-satellite',
 		show: computed(() => $i != null),
-		active: computed(() => mainRouter.currentRoute.value.path.startsWith('/timeline/antenna/') || mainRouter.currentRoute.value.path === '/my/antennas' || mainRouter.currentRoute.value.path.startsWith('/my/antennas/')),
-		action: (ev) => {
-			const items = ref([{
-				type: 'pending',
-			}]);
-			os.api('antennas/list').then(antennas => {
-				const _items = [...antennas.map(antenna => ({
-					type: 'link',
-					text: antenna.name,
-					to: `/timeline/antenna/${antenna.id}`,
-				})), null, {
-					type: 'link',
-					to: '/my/antennas',
-					text: i18n.ts.manageAntennas,
-					icon: 'fas fa-cog',
-				}];
-				items.value = _items;
-			});
-			os.popupMenu(items, ev.currentTarget ?? ev.target);
-		},
+		to: '/my/antennas',
 	},
 	favorites: {
 		title: 'favorites',
