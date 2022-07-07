@@ -128,7 +128,7 @@ function onKeydown(ev: KeyboardEvent) {
 	if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey)) {
 		textEl.value += '\n';
 	}
-	else if (ev.key === 'Enter' && !ev.shiftKey && canSend) {
+	else if (ev.key === 'Enter' && !ev.shiftKey && !('ontouchstart' in document.documentElement) && canSend) {
 		send();
 	}
 }
