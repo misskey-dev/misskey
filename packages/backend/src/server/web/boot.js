@@ -159,8 +159,8 @@
 			font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
 		}
 
-		.misskey_app {
-			display: none;
+		#misskey_app {
+			display: none !important;
 		}
 
 		body,
