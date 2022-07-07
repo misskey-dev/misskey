@@ -67,7 +67,7 @@ export const routes = [{
 	loginRequired: true,
 }, {
 	path: '/explore/tags/:tag',
-	component: page(() => import('./pages/explore.vue')),
+	component: page(() => import('./pages/tag.vue')),
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
