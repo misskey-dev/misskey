@@ -1,7 +1,7 @@
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
 import { getUser } from '../../../common/getters.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'users'],

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, defineAsyncComponent, nextTick, ref } from 'vue';
+import { defineAsyncComponent, nextTick, ref } from 'vue';
 import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
 import { v4 as uuid } from 'uuid';
@@ -24,7 +24,7 @@ import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
-import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const code = ref(null);
 
@@ -35,7 +35,7 @@ function installPlugin({ id, meta, ast, token }) {
 		active: true,
 		configData: {},
 		token: token,
-		ast: ast
+		ast: ast,
 	}));
 }
 
@@ -46,7 +46,7 @@ async function install() {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: 'Syntax error :('
+			text: 'Syntax error :(',
 		});
 		return;
 	}
@@ -55,7 +55,7 @@ async function install() {
 	if (meta == null) {
 		os.alert({
 			type: 'error',
-			text: 'No metadata found :('
+			text: 'No metadata found :(',
 		});
 		return;
 	}
@@ -64,7 +64,7 @@ async function install() {
 	if (metadata == null) {
 		os.alert({
 			type: 'error',
-			text: 'No metadata found :('
+			text: 'No metadata found :(',
 		});
 		return;
 	}
@@ -73,7 +73,7 @@ async function install() {
 	if (name == null || version == null || author == null) {
 		os.alert({
 			type: 'error',
-			text: 'Required property not found :('
+			text: 'Required property not found :(',
 		});
 		return;
 	}
@@ -83,7 +83,7 @@ async function install() {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: name,
-			initialPermissions: permissions
+			initialPermissions: permissions,
 		}, {
 			done: async result => {
 				const { name, permissions } = result;
@@ -93,17 +93,17 @@ async function install() {
 					permission: permissions,
 				});
 				res(token);
-			}
+			},
 		}, 'closed');
 	});
 
 	installPlugin({
 		id: uuid(),
 		meta: {
-			name, version, author, description, permissions, config
+			name, version, author, description, permissions, config,
 		},
 		token,
-		ast: serialize(ast)
+		ast: serialize(ast),
 	});
 
 	os.success();
@@ -113,11 +113,12 @@ async function install() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts._plugin.install,
-		icon: 'fas fa-download',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts._plugin.install,
+	icon: 'fas fa-download',
 });
 </script>

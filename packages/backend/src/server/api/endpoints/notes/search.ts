@@ -1,8 +1,8 @@
+import { In } from 'typeorm';
+import { Notes } from '@/models/index.js';
+import config from '@/config/index.js';
 import es from '../../../../db/elasticsearch.js';
 import define from '../../define.js';
-import { Notes } from '@/models/index.js';
-import { In } from 'typeorm';
-import config from '@/config/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
@@ -99,7 +99,7 @@ export default define(meta, paramDef, async (ps, me) => {
 					userHost: ps.host,
 				},
 			}] : []
-		: [];
+			: [];
 
 		const result = await es.search({
 			index: config.elasticsearch.index || 'misskey_note',

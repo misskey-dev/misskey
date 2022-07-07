@@ -1,12 +1,12 @@
 <template>
-<MkA v-if="url.startsWith('/')" v-user-preview="canonical" :class="[$style.root, { isMe }]" :to="url" :style="{ background: bg }">
+<MkA v-if="url.startsWith('/')" v-user-preview="canonical" :class="[$style.root, { isMe }]" :to="url" :style="{ background: bgCss }">
 	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span v-if="(host != localHost) || $store.state.showFullAcct" :class="$style.mainHost">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
-<a v-else :class="$style.root" :href="url" target="_blank" rel="noopener" :style="{ background: bg }">
+<a v-else :class="$style.root" :href="url" target="_blank" rel="noopener" :style="{ background: bgCss }">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span :class="$style.mainHost">@{{ toUnicode(host) }}</span>
@@ -14,49 +14,31 @@
 </a>
 </template>
 
-<script lang="ts">
-import { defineComponent, useCssModule } from 'vue';
-import tinycolor from 'tinycolor2';
+<script lang="ts" setup>
 import { toUnicode } from 'punycode';
+import { useCssModule } from 'vue';
+import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config';
 import { $i } from '@/account';
 
-export default defineComponent({
-	props: {
-		username: {
-			type: String,
-			required: true
-		},
-		host: {
-			type: String,
-			required: true
-		}
-	},
+const props = defineProps<{
+	username: string;
+	host: string;
+}>();
 
-	setup(props) {
-		const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
+const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
 
-		const url = `/${canonical}`;
+const url = `/${canonical}`;
 
-		const isMe = $i && (
-			`@${props.username}@${toUnicode(props.host)}` === `@${$i.username}@${toUnicode(localHost)}`.toLowerCase()
-		);
+const isMe = $i && (
+	`@${props.username}@${toUnicode(props.host)}` === `@${$i.username}@${toUnicode(localHost)}`.toLowerCase()
+);
 
-		const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
-		bg.setAlpha(0.1);
+const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
+bg.setAlpha(0.1);
+const bgCss = bg.toRgbString();
 
-		useCssModule();
-
-		return {
-			localHost,
-			isMe,
-			url,
-			canonical,
-			toUnicode,
-			bg: bg.toRgbString(),
-		};
-	},
-});
+useCssModule();
 </script>
 
 <style lang="scss" module>

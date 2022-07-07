@@ -1,8 +1,8 @@
+import { pushUserToUserList } from '@/services/user-list/push.js';
+import { UserLists, UserListJoinings, Blockings } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
 import { getUser } from '../../../common/getters.js';
-import { pushUserToUserList } from '@/services/user-list/push.js';
-import { UserLists, UserListJoinings, Blockings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['lists', 'users'],

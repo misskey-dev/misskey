@@ -1,8 +1,8 @@
 import ms from 'ms';
-import define from '../../define.js';
 import { Pages, DriveFiles } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { Page } from '@/models/entities/page.js';
+import define from '../../define.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -51,7 +51,7 @@ export const paramDef = {
 		} },
 		script: { type: 'string' },
 		eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true },
-		font: { type: 'string', enum: ['serif', 'sans-serif'], default: "sans-serif" },
+		font: { type: 'string', enum: ['serif', 'sans-serif'], default: 'sans-serif' },
 		alignCenter: { type: 'boolean', default: false },
 		hideTitleWhenPinned: { type: 'boolean', default: false },
 	},

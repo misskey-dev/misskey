@@ -3,7 +3,9 @@ export function checkWordMute(note: Record<string, any>, me: Record<string, any>
 	if (me && (note.userId === me.id)) return false;
 
 	if (mutedWords.length > 0) {
-		if (note.text == null) return false;
+		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+
+		if (text === '') return false;
 
 		const matched = mutedWords.some(filter => {
 			if (Array.isArray(filter)) {
@@ -11,7 +13,7 @@ export function checkWordMute(note: Record<string, any>, me: Record<string, any>
 				const filteredFilter = filter.filter(keyword => keyword !== '');
 				if (filteredFilter.length === 0) return false;
 
-				return filteredFilter.every(keyword => note.text!.includes(keyword));
+				return filteredFilter.every(keyword => text.includes(keyword));
 			} else {
 				// represents RegExp
 				const regexp = filter.match(/^\/(.+)\/(.*)$/);
@@ -20,7 +22,7 @@ export function checkWordMute(note: Record<string, any>, me: Record<string, any>
 				if (!regexp) return false;
 
 				try {
-					return new RegExp(regexp[1], regexp[2]).test(note.text!);
+					return new RegExp(regexp[1], regexp[2]).test(text);
 				} catch (err) {
 					// This should never happen due to input sanitisation.
 					return false;

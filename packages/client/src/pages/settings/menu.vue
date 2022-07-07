@@ -18,16 +18,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { menuDef } from '@/menu';
 import { defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const items = ref(defaultStore.state.menu.join('\n'));
 
@@ -37,7 +37,7 @@ const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
 		type: 'info',
-		text: i18n.ts.reloadToApplySetting
+		text: i18n.ts.reloadToApplySetting,
 	});
 	if (canceled) return;
 
@@ -49,10 +49,10 @@ async function addItem() {
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
-			value: k, text: i18n.ts[menuDef[k].title]
+			value: k, text: i18n.ts[menuDef[k].title],
 		})), {
-			value: '-', text: i18n.ts.divider
-		}]
+			value: '-', text: i18n.ts.divider,
+		}],
 	});
 	if (canceled) return;
 	items.value = [...split.value, item].join('\n');
@@ -76,11 +76,12 @@ watch(menuDisplay, async () => {
 	await reloadAsk();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.menu,
-		icon: 'fas fa-list-ul',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.menu,
+	icon: 'fas fa-list-ul',
 });
 </script>

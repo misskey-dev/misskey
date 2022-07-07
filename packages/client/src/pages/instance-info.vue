@@ -1,69 +1,80 @@
 <template>
-<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
-	<div v-if="instance" class="_formRoot">
-		<div class="fnfelxur">
-			<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
-		</div>
-		<MkKeyValue :copy="host" oneline style="margin: 1em 0;">
-			<template #key>Host</template>
-			<template #value><span class="_monospace"><MkLink :url="`https://${host}`">{{ host }}</MkLink></span></template>
-		</MkKeyValue>
-		<MkKeyValue oneline style="margin: 1em 0;">
-			<template #key>Name</template>
-			<template #value>{{ instance.name || `(${$ts.unknown})` }}</template>
-		</MkKeyValue>
-		<MkKeyValue>
-			<template #key>{{ $ts.description }}</template>
-			<template #value>{{ instance.description }}</template>
-		</MkKeyValue>
-		<MkKeyValue oneline style="margin: 1em 0;">
-			<template #key>{{ $ts.software }}</template>
-			<template #value><span class="_monospace">{{ instance.softwareName || `(${$ts.unknown})` }} / {{ instance.softwareVersion || `(${$ts.unknown})` }}</span></template>
-		</MkKeyValue>
-		<MkKeyValue oneline style="margin: 1em 0;">
-			<template #key>{{ $ts.administrator }}</template>
-			<template #value>{{ instance.maintainerName || `(${$ts.unknown})` }} ({{ instance.maintainerEmail || `(${$ts.unknown})` }})</template>
-		</MkKeyValue>
+<MkStickyContainer>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer v-if="instance" :content-max="600" :margin-min="16" :margin-max="32">
+		<div v-if="tab === 'overview'" class="_formRoot">
+			<div class="fnfelxur">
+				<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
+				<span class="name">{{ instance.name || `(${$ts.unknown})` }}</span>
+			</div>
+			<MkKeyValue :copy="host" oneline style="margin: 1em 0;">
+				<template #key>Host</template>
+				<template #value><span class="_monospace"><MkLink :url="`https://${host}`">{{ host }}</MkLink></span></template>
+			</MkKeyValue>
+			<MkKeyValue oneline style="margin: 1em 0;">
+				<template #key>{{ $ts.software }}</template>
+				<template #value><span class="_monospace">{{ instance.softwareName || `(${$ts.unknown})` }} / {{ instance.softwareVersion || `(${$ts.unknown})` }}</span></template>
+			</MkKeyValue>
+			<MkKeyValue oneline style="margin: 1em 0;">
+				<template #key>{{ $ts.administrator }}</template>
+				<template #value>{{ instance.maintainerName || `(${$ts.unknown})` }} ({{ instance.maintainerEmail || `(${$ts.unknown})` }})</template>
+			</MkKeyValue>
+			<MkKeyValue>
+				<template #key>{{ $ts.description }}</template>
+				<template #value>{{ instance.description }}</template>
+			</MkKeyValue>
 
-		<FormSection v-if="iAmModerator">
-			<template #label>Moderation</template>
-			<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.stopActivityDelivery }}</FormSwitch>
-			<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ $ts.blockThisInstance }}</FormSwitch>
-			<MkButton @click="refreshMetadata">Refresh metadata</MkButton>
-		</FormSection>
+			<FormSection v-if="iAmModerator">
+				<template #label>Moderation</template>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.stopActivityDelivery }}</FormSwitch>
+				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ $ts.blockThisInstance }}</FormSwitch>
+				<MkButton @click="refreshMetadata"><i class="fas fa-refresh"></i> Refresh metadata</MkButton>
+			</FormSection>
 
-		<FormSection>
-			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>{{ $ts.registeredAt }}</template>
-				<template #value><MkTime mode="detail" :time="instance.caughtAt"/></template>
-			</MkKeyValue>
-			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>{{ $ts.updatedAt }}</template>
-				<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
-			</MkKeyValue>
-			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>{{ $ts.latestRequestSentAt }}</template>
-				<template #value><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></template>
-			</MkKeyValue>
-			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>{{ $ts.latestStatus }}</template>
-				<template #value>{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</template>
-			</MkKeyValue>
-			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>{{ $ts.latestRequestReceivedAt }}</template>
-				<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
-			</MkKeyValue>
-		</FormSection>
+			<FormSection>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>{{ $ts.registeredAt }}</template>
+					<template #value><MkTime mode="detail" :time="instance.caughtAt"/></template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>{{ $ts.updatedAt }}</template>
+					<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>{{ $ts.latestRequestSentAt }}</template>
+					<template #value><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>{{ $ts.latestStatus }}</template>
+					<template #value>{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>{{ $ts.latestRequestReceivedAt }}</template>
+					<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
+				</MkKeyValue>
+			</FormSection>
 	
-		<FormSection>
-			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>Open Registrations</template>
-				<template #value>{{ instance.openRegistrations ? $ts.yes : $ts.no }}</template>
-			</MkKeyValue>
-		</FormSection>
+			<FormSection>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>Following (Pub)</template>
+					<template #value>{{ number(instance.followingCount) }}</template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>Followers (Sub)</template>
+					<template #value>{{ number(instance.followersCount) }}</template>
+				</MkKeyValue>
+			</FormSection>
 
-		<FormSection>
-			<template #label>{{ $ts.statistics }}</template>
+			<FormSection>
+				<template #label>Well-known resources</template>
+				<FormLink :to="`https://${host}/.well-known/host-meta`" external style="margin-bottom: 8px;">host-meta</FormLink>
+				<FormLink :to="`https://${host}/.well-known/host-meta.json`" external style="margin-bottom: 8px;">host-meta.json</FormLink>
+				<FormLink :to="`https://${host}/.well-known/nodeinfo`" external style="margin-bottom: 8px;">nodeinfo</FormLink>
+				<FormLink :to="`https://${host}/robots.txt`" external style="margin-bottom: 8px;">robots.txt</FormLink>
+				<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
+			</FormSection>
+		</div>
+		<div v-else-if="tab === 'chart'" class="_formRoot">
 			<div class="cmhjzshl">
 				<div class="selects">
 					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -79,30 +90,28 @@
 						<option value="instance-drive-files">{{ $ts._instanceCharts.files }}</option>
 						<option value="instance-drive-files-total">{{ $ts._instanceCharts.filesTotal }}</option>
 					</MkSelect>
-					<MkSelect v-model="chartSpan" style="margin: 0;">
-						<option value="hour">{{ $ts.perHour }}</option>
-						<option value="day">{{ $ts.perDay }}</option>
-					</MkSelect>
 				</div>
-				<div class="chart">
-					<MkChart :src="chartSrc" :span="chartSpan" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
+				<div class="charts">
+					<div class="label">{{ i18n.t('recentNHours', { n: 90 }) }}</div>
+					<MkChart class="chart" :src="chartSrc" span="hour" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
+					<div class="label">{{ i18n.t('recentNDays', { n: 90 }) }}</div>
+					<MkChart class="chart" :src="chartSrc" span="day" :limit="90" :args="{ host: host }" :detailed="true"></MkChart>
 				</div>
 			</div>
-		</FormSection>
-
-		<MkObjectView tall :value="instance">
-		</MkObjectView>
-
-		<FormSection>
-			<template #label>Well-known resources</template>
-			<FormLink :to="`https://${host}/.well-known/host-meta`" external style="margin-bottom: 8px;">host-meta</FormLink>
-			<FormLink :to="`https://${host}/.well-known/host-meta.json`" external style="margin-bottom: 8px;">host-meta.json</FormLink>
-			<FormLink :to="`https://${host}/.well-known/nodeinfo`" external style="margin-bottom: 8px;">nodeinfo</FormLink>
-			<FormLink :to="`https://${host}/robots.txt`" external style="margin-bottom: 8px;">robots.txt</FormLink>
-			<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
-		</FormSection>
-	</div>
-</MkSpacer>
+		</div>
+		<div v-else-if="tab === 'users'" class="_formRoot">
+			<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
+				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${new Date(user.updatedAt).toLocaleString()}`" class="user" :to="`/user-info/${user.id}`">
+					<MkUserCardMini :user="user"/>
+				</MkA>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'raw'" class="_formRoot">
+			<MkObjectView tall :value="instance">
+			</MkObjectView>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -120,33 +129,46 @@ import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';
-import * as symbols from '@/symbols';
 import { iAmModerator } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
+import MkUserCardMini from '@/components/user-card-mini.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 
 const props = defineProps<{
 	host: string;
 }>();
 
+let tab = $ref('overview');
+let chartSrc = $ref('instance-requests');
 let meta = $ref<misskey.entities.DetailedInstanceMetadata | null>(null);
 let instance = $ref<misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
-let chartSrc = $ref('instance-requests');
-let chartSpan = $ref('hour');
+
+const usersPagination = {
+	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
+	limit: 10,
+	params: {
+		sort: '+updatedAt',
+		state: 'all',
+		hostname: props.host,
+	},
+	offsetMode: true,
+};
 
 async function fetch() {
-	meta = await os.api('meta', { detail: true });
 	instance = await os.api('federation/show-instance', {
 		host: props.host,
 	});
 	suspended = instance.isSuspended;
-	isBlocked = meta.blockedHosts.includes(instance.host);
+	isBlocked = instance.isBlocked;
 }
 
 async function toggleBlock(ev) {
 	if (meta == null) return;
 	await os.api('admin/update-meta', {
-		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host)
+		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host),
 	});
 }
 
@@ -168,29 +190,52 @@ function refreshMetadata() {
 
 fetch();
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: props.host,
-		icon: 'fas fa-info-circle',
-		bg: 'var(--bg)',
-		actions: [{
-			text: `https://${props.host}`,
-			icon: 'fas fa-external-link-alt',
-			handler: () => {
-				window.open(`https://${props.host}`, '_blank');
-			}
-		}],
+const headerActions = $computed(() => [{
+	text: `https://${props.host}`,
+	icon: 'fas fa-external-link-alt',
+	handler: () => {
+		window.open(`https://${props.host}`, '_blank');
 	},
+}]);
+
+const headerTabs = $computed(() => [{
+	key: 'overview',
+	title: i18n.ts.overview,
+	icon: 'fas fa-info-circle',
+}, {
+	key: 'chart',
+	title: i18n.ts.charts,
+	icon: 'fas fa-chart-simple',
+}, {
+	key: 'users',
+	title: i18n.ts.users,
+	icon: 'fas fa-users',
+}, {
+	key: 'raw',
+	title: 'Raw',
+	icon: 'fas fa-code',
+}]);
+
+definePageMetadata({
+	title: props.host,
+	icon: 'fas fa-server',
 });
 </script>
 
 <style lang="scss" scoped>
 .fnfelxur {
+	display: flex;
+	align-items: center;
+
 	> .icon {
 		display: block;
-		margin: 0;
+		margin: 0 16px 0 0;
 		height: 64px;
 		border-radius: 8px;
+	}
+
+	> .name {
+		word-break: break-all;
 	}
 }
 
@@ -198,6 +243,13 @@ defineExpose({
 	> .selects {
 		display: flex;
 		margin: 0 0 16px 0;
+	}
+
+	> .charts {
+		> .label {
+			margin-bottom: 12px;
+			font-weight: bold;
+		}
 	}
 }
 </style>

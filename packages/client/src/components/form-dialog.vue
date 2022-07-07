@@ -1,5 +1,6 @@
 <template>
-<XModalWindow ref="dialog"
+<XModalWindow
+	ref="dialog"
 	:width="450"
 	:can-close="false"
 	:with-ok-button="true"
@@ -37,10 +38,10 @@
 					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
 				</FormSelect>
 				<FormRadios v-else-if="form[item].type === 'radio'" v-model="values[item]" class="_formBlock">
-					<template #caption><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
 				</FormRadios>
-				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter" class="_formBlock">
+				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</FormRange>
@@ -55,7 +56,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
 import FormInput from './form/input.vue';
 import FormTextarea from './form/textarea.vue';
 import FormSwitch from './form/switch.vue';
@@ -63,6 +63,7 @@ import FormSelect from './form/select.vue';
 import FormRange from './form/range.vue';
 import MkButton from './ui/button.vue';
 import FormRadios from './form/radios.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 
 export default defineComponent({
 	components: {
@@ -91,31 +92,31 @@ export default defineComponent({
 
 	data() {
 		return {
-			values: {}
+			values: {},
 		};
 	},
 
 	created() {
 		for (const item in this.form) {
-			this.values[item] = this.form[item].hasOwnProperty('default') ? this.form[item].default : null;
+			this.values[item] = this.form[item].default ?? null;
 		}
 	},
 
 	methods: {
 		ok() {
 			this.$emit('done', {
-				result: this.values
+				result: this.values,
 			});
 			this.$refs.dialog.close();
 		},
 
 		cancel() {
 			this.$emit('done', {
-				canceled: true
+				canceled: true,
 			});
 			this.$refs.dialog.close();
-		}
-	}
+		},
+	},
 });
 </script>
 

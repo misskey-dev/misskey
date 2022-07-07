@@ -34,7 +34,6 @@ function calc(src: Element) {
 
 export default {
 	mounted(src, binding, vn) {
-
 		const resize = new ResizeObserver((entries, observer) => {
 			calc(src);
 		});

@@ -1,6 +1,6 @@
-import define from '../../../define.js';
-import { Polls, Mutings, Notes, PollVotes } from '@/models/index.js';
 import { Brackets, In } from 'typeorm';
+import { Polls, Mutings, Notes, PollVotes } from '@/models/index.js';
+import define from '../../../define.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -31,8 +31,8 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	const query = Polls.createQueryBuilder('poll')
 		.where('poll.userHost IS NULL')
-		.andWhere(`poll.userId != :meId`, { meId: user.id })
-		.andWhere(`poll.noteVisibility = 'public'`)
+		.andWhere('poll.userId != :meId', { meId: user.id })
+		.andWhere('poll.noteVisibility = \'public\'')
 		.andWhere(new Brackets(qb => { qb
 			.where('poll.expiresAt IS NULL')
 			.orWhere('poll.expiresAt > :now', { now: new Date() });
@@ -60,12 +60,21 @@ export default define(meta, paramDef, async (ps, user) => {
 	query.setParameters(mutingQuery.getParameters());
 	//#endregion
 
-	const polls = await query.take(ps.limit).skip(ps.offset).getMany();
+	const polls = await query
+		.orderBy('poll.noteId', 'DESC')
+		.take(ps.limit)
+		.skip(ps.offset)
+		.getMany();
 
 	if (polls.length === 0) return [];
 
-	const notes = await Notes.findBy({
-		id: In(polls.map(poll => poll.noteId)),
+	const notes = await Notes.find({
+		where: {
+			id: In(polls.map(poll => poll.noteId)),
+		},
+		order: {
+			createdAt: 'DESC',
+		},
 	});
 
 	return await Notes.packMany(notes, user, {

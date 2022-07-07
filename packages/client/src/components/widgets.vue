@@ -19,7 +19,9 @@
 				<div class="customize-container">
 					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="fas fa-cog"></i></button>
 					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="fas fa-times"></i></button>
-					<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="handle" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
+					<div class="handle">
+						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
+					</div>
 				</div>
 			</template>
 		</XDraggable>
@@ -111,6 +113,7 @@ export default defineComponent({
 	}
 
 	> .widget, .customize-container {
+		contain: content;
 		margin: var(--margin) 0;
 
 		&:first-of-type {
@@ -140,6 +143,12 @@ export default defineComponent({
 
 		> .remove {
 			right: 8px;
+		}
+
+		> .handle {
+			> .widget {
+				pointer-events: none;
+			}
 		}
 	}
 }
