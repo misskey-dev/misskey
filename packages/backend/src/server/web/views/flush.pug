@@ -7,9 +7,6 @@ html
 		title Flushing Misskey
 		style
 			include ../flush.css
-
-	body
-		#msg
 		script.
 			const msg = document.getElementById('msg');
 			const successText = `\nSuccess Flush! <a href="/">Back to Misskey</a>\n成功しました。<a href="/">Misskeyを開き直してください。</a>`;
@@ -52,4 +49,6 @@ html
 
 			function message(text) {
 				msg.insertAdjacentHTML('beforeend', `<p>[${(new Date()).toString()}] ${text.replace(/\n/g,'<br>')}</p>`)
-			}
+
+	body
+		#msg
