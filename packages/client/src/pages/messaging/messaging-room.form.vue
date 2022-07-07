@@ -129,6 +129,7 @@ function onKeydown(ev: KeyboardEvent) {
 		textEl.value += '\n';
 	}
 	else if (ev.key === 'Enter' && !ev.shiftKey && !('ontouchstart' in document.documentElement) && canSend) {
+		ev.preventDefault();
 		send();
 	}
 }
