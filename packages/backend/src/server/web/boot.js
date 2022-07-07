@@ -258,6 +258,11 @@
 		summary > * {
 			display: inline;
 		}
+
+		@media screen and (max-width: 500px) {
+			details {
+				width: 50%;
+			}
 		`)
 	}
 
