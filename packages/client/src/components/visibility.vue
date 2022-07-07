@@ -1,17 +1,17 @@
 <template>
-<span v-if="note.visibility !== 'public'" class="visibility">
+<span v-if="note.visibility !== 'public'" :class="$style.visibility">
 	<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
 	<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 	<i v-else-if="note.visibility === 'specified'" ref="specified" class="fas fa-envelope"></i>
 </span>
-<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
+<span v-if="note.localOnly" :class="$style.localOnly"><i class="fas fa-biohazard"></i></span>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
 import XDetails from '@/components/users-tooltip.vue';
 import * as os from '@/os';
-import { useTooltip } from '@/scripts/use-tooltip.ts';
+import { useTooltip } from '@/scripts/use-tooltip';
 
 const props = defineProps<{
 	note: {
@@ -21,11 +21,10 @@ const props = defineProps<{
 	},
 }>();
 
-// Using $ref here breaks the component.
-const specified = ref<HTMLElement>();
+const specified = $ref<HTMLElement>();
 
 if (props.note.visibility === 'specified') {
-	useTooltip(specified, async (showing) => {
+	useTooltip($$(specified), async (showing) => {
 		const users = await os.api('users/show', {
 			userIds: props.note.visibleUserIds,
 			limit: 10,
@@ -35,14 +34,14 @@ if (props.note.visibility === 'specified') {
 			showing,
 			users,
 			count: props.note.visibleUserIds.length,
-			targetElement: specified.value,
+			targetElement: specified,
 		}, {}, 'closed');
 	});
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .visibility, .localOnly {
-	margin-left: .3em;
+	margin-left: 0.5em;
 }
 </style>
