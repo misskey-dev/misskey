@@ -29,18 +29,18 @@ html {
 	text-align: center;
 }
 button {
-	border-radius: 999px;
-	padding: 0px 12px 0px 12px;
-	border: none;
-	cursor: pointer;
-	margin-bottom: 12px;
-	background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
-	line-height: 50px;
-	color: #222;
-	font-weight: bold;
-	font-size: 20px;
-	padding: 12px;
-}
+	border-radius:999px;
+	padding:0 40px;
+	margin-top: 1rem;
+	border:none;
+	cursor:pointer;
+	margin-bottom:12px;
+	background:linear-gradient(90deg,#86b300,#4ab300);
+	line-height:50px;
+	color:#222;
+	font-weight:700;
+	font-size:20px;
+ }
 button:hover {
 	background: rgb(153, 204, 0);
 }
