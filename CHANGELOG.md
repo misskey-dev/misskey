@@ -33,6 +33,7 @@ You should also include the user name that made the change.
 - Client: Word mute also checks content warnings @Johann150
 - Client: メニューからページをリロードできるように @syuilo
 - Client: Improve emoji picker performance @syuilo
+- Client: For notes with specified visibility, show recipients when hovering over visibility symbol. @Johann150
 - Client: Make widgets available again on a tablet @syuilo
 - ユーザーにモデレーションメモを残せる機能 @syuilo
 - Make possible to delete an account by admin @syuilo
