@@ -192,7 +192,7 @@ async function saveAs() {
 	theme.name = name;
 	theme.author = `@${$i.username}@${toUnicode(host)}`;
 	if (description) theme.desc = description;
-	addTheme(theme);
+	await addTheme(theme);
 	applyTheme(theme);
 	if (defaultStore.state.darkMode) {
 		ColdDeviceStorage.set('darkTheme', theme);
