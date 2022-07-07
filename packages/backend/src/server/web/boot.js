@@ -159,13 +159,16 @@
 			font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
 		}
 
+		.misskey_app {
+			display: none;
+		}
+
 		body,
 		html {
 			background-color: #222;
 			color: #dfddcc;
 			justify-content: center;
 			margin: auto;
-			width: 80%;
 			padding: 10px;
 			text-align: center;
 		}
