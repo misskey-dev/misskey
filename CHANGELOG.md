@@ -11,6 +11,9 @@ You should also include the user name that made the change.
 
 ## 12.x.x (unreleased)
 
+### Known issues
+- 現在arm64環境ではインストールに失敗します。これは次のバージョンで修正される予定です。
+
 ### Changes
 - ハイライトがみつけるに統合されました
 - カスタム絵文字ページはインスタンス情報ページに統合されました
