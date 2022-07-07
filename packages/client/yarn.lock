@@ -600,10 +600,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@vitejs/plugin-vue@3.0.0-beta.0":
-  version "3.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-3.0.0-beta.0.tgz#092f4f50ee183818e252331833541dbdcae1b91d"
-  integrity sha512-t8os1QK1qpovpgYAJSOWYEu+Doy/DZRW1cNwMvUl0qo+Yv7D9a3cxo24oL01lbojcc9ABQhyvUP3BsvFNtriqg==
+"@vitejs/plugin-vue@3.0.0-beta.1":
+  version "3.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-3.0.0-beta.1.tgz#65a6be6ed619955a5edea6115dedcfc5da4ed3f6"
+  integrity sha512-cPVQHIKZkVEQ8qW7+BlbTrGJXNpP2aMKzVhQdTnWK9u6cSDmVdZOXHmKPO2KVvrNpFXXS8R7hHBXMsSApA+XOA==
 
 "@vue/compiler-core@3.2.37":
   version "3.2.37"
@@ -4215,10 +4215,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vite@3.0.0-beta.6:
-  version "3.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-3.0.0-beta.6.tgz#dd54c304ce7ceca243be8a114f28c431bbc447a1"
-  integrity sha512-jAxxCGXs6oIO3dFh7gwDEP9RqFzYY+ULDWawS1dd3HfM4FCr8rkOnLljDoBBIDdTNM8M7pDzdoYSmpPEOJqyZQ==
+vite@3.0.0-beta.7:
+  version "3.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-3.0.0-beta.7.tgz#ded6483ef3b9b16dbe3a912a35accb9cc3498530"
+  integrity sha512-yjw154hB229qq5Bl6+/CJSTxC/yIDmDJbaAjE/pdracz3jytNEd2ovk5BvxgZT6+qPiUc2rRH3FgGqiZnweIFw==
   dependencies:
     esbuild "^0.14.47"
     postcss "^8.4.14"

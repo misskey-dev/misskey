@@ -154,7 +154,7 @@ function createDoughnut(chartEl, tooltip, data) {
 }
 
 onMounted(() => {
-	os.apiGet('federation/stats', { limit: 20 }).then(fedStats => {
+	os.apiGet('federation/stats', { limit: 30 }).then(fedStats => {
 		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,

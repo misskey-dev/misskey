@@ -11,6 +11,9 @@ You should also include the user name that made the change.
 
 ## 12.x.x (unreleased)
 
+### Known issues
+- 現在arm64環境ではインストールに失敗します。これは次のバージョンで修正される予定です。
+
 ### Changes
 - ハイライトがみつけるに統合されました
 - カスタム絵文字ページはインスタンス情報ページに統合されました
@@ -18,6 +21,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Server: Allow GET method for some endpoints @syuilo
+- Server: Auto NSFW detection @syuilo
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
@@ -30,6 +34,7 @@ You should also include the user name that made the change.
 - Client: メニューからページをリロードできるように @syuilo
 - Client: Improve emoji picker performance @syuilo
 - Client: For notes with specified visibility, show recipients when hovering over visibility symbol. @Johann150
+- Client: Make widgets available again on a tablet @syuilo
 - ユーザーにモデレーションメモを残せる機能 @syuilo
 - Make possible to delete an account by admin @syuilo
 - Improve player detection in URL preview @mei23
