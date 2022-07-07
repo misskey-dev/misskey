@@ -1,34 +1,37 @@
 <template>
-<div>
-	<MkPagination ref="paginationComponent" :pagination="pagination">
-		<template #empty>
-			<div class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $ts.noFollowRequests }}</div>
-			</div>
-		</template>
-		<template #default="{items}">
-			<div class="mk-follow-requests">
-				<div v-for="req in items" :key="req.id" class="user _panel">
-					<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
-					<div class="body">
-						<div class="name">
-							<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
-							<p class="acct">@{{ acct(req.follower) }}</p>
-						</div>
-						<div v-if="req.follower.description" class="description" :title="req.follower.description">
-							<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
-						</div>
-						<div class="actions">
-							<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
-							<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
+<MkStickyContainer>
+	<template #header><MkPageHeader/></template>
+	<MkSpacer :content-max="800">
+		<MkPagination ref="paginationComponent" :pagination="pagination">
+			<template #empty>
+				<div class="_fullinfo">
+					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<div>{{ $ts.noFollowRequests }}</div>
+				</div>
+			</template>
+			<template #default="{items}">
+				<div class="mk-follow-requests">
+					<div v-for="req in items" :key="req.id" class="user _panel">
+						<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
+						<div class="body">
+							<div class="name">
+								<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
+								<p class="acct">@{{ acct(req.follower) }}</p>
+							</div>
+							<div v-if="req.follower.description" class="description" :title="req.follower.description">
+								<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+							</div>
+							<div class="actions">
+								<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
+								<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</template>
-	</MkPagination>
-</div>
+			</template>
+		</MkPagination>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

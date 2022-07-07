@@ -2,7 +2,7 @@
 <MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-instance-cloud">
 	<div class="">
 		<MkTagCloud v-if="activeInstances">
-			<li v-for="instance in activeInstances">
+			<li v-for="instance in activeInstances" :key="instance.id">
 				<a @click.prevent="onInstanceClick(instance)">
 					<img style="width: 32px;" :src="instance.iconUrl">
 				</a>
