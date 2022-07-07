@@ -1,131 +1,20 @@
-main>.tabs {
- padding:16px;
- border-bottom:4px solid #c3c3c3
-}
-#lsEditor>.adder {
- margin:16px;
- padding:16px;
- border:2px solid #c3c3c3
-}
-#lsEditor>.adder>textarea {
- display:block;
- width:100%;
- min-height:5em;
- box-sizing:border-box
-}
-#lsEditor>.record {
- padding:16px;
- border-bottom:1px solid #c3c3c3
-}
-#lsEditor>.record>header {
- font-weight:700
-}
-#lsEditor>.record>textarea {
- display:block;
- width:100%;
- min-height:5em;
- box-sizing:border-box
-}
-html {
- background:#222
-}
-main {
- background:#333;
- border-radius:10px
-}
-#tl>div {
- padding:16px;
- border-bottom:1px solid #c3c3c3
-}
-#tl>div>header {
- font-weight:700
-}
-* {
- font-family:BIZ UDGothic,Roboto,HelveticaNeue,Arial,sans-serif
-}
-#misskey_app {
- display:none!important
-}
-body,
-html {
- background-color:#222;
- color:#dfddcc;
- justify-content:center;
- margin:auto;
- padding:10px;
- text-align:center
-}
-button {
- background:linear-gradient(90deg,#86b300,#4ab300);
- line-height:50px;
- color:#222;
- font-weight:700;
- font-size:20px;
- border-radius:999px;
- padding:0 20px;
- margin-left: 5px;
- margin-right: 5px;
- border:none;
- cursor:pointer;
- margin-bottom:12px;
- background:#444;
- line-height:40px;
- color:#9c0;
- font-size:16px;
-}
-button:hover {
- background:#555
-}
-#ls {
- background:linear-gradient(90deg,#86b300,#4ab300);
- line-height:50px;
- color:#222;
- font-weight:700;
- font-size:20px;
- padding:12px
-}
-#ls:hover {
- background:#9c0
-}
-a {
- color:#86b300;
- text-decoration:none
-}
-li,
-p {
- font-size:16px
-}
-h1 {
- font-size:32px
-}
-code {
- font-family:Fira,FiraCode,monospace
-}
-textarea {
- background-color:#444;
- border:solid #aaa;
- border-radius:10px;
- color:#dfddcc;
- margin-top:1rem;
- margin-bottom:1rem;
- width:20rem;
- height:7rem;
- padding:.5rem
-}
-textarea:focus {
- border:solid #eee
-}
-input {
- background-color:#666;
- border:solid #aaa;
- border-radius:10px;
- color:#dfddcc;
- margin-top:1rem;
- margin-bottom:1rem;
- width:10rem;
- height:1rem;
- padding:.5rem
-}
-input:focus {
- border:solid #eee
-}
+doctype html
+
+html
+
+	head
+		meta(charset='utf-8')
+		meta(name='application-name' content='Misskey')
+		title Misskey Repair Tool
+		style
+			include ../bios.css
+		script
+			include ../bios.js
+
+	body
+		header
+			h1 Misskey Repair Tool #{version}
+		main
+			div.tabs
+				button#ls Edit local storage
+			div#content
