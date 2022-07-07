@@ -32,13 +32,13 @@ import * as Misskey from 'misskey-js';
 import autosize from 'autosize';
 //import insertTextAtCursor from 'insert-text-at-cursor';
 import { throttle } from 'throttle-debounce';
+import { Autocomplete } from '@/scripts/autocomplete';
 import { formatTimeString } from '@/scripts/format-time-string';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
-//import { Autocomplete } from '@/scripts/autocomplete';
 import { uploadFile } from '@/scripts/upload';
 
 const props = defineProps<{
@@ -203,8 +203,7 @@ onMounted(() => {
 	autosize(textEl);
 
 	// TODO: detach when unmount
-	// TODO
-	//new Autocomplete(textEl, this, { model: 'text' });
+	new Autocomplete(textEl, $$(text));
 
 	// 書きかけの投稿を復元
 	const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[draftKey];
