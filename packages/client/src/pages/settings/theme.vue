@@ -97,7 +97,10 @@ const darkThemeId = computed({
 		return darkTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id));
+		const t = themes.value.find(x => x.id === id);
+		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
+			ColdDeviceStorage.set('darkTheme', t);
+		}
 	},
 });
 const lightTheme = ColdDeviceStorage.ref('lightTheme');
@@ -106,7 +109,10 @@ const lightThemeId = computed({
 		return lightTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id));
+		const t = themes.value.find(x => x.id === id);
+		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
+			ColdDeviceStorage.set('lightTheme', t);
+		}
 	},
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
