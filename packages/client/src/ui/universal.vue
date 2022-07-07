@@ -16,7 +16,7 @@
 		<XWidgets @mounted="attachSticky"/>
 	</div>
 
-	<button class="widgetButton _button" :class="{ show: true }" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
+	<button v-if="!isDesktop && !isMobile" class="widgetButton _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
@@ -249,7 +249,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		}
 	}
 
-/*
 	> .widgetButton {
 		display: block;
 		position: fixed;
@@ -262,18 +261,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
 		background: var(--panel);
-
-		&.navHidden {
-			display: none;
-		}
-
-		@media (min-width: ($widgets-hide-threshold + 1px)) {
-			display: none;
-		}
-	}*/
-
-	> .widgetButton {
-		display: none;
 	}
 
 	> .widgetsDrawer-back {
