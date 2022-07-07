@@ -8,7 +8,7 @@ window.onload = async () => {
 		const promise = new Promise((resolve, reject) => {
 			// Append a credential
 			if (i) data.i = i;
-	
+
 			// Send request
 			fetch(endpoint.indexOf('://') > -1 ? endpoint : `/api/${endpoint}`, {
 				method: 'POST',
@@ -17,7 +17,7 @@ window.onload = async () => {
 				cache: 'no-cache'
 			}).then(async (res) => {
 				const body = res.status === 204 ? null : await res.json();
-	
+
 				if (res.status === 200) {
 					resolve(body);
 				} else if (res.status === 204) {
@@ -27,7 +27,7 @@ window.onload = async () => {
 				}
 			}).catch(reject);
 		});
-		
+
 		return promise;
 	};
 
@@ -44,7 +44,7 @@ window.onload = async () => {
 		const addKeyInput = document.createElement('input');
 		const addValueTextarea = document.createElement('textarea');
 		const addButton = document.createElement('button');
-		addButton.textContent = 'add';
+		addButton.textContent = 'Add';
 		addButton.addEventListener('click', () => {
 			localStorage.setItem(addKeyInput.value, addValueTextarea.value);
 			location.reload();
@@ -64,13 +64,13 @@ window.onload = async () => {
 			const textarea = document.createElement('textarea');
 			textarea.textContent = localStorage.getItem(k);
 			const saveButton = document.createElement('button');
-			saveButton.textContent = 'save';
+			saveButton.textContent = 'Save';
 			saveButton.addEventListener('click', () => {
 				localStorage.setItem(k, textarea.value);
 				location.reload();
 			});
 			const removeButton = document.createElement('button');
-			removeButton.textContent = 'remove';
+			removeButton.textContent = 'Remove';
 			removeButton.addEventListener('click', () => {
 				localStorage.removeItem(k);
 				location.reload();
