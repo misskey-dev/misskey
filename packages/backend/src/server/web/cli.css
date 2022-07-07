@@ -44,12 +44,6 @@ button {
 button:hover {
 	background: rgb(153, 204, 0);
 }
-
-.button-label-small {
-	color: rgb(153, 204, 0);
-	font-size: 16px;
-	padding: 12px;
-}
 a {
 	color: rgb(134, 179, 0);
 	text-decoration: none;

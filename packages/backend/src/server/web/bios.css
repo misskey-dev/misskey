@@ -1,23 +1,11 @@
-* {
-	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
-}
-
-html {
-	background: #ffb4e1;
-}
-
-main {
-	background: #dedede;
-}
 main > .tabs {
 	padding: 16px;
-	border-bottom: solid 4px #c3c3c3;
+	border-bottom: 4px solid #c3c3c3;
 }
-
 #lsEditor > .adder {
 	margin: 16px;
 	padding: 16px;
-	border: solid 2px #c3c3c3;
+	border: 2px solid #c3c3c3;
 }
 #lsEditor > .adder > textarea {
 	display: block;
@@ -27,14 +15,131 @@ main > .tabs {
 }
 #lsEditor > .record {
 	padding: 16px;
-	border-bottom: solid 1px #c3c3c3;
+	border-bottom: 1px solid #c3c3c3;
 }
 #lsEditor > .record > header {
-	font-weight: bold;
+	font-weight: 700;
 }
 #lsEditor > .record > textarea {
 	display: block;
 	width: 100%;
 	min-height: 5em;
 	box-sizing: border-box;
+}
+
+html {
+	background: #222;
+}
+main {
+	background: #333;
+	border-radius: 10px;
+}
+#tl > div {
+	padding: 16px;
+	border-bottom: 1px solid #c3c3c3;
+}
+#tl > div > header {
+	font-weight: 700;
+}
+
+* {
+	font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
+}
+#misskey_app {
+	display: none !important;
+}
+body,
+html {
+	background-color: #222;
+	color: #dfddcc;
+	justify-content: center;
+	margin: auto;
+	padding: 10px;
+	text-align: center;
+}
+button {
+	border-radius: 999px;
+	padding: 0px 12px 0px 12px;
+	border: none;
+	cursor: pointer;
+	margin-bottom: 12px;
+	background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
+	line-height: 50px;
+	color: #222;
+	font-weight: bold;
+	font-size: 20px;
+	padding: 12px;
+}
+button {
+	border-radius: 999px;
+	padding: 0px 12px 0px 12px;
+	border: none;
+	cursor: pointer;
+	margin-bottom: 12px;
+}
+button {
+	background: #444;
+	line-height: 40px;
+	color: rgb(153, 204, 0);
+	font-size: 16px;
+	padding: 12px;
+}
+button:hover {
+	background: #555;
+}
+#ls {
+	background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
+	line-height: 50px;
+	color: #222;
+	font-weight: bold;
+	font-size: 20px;
+	padding: 12px;
+}
+#ls:hover {
+	background: rgb(153, 204, 0);
+}
+a {
+	color: rgb(134, 179, 0);
+	text-decoration: none;
+}
+p,
+li {
+	font-size: 16px;
+}
+
+h1 {
+	font-size: 32px;
+}
+code {
+	font-family: Fira, FiraCode, monospace;
+}
+textarea {
+	background-color: #444;
+	border: solid #aaa;
+	border-radius: 10px;
+	color: #dfddcc;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	width: 20rem;
+	height: 5rem;
+	padding: 0.5rem;
+}
+
+textarea:focus {
+	border: solid #eee;
+}
+input {
+	background-color: #666;
+	border: solid #aaa;
+	border-radius: 10px;
+	color: #dfddcc;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	width: 10rem;
+	height: 1rem;
+	padding: 0.5rem;
+}
+
+input:focus {
+	border: solid #eee;
 }
