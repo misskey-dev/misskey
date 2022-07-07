@@ -125,7 +125,10 @@ function onDrop(ev: DragEvent): void {
 
 function onKeydown(ev: KeyboardEvent) {
 	typing();
-	if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey) && canSend) {
+	if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey || ev.shiftKey) && canSend) {
+		textEl.value += '\n'
+	}
+	else if (ev.key === 'Enter' && canSend) {
 		send();
 	}
 }
