@@ -28,7 +28,17 @@
 			<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
 			<template #suffixIcon><i class="fas fa-folder-open"></i></template>
 		</FormLink>
-		<FormSwitch v-model="keepOriginalUploading" class="_formBlock">{{ i18n.ts.keepOriginalUploading }}<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template></FormSwitch>
+		<FormSwitch v-model="keepOriginalUploading" class="_formBlock">
+			<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
+			<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
+		</FormSwitch>
+		<FormSwitch v-model="alwaysMarkNsfw" class="_formBlock" @update:modelValue="saveProfile()">
+			<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
+		</FormSwitch>
+		<FormSwitch v-model="autoSensitive" class="_formBlock" @update:modelValue="saveProfile()">
+			<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
+			<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
+		</FormSwitch>
 	</FormSection>
 </div>
 </template>
@@ -47,11 +57,14 @@ import { defaultStore } from '@/store';
 import MkChart from '@/components/chart.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
 
 const fetching = ref(true);
 const usage = ref<any>(null);
 const capacity = ref<any>(null);
 const uploadFolder = ref<any>(null);
+let alwaysMarkNsfw = $ref($i.alwaysMarkNsfw);
+let autoSensitive = $ref($i.autoSensitive);
 
 const meterStyle = computed(() => {
 	return {
@@ -91,6 +104,13 @@ function chooseUploadFolder() {
 		} else {
 			uploadFolder.value = null;
 		}
+	});
+}
+
+function saveProfile() {
+	os.api('i/update', {
+		alwaysMarkNsfw: !!alwaysMarkNsfw,
+		autoSensitive: !!autoSensitive,
 	});
 }
 

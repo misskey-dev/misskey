@@ -198,7 +198,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 					height: 100%;
 					background: var(--accent);
 					opacity: 0.5;
-					transition: width 0.2s cubic-bezier(0,0,0,1);
+					//transition: width 0.2s cubic-bezier(0,0,0,1);
 				}
 			}
 
@@ -231,7 +231,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 				cursor: grab;
 				background: var(--accent);
 				border-radius: 999px;
-				transition: left 0.2s cubic-bezier(0,0,0,1);
+				//transition: left 0.2s cubic-bezier(0,0,0,1);
 
 				&:hover {
 					background: var(--accentLighten);

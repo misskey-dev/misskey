@@ -9,18 +9,36 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.112.2 (2022/07/08)
+
+### Bugfixes
+- Fix Docker doesn't work @mei23  
+  Still not working on arm64 environment. (See 12.112.0)
+
+## 12.112.1 (2022/07/07)
+same as 12.112.0
+
+## 12.112.0 (2022/07/07)
+
+### Known issues
+- 現在arm64環境ではインストールに失敗します。これは次のバージョンで修正される予定です。
 
 ### Changes
 - ハイライトがみつけるに統合されました
 - カスタム絵文字ページはインスタンス情報ページに統合されました
 - 連合ページはインスタンス情報ページに統合されました
+- メンション一覧ページは通知一覧ページに統合されました
+- ダイレクト投稿一覧ページは通知一覧ページに統合されました
+- メニューからアンテナタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
+- メニューからリストタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
 
 ### Improvements
 - Server: Allow GET method for some endpoints @syuilo
+- Server: Auto NSFW detection @syuilo
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
+- Client: Statusbars @syuilo
 - Client: Add instance-cloud widget @syuilo
 - Client: Add rss-ticker widget @syuilo
 - Client: Removing entries from a clip @futchitwo
@@ -29,6 +47,8 @@ You should also include the user name that made the change.
 - Client: Word mute also checks content warnings @Johann150
 - Client: メニューからページをリロードできるように @syuilo
 - Client: Improve emoji picker performance @syuilo
+- Client: For notes with specified visibility, show recipients when hovering over visibility symbol. @Johann150
+- Client: Make widgets available again on a tablet @syuilo
 - ユーザーにモデレーションメモを残せる機能 @syuilo
 - Make possible to delete an account by admin @syuilo
 - Improve player detection in URL preview @mei23

@@ -48,6 +48,10 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
+		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
+		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
+		setSensitiveFlagAutomatically: { type: 'boolean' },
+		enableSensitiveMediaDetectionForVideos: { type: 'boolean' },
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
@@ -211,6 +215,22 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.recaptchaSecretKey !== undefined) {
 		set.recaptchaSecretKey = ps.recaptchaSecretKey;
+	}
+
+	if (ps.sensitiveMediaDetection !== undefined) {
+		set.sensitiveMediaDetection = ps.sensitiveMediaDetection;
+	}
+
+	if (ps.sensitiveMediaDetectionSensitivity !== undefined) {
+		set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
+	}
+
+	if (ps.setSensitiveFlagAutomatically !== undefined) {
+		set.setSensitiveFlagAutomatically = ps.setSensitiveFlagAutomatically;
+	}
+
+	if (ps.enableSensitiveMediaDetectionForVideos !== undefined) {
+		set.enableSensitiveMediaDetectionForVideos = ps.enableSensitiveMediaDetectionForVideos;
 	}
 
 	if (ps.proxyAccountId !== undefined) {

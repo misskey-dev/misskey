@@ -80,7 +80,7 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 	::v-deep(.item) {
 		display: inline-block;
 		vertical-align: bottom;
-		margin-right: 3em;
+		margin-right: 5em;
 
 		> .icon {
 			display: inline-block;

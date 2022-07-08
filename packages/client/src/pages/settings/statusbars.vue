@@ -5,7 +5,7 @@
 		<template #suffix>{{ x.name }}</template>
 		<XStatusbar :_id="x.id" :user-lists="userLists"/>
 	</FormFolder>
-	<FormButton @click="add">add</FormButton>
+	<FormButton primary @click="add">{{ i18n.ts.add }}</FormButton>
 </div>
 </template>
 
