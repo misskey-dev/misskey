@@ -32,6 +32,7 @@ same as 12.112.0
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
+- Client: Statusbars @syuilo
 - Client: Add instance-cloud widget @syuilo
 - Client: Add rss-ticker widget @syuilo
 - Client: Removing entries from a clip @futchitwo
