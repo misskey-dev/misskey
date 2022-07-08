@@ -172,7 +172,6 @@ watch([
 	fontSize,
 	useSystemFont,
 	enableInfiniteScroll,
-	enterSendsMessage,
 	squareAvatars,
 	aiChanMode,
 	showGapBetweenNotesInTimeline,
