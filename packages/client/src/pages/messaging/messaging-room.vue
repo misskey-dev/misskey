@@ -296,6 +296,8 @@ definePageMetadata(computed(() => !fetching ? user ? {
 	position: relative;
 
 	> .body {
+		min-height: 80vh;
+
 		.more {
 			display: block;
 			margin: 16px auto;
