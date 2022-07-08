@@ -125,12 +125,21 @@ function onDrop(ev: DragEvent): void {
 
 function onKeydown(ev: KeyboardEvent) {
 	typing();
-	if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey)) {
-		textEl.value += '\n';
+	let sendOnEnter = localStorage.getItem('enterSendsMessage') === 'true' || defaultStore.state.enterSendsMessage;
+	if (sendOnEnter) {
+		if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey)) {
+			textEl.value += '\n';
+		}
+		else if (ev.key === 'Enter' && !ev.shiftKey && !('ontouchstart' in document.documentElement) && canSend) {
+			ev.preventDefault();
+			send();
+		}
 	}
-	else if (ev.key === 'Enter' && !ev.shiftKey && !('ontouchstart' in document.documentElement) && canSend) {
-		ev.preventDefault();
-		send();
+	else {
+		if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey) && canSend) {
+			ev.preventDefault();
+			send();
+		}
 	}
 }
 

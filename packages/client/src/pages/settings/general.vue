@@ -27,6 +27,7 @@
 		<FormSwitch v-model="imageNewTab" class="_formBlock">{{ i18n.ts.openImageInNewTab }}</FormSwitch>
 		<FormSwitch v-model="enableInfiniteScroll" class="_formBlock">{{ i18n.ts.enableInfiniteScroll }}</FormSwitch>
 		<FormSwitch v-model="useReactionPickerForContextMenu" class="_formBlock">{{ i18n.ts.useReactionPickerForContextMenu }}</FormSwitch>
+		<FormSwitch v-model="enterSendsMessage" class="_formBlock">{{ i18n.ts.enterSendsMessage }}</FormSwitch>
 		<FormSwitch v-model="disablePagesScript" class="_formBlock">{{ i18n.ts.disablePagesScript }}</FormSwitch>
 
 		<FormSelect v-model="serverDisconnectedBehavior" class="_formBlock">
@@ -140,6 +141,7 @@ const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostF
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
+const enterSendsMessage = computed(defaultStore.makeGetterSetter('enterSendsMessage'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
@@ -170,6 +172,7 @@ watch([
 	fontSize,
 	useSystemFont,
 	enableInfiniteScroll,
+	enterSendsMessage,
 	squareAvatars,
 	aiChanMode,
 	showGapBetweenNotesInTimeline,
