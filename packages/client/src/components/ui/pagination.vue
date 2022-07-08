@@ -165,7 +165,7 @@ async function init(): Promise<void> {
 		error.value = true;
 		fetching.value = false;
 	});
-};
+}
 
 const reload = (): Promise<void> => {
 	items.value = [];
@@ -260,7 +260,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 			items.value = items.value.concat(res);
 			more.value = true;
 		} else {
-			items.value = items.value.concat(res) ;
+			items.value = items.value.concat(res);
 			more.value = false;
 		}
 		offset.value += res.length;
