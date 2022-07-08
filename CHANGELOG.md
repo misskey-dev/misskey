@@ -15,7 +15,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Fix Docker doesn't work @mei23  
-  Probably still not working on arm64 environment.
+  Still not working on arm64 environment. (See 12.112.0)
 
 ## 12.112.1 (2022/07/07)
 same as 12.112.0
