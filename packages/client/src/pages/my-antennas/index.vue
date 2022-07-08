@@ -34,7 +34,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.manageAntennas,
 	icon: 'fas fa-satellite',
-	bg: 'var(--bg)',
 });
 </script>
 

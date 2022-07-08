@@ -5,7 +5,7 @@
 		<FormSuspense :p="init">
 			<div class="_formRoot">
 				<FormSwitch v-model="enableEmail" class="_formBlock">
-					<template #label>{{ i18n.ts.enableEmail }}</template>
+					<template #label>{{ i18n.ts.enableEmail }} ({{ i18n.ts.recommended }})</template>
 					<template #caption>{{ i18n.ts.emailConfigInfo }}</template>
 				</FormSwitch>
 
@@ -122,6 +122,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.emailServer,
 	icon: 'fas fa-envelope',
-	bg: 'var(--bg)',
 });
 </script>

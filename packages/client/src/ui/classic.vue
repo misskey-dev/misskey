@@ -57,11 +57,11 @@ const XWidgets = defineAsyncComponent(() => import('./classic.widgets.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 
-const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
+let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsShowing = $ref(false);
-const fullView = $ref(false);
+let widgetsShowing = $ref(false);
+let fullView = $ref(false);
 let globalHeaderHeight = $ref(0);
 const wallpaper = localStorage.getItem('wallpaper') != null;
 const showMenuOnTop = $computed(() => defaultStore.state.menuDisplay === 'top');
@@ -241,7 +241,7 @@ onMounted(() => {
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;
-			overflow: clip;
+			overflow: hidden; overflow: clip;
 			--margin: 12px;
 		}
 

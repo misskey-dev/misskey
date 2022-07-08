@@ -7,6 +7,8 @@ import { IEndpointMeta } from './endpoints.js';
 const logger = new Logger('limiter');
 
 export const limiter = (limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string) => new Promise<void>((ok, reject) => {
+	if (process.env.NODE_ENV === 'test') ok();
+
 	const hasShortTermLimit = typeof limitation.minInterval === 'number';
 
 	const hasLongTermLimit =

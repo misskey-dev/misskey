@@ -21,6 +21,7 @@ module.exports = {
 		}],
 		'eol-last': ['error', 'always'],
 		'semi': ['error', 'always'],
+		'semi-spacing': ['error', { 'before': false, 'after': true }],
 		'quotes': ['warn', 'single'],
 		'comma-dangle': ['warn', 'always-multiline'],
 		'keyword-spacing': ['error', {
@@ -31,6 +32,11 @@ module.exports = {
 			'beforeColon': false,
 			'afterColon': true,
 		}],
+		'arrow-spacing': ['error', {
+			'before': true,
+			'after': true,
+		}],
+		'padded-blocks': ['error', 'never'],
 		/* TODO: path aliasを使わないとwarnする
 		'no-restricted-imports': ['warn', {
 			'patterns': [

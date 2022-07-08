@@ -81,10 +81,10 @@
 		<option value="force">{{ i18n.ts._nsfw.force }}</option>
 	</FormSelect>
 
-	<FormGroup>
-		<template #label>{{ i18n.ts.defaultNavigationBehaviour }}</template>
-		<FormSwitch v-model="defaultSideView">{{ i18n.ts.openInSideView }}</FormSwitch>
-	</FormGroup>
+	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" class="_formBlock">
+		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
+		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+	</FormRange>
 
 	<FormLink to="/settings/deck" class="_formBlock">{{ i18n.ts.deck }}</FormLink>
 
@@ -97,7 +97,7 @@ import { computed, ref, watch } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormGroup from '@/components/form/group.vue';
+import FormRange from '@/components/form/range.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
@@ -137,7 +137,7 @@ const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const disablePagesScript = computed(defaultStore.makeGetterSetter('disablePagesScript'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
-const defaultSideView = computed(defaultStore.makeGetterSetter('defaultSideView'));
+const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
@@ -186,6 +186,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.general,
 	icon: 'fas fa-cogs',
-	bg: 'var(--bg)',
 });
 </script>

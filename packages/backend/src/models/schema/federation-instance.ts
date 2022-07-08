@@ -52,6 +52,10 @@ export const packedFederationInstanceSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		isBlocked: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		softwareName: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -92,6 +96,10 @@ export const packedFederationInstanceSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 			format: 'url',
+		},
+		themeColor: {
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		infoUpdatedAt: {
 			type: 'string',

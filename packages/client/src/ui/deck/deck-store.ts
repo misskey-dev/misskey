@@ -13,7 +13,7 @@ type ColumnWidget = {
 
 export type Column = {
 	id: string;
-	type: string;
+	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'list' | 'mentions' | 'direct';
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
@@ -53,14 +53,6 @@ export const deckStore = markRaw(new Storage('deck', {
 	navWindow: {
 		where: 'deviceAccount',
 		default: true,
-	},
-	columnMargin: {
-		where: 'deviceAccount',
-		default: 16,
-	},
-	columnHeaderHeight: {
-		where: 'deviceAccount',
-		default: 42,
 	},
 }));
 

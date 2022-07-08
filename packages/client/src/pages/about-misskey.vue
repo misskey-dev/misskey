@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<div style="overflow: clip;">
+	<div style="overflow: hidden; overflow: clip;">
 		<MkSpacer :content-max="600" :margin-min="20">
 			<div class="_formRoot znqjceqz">
 				<div id="debug"></div>
@@ -204,7 +204,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.aboutMisskey,
 	icon: null,
-	bg: 'var(--bg)',
 });
 </script>
 

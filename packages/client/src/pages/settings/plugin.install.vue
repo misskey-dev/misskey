@@ -120,6 +120,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts._plugin.install,
 	icon: 'fas fa-download',
-	bg: 'var(--bg)',
 });
 </script>

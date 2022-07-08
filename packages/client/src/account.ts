@@ -17,12 +17,15 @@ const accountData = localStorage.getItem('account');
 export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+export const iAmAdmin = $i != null && $i.isAdmin;
 
 export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
 
 	await removeAccount($i.id);
+
+	const accounts = await getAccounts();
 
 	//#region Remove service worker registration
 	try {

@@ -1,16 +1,15 @@
-import * as redis from 'redis';
+import Redis from 'ioredis';
 import config from '@/config/index.js';
 
 export function createConnection() {
-	return redis.createClient(
-		config.redis.port,
-		config.redis.host,
-		{
-			password: config.redis.pass,
-			prefix: config.redis.prefix,
-			db: config.redis.db || 0,
-		}
-	);
+	return new Redis({
+		port: config.redis.port,
+		host: config.redis.host,
+		family: config.redis.family == null ? 0 : config.redis.family,
+		password: config.redis.pass,
+		keyPrefix: `${config.redis.prefix}:`,
+		db: config.redis.db || 0,
+	});
 }
 
 export const subsdcriber = createConnection();

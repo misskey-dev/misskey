@@ -181,6 +181,8 @@ const fetchMore = async (): Promise<void> => {
 		limit: SECOND_FETCH_LIMIT + 1,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
+		} : props.pagination.reversed ? {
+			sinceId: items.value[0].id,
 		} : {
 			untilId: items.value[items.value.length - 1].id,
 		}),
@@ -247,6 +249,8 @@ const fetchMoreAhead = async (): Promise<void> => {
 		limit: SECOND_FETCH_LIMIT + 1,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
+		} : props.pagination.reversed ? {
+			untilId: items.value[0].id,
 		} : {
 			sinceId: items.value[items.value.length - 1].id,
 		}),

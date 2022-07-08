@@ -13,10 +13,9 @@
 			<MkEmoji :normal="true" :no-style="true" emoji="🎉"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="🍮"/>
 		</div>
-		<div class="main _panel">
-			<div class="bg">
-				<div class="fade"></div>
-			</div>
+		<div class="main">
+			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
+			<button class="_button _acrylic menu" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
 			<div class="fg">
 				<h1>
 					<!-- 背景色によってはロゴが見えなくなるのでとりあえず無効に -->
@@ -24,123 +23,108 @@
 					<span class="text">{{ instanceName }}</span>
 				</h1>
 				<div class="about">
-					<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div class="desc" v-html="meta.description || i18n.ts.headlineMisskey"></div>
 				</div>
 				<div class="action">
-					<MkButton inline gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ $ts.signup }}</MkButton>
-					<MkButton inline data-cy-signin @click="signin()">{{ $ts.login }}</MkButton>
+					<MkButton inline rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.signup }}</MkButton>
+					<MkButton inline rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
 				</div>
-				<div v-if="onlineUsersCount && stats" class="status">
-					<div>
-						<I18n :src="$ts.nUsers" text-tag="span" class="users">
-							<template #n><b>{{ number(stats.originalUsersCount) }}</b></template>
-						</I18n>
-						<I18n :src="$ts.nNotes" text-tag="span" class="notes">
-							<template #n><b>{{ number(stats.originalNotesCount) }}</b></template>
-						</I18n>
-					</div>
-					<I18n :src="$ts.onlineUsersCount" text-tag="span" class="online">
-						<template #n><b>{{ onlineUsersCount }}</b></template>
-					</I18n>
-				</div>
-				<button class="_button _acrylic menu" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
 			</div>
+		</div>
+		<div v-if="instances" class="federation">
+			<MarqueeText :duration="40">
+				<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
+					<!--<MkInstanceCardMini :instance="instance"/>-->
+					<img v-if="instance.iconUrl" class="icon" :src="instance.iconUrl" alt=""/>
+					<span class="name _monospace">{{ instance.host }}</span>
+				</MkA>
+			</MarqueeText>
 		</div>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import { toUnicode } from 'punycode/';
+import XTimeline from './welcome.timeline.vue';
+import MarqueeText from '@/components/marquee.vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
 import XNote from '@/components/note.vue';
 import MkFeaturedPhotos from '@/components/featured-photos.vue';
-import XTimeline from './welcome.timeline.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import number from '@/filters/number';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		XNote,
-		MkFeaturedPhotos,
-		XTimeline,
-	},
+let meta = $ref();
+let stats = $ref();
+let tags = $ref();
+let onlineUsersCount = $ref();
+let instances = $ref();
 
-	data() {
-		return {
-			host: toUnicode(host),
-			instanceName,
-			meta: null,
-			stats: null,
-			tags: [],
-			onlineUsersCount: null,
-		};
-	},
-
-	created() {
-		os.api('meta', { detail: true }).then(meta => {
-			this.meta = meta;
-		});
-
-		os.api('stats').then(stats => {
-			this.stats = stats;
-		});
-
-		os.api('get-online-users-count').then(res => {
-			this.onlineUsersCount = res.count;
-		});
-
-		os.api('hashtags/list', {
-			sort: '+mentionedLocalUsers',
-			limit: 8
-		}).then(tags => {
-			this.tags = tags;
-		});
-	},
-
-	methods: {
-		signin() {
-			os.popup(XSigninDialog, {
-				autoSet: true
-			}, {}, 'closed');
-		},
-
-		signup() {
-			os.popup(XSignupDialog, {
-				autoSet: true
-			}, {}, 'closed');
-		},
-
-		showMenu(ev) {
-			os.popupMenu([{
-				text: this.$t('aboutX', { x: instanceName }),
-				icon: 'fas fa-info-circle',
-				action: () => {
-					os.pageWindow('/about');
-				}
-			}, {
-				text: this.$ts.aboutMisskey,
-				icon: 'fas fa-info-circle',
-				action: () => {
-					os.pageWindow('/about-misskey');
-				}
-			}, null, {
-				text: this.$ts.help,
-				icon: 'fas fa-question-circle',
-				action: () => {
-					window.open(`https://misskey-hub.net/help.md`, '_blank');
-				}
-			}], ev.currentTarget ?? ev.target);
-		},
-
-		number
-	}
+os.api('meta', { detail: true }).then(_meta => {
+	meta = _meta;
 });
+
+os.api('stats').then(_stats => {
+	stats = _stats;
+});
+
+os.api('get-online-users-count').then(res => {
+	onlineUsersCount = res.count;
+});
+
+os.api('hashtags/list', {
+	sort: '+mentionedLocalUsers',
+	limit: 8,
+}).then(_tags => {
+	tags = _tags;
+});
+
+os.api('federation/instances', {
+	sort: '+pubSub',
+	limit: 20,
+}).then(_instances => {
+	instances = _instances;
+});
+
+function signin() {
+	os.popup(XSigninDialog, {
+		autoSet: true,
+	}, {}, 'closed');
+}
+
+function signup() {
+	os.popup(XSignupDialog, {
+		autoSet: true,
+	}, {}, 'closed');
+}
+
+function showMenu(ev) {
+	os.popupMenu([{
+		text: i18n.ts.instanceInfo,
+		icon: 'fas fa-info-circle',
+		action: () => {
+			os.pageWindow('/about');
+		},
+	}, {
+		text: i18n.ts.aboutMisskey,
+		icon: 'fas fa-info-circle',
+		action: () => {
+			os.pageWindow('/about-misskey');
+		},
+	}, null, {
+		text: i18n.ts.help,
+		icon: 'fas fa-question-circle',
+		action: () => {
+			window.open('https://misskey-hub.net/help.md', '_blank');
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -201,7 +185,7 @@ export default defineComponent({
 			position: absolute;
 			top: 42px;
 			left: 42px;
-			width: 160px;
+			width: 140px;
 
 			@media (max-width: 450px) {
 				width: 130px;
@@ -226,30 +210,29 @@ export default defineComponent({
 			position: relative;
 			width: min(480px, 100%);
 			margin: auto auto auto 128px;
+			background: var(--panel);
+			border-radius: var(--radius);
 			box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 
 			@media (max-width: 1200px) {
 				margin: auto;
 			}
 
-			> .bg {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 128px;
-				background-position: center;
-				background-size: cover;
-				opacity: 0.75;
+			> .icon {
+				width: 85px;
+				margin-top: -47px;
+				border-radius: 100%;
+				vertical-align: bottom;
+			}
 
-				> .fade {
-					position: absolute;
-					bottom: 0;
-					left: 0;
-					width: 100%;
-					height: 128px;
-					background: linear-gradient(0deg, var(--panel), var(--X15));
-				}
+			> .menu {
+				position: absolute;
+				top: 16px;
+				right: 16px;
+				width: 32px;
+				height: 32px;
+				border-radius: 8px;
+				font-size: 18px;
 			}
 
 			> .fg {
@@ -259,8 +242,8 @@ export default defineComponent({
 				> h1 {
 					display: block;
 					margin: 0;
-					padding: 32px 32px 24px 32px;
-					font-size: 1.5em;
+					padding: 16px 32px 24px 32px;
+					font-size: 1.4em;
 
 					> .logo {
 						vertical-align: bottom;
@@ -280,41 +263,47 @@ export default defineComponent({
 						line-height: 28px;
 					}
 				}
-
-				> .status {
-					border-top: solid 0.5px var(--divider);
-					padding: 32px;
-					font-size: 90%;
-
-					> div {
-						> span:not(:last-child) {
-							padding-right: 1em;
-							margin-right: 1em;
-							border-right: solid 0.5px var(--divider);
-						}
-					}
-
-					> .online {
-						::v-deep(b) {
-							color: #41b781;
-						}
-
-						::v-deep(span) {
-							opacity: 0.7;
-						}
-					}
-				}
-
-				> .menu {
-					position: absolute;
-					top: 16px;
-					right: 16px;
-					width: 32px;
-					height: 32px;
-					border-radius: 8px;
-				}
 			}
 		}
+
+		> .federation {
+			position: absolute;
+			bottom: 16px;
+			left: 0;
+			right: 0;
+			margin: auto;
+			background: var(--acrylicPanel);
+			-webkit-backdrop-filter: var(--blur, blur(15px));
+			backdrop-filter: var(--blur, blur(15px));
+			border-radius: 999px;
+			overflow: hidden; overflow: clip;
+			width: 800px;
+			padding: 8px 0;
+
+			@media (max-width: 900px) {
+				display: none;
+			}
+		}
+	}
+}
+</style>
+
+<style lang="scss" module>
+.federationInstance {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: bottom;
+	padding: 6px 12px 6px 6px;
+	margin: 0 10px 0 0;
+	background: var(--panel);
+	border-radius: 999px;
+
+	> :global(.icon) {
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		margin-right: 5px;
+		border-radius: 999px;
 	}
 }
 </style>

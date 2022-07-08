@@ -2,20 +2,21 @@
 <div class="dkgtipfy" :class="{ wallpaper }">
 	<XSidebar v-if="!isMobile" class="sidebar"/>
 
-	<div class="contents" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
-		<main>
-			<div class="content">
+	<MkStickyContainer class="contents">
+		<template #header><XStatusBars :class="$style.statusbars"/></template>
+		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
+			<div :class="$style.content">
 				<RouterView/>
 			</div>
-			<div class="spacer"></div>
+			<div :class="$style.spacer"></div>
 		</main>
-	</div>
+	</MkStickyContainer>
 
 	<div v-if="isDesktop" ref="widgetsEl" class="widgets">
 		<XWidgets @mounted="attachSticky"/>
 	</div>
 
-	<button class="widgetButton _button" :class="{ show: true }" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
+	<button v-if="!isDesktop && !isMobile" class="widgetButton _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
@@ -71,6 +72,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
+const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
@@ -234,19 +236,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 	> .contents {
 		width: 100%;
 		min-width: 0;
-		background: var(--panel);
-
-		> main {
-			min-width: 0;
-
-			> .spacer {
-				height: calc(env(safe-area-inset-bottom, 0px) + 96px);
-
-				@media (min-width: ($widgets-hide-threshold + 1px)) {
-					display: none;
-				}
-			}
-		}
+		background: var(--bg);
 	}
 
 	> .widgets {
@@ -259,7 +249,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		}
 	}
 
-/*
 	> .widgetButton {
 		display: block;
 		position: fixed;
@@ -272,18 +261,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
 		background: var(--panel);
-
-		&.navHidden {
-			display: none;
-		}
-
-		@media (min-width: ($widgets-hide-threshold + 1px)) {
-			display: none;
-		}
-	}*/
-
-	> .widgetButton {
-		display: none;
 	}
 
 	> .widgetsDrawer-back {
@@ -396,5 +373,20 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" module>
+.statusbars {
+	position: sticky;
+	top: 0;
+	left: 0;
+}
+
+.spacer {
+	$widgets-hide-threshold: 1090px;
+
+	height: calc(env(safe-area-inset-bottom, 0px) + 96px);
+
+	@media (min-width: ($widgets-hide-threshold + 1px)) {
+		display: none;
+	}
+}
 </style>

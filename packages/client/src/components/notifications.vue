@@ -60,8 +60,10 @@ const onNotification = (notification) => {
 	}
 };
 
+let connection;
+
 onMounted(() => {
-	const connection = stream.useChannel('main');
+	connection = stream.useChannel('main');
 	connection.on('notification', onNotification);
 	connection.on('readAllNotifications', () => {
 		if (pagingComponent.value) {
@@ -87,10 +89,10 @@ onMounted(() => {
 			}
 		}
 	});
+});
 
-	onUnmounted(() => {
-		connection.dispose();
-	});
+onUnmounted(() => {
+	if (connection) connection.dispose();
 });
 </script>
 

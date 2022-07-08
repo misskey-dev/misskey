@@ -47,6 +47,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.instanceBlocking,
 	icon: 'fas fa-ban',
-	bg: 'var(--bg)',
 });
 </script>

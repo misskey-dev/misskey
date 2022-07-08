@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="900">
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
@@ -282,19 +282,16 @@ const headerActions = $computed(() => [{
 }]);
 
 const headerTabs = $computed(() => [{
-	active: tab.value === 'local',
+	key: 'local',
 	title: i18n.ts.local,
-	onClick: () => { tab.value = 'local'; },
 }, {
-	active: tab.value === 'remote',
+	key: 'remote',
 	title: i18n.ts.remote,
-	onClick: () => { tab.value = 'remote'; },
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'fas fa-laugh',
-	bg: 'var(--bg)',
 })));
 </script>
 

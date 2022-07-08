@@ -136,11 +136,11 @@ function focusDown() {
 	> .item {
 		display: block;
 		position: relative;
-		padding: 8px 18px;
+		padding: 6px 16px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
-		font-size: 0.9em;
+		font-size: 0.85em;
 		line-height: 20px;
 		text-align: left;
 		overflow: hidden;
