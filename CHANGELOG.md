@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Make active email validation configurable
+
+### Bugfixes
+
 ## 12.112.2 (2022/07/08)
 
 ### Bugfixes
