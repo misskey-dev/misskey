@@ -68,10 +68,17 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 					}
 
 					try {
-						UserIps.insert({
-							createdAt: new Date(),
+						UserIps.findOneBy({
 							userId: user.id,
-							ip: ip,
+							ip: ip
+						}).then(exist => {
+							if (!exist) {
+								UserIps.insert({
+									createdAt: new Date(),
+									userId: user.id,
+									ip: ip,
+								});
+							}
 						});
 					} catch {
 					}
