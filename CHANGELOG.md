@@ -21,6 +21,7 @@ You should also include the user name that made the change.
 ### Bugfixes
 - Fix Docker doesn't work @mei23  
   Still not working on arm64 environment. (See 12.112.0)
+- Server: Fix Attempts to update all notifications @mei23
 
 ## 12.112.1 (2022/07/07)
 same as 12.112.0
