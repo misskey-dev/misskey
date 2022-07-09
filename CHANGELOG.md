@@ -15,6 +15,7 @@ You should also include the user name that made the change.
 - Make active email validation configurable
 
 ### Bugfixes
+- Server: Fix Attempts to update all notifications @mei23
 
 ## 12.112.2 (2022/07/08)
 
