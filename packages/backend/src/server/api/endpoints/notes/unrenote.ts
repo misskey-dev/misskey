@@ -1,9 +1,9 @@
-import deleteNote from '@/services/note/delete.js';
-import define from '../../define.js';
 import ms from 'ms';
+import deleteNote from '@/services/note/delete.js';
+import { Notes, Users } from '@/models/index.js';
+import define from '../../define.js';
 import { getNote } from '../../common/getters.js';
 import { ApiError } from '../../error.js';
-import { Notes, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['notes'],

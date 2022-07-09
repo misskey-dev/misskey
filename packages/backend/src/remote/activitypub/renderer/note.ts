@@ -82,15 +82,14 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 
 	const files = await getPromisedFiles(note.fileIds);
 
-	// text should never be undefined
-	const text = note.text ?? null;
+	const text = note.text ?? '';
 	let poll: Poll | null = null;
 
 	if (note.hasPoll) {
 		poll = await Polls.findOneBy({ noteId: note.id });
 	}
 
-	let apText = text ?? '';
+	let apText = text;
 
 	if (quote) {
 		apText += `\n\nRE: ${quote}`;

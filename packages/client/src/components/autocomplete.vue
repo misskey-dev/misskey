@@ -20,6 +20,7 @@
 			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else-if="!defaultStore.state.useOsNativeEmojis" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else class="emoji">{{ emoji.emoji }}</span>
+			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
 			<span v-if="emoji.aliasOf" class="alias">({{ emoji.aliasOf }})</span>
 		</li>
@@ -35,6 +36,7 @@
 <script lang="ts">
 import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
+import { char2filePath } from '@/scripts/twemoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
@@ -42,7 +44,6 @@ import { MFM_TAGS } from '@/scripts/mfm-tags';
 import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
-import { twemojiSvgBase } from '@/scripts/twemoji-base';
 import { i18n } from '@/i18n';
 
 type EmojiDef = {
@@ -55,16 +56,10 @@ type EmojiDef = {
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
-const char2file = (char: string) => {
-	let codes = Array.from(char).map(x => x.codePointAt(0)?.toString(16));
-	if (!codes.includes('200d')) codes = codes.filter(x => x !== 'fe0f');
-	return codes.filter(x => x && x.length).join('-');
-};
-
 const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
-	url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
+	url: char2filePath(x.char),
 }));
 
 for (const x of lib) {
@@ -74,7 +69,7 @@ for (const x of lib) {
 				emoji: x.char,
 				name: k,
 				aliasOf: x.name,
-				url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
+				url: char2filePath(x.char),
 			});
 		}
 	}

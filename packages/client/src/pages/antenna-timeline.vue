@@ -1,104 +1,92 @@
 <template>
-<div v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
-	<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-	<div class="tl _block">
-		<XTimeline ref="tl" :key="antennaId"
-			class="tl"
-			src="antenna"
-			:antenna="antennaId"
-			:sound="true"
-			@queue="queueUpdated"
-		/>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
+		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+		<div class="tl _block">
+			<XTimeline
+				ref="tlEl" :key="antennaId"
+				class="tl"
+				src="antenna"
+				:antenna="antennaId"
+				:sound="true"
+				@queue="queueUpdated"
+			/>
+		</div>
 	</div>
-</div>
+</MkStickyContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent, computed } from 'vue';
+<script lang="ts" setup>
+import { computed, inject, watch } from 'vue';
 import XTimeline from '@/components/timeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
+import { useRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XTimeline,
-	},
+const router = useRouter();
 
-	props: {
-		antennaId: {
-			type: String,
-			required: true
-		}
-	},
+const props = defineProps<{
+	antennaId: string;
+}>();
 
-	data() {
-		return {
-			antenna: null,
-			queue: 0,
-			[symbols.PAGE_INFO]: computed(() => this.antenna ? {
-				title: this.antenna.name,
-				icon: 'fas fa-satellite',
-				bg: 'var(--bg)',
-				actions: [{
-					icon: 'fas fa-calendar-alt',
-					text: this.$ts.jumpToSpecifiedDate,
-					handler: this.timetravel
-				}, {
-					icon: 'fas fa-cog',
-					text: this.$ts.settings,
-					handler: this.settings
-				}],
-			} : null),
-		};
-	},
+let antenna = $ref(null);
+let queue = $ref(0);
+let rootEl = $ref<HTMLElement>();
+let tlEl = $ref<InstanceType<typeof XTimeline>>();
+const keymap = $computed(() => ({
+	't': focus,
+}));
 
-	computed: {
-		keymap(): any {
-			return {
-				't': this.focus
-			};
-		},
-	},
+function queueUpdated(q) {
+	queue = q;
+}
 
-	watch: {
-		antennaId: {
-			async handler() {
-				this.antenna = await os.api('antennas/show', {
-					antennaId: this.antennaId
-				});
-			},
-			immediate: true
-		}
-	},
+function top() {
+	scroll(rootEl, { top: 0 });
+}
 
-	methods: {
-		queueUpdated(q) {
-			this.queue = q;
-		},
+async function timetravel() {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.ts.date,
+	});
+	if (canceled) return;
 
-		top() {
-			scroll(this.$el, { top: 0 });
-		},
+	tlEl.timetravel(date);
+}
 
-		async timetravel() {
-			const { canceled, result: date } = await os.inputDate({
-				title: this.$ts.date,
-			});
-			if (canceled) return;
+function settings() {
+	router.push(`/my/antennas/${props.antennaId}`);
+}
 
-			this.$refs.tl.timetravel(date);
-		},
+function focus() {
+	tlEl.focus();
+}
 
-		settings() {
-			this.$router.push(`/my/antennas/${this.antennaId}`);
-		},
+watch(() => props.antennaId, async () => {
+	antenna = await os.api('antennas/show', {
+		antennaId: props.antennaId,
+	});
+}, { immediate: true });
 
-		focus() {
-			(this.$refs.tl as any).focus();
-		}
-	}
-});
+const headerActions = $computed(() => antenna ? [{
+	icon: 'fas fa-calendar-alt',
+	text: i18n.ts.jumpToSpecifiedDate,
+	handler: timetravel,
+}, {
+	icon: 'fas fa-cog',
+	text: i18n.ts.settings,
+	handler: settings,
+}] : []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => antenna ? {
+	title: antenna.name,
+	icon: 'fas fa-satellite',
+} : null));
 </script>
 
 <style lang="scss" scoped>
@@ -122,7 +110,7 @@ export default defineComponent({
 	> .tl {
 		background: var(--bg);
 		border-radius: var(--radius);
-		overflow: clip;
+		overflow: hidden; overflow: clip;
 	}
 
 	&.min-width_800px {

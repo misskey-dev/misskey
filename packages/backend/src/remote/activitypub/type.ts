@@ -201,7 +201,7 @@ export interface IApMention extends IObject {
 	href: string;
 }
 
-export const isMention = (object: IObject): object is IApMention=>
+export const isMention = (object: IObject): object is IApMention =>
 	getApType(object) === 'Mention' &&
 	typeof object.href === 'string';
 

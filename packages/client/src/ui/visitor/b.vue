@@ -12,11 +12,7 @@
 		<div class="contents">
 			<XHeader v-if="!root" class="header" :info="pageInfo"/>
 			<main>
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<component :is="Component" :ref="changePage"/>
-					</transition>
-				</router-view>
+				<RouterView/>
 			</main>
 			<div v-if="!root" class="powered-by">
 				<b><MkA to="/">{{ host }}</MkA></b>
@@ -26,7 +22,8 @@
 	</div>
 
 	<transition :name="$store.state.animation ? 'tray-back' : ''">
-		<div v-if="showMenu"
+		<div
+			v-if="showMenu"
 			class="menu-back _modalBg"
 			@click="showMenu = false"
 			@touchstart.passive="showMenu = false"
@@ -48,8 +45,10 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+<script lang="ts" setup>
+import { ComputedRef, onMounted, provide } from 'vue';
+import XHeader from './header.vue';
+import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -57,102 +56,69 @@ import MkPagination from '@/components/ui/pagination.vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
-import XHeader from './header.vue';
-import XKanban from './kanban.vue';
-import { ColdDeviceStorage } from '@/store';
-import * as symbols from '@/symbols';
+import { ColdDeviceStorage, defaultStore } from '@/store';
+import { mainRouter } from '@/router';
+import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const DESKTOP_THRESHOLD = 1100;
 
-export default defineComponent({
-	components: {
-		XHeader,
-		XKanban,
-		MkPagination,
-		MkButton,
-	},
+let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
-	data() {
-		return {
-			host,
-			instanceName,
-			pageInfo: null,
-			meta: null,
-			showMenu: false,
-			narrow: window.innerWidth < 1280,
-			announcements: {
-				endpoint: 'announcements',
-				limit: 10,
-			},
-			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
-		};
-	},
-
-	computed: {
-		keymap(): any {
-			return {
-				'd': () => {
-					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-					this.$store.set('darkMode', !this.$store.state.darkMode);
-				},
-				's': search,
-				'h|/': this.help
-			};
-		},
-
-		root(): boolean {
-			return this.$route.path === '/';
-		},
-	},
-
-	created() {
-		//document.documentElement.style.overflowY = 'scroll';
-
-		os.api('meta', { detail: true }).then(meta => {
-			this.meta = meta;
-		});
-	},
-
-	mounted() {
-		if (!this.isDesktop) {
-			window.addEventListener('resize', () => {
-				if (window.innerWidth >= DESKTOP_THRESHOLD) this.isDesktop = true;
-			}, { passive: true });
-		}
-	},
-
-	methods: {
-		changePage(page) {
-			if (page == null) return;
-			if (page[symbols.PAGE_INFO]) {
-				this.pageInfo = page[symbols.PAGE_INFO];
-			}
-		},
-
-		top() {
-			window.scroll({ top: 0, behavior: 'smooth' });
-		},
-
-		help() {
-			window.open(`https://misskey-hub.net/docs/keyboard-shortcut.md`, '_blank');
-		},
-
-		onTransition() {
-			if (window._scroll) window._scroll();
-		},
-
-		signin() {
-			os.popup(XSigninDialog, {
-				autoSet: true
-			}, {}, 'closed');
-		},
-
-		signup() {
-			os.popup(XSignupDialog, {
-				autoSet: true
-			}, {}, 'closed');
-		}
+provide('router', mainRouter);
+provideMetadataReceiver((info) => {
+	pageMetadata = info;
+	if (pageMetadata.value) {
+		document.title = `${pageMetadata.value.title} | ${instanceName}`;
 	}
+});
+
+const announcements = {
+	endpoint: 'announcements',
+	limit: 10,
+};
+let showMenu = $ref(false);
+let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
+let narrow = $ref(window.innerWidth < 1280);
+let meta = $ref();
+
+const keymap = $computed(() => {
+	return {
+		'd': () => {
+			if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
+			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		},
+		's': search,
+	};
+});
+
+const root = $computed(() => mainRouter.currentRoute.value.name === 'index');
+
+os.api('meta', { detail: true }).then(res => {
+	meta = res;
+});
+
+function signin() {
+	os.popup(XSigninDialog, {
+		autoSet: true,
+	}, {}, 'closed');
+}
+
+function signup() {
+	os.popup(XSignupDialog, {
+		autoSet: true,
+	}, {}, 'closed');
+}
+
+onMounted(() => {
+	if (!isDesktop) {
+		window.addEventListener('resize', () => {
+			if (window.innerWidth >= DESKTOP_THRESHOLD) isDesktop = true;
+		}, { passive: true });
+	}
+});
+
+defineExpose({
+	showMenu: $$(showMenu),
 });
 </script>
 

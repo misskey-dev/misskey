@@ -1,3 +1,5 @@
+// PIZZAX --- A lightweight store
+
 import { onUnmounted, Ref, ref, watch } from 'vue';
 import { $i } from './account';
 import { api } from './os';
@@ -116,7 +118,7 @@ export class Storage<T extends StateDef> {
 				api('i/registry/set', {
 					scope: ['client', this.key],
 					key: key,
-					value: value
+					value: value,
 				});
 				break;
 			}
@@ -161,7 +163,7 @@ export class Storage<T extends StateDef> {
 				const val = setter ? setter(value) : value;
 				this.set(key, val);
 				valueRef.value = val;
-			}
+			},
 		};
 	}
 }

@@ -9,6 +9,7 @@
 				<img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
 			</h1>
 			<div class="about">
+				<!-- eslint-disable-next-line vue/no-v-html -->
 				<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 			</div>
 			<div class="action">

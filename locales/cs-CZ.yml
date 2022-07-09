@@ -474,6 +474,7 @@ info: "Informace"
 user: "Uživatelé"
 administration: "Administrace"
 searchByGoogle: "Vyhledávání"
+file: "Soubor(ů)"
 _email:
   _follow:
     title: "Máte nového následovníka"

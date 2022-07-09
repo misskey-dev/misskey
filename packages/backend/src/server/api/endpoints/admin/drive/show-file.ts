@@ -1,6 +1,6 @@
+import { DriveFiles } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -182,6 +182,11 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
+	}
+
+	if (!me.isAdmin) {
+		delete file.requestIp;
+		delete file.requestHeaders;
 	}
 
 	return file;

@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<div class="ieepwinx">
 		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
 
@@ -11,27 +12,28 @@
 			</MkPagination>
 		</div>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'antennas/list' as const,
 	limit: 10,
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.manageAntennas,
-		icon: 'fas fa-satellite',
-		bg: 'var(--bg)'
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.manageAntennas,
+	icon: 'fas fa-satellite',
 });
 </script>
 

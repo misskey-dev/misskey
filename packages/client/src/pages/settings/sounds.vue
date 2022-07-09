@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, ref } from 'vue';
+import { computed, ref } from 'vue';
 import FormRange from '@/components/form/range.vue';
 import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
@@ -26,8 +26,8 @@ import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { playFile } from '@/scripts/sound';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const masterVolume = computed({
 	get: () => {
@@ -35,19 +35,19 @@ const masterVolume = computed({
 	},
 	set: (value) => {
 		ColdDeviceStorage.set('sound_masterVolume', value);
-	}
+	},
 });
 
 const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
 
 const sounds = ref({
-    note: ColdDeviceStorage.get('sound_note'),
-    noteMy: ColdDeviceStorage.get('sound_noteMy'),
-    notification: ColdDeviceStorage.get('sound_notification'),
-    chat: ColdDeviceStorage.get('sound_chat'),
-    chatBg: ColdDeviceStorage.get('sound_chatBg'),
-    antenna: ColdDeviceStorage.get('sound_antenna'),
-    channel: ColdDeviceStorage.get('sound_channel'),
+	note: ColdDeviceStorage.get('sound_note'),
+	noteMy: ColdDeviceStorage.get('sound_noteMy'),
+	notification: ColdDeviceStorage.get('sound_notification'),
+	chat: ColdDeviceStorage.get('sound_chat'),
+	chatBg: ColdDeviceStorage.get('sound_chatBg'),
+	antenna: ColdDeviceStorage.get('sound_antenna'),
+	channel: ColdDeviceStorage.get('sound_channel'),
 });
 
 const soundsTypes = [
@@ -95,15 +95,15 @@ async function edit(type) {
 			step: 0.05,
 			textConverter: (v) => `${Math.floor(v * 100)}%`,
 			label: i18n.ts.volume,
-			default: sounds.value[type].volume
+			default: sounds.value[type].volume,
 		},
 		listen: {
 			type: 'button',
 			content: i18n.ts.listen,
 			action: (_, values) => {
 				playFile(values.type, values.volume);
-			}
-		}
+			},
+		},
 	});
 	if (canceled) return;
 
@@ -124,11 +124,12 @@ function reset() {
 	}
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.sounds,
-		icon: 'fas fa-music',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.sounds,
+	icon: 'fas fa-music',
 });
 </script>

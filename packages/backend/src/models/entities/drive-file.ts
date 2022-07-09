@@ -1,7 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { id } from '../id.js';
 import { User } from './user.js';
 import { DriveFolder } from './drive-folder.js';
-import { id } from '../id.js';
 
 @Entity()
 @Index(['userId', 'folderId', 'id'])
@@ -156,6 +156,19 @@ export class DriveFile {
 	})
 	public isSensitive: boolean;
 
+	@Index()
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether the DriveFile is NSFW. (predict)',
+	})
+	public maybeSensitive: boolean;
+
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public maybePorn: boolean;
+
 	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か
 	 */
@@ -165,4 +178,15 @@ export class DriveFile {
 		comment: 'Whether the DriveFile is direct link to remote server.',
 	})
 	public isLink: boolean;
+
+	@Column('jsonb', {
+		default: {},
+		nullable: true,
+	})
+	public requestHeaders: Record<string, string> | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public requestIp: string | null;
 }

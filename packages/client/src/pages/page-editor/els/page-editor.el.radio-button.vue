@@ -12,41 +12,28 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkInput from '@/components/form/input.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer, MkTextarea, MkInput
-	},
-	props: {
-		value: {
-			required: true
-		},
-	},
-	data() {
-		return {
-			values: '',
-		};
-	},
-	watch: {
-		values: {
-			handler() {
-				this.value.values = this.values.split('\n');
-			},
-			deep: true
-		}
-	},
-	created() {
-		if (this.value.name == null) this.value.name = '';
-		if (this.value.title == null) this.value.title = '';
-		if (this.value.values == null) this.value.values = [];
-		this.values = this.value.values.join('\n');
-	},
+const props = withDefaults(defineProps<{
+	value: any
+}>(), {
+	value: {
+		name: '',
+		title: '',
+		values: []
+	}
+});
+
+let values: string = $ref(props.value.values.join('\n'));
+
+watch(values, () => {
+	props.value.values = values.split('\n');
+}, {
+	deep: true
 });
 </script>

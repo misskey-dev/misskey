@@ -809,6 +809,7 @@ tenMinutes: "10 minuti"
 oneHour: "1 ora"
 oneDay: "1 giorno"
 oneWeek: "1 settimana"
+file: "Allegati"
 _emailUnavailable:
   used: "Email già in uso"
   format: "Formato email non valido"
@@ -1443,8 +1444,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Mostra sempre la colonna principale"
   columnAlign: "Allineare colonne"
-  columnMargin: "Margine tra le colonne"
-  columnHeaderHeight: "Dimensioni dell'intestazione della colonna"
   addColumn: "Aggiungi colonna"
   swapLeft: "Sposta a sinistra"
   swapRight: "Sposta a destra"

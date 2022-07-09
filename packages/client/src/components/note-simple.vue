@@ -36,7 +36,7 @@ const showContent = $ref(false);
 	display: flex;
 	margin: 0;
 	padding: 0;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 	font-size: 0.95em;
 
 	&.min-width_350px {

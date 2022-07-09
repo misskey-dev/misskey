@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, defineExpose, ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const isDesktop = ref(window.innerWidth >= 1100);
 
@@ -29,17 +29,18 @@ function generateToken() {
 			os.alert({
 				type: 'success',
 				title: i18n.ts.token,
-				text: token
+				text: token,
 			});
 		},
 	}, 'closed');
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'API',
-		icon: 'fas fa-key',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: 'API',
+	icon: 'fas fa-key',
 });
 </script>

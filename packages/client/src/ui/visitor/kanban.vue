@@ -1,10 +1,11 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
 <div class="rwqkcmrc" :style="{ backgroundImage: transparent ? 'none' : `url(${ $instance.backgroundImageUrl })` }">
 	<div class="back" :class="{ transparent }"></div>
 	<div class="contents">
 		<div class="wrapper">
 			<h1 v-if="meta" :class="{ full }">
-				<MkA to="/" class="link"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></MkA>
+				<MkA to="/" class="link"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl" alt="logo"><span v-else class="text">{{ instanceName }}</span></MkA>
 			</h1>
 			<template v-if="full">
 				<div v-if="meta" class="about">
@@ -21,7 +22,7 @@
 							<div class="title">{{ announcement.title }}</div>
 							<div class="content">
 								<Mfm :text="announcement.text"/>
-								<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
+								<img v-if="announcement.imageUrl" :src="announcement.imageUrl" alt="announcement image"/>
 							</div>
 						</section>
 					</MkPagination>

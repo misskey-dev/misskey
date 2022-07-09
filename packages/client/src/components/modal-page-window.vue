@@ -1,163 +1,118 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
-	<div class="hrmcaedk _window _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
+	<div ref="rootEl" class="hrmcaedk _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
 			<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
 			<span v-else style="display: inline-block; width: 20px"></span>
-			<span v-if="pageInfo" class="title">
-				<i v-if="pageInfo.icon" class="icon" :class="pageInfo.icon"></i>
-				<span>{{ pageInfo.title }}</span>
+			<span v-if="pageMetadata?.value" class="title">
+				<i v-if="pageMetadata?.value.icon" class="icon" :class="pageMetadata?.value.icon"></i>
+				<span>{{ pageMetadata?.value.title }}</span>
 			</span>
 			<button class="_button" @click="$refs.modal.close()"><i class="fas fa-times"></i></button>
 		</div>
 		<div class="body">
 			<MkStickyContainer>
-				<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
-				<keep-alive>
-					<component :is="component" v-bind="props" :ref="changePage"/>
-				</keep-alive>
+				<template #header><MkPageHeader v-if="pageMetadata?.value && !pageMetadata?.value.hideHeader" :info="pageMetadata?.value"/></template>
+				<RouterView :router="router"/>
 			</MkStickyContainer>
 		</div>
 	</div>
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ComputedRef, provide } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
-import { popout } from '@/scripts/popout';
+import { popout as _popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { resolve } from '@/router';
 import { url } from '@/config';
-import * as symbols from '@/symbols';
 import * as os from '@/os';
+import { mainRouter, routes } from '@/router';
+import { i18n } from '@/i18n';
+import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { Router } from '@/nirax';
 
-export default defineComponent({
-	components: {
-		MkModal,
-	},
+const props = defineProps<{
+	initialPath: string;
+}>();
 
-	inject: {
-		sideViewHook: {
-			default: null,
-		},
-	},
+defineEmits<{
+	(ev: 'closed'): void;
+	(ev: 'click'): void;
+}>();
 
-	provide() {
-		return {
-			navHook: (path) => {
-				this.navigate(path);
-			},
-			shouldHeaderThin: true,
-		};
-	},
+const router = new Router(routes, props.initialPath);
 
-	props: {
-		initialPath: {
-			type: String,
-			required: true,
-		},
-		initialComponent: {
-			type: Object,
-			required: true,
-		},
-		initialProps: {
-			type: Object,
-			required: false,
-			default: () => {},
-		},
-	},
-
-	emits: ['closed'],
-
-	data() {
-		return {
-			width: 860,
-			height: 660,
-			pageInfo: null,
-			path: this.initialPath,
-			component: this.initialComponent,
-			props: this.initialProps,
-			history: [],
-		};
-	},
-
-	computed: {
-		url(): string {
-			return url + this.path;
-		},
-
-		contextmenu() {
-			return [{
-				type: 'label',
-				text: this.path,
-			}, {
-				icon: 'fas fa-expand-alt',
-				text: this.$ts.showInPage,
-				action: this.expand,
-			}, this.sideViewHook ? {
-				icon: 'fas fa-columns',
-				text: this.$ts.openInSideView,
-				action: () => {
-					this.sideViewHook(this.path);
-					this.$refs.window.close();
-				},
-			} : undefined, {
-				icon: 'fas fa-external-link-alt',
-				text: this.$ts.popout,
-				action: this.popout,
-			}, null, {
-				icon: 'fas fa-external-link-alt',
-				text: this.$ts.openInNewTab,
-				action: () => {
-					window.open(this.url, '_blank');
-					this.$refs.window.close();
-				},
-			}, {
-				icon: 'fas fa-link',
-				text: this.$ts.copyLink,
-				action: () => {
-					copyToClipboard(this.url);
-				},
-			}];
-		},
-	},
-
-	methods: {
-		changePage(page) {
-			if (page == null) return;
-			if (page[symbols.PAGE_INFO]) {
-				this.pageInfo = page[symbols.PAGE_INFO];
-			}
-		},
-
-		navigate(path, record = true) {
-			if (record) this.history.push(this.path);
-			this.path = path;
-			const { component, props } = resolve(path);
-			this.component = component;
-			this.props = props;
-		},
-
-		back() {
-			this.navigate(this.history.pop(), false);
-		},
-
-		expand() {
-			this.$router.push(this.path);
-			this.$refs.window.close();
-		},
-
-		popout() {
-			popout(this.path, this.$el);
-			this.$refs.window.close();
-		},
-
-		onContextmenu(ev: MouseEvent) {
-			os.contextMenu(this.contextmenu, ev);
-		},
-	},
+router.addListener('push', ctx => {
+	
 });
+
+let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
+let rootEl = $ref();
+let modal = $ref<InstanceType<typeof MkModal>>();
+let path = $ref(props.initialPath);
+let width = $ref(860);
+let height = $ref(660);
+const history = [];
+
+provide('router', router);
+provideMetadataReceiver((info) => {
+	pageMetadata = info;
+});
+provide('shouldOmitHeaderTitle', true);
+provide('shouldHeaderThin', true);
+
+const pageUrl = $computed(() => url + path);
+const contextmenu = $computed(() => {
+	return [{
+		type: 'label',
+		text: path,
+	}, {
+		icon: 'fas fa-expand-alt',
+		text: i18n.ts.showInPage,
+		action: expand,
+	}, {
+		icon: 'fas fa-external-link-alt',
+		text: i18n.ts.popout,
+		action: popout,
+	}, null, {
+		icon: 'fas fa-external-link-alt',
+		text: i18n.ts.openInNewTab,
+		action: () => {
+			window.open(pageUrl, '_blank');
+			modal.close();
+		},
+	}, {
+		icon: 'fas fa-link',
+		text: i18n.ts.copyLink,
+		action: () => {
+			copyToClipboard(pageUrl);
+		},
+	}];
+});
+
+function navigate(path, record = true) {
+	if (record) history.push(router.getCurrentPath());
+	router.push(path);
+}
+
+function back() {
+	navigate(history.pop(), false);
+}
+
+function expand() {
+	mainRouter.push(path);
+	modal.close();
+}
+
+function popout() {
+	_popout(path, rootEl);
+	modal.close();
+}
+
+function onContextmenu(ev: MouseEvent) {
+	os.contextMenu(contextmenu, ev);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -166,6 +121,7 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	contain: content;
+	border-radius: var(--radius);
 
 	--root-margin: 24px;
 
@@ -184,7 +140,9 @@ export default defineComponent({
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		box-shadow: 0px 1px var(--divider);
+		background: var(--windowHeader);
+		-webkit-backdrop-filter: var(--blur, blur(15px));
+		backdrop-filter: var(--blur, blur(15px));
 
 		> button {
 			height: $height;

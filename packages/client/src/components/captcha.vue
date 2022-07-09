@@ -51,7 +51,7 @@ const variable = computed(() => {
 	}
 });
 
-const loaded = computed(() => !!window[variable.value]);
+const loaded = !!window[variable.value];
 
 const src = computed(() => {
 	switch (props.provider) {
@@ -62,7 +62,7 @@ const src = computed(() => {
 
 const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
 
-if (loaded.value) {
+if (loaded) {
 	available.value = true;
 } else {
 	(document.getElementById(props.provider) || document.head.appendChild(Object.assign(document.createElement('script'), {
@@ -74,7 +74,7 @@ if (loaded.value) {
 }
 
 function reset() {
-	if (captcha.value?.reset) captcha.value.reset();
+	if (captcha.value.reset) captcha.value.reset();
 }
 
 function requestRender() {

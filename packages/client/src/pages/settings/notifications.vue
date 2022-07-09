@@ -10,15 +10,15 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, defineExpose } from 'vue';
+import { defineAsyncComponent } from 'vue';
+import { notificationTypes } from 'misskey-js';
 import FormButton from '@/components/ui/button.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import { notificationTypes } from 'misskey-js';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 async function readAllUnreadNotes() {
 	await os.api('i/read-all-unread-notes');
@@ -45,15 +45,16 @@ function configure() {
 			}).then(i => {
 				$i!.mutingNotificationTypes = i.mutingNotificationTypes;
 			});
-		}
+		},
 	}, 'closed');
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.notifications,
-		icon: 'fas fa-bell',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.notifications,
+	icon: 'fas fa-bell',
 });
 </script>

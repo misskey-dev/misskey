@@ -7,7 +7,8 @@
 	:aria-disabled="disabled"
 	@click="toggle"
 >
-	<input type="radio"
+	<input
+		type="radio"
 		:disabled="disabled"
 	>
 	<span class="button">
@@ -23,27 +24,27 @@ import { defineComponent } from 'vue';
 export default defineComponent({
 	props: {
 		modelValue: {
-			required: false
+			required: false,
 		},
 		value: {
-			required: false
+			required: false,
 		},
 		disabled: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	computed: {
 		checked(): boolean {
 			return this.modelValue === this.value;
-		}
+		},
 	},
 	methods: {
 		toggle() {
 			if (this.disabled) return;
 			this.$emit('update:modelValue', this.value);
-		}
-	}
+		},
+	},
 });
 </script>
 
@@ -53,7 +54,8 @@ export default defineComponent({
 	display: inline-block;
 	text-align: left;
 	cursor: pointer;
-	padding: 10px 12px;
+	padding: 9px 12px;
+	min-width: 60px;
 	background-color: var(--panel);
 	background-clip: padding-box !important;
 	border: solid 1px var(--panel);
