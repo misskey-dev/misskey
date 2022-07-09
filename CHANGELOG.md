@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.112.3 (2022/07/09)
 
 ### Improvements
 - Make active email validation configurable
