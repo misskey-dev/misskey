@@ -46,7 +46,7 @@ self.addEventListener('push', ev => {
 				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 12) break;
 
 				// クライアントがあったらストリームに接続しているということなので通知しない
-				if (clients.length != 0) break;
+				if (clients.length !== 0) break;
 
 				return createNotification(data);
 			case 'readAllNotifications':
