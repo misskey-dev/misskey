@@ -19,10 +19,7 @@ export async function readNotification(
 		isRead: true,
 	});
 
-	if (result.affected === 0) {
-		console.log('readNotification: no notification found');
-		return;
-	};
+	if (result.affected === 0) return;
 
 	if (!await Users.getHasUnreadNotification(userId)) return postReadAllNotifications(userId);
 	else return postReadNotifications(userId, notificationIds);
