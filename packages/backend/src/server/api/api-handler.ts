@@ -68,18 +68,11 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 					}
 
 					try {
-						UserIps.findOneBy({
+						UserIps.createQueryBuilder().insert().values({
+							createdAt: new Date(),
 							userId: user.id,
-							ip: ip
-						}).then(exist => {
-							if (!exist) {
-								UserIps.insert({
-									createdAt: new Date(),
-									userId: user.id,
-									ip: ip,
-								});
-							}
-						});
+							ip: ip,
+						}).orIgnore(true).execute();
 					} catch {
 					}
 				}
