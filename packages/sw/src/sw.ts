@@ -38,17 +38,16 @@ self.addEventListener('push', ev => {
 	}).then(async <K extends keyof pushNotificationDataMap>(clients: readonly WindowClient[]) => {
 		const data: pushNotificationDataMap[K] = ev.data?.json();
 
-		// 10分以上経過している場合は無視
-		if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 10) {
-			return createEmptyNotification();
-		}
-
 		switch (data.type) {
 			// case 'driveFileCreated':
 			case 'notification':
 			case 'unreadMessagingMessage':
+				// 10分以上経過している場合は無視
+				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 10) break;
+
 				// クライアントがあったらストリームに接続しているということなので通知しない
-				if (clients.length != 0) return;
+				if (clients.length != 0) break;
+
 				return createNotification(data);
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
