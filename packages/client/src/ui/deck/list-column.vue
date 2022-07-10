@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import {  } from 'vue';
+import { } from 'vue';
 import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
