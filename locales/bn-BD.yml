@@ -843,6 +843,7 @@ oneWeek: "এক সপ্তাহ"
 reflectMayTakeTime: "এটির কাজ দেখা যেতে কিছুটা সময় লাগতে পারে।"
 failedToFetchAccountInformation: "অ্যাকাউন্টের তথ্য উদ্ধার করা যায়নি"
 rateLimitExceeded: "রেট লিমিট ছাড়িয়ে গেছে "
+file: "ফাইলগুলি"
 _emailUnavailable:
   used: "এই ইমেইল ঠিকানাটি ইতোমধ্যে ব্যবহৃত হয়েছে"
   format: "এই ইমেল ঠিকানাটি সঠিকভাবে লিখা হয়নি"
@@ -1638,8 +1639,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "সর্বদা মেইন কলাম দেখান"
   columnAlign: "কলাম সাজান"
-  columnMargin: "কলামের মধ্যবর্তী মার্জিন"
-  columnHeaderHeight: "কলামের হেডারের উচ্চতা"
   addColumn: "কলাম যুক্ত করুন"
   swapLeft: "বামে সরান"
   swapRight: "ডানে সরান"

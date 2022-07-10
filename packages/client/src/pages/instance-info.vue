@@ -28,7 +28,7 @@
 				<template #label>Moderation</template>
 				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.stopActivityDelivery }}</FormSwitch>
 				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ $ts.blockThisInstance }}</FormSwitch>
-				<MkButton @click="refreshMetadata">Refresh metadata</MkButton>
+				<MkButton @click="refreshMetadata"><i class="fas fa-refresh"></i> Refresh metadata</MkButton>
 			</FormSection>
 
 			<FormSection>
@@ -56,8 +56,12 @@
 	
 			<FormSection>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>Open Registrations</template>
-					<template #value>{{ instance.openRegistrations ? $ts.yes : $ts.no }}</template>
+					<template #key>Following (Pub)</template>
+					<template #value>{{ number(instance.followingCount) }}</template>
+				</MkKeyValue>
+				<MkKeyValue oneline style="margin: 1em 0;">
+					<template #key>Followers (Sub)</template>
+					<template #value>{{ number(instance.followersCount) }}</template>
 				</MkKeyValue>
 			</FormSection>
 

@@ -144,6 +144,7 @@ export default defineComponent({
 .ukygtjoj {
 	position: relative;
 	overflow: hidden; overflow: clip;
+	contain: content;
 
 	&.naked {
 		background: transparent !important;

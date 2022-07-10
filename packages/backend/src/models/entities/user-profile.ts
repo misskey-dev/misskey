@@ -155,6 +155,11 @@ export class UserProfile {
 	@Column('boolean', {
 		default: false,
 	})
+	public autoSensitive: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public carefulBot: boolean;
 
 	@Column('boolean', {

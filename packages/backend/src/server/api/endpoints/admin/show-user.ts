@@ -58,6 +58,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		autoAcceptFollowed: profile.autoAcceptFollowed,
 		noCrawle: profile.noCrawle,
 		alwaysMarkNsfw: profile.alwaysMarkNsfw,
+		autoSensitive: profile.autoSensitive,
 		carefulBot: profile.carefulBot,
 		injectFeaturedNote: profile.injectFeaturedNote,
 		receiveAnnouncementEmail: profile.receiveAnnouncementEmail,

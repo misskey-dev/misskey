@@ -28,12 +28,7 @@
 				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" class="visibility">
-				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
-				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
-				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
-			</span>
-			<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
+			<MkVisibility :note="note"/>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -118,6 +113,7 @@ import XPoll from './poll.vue';
 import XRenoteButton from './renote-button.vue';
 import MkUrlPreview from '@/components/url-preview.vue';
 import MkInstanceTicker from '@/components/instance-ticker.vue';
+import MkVisibility from '@/components/visibility.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { checkWordMute } from '@/scripts/check-word-mute';
@@ -405,14 +401,6 @@ function readPromo() {
 				> .dropdownIcon {
 					margin-right: 4px;
 				}
-			}
-
-			> .visibility {
-				margin-left: 8px;
-			}
-
-			> .localOnly {
-				margin-left: 8px;
 			}
 		}
 	}

@@ -39,14 +39,6 @@ html {
 		scrollbar-color: var(--scrollbarHandle) inherit;
 		scrollbar-width: thin;
 
-		&:hover {
-			scrollbar-color: var(--scrollbarHandleHover) inherit;
-		}
-
-		&:active {
-			scrollbar-color: var(--accent) inherit;
-		}
-
 		&::-webkit-scrollbar {
 			width: 6px;
 			height: 6px;
@@ -405,6 +397,16 @@ hr {
 	> *:not(:last-child) {
 		margin-bottom: 8px;
 	}
+}
+
+._beta {
+	margin-left: 0.7em;
+	font-size: 65%;
+	padding: 2px 3px;
+	color: var(--accent);
+	border: solid 1px var(--accent);
+	border-radius: 4px;
+	vertical-align: top;
 }
 
 ._table {
