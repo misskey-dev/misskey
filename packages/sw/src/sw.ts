@@ -42,8 +42,8 @@ self.addEventListener('push', ev => {
 			// case 'driveFileCreated':
 			case 'notification':
 			case 'unreadMessagingMessage':
-				// 10分以上経過している場合は無視
-				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 10) break;
+				// 半日以上経過している場合は無視
+				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 12) break;
 
 				// クライアントがあったらストリームに接続しているということなので通知しない
 				if (clients.length != 0) break;
