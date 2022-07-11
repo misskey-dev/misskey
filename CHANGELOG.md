@@ -14,7 +14,7 @@ You should also include the user name that made the change.
 ### Improvements
 
 ### Bugfixes
-- Server: Fix crash at startup in an environment that does not support TensorFlow @mei23
+- Server: Fix crash at startup if TensorFlow is not supported @mei23
 
 ## 12.112.3 (2022/07/09)
 
