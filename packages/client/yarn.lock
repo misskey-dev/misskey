@@ -2866,12 +2866,12 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-mfm-js@0.22.1:
-  version "0.22.1"
-  resolved "https://registry.yarnpkg.com/mfm-js/-/mfm-js-0.22.1.tgz#ad5f0b95cc903ca5a5e414e2edf64ac4648dc8c2"
-  integrity sha512-UV5zvDKlWPpBFeABhyCzuOTJ3RwrNrmVpJ+zz/dFX6D/ntEywljgxkfsLamcy0ZSwUAr0O+WQxGHvAwyxUgsAQ==
+mfm-js@0.23.0-canary.1:
+  version "0.23.0-canary.1"
+  resolved "https://registry.yarnpkg.com/mfm-js/-/mfm-js-0.23.0-canary.1.tgz#1b7b7635f18bed9776054406b72e6bd613c8d0eb"
+  integrity sha512-SkMrW1rQAv+mFGtLKN9DSv6vxSREDu8ChmkBl1Ch5sQfp47BhuvcRg5EKGmt3WAQRAOylXYMg8wVYR7C5BHKeA==
   dependencies:
-    twemoji-parser "14.0.x"
+    twemoji-parser "14.0.0"
 
 micromatch@^4.0.2:
   version "4.0.2"
@@ -4085,7 +4085,7 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-twemoji-parser@14.0.0, twemoji-parser@14.0.x:
+twemoji-parser@14.0.0:
   version "14.0.0"
   resolved "https://registry.yarnpkg.com/twemoji-parser/-/twemoji-parser-14.0.0.tgz#13dabcb6d3a261d9efbf58a1666b182033bf2b62"
   integrity sha512-9DUOTGLOWs0pFWnh1p6NF+C3CkQ96PWmEFwhOVmT3WbecRC+68AIqpsnJXygfkFcp4aXbOp8Dwbhh/HQgvoRxA==

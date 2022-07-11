@@ -214,7 +214,7 @@ export default define(meta, paramDef, async (ps, _user, token) => {
 	const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 
 	if (newName != null) {
-		const tokens = mfm.parsePlain(newName);
+		const tokens = mfm.parseSimple(newName);
 		emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
 	}
 
