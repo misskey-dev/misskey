@@ -20,7 +20,7 @@ export async function detectSensitive(path: string): Promise<nsfw.predictionType
 		}
 
 		if (!isSupportedCpu) {
-			console.error('This CPU cannot use TensorFlow');
+			console.error('This CPU cannot use TensorFlow.');
 			return null;
 		}
 
