@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Server: Fix crash at startup in an environment that does not support TensorFlow @mei23
+
 ## 12.112.3 (2022/07/09)
 
 ### Improvements
