@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Support <plain> syntax for MFM
 
 ### Bugfixes
 - Server: Fix crash at startup if TensorFlow is not supported @mei23
