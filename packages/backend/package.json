@@ -13,6 +13,9 @@
 		"chokidar": "^3.3.1",
 		"lodash": "^4.17.21"
 	},
+	"optionalDependencies": {
+		"@tensorflow/tfjs-node": "3.18.0"
+	},
 	"dependencies": {
 		"@bull-board/koa": "4.0.0",
 		"@discordapp/twemoji": "14.0.2",
@@ -23,7 +26,6 @@
 		"@peertube/http-signature": "1.6.0",
 		"@sinonjs/fake-timers": "9.1.2",
 		"@syuilo/aiscript": "0.11.1",
-		"@tensorflow/tfjs-node": "3.18.0",
 		"abort-controller": "3.0.0",
 		"ajv": "8.11.0",
 		"archiver": "5.3.1",
