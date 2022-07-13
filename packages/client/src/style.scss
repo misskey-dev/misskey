@@ -252,7 +252,7 @@ hr {
 ._panel {
 	background: var(--panel);
 	border-radius: var(--radius);
-	overflow: hidden; overflow: clip;
+	overflow: clip;
 }
 
 ._block {
