@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<div class="mk-list-page">
 		<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 			<div v-if="list" class="_section">
@@ -31,104 +32,96 @@
 			</div>
 		</transition>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineComponent, watch } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
+import { mainRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton
-	},
+const props = defineProps<{
+	listId: string;
+}>();
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: computed(() => this.list ? {
-				title: this.list.name,
-				icon: 'fas fa-list-ul',
-				bg: 'var(--bg)',
-			} : null),
-			list: null,
-			users: [],
-		};
-	},
+let list = $ref(null);
+let users = $ref([]);
 
-	watch: {
-		$route: 'fetch'
-	},
+function fetchList() {
+	os.api('users/lists/show', {
+		listId: props.listId,
+	}).then(_list => {
+		list = _list;
+		os.api('users/show', {
+			userIds: list.userIds,
+		}).then(_users => {
+			users = _users;
+		});
+	});
+}
 
-	created() {
-		this.fetch();
-	},
+function addUser() {
+	os.selectUser().then(user => {
+		os.apiWithDialog('users/lists/push', {
+			listId: list.id,
+			userId: user.id,
+		}).then(() => {
+			users.push(user);
+		});
+	});
+}
 
-	methods: {
-		fetch() {
-			os.api('users/lists/show', {
-				listId: this.$route.params.list
-			}).then(list => {
-				this.list = list;
-				os.api('users/show', {
-					userIds: this.list.userIds
-				}).then(users => {
-					this.users = users;
-				});
-			});
-		},
+function removeUser(user) {
+	os.api('users/lists/pull', {
+		listId: list.id,
+		userId: user.id,
+	}).then(() => {
+		users = users.filter(x => x.id !== user.id);
+	});
+}
 
-		addUser() {
-			os.selectUser().then(user => {
-				os.apiWithDialog('users/lists/push', {
-					listId: this.list.id,
-					userId: user.id
-				}).then(() => {
-					this.users.push(user);
-				});
-			});
-		},
+async function renameList() {
+	const { canceled, result: name } = await os.inputText({
+		title: i18n.ts.enterListName,
+		default: list.name,
+	});
+	if (canceled) return;
 
-		removeUser(user) {
-			os.api('users/lists/pull', {
-				listId: this.list.id,
-				userId: user.id
-			}).then(() => {
-				this.users = this.users.filter(x => x.id !== user.id);
-			});
-		},
+	await os.api('users/lists/update', {
+		listId: list.id,
+		name: name,
+	});
 
-		async renameList() {
-			const { canceled, result: name } = await os.inputText({
-				title: this.$ts.enterListName,
-				default: this.list.name
-			});
-			if (canceled) return;
+	list.name = name;
+}
 
-			await os.api('users/lists/update', {
-				listId: this.list.id,
-				name: name
-			});
+async function deleteList() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: list.name }),
+	});
+	if (canceled) return;
 
-			this.list.name = name;
-		},
+	await os.api('users/lists/delete', {
+		listId: list.id,
+	});
+	os.success();
+	mainRouter.push('/my/lists');
+}
 
-		async deleteList() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.list.name }),
-			});
-			if (canceled) return;
+watch(() => props.listId, fetchList, { immediate: true });
 
-			await os.api('users/lists/delete', {
-				listId: this.list.id
-			});
-			os.success();
-			this.$router.push('/my/lists');
-		}
-	}
-});
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => list ? {
+	title: list.name,
+	icon: 'fas fa-list-ul',
+} : null));
 </script>
 
 <style lang="scss" scoped>

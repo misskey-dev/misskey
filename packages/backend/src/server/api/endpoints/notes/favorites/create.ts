@@ -1,8 +1,8 @@
+import { NoteFavorites } from '@/models/index.js';
+import { genId } from '@/misc/gen-id.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
 import { getNote } from '../../../common/getters.js';
-import { NoteFavorites } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['notes', 'favorites'],

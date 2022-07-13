@@ -1,7 +1,7 @@
 import config from '@/config/index.js';
-import define from '../../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -195,6 +195,22 @@ export const meta = {
 				type: 'string',
 				optional: true, nullable: true,
 			},
+			sensitiveMediaDetection: {
+				type: 'string',
+				optional: true, nullable: false,
+			},
+			sensitiveMediaDetectionSensitivity: {
+				type: 'string',
+				optional: true, nullable: false,
+			},
+			setSensitiveFlagAutomatically: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+			enableSensitiveMediaDetectionForVideos: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
 			proxyAccountId: {
 				type: 'string',
 				optional: true, nullable: true,
@@ -304,6 +320,14 @@ export const meta = {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
+			enableIpLogging: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
+			enableActiveEmailValidation: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -360,13 +384,16 @@ export default define(meta, paramDef, async (ps, me) => {
 		pinnedPages: instance.pinnedPages,
 		pinnedClipId: instance.pinnedClipId,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
-
 		useStarForReactionFallback: instance.useStarForReactionFallback,
 		pinnedUsers: instance.pinnedUsers,
 		hiddenTags: instance.hiddenTags,
 		blockedHosts: instance.blockedHosts,
 		hcaptchaSecretKey: instance.hcaptchaSecretKey,
 		recaptchaSecretKey: instance.recaptchaSecretKey,
+		sensitiveMediaDetection: instance.sensitiveMediaDetection,
+		sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
+		setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
+		enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 		proxyAccountId: instance.proxyAccountId,
 		twitterConsumerKey: instance.twitterConsumerKey,
 		twitterConsumerSecret: instance.twitterConsumerSecret,
@@ -397,5 +424,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		objectStorageS3ForcePathStyle: instance.objectStorageS3ForcePathStyle,
 		deeplAuthKey: instance.deeplAuthKey,
 		deeplIsPro: instance.deeplIsPro,
+		enableIpLogging: instance.enableIpLogging,
+		enableActiveEmailValidation: instance.enableActiveEmailValidation,
 	};
 });

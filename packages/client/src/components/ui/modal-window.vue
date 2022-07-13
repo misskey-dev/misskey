@@ -1,7 +1,7 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" @click="$emit('click')" @closed="$emit('closed')">
-	<div class="ebkgoccj _window _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
-		<div class="header">
+<MkModal ref="modal" :prefer-type="'dialog'" @click="onBgClick" @closed="$emit('closed')">
+	<div ref="rootEl" class="ebkgoccj _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
+		<div ref="headerEl" class="header">
 			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<span class="title">
 				<slot name="header"></slot>
@@ -9,84 +9,77 @@
 			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="fas fa-check"></i></button>
 		</div>
-		<div v-if="padding" class="body">
-			<div class="_section">
-				<slot></slot>
-			</div>
-		</div>
-		<div v-else class="body">
-			<slot></slot>
+		<div class="body">
+			<slot :width="bodyWidth" :height="bodyHeight"></slot>
 		</div>
 	</div>
 </MkModal>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onUnmounted } from 'vue';
 import MkModal from './modal.vue';
 
-export default defineComponent({
-	components: {
-		MkModal
-	},
-	props: {
-		withOkButton: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		okButtonDisabled: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		padding: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		width: {
-			type: Number,
-			required: false,
-			default: 400
-		},
-		height: {
-			type: Number,
-			required: false,
-			default: null
-		},
-		canClose: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-		scroll: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-	},
+const props = withDefaults(defineProps<{
+	withOkButton: boolean;
+	okButtonDisabled: boolean;
+	width: number;
+	height: number | null;
+	scroll: boolean;
+}>(), {
+	withOkButton: false,
+	okButtonDisabled: false,
+	width: 400,
+	height: null,
+	scroll: true,
+});
 
-	emits: ['click', 'close', 'closed', 'ok'],
+const emit = defineEmits<{
+	(event: 'click'): void;
+	(event: 'close'): void;
+	(event: 'closed'): void;
+	(event: 'ok'): void;
+}>();
 
-	data() {
-		return {
-		};
-	},
+let modal = $ref<InstanceType<typeof MkModal>>();
+let rootEl = $ref<HTMLElement>();
+let headerEl = $ref<HTMLElement>();
+let bodyWidth = $ref(0);
+let bodyHeight = $ref(0);
 
-	methods: {
-		close() {
-			this.$refs.modal.close();
-		},
+const close = () => {
+	modal.close();
+};
 
-		onKeydown(evt) {
-			if (evt.which === 27) { // Esc
-				evt.preventDefault();
-				evt.stopPropagation();
-				this.close();
-			}
-		},
+const onBgClick = () => {
+	emit('click');
+};
+
+const onKeydown = (evt) => {
+	if (evt.which === 27) { // Esc
+		evt.preventDefault();
+		evt.stopPropagation();
+		close();
 	}
+};
+
+const ro = new ResizeObserver((entries, observer) => {
+	bodyWidth = rootEl.offsetWidth;
+	bodyHeight = rootEl.offsetHeight - headerEl.offsetHeight;
+});
+
+onMounted(() => {
+	bodyWidth = rootEl.offsetWidth;
+	bodyHeight = rootEl.offsetHeight - headerEl.offsetHeight;
+	ro.observe(rootEl);
+});
+
+onUnmounted(() => {
+	ro.disconnect();
+});
+
+defineExpose({
+	close,
 });
 </script>
 
@@ -96,6 +89,7 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	contain: content;
+	border-radius: var(--radius);
 
 	--root-margin: 24px;
 
@@ -108,7 +102,9 @@ export default defineComponent({
 		$height-narrow: 42px;
 		display: flex;
 		flex-shrink: 0;
-		box-shadow: 0px 1px var(--divider);
+		background: var(--windowHeader);
+		-webkit-backdrop-filter: var(--blur, blur(15px));
+		backdrop-filter: var(--blur, blur(15px));
 
 		> button {
 			height: $height;
@@ -143,6 +139,7 @@ export default defineComponent({
 
 	> .body {
 		overflow: auto;
+		background: var(--panel);
 	}
 }
 </style>

@@ -1,8 +1,7 @@
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
 import Channel from '../channel.js';
 import { Notes } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { Packed } from '@/misc/schema.js';
 
 export default class extends Channel {
@@ -38,9 +37,9 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isMutedUserRelated(note, this.muting)) return;
+		if (isUserRelated(note, this.muting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isBlockerUserRelated(note, this.blocking)) return;
+		if (isUserRelated(note, this.blocking)) return;
 
 		this.connection.cacheNote(note);
 

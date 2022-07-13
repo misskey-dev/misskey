@@ -1,6 +1,6 @@
-import define from '../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { DriveFiles } from '@/models/index.js';
+import define from '../define.js';
 
 export const meta = {
 	tags: ['drive', 'account'],
@@ -39,7 +39,7 @@ export default define(meta, paramDef, async (ps, user) => {
 	const usage = await DriveFiles.calcDriveUsageOf(user.id);
 
 	return {
-		capacity: 1024 * 1024 * instance.localDriveCapacityMb,
+		capacity: 1024 * 1024 * (user.driveCapacityOverrideMb || instance.localDriveCapacityMb),
 		usage: usage,
 	};
 });

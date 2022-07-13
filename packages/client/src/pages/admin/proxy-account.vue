@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
 		<MkInfo class="_formBlock">{{ i18n.ts.proxyAccountDescription }}</MkInfo>
 		<MkKeyValue class="_formBlock">
@@ -9,7 +10,7 @@
 
 		<FormButton primary class="_formBlock" @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</FormButton>
 	</FormSuspense>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -19,9 +20,9 @@ import FormButton from '@/components/ui/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let proxyAccount: any = $ref(null);
 let proxyAccountId: any = $ref(null);
@@ -50,11 +51,12 @@ function save() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.proxyAccount,
-		icon: 'fas fa-ghost',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.proxyAccount,
+	icon: 'fas fa-ghost',
 });
 </script>

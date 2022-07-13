@@ -9,12 +9,12 @@
 
 	<form v-if="instance.enableEmail" class="bafeceda" @submit.prevent="onSubmit">
 		<div class="main _formRoot">
-			<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
+			<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
 				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 
-			<MkInput v-model="email" class="_formBlock" type="email" spellcheck="false" required>
+			<MkInput v-model="email" class="_formBlock" type="email" :spellcheck="false" required>
 				<template #label>{{ i18n.ts.emailAddress }}</template>
 				<template #caption>{{ i18n.ts._forgotPassword.enterEmail }}</template>
 			</MkInput>

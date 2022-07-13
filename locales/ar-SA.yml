@@ -803,6 +803,7 @@ oneHour: "ساعة"
 oneDay: "يوم"
 oneWeek: "أسبوع"
 failedToFetchAccountInformation: "تعذر جلب معلومات الحساب"
+file: "الملفات"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"
@@ -1007,7 +1008,6 @@ _sfx:
   antenna: "الهوائيات"
   channel: "إشعارات القنات"
 _ago:
-  unknown: "مجهول"
   future: "المستقبَل"
   justNow: "اللحظة"
   secondsAgo: "منذ {n} ثوانٍ"

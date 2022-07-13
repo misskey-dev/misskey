@@ -1,5 +1,6 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<div class="qtcaoidl">
 		<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 
@@ -10,7 +11,7 @@
 			</MkA>
 		</MkPagination>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -18,8 +19,8 @@ import { } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -61,15 +62,16 @@ function onClipDeleted() {
 	pagingComponent.reload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.clip,
-		icon: 'fas fa-paperclip',
-		bg: 'var(--bg)',
-		action: {
-			icon: 'fas fa-plus',
-			handler: create
-		},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.clip,
+	icon: 'fas fa-paperclip',
+	action: {
+		icon: 'fas fa-plus',
+		handler: create,
 	},
 });
 </script>

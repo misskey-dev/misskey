@@ -38,8 +38,8 @@ import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let name = $ref('');
 let url = $ref('');
@@ -71,11 +71,12 @@ async function create(): Promise<void> {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'Create new webhook',
-		icon: 'fas fa-bolt',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: 'Create new webhook',
+	icon: 'fas fa-bolt',
 });
 </script>

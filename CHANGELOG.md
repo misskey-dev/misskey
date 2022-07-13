@@ -10,14 +10,104 @@ You should also include the user name that made the change.
 -->
 
 ## 12.x.x (unreleased)
+
+### Improvements
+- Support <plain> syntax for MFM
+
+### Bugfixes
+- Server: Fix crash at startup if TensorFlow is not supported @mei23
+- Client: URLエンコードされたルーティングを修正
+
+## 12.112.3 (2022/07/09)
+
+### Improvements
+- Make active email validation configurable
+
+### Bugfixes
+- Server: Fix Attempts to update all notifications @mei23
+
+## 12.112.2 (2022/07/08)
+
+### Bugfixes
+- Fix Docker doesn't work @mei23  
+  Still not working on arm64 environment. (See 12.112.0)
+
+## 12.112.1 (2022/07/07)
+same as 12.112.0
+
+## 12.112.0 (2022/07/07)
+
+### Known issues
+- 現在arm64環境ではインストールに失敗します。これは次のバージョンで修正される予定です。
+
+### Changes
+- ハイライトがみつけるに統合されました
+- カスタム絵文字ページはインスタンス情報ページに統合されました
+- 連合ページはインスタンス情報ページに統合されました
+- メンション一覧ページは通知一覧ページに統合されました
+- ダイレクト投稿一覧ページは通知一覧ページに統合されました
+- メニューからアンテナタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
+- メニューからリストタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
+
+### Improvements
+- Server: Allow GET method for some endpoints @syuilo
+- Server: Auto NSFW detection @syuilo
+- Server: Add rate limit to i/notifications @tamaina
+- Client: Improve control panel @syuilo
+- Client: Show warning in control panel when there is an unresolved abuse report @syuilo
+- Client: Statusbars @syuilo
+- Client: Add instance-cloud widget @syuilo
+- Client: Add rss-ticker widget @syuilo
+- Client: Removing entries from a clip @futchitwo
+- Client: Poll highlights in explore page @syuilo
+- Client: Improve deck UI @syuilo
+- Client: Word mute also checks content warnings @Johann150
+- Client: メニューからページをリロードできるように @syuilo
+- Client: Improve emoji picker performance @syuilo
+- Client: For notes with specified visibility, show recipients when hovering over visibility symbol. @Johann150
+- Client: Make widgets available again on a tablet @syuilo
+- ユーザーにモデレーションメモを残せる機能 @syuilo
+- Make possible to delete an account by admin @syuilo
+- Improve player detection in URL preview @mei23
+- Add Badge Image to Push Notification #8012 @tamaina
+- Server: Improve performance
+- Server: Supports IPv6 on Redis transport. @mei23  
+  IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
+- Server: Add possibility to log IP addresses of users @syuilo
+- Add additional drive capacity change support @CyberRex0
+
+### Bugfixes
+- Server: Fix GenerateVideoThumbnail failed @mei23
+- Server: Ensure temp directory cleanup @Johann150
+- favicons of federated instances not showing @syuilo
+- Admin: The checkbox for blocking an instance works again @Johann150
+- Client: Prevent access to user pages when not logged in @pixeldesu @Johann150
+- Client: Disable some hotkeys (e.g. for creating a post) for not logged in users @pixeldesu
+- Client: Ask users that are not logged in to log in when trying to vote in a poll @Johann150
+- Instance mutes also apply in antennas etc. @Johann150
+
+## 12.111.1 (2022/06/13)
+
+### Bugfixes
+- some fixes of multiple notification read @tamaina
+- some GenerateVideoThumbnail failed @Johann150
+- Client: デッキでウィジェットの情報が保存されない問題を修正 @syuilo
+- Client: ギャラリーの投稿を開こうとすると編集画面が表示される @futchitwo
+
+## 12.111.0 (2022/06/11)
+### Note
+- Node.js 16.15.0 or later is required
+
 ### Improvements
 - Supports Unicode Emoji 14.0 @mei23
 - プッシュ通知を複数アカウント対応に #7667 @tamaina
 - プッシュ通知にクリックやactionを設定 #7667 @tamaina
 - ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
 - Server: always remove completed tasks of job queue @Johann150
+- Client: アバターの設定で画像をクロップできるように @syuilo
 - Client: make emoji stand out more on reaction button @Johann150
 - Client: display URL of QR code for TOTP registration @tamaina
+- Client: render quote renote CWs as MFM @pixeldesu
 - API: notifications/readは配列でも受け付けるように #7667 @tamaina
 - API: ユーザー検索で、クエリがusernameの条件を満たす場合はusernameもLIKE検索するように @tamaina
 - MFM: Allow speed changes in all animated MFMs @Johann150
@@ -30,16 +120,14 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Server: keep file order of note attachement @Johann150
-- Server: fix caching @Johann150
-- Server: await promises when following or unfollowing users @Johann150
 - Server: fix missing foreign key for reports leading to reports page being unusable @Johann150
 - Server: fix internal in-memory caching @Johann150
-- Server: use correct order of attachments on notes @Johann150
 - Server: prevent crash when processing certain PNGs @syuilo
 - Server: Fix unable to generate video thumbnails @mei23
 - Server: Fix `Cannot find module` issue @mei23
 - Federation: Add rel attribute to host-meta @mei23
 - Federation: add id for activitypub follows @Johann150
+- Federation: use `source` instead of `_misskey_content` @Johann150
 - Federation: ensure resolver does not fetch local resources via HTTP(S) @Johann150
 - Federation: correctly render empty note text @Johann150
 - Federation: Fix quote renotes containing no text being federated correctly @Johann150

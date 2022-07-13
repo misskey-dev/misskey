@@ -1,6 +1,6 @@
 <template>
 <div ref="thumbnail" class="zdjebgpv">
-	<ImgWithBlurhash v-if="isThumbnailAvailable" :hash="file.blurhash" :src="file.thumbnailUrl" :alt="file.name" :title="file.name" :style="`object-fit: ${ fit }`"/>
+	<ImgWithBlurhash v-if="isThumbnailAvailable" :hash="file.blurhash" :src="file.thumbnailUrl" :alt="file.name" :title="file.name" :cover="fit !== 'contain'"/>
 	<i v-else-if="is === 'image'" class="fas fa-file-image icon"></i>
 	<i v-else-if="is === 'video'" class="fas fa-file-video icon"></i>
 	<i v-else-if="is === 'audio' || is === 'midi'" class="fas fa-music icon"></i>
@@ -33,16 +33,16 @@ const is = computed(() => {
 	if (props.file.type.endsWith('/pdf')) return 'pdf';
 	if (props.file.type.startsWith('text/')) return 'textfile';
 	if ([
-			"application/zip",
-			"application/x-cpio",
-			"application/x-bzip",
-			"application/x-bzip2",
-			"application/java-archive",
-			"application/x-rar-compressed",
-			"application/x-tar",
-			"application/gzip",
-			"application/x-7z-compressed"
-		].some(archiveType => archiveType === props.file.type)) return 'archive';
+		'application/zip',
+		'application/x-cpio',
+		'application/x-bzip',
+		'application/x-bzip2',
+		'application/java-archive',
+		'application/x-rar-compressed',
+		'application/x-tar',
+		'application/gzip',
+		'application/x-7z-compressed',
+	].some(archiveType => archiveType === props.file.type)) return 'archive';
 	return 'unknown';
 });
 
@@ -57,9 +57,9 @@ const isThumbnailAvailable = computed(() => {
 .zdjebgpv {
 	position: relative;
 	display: flex;
-	background: #e1e1e1;
+	background: var(--panel);
 	border-radius: 8px;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
 
 	> .icon-sub {
 		position: absolute;

@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import XNotes from '@/components/notes.vue';
-import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	tag: string;
@@ -21,11 +21,12 @@ const pagination = {
 	})),
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: props.tag,
-		icon: 'fas fa-hashtag',
-		bg: 'var(--bg)',
-	})),
-});
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => ({
+	title: props.tag,
+	icon: 'fas fa-hashtag',
+})));
 </script>

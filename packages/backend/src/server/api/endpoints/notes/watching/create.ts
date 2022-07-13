@@ -1,5 +1,5 @@
-import define from '../../../define.js';
 import watch from '@/services/note/watch.js';
+import define from '../../../define.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
 

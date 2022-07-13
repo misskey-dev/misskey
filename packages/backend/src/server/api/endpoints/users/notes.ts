@@ -1,16 +1,17 @@
+import { Brackets } from 'typeorm';
+import { Notes } from '@/models/index.js';
 import define from '../../define.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { Notes } from '@/models/index.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { Brackets } from 'typeorm';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
+
+	description: 'Show all notes that this user created.',
 
 	res: {
 		type: 'array',
@@ -75,9 +76,10 @@ export default define(meta, paramDef, async (ps, me) => {
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	generateVisibilityQuery(query, me);
-	if (me) generateMutedUserQuery(query, me, user);
-	if (me) generateBlockedUserQuery(query, me);
-	if (me) generateMutedInstanceQuery(query, me);
+	if (me) {
+		generateMutedUserQuery(query, me, user);
+		generateBlockedUserQuery(query, me);
+	}
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

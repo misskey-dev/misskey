@@ -7,7 +7,7 @@
 	<div v-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination" class="muting">
 			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
-			<template v-slot="{items}">
+			<template #default="{items}">
 				<FormLink v-for="mute in items" :key="mute.id" :to="userPage(mute.mutee)">
 					<MkAcct :user="mute.mutee"/>
 				</FormLink>
@@ -17,7 +17,7 @@
 	<div v-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination" class="blocking">
 			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
-			<template v-slot="{items}">
+			<template #default="{items}">
 				<FormLink v-for="block in items" :key="block.id" :to="userPage(block.blockee)">
 					<MkAcct :user="block.blockee"/>
 				</FormLink>
@@ -35,8 +35,8 @@ import FormInfo from '@/components/ui/info.vue';
 import FormLink from '@/components/form/link.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let tab = $ref('mute');
 
@@ -50,11 +50,12 @@ const blockingPagination = {
 	limit: 10,
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.muteAndBlock,
-		icon: 'fas fa-ban',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.muteAndBlock,
+	icon: 'fas fa-ban',
 });
 </script>

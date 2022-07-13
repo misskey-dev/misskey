@@ -10,7 +10,8 @@
 			</button>
 		</div>
 	</header>
-	<transition :name="$store.state.animation ? 'container-toggle' : ''"
+	<transition
+		:name="$store.state.animation ? 'container-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
@@ -34,37 +35,37 @@ export default defineComponent({
 		showHeader: {
 			type: Boolean,
 			required: false,
-			default: true
+			default: true,
 		},
 		thin: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		naked: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		foldable: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		expanded: {
 			type: Boolean,
 			required: false,
-			default: true
+			default: true,
 		},
 		scrollable: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		maxHeight: {
 			type: Number,
 			required: false,
-			default: null
+			default: null,
 		},
 	},
 	data() {
@@ -79,12 +80,12 @@ export default defineComponent({
 			const headerHeight = this.showHeader ? this.$refs.header.offsetHeight : 0;
 			this.$el.style.minHeight = `${headerHeight}px`;
 			if (showBody) {
-				this.$el.style.flexBasis = `auto`;
+				this.$el.style.flexBasis = 'auto';
 			} else {
 				this.$el.style.flexBasis = `${headerHeight}px`;
 			}
 		}, {
-			immediate: true
+			immediate: true,
 		});
 
 		this.$el.style.setProperty('--maxHeight', this.maxHeight + 'px');
@@ -124,7 +125,7 @@ export default defineComponent({
 		afterLeave(el) {
 			el.style.height = null;
 		},
-	}
+	},
 });
 </script>
 
@@ -142,7 +143,8 @@ export default defineComponent({
 
 .ukygtjoj {
 	position: relative;
-	overflow: clip;
+	overflow: hidden; overflow: clip;
+	contain: content;
 
 	&.naked {
 		background: transparent !important;

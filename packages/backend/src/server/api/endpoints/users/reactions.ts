@@ -1,5 +1,5 @@
-import define from '../../define.js';
 import { NoteReactions, UserProfiles } from '@/models/index.js';
+import define from '../../define.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { ApiError } from '../../error.js';
@@ -8,6 +8,8 @@ export const meta = {
 	tags: ['users', 'reactions'],
 
 	requireCredential: false,
+
+	description: 'Show all reactions this user made.',
 
 	res: {
 		type: 'array',
@@ -50,8 +52,8 @@ export default define(meta, paramDef, async (ps, me) => {
 	}
 
 	const query = makePaginationQuery(NoteReactions.createQueryBuilder('reaction'),
-			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere(`reaction.userId = :userId`, { userId: ps.userId })
+		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+		.andWhere('reaction.userId = :userId', { userId: ps.userId })
 		.leftJoinAndSelect('reaction.note', 'note');
 
 	generateVisibilityQuery(query, me);

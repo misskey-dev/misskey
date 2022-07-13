@@ -1,6 +1,6 @@
 import { ref } from 'vue';
-import { globalEvents } from '@/events';
 import tinycolor from 'tinycolor2';
+import { globalEvents } from '@/events';
 
 export type Theme = {
 	id: string;
@@ -31,18 +31,18 @@ export const getBuiltinThemes = () => Promise.all(
 		'd-astro',
 		'd-future',
 		'd-botanical',
+		'd-green-lime',
+		'd-green-orange',
 		'd-cherry',
 		'd-ice',
-		'd-pumpkin',
-		'd-black',
-	].map(name => import(`../themes/${name}.json5`).then(({ default: _default }): Theme => _default))
+	].map(name => import(`../themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
 export const getBuiltinThemesRef = () => {
 	const builtinThemes = ref<Theme[]>([]);
 	getBuiltinThemes().then(themes => builtinThemes.value = themes);
 	return builtinThemes;
-}
+};
 
 let timeout = null;
 

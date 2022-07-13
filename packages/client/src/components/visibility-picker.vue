@@ -105,7 +105,7 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 		}
 
 		&.active {
-			color: #fff;
+			color: var(--fgOnAccent);
 			background: var(--accent);
 		}
 

@@ -1,11 +1,15 @@
 import bcrypt from 'bcryptjs';
 import { publishMainStream } from '@/services/stream.js';
-import define from '../define.js';
 import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';
+import define from '../define.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
+	tags: ['reset password'],
+
 	requireCredential: false,
+
+	description: 'Complete the password reset that was previously requested.',
 
 	errors: {
 

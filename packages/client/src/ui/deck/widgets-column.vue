@@ -3,6 +3,7 @@
 	<template #header><i class="fas fa-window-maximize" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
+		<div v-if="!(column.widgets && column.widgets.length > 0) && !edit" class="intro">{{ i18n.ts._deck.widgetsIntroduction }}</div>
 		<XWidgets :edit="edit" :widgets="column.widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="edit = false"/>
 	</div>
 </XColumn>
@@ -10,9 +11,10 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XWidgets from '@/components/widgets.vue';
 import XColumn from './column.vue';
 import { addColumnWidget, Column, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store';
+import XWidgets from '@/components/widgets.vue';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	column: Column;
@@ -52,5 +54,10 @@ function func() {
 	--panelBorder: none;
 
 	padding: 0 var(--margin);
+
+	> .intro {
+		padding: 16px;
+		text-align: center;
+	}
 }
 </style>

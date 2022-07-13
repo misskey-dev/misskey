@@ -1,6 +1,6 @@
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import define from '../../../define.js';
 import { ApiError } from '../../../error.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -8,6 +8,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Leave a group. The owner of a group can not leave. They must transfer ownership or delete the group instead.',
 
 	errors: {
 		noSuchGroup: {

@@ -1,9 +1,9 @@
 import { throttle } from 'throttle-debounce';
+import { markRaw } from 'vue';
+import { notificationTypes } from 'misskey-js';
+import { Storage } from '../../pizzax';
 import { i18n } from '@/i18n';
 import { api } from '@/os';
-import { markRaw } from 'vue';
-import { Storage } from '../../pizzax';
-import { notificationTypes } from 'misskey-js';
 
 type ColumnWidget = {
 	name: string;
@@ -13,7 +13,7 @@ type ColumnWidget = {
 
 export type Column = {
 	id: string;
-	type: string;
+	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'list' | 'mentions' | 'direct';
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
@@ -32,35 +32,27 @@ function copy<T>(x: T): T {
 export const deckStore = markRaw(new Storage('deck', {
 	profile: {
 		where: 'deviceAccount',
-		default: 'default'
+		default: 'default',
 	},
 	columns: {
 		where: 'deviceAccount',
-		default: [] as Column[]
+		default: [] as Column[],
 	},
 	layout: {
 		where: 'deviceAccount',
-		default: [] as Column['id'][][]
+		default: [] as Column['id'][][],
 	},
 	columnAlign: {
 		where: 'deviceAccount',
-		default: 'left' as 'left' | 'right' | 'center'
+		default: 'left' as 'left' | 'right' | 'center',
 	},
 	alwaysShowMainColumn: {
 		where: 'deviceAccount',
-		default: true
+		default: true,
 	},
 	navWindow: {
 		where: 'deviceAccount',
-		default: true
-	},
-	columnMargin: {
-		where: 'deviceAccount',
-		default: 16
-	},
-	columnHeaderHeight: {
-		where: 'deviceAccount',
-		default: 42
+		default: true,
 	},
 }));
 
@@ -109,7 +101,7 @@ export const saveDeck = throttle(1000, () => {
 		value: {
 			columns: deckStore.reactiveState.columns.value,
 			layout: deckStore.reactiveState.layout.value,
-		}
+		},
 	});
 });
 
@@ -276,7 +268,7 @@ export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 	saveDeck();
 }
 
-export function updateColumnWidget(id: Column['id'], widgetId: string, WidgetData: any) {
+export function updateColumnWidget(id: Column['id'], widgetId: string, widgetData: any) {
 	const columns = copy(deckStore.state.columns);
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStore.state.columns[columnIndex]);

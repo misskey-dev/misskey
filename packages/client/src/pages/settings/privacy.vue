@@ -31,8 +31,13 @@
 
 	<FormSection>
 		<FormSwitch v-model="rememberNoteVisibility" class="_formBlock" @update:modelValue="save()">{{ $ts.rememberNoteVisibility }}</FormSwitch>
-		<FormGroup v-if="!rememberNoteVisibility" class="_formBlock">
+		<FormFolder v-if="!rememberNoteVisibility" class="_formBlock">
 			<template #label>{{ $ts.defaultNoteVisibility }}</template>
+			<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ $ts._visibility.public }}</template>
+			<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ $ts._visibility.home }}</template>
+			<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ $ts._visibility.followers }}</template>
+			<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ $ts._visibility.specified }}</template>
+
 			<FormSelect v-model="defaultNoteVisibility" class="_formBlock">
 				<option value="public">{{ $ts._visibility.public }}</option>
 				<option value="home">{{ $ts._visibility.home }}</option>
@@ -40,7 +45,7 @@
 				<option value="specified">{{ $ts._visibility.specified }}</option>
 			</FormSelect>
 			<FormSwitch v-model="defaultNoteLocalOnly" class="_formBlock">{{ $ts._visibility.localOnly }}</FormSwitch>
-		</FormGroup>
+		</FormFolder>
 	</FormSection>
 
 	<FormSwitch v-model="keepCw" class="_formBlock" @update:modelValue="save()">{{ $ts.keepCw }}</FormSwitch>
@@ -52,12 +57,12 @@ import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormSection from '@/components/form/section.vue';
-import FormGroup from '@/components/form/group.vue';
+import FormFolder from '@/components/form/folder.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let isLocked = $ref($i.isLocked);
 let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
@@ -84,11 +89,12 @@ function save() {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.privacy,
-		icon: 'fas fa-lock-open',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.privacy,
+	icon: 'fas fa-lock-open',
 });
 </script>

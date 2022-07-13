@@ -36,7 +36,7 @@ export class Hpml {
 		if (this.opts.enableAiScript) {
 			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
 				storageKey: 'pages:' + this.page.id
-			}), ...initAiLib(this)}, {
+			}), ...initAiLib(this) }, {
 				in: (q) => {
 					return new Promise(ok => {
 						os.inputText({
@@ -159,7 +159,6 @@ export class Hpml {
 
 	@autobind
 	private evaluate(expr: Expr, scope: HpmlScope): any {
-
 		if (isLiteralValue(expr)) {
 			if (expr.type === null) {
 				return null;

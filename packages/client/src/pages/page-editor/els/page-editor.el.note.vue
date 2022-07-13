@@ -16,9 +16,9 @@
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
@@ -26,42 +26,27 @@ import XNote from '@/components/note.vue';
 import XNoteDetailed from '@/components/note-detailed.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer, MkInput, MkSwitch, XNote, XNoteDetailed,
-	},
+const props = withDefaults(defineProps<{
+	value: any
+}>(), {
+	value: {
+		note: null,
+		detailed: false
+	}
+});
 
-	props: {
-		value: {
-			required: true
-		},
-	},
+let id: any = $ref(props.value.note);
+let note: any = $ref(null);
 
-	data() {
-		return {
-			id: this.value.note,
-			note: null,
-		};
-	},
+watch(id, async () => {
+	if (id && (id.startsWith('http://') || id.startsWith('https://'))) {
+		props.value.note = (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop();
+	} else {
+		props.value.note = id;
+	}
 
-	watch: {
-		id: {
-			async handler() {
-				if (this.id && (this.id.startsWith('http://') || this.id.startsWith('https://'))) {
-					this.value.note = this.id.endsWith('/') ? this.id.substr(0, this.id.length - 1).split('/').pop() : this.id.split('/').pop();
-				} else {
-					this.value.note = this.id;
-				}
-
-				this.note = await os.api('notes/show', { noteId: this.value.note });
-			},
-			immediate: true
-		},
-	},
-
-	created() {
-		if (this.value.note == null) this.value.note = null;
-		if (this.value.detailed == null) this.value.detailed = false;
-	},
+	note = await os.api('notes/show', { noteId: props.value.note });
+}, {
+	immediate: true
 });
 </script>

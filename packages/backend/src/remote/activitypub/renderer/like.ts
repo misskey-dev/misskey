@@ -8,7 +8,7 @@ import renderEmoji from './emoji.js';
 export const renderLike = async (noteReaction: NoteReaction, note: Note) => {
 	const reaction = noteReaction.reaction;
 
-	const object =  {
+	const object = {
 		type: 'Like',
 		id: `${config.url}/likes/${noteReaction.id}`,
 		actor: `${config.url}/users/${noteReaction.userId}`,

@@ -11,6 +11,8 @@ export const meta = {
 
 	kind: 'write:drive',
 
+	description: 'Delete an existing drive file.',
+
 	errors: {
 		noSuchFile: {
 			message: 'No such file.',

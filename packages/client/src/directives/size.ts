@@ -27,8 +27,8 @@ function getClassOrder(width: number, queue: Value): ClassOrder {
 			...(queue.min ? queue.min.filter(v => width >= v).map(getMinClass) : []),
 		],
 		remove: [
-			...(queue.max ? queue.max.filter(v => width  > v).map(getMaxClass) : []),
-			...(queue.min ? queue.min.filter(v => width  < v).map(getMinClass) : []),
+			...(queue.max ? queue.max.filter(v => width > v).map(getMaxClass) : []),
+			...(queue.min ? queue.min.filter(v => width < v).map(getMinClass) : []),
 		]
 	};
 }
@@ -60,9 +60,9 @@ function calc(el: Element) {
 		return;
 	}
 	if (info.intersection) {
-		info.intersection.disconnect()
+		info.intersection.disconnect();
 		delete info.intersection;
-	};
+	}
 
 	mountings.set(el, Object.assign(info, { previousWidth: width }));
 

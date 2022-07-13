@@ -41,9 +41,9 @@ export function physics(container: HTMLElement) {
 
 	const groundThickness = 1024;
 	const ground = Matter.Bodies.rectangle(containerCenterX, containerHeight + (groundThickness / 2), containerWidth, groundThickness, {
-		isStatic:     true,
-		restitution:  0.1,
-		friction:     2
+		isStatic: true,
+		restitution: 0.1,
+		friction: 2
 	});
 
 	//const wallRight = Matter.Bodies.rectangle(window.innerWidth+50, window.innerHeight/2, 100, window.innerHeight, wallopts);

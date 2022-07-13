@@ -1,8 +1,8 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { ffVisibility, notificationTypes } from '@/types.js';
 import { id } from '../id.js';
 import { User } from './user.js';
 import { Page } from './page.js';
-import { ffVisibility, notificationTypes } from '@/types.js';
 
 // TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
 //       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン
@@ -117,6 +117,11 @@ export class UserProfile {
 	})
 	public password: string | null;
 
+	@Column('varchar', {
+		length: 8192, default: '',
+	})
+	public moderationNote: string | null;
+
 	// TODO: そのうち消す
 	@Column('jsonb', {
 		default: {},
@@ -146,6 +151,11 @@ export class UserProfile {
 		default: false,
 	})
 	public alwaysMarkNsfw: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public autoSensitive: boolean;
 
 	@Column('boolean', {
 		default: false,
