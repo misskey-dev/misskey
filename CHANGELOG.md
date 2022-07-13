@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.113.0 (2022/07/13)
 
 ### Improvements
 - Support <plain> syntax for MFM
