@@ -24,6 +24,7 @@ export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> 
 	type: K;
 	body: pushNotificationDataSourceMap[K];
 	userId: string;
+	dateTime: number;
 };
 
 export type pushNotificationDataMap = {

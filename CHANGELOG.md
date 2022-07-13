@@ -9,6 +9,20 @@
 You should also include the user name that made the change.
 -->
 
+## 12.112.3 (2022/07/09)
+
+### Improvements
+- Make active email validation configurable
+
+### Bugfixes
+- Server: Fix Attempts to update all notifications @mei23
+
+## 12.112.2 (2022/07/08)
+
+### Bugfixes
+- Fix Docker doesn't work @mei23  
+  Still not working on arm64 environment. (See 12.112.0)
+
 ## 12.112.1 (2022/07/07)
 same as 12.112.0
 
@@ -21,6 +35,10 @@ same as 12.112.0
 - ハイライトがみつけるに統合されました
 - カスタム絵文字ページはインスタンス情報ページに統合されました
 - 連合ページはインスタンス情報ページに統合されました
+- メンション一覧ページは通知一覧ページに統合されました
+- ダイレクト投稿一覧ページは通知一覧ページに統合されました
+- メニューからアンテナタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
+- メニューからリストタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
 
 ### Improvements
 - Server: Allow GET method for some endpoints @syuilo
@@ -28,6 +46,7 @@ same as 12.112.0
 - Server: Add rate limit to i/notifications @tamaina
 - Client: Improve control panel @syuilo
 - Client: Show warning in control panel when there is an unresolved abuse report @syuilo
+- Client: Statusbars @syuilo
 - Client: Add instance-cloud widget @syuilo
 - Client: Add rss-ticker widget @syuilo
 - Client: Removing entries from a clip @futchitwo

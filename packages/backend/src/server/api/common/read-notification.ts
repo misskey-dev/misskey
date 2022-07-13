@@ -27,7 +27,7 @@ export async function readNotificationByQuery(
 	userId: User['id'],
 	query: Record<string, any>
 ) {
-	const notificationIds = await Notifications.find({
+	const notificationIds = await Notifications.findBy({
 		...query,
 		notifieeId: userId,
 		isRead: false,

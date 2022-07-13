@@ -64,6 +64,7 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 			type,
 			body: type === 'notification' ? truncateNotification(body as Packed<'Notification'>) : body,
 			userId,
+			dateTime: (new Date()).getTime(),
 		}), {
 			proxy: config.proxy,
 		}).catch((err: any) => {

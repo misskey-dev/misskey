@@ -886,6 +886,7 @@ cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためア�
 beta: "ベータ"
 enableAutoSensitive: "自動NSFW判定"
 enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにNSFWフラグを設定します。この機能をオフにしても、インスタンスによっては自動で設定されることがあります。"
+activeEmailValidationDescription: "ユーザーのメールアドレスのバリデーションを、捨てアドかどうかや実際に通信可能かどうかなどを判定しより積極的に行います。オフにすると単に文字列として正しいかどうかのみチェックされます。"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"

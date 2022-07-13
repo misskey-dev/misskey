@@ -324,6 +324,10 @@ export const meta = {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
+			enableActiveEmailValidation: {
+				type: 'boolean',
+				optional: true, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -421,5 +425,6 @@ export default define(meta, paramDef, async (ps, me) => {
 		deeplAuthKey: instance.deeplAuthKey,
 		deeplIsPro: instance.deeplIsPro,
 		enableIpLogging: instance.enableIpLogging,
+		enableActiveEmailValidation: instance.enableActiveEmailValidation,
 	};
 });
