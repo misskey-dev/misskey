@@ -18,7 +18,7 @@
 		panelHeaderDivider: '@divider',
 		popup: '#293330',
 		renote: '@accent',
-		mentionMe: '#ffaa00',
+		mentionMe: '#b4e900',
 		link: '#24d7ce',
 	},
 }
