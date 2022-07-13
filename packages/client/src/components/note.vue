@@ -165,11 +165,11 @@ const reactButton = ref<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
-const collapsed = ref(appearNote.cw == null);
 const isLong = ref(appearNote.cw == null && appearNote.text != null && (
 	(appearNote.text.split('\n').length > 9) ||
 	(appearNote.text.length > 500)
 ));
+const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
