@@ -119,7 +119,6 @@ export default defineComponent({
 
 	> .main {
 		text-align: center;
-		border-radius: 5px;
 
 		> a {
 			display: inline-block;
@@ -136,13 +135,13 @@ export default defineComponent({
 				display: block;
 				object-fit: contain;
 				margin: auto;
+				border-radius: 5px;
 			}
 
 			> .menu {
 				position: absolute;
 				top: 1px;
 				right: 1px;
-				background: var(--panel);
 
 				> .ad-circle {
 					border: 3px solid var(--panel);
