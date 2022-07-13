@@ -738,6 +738,10 @@ hide: "Сховати"
 searchByGoogle: "Пошук"
 indefinitely: "Ніколи"
 file: "Файли"
+reverse: "Перевернути"
+colored: "Кольоровий"
+label: "Назва"
+localOnly: "Локально"
 _ffVisibility:
   public: "Опублікувати"
 _ad:
