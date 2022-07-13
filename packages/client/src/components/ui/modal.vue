@@ -102,7 +102,7 @@ const MARGIN = 16;
 const align = () => {
 	if (props.src == null) return;
 	if (type === 'drawer') return;
-	if (type == 'dialog') return;
+	if (type === 'dialog') return;
 
 	if (content == null) return;
 
