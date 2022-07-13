@@ -128,7 +128,9 @@ export class Router extends EventEmitter<{
 							props.set(p.name, safeURIDecode(parts[0].substring(p.startsWith.length)));
 							parts.shift();
 						} else {
-							props.set(p.name, safeURIDecode(parts[0]));
+							if (parts[0]) {
+								props.set(p.name, safeURIDecode(parts[0]));
+							}
 							parts.shift();
 						}
 					}
