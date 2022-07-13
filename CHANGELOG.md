@@ -16,6 +16,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Server: Fix crash at startup if TensorFlow is not supported @mei23
+- Client: URLエンコードされたルーティングを修正
 
 ## 12.112.3 (2022/07/09)
 
