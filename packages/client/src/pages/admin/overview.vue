@@ -355,7 +355,7 @@ async function renderChart() {
 		plugins: [{
 			id: 'vLine',
 			beforeDraw(chart, args, options) {
-				if (chart.tooltip._active && chart.tooltip._active.length) {
+				if (chart.tooltip?._active?.length) {
 					const activePoint = chart.tooltip._active[0];
 					const ctx = chart.ctx;
 					const x = activePoint.element.x;
@@ -561,7 +561,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
-					overflow: hidden; overflow: clip;
+					overflow: clip;
 				}
 			}
 
@@ -620,7 +620,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
-					overflow: hidden; overflow: clip;
+					overflow: clip;
 				}
 			}
 		}

@@ -138,7 +138,7 @@ definePageMetadata(computed(() => ({
 .fwhjspax {
 	text-align: center;
 	border-radius: 10px;
-	overflow: hidden; overflow: clip;
+	overflow: clip;
 	background-size: cover;
 	background-position: center center;
 

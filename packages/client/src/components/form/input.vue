@@ -41,7 +41,7 @@ import { useInterval } from '@/scripts/use-interval';
 
 const props = defineProps<{
 	modelValue: string | number;
-	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time';
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search';
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;

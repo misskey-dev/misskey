@@ -53,7 +53,6 @@ module.exports = {
 		'no-empty-pattern': ['warn'],
 		'no-async-promise-executor': ['off'],
 		'no-useless-escape': ['off'],
-		'no-multi-spaces': ['warn'],
 		'no-multiple-empty-lines': ['error', { 'max': 1 }],
 		'no-control-regex': ['warn'],
 		'no-empty': ['warn'],

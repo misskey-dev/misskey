@@ -241,7 +241,7 @@ onMounted(() => {
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;
-			overflow: hidden; overflow: clip;
+			overflow: clip;
 			--margin: 12px;
 		}
 
