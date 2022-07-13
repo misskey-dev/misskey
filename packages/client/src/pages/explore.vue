@@ -5,11 +5,8 @@
 		<div v-if="tab === 'featured'">
 			<XFeatured/>
 		</div>
-		<div v-else-if="tab === 'localUsers'">
-			<XUsers origin="local"/>
-		</div>
-		<div v-else-if="tab === 'remoteUsers'">
-			<XUsers origin="remote"/>
+		<div v-else-if="tab === 'users'">
+			<XUsers/>
 		</div>
 		<div v-else-if="tab === 'search'">
 			<MkSpacer :content-max="1200">
@@ -75,13 +72,9 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-bolt',
 	title: i18n.ts.featured,
 }, {
-	key: 'localUsers',
+	key: 'users',
 	icon: 'fas fa-users',
 	title: i18n.ts.users,
-}, {
-	key: 'remoteUsers',
-	icon: 'fas fa-users',
-	title: i18n.ts.remote,
 }, {
 	key: 'search',
 	title: i18n.ts.search,
