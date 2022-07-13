@@ -61,9 +61,8 @@ useCssModule();
 		border-radius: 100%;
 	}
 
-	> .host {
+	> .main > .host {
 		opacity: 0.5;
 	}
 }
-
 </style>
