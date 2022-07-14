@@ -1,6 +1,6 @@
 <template>
-<div v-if="ad" class="qiivuoyo">
-	<div v-if="!showMenu" class="main" :class="ad.place">
+<div v-if="adz" class="qiivuoyo">
+	<div v-if="!showMenu && showAds" class="main" :class="ad.place">
 		<a :href="ad.url" target="_blank">
 			<img :src="ad.imageUrl">
 			<button class="_button menu" @click.prevent.stop="toggleMenu"><span class="fas fa-info-circle"></span></button>
@@ -44,6 +44,7 @@ export default defineComponent({
 
 	setup(props) {
 		const showMenu = ref(false);
+		const showAds = ref<boolean>(defaultStore.state.showAds);
 		const toggleMenu = () => {
 			showMenu.value = !showMenu.value;
 		};
@@ -104,6 +105,7 @@ export default defineComponent({
 		return {
 			ad: chosen,
 			showMenu,
+			showAds,
 			toggleMenu,
 			host,
 			reduceFrequency,
