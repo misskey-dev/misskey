@@ -31,7 +31,6 @@ import { ref, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import 'vlitejs/dist/vlite.css';
 import Vlitejs from 'vlitejs';
-import VlitejsPip from 'vlitejs/dist/plugins/pip';
 import { defaultStore } from '@/store';
 
 const props = defineProps<{
@@ -39,20 +38,12 @@ const props = defineProps<{
 }>();
 
 const videoEl = $ref<HTMLVideoElement | null>();
-try {
-	Vlitejs.registerPlugin('pip', VlitejsPip);
-}
-catch (err) {
-	console.error('Pip plugin is already registered');
-}
 
 const playerInstance = ref();
 
 onMounted(() => {
 	if (videoEl) {
-		playerInstance.value = new Vlitejs(videoEl, {
-			plugins: ['pip'],
-		});
+		playerInstance.value = new Vlitejs('#player');
 	}
 });
 
