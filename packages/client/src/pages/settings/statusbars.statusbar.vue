@@ -86,7 +86,6 @@ import FormRadios from '@/components/form/radios.vue';
 import FormButton from '@/components/ui/button.vue';
 import FormRange from '@/components/form/range.vue';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
