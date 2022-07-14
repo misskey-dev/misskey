@@ -14,9 +14,11 @@
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
 	window.onerror = (e) => {
+		console.error(e);
 		renderError('SOMETHING_HAPPENED', e);
 	};
 	window.onunhandledrejection = (e) => {
+		console.error(e);
 		renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
 	};
 
