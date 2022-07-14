@@ -216,26 +216,18 @@ console.info('13');
 // https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 // なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
 const rootEl = (() => {
-	console.info('13-1');
 	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
-	console.info('13-2');
 
 	const currentEl = document.getElementById(MISSKEY_MOUNT_DIV_ID);
-	console.info('13-3');
 
 	if (currentEl) {
-		console.info('13-4');
 		console.warn('multiple import detected');
 		return currentEl;
 	}
 
-	console.info('13-5');
 	const rootEl = document.createElement('div');
-	console.info('13-6');
 	rootEl.id = MISSKEY_MOUNT_DIV_ID;
-	console.info('13-7');
 	document.body.appendChild(rootEl);
-	console.info('13-8');
 	return rootEl;
 })();
 
