@@ -4208,6 +4208,11 @@ v8-compile-cache@^2.0.3:
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.2.0.tgz#9471efa3ef9128d2f7c6a7ca39c4dd6b5055b132"
   integrity sha512-gTpR5XQNKFwOd4clxfnhaqvfqMpqEwr4tOtCyz4MtYZX2JYhfr1JvBFKdS+7K/9rfpZR3VLX+YWBbKoxCgS43Q==
 
+validate-target@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/validate-target/-/validate-target-2.0.0.tgz#b8fb4f8ccbed9503e8316d9f5d419daec82efab6"
+  integrity sha512-ELRDv4dNxEPrwavvk8OSNtyvUYZVqKIo9c3deHBxf8YhnNJMN9qtZJkW1sRCqI7gMElHWjy/AaIyJq/DdsKN2Q==
+
 vanilla-tilt@1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/vanilla-tilt/-/vanilla-tilt-1.7.2.tgz#59a5565d9f1f6d392a36969f223fb600dd101a81"
@@ -4233,6 +4238,13 @@ vite@3.0.0:
     rollup "^2.75.6"
   optionalDependencies:
     fsevents "~2.3.2"
+
+vlitejs@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/vlitejs/-/vlitejs-4.0.6.tgz#0e5b7941cf14601bccb5c62a12bedcd770835b02"
+  integrity sha512-7wEBytjE90UqKbHb/gBrArZcy7trl5FAhzpNTE2xjRWT4bHgZaQ8RlLJbM7/aPaMNPExMCtELYhc8IIZff+E2A==
+  dependencies:
+    validate-target "^2.0.0"
 
 void-elements@^3.1.0:
   version "3.1.0"

@@ -75,6 +75,7 @@
 		"v-debounce": "0.1.2",
 		"vanilla-tilt": "1.7.2",
 		"vite": "3.0.0",
+		"vlitejs": "4.0.6",
 		"vue": "3.2.37",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vuedraggable": "4.0.1",
@@ -108,5 +109,6 @@
 		"eslint-plugin-import": "2.26.0",
 		"eslint-plugin-vue": "9.2.0",
 		"start-server-and-test": "1.14.0"
-	}
+	},
+	"packageManager": "yarn@3.2.1"
 }

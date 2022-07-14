@@ -7,15 +7,17 @@
 </div>
 <div v-else class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
 	<video
+		id="player"
 		:poster="video.thumbnailUrl"
 		:title="video.comment"
 		:alt="video.comment"
+		class="vlite-js"
 		preload="none"
 		controls
 		@contextmenu.stop
 	>
-		<source 
-			:src="video.url" 
+		<source
+			:src="video.url"
 			:type="video.type"
 		>
 	</video>
@@ -26,11 +28,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as misskey from 'misskey-js';
+import 'vlitejs/dist/vlite.css';
+import Vlitejs from 'vlitejs';
 import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
+
+new Vlitejs('#player', {
+	plugins: ['pip'],
+});
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
 </script>
@@ -38,6 +46,11 @@ const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSe
 <style lang="scss" scoped>
 .kkjnbbplepmiyuadieoenjgutgcmtsvu {
 	position: relative;
+
+	> .vlite-js {
+		--vlite-colorPrimary: var(--accent);
+		--vlite-controlsColor: var(--fg);
+	}
 
 	> i {
 		display: block;
@@ -72,8 +85,8 @@ const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSe
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: #111;
-	color: #fff;
+	/* background: #111;
+	color: #fff; */
 
 	> div {
 		display: table-cell;
