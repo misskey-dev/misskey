@@ -34,12 +34,8 @@ const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
 
-const videoEl = $ref<HTMLVideoElement | null>();
-
 onMounted(() => {
-	if (videoEl) {
-		new Vlitejs('#player');
-	}
+	new Vlitejs('#player');
 });
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
