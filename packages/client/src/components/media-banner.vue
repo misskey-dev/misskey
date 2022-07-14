@@ -39,8 +39,6 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-new Vlitejs('#player');
-
 const audioEl = $ref<HTMLAudioElement | null>();
 let hide = $ref(true);
 
@@ -49,7 +47,10 @@ function volumechange() {
 }
 
 onMounted(() => {
-	if (audioEl) audioEl.volume = ColdDeviceStorage.get('mediaVolume');
+	if (audioEl) {
+		audioEl.volume = ColdDeviceStorage.get('mediaVolume');
+		new Vlitejs('#player');
+	}
 });
 </script>
 

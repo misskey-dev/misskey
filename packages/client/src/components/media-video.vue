@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import 'vlitejs/dist/vlite.css';
 import Vlitejs from 'vlitejs';
@@ -37,10 +37,15 @@ const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
 
-Vlitejs.registerPlugin('pip', VlitejsPip);
+const videoEl = $ref<HTMLVideoElement | null>();
 
-new Vlitejs('#player', {
-	plugins: ['pip'],
+onMounted(() => {
+	if (videoEl) {
+		Vlitejs.registerPlugin('pip', VlitejsPip);
+		new Vlitejs('#player', {
+			plugins: ['pip'],
+		});
+	}
 });
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
