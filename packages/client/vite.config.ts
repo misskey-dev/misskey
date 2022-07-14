@@ -49,6 +49,7 @@ export default defineConfig(({ command, mode }) => {
 				'chrome100',
 				'firefox100',
 				'safari15',
+				'es2017', // TODO: そのうち消す
 			],
 			manifest: 'manifest.json',
 			rollupOptions: {
