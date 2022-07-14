@@ -46,12 +46,10 @@ function volumechange() {
 	if (audioEl) ColdDeviceStorage.set('mediaVolume', audioEl.volume);
 }
 
-const playerInstance = ref();
-
 onMounted(() => {
 	if (audioEl) {
 		audioEl.volume = ColdDeviceStorage.get('mediaVolume');
-		playerInstance.value = new Vlitejs('#player');
+		new Vlitejs('#player');
 	}
 });
 </script>
