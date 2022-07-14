@@ -59,6 +59,7 @@
 	import(`/assets/${CLIENT_ENTRY}`)
 		.catch(async e => {
 			await checkUpdate();
+			console.error(e);
 			renderError('APP_FETCH_FAILED', e);
 		})
 	//#endregion
@@ -271,17 +272,22 @@
 
 	// eslint-disable-next-line no-inner-declarations
 	async function checkUpdate() {
-		// TODO: サーバーが落ちている場合などのエラーハンドリング
-		const res = await fetch('/api/meta', {
-			method: 'POST',
-			cache: 'no-cache'
-		});
+		try {
+			const res = await fetch('/api/meta', {
+				method: 'POST',
+				cache: 'no-cache'
+			});
 
-		const meta = await res.json();
+			const meta = await res.json();
 
-		if (meta.version != v) {
-			localStorage.setItem('v', meta.version);
-			refresh();
+			if (meta.version != v) {
+				localStorage.setItem('v', meta.version);
+				refresh();
+			}
+		} catch (e) {
+			console.error(e);
+			renderError('UPDATE_CHECK_FAILED', e);
+			throw e;
 		}
 	}
 
