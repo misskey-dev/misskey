@@ -30,11 +30,14 @@ import { ref } from 'vue';
 import * as misskey from 'misskey-js';
 import 'vlitejs/dist/vlite.css';
 import Vlitejs from 'vlitejs';
+import VlitejsPip from 'vlitejs/dist/plugins/pip';
 import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
+
+Vlitejs.registerPlugin('pip', VlitejsPip);
 
 new Vlitejs('#player', {
 	plugins: ['pip'],
