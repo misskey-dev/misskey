@@ -15,13 +15,10 @@
 		class="vlite-js"
 		preload="none"
 		controls
+		:src="video.url"
+		:type="video.type"
 		@contextmenu.stop
-	>
-		<source
-			:src="video.url"
-			:type="video.type"
-		>
-	</video>
+	></video>
 	<i class="fas fa-eye-slash" @click="hide = true"></i>
 </div>
 </template>
@@ -39,11 +36,9 @@ const props = defineProps<{
 
 const videoEl = $ref<HTMLVideoElement | null>();
 
-const playerInstance = ref();
-
 onMounted(() => {
 	if (videoEl) {
-		playerInstance.value = new Vlitejs('#player');
+		new Vlitejs('#player');
 	}
 });
 
