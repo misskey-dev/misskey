@@ -74,14 +74,12 @@ if (_DEV_) {
 
 // タッチデバイスでCSSの:hoverを機能させる
 document.addEventListener('touchend', () => {}, { passive: true });
-console.info('1');
 
 // 一斉リロード
 reloadChannel.addEventListener('message', path => {
 	if (path !== null) location.href = path;
 	else location.reload();
 });
-console.info('2');
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい
@@ -92,7 +90,6 @@ window.addEventListener('resize', () => {
 	document.documentElement.style.setProperty('--vh', `${vh}px`);
 });
 //#endregion
-console.info('3');
 
 // If mobile, insert the viewport meta tag
 if (['smartphone', 'tablet'].includes(deviceKind)) {
@@ -100,18 +97,15 @@ if (['smartphone', 'tablet'].includes(deviceKind)) {
 	viewport.setAttribute('content',
 		`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
 }
-console.info('4');
 
 //#region Set lang attr
 const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
-console.info('5');
 
 //#region loginId
 const params = new URLSearchParams(location.search);
 const loginId = params.get('loginId');
-console.info('6', loginId);
 
 if (loginId) {
 	const target = getUrlWithoutLoginId(location.href);
@@ -125,7 +119,6 @@ if (loginId) {
 
 	history.replaceState({ misskey: 'loginId' }, '', target);
 }
-console.info('7');
 
 //#endregion
 
@@ -134,14 +127,12 @@ if ($i && $i.token) {
 	if (_DEV_) {
 		console.log('account cache found. refreshing...');
 	}
-	console.info('8');
 
 	refreshAccount();
 } else {
 	if (_DEV_) {
 		console.log('no account cache found.');
 	}
-	console.info('9');
 
 	// 連携ログインの場合用にCookieを参照する
 	const i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
@@ -175,7 +166,6 @@ fetchInstanceMetaPromise.then(() => {
 	// Init service worker
 	initializeSw();
 });
-console.info('10');
 
 const app = createApp(
 	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
@@ -184,8 +174,6 @@ const app = createApp(
 	ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
 	defineAsyncComponent(() => import('@/ui/universal.vue')),
 );
-
-console.info('11');
 
 if (_DEV_) {
 	app.config.performance = true;
@@ -203,15 +191,11 @@ widgets(app);
 directives(app);
 components(app);
 
-console.info('12');
-
 const splash = document.getElementById('splash');
 // 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))
 if (splash) splash.addEventListener('transitionend', () => {
 	splash.remove();
 });
-
-console.info('13');
 
 // https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 // なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
@@ -231,11 +215,7 @@ const rootEl = (() => {
 	return rootEl;
 })();
 
-console.info('14');
-
 app.mount(rootEl);
-
-console.info('15');
 
 // boot.jsのやつを解除
 window.onerror = null;
@@ -243,14 +223,10 @@ window.onunhandledrejection = null;
 
 reactionPicker.init();
 
-console.info('16');
-
 if (splash) {
 	splash.style.opacity = '0';
 	splash.style.pointerEvents = 'none';
 }
-
-console.info('17');
 
 // クライアントが更新されたか？
 const lastVersion = localStorage.getItem('lastVersion');
@@ -270,8 +246,6 @@ if (lastVersion !== version) {
 	} catch (err) {
 	}
 }
-
-console.info('18');
 
 // NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
@@ -293,8 +267,6 @@ watch(lightTheme, (theme) => {
 	}
 });
 
-console.info('19');
-
 //#region Sync dark mode
 if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
 	defaultStore.set('darkMode', isDeviceDarkmode());
@@ -306,8 +278,6 @@ window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
 	}
 });
 //#endregion
-
-console.info('20');
 
 fetchInstanceMetaPromise.then(() => {
 	if (defaultStore.state.themeInitial) {
