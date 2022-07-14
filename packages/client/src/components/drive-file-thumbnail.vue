@@ -59,7 +59,7 @@ const isThumbnailAvailable = computed(() => {
 	display: flex;
 	background: var(--panel);
 	border-radius: 8px;
-	overflow: hidden; overflow: clip;
+	overflow: clip;
 
 	> .icon-sub {
 		position: absolute;

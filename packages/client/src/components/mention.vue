@@ -1,15 +1,15 @@
 <template>
-<MkA v-if="url.startsWith('/')" v-user-preview="canonical" :class="[$style.root, { isMe }]" :to="url" :style="{ background: bgCss }">
-	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
+<MkA v-if="url.startsWith('/')" v-user-preview="canonical" class="akbvjaqn" :class="{ isMe }" :to="url" :style="{ background: bgCss }">
+	<img class="icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
-		<span v-if="(host != localHost) || $store.state.showFullAcct" :class="$style.mainHost">@{{ toUnicode(host) }}</span>
+		<span v-if="(host != localHost) || $store.state.showFullAcct" class="host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
-<a v-else :class="$style.root" :href="url" target="_blank" rel="noopener" :style="{ background: bgCss }">
+<a v-else class="akbvjaqn" :href="url" target="_blank" rel="noopener" :style="{ background: bgCss }">
 	<span class="main">
 		<span class="username">@{{ username }}</span>
-		<span :class="$style.mainHost">@{{ toUnicode(host) }}</span>
+		<span class="host">@{{ toUnicode(host) }}</span>
 	</span>
 </a>
 </template>
@@ -41,8 +41,8 @@ const bgCss = bg.toRgbString();
 useCssModule();
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.akbvjaqn {
 	display: inline-block;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
@@ -51,18 +51,18 @@ useCssModule();
 	&.isMe {
 		color: var(--mentionMe);
 	}
-}
 
-.icon {
-	width: 1.5em;
-	height: 1.5em;
-	object-fit: cover;
-	margin: 0 0.2em 0 0;
-	vertical-align: bottom;
-	border-radius: 100%;
-}
+	> .icon {
+		width: 1.5em;
+		height: 1.5em;
+		object-fit: cover;
+		margin: 0 0.2em 0 0;
+		vertical-align: bottom;
+		border-radius: 100%;
+	}
 
-.mainHost {
-	opacity: 0.5;
+	> .main > .host {
+		opacity: 0.5;
+	}
 }
 </style>

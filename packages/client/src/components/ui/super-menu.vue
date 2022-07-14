@@ -30,7 +30,7 @@ export default defineComponent({
 	props: {
 		def: {
 			type: Array,
-			required: true
+			required: true,
 		},
 		grid: {
 			type: Boolean,
@@ -64,7 +64,7 @@ export default defineComponent({
 				box-sizing: border-box;
 				padding: 10px 16px 10px 8px;
 				border-radius: 9px;
-				font-size: 0.95em;
+				font-size: 0.9em;
 
 				&:hover {
 					text-decoration: none;
