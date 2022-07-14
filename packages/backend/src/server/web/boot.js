@@ -56,14 +56,23 @@
 	//#endregion
 
 	//#region Script
-	window.addEventListener('DOMContentLoaded', () => {
+	function importAppScript() {
 		import(`/assets/${CLIENT_ENTRY}`)
 			.catch(async e => {
 				await checkUpdate();
 				console.error(e);
 				renderError('APP_IMPORT', e);
 			});
-	});
+	}
+
+	// タイミングによっては、この時点でDOMの構築が済んでいる場合とそうでない場合とがある
+	if (document.readyState !== 'loading') {
+		importAppScript();
+	} else {
+		window.addEventListener('DOMContentLoaded', () => {
+			importAppScript();
+		});
+	}
 	//#endregion
 
 	//#region Theme
