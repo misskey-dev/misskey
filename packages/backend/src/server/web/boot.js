@@ -56,12 +56,14 @@
 	//#endregion
 
 	//#region Script
-	import(`/assets/${CLIENT_ENTRY}`)
-		.catch(async e => {
-			await checkUpdate();
-			console.error(e);
-			renderError('APP_IMPORT', e);
-		})
+	window.addEventListener('DOMContentLoaded', () => {
+		import(`/assets/${CLIENT_ENTRY}`)
+			.catch(async e => {
+				await checkUpdate();
+				console.error(e);
+				renderError('APP_IMPORT', e);
+			});
+	});
 	//#endregion
 
 	//#region Theme
