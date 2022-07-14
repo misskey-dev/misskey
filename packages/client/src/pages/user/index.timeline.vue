@@ -1,14 +1,12 @@
 <template>
-<MkStickyContainer>
-	<template #header>
-		<MkTab v-model="include" :class="$style.tab">
-			<option :value="null">{{ $ts.notes }}</option>
-			<option value="replies">{{ $ts.notesAndReplies }}</option>
-			<option value="files">{{ $ts.withFiles }}</option>
-		</MkTab>
-	</template>
+<div v-sticky-container class="yrzkoczt">
+	<MkTab v-model="include" class="tab">
+		<option :value="null">{{ $ts.notes }}</option>
+		<option value="replies">{{ $ts.notesAndReplies }}</option>
+		<option value="files">{{ $ts.withFiles }}</option>
+	</MkTab>
 	<XNotes :no-gap="true" :pagination="pagination"/>
-</MkStickyContainer>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -35,10 +33,12 @@ const pagination = {
 };
 </script>
 
-<style lang="scss" module>
-.tab {
-	margin: calc(var(--margin) / 2) 0;
-	padding: calc(var(--margin) / 2) 0;
-	background: var(--bg);
+<style lang="scss" scoped>
+.yrzkoczt {
+	> .tab {
+		margin: calc(var(--margin) / 2) 0;
+		padding: calc(var(--margin) / 2) 0;
+		background: var(--bg);
+	}
 }
 </style>
