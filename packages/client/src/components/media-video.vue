@@ -39,7 +39,12 @@ const props = defineProps<{
 }>();
 
 const videoEl = $ref<HTMLVideoElement | null>();
-Vlitejs.registerPlugin('pip', VlitejsPip);
+try {
+	Vlitejs.registerPlugin('pip', VlitejsPip);
+}
+catch (err) {
+	console.error('Pip plugin is already registered');
+}
 
 const playerInstance = ref();
 
