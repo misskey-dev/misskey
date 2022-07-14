@@ -1,5 +1,5 @@
 <template>
-<div v-if="adz" class="qiivuoyo">
+<div v-if="ad" class="qiivuoyo">
 	<div v-if="!showMenu && showAds" class="main" :class="ad.place">
 		<a :href="ad.url" target="_blank">
 			<img :src="ad.imageUrl">
