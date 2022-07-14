@@ -8,6 +8,7 @@
 <div v-else class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
 	<video
 		id="player"
+		ref="videoEl"
 		:poster="video.thumbnailUrl"
 		:title="video.comment"
 		:alt="video.comment"
@@ -38,11 +39,13 @@ const props = defineProps<{
 }>();
 
 const videoEl = $ref<HTMLVideoElement | null>();
+Vlitejs.registerPlugin('pip', VlitejsPip);
+
+const playerInstance = ref();
 
 onMounted(() => {
 	if (videoEl) {
-		Vlitejs.registerPlugin('pip', VlitejsPip);
-		new Vlitejs('#player', {
+		playerInstance.value = new Vlitejs(videoEl, {
 			plugins: ['pip'],
 		});
 	}
