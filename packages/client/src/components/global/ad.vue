@@ -1,6 +1,6 @@
 <template>
-<div v-if="ad" class="qiivuoyo">
-	<div v-if="!showMenu && showAds" class="main" :class="ad.place">
+<div v-if="ad && showAds" class="qiivuoyo">
+	<div v-if="!showMenu" class="main" :class="ad.place">
 		<a :href="ad.url" target="_blank">
 			<img :src="ad.imageUrl">
 			<button class="_button menu" @click.prevent.stop="toggleMenu"><span class="fas fa-info-circle"></span></button>
