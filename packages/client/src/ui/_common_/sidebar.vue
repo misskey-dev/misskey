@@ -244,7 +244,7 @@ function more(ev: MouseEvent) {
 				padding: 18px 0;
 				width: 100%;
 				text-align: center;
-				font-size: $ui-font-size * 1.1;
+				font-size: $ui-font-size;
 				line-height: initial;
 
 				> .icon,
