@@ -44,7 +44,7 @@ export default defineComponent({
 
 	setup(props) {
 		const showMenu = ref(false);
-		const showAds = ref<boolean>(defaultStore.state.showAds);
+		const showAds = defaultStore.state.showAds;
 		const toggleMenu = () => {
 			showMenu.value = !showMenu.value;
 		};
