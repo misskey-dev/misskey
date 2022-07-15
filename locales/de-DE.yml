@@ -889,7 +889,7 @@ enableAutoSensitiveDescription: "Setzt soweit möglich durch Verwendung von Mach
 activeEmailValidationDescription: "Aktivert strengere Überprüfung von E-Mail-Adressen, d.h. Testen auf Wegwerfadressen und darauf, ob mit der Adresse tatsächlich kommuniziert werden kann. Ist dies deaktiviert, so wird nur das Format der E-Mail überprüft."
 navbar: "Navigationsleiste"
 shuffle: "Mischen"
-account: "Benutzerkonten"
+account: "Benutzerkonto"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
