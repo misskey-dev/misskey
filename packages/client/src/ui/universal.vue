@@ -365,11 +365,11 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		height: calc(var(--vh, 1vh) * 100);
 		width: 240px;
 		box-sizing: border-box;
+		contain: strict;
 		overflow: auto;
 		overscroll-behavior: contain;
-		background: var(--bg);
+		background: var(--navBg);
 	}
-
 }
 </style>
 

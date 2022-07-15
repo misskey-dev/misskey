@@ -359,9 +359,10 @@ function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
 		height: calc(var(--vh, 1vh) * 100);
 		width: 240px;
 		box-sizing: border-box;
+		contain: strict;
 		overflow: auto;
 		overscroll-behavior: contain;
-		background: var(--bg);
+		background: var(--navBg);
 	}
 }
 </style>
