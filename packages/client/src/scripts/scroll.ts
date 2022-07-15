@@ -63,7 +63,9 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance: nu
 		}
 	};
 
-	function removeListener() { containerOrWindow.removeEventListener('scroll', onScroll); }
+	function removeListener() {
+		containerOrWindow.removeEventListener('scroll', onScroll);
+	}
 	containerOrWindow.addEventListener('scroll', onScroll, { passive: true });
 	return removeListener;
 }
