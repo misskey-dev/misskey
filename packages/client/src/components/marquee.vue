@@ -76,7 +76,7 @@ export default {
 
 <style lang="scss" module>
 .wrap {
-	overflow: hidden; overflow: clip;
+	overflow: clip;
 	animation-play-state: running;
 
 	&:hover {

@@ -58,6 +58,19 @@
 				</FormFolder>
 
 				<FormFolder class="_formBlock">
+					<template #label>Active Email Validation</template>
+					<template v-if="enableActiveEmailValidation" #suffix>Enabled</template>
+					<template v-else #suffix>Disabled</template>
+
+					<div class="_formRoot">
+						<span class="_formBlock">{{ i18n.ts.activeEmailValidationDescription }}</span>
+						<FormSwitch v-model="enableActiveEmailValidation" class="_formBlock" @update:modelValue="save">
+							<template #label>Enable</template>
+						</FormSwitch>
+					</div>
+				</FormFolder>
+
+				<FormFolder class="_formBlock">
 					<template #label>Log IP address</template>
 					<template v-if="enableIpLogging" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
@@ -112,6 +125,7 @@ let sensitiveMediaDetectionSensitivity: number = $ref(0);
 let setSensitiveFlagAutomatically: boolean = $ref(false);
 let enableSensitiveMediaDetectionForVideos: boolean = $ref(false);
 let enableIpLogging: boolean = $ref(false);
+let enableActiveEmailValidation: boolean = $ref(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -128,6 +142,7 @@ async function init() {
 	setSensitiveFlagAutomatically = meta.setSensitiveFlagAutomatically;
 	enableSensitiveMediaDetectionForVideos = meta.enableSensitiveMediaDetectionForVideos;
 	enableIpLogging = meta.enableIpLogging;
+	enableActiveEmailValidation = meta.enableActiveEmailValidation;
 }
 
 function save() {
@@ -144,6 +159,7 @@ function save() {
 		setSensitiveFlagAutomatically,
 		enableSensitiveMediaDetectionForVideos,
 		enableIpLogging,
+		enableActiveEmailValidation,
 	}).then(() => {
 		fetchInstance();
 	});

@@ -1,5 +1,9 @@
 <template>
 <MkSpacer :content-max="1200">
+	<MkTab v-model="origin" style="margin-bottom: var(--margin);">
+		<option value="local">{{ $ts.local }}</option>
+		<option value="remote">{{ $ts.remote }}</option>
+	</MkTab>
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
 			<MkFolder class="_gap" persist-key="explore-pinned-users">
@@ -57,16 +61,17 @@
 import { computed, watch } from 'vue';
 import XUserList from '@/components/user-list.vue';
 import MkFolder from '@/components/ui/folder.vue';
+import MkTab from '@/components/tab.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 
 const props = defineProps<{
-	origin: 'local' | 'remote';
 	tag?: string;
 }>();
 
+let origin = $ref('local');
 let tagsEl = $ref<InstanceType<typeof MkFolder>>();
 let tagsLocal = $ref([]);
 let tagsRemote = $ref([]);

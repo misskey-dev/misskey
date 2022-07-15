@@ -143,7 +143,7 @@ export default defineComponent({
 
 .ukygtjoj {
 	position: relative;
-	overflow: hidden; overflow: clip;
+	overflow: clip;
 	contain: content;
 
 	&.naked {

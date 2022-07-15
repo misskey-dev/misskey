@@ -39,15 +39,15 @@ let pointsRenote: any = $ref(null);
 let pointsTotal: any = $ref(null);
 
 function dragListen(fn) {
-	window.addEventListener('mousemove',  fn);
+	window.addEventListener('mousemove', fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup',    dragClear.bind(null, fn));
+	window.addEventListener('mouseup', dragClear.bind(null, fn));
 }
 
 function dragClear(fn) {
-	window.removeEventListener('mousemove',  fn);
+	window.removeEventListener('mousemove', fn);
 	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup',    dragClear);
+	window.removeEventListener('mouseup', dragClear);
 }
 
 function onMousedown(ev) {

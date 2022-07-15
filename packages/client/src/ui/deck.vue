@@ -69,12 +69,12 @@ import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn as addColumnToStore, loadDeck } from './deck/deck-store';
 import DeckColumnCore from '@/ui/deck/column-core.vue';
-import XSidebar from '@/ui/_common_/sidebar.vue';
-import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
+import XSidebar from '@/ui/_common_/navbar.vue';
+import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/ui/button.vue';
 import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
+import { navbarItemDef } from '@/navbar';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
@@ -105,8 +105,8 @@ const columns = deckStore.reactiveState.columns;
 const layout = deckStore.reactiveState.layout;
 const menuIndicated = computed(() => {
 	if ($i == null) return false;
-	for (const def in menuDef) {
-		if (menuDef[def].indicated) return true;
+	for (const def in navbarItemDef) {
+		if (navbarItemDef[def].indicated) return true;
 	}
 	return false;
 });
