@@ -114,15 +114,15 @@ const menuDef = computed(() => [{
 		to: '/settings/theme',
 		active: props.initialPage === 'theme',
 	}, {
-		icon: 'fas fa-list-ul',
+		icon: 'fas fa-bars',
+		text: i18n.ts.navbar,
+		to: '/settings/navbar',
+		active: props.initialPage === 'navbar',
+	}, {
+		icon: 'fas fa-bars-progress',
 		text: i18n.ts.statusbar,
 		to: '/settings/statusbars',
 		active: props.initialPage === 'statusbars',
-	}, {
-		icon: 'fas fa-list-ul',
-		text: i18n.ts.menu,
-		to: '/settings/menu',
-		active: props.initialPage === 'menu',
 	}, {
 		icon: 'fas fa-music',
 		text: i18n.ts.sounds,
@@ -225,7 +225,7 @@ const component = computed(() => {
 		case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
 		case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 		case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
-		case 'menu': return defineAsyncComponent(() => import('./menu.vue'));
+		case 'navbar': return defineAsyncComponent(() => import('./navbar.vue'));
 		case 'statusbars': return defineAsyncComponent(() => import('./statusbars.vue'));
 		case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
 		case 'custom-css': return defineAsyncComponent(() => import('./custom-css.vue'));
@@ -291,6 +291,8 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => []);
 
 definePageMetadata(INFO);
+// w 890
+// h 700
 </script>
 
 <style lang="scss" scoped>

@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
-import { useCssModule } from 'vue';
+import { } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config';
 import { $i } from '@/account';
@@ -37,8 +37,6 @@ const isMe = $i && (
 const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
 bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
-
-useCssModule();
 </script>
 
 <style lang="scss" scoped>

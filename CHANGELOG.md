@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- クライアントが起動しなくなることがある問題を修正 @syuilo
+
 ## 12.113.0 (2022/07/13)
 
 ### Improvements

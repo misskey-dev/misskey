@@ -116,7 +116,7 @@ const setPosition = () => {
 		let top: number;
 
 		if (props.targetElement) {
-			left = (rect.left + window.pageXOffset) + props.innerMargin;
+			left = (rect.left + props.targetElement.offsetWidth + window.pageXOffset) + props.innerMargin;
 			top = rect.top + window.pageYOffset + (props.targetElement.offsetHeight / 2);
 		} else {
 			left = props.x + props.innerMargin;

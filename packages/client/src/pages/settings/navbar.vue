@@ -1,7 +1,7 @@
 <template>
 <div class="_formRoot">
 	<FormTextarea v-model="items" tall manual-save class="_formBlock">
-		<template #label>{{ i18n.ts.menu }}</template>
+		<template #label>{{ i18n.ts.navbar }}</template>
 		<template #caption><button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button></template>
 	</FormTextarea>
 
@@ -23,7 +23,7 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
+import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
@@ -45,11 +45,11 @@ async function reloadAsk() {
 }
 
 async function addItem() {
-	const menu = Object.keys(menuDef).filter(k => !defaultStore.state.menu.includes(k));
+	const menu = Object.keys(navbarItemDef).filter(k => !defaultStore.state.menu.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
-			value: k, text: i18n.ts[menuDef[k].title],
+			value: k, text: i18n.ts[navbarItemDef[k].title],
 		})), {
 			value: '-', text: i18n.ts.divider,
 		}],
@@ -81,7 +81,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => []);
 
 definePageMetadata({
-	title: i18n.ts.menu,
+	title: i18n.ts.navbar,
 	icon: 'fas fa-list-ul',
 });
 </script>
