@@ -111,7 +111,7 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 		backed = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement,
-		rootMargin: props.pagination.reversed ? "-100% 0px 100% 0px" : "100% 0px -100% 0px",
+		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: 0.01,
 	});
 }, { immediate: true });
