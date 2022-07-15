@@ -28,6 +28,9 @@
 		<MkInput v-model="statusbar.props.url" manual-save class="_formBlock" type="url">
 			<template #label>URL</template>
 		</MkInput>
+		<MkSwitch v-model="statusbar.props.shuffle" class="_formBlock">
+			<template #label>{{ i18n.ts.shuffle }}</template>
+		</MkSwitch>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
@@ -100,6 +103,7 @@ watch(() => statusbar.type, () => {
 	if (statusbar.type === 'rss') {
 		statusbar.name = 'NEWS';
 		statusbar.props.url = 'http://feeds.afpbb.com/rss/afpbb/afpbbnews';
+		statusbar.props.shuffle = true;
 		statusbar.props.refreshIntervalSec = 120;
 		statusbar.props.display = 'marquee';
 		statusbar.props.marqueeDuration = 100;
