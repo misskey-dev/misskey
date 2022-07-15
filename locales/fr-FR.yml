@@ -843,6 +843,7 @@ reverse: "Inverser"
 colored: "Coloré"
 label: "Étiquette"
 localOnly: "Local seulement"
+account: "Comptes"
 _emailUnavailable:
   used: "Non disponible"
   format: "Le format de cette adresse de courriel est invalide"

@@ -6,7 +6,7 @@ import { i18n } from '@/i18n';
 import { ui } from '@/config';
 import { unisonReload } from '@/scripts/unison-reload';
 
-export const menuDef = reactive({
+export const navbarItemDef = reactive({
 	notifications: {
 		title: 'notifications',
 		icon: 'fas fa-bell',

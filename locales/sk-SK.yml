@@ -883,6 +883,8 @@ beta: "Beta"
 enableAutoSensitive: "Automatická detekcia NSFW"
 enableAutoSensitiveDescription: "Ak je zapnuté, príznak NSFW sa na médiách automaticky nastaví pomocou strojového učenia. Aj keď je táto funkcia vypnutá, v niektorých prípadoch sa môže nastaviť automaticky."
 activeEmailValidationDescription: "Dôkladnejšie overí e-mailovú adresu používateľa tým, že zistí, či ide o vyradenú e-mailovú adresu a či sa s ňou dá skutočne komunikovať. Ak nie je začiarknuté, e-mailová adresa sa kontroluje len ako text."
+navbar: "Navigačný panel"
+account: "Účty"
 _sensitiveMediaDetection:
   description: "Strojové učenie sa použije na automatickú detekciu citlivých médií na účely ich moderovania. Mierne sa zvýši zaťaženie servera."
   sensitivity: "Citlivosť detekcie"

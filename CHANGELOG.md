@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.114.0 (2022/07/15)
+
+### Improvements
+- RSSティッカーで表示順序をシャッフルできるように @syuilo
+
+### Bugfixes
+- クライアントが起動しなくなることがある問題を修正 @syuilo
+
 ## 12.113.0 (2022/07/13)
 
 ### Improvements

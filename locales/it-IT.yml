@@ -814,6 +814,7 @@ reverse: "Inverti"
 colored: "Colorato"
 label: "Etichetta"
 localOnly: "Soltanto locale"
+account: "Account"
 _emailUnavailable:
   used: "Email già in uso"
   format: "Formato email non valido"

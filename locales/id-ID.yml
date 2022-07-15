@@ -852,6 +852,7 @@ reverse: "Balik"
 colored: "Diwarnai"
 label: "Label"
 localOnly: "Hanya lokal"
+account: "Akun"
 _emailUnavailable:
   used: "Alamat surel ini telah digunakan"
   format: "Format tidak valid."
