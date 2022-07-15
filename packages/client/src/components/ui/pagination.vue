@@ -102,13 +102,19 @@ const scrollableElement = $computed(() => getScrollContainer(contentEl));
 
 // 先頭が表示されているかどうかを検出
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
-const scrollObserver = $computed(() => new IntersectionObserver(entries => {
-	backed = entries[0].isIntersecting;
-}, {
-	root: scrollableElement,
-	rootMargin: props.pagination.reversed ? "-100% 0px 100% 0px" : "100% 0px -100% 0px",
-	threshold: 0.01,
-}));
+let scrollObserver = $ref<IntersectionObserver>();
+
+watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
+	if (scrollObserver) scrollObserver.disconnect();
+
+	scrollObserver = new IntersectionObserver(entries => {
+		backed = entries[0].isIntersecting;
+	}, {
+		root: scrollableElement,
+		rootMargin: props.pagination.reversed ? "-100% 0px 100% 0px" : "100% 0px -100% 0px",
+		threshold: 0.01,
+	});
+}, { immediate: true });
 
 watch($$(rootEl), () => {
 	scrollObserver.disconnect();
