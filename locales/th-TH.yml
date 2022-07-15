@@ -822,6 +822,7 @@ deleteAccountConfirm: "การดำเนินการนี้จะลบ
 incorrectPassword: "รหัสผ่านไม่ถูกต้อง"
 searchByGoogle: "ค้นหา"
 file: "ไฟล์"
+account: "บัญชีผู้ใช้"
 _ffVisibility:
   public: "เผยแพร่"
 _ad:
