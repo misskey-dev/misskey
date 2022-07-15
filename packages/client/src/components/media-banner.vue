@@ -7,7 +7,6 @@
 	</div>
 	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" class="audio">
 		<audio
-			id="player"
 			ref="audioEl"
 			class="audio vlite-js"
 			:src="media.url"
@@ -49,7 +48,7 @@ function volumechange() {
 onMounted(() => {
 	if (audioEl) {
 		audioEl.volume = ColdDeviceStorage.get('mediaVolume');
-		new Vlitejs('#player');
+		new Vlitejs(audioEl);
 	}
 });
 </script>

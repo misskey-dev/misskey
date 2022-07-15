@@ -7,7 +7,6 @@
 </div>
 <div v-else class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
 	<video
-		id="player"
 		ref="videoEl"
 		:poster="video.thumbnailUrl"
 		:title="video.comment"
@@ -34,8 +33,10 @@ const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
 
+const videoEl = $ref(null);
+
 onMounted(() => {
-	new Vlitejs('#player');
+	new Vlitejs(videoEl);
 });
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));

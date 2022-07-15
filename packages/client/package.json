@@ -109,6 +109,5 @@
 		"eslint-plugin-import": "2.26.0",
 		"eslint-plugin-vue": "9.2.0",
 		"start-server-and-test": "1.14.0"
-	},
-	"packageManager": "yarn@3.2.1"
+	}
 }
