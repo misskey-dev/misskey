@@ -46,6 +46,7 @@ import { i18n } from '@/i18n';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
+provide('shouldSpacerMin', true);
 
 const props = withDefaults(defineProps<{
 	column: Column;

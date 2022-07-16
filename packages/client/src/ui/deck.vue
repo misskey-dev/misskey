@@ -162,8 +162,6 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
-provide('shouldSpacerMin', true);
-
 document.documentElement.style.overflowY = 'hidden';
 document.documentElement.style.scrollBehavior = 'auto';
 window.addEventListener('wheel', (ev) => {
