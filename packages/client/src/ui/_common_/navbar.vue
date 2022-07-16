@@ -356,7 +356,7 @@ function more(ev: MouseEvent) {
 
 					> .icon {
 						display: inline-block;
-						width: 38px;
+						width: 30px;
 						aspect-ratio: 1;
 					}
 				}
