@@ -44,7 +44,7 @@
 			<button v-tooltip.noDelay.right="i18n.ts.note" class="item _button post" data-cy-open-post-form @click="os.post">
 				<i class="icon fas fa-pencil-alt fa-fw"></i><span class="text">{{ i18n.ts.note }}</span>
 			</button>
-			<button v-click-anime v-tooltip.noDelay.right="i18n.ts.account" class="item _button account" @click="openAccountMenu">
+			<button v-click-anime v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="item _button account" @click="openAccountMenu">
 				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 			</button>
 		</div>

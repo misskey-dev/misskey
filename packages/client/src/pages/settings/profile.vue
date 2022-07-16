@@ -39,10 +39,10 @@
 
 			<div class="_formRoot">
 				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
-					<FormInput v-model="record.name">
+					<FormInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
 					</FormInput>
-					<FormInput v-model="record.value">
+					<FormInput v-model="record.value" small>
 						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
 					</FormInput>
 				</FormSplit>

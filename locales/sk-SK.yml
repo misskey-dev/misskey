@@ -1698,6 +1698,8 @@ _deck:
   stackLeft: "Priložiť do ľavého stĺpca"
   popRight: "Vybrať napravo"
   profile: "Profil"
+  newProfile: "Nový profil"
+  deleteProfile: "Odstrániť profil"
   introduction: "Kombinujte stĺpce a vytvorte si svoje vlastné rozhranie!"
   introduction2: "Stlačením tlačidla + v pravej časti obrazovky môžete kedykoľvek pridať stĺpce."
   widgetsIntroduction: "V ponuke stĺpca vyberte možnosť \"Upraviť widget\" a pridajte widget"

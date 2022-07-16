@@ -9,6 +9,16 @@
 You should also include the user name that made the change.
 -->
 
+## 12.116.0 (2022/07/16)
+
+### Improvements
+- Client: registry editor @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+### Bugfixes
+- Error During Migration Run to 12.111.x
+- Server: TypeError: Cannot convert undefined or null to object @syuilo
+
 ## 12.115.0 (2022/07/16)
 
 ### Improvements

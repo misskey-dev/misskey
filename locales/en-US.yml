@@ -1703,6 +1703,8 @@ _deck:
   stackLeft: "Stack with the left column"
   popRight: "Pop column to the right"
   profile: "Profile"
+  newProfile: "New profile"
+  deleteProfile: "Delete profile"
   introduction: "Create the perfect interface for you by arranging columns freely!"
   introduction2: "Click on the + on the right of the screen to add new colums whenever you want."
   widgetsIntroduction: "Please select \"Edit widgets\" in the column menu and add a widget."
