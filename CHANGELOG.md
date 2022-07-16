@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Client: registry editor @syuilo
+
+### Bugfixes
+- 
+
 ## 12.115.0 (2022/07/16)
 
 ### Improvements

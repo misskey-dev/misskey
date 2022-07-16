@@ -154,6 +154,15 @@ export const routes = [{
 	path: '/channels',
 	component: page(() => import('./pages/channels.vue')),
 }, {
+	path: '/registry/keys/system/:path(*)?',
+	component: page(() => import('./pages/registry.keys.vue')),
+}, {
+	path: '/registry/value/system/:path(*)?',
+	component: page(() => import('./pages/registry.value.vue')),
+}, {
+	path: '/registry',
+	component: page(() => import('./pages/registry.vue')),
+}, {
 	path: '/admin/file/:fileId',
 	component: iAmModerator ? page(() => import('./pages/admin-file.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
