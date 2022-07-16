@@ -1703,6 +1703,8 @@ _deck:
   stackLeft: "Xếp chồng với cột bên trái"
   popRight: "Xếp chồng với cột bên trái"
   profile: "Hồ sơ"
+  newProfile: "Hồ sơ mới"
+  deleteProfile: "Xóa hồ sơ"
   introduction: "Kết hợp các cột để tạo giao diện của riêng bạn!"
   introduction2: "Bạn có thể thêm cột bất kỳ lúc nào bằng cách nhấn + ở bên phải màn hình."
   widgetsIntroduction: "Chọn \"Sửa widget\" trong menu cột và thêm một widget."

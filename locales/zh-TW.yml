@@ -1702,6 +1702,8 @@ _deck:
   stackLeft: "向左折疊"
   popRight: "向右彈出"
   profile: "個人檔案"
+  newProfile: "新建個人檔案"
+  deleteProfile: "刪除個人檔案"
   introduction: "組合欄位來製作屬於自己的介面吧！"
   introduction2: "您可以隨時透過按畫面右方的 + 來添加欄位。"
   widgetsIntroduction: "請從欄位的選單中，選擇「編輯小工具」來添加小工具"
