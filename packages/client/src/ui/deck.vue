@@ -33,8 +33,16 @@
 				<div>{{ i18n.ts._deck.introduction2 }}</div>
 			</div>
 			<div class="sideMenu">
-				<button v-tooltip.left="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="fas fa-plus"></i></button>
-				<button v-tooltip.left="i18n.ts.settings" class="_button button settings" @click="showSettings"><i class="fas fa-cog"></i></button>
+				<div class="top">
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" class="_button button" @click="changeProfile"><i class="fas fa-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" class="_button button" @click="deleteProfile"><i class="fas fa-trash-can"></i></button>
+				</div>
+				<div class="middle">
+					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="fas fa-plus"></i></button>
+				</div>
+				<div class="bottom">
+					<button v-tooltip.noDelay.left="i18n.ts.settings" class="_button button settings" @click="showSettings"><i class="fas fa-cog"></i></button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -67,7 +75,7 @@
 import { computed, defineAsyncComponent, onMounted, provide, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import { deckStore, addColumn as addColumnToStore, loadDeck } from './deck/deck-store';
+import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store';
 import DeckColumnCore from '@/ui/deck/column-core.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
@@ -78,6 +86,7 @@ import { navbarItemDef } from '@/navbar';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
+import { unisonReload } from '@/scripts/unison-reload';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 mainRouter.navHook = (path): boolean => {
@@ -167,6 +176,51 @@ loadDeck();
 
 function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
 	// TODO??
+}
+
+function changeProfile(ev: MouseEvent) {
+	const items = ref([{
+		text: deckStore.state.profile,
+		active: true.valueOf,
+	}]);
+	getProfiles().then(profiles => {
+		items.value = [{
+			text: deckStore.state.profile,
+			active: true.valueOf,
+		}, ...(profiles.filter(k => k !== deckStore.state.profile).map(k => ({
+			text: k,
+			action: () => {
+				deckStore.set('profile', k);
+				unisonReload();
+			},
+		}))), null, {
+			text: i18n.ts._deck.newProfile,
+			icon: 'fas fa-plus',
+			action: async () => {
+				const { canceled, result: name } = await os.inputText({
+					title: i18n.ts._deck.profile,
+					allowEmpty: false,
+				});
+				if (canceled) return;
+
+				deckStore.set('profile', name);
+				unisonReload();
+			},
+		}];
+	});
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
+}
+
+async function deleteProfile() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('deleteAreYouSure', { x: deckStore.state.profile }),
+	});
+	if (canceled) return;
+
+	deleteProfile_(deckStore.state.profile);
+	deckStore.set('profile', 'default');
+	unisonReload();
 }
 </script>
 
@@ -271,9 +325,25 @@ function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
 				justify-content: center;
 				width: 32px;
 
-				> .button {
-					width: 100%;
-					aspect-ratio: 1;
+				> .top, > .middle, > .bottom {
+					> .button {
+						display: block;
+						width: 100%;
+						aspect-ratio: 1;
+					}
+				}
+
+				> .top {
+					margin-bottom: auto;
+				}
+
+				> .middle {
+					margin-top: auto;
+					margin-bottom: auto;
+				}
+
+				> .bottom {
+					margin-top: auto;
 				}
 			}
 		}
