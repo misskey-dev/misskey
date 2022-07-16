@@ -23,7 +23,7 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="fas fa-cog"></i></button>
+		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="fas fa-ellipsis"></i></button>
 	</header>
 	<div v-show="active" ref="body">
 		<slot></slot>
@@ -361,7 +361,6 @@ function onDrop(ev) {
 			z-index: 1;
 			width: var(--deckColumnHeaderHeight);
 			line-height: var(--deckColumnHeaderHeight);
-			font-size: 16px;
 			color: var(--faceTextButton);
 
 			&:hover {

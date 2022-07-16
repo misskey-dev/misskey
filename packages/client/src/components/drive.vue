@@ -26,7 +26,8 @@
 		</div>
 		<button class="menu _button" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
 	</nav>
-	<div ref="main" class="main"
+	<div
+		ref="main" class="main"
 		:class="{ uploading: uploadings.length > 0, fetching }"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"
@@ -142,7 +143,7 @@ const isDragSource = ref(false);
 const fetching = ref(true);
 
 const ilFilesObserver = new IntersectionObserver(
-	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles()
+	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles(),
 );
 
 watch(folder, () => emit('cd', folder.value));
@@ -232,7 +233,7 @@ function onDrop(ev: DragEvent): any {
 		removeFile(file.id);
 		os.api('drive/files/update', {
 			fileId: file.id,
-			folderId: folder.value ? folder.value.id : null
+			folderId: folder.value ? folder.value.id : null,
 		});
 	}
 	//#endregion
@@ -248,7 +249,7 @@ function onDrop(ev: DragEvent): any {
 		removeFolder(droppedFolder.id);
 		os.api('drive/folders/update', {
 			folderId: droppedFolder.id,
-			parentId: folder.value ? folder.value.id : null
+			parentId: folder.value ? folder.value.id : null,
 		}).then(() => {
 			// noop
 		}).catch(err => {
@@ -256,13 +257,13 @@ function onDrop(ev: DragEvent): any {
 				case 'detected-circular-definition':
 					os.alert({
 						title: i18n.ts.unableToProcess,
-						text: i18n.ts.circularReferenceFolder
+						text: i18n.ts.circularReferenceFolder,
 					});
 					break;
 				default:
 					os.alert({
 						type: 'error',
-						text: i18n.ts.somethingHappened
+						text: i18n.ts.somethingHappened,
 					});
 			}
 		});
@@ -278,17 +279,17 @@ function urlUpload() {
 	os.inputText({
 		title: i18n.ts.uploadFromUrl,
 		type: 'url',
-		placeholder: i18n.ts.uploadFromUrlDescription
+		placeholder: i18n.ts.uploadFromUrlDescription,
 	}).then(({ canceled, result: url }) => {
 		if (canceled || !url) return;
 		os.api('drive/files/upload-from-url', {
 			url: url,
-			folderId: folder.value ? folder.value.id : undefined
+			folderId: folder.value ? folder.value.id : undefined,
 		});
 
 		os.alert({
 			title: i18n.ts.uploadFromUrlRequested,
-			text: i18n.ts.uploadFromUrlMayTakeTime
+			text: i18n.ts.uploadFromUrlMayTakeTime,
 		});
 	});
 }
@@ -296,12 +297,12 @@ function urlUpload() {
 function createFolder() {
 	os.inputText({
 		title: i18n.ts.createFolder,
-		placeholder: i18n.ts.folderName
+		placeholder: i18n.ts.folderName,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
 		os.api('drive/folders/create', {
 			name: name,
-			parentId: folder.value ? folder.value.id : undefined
+			parentId: folder.value ? folder.value.id : undefined,
 		}).then(createdFolder => {
 			addFolder(createdFolder, true);
 		});
@@ -312,12 +313,12 @@ function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	os.inputText({
 		title: i18n.ts.renameFolder,
 		placeholder: i18n.ts.inputNewFolderName,
-		default: folderToRename.name
+		default: folderToRename.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
 		os.api('drive/folders/update', {
 			folderId: folderToRename.id,
-			name: name
+			name: name,
 		}).then(updatedFolder => {
 			// FIXME: 画面を更新するために自分自身に移動
 			move(updatedFolder);
@@ -327,7 +328,7 @@ function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 
 function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	os.api('drive/folders/delete', {
-		folderId: folderToDelete.id
+		folderId: folderToDelete.id,
 	}).then(() => {
 		// 削除時に親フォルダに移動
 		move(folderToDelete.parentId);
@@ -337,15 +338,15 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 				os.alert({
 					type: 'error',
 					title: i18n.ts.unableToDelete,
-					text: i18n.ts.hasChildFilesOrFolders
+					text: i18n.ts.hasChildFilesOrFolders,
 				});
 				break;
 			default:
 				os.alert({
 					type: 'error',
-					text: i18n.ts.unableToDelete
+					text: i18n.ts.unableToDelete,
 				});
-			}
+		}
 	});
 }
 
@@ -411,7 +412,7 @@ function move(target?: Misskey.entities.DriveFolder) {
 	fetching.value = true;
 
 	os.api('drive/folders/show', {
-		folderId: target
+		folderId: target,
 	}).then(folderToMove => {
 		folder.value = folderToMove;
 		hierarchyFolders.value = [];
@@ -510,7 +511,7 @@ async function fetch() {
 
 	const foldersPromise = os.api('drive/folders', {
 		folderId: folder.value ? folder.value.id : null,
-		limit: foldersMax + 1
+		limit: foldersMax + 1,
 	}).then(fetchedFolders => {
 		if (fetchedFolders.length === foldersMax + 1) {
 			moreFolders.value = true;
@@ -522,7 +523,7 @@ async function fetch() {
 	const filesPromise = os.api('drive/files', {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		limit: filesMax + 1
+		limit: filesMax + 1,
 	}).then(fetchedFiles => {
 		if (fetchedFiles.length === filesMax + 1) {
 			moreFiles.value = true;
@@ -549,7 +550,7 @@ function fetchMoreFiles() {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
 		untilId: files.value[files.value.length - 1].id,
-		limit: max + 1
+		limit: max + 1,
 	}).then(files => {
 		if (files.length === max + 1) {
 			moreFiles.value = true;
@@ -569,30 +570,30 @@ function getMenu() {
 		ref: keepOriginal,
 	}, null, {
 		text: i18n.ts.addFile,
-		type: 'label'
+		type: 'label',
 	}, {
 		text: i18n.ts.upload,
 		icon: 'fas fa-upload',
-		action: () => { selectLocalFile(); }
+		action: () => { selectLocalFile(); },
 	}, {
 		text: i18n.ts.fromUrl,
 		icon: 'fas fa-link',
-		action: () => { urlUpload(); }
+		action: () => { urlUpload(); },
 	}, null, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
-		type: 'label'
+		type: 'label',
 	}, folder.value ? {
 		text: i18n.ts.renameFolder,
 		icon: 'fas fa-i-cursor',
-		action: () => { renameFolder(folder.value); }
+		action: () => { renameFolder(folder.value); },
 	} : undefined, folder.value ? {
 		text: i18n.ts.deleteFolder,
 		icon: 'fas fa-trash-alt',
-		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); }
+		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
 	} : undefined, {
 		text: i18n.ts.createFolder,
 		icon: 'fas fa-folder-plus',
-		action: () => { createFolder(); }
+		action: () => { createFolder(); },
 	}];
 }
 
@@ -662,14 +663,14 @@ onBeforeUnmount(() => {
 		> .path {
 			display: inline-block;
 			vertical-align: bottom;
-			line-height: 50px;
+			line-height: 42px;
 			white-space: nowrap;
 
 			> * {
 				display: inline-block;
 				margin: 0;
 				padding: 0 8px;
-				line-height: 50px;
+				line-height: 42px;
 				cursor: pointer;
 
 				* {

@@ -393,7 +393,7 @@ export default defineComponent({
 		border-radius: var(--radius);
 
 		> .header {
-			--height: 45px;
+			--height: 42px;
 
 			&.mini {
 				--height: 38px;

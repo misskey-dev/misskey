@@ -878,6 +878,7 @@ cannotUploadBecauseInappropriate: "因为可能含有不适宜的内容，无法
 cannotUploadBecauseNoFreeSpace: "因为已无可用空间，无法上传。"
 beta: "测试"
 enableAutoSensitive: "自动 NSFW 识别"
+account: "账户"
 _sensitiveMediaDetection:
   description: "可以使用机器学习技术自动检测敏感媒体，以便进行审核。服务器负载将略微增加。"
   sensitivity: "检测敏感度"
