@@ -1696,6 +1696,7 @@ _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
   columnAlign: "Spaltenausrichtung"
   addColumn: "Spalte hinzufügen"
+  configureColumn: "Spalteneinstellungen"
   swapLeft: "Mit linker Spalte tauschen"
   swapRight: "Mit rechter Spalte tauschen"
   swapUp: "Mit oberer Spalte tauschen"
