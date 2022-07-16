@@ -77,9 +77,9 @@ const inputEl = ref<HTMLElement>();
 const prefixEl = ref<HTMLElement>();
 const suffixEl = ref<HTMLElement>();
 const height =
-	props.small ? 38 :
-	props.large ? 42 :
-	40;
+	props.small ? 36 :
+	props.large ? 40 :
+	38;
 
 const focus = () => inputEl.value.focus();
 const onInput = (ev: KeyboardEvent) => {
