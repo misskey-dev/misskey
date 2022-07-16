@@ -1696,6 +1696,7 @@ _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
   addColumn: "Add column"
+  configureColumn: "Column settings"
   swapLeft: "Swap with the left column"
   swapRight: "Swap with the right column"
   swapUp: "Swap with the above column"
