@@ -14,9 +14,11 @@
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
 	window.onerror = (e) => {
+		console.error(e);
 		renderError('SOMETHING_HAPPENED', e);
 	};
 	window.onunhandledrejection = (e) => {
+		console.error(e);
 		renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
 	};
 
@@ -47,18 +49,30 @@
 			localStorage.setItem('localeVersion', v);
 		} else {
 			await checkUpdate();
-			renderError('LOCALE_FETCH_FAILED');
+			renderError('LOCALE_FETCH');
 			return;
 		}
 	}
 	//#endregion
 
 	//#region Script
-	import(`/assets/${CLIENT_ENTRY}`)
-		.catch(async e => {
-			await checkUpdate();
-			renderError('APP_FETCH_FAILED', e);
-		})
+	function importAppScript() {
+		import(`/assets/${CLIENT_ENTRY}`)
+			.catch(async e => {
+				await checkUpdate();
+				console.error(e);
+				renderError('APP_IMPORT', e);
+			});
+	}
+
+	// タイミングによっては、この時点でDOMの構築が済んでいる場合とそうでない場合とがある
+	if (document.readyState !== 'loading') {
+		importAppScript();
+	} else {
+		window.addEventListener('DOMContentLoaded', () => {
+			importAppScript();
+		});
+	}
 	//#endregion
 
 	//#region Theme
@@ -112,35 +126,35 @@
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
-			document.documentElement.innerHTML = `
+			document.body.innerHTML = `
 			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   			<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   			<path d="M12 9v2m0 4v.01"></path>
-   			<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
+				<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+				<path d="M12 9v2m0 4v.01"></path>
+				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
 			<h1>出现了一些问题！</h1>
 			<button class="button-big" onclick="location.reload(true);">
 				<span class="button-label-big">刷新</span>
 			</button>
-      <p class="dont-worry">不用担心，这(应该)不是您的错。</p>
+			<p class="dont-worry">不用担心，这(应该)不是您的错。</p>
 			<p>如果该错误在刷新后仍然出现，请联系您实例的管理员。<br>您也可以尝试以下的选项：</p>
-      <a href="/flush">
-      <button class="button-small">
-        <span class="button-label-small">清理偏好设置与缓存</span>
-      </button>
-      </a>
+			<a href="/flush">
+				<button class="button-small">
+					<span class="button-label-small">清理偏好设置与缓存</span>
+				</button>
+			</a>
 			<br>
-      <a href="/cli">
-        <button class="button-small">
-          <span class="button-label-small">启动简单客户端</span>
-        </button>
-      </a>
+			<a href="/cli">
+				<button class="button-small">
+					<span class="button-label-small">启动简单客户端</span>
+				</button>
+			</a>
 			<br>
-      <a href="/bios">
-        <button class="button-small">
-          <span class="button-label-small">启动修复工具</span>
-        </button>
-      </a>
+			<a href="/bios">
+				<button class="button-small">
+					<span class="button-label-small">启动修复工具</span>
+				</button>
+			</a>
 			<br>
 			<div id="errors"></div>
 			`;
@@ -269,17 +283,22 @@
 
 	// eslint-disable-next-line no-inner-declarations
 	async function checkUpdate() {
-		// TODO: サーバーが落ちている場合などのエラーハンドリング
-		const res = await fetch('/api/meta', {
-			method: 'POST',
-			cache: 'no-cache'
-		});
+		try {
+			const res = await fetch('/api/meta', {
+				method: 'POST',
+				cache: 'no-cache'
+			});
 
-		const meta = await res.json();
+			const meta = await res.json();
 
-		if (meta.version != v) {
-			localStorage.setItem('v', meta.version);
-			refresh();
+			if (meta.version != v) {
+				localStorage.setItem('v', meta.version);
+				refresh();
+			}
+		} catch (e) {
+			console.error(e);
+			renderError('UPDATE_CHECK', e);
+			throw e;
 		}
 	}
 

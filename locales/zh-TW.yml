@@ -887,6 +887,8 @@ beta: "Beta"
 enableAutoSensitive: "自動NSFW判定"
 enableAutoSensitiveDescription: "如果可用，請利用機器學習在媒體上自動設置 NSFW 旗標。 即使關閉此功能，依實例而定也可能會自動設置。"
 activeEmailValidationDescription: "積極地驗證用戶的電子郵件地址，判斷它是否為免洗地址，或者它是否可以通信。 若關閉，則只會檢查字元是否正確。"
+navbar: "導覽列"
+account: "帳戶"
 _sensitiveMediaDetection:
   description: "您可以使用機器學習自動檢測敏感媒體並將其用於審核。 伺服器的負荷會稍微增加。"
   sensitivity: "檢測敏感度"

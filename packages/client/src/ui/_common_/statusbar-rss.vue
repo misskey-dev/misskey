@@ -20,9 +20,11 @@ import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
 import MarqueeText from '@/components/marquee.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
+import { shuffle } from '@/scripts/shuffle';
 
 const props = defineProps<{
 	url?: string;
+	shuffle?: boolean;
 	display?: 'marquee' | 'oneByOne';
 	marqueeDuration?: number;
 	marqueeReverse?: boolean;
@@ -37,6 +39,9 @@ let key = $ref(0);
 const tick = () => {
 	fetch(`/api/fetch-rss?url=${props.url}`, {}).then(res => {
 		res.json().then(feed => {
+			if (props.shuffle) {
+				shuffle(feed.items);
+			}
 			items.value = feed.items;
 			fetching.value = false;
 			key++;

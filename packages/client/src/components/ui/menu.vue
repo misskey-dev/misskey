@@ -140,7 +140,7 @@ function focusDown() {
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
-		font-size: 0.85em;
+		font-size: 0.9em;
 		line-height: 20px;
 		text-align: left;
 		overflow: hidden;

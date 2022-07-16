@@ -16,9 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCssModule } from 'vue';
-
-useCssModule();
+import { } from 'vue';
 
 const props = withDefaults(defineProps<{
 	inline?: boolean;

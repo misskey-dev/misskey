@@ -10,7 +10,7 @@
 		}]"
 	>
 		<span class="name">{{ x.name }}</span>
-		<XRss v-if="x.type === 'rss'" class="body" :refresh-interval-sec="x.props.refreshIntervalSec" :marquee-duration="x.props.marqueeDuration" :marquee-reverse="x.props.marqueeReverse" :display="x.props.display" :url="x.props.url"/>
+		<XRss v-if="x.type === 'rss'" class="body" :refresh-interval-sec="x.props.refreshIntervalSec" :marquee-duration="x.props.marqueeDuration" :marquee-reverse="x.props.marqueeReverse" :display="x.props.display" :url="x.props.url" :shuffle="x.props.shuffle"/>
 		<XFederation v-else-if="x.type === 'federation'" class="body" :refresh-interval-sec="x.props.refreshIntervalSec" :marquee-duration="x.props.marqueeDuration" :marquee-reverse="x.props.marqueeReverse" :display="x.props.display" :colored="x.props.colored"/>
 		<XUserList v-else-if="x.type === 'userList'" class="body" :refresh-interval-sec="x.props.refreshIntervalSec" :marquee-duration="x.props.marqueeDuration" :marquee-reverse="x.props.marqueeReverse" :display="x.props.display" :user-list-id="x.props.userListId"/>
 	</div>
@@ -28,6 +28,7 @@ const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue')
 
 <style lang="scss" scoped>
 .dlrsnxqu {
+	font-size: 15px;
 	background: var(--panel);
 
 	> .item {

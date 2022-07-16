@@ -592,8 +592,6 @@ function readPromo() {
 	}
 
 	&.max-width_300px {
-		font-size: 0.825em;
-
 		> .article {
 			> .avatar {
 				width: 44px;
