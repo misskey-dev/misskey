@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin"/></template>
 	<MkSpacer :content-max="800">
 		<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
 			<XTutorial v-if="$i && $store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
@@ -118,7 +118,6 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._timelines.home,
 	icon: 'fas fa-home',
 	iconOnly: true,
-	loginRequired: true,
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
@@ -129,7 +128,6 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._timelines.social,
 	icon: 'fas fa-share-alt',
 	iconOnly: true,
-	loginRequired: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
@@ -139,21 +137,33 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-list-ul',
 	title: i18n.ts.lists,
 	iconOnly: true,
-	loginRequired: true,
 	onClick: chooseList,
 }, {
 	icon: 'fas fa-satellite',
 	title: i18n.ts.antennas,
 	iconOnly: true,
-	loginRequired: true,
 	onClick: chooseAntenna,
 }, {
 	icon: 'fas fa-satellite-dish',
 	title: i18n.ts.channel,
 	iconOnly: true,
-	loginRequired: true,
 	onClick: chooseChannel,
 }]);
+
+const headerTabsWhenNotLogin = $computed(() => [
+	...(isLocalTimelineAvailable ? [{
+		key: 'local',
+		title: i18n.ts._timelines.local,
+		icon: 'fas fa-comments',
+		iconOnly: true,
+	}] : []),
+	...(isGlobalTimelineAvailable ? [{
+		key: 'global',
+		title: i18n.ts._timelines.global,
+		icon: 'fas fa-globe',
+		iconOnly: true,
+	}] : []),
+]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,

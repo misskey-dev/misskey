@@ -39,7 +39,6 @@ import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { scrollToTop } from '@/scripts/scroll';
 import { i18n } from '@/i18n';
-import { $i } from '@/account';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
 
@@ -48,7 +47,6 @@ type Tab = {
 	title: string;
 	icon?: string;
 	iconOnly?: boolean;
-	loginRequired?: boolean;
 	onClick?: (ev: MouseEvent) => void;
 };
 
@@ -73,7 +71,6 @@ const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
 const el = $ref<HTMLElement | null>(null);
-const tabs = $i ? props.tabs : props.tabs?.filter(tab => !tab.loginRequired);
 const tabRefs = {};
 const tabHighlightEl = $ref<HTMLElement | null>(null);
 const bg = ref(null);
