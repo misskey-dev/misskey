@@ -1691,6 +1691,7 @@ _deck:
   alwaysShowMainColumn: "总是显示主列"
   columnAlign: "列对齐"
   addColumn: "添加列"
+  configureColumn: "列设置"
   swapLeft: "向左移动"
   swapRight: "向右移动"
   swapUp: "向上移动"
