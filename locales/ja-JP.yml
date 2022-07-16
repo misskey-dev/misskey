@@ -1755,6 +1755,7 @@ _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
   addColumn: "カラムを追加"
+  configureColumn: "カラムの設定"
   swapLeft: "左に移動"
   swapRight: "右に移動"
   swapUp: "上に移動"
