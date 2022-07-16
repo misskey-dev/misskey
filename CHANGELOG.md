@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Client: デッキUI時に ページで表示 ボタンが機能しない問題を修正 @syuilo
+
 ## 12.116.0 (2022/07/16)
 
 ### Improvements
