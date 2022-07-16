@@ -71,7 +71,7 @@ export class Router extends EventEmitter<{
 	private currentKey = Date.now().toString();
 
 	public currentRoute: ShallowRef<RouteDef | null> = shallowRef(null);
-	public navHook: ((path: string) => boolean) | null = null;
+	public navHook: ((path: string, flag?: any) => boolean) | null = null;
 
 	constructor(routes: Router['routes'], currentPath: Router['currentPath']) {
 		super();
@@ -213,14 +213,14 @@ export class Router extends EventEmitter<{
 		return this.currentKey;
 	}
 
-	public push(path: string) {
+	public push(path: string, flag?: any) {
 		const beforePath = this.currentPath;
 		if (path === beforePath) {
 			this.emit('same');
 			return;
 		}
 		if (this.navHook) {
-			const cancel = this.navHook(path);
+			const cancel = this.navHook(path, flag);
 			if (cancel) return;
 		}
 		this.navigate(path, null);

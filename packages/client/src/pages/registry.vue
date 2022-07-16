@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="600">
+	<MkSpacer :content-max="600" :margin-min="16">
 		<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
 		<FormSection v-if="scopes">

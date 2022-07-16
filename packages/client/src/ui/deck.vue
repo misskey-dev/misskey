@@ -89,7 +89,8 @@ import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
-mainRouter.navHook = (path): boolean => {
+mainRouter.navHook = (path, flag): boolean => {
+	if (flag === 'forcePage') return false;
 	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
 	if (deckStore.state.navWindow || noMainColumn) {
 		os.pageWindow(path);
@@ -160,8 +161,6 @@ const onContextmenu = (ev) => {
 		action: addColumn,
 	}], ev);
 };
-
-provide('shouldSpacerMin', true);
 
 document.documentElement.style.overflowY = 'hidden';
 document.documentElement.style.scrollBehavior = 'auto';

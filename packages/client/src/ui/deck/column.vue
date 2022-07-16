@@ -31,31 +31,25 @@
 </section>
 </template>
 
-<script lang="ts">
-export type DeckFunc = {
-	title: string;
-	handler: (payload: MouseEvent) => void;
-	icon?: string;
-};
-</script>
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
+import { onBeforeUnmount, onMounted, provide, Ref, watch } from 'vue';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column , deckStore } from './deck-store';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { MenuItem } from '@/types/menu';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
+provide('shouldSpacerMin', true);
 
 const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
-	func?: DeckFunc | null;
 	naked?: boolean;
 	indicated?: boolean;
+	menu?: MenuItem[];
 }>(), {
 	isStacked: false,
-	func: null,
 	naked: false,
 	indicated: false,
 });
@@ -110,9 +104,9 @@ function toggleActive() {
 }
 
 function getMenu() {
-	const items = [{
-		icon: 'fas fa-pencil-alt',
-		text: i18n.ts.edit,
+	let items = [{
+		icon: 'fas fa-cog',
+		text: i18n.ts._deck.configureColumn,
 		action: async () => {
 			const { canceled, result } = await os.form(props.column.name, {
 				name: {
@@ -179,13 +173,9 @@ function getMenu() {
 		},
 	}];
 
-	if (props.func) {
+	if (props.menu) {
 		items.unshift(null);
-		items.unshift({
-			icon: props.func.icon,
-			text: props.func.title,
-			action: props.func.handler,
-		});
+		items = props.menu.concat(items);
 	}
 
 	return items;

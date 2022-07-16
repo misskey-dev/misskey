@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="600">
+	<MkSpacer :content-max="600" :margin-min="16">
 		<FormInfo warn>{{ $ts.editTheseSettingsMayBreakAccount }}</FormInfo>
 
 		<template v-if="value">

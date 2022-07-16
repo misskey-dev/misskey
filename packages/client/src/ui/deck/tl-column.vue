@@ -1,5 +1,5 @@
 <template>
-<XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="fas fa-home"></i>
 		<i v-else-if="column.tl === 'local'" class="fas fa-comments"></i>
@@ -22,9 +22,9 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
+import { removeColumn, updateColumn, Column } from './deck-store';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
-import { removeColumn, updateColumn, Column } from './deck-store';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
@@ -57,13 +57,13 @@ async function setType() {
 	const { canceled, result: src } = await os.select({
 		title: i18n.ts.timeline,
 		items: [{
-			value: 'home' as const, text: i18n.ts._timelines.home
+			value: 'home' as const, text: i18n.ts._timelines.home,
 		}, {
-			value: 'local' as const, text: i18n.ts._timelines.local
+			value: 'local' as const, text: i18n.ts._timelines.local,
 		}, {
-			value: 'social' as const, text: i18n.ts._timelines.social
+			value: 'social' as const, text: i18n.ts._timelines.social,
 		}, {
-			value: 'global' as const, text: i18n.ts._timelines.global
+			value: 'global' as const, text: i18n.ts._timelines.global,
 		}],
 	});
 	if (canceled) {
@@ -73,7 +73,7 @@ async function setType() {
 		return;
 	}
 	updateColumn(props.column.id, {
-		tl: src
+		tl: src,
 	});
 }
 
@@ -96,6 +96,12 @@ function onChangeActiveState(state) {
 		indicated = false;
 	}
 }
+
+const menu = [{
+	icon: 'fas fa-pencil-alt',
+	text: i18n.ts.timeline,
+	action: setType,
+}];
 
 /*
 export default defineComponent({

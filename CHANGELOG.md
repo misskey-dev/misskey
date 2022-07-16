@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 12.116.1 (2022/07/17)
+
+### Bugfixes
+- Client: デッキUI時に ページで表示 ボタンが機能しない問題を修正 @syuilo
+- Error During Migration Run to 12.111.x
+
 ## 12.116.0 (2022/07/16)
 
 ### Improvements
