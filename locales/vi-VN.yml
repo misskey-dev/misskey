@@ -1696,6 +1696,7 @@ _deck:
   alwaysShowMainColumn: "Luôn hiện cột chính"
   columnAlign: "Căn cột"
   addColumn: "Thêm cột"
+  configureColumn: "Cài đặt cột"
   swapLeft: "Hoán đổi với cột bên trái"
   swapRight: "Hoán đổi với cột bên phải"
   swapUp: "Hoán đổi với cột trên"
