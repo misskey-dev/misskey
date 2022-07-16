@@ -3,7 +3,7 @@
 	<div class="body">
 		<div class="top">
 			<div class="banner" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }"></div>
-			<button v-click-anime v-tooltip.right="$instance.name ?? i18n.ts.instance" class="item _button instance" @click="openInstanceMenu">
+			<button v-click-anime class="item _button instance" @click="openInstanceMenu">
 				<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
 			</button>
 		</div>
