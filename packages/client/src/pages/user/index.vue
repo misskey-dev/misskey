@@ -23,7 +23,6 @@ import calcAge from 's-age';
 import * as Acct from 'misskey-js/built/acct';
 import * as misskey from 'misskey-js';
 import { getScrollPosition } from '@/scripts/scroll';
-import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
 import { userPage, acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
@@ -64,10 +63,6 @@ function fetchUser(): void {
 watch(() => props.acct, fetchUser, {
 	immediate: true,
 });
-
-function menu(ev) {
-	os.popupMenu(getUserMenu(user), ev.currentTarget ?? ev.target);
-}
 
 const headerActions = $computed(() => []);
 
