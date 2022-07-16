@@ -9,8 +9,6 @@
 		<option value="left">{{ i18n.ts.left }}</option>
 		<option value="center">{{ i18n.ts.center }}</option>
 	</FormRadios>
-
-	<FormLink class="_formBlock" @click="setProfile">{{ i18n.ts._deck.profile }}<template #suffix>{{ profile }}</template></FormLink>
 </div>
 </template>
 
@@ -29,18 +27,6 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 const navWindow = computed(deckStore.makeGetterSetter('navWindow'));
 const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMainColumn'));
 const columnAlign = computed(deckStore.makeGetterSetter('columnAlign'));
-const profile = computed(deckStore.makeGetterSetter('profile'));
-
-async function setProfile() {
-	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts._deck.profile,
-		allowEmpty: false,
-	});
-	if (canceled) return;
-	
-	profile.value = name;
-	unisonReload();
-}
 
 const headerActions = $computed(() => []);
 

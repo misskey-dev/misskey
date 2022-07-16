@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 12.115.0 (2022/07/16)
+
+### Improvements
+- Client: Deckのプロファイル切り替えを簡単に @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
 ## 12.114.0 (2022/07/15)
 
 ### Improvements
