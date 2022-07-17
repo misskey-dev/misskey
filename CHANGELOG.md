@@ -9,6 +9,15 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Client: ウィンドウを最大化できるように @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+### Bugfixes
+- 
+
 ## 12.116.1 (2022/07/17)
 
 ### Bugfixes
