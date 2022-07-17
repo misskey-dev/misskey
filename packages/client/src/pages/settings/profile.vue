@@ -1,7 +1,7 @@
 <template>
 <div class="_formRoot">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-		<div class="avatar _acrylic">
+		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
 			<MkButton primary rounded class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
@@ -187,6 +187,7 @@ definePageMetadata({
 	position: relative;
 	background-size: cover;
 	background-position: center;
+	border: solid 1px var(--divider);
 	border-radius: 10px;
 	overflow: clip;
 

@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
-	<div v-if="showing" ref="rootEl" class="ebkgocck">
+	<div v-if="showing" ref="rootEl" class="ebkgocck" :class="{ maximized }">
 		<div class="body _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 
 provide('inWindow', true);
 
-let rootEl = $ref<HTMLElement>();
+let rootEl = $ref<HTMLElement | null>();
 let showing = $ref(true);
 let beforeClickedAt = 0;
 let maximized = $ref(false);
@@ -116,7 +116,9 @@ function onContextmenu(ev: MouseEvent) {
 
 // 最前面へ移動
 function top() {
-	rootEl.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low');
+	if (rootEl) {
+		rootEl.style.zIndex = os.claimZIndex(props.front ? 'middle' : 'low');
+	}
 }
 
 function maximize() {
@@ -412,7 +414,7 @@ defineExpose({
 	left: 0;
 
 	> .body {
-		overflow: hidden;
+		overflow: clip;
 		display: flex;
 		flex-direction: column;
 		contain: content;
@@ -548,6 +550,12 @@ defineExpose({
 			width: $size * 2;
 			height: $size * 2;
 			cursor: nesw-resize;
+		}
+	}
+
+	&.maximized {
+		> .body {
+			border-radius: 0;
 		}
 	}
 }
