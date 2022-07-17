@@ -48,17 +48,18 @@
 		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
 		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ i18n.ts.squareAvatars }}</FormSwitch>
 		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ i18n.ts.useSystemFont }}</FormSwitch>
-		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">{{ i18n.ts.useOsNativeEmojis }}
+		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">
+			{{ i18n.ts.useOsNativeEmojis }}
 			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
 		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ i18n.ts.disableDrawer }}</FormSwitch>
 
 		<FormRadios v-model="fontSize" class="_formBlock">
 			<template #label>{{ i18n.ts.fontSize }}</template>
-			<option value="small"><span style="font-size: 14px;">Aa</span></option>
-			<option :value="null"><span style="font-size: 16px;">Aa</span></option>
-			<option value="large"><span style="font-size: 18px;">Aa</span></option>
-			<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
+			<option :value="null"><span style="font-size: 14px;">Aa</span></option>
+			<option value="1"><span style="font-size: 15px;">Aa</span></option>
+			<option value="2"><span style="font-size: 16px;">Aa</span></option>
+			<option value="3"><span style="font-size: 17px;">Aa</span></option>
 		</FormRadios>
 	</FormSection>
 
@@ -80,10 +81,10 @@
 		<option value="force">{{ i18n.ts._nsfw.force }}</option>
 	</FormSelect>
 
-	<FormGroup>
-		<template #label>{{ i18n.ts.defaultNavigationBehaviour }}</template>
-		<FormSwitch v-model="defaultSideView">{{ i18n.ts.openInSideView }}</FormSwitch>
-	</FormGroup>
+	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" class="_formBlock">
+		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
+		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+	</FormRange>
 
 	<FormLink to="/settings/deck" class="_formBlock">{{ i18n.ts.deck }}</FormLink>
 
@@ -92,11 +93,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormGroup from '@/components/form/group.vue';
+import FormRange from '@/components/form/range.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/link.vue';
@@ -104,8 +105,8 @@ import { langs } from '@/config';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const lang = ref(localStorage.getItem('lang'));
 const fontSize = ref(localStorage.getItem('fontSize'));
@@ -136,7 +137,7 @@ const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const disablePagesScript = computed(defaultStore.makeGetterSetter('disablePagesScript'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
-const defaultSideView = computed(defaultStore.makeGetterSetter('defaultSideView'));
+const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
@@ -173,16 +174,17 @@ watch([
 	aiChanMode,
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
-	overridedDeviceKind
+	overridedDeviceKind,
 ], async () => {
 	await reloadAsk();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.general,
-		icon: 'fas fa-cogs',
-		bg: 'var(--bg)'
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.general,
+	icon: 'fas fa-cogs',
 });
 </script>

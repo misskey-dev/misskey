@@ -7,9 +7,9 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { login } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	code: string;
@@ -26,11 +26,13 @@ onMounted(async () => {
 	login(res.i, '/');
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.signup,
-		icon: 'fas fa-user',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.signup,
+	icon: 'fas fa-user',
 });
 </script>
 

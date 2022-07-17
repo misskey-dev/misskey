@@ -64,8 +64,8 @@ import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let reactions = $ref(JSON.parse(JSON.stringify(defaultStore.state.reactions)));
 
@@ -83,7 +83,7 @@ function remove(reaction, ev: MouseEvent) {
 		text: i18n.ts.remove,
 		action: () => {
 			reactions = reactions.filter(x => x !== reaction);
-		}
+		},
 	}], ev.currentTarget ?? ev.target);
 }
 
@@ -106,7 +106,7 @@ async function setDefault() {
 
 function chooseEmoji(ev: MouseEvent) {
 	os.pickEmoji(ev.currentTarget ?? ev.target, {
-		showPinned: false
+		showPinned: false,
 	}).then(emoji => {
 		if (!reactions.includes(emoji)) {
 			reactions.push(emoji);
@@ -120,15 +120,16 @@ watch($$(reactions), () => {
 	deep: true,
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.reaction,
-		icon: 'fas fa-laugh',
-		action: {
-			icon: 'fas fa-eye',
-			handler: preview,
-		},
-		bg: 'var(--bg)',
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.reaction,
+	icon: 'fas fa-laugh',
+	action: {
+		icon: 'fas fa-eye',
+		handler: preview,
 	},
 });
 </script>

@@ -737,6 +737,11 @@ hashtags: "Хештеґ"
 hide: "Сховати"
 searchByGoogle: "Пошук"
 indefinitely: "Ніколи"
+file: "Файли"
+reverse: "Перевернути"
+colored: "Кольоровий"
+label: "Назва"
+localOnly: "Локально"
 _ffVisibility:
   public: "Опублікувати"
 _ad:
@@ -1434,8 +1439,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Завжди показувати головну колонку"
   columnAlign: "Вирівняти стовпці"
-  columnMargin: "Відступ між стовпцями"
-  columnHeaderHeight: "Висота заголовку колони"
   addColumn: "Додати стовпець"
   swapLeft: "Пересунути ліворуч"
   swapRight: "Пересунути праворуч"

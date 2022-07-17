@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
-import XDetails from '@/components/renote.details.vue';
+import XDetails from '@/components/users-tooltip.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import * as os from '@/os';
 import { $i } from '@/account';

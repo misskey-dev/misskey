@@ -16,7 +16,7 @@ export type TextValue = ExprBase & {
 	value: string;
 };
 
-export type MultiLineTextValue = ExprBase  & {
+export type MultiLineTextValue = ExprBase & {
 	type: 'multiLineText';
 	value: string;
 };

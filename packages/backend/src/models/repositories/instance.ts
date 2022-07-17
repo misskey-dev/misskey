@@ -1,11 +1,13 @@
 import { db } from '@/db/postgre.js';
 import { Instance } from '@/models/entities/instance.js';
 import { Packed } from '@/misc/schema.js';
+import { fetchMeta } from '@/misc/fetch-meta.js';
 
 export const InstanceRepository = db.getRepository(Instance).extend({
 	async pack(
 		instance: Instance,
 	): Promise<Packed<'FederationInstance'>> {
+		const meta = await fetchMeta();
 		return {
 			id: instance.id,
 			caughtAt: instance.caughtAt.toISOString(),
@@ -18,6 +20,7 @@ export const InstanceRepository = db.getRepository(Instance).extend({
 			lastCommunicatedAt: instance.lastCommunicatedAt.toISOString(),
 			isNotResponding: instance.isNotResponding,
 			isSuspended: instance.isSuspended,
+			isBlocked: meta.blockedHosts.includes(instance.host),
 			softwareName: instance.softwareName,
 			softwareVersion: instance.softwareVersion,
 			openRegistrations: instance.openRegistrations,
@@ -26,6 +29,8 @@ export const InstanceRepository = db.getRepository(Instance).extend({
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
 			iconUrl: instance.iconUrl,
+			faviconUrl: instance.faviconUrl,
+			themeColor: instance.themeColor,
 			infoUpdatedAt: instance.infoUpdatedAt ? instance.infoUpdatedAt.toISOString() : null,
 		};
 	},

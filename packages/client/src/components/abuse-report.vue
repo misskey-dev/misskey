@@ -1,13 +1,19 @@
 <template>
-<div class="bcekxzvu _card _gap">
-	<div class="_content target">
-		<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true"/>
-		<MkA v-user-preview="report.targetUserId" class="info" :to="userPage(report.targetUser)">
-			<MkUserName class="name" :user="report.targetUser"/>
-			<MkAcct class="acct" :user="report.targetUser" style="display: block;"/>
+<div class="bcekxzvu _gap _panel">
+	<div class="target">
+		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`">
+			<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true" :disable-link="true"/>
+			<div class="names">
+				<MkUserName class="name" :user="report.targetUser"/>
+				<MkAcct class="acct" :user="report.targetUser" style="display: block;"/>
+			</div>
 		</MkA>
+		<MkKeyValue class="_formBlock">
+			<template #key>{{ $ts.registeredDate }}</template>
+			<template #value>{{ new Date(report.targetUser.createdAt).toLocaleString() }} (<MkTime :time="report.targetUser.createdAt"/>)</template>
+		</MkKeyValue>
 	</div>
-	<div class="_content">
+	<div class="detail">
 		<div>
 			<Mfm :text="report.comment"/>
 		</div>
@@ -18,85 +24,85 @@
 			<MkAcct :user="report.assignee"/>
 		</div>
 		<div><MkTime :time="report.createdAt"/></div>
-	</div>
-	<div class="_footer">
-		<MkSwitch v-model="forward" :disabled="report.targetUser.host == null || report.resolved">
-			{{ $ts.forwardReport }}
-			<template #caption>{{ $ts.forwardReportIsAnonymous }}</template>
-		</MkSwitch>
-		<MkButton v-if="!report.resolved" primary @click="resolve">{{ $ts.abuseMarkAsResolved }}</MkButton>
+		<div class="action">
+			<MkSwitch v-model="forward" :disabled="report.targetUser.host == null || report.resolved">
+				{{ $ts.forwardReport }}
+				<template #caption>{{ $ts.forwardReportIsAnonymous }}</template>
+			</MkSwitch>
+			<MkButton v-if="!report.resolved" primary @click="resolve">{{ $ts.abuseMarkAsResolved }}</MkButton>
+		</div>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
+<script lang="ts" setup>
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/form/switch.vue';
+import MkKeyValue from '@/components/key-value.vue';
 import { acct, userPage } from '@/filters/user';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkSwitch,
-	},
+const props = defineProps<{
+	report: any;
+}>();
 
-	props: {
-		report: {
-			type: Object,
-			required: true,
-		}
-	},
+const emit = defineEmits<{
+	(ev: 'resolved', reportId: string): void;
+}>();
 
-	emits: ['resolved'],
+let forward = $ref(props.report.forwarded);
 
-	data() {
-		return {
-			forward: this.report.forwarded,
-		};
-	},
-
-	methods: {
-		acct,
-		userPage,
-
-		resolve() {
-			os.apiWithDialog('admin/resolve-abuse-user-report', {
-				forward: this.forward,
-				reportId: this.report.id,
-			}).then(() => {
-				this.$emit('resolved', this.report.id);
-			});
-		}
-	}
-});
+function resolve() {
+	os.apiWithDialog('admin/resolve-abuse-user-report', {
+		forward: forward,
+		reportId: props.report.id,
+	}).then(() => {
+		emit('resolved', props.report.id);
+	});
+}
 </script>
 
 <style lang="scss" scoped>
 .bcekxzvu {
+	display: flex;
+
 	> .target {
-		display: flex;
-		width: 100%;
+		width: 35%;
 		box-sizing: border-box;
 		text-align: left;
-		align-items: center;
-
-		> .avatar {
-			width: 42px;
-			height: 42px;
-		}
+		padding: 24px;
+		border-right: solid 1px var(--divider);
 
 		> .info {
-			margin-left: 0.3em;
-			padding: 0 8px;
-			flex: 1;
+			display: flex;
+			box-sizing: border-box;
+			align-items: center;
+			padding: 14px;
+			border-radius: 8px;
+			--c: rgb(255 196 0 / 15%);
+			background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
+			background-size: 16px 16px;
 
-			> .name {
-				font-weight: bold;
+			> .avatar {
+				width: 42px;
+				height: 42px;
+			}
+
+			> .names {
+				margin-left: 0.3em;
+				padding: 0 8px;
+				flex: 1;
+
+				> .name {
+					font-weight: bold;
+				}
 			}
 		}
+	}
+
+	> .detail {
+		flex: 1;
+		padding: 24px;
 	}
 }
 </style>

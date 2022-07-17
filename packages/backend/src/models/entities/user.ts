@@ -218,6 +218,12 @@ export class User {
 	})
 	public token: string | null;
 
+	@Column('integer', {
+		nullable: true,
+		comment: 'Overrides user drive capacity limit',
+	})
+	public driveCapacityOverrideMb: number | null;
+
 	constructor(data: Partial<User>) {
 		if (data == null) return;
 

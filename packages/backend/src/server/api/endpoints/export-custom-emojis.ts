@@ -1,6 +1,6 @@
-import define from '../define.js';
-import { createExportCustomEmojisJob } from '@/queue/index.js';
 import ms from 'ms';
+import { createExportCustomEmojisJob } from '@/queue/index.js';
+import define from '../define.js';
 
 export const meta = {
 	secure: true,

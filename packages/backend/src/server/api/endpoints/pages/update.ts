@@ -1,8 +1,8 @@
 import ms from 'ms';
+import { Not } from 'typeorm';
+import { Pages, DriveFiles } from '@/models/index.js';
 import define from '../../define.js';
 import { ApiError } from '../../error.js';
-import { Pages, DriveFiles } from '@/models/index.js';
-import { Not } from 'typeorm';
 
 export const meta = {
 	tags: ['pages'],

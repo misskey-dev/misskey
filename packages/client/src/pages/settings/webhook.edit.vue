@@ -40,19 +40,11 @@ import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
-
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'Edit webhook',
-		icon: 'fas fa-bolt',
-		bg: 'var(--bg)',
-	},
-});
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const webhook = await os.api('i/webhooks/show', {
-	webhookId: new URLSearchParams(window.location.search).get('id')
+	webhookId: new URLSearchParams(window.location.search).get('id'),
 });
 
 let name = $ref(webhook.name);
@@ -86,4 +78,13 @@ async function save(): Promise<void> {
 		active,
 	});
 }
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: 'Edit webhook',
+	icon: 'fas fa-bolt',
+});
 </script>

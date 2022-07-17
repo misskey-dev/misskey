@@ -9,13 +9,13 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const localCustomCss = ref(localStorage.getItem('customCss') ?? '');
 
@@ -35,11 +35,12 @@ watch(localCustomCss, async () => {
 	await apply();
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.customCss,
-		icon: 'fas fa-code',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.customCss,
+	icon: 'fas fa-code',
 });
 </script>

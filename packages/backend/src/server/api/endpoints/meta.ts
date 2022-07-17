@@ -1,10 +1,10 @@
+import { IsNull, MoreThan } from 'typeorm';
 import config from '@/config/index.js';
-import define from '../define.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Ads, Emojis, Users } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { IsNull, MoreThan } from 'typeorm';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import define from '../define.js';
 
 export const meta = {
 	tags: ['meta'],

@@ -30,7 +30,7 @@ html {
 	overflow: auto;
 	overflow-wrap: break-word;
 	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
-	font-size: 15px;
+	font-size: 14px;
 	line-height: 1.35;
 	text-size-adjust: 100%;
 	tab-size: 2;
@@ -38,14 +38,6 @@ html {
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) inherit;
 		scrollbar-width: thin;
-
-		&:hover {
-			scrollbar-color: var(--scrollbarHandleHover) inherit;
-		}
-
-		&:active {
-			scrollbar-color: var(--accent) inherit;
-		}
 
 		&::-webkit-scrollbar {
 			width: 6px;
@@ -69,16 +61,16 @@ html {
 		}
 	}
 
-	&.f-small {
-		font-size: 0.9em;
+	&.f-1 {
+		font-size: 15px;
 	}
 
-	&.f-large {
-		font-size: 1.1em;
+	&.f-2 {
+		font-size: 16px;
 	}
 
-	&.f-veryLarge {
-		font-size: 1.2em;
+	&.f-3 {
+		font-size: 17px;
 	}
 
 	&.useSystemFont {
@@ -338,12 +330,6 @@ hr {
 	}
 }
 
-._window {
-	background: var(--panel);
-	border-radius: var(--radius);
-	contain: content;
-}
-
 ._popup {
 	background: var(--popup);
 	border-radius: var(--radius);
@@ -411,6 +397,16 @@ hr {
 	> *:not(:last-child) {
 		margin-bottom: 8px;
 	}
+}
+
+._beta {
+	margin-left: 0.7em;
+	font-size: 65%;
+	padding: 2px 3px;
+	color: var(--accent);
+	border: solid 1px var(--accent);
+	border-radius: 4px;
+	vertical-align: top;
 }
 
 ._table {

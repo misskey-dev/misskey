@@ -1,71 +1,63 @@
 <template>
 <div ref="rootEl">
-	<slot name="header"></slot>
-	<div ref="bodyEl">
+	<div ref="headerEl">
+		<slot name="header"></slot>
+	</div>
+	<div ref="bodyEl" :data-sticky-container-header-height="headerHeight">
 		<slot></slot>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
+// なんか動かない
+//const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
+const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
+</script>
 
-export default defineComponent({
-	props: {
-		autoSticky: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
+<script lang="ts" setup>
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
 
-	setup(props, context) {
-		const rootEl = ref<HTMLElement>(null);
-		const bodyEl = ref<HTMLElement>(null);
+const rootEl = $ref<HTMLElement>();
+const headerEl = $ref<HTMLElement>();
+const bodyEl = $ref<HTMLElement>();
 
-		const calc = () => {
-			const currentStickyTop = getComputedStyle(rootEl.value).getPropertyValue('--stickyTop') || '0px';
+let headerHeight = $ref<string | undefined>();
+let childStickyTop = $ref(0);
+const parentStickyTop = inject<Ref<number>>(CURRENT_STICKY_TOP, ref(0));
+provide(CURRENT_STICKY_TOP, $$(childStickyTop));
 
-			const header = rootEl.value.children[0];
-			if (header === bodyEl.value) {
-				bodyEl.value.style.setProperty('--stickyTop', currentStickyTop);
-			} else {
-				bodyEl.value.style.setProperty('--stickyTop', `calc(${currentStickyTop} + ${header.offsetHeight}px)`);
+const calc = () => {
+	childStickyTop = parentStickyTop.value + headerEl.offsetHeight;
+	headerHeight = headerEl.offsetHeight.toString();
+};
 
-				if (props.autoSticky) {
-					header.style.setProperty('--stickyTop', currentStickyTop);
-					header.style.position = 'sticky';
-					header.style.top = 'var(--stickyTop)';
-					header.style.zIndex = '1';
-				}
-			}
-		};
+const observer = new ResizeObserver(() => {
+	window.setTimeout(() => {
+		calc();
+	}, 100);
+});
 
-		onMounted(() => {
-			calc();
+onMounted(() => {
+	calc();
 
-			const observer = new MutationObserver(() => {
-				window.setTimeout(() => {
-					calc();
-				}, 100);
-			});
+	watch(parentStickyTop, calc);
 
-			observer.observe(rootEl.value, {
-				attributes: false,
-				childList: true,
-				subtree: false,
-			});
+	watch($$(childStickyTop), () => {
+		bodyEl.style.setProperty('--stickyTop', `${childStickyTop}px`);
+	}, {
+		immediate: true,
+	});
 
-			onUnmounted(() => {
-				observer.disconnect();
-			});
-		});
+	headerEl.style.position = 'sticky';
+	headerEl.style.top = 'var(--stickyTop, 0)';
+	headerEl.style.zIndex = '1000';
 
-		return {
-			rootEl,
-			bodyEl,
-		};
-	},
+	observer.observe(headerEl);
+});
+
+onUnmounted(() => {
+	observer.disconnect();
 });
 </script>
 

@@ -5,11 +5,13 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { inject } from 'vue';
 import XAntenna from './editor.vue';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
-import { router } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { useRouter } from '@/router';
+
+const router = useRouter();
 
 let draft = $ref({
 	name: '',
@@ -22,19 +24,20 @@ let draft = $ref({
 	withReplies: false,
 	caseSensitive: false,
 	withFile: false,
-	notify: false
+	notify: false,
 });
 
 function onAntennaCreated() {
 	router.push('/my/antennas');
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.manageAntennas,
-		icon: 'fas fa-satellite',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.manageAntennas,
+	icon: 'fas fa-satellite',
 });
 </script>
 

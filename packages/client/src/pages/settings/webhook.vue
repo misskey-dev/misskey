@@ -8,7 +8,7 @@
 	
 	<FormSection>
 		<MkPagination :pagination="pagination">
-			<template v-slot="{items}">
+			<template #default="{items}">
 				<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit?id=${webhook.id}`" class="_formBlock">
 					<template #icon>
 						<i v-if="webhook.active === false" class="fas fa-circle-pause"></i>
@@ -34,19 +34,20 @@ import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'i/webhooks/list' as const,
 	limit: 10,
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'Webhook',
-		icon: 'fas fa-bolt',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: 'Webhook',
+	icon: 'fas fa-bolt',
 });
 </script>

@@ -760,6 +760,11 @@ pubSub: "Konta Pub/Sub"
 hide: "Ukryj"
 searchByGoogle: "Szukaj"
 indefinitely: "Nigdy"
+file: "Pliki"
+reverse: "Odwróć"
+colored: "Kolorowe"
+label: "Etykieta"
+account: "Konta"
 _ffVisibility:
   public: "Publikuj"
 _ad:
@@ -1406,8 +1411,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Zawsze pokazuj główną kolumnę"
   columnAlign: "Wyrównaj kolumny"
-  columnMargin: "Odstęp między kolumnami"
-  columnHeaderHeight: "Wysokość nagłówka kolumny"
   addColumn: "Dodaj kolumnę"
   swapLeft: "Przesuń w lewo"
   swapRight: "Przesuń w prawo"

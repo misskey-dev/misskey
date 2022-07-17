@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" @click="onBgClick" @closed="$emit('closed')">
-	<div ref="rootEl" class="ebkgoccj _window _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
+	<div ref="rootEl" class="ebkgoccj _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
 		<div ref="headerEl" class="header">
 			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<span class="title">
@@ -9,12 +9,7 @@
 			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="fas fa-check"></i></button>
 		</div>
-		<div v-if="padding" class="body">
-			<div class="_section">
-				<slot :width="bodyWidth" :height="bodyHeight"></slot>
-			</div>
-		</div>
-		<div v-else class="body">
+		<div class="body">
 			<slot :width="bodyWidth" :height="bodyHeight"></slot>
 		</div>
 	</div>
@@ -28,14 +23,12 @@ import MkModal from './modal.vue';
 const props = withDefaults(defineProps<{
 	withOkButton: boolean;
 	okButtonDisabled: boolean;
-	padding: boolean;
 	width: number;
 	height: number | null;
 	scroll: boolean;
 }>(), {
 	withOkButton: false,
 	okButtonDisabled: false,
-	padding: false,
 	width: 400,
 	height: null,
 	scroll: true,
@@ -96,6 +89,7 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 	contain: content;
+	border-radius: var(--radius);
 
 	--root-margin: 24px;
 
@@ -104,11 +98,13 @@ defineExpose({
 	}
 
 	> .header {
-		$height: 58px;
+		$height: 46px;
 		$height-narrow: 42px;
 		display: flex;
 		flex-shrink: 0;
-		box-shadow: 0px 1px var(--divider);
+		background: var(--windowHeader);
+		-webkit-backdrop-filter: var(--blur, blur(15px));
+		backdrop-filter: var(--blur, blur(15px));
 
 		> button {
 			height: $height;
@@ -142,7 +138,9 @@ defineExpose({
 	}
 
 	> .body {
+		flex: 1;
 		overflow: auto;
+		background: var(--panel);
 	}
 }
 </style>

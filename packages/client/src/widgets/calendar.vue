@@ -34,9 +34,10 @@
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import { i18n } from '@/i18n';
+import { useInterval } from '@/scripts/use-interval';
 
 const name = 'calendar';
 
@@ -85,28 +86,26 @@ const tick = () => {
 		i18n.ts._weekday.wednesday,
 		i18n.ts._weekday.thursday,
 		i18n.ts._weekday.friday,
-		i18n.ts._weekday.saturday
+		i18n.ts._weekday.saturday,
 	][now.getDay()];
 
-	const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();
-	const dayDenom   = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;
+	const dayNumer = now.getTime() - new Date(ny, nm, nd).getTime();
+	const dayDenom = 1000/*ms*/ * 60/*s*/ * 60/*m*/ * 24/*h*/;
 	const monthNumer = now.getTime() - new Date(ny, nm, 1).getTime();
 	const monthDenom = new Date(ny, nm + 1, 1).getTime() - new Date(ny, nm, 1).getTime();
-	const yearNumer  = now.getTime() - new Date(ny, 0, 1).getTime();
-	const yearDenom  = new Date(ny + 1, 0, 1).getTime() - new Date(ny, 0, 1).getTime();
+	const yearNumer = now.getTime() - new Date(ny, 0, 1).getTime();
+	const yearDenom = new Date(ny + 1, 0, 1).getTime() - new Date(ny, 0, 1).getTime();
 
-	dayP.value   = dayNumer   / dayDenom   * 100;
+	dayP.value = dayNumer / dayDenom * 100;
 	monthP.value = monthNumer / monthDenom * 100;
-	yearP.value  = yearNumer  / yearDenom  * 100;
+	yearP.value = yearNumer / yearDenom * 100;
 
 	isHoliday.value = now.getDay() === 0 || now.getDay() === 6;
 };
 
-tick();
-
-const intervalId = window.setInterval(tick, 1000);
-onUnmounted(() => {
-	window.clearInterval(intervalId);
+useInterval(tick, 1000, {
+	immediate: true,
+	afterMounted: false,
 });
 
 defineExpose<WidgetComponentExpose>({

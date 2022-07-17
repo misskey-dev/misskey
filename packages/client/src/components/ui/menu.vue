@@ -136,7 +136,7 @@ function focusDown() {
 	> .item {
 		display: block;
 		position: relative;
-		padding: 8px 18px;
+		padding: 6px 16px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;

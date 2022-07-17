@@ -1,11 +1,10 @@
+import { Brackets } from 'typeorm';
+import { Notes } from '@/models/index.js';
 import define from '../../define.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { Brackets } from 'typeorm';
-import { Notes } from '@/models/index.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -38,13 +37,13 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(new Brackets(qb => { qb
-			.where(`note.replyId = :noteId`, { noteId: ps.noteId })
+			.where('note.replyId = :noteId', { noteId: ps.noteId })
 			.orWhere(new Brackets(qb => { qb
-				.where(`note.renoteId = :noteId`, { noteId: ps.noteId })
+				.where('note.renoteId = :noteId', { noteId: ps.noteId })
 				.andWhere(new Brackets(qb => { qb
-					.where(`note.text IS NOT NULL`)
-					.orWhere(`note.fileIds != '{}'`)
-					.orWhere(`note.hasPoll = TRUE`);
+					.where('note.text IS NOT NULL')
+					.orWhere('note.fileIds != \'{}\'')
+					.orWhere('note.hasPoll = TRUE');
 				}));
 			}));
 		}))
@@ -61,9 +60,10 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
 	generateVisibilityQuery(query, user);
-	if (user) generateMutedUserQuery(query, user);
-	if (user) generateBlockedUserQuery(query, user);
-	if (user) generateMutedInstanceQuery(query, user);
+	if (user) {
+		generateMutedUserQuery(query, user);
+		generateBlockedUserQuery(query, user);
+	}
 
 	const notes = await query.take(ps.limit).getMany();
 

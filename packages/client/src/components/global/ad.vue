@@ -3,7 +3,7 @@
 	<div v-if="!showMenu" class="main" :class="ad.place">
 		<a :href="ad.url" target="_blank">
 			<img :src="ad.imageUrl">
-			<button class="_button menu" @click.prevent.stop="toggleMenu"><span class="fas fa-info-circle"></span></button>
+			<button class="_button menu" @click.prevent.stop="toggleMenu"><span class="fas fa-info-circle info-circle"></span></button>
 		</a>
 	</div>
 	<div v-else class="menu">
@@ -135,13 +135,19 @@ export default defineComponent({
 				display: block;
 				object-fit: contain;
 				margin: auto;
+				border-radius: 5px;
 			}
 
 			> .menu {
 				position: absolute;
-				top: 0;
-				right: 0;
-				background: var(--panel);
+				top: 1px;
+				right: 1px;
+
+				> .info-circle {
+					border: 3px solid var(--panel);
+					border-radius: 50%;
+					background: var(--panel);
+				}
 			}
 		}
 

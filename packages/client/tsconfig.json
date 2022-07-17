@@ -35,7 +35,8 @@
 		"lib": [
 			"esnext",
 			"dom"
-		]
+		],
+		"jsx": "preserve"
 	},
 	"compileOnSave": false,
 	"include": [

@@ -145,6 +145,12 @@ export function toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMenti
 			a.textContent = node.props.content;
 			return a;
 		},
+
+		plain(node) {
+			const el = doc.createElement('span');
+			appendChildren(node.children, el);
+			return el;
+		},
 	};
 
 	appendChildren(nodes, doc.body);

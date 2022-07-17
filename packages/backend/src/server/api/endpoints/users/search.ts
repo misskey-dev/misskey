@@ -1,7 +1,7 @@
-import define from '../../define.js';
+import { Brackets } from 'typeorm';
 import { UserProfiles, Users } from '@/models/index.js';
 import { User } from '@/models/entities/user.js';
-import { Brackets } from 'typeorm';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['users'],
@@ -27,7 +27,7 @@ export const paramDef = {
 		query: { type: 'string' },
 		offset: { type: 'integer', default: 0 },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: "combined" },
+		origin: { type: 'string', enum: ['local', 'remote', 'combined'], default: 'combined' },
 		detail: { type: 'boolean', default: true },
 	},
 	required: ['query'],
@@ -113,7 +113,7 @@ export default define(meta, paramDef, async (ps, me) => {
 				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 				.take(ps.limit)
 				.skip(ps.offset)
-				.getMany()
+				.getMany(),
 			);
 		}
 	}
