@@ -1699,6 +1699,7 @@ _deck:
   stackLeft: "向左折叠"
   popRight: "向右弹出"
   profile: "个人资料"
+  newProfile: "新建个人资料"
   _columns:
     main: "主列"
     widgets: "小工具"
