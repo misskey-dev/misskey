@@ -206,17 +206,16 @@ export async function openAccountMenu(opts: {
 			to: `/@${ $i.username }`,
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+			type: 'parent',
 			icon: 'fas fa-plus',
 			text: i18n.ts.addAccount,
-			action: () => {
-				popupMenu([{
-					text: i18n.ts.existingAccount,
-					action: () => { showSigninDialog(); },
-				}, {
-					text: i18n.ts.createAccount,
-					action: () => { createAccount(); },
-				}], ev.currentTarget ?? ev.target);
-			},
+			children: [{
+				text: i18n.ts.existingAccount,
+				action: () => { showSigninDialog(); },
+			}, {
+				text: i18n.ts.createAccount,
+				action: () => { createAccount(); },
+			}],
 		}, {
 			type: 'link',
 			icon: 'fas fa-users',

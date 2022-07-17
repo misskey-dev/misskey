@@ -890,6 +890,7 @@ activeEmailValidationDescription: "ユーザーのメールアドレスのバリ
 navbar: "ナビゲーションバー"
 shuffle: "シャッフル"
 account: "アカウント"
+move: "移動"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"

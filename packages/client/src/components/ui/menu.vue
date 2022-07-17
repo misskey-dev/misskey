@@ -50,7 +50,7 @@
 		</span>
 	</div>
 	<div v-if="childMenu" class="child">
-		<XChild ref="child" :items="childMenu" :target-element="childTarget" showing @actioned="childActioned"/>
+		<XChild ref="child" :items="childMenu" :target-element="childTarget" :root-element="itemsEl" showing @actioned="childActioned"/>
 	</div>
 </div>
 </template>
@@ -61,7 +61,7 @@ import { focusPrev, focusNext } from '@/scripts/focus';
 import FormSwitch from '@/components/form/switch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
 import * as os from '@/os';
-const XChild = defineAsyncComponent(() => import('./child-menu.vue'));
+const XChild = defineAsyncComponent(() => import('./menu.child.vue'));
 
 const props = defineProps<{
 	items: MenuItem[];
