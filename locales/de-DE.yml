@@ -890,6 +890,7 @@ activeEmailValidationDescription: "Aktivert strengere Überprüfung von E-Mail-A
 navbar: "Navigationsleiste"
 shuffle: "Mischen"
 account: "Benutzerkonto"
+move: "Verschieben"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
@@ -1696,6 +1697,7 @@ _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
   columnAlign: "Spaltenausrichtung"
   addColumn: "Spalte hinzufügen"
+  configureColumn: "Spalteneinstellungen"
   swapLeft: "Mit linker Spalte tauschen"
   swapRight: "Mit rechter Spalte tauschen"
   swapUp: "Mit oberer Spalte tauschen"
