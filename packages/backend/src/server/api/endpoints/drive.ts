@@ -35,11 +35,12 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, user) => {
 	const instance = await fetchMeta(true);
 
-	// Calculate drive usage
+	// Calculate drive usage and capacity
 	const usage = await DriveFiles.calcDriveUsageOf(user.id);
+	const capacity = user.driveCapacityOverrideMb || instance.localDriveCapacityMb;
 
 	return {
-		capacity: 1024 * 1024 * (user.driveCapacityOverrideMb || instance.localDriveCapacityMb),
+		capacity: 1024 * 1024 * capacity,
 		usage: usage,
 	};
 });
