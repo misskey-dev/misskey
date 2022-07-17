@@ -46,7 +46,7 @@ export default defineComponent({
 		rounded: {
 			type: Boolean,
 			required: false,
-			default: false,
+			default: true,
 		},
 		inline: {
 			type: Boolean,

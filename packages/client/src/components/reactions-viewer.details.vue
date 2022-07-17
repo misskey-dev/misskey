@@ -50,14 +50,14 @@ const emit = defineEmits<{
 		}
 
 		> .name {
-			font-size: 0.9em;
+			font-size: 1em;
 		}
 	}
 
 	> .users {
 		flex: 1;
 		min-width: 0;
-		font-size: 0.9em;
+		font-size: 0.95em;
 		border-left: solid 0.5px var(--divider);
 		padding-left: 10px;
 		margin-left: 10px;
