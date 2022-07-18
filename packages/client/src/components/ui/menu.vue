@@ -1,55 +1,67 @@
 <template>
-<div
-	ref="itemsEl" v-hotkey="keymap"
-	class="rrevdjwt"
-	:class="{ center: align === 'center', asDrawer }"
-	:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
-	@contextmenu.self="e => e.preventDefault()"
->
-	<template v-for="(item, i) in items2">
-		<div v-if="item === null" class="divider"></div>
-		<span v-else-if="item.type === 'label'" class="label item">
-			<span>{{ item.text }}</span>
+<div>
+	<div
+		ref="itemsEl" v-hotkey="keymap"
+		class="rrevdjwt _popup _shadow"
+		:class="{ center: align === 'center', asDrawer }"
+		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
+		@contextmenu.self="e => e.preventDefault()"
+	>
+		<template v-for="(item, i) in items2">
+			<div v-if="item === null" class="divider"></div>
+			<span v-else-if="item.type === 'label'" class="label item">
+				<span>{{ item.text }}</span>
+			</span>
+			<span v-else-if="item.type === 'pending'" :tabindex="i" class="pending item">
+				<span><MkEllipsis/></span>
+			</span>
+			<MkA v-else-if="item.type === 'link'" :to="item.to" :tabindex="i" class="_button item" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+				<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
+				<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+				<span>{{ item.text }}</span>
+				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+			</MkA>
+			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button item" @click="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+				<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
+				<span>{{ item.text }}</span>
+				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+			</a>
+			<button v-else-if="item.type === 'user'" :tabindex="i" class="_button item" :class="{ active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+				<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
+				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+			</button>
+			<span v-else-if="item.type === 'switch'" :tabindex="i" class="item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+				<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
+			</span>
+			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button item parent" :class="{ childShowing: childShowingItem === item }" @mouseenter="showChildren(item, $event)">
+				<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
+				<span>{{ item.text }}</span>
+				<span class="caret"><i class="fas fa-caret-right fa-fw"></i></span>
+			</button>
+			<button v-else :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+				<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
+				<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+				<span>{{ item.text }}</span>
+				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+			</button>
+		</template>
+		<span v-if="items2.length === 0" class="none item">
+			<span>{{ $ts.none }}</span>
 		</span>
-		<span v-else-if="item.type === 'pending'" :tabindex="i" class="pending item">
-			<span><MkEllipsis/></span>
-		</span>
-		<MkA v-else-if="item.type === 'link'" :to="item.to" :tabindex="i" class="_button item" @click.passive="close()">
-			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
-			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
-			<span>{{ item.text }}</span>
-			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
-		</MkA>
-		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button item" @click="close()">
-			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
-			<span>{{ item.text }}</span>
-			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
-		</a>
-		<button v-else-if="item.type === 'user'" :tabindex="i" class="_button item" :class="{ active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)">
-			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
-			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
-		</button>
-		<span v-else-if="item.type === 'switch'" :tabindex="i" class="item">
-			<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
-		</span>
-		<button v-else :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)">
-			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
-			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
-			<span>{{ item.text }}</span>
-			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
-		</button>
-	</template>
-	<span v-if="items2.length === 0" class="none item">
-		<span>{{ $ts.none }}</span>
-	</span>
+	</div>
+	<div v-if="childMenu" class="child">
+		<XChild ref="child" :items="childMenu" :target-element="childTarget" :root-element="itemsEl" showing @actioned="childActioned"/>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, watch } from 'vue';
+import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import FormSwitch from '@/components/form/switch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
+import * as os from '@/os';
+const XChild = defineAsyncComponent(() => import('./menu.child.vue'));
 
 const props = defineProps<{
 	items: MenuItem[];
@@ -61,18 +73,22 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'close'): void;
+	(ev: 'close', actioned?: boolean): void;
 }>();
 
 let itemsEl = $ref<HTMLDivElement>();
 
 let items2: InnerMenuItem[] = $ref([]);
 
+let child = $ref<InstanceType<typeof XChild>>();
+
 let keymap = $computed(() => ({
 	'up|k|shift+tab': focusUp,
 	'down|j|tab': focusDown,
 	'esc': close,
 }));
+
+let childShowingItem = $ref<MenuItem | null>();
 
 watch(() => props.items, () => {
 	const items: (MenuItem | MenuPending)[] = [...props.items].filter(item => item !== undefined);
@@ -93,21 +109,53 @@ watch(() => props.items, () => {
 	immediate: true,
 });
 
-onMounted(() => {
-	if (props.viaKeyboard) {
-		nextTick(() => {
-			focusNext(itemsEl.children[0], true, false);
-		});
+let childMenu = $ref<MenuItem[] | null>();
+let childTarget = $ref<HTMLElement | null>();
+
+function closeChild() {
+	childMenu = null;
+	childShowingItem = null;
+}
+
+function childActioned() {
+	closeChild();
+	close(true);
+}
+
+function onGlobalMousedown(event: MouseEvent) {
+	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
+	if (child && child.checkHit(event)) return;
+	closeChild();
+}
+
+let childCloseTimer: null | number = null;
+function onItemMouseEnter(item) {
+	childCloseTimer = window.setTimeout(() => {
+		closeChild();
+	}, 300);
+}
+function onItemMouseLeave(item) {
+	if (childCloseTimer) window.clearTimeout(childCloseTimer);
+}
+
+async function showChildren(item: MenuItem, ev: MouseEvent) {
+	if (props.asDrawer) {
+		os.popupMenu(item.children, ev.currentTarget ?? ev.target);
+		close();
+	} else {
+		childTarget = ev.currentTarget ?? ev.target;
+		childMenu = item.children;
+		childShowingItem = item;
 	}
-});
+}
 
 function clicked(fn: MenuAction, ev: MouseEvent) {
 	fn(ev);
-	close();
+	close(true);
 }
 
-function close() {
-	emit('close');
+function close(actioned = false) {
+	emit('close', actioned);
 }
 
 function focusUp() {
@@ -117,6 +165,20 @@ function focusUp() {
 function focusDown() {
 	focusNext(document.activeElement);
 }
+
+onMounted(() => {
+	if (props.viaKeyboard) {
+		nextTick(() => {
+			focusNext(itemsEl.children[0], true, false);
+		});
+	}
+
+	document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
+});
+
+onBeforeUnmount(() => {
+	document.removeEventListener('mousedown', onGlobalMousedown);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -223,6 +285,25 @@ function focusDown() {
 		&.none {
 			pointer-events: none;
 			opacity: 0.7;
+		}
+
+		&.parent {
+			display: flex;
+			align-items: center;
+			cursor: default;
+
+			> .caret {
+				margin-left: auto;
+			}
+
+			&.childShowing {
+				color: var(--accent);
+				text-decoration: none;
+
+				&:before {
+					background: var(--accentedBg);
+				}
+			}
 		}
 
 		> i {

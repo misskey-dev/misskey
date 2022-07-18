@@ -1645,6 +1645,7 @@ _deck:
   alwaysShowMainColumn: "সর্বদা মেইন কলাম দেখান"
   columnAlign: "কলাম সাজান"
   addColumn: "কলাম যুক্ত করুন"
+  configureColumn: "কলাম সেটিংস"
   swapLeft: "বামে সরান"
   swapRight: "ডানে সরান"
   swapUp: "উপরে উঠান"

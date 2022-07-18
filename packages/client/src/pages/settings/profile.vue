@@ -1,11 +1,11 @@
 <template>
 <div class="_formRoot">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-		<div class="avatar _acrylic">
+		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
-			<MkButton primary class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+			<MkButton primary rounded class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
-		<MkButton primary class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
+		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
 	<FormInput v-model="profile.name" :max="30" manual-save class="_formBlock">
@@ -39,10 +39,10 @@
 
 			<div class="_formRoot">
 				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
-					<FormInput v-model="record.name">
+					<FormInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
 					</FormInput>
-					<FormInput v-model="record.value">
+					<FormInput v-model="record.value" small>
 						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
 					</FormInput>
 				</FormSplit>
@@ -187,6 +187,7 @@ definePageMetadata({
 	position: relative;
 	background-size: cover;
 	background-position: center;
+	border: solid 1px var(--divider);
 	border-radius: 10px;
 	overflow: clip;
 

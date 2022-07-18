@@ -890,6 +890,7 @@ activeEmailValidationDescription: "ユーザーのメールアドレスのバリ
 navbar: "ナビゲーションバー"
 shuffle: "シャッフル"
 account: "アカウント"
+move: "移動"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -1755,6 +1756,7 @@ _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
   addColumn: "カラムを追加"
+  configureColumn: "カラムの設定"
   swapLeft: "左に移動"
   swapRight: "右に移動"
   swapUp: "上に移動"
@@ -1762,6 +1764,8 @@ _deck:
   stackLeft: "左に重ねる"
   popRight: "右に出す"
   profile: "プロファイル"
+  newProfile: "新規プロファイル"
+  deleteProfile: "プロファイルを削除"
   introduction: "カラムを組み合わせて自分だけのインターフェイスを作りましょう！"
   introduction2: "画面の右にある + を押して、いつでもカラムを追加できます。"
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選択してウィジェットを追加してください"

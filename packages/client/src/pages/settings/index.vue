@@ -330,13 +330,11 @@ definePageMetadata(INFO);
 				width: 34%;
 				padding-right: 32px;
 				box-sizing: border-box;
-				overflow: auto;
 			}
 
 			> .main {
 				flex: 1;
 				min-width: 0;
-				overflow: auto;
 			}
 		}
 	}
