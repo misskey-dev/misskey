@@ -10,7 +10,7 @@
 				<XPages v-else-if="tab === 'pages'" :user="user"/>
 				<XGallery v-else-if="tab === 'gallery'" :user="user"/>
 			</div>
-			<MkError v-else-if="error" @retry="fetch()"/>
+			<MkError v-else-if="error" @retry="fetchUser()"/>
 			<MkLoading v-else/>
 		</transition>
 	</div>
