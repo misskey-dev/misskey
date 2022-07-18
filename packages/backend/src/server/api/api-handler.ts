@@ -81,11 +81,15 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 		}
 	}).catch(e => {
 		if (e instanceof AuthenticationError) {
-			reply(403, new ApiError({
-				message: 'Authentication failed. Please ensure your token is correct.',
+			ctx.response.status = 403;
+			ctx.response.set('WWW-Authenticate', 'Bearer');
+			ctx.response.body = {
+				message: 'Authentication failed: ' + e.message,
 				code: 'AUTHENTICATION_FAILED',
 				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
-			}));
+				kind: 'client',
+			};
+			res();
 		} else {
 			reply(500, new ApiError());
 		}

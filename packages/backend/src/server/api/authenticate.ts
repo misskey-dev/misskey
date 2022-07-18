@@ -42,7 +42,7 @@ export default async (authorization: string | null | undefined, bodyToken: strin
 			() => Users.findOneBy({ token }) as Promise<ILocalUser | null>);
 
 		if (user == null) {
-			throw new AuthenticationError('user not found');
+			throw new AuthenticationError('unknown token');
 		}
 
 		return [user, null];
@@ -56,7 +56,7 @@ export default async (authorization: string | null | undefined, bodyToken: strin
 		});
 
 		if (accessToken == null) {
-			throw new AuthenticationError('invalid signature');
+			throw new AuthenticationError('unknown token');
 		}
 
 		AccessTokens.update(accessToken.id, {
