@@ -20,7 +20,7 @@ export const initializeStreamingServer = (server: http.Server) => {
 		// TODO: トークンが間違ってるなどしてauthenticateに失敗したら
 		// コネクション切断するなりエラーメッセージ返すなりする
 		// (現状はエラーがキャッチされておらずサーバーのログに流れて邪魔なので)
-		const [user, app] = await authenticate(q.i as string);
+		const [user, app] = await authenticate(request.httpRequest.headers.authorization, q.i);
 
 		if (user?.isSuspended) {
 			request.reject(400);

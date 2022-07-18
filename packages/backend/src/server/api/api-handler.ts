@@ -43,7 +43,8 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 	};
 
 	// Authentication
-	authenticate(body['i']).then(([user, app]) => {
+	// for GET requests, do not even pass on the body parameter as it is considered unsafe
+	authenticate(ctx.headers.authorization, ctx.method === 'GET' ? null : body['i']).then(([user, app]) => {
 		// API invoking
 		call(endpoint.name, user, app, body, ctx).then((res: any) => {
 			if (ctx.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
