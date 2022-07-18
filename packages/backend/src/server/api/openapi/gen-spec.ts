@@ -33,6 +33,11 @@ export function genOpenapiSpec() {
 					in: 'body',
 					name: 'i',
 				},
+				// TODO: change this to oauth2 when the remaining oauth stuff is set up
+				Bearer: {
+					type: 'http',
+					scheme: 'bearer',
+				}
 			},
 		},
 	};
@@ -71,6 +76,19 @@ export function genOpenapiSpec() {
 			schema.required.push('file');
 		}
 
+		const security = [
+			{
+				ApiKeyAuth: [],
+			},
+			{
+				Bearer: [],
+			},
+		];
+		if (!endpoint.meta.requireCredential) {
+			// add this to make authentication optional
+			security.push({});
+		}
+
 		const info = {
 			operationId: endpoint.name,
 			summary: endpoint.name,
@@ -79,14 +97,8 @@ export function genOpenapiSpec() {
 				description: 'Source code',
 				url: `https://github.com/misskey-dev/misskey/blob/develop/packages/backend/src/server/api/endpoints/${endpoint.name}.ts`,
 			},
-			...(endpoint.meta.tags ? {
-				tags: [endpoint.meta.tags[0]],
-			} : {}),
-			...(endpoint.meta.requireCredential ? {
-				security: [{
-					ApiKeyAuth: [],
-				}],
-			} : {}),
+			tags: endpoint.meta.tags || undefined,
+			security,
 			requestBody: {
 				required: true,
 				content: {
@@ -181,9 +193,16 @@ export function genOpenapiSpec() {
 			},
 		};
 
-		spec.paths['/' + endpoint.name] = {
+		const path = {
 			post: info,
 		};
+		if (endpoint.meta.allowGet) {
+			path.get = { ...info };
+			// API Key authentication is not permitted for GET requests
+			path.get.security = path.get.security.filter(elem => !Object.prototype.hasOwnProperty.call(elem, 'ApiKeyAuth'));
+		}
+
+		spec.paths['/' + endpoint.name] = path;
 	}
 
 	return spec;
