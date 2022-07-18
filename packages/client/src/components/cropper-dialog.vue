@@ -62,7 +62,6 @@ const ok = async () => {
 		croppedCanvas.toBlob(blob => {
 			const formData = new FormData();
 			formData.append('file', blob);
-			formData.append('i', $i.token);
 			if (defaultStore.state.uploadFolder) {
 				formData.append('folderId', defaultStore.state.uploadFolder);
 			}
@@ -70,6 +69,9 @@ const ok = async () => {
 			fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
 				body: formData,
+				headers: {
+					authorization: `Bearer ${$i.token}`,
+				},
 			})
 			.then(response => response.json())
 			.then(f => {

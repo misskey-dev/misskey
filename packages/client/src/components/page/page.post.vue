@@ -54,7 +54,6 @@ export default defineComponent({
 				canvas.toBlob(blob => {
 					const formData = new FormData();
 					formData.append('file', blob);
-					formData.append('i', this.$i.token);
 					if (this.$store.state.uploadFolder) {
 						formData.append('folderId', this.$store.state.uploadFolder);
 					}
@@ -62,6 +61,9 @@ export default defineComponent({
 					fetch(apiUrl + '/drive/files/create', {
 						method: 'POST',
 						body: formData,
+						headers: {
+							authorization: `Bearer ${this.$i.token}`,
+						},
 					})
 					.then(response => response.json())
 					.then(f => {

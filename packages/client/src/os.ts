@@ -23,17 +23,16 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise((resolve, reject) => {
-		// Append a credential
-		if ($i) (data as any).i = $i.token;
-		if (token !== undefined) (data as any).i = token;
+	const authorizationToken = token ?? $i?.token ?? undefined;
+	const authorization = authorizationToken ? `Bearer ${authorizationToken}` : undefined;
 
-		// Send request
+	const promise = new Promise((resolve, reject) => {
 		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
 			cache: 'no-cache',
+			headers: { authorization },
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 
@@ -52,7 +51,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 	return promise;
 }) as typeof apiClient.request;
 
-export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
+export const apiGet = ((endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) => {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -61,12 +60,16 @@ export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
 
 	const query = new URLSearchParams(data);
 
+	const authorizationToken = token ?? $i?.token ?? undefined;
+	const authorization = authorizationToken ? `Bearer ${authorizationToken}` : undefined;
+
 	const promise = new Promise((resolve, reject) => {
 		// Send request
 		fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
 			credentials: 'omit',
 			cache: 'default',
+			headers: { authorization },
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 

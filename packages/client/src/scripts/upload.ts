@@ -71,7 +71,6 @@ export function uploadFile(
 			}
 
 			const formData = new FormData();
-			formData.append('i', $i.token);
 			formData.append('force', 'true');
 			formData.append('file', resizedImage || file);
 			formData.append('name', ctx.name);
@@ -79,6 +78,7 @@ export function uploadFile(
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
+			xhr.setRequestHeader('Authorization', `Bearer ${$i.token}`);
 			xhr.onload = (ev) => {
 				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 					// TODO: 消すのではなくて(ネットワーク的なエラーなら)再送できるようにしたい
