@@ -17,10 +17,14 @@ export const initializeStreamingServer = (server: http.Server) => {
 	ws.on('request', async (request) => {
 		const q = request.resourceURL.query as ParsedUrlQuery;
 
-		// TODO: トークンが間違ってるなどしてauthenticateに失敗したら
-		// コネクション切断するなりエラーメッセージ返すなりする
-		// (現状はエラーがキャッチされておらずサーバーのログに流れて邪魔なので)
-		const [user, app] = await authenticate(request.httpRequest.headers.authorization, q.i);
+		const [user, app] = await authenticate(request.httpRequest.headers.authorization, q.i)
+			.catch(err => {
+				request.reject(403, err.message);
+				return [];
+			});
+		if (typeof user === 'undefined') {
+			return;
+		}
 
 		if (user?.isSuspended) {
 			request.reject(400);
