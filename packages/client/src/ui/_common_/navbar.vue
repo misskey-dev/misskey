@@ -110,6 +110,36 @@ function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.federation,
 		icon: 'fas fa-globe',
 		to: '/about#federation',
+	}, null, {
+		type: 'parent',
+		text: i18n.ts.help,
+		icon: 'fas fa-question-circle',
+		children: [{
+			type: 'link',
+			to: '/mfm-cheat-sheet',
+			text: i18n.ts._mfm.cheatSheet,
+			icon: 'fas fa-code',
+		}, {
+			type: 'link',
+			to: '/scratchpad',
+			text: i18n.ts.scratchpad,
+			icon: 'fas fa-terminal',
+		}, {
+			type: 'link',
+			to: '/api-console',
+			text: 'API Console',
+			icon: 'fas fa-terminal',
+		}, null, {
+			text: i18n.ts.document,
+			icon: 'fas fa-question-circle',
+			action: () => {
+				window.open('https://misskey-hub.net/help.html', '_blank');
+			},
+		}],
+	}, {
+		type: 'link',
+		text: i18n.ts.aboutMisskey,
+		to: '/about-misskey',
 	}], ev.currentTarget ?? ev.target, {
 		align: 'left',
 	});
@@ -126,7 +156,7 @@ function more(ev: MouseEvent) {
 <style lang="scss" scoped>
 .mvcprjjd {
 	$nav-width: 250px;
-	$nav-icon-only-width: 86px;
+	$nav-icon-only-width: 80px;
 
 	flex: 0 0 $nav-width;
 	width: $nav-width;

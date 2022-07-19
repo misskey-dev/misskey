@@ -890,6 +890,7 @@ activeEmailValidationDescription: "Enables stricter validation of email addresse
 navbar: "Navigation bar"
 shuffle: "Shuffle"
 account: "Account"
+move: "Move"
 _sensitiveMediaDetection:
   description: "Reduces the effort of server moderation through automatically recognizing NSFW media via Machine Learning. This will slightly increase the load on the server."
   sensitivity: "Detection sensitivity"
@@ -1696,6 +1697,7 @@ _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
   addColumn: "Add column"
+  configureColumn: "Column settings"
   swapLeft: "Swap with the left column"
   swapRight: "Swap with the right column"
   swapUp: "Swap with the above column"

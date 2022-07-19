@@ -128,31 +128,36 @@ function getMenu() {
 			if (canceled) return;
 			updateColumn(props.column.id, result);
 		},
-	}, null, {
-		icon: 'fas fa-arrow-left',
-		text: i18n.ts._deck.swapLeft,
-		action: () => {
-			swapLeftColumn(props.column.id);
-		},
 	}, {
-		icon: 'fas fa-arrow-right',
-		text: i18n.ts._deck.swapRight,
-		action: () => {
-			swapRightColumn(props.column.id);
-		},
-	}, props.isStacked ? {
-		icon: 'fas fa-arrow-up',
-		text: i18n.ts._deck.swapUp,
-		action: () => {
-			swapUpColumn(props.column.id);
-		},
-	} : undefined, props.isStacked ? {
-		icon: 'fas fa-arrow-down',
-		text: i18n.ts._deck.swapDown,
-		action: () => {
-			swapDownColumn(props.column.id);
-		},
-	} : undefined, null, {
+		type: 'parent',
+		text: i18n.ts.move + '...',
+		icon: 'fas fa-arrows-up-down-left-right',
+		children: [{
+			icon: 'fas fa-arrow-left',
+			text: i18n.ts._deck.swapLeft,
+			action: () => {
+				swapLeftColumn(props.column.id);
+			},
+		}, {
+			icon: 'fas fa-arrow-right',
+			text: i18n.ts._deck.swapRight,
+			action: () => {
+				swapRightColumn(props.column.id);
+			},
+		}, props.isStacked ? {
+			icon: 'fas fa-arrow-up',
+			text: i18n.ts._deck.swapUp,
+			action: () => {
+				swapUpColumn(props.column.id);
+			},
+		} : undefined, props.isStacked ? {
+			icon: 'fas fa-arrow-down',
+			text: i18n.ts._deck.swapDown,
+			action: () => {
+				swapDownColumn(props.column.id);
+			},
+		} : undefined],
+	}, {
 		icon: 'fas fa-window-restore',
 		text: i18n.ts._deck.stackLeft,
 		action: () => {

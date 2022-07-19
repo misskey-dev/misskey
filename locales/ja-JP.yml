@@ -890,6 +890,7 @@ activeEmailValidationDescription: "ユーザーのメールアドレスのバリ
 navbar: "ナビゲーションバー"
 shuffle: "シャッフル"
 account: "アカウント"
+move: "移動"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -1037,6 +1038,8 @@ _mfm:
   sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
   rotate: "回転"
   rotateDescription: "指定した角度で回転させます。"
+  plain: "プレーン"
+  plainDescription: "内側の構文を全て無効にします。"
 
 _instanceTicker:
   none: "表示しない"
