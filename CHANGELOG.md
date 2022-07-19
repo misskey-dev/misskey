@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.117.1 (2022/07/19)
 
 ### Improvements
 - Client: UIのブラッシュアップ @syuilo
