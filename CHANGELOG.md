@@ -19,6 +19,7 @@ You should also include the user name that made the change.
 - Client: リアクションピッカーがアプリ内ウィンドウの後ろに表示されてしまう問題を修正 @syuilo
 - Client: ユーザー情報の取得の再試行を修正 @xianonn
 - Client: MFMチートシートの挙動を修正 @syuilo
+- Client: 「インスタンスからのお知らせを受け取る」の設定を変更できない問題を修正 @syuilo
 
 ## 12.117.0 (2022/07/18)
 
