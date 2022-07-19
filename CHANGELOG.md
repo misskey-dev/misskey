@@ -17,7 +17,8 @@ You should also include the user name that made the change.
 ### Bugfixes
 - Server: ファイルのアップロードに失敗することがある問題を修正 @acid-chicken
 - Client: リアクションピッカーがアプリ内ウィンドウの後ろに表示されてしまう問題を修正 @syuilo
-- Client: ユーザー情報の取得の再試行を修正する @xianonn
+- Client: ユーザー情報の取得の再試行を修正 @xianonn
+- Client: MFMチートシートの挙動を修正 @syuilo
 
 ## 12.117.0 (2022/07/18)
 

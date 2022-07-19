@@ -1038,6 +1038,8 @@ _mfm:
   sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
   rotate: "回転"
   rotateDescription: "指定した角度で回転させます。"
+  plain: "プレーン"
+  plainDescription: "内側の構文を全て無効にします。"
 
 _instanceTicker:
   none: "表示しない"
