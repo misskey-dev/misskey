@@ -164,7 +164,7 @@
 		detailsElement.innerHTML = `
 		<br>
 		<summary>
-			<code>ERROR CODE: ${code}</code>
+			<code>错误代码: ${code}</code>
 		</summary>
 		<code>${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
