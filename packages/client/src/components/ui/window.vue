@@ -75,7 +75,7 @@ const props = withDefaults(defineProps<{
 	canResize: false,
 	closeButton: true,
 	mini: false,
-	front: true,
+	front: false,
 	contextmenu: null,
 	buttonsLeft: () => [],
 	buttonsRight: () => [],

@@ -101,13 +101,17 @@ export async function getFileInfo(path: string, opts: {
 	let porn = false;
 
 	if (!opts.skipSensitiveDetection) {
-		[sensitive, porn] = await detectSensitivity(
+		await detectSensitivity(
 			path,
 			type.mime,
 			opts.sensitiveThreshold ?? 0.5,
 			opts.sensitiveThresholdForPorn ?? 0.75,
 			opts.enableSensitiveMediaDetectionForVideos ?? false,
-		);
+		).then(value => {
+			[sensitive, porn] = value;
+		}, error => {
+			warnings.push(`detectSensitivity failed: ${error}`);
+		});
 	}
 
 	return {

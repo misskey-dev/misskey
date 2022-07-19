@@ -10,7 +10,7 @@
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch :value="$i.receiveAnnouncementEmail" @update:modelValue="onChangeReceiveAnnouncementEmail">
+		<FormSwitch :model-value="$i.receiveAnnouncementEmail" @update:modelValue="onChangeReceiveAnnouncementEmail">
 			{{ $ts.receiveAnnouncementFromInstance }}
 		</FormSwitch>
 	</FormSection>
