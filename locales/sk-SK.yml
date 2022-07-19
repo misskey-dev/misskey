@@ -885,6 +885,7 @@ enableAutoSensitiveDescription: "Ak je zapnuté, príznak NSFW sa na médiách a
 activeEmailValidationDescription: "Dôkladnejšie overí e-mailovú adresu používateľa tým, že zistí, či ide o vyradenú e-mailovú adresu a či sa s ňou dá skutočne komunikovať. Ak nie je začiarknuté, e-mailová adresa sa kontroluje len ako text."
 navbar: "Navigačný panel"
 account: "Účty"
+move: "Pohyb"
 _sensitiveMediaDetection:
   description: "Strojové učenie sa použije na automatickú detekciu citlivých médií na účely ich moderovania. Mierne sa zvýši zaťaženie servera."
   sensitivity: "Citlivosť detekcie"
@@ -1691,6 +1692,7 @@ _deck:
   alwaysShowMainColumn: "Vždy zobraziť v hlavnom stĺpci"
   columnAlign: "Zarovnať stĺpce"
   addColumn: "Pridať stĺpec"
+  configureColumn: "Nastavenie stĺpcov"
   swapLeft: "Vymeniť vľavo"
   swapRight: "Vymeniť vpravo"
   swapUp: "Vymeniť hore"
