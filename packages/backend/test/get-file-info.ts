@@ -10,9 +10,11 @@ const _dirname = dirname(_filename);
 describe('Get file info', () => {
 	it('Empty file', async (async () => {
 		const path = `${_dirname}/resources/emptyfile`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 0,
 			md5: 'd41d8cd98f00b204e9800998ecf8427e',
@@ -28,9 +30,11 @@ describe('Get file info', () => {
 
 	it('Generic JPEG', async (async () => {
 		const path = `${_dirname}/resources/Lenna.jpg`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 25360,
 			md5: '091b3f259662aa31e2ffef4519951168',
@@ -46,9 +50,11 @@ describe('Get file info', () => {
 
 	it('Generic APNG', async (async () => {
 		const path = `${_dirname}/resources/anime.png`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 1868,
 			md5: '08189c607bea3b952704676bb3c979e0',
@@ -64,9 +70,11 @@ describe('Get file info', () => {
 
 	it('Generic AGIF', async (async () => {
 		const path = `${_dirname}/resources/anime.gif`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 2248,
 			md5: '32c47a11555675d9267aee1a86571e7e',
@@ -82,9 +90,11 @@ describe('Get file info', () => {
 
 	it('PNG with alpha', async (async () => {
 		const path = `${_dirname}/resources/with-alpha.png`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 3772,
 			md5: 'f73535c3e1e27508885b69b10cf6e991',
@@ -100,9 +110,11 @@ describe('Get file info', () => {
 
 	it('Generic SVG', async (async () => {
 		const path = `${_dirname}/resources/image.svg`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 505,
 			md5: 'b6f52b4b021e7b92cdd04509c7267965',
@@ -119,9 +131,11 @@ describe('Get file info', () => {
 	it('SVG with XML definition', async (async () => {
 		// https://github.com/misskey-dev/misskey/issues/4413
 		const path = `${_dirname}/resources/with-xml-def.svg`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 544,
 			md5: '4b7a346cde9ccbeb267e812567e33397',
@@ -137,9 +151,11 @@ describe('Get file info', () => {
 
 	it('Dimension limit', async (async () => {
 		const path = `${_dirname}/resources/25000x25000.png`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 75933,
 			md5: '268c5dde99e17cf8fe09f1ab3f97df56',
@@ -155,9 +171,11 @@ describe('Get file info', () => {
 
 	it('Rotate JPEG', async (async () => {
 		const path = `${_dirname}/resources/rotate.jpg`;
-		const info = await getFileInfo(path) as any;
+		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
+		delete info.sensitive;
+		delete info.porn;
 		assert.deepStrictEqual(info, {
 			size: 12624,
 			md5: '68d5b2d8d1d1acbbce99203e3ec3857e',

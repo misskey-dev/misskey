@@ -110,7 +110,7 @@ definePageMetadata(computed(() => antenna ? {
 	> .tl {
 		background: var(--bg);
 		border-radius: var(--radius);
-		overflow: hidden; overflow: clip;
+		overflow: clip;
 	}
 
 	&.min-width_800px {

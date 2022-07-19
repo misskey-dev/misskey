@@ -15,20 +15,6 @@
 				</MkA>
 			</template>
 		</div>
-		<div class="sub">
-			<button v-click-anime class="_button" @click="help">
-				<i class="fas fa-question-circle icon"></i>
-				<div class="text">{{ $ts.help }}</div>
-			</button>
-			<MkA v-click-anime to="/about" @click.passive="close()">
-				<i class="fas fa-info-circle icon"></i>
-				<div class="text">{{ $ts.instanceInfo }}</div>
-			</MkA>
-			<MkA v-click-anime to="/about-misskey" @click.passive="close()">
-				<img src="/static-assets/favicon.png" class="icon"/>
-				<div class="text">{{ $ts.aboutMisskey }}</div>
-			</MkA>
-		</div>
 	</div>
 </MkModal>
 </template>
@@ -36,7 +22,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
-import { menuDef } from '@/menu';
+import { navbarItemDef } from '@/navbar';
 import { instanceName } from '@/config';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -62,7 +48,7 @@ const modal = $ref<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 
-const items = Object.keys(menuDef).filter(k => !menu.includes(k)).map(k => menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
+const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k => navbarItemDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 	type: def.to ? 'link' : 'button',
 	text: i18n.ts[def.title],
 	icon: def.icon,
@@ -73,28 +59,6 @@ const items = Object.keys(menuDef).filter(k => !menu.includes(k)).map(k => menuD
 
 function close() {
 	modal.close();
-}
-
-function help(ev: MouseEvent) {
-	os.popupMenu([{
-		type: 'link',
-		to: '/mfm-cheat-sheet',
-		text: i18n.ts._mfm.cheatSheet,
-		icon: 'fas fa-code',
-	}, {
-		type: 'link',
-		to: '/scratchpad',
-		text: i18n.ts.scratchpad,
-		icon: 'fas fa-terminal',
-	}, null, {
-		text: i18n.ts.document,
-		icon: 'fas fa-question-circle',
-		action: () => {
-			window.open('https://misskey-hub.net/help.html', '_blank');
-		},
-	}], ev.currentTarget ?? ev.target);
-
-	close();
 }
 </script>
 

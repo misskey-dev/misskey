@@ -644,6 +644,7 @@ administration: "Gestionare"
 middle: "Mediu"
 sent: "Trimite"
 searchByGoogle: "Caută"
+file: "Fișiere"
 _email:
   _follow:
     title: "te-a urmărit"

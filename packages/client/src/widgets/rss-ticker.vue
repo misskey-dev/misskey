@@ -26,6 +26,7 @@ import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import MkContainer from '@/components/ui/container.vue';
 import { useInterval } from '@/scripts/use-interval';
+import { shuffle } from '@/scripts/shuffle';
 
 const name = 'rssTicker';
 
@@ -33,6 +34,10 @@ const widgetPropsDef = {
 	url: {
 		type: 'string' as const,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+	},
+	shuffle: {
+		type: 'boolean' as const,
+		default: true,
 	},
 	refreshIntervalSec: {
 		type: 'number' as const,
@@ -80,6 +85,9 @@ let key = $ref(0);
 const tick = () => {
 	fetch(`/api/fetch-rss?url=${widgetProps.url}`, {}).then(res => {
 		res.json().then(feed => {
+			if (widgetProps.shuffle) {
+				shuffle(feed.items);
+			}
 			items.value = feed.items;
 			fetching.value = false;
 			key++;

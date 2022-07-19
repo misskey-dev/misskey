@@ -16,7 +16,7 @@
 		<XWidgets @mounted="attachSticky"/>
 	</div>
 
-	<button class="widgetButton _button" :class="{ show: true }" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
+	<button v-if="!isDesktop && !isMobile" class="widgetButton _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
@@ -61,17 +61,17 @@ import { defineAsyncComponent, provide, onMounted, computed, ref, watch, Compute
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
-import XDrawerMenu from '@/ui/_common_/sidebar-for-mobile.vue';
+import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import { menuDef } from '@/menu';
+import { navbarItemDef } from '@/navbar';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
-const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/sidebar.vue'));
+const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
@@ -97,9 +97,9 @@ provideMetadataReceiver((info) => {
 });
 
 const menuIndicated = computed(() => {
-	for (const def in menuDef) {
+	for (const def in navbarItemDef) {
 		if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
-		if (menuDef[def].indicated) return true;
+		if (navbarItemDef[def].indicated) return true;
 	}
 	return false;
 });
@@ -249,7 +249,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		}
 	}
 
-/*
 	> .widgetButton {
 		display: block;
 		position: fixed;
@@ -262,18 +261,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
 		background: var(--panel);
-
-		&.navHidden {
-			display: none;
-		}
-
-		@media (min-width: ($widgets-hide-threshold + 1px)) {
-			display: none;
-		}
-	}*/
-
-	> .widgetButton {
-		display: none;
 	}
 
 	> .widgetsDrawer-back {
@@ -378,11 +365,11 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		height: calc(var(--vh, 1vh) * 100);
 		width: 240px;
 		box-sizing: border-box;
+		contain: strict;
 		overflow: auto;
 		overscroll-behavior: contain;
-		background: var(--bg);
+		background: var(--navBg);
 	}
-
 }
 </style>
 

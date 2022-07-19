@@ -5,6 +5,7 @@ import { defaultStore } from '@/store';
 import { apiUrl } from '@/config';
 import { $i } from '@/account';
 import { alert } from '@/os';
+import { i18n } from '@/i18n';
 
 type Uploading = {
 	id: string;
@@ -80,14 +81,37 @@ export function uploadFile(
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
 			xhr.onload = (ev) => {
 				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
-					// TODO: 消すのではなくて再送できるようにしたい
+					// TODO: 消すのではなくて(ネットワーク的なエラーなら)再送できるようにしたい
 					uploads.value = uploads.value.filter(x => x.id !== id);
 
-					alert({
-						type: 'error',
-						title: 'Failed to upload',
-						text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`,
-					});
+					if (ev.target?.response) {
+						const res = JSON.parse(ev.target.response);
+						if (res.error?.id === 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2') {
+							alert({
+								type: 'error',
+								title: i18n.ts.failedToUpload,
+								text: i18n.ts.cannotUploadBecauseInappropriate,
+							});
+						} else if (res.error?.id === 'd08dbc37-a6a9-463a-8c47-96c32ab5f064') {
+							alert({
+								type: 'error',
+								title: i18n.ts.failedToUpload,
+								text: i18n.ts.cannotUploadBecauseNoFreeSpace,
+							});
+						} else {
+							alert({
+								type: 'error',
+								title: i18n.ts.failedToUpload,
+								text: `${res.error?.message}\n${res.error?.code}\n${res.error?.id}`,
+							});
+						}
+					} else {
+						alert({
+							type: 'error',
+							title: 'Failed to upload',
+							text: `${JSON.stringify(ev.target?.response)}, ${JSON.stringify(xhr.response)}`,
+						});
+					}
 
 					reject();
 					return;

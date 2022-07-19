@@ -7,8 +7,9 @@ import * as os from '@/os';
 import { userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
+import { Router } from '@/nirax';
 
-export function getUserMenu(user) {
+export function getUserMenu(user, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
 
 	async function pushList() {
@@ -161,7 +162,7 @@ export function getUserMenu(user) {
 		icon: 'fas fa-info-circle',
 		text: i18n.ts.info,
 		action: () => {
-			os.pageWindow(`/user-info/${user.id}`);
+			router.push(`/user-info/${user.id}`);
 		},
 	}, {
 		icon: 'fas fa-envelope',
@@ -227,7 +228,7 @@ export function getUserMenu(user) {
 			icon: 'fas fa-pencil-alt',
 			text: i18n.ts.editProfile,
 			action: () => {
-				mainRouter.push('/settings/profile');
+				router.push('/settings/profile');
 			},
 		}]);
 	}

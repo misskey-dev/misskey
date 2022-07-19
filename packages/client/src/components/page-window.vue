@@ -122,7 +122,7 @@ function close() {
 }
 
 function expand() {
-	mainRouter.push(router.getCurrentPath());
+	mainRouter.push(router.getCurrentPath(), 'forcePage');
 	windowEl.close();
 }
 

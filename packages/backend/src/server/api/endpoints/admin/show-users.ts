@@ -25,7 +25,7 @@ export const paramDef = {
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
 		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'silenced', 'suspended'], default: 'all' },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
 		username: { type: 'string', nullable: true, default: null },
 		hostname: {
 			type: 'string',
@@ -61,7 +61,7 @@ export default define(meta, paramDef, async (ps, me) => {
 	}
 
 	if (ps.hostname) {
-		query.andWhere('user.host like :hostname', { hostname: '%' + ps.hostname.toLowerCase() + '%' });
+		query.andWhere('user.host = :hostname', { hostname: ps.hostname.toLowerCase() });
 	}
 
 	switch (ps.sort) {

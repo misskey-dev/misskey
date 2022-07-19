@@ -155,7 +155,7 @@ const age = $computed(() => {
 });
 
 function menu(ev) {
-	os.popupMenu(getUserMenu(props.user), ev.currentTarget ?? ev.target);
+	os.popupMenu(getUserMenu(props.user, router), ev.currentTarget ?? ev.target);
 }
 
 function parallaxLoop() {

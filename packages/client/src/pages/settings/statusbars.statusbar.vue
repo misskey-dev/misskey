@@ -8,7 +8,7 @@
 	</FormSelect>
 
 	<MkInput v-model="statusbar.name" manual-save class="_formBlock">
-		<template #label>Name</template>
+		<template #label>{{ i18n.ts.label }}</template>
 	</MkInput>
 
 	<MkSwitch v-model="statusbar.black" class="_formBlock">
@@ -16,7 +16,7 @@
 	</MkSwitch>
 
 	<FormRadios v-model="statusbar.size" class="_formBlock">
-		<template #label>Size</template>
+		<template #label>{{ i18n.ts.size }}</template>
 		<option value="verySmall">{{ i18n.ts.small }}+</option>
 		<option value="small">{{ i18n.ts.small }}</option>
 		<option value="medium">{{ i18n.ts.medium }}</option>
@@ -28,28 +28,33 @@
 		<MkInput v-model="statusbar.props.url" manual-save class="_formBlock" type="url">
 			<template #label>URL</template>
 		</MkInput>
+		<MkSwitch v-model="statusbar.props.shuffle" class="_formBlock">
+			<template #label>{{ i18n.ts.shuffle }}</template>
+		</MkSwitch>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
-			<template #label>Refresh interval</template>
+			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
-		<MkInput v-model="statusbar.props.marqueeDuration" manual-save class="_formBlock" type="number">
-			<template #label>Duration</template>
-		</MkInput>
+		<FormRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1" class="_formBlock">
+			<template #label>{{ i18n.ts.speed }}</template>
+			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
+		</FormRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse" class="_formBlock">
-			<template #label>Reverse</template>
+			<template #label>{{ i18n.ts.reverse }}</template>
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
-			<template #label>Refresh interval</template>
+			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
-		<MkInput v-model="statusbar.props.marqueeDuration" manual-save class="_formBlock" type="number">
-			<template #label>Duration</template>
-		</MkInput>
+		<FormRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1" class="_formBlock">
+			<template #label>{{ i18n.ts.speed }}</template>
+			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
+		</FormRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse" class="_formBlock">
-			<template #label>Reverse</template>
+			<template #label>{{ i18n.ts.reverse }}</template>
 		</MkSwitch>
 		<MkSwitch v-model="statusbar.props.colored" class="_formBlock">
-			<template #label>Colored</template>
+			<template #label>{{ i18n.ts.colored }}</template>
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'userList' && userLists != null">
@@ -58,18 +63,19 @@
 			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
 		</FormSelect>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
-			<template #label>Refresh interval</template>
+			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
-		<MkInput v-model="statusbar.props.marqueeDuration" manual-save class="_formBlock" type="number">
-			<template #label>Duration</template>
-		</MkInput>
+		<FormRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1" class="_formBlock">
+			<template #label>{{ i18n.ts.speed }}</template>
+			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
+		</FormRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse" class="_formBlock">
-			<template #label>Reverse</template>
+			<template #label>{{ i18n.ts.reverse }}</template>
 		</MkSwitch>
 	</template>
 
 	<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton danger @click="del">Delete</FormButton>
+		<FormButton danger @click="del">{{ i18n.ts.remove }}</FormButton>
 	</div>
 </div>
 </template>
@@ -81,8 +87,8 @@ import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormButton from '@/components/ui/button.vue';
+import FormRange from '@/components/form/range.vue';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
@@ -97,6 +103,7 @@ watch(() => statusbar.type, () => {
 	if (statusbar.type === 'rss') {
 		statusbar.name = 'NEWS';
 		statusbar.props.url = 'http://feeds.afpbb.com/rss/afpbb/afpbbnews';
+		statusbar.props.shuffle = true;
 		statusbar.props.refreshIntervalSec = 120;
 		statusbar.props.display = 'marquee';
 		statusbar.props.marqueeDuration = 100;

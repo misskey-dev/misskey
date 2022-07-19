@@ -47,7 +47,7 @@ export default defineComponent({
 	render() {
 		if (this.text == null || this.text === '') return;
 
-		const ast = (this.plain ? mfm.parsePlain : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
+		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
 
 		const validTime = (t: string | null | undefined) => {
 			if (t == null) return null;
@@ -310,6 +310,10 @@ export default defineComponent({
 						key: Math.random(),
 						q: token.props.query,
 					})];
+				}
+
+				case 'plain': {
+					return [h('span', genEl(token.children))];
 				}
 
 				default: {

@@ -5,26 +5,25 @@
 		<div v-if="tab === 'featured'">
 			<XFeatured/>
 		</div>
-		<div v-else-if="tab === 'localUsers'">
-			<XUsers origin="local"/>
-		</div>
-		<div v-else-if="tab === 'remoteUsers'">
-			<XUsers origin="remote"/>
+		<div v-else-if="tab === 'users'">
+			<XUsers/>
 		</div>
 		<div v-else-if="tab === 'search'">
-			<div class="_isolated">
-				<MkInput v-model="searchQuery" :debounce="true" type="search">
-					<template #prefix><i class="fas fa-search"></i></template>
-					<template #label>{{ $ts.searchUser }}</template>
-				</MkInput>
-				<MkRadios v-model="searchOrigin">
-					<option value="combined">{{ $ts.all }}</option>
-					<option value="local">{{ $ts.local }}</option>
-					<option value="remote">{{ $ts.remote }}</option>
-				</MkRadios>
-			</div>
+			<MkSpacer :content-max="1200">
+				<div>
+					<MkInput v-model="searchQuery" :debounce="true" type="search" class="_formBlock">
+						<template #prefix><i class="fas fa-search"></i></template>
+						<template #label>{{ $ts.searchUser }}</template>
+					</MkInput>
+					<MkRadios v-model="searchOrigin" class="_formBlock">
+						<option value="combined">{{ $ts.all }}</option>
+						<option value="local">{{ $ts.local }}</option>
+						<option value="remote">{{ $ts.remote }}</option>
+					</MkRadios>
+				</div>
 
-			<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
+				<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
+			</MkSpacer>
 		</div>
 	</div>
 </MkStickyContainer>
@@ -42,6 +41,7 @@ import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
+import XUserList from '@/components/user-list.vue';
 
 const props = defineProps<{
 	tag?: string;
@@ -72,13 +72,9 @@ const headerTabs = $computed(() => [{
 	icon: 'fas fa-bolt',
 	title: i18n.ts.featured,
 }, {
-	key: 'localUsers',
+	key: 'users',
 	icon: 'fas fa-users',
 	title: i18n.ts.users,
-}, {
-	key: 'remoteUsers',
-	icon: 'fas fa-users',
-	title: i18n.ts.remote,
 }, {
 	key: 'search',
 	title: i18n.ts.search,

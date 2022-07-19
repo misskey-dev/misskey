@@ -47,7 +47,6 @@ import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
@@ -241,7 +240,7 @@ onMounted(() => {
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;
-			overflow: hidden; overflow: clip;
+			overflow: clip;
 			--margin: 12px;
 		}
 

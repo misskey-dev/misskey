@@ -7,9 +7,9 @@
 			</MkA>
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>
-				<component :is="menuDef[item].to ? 'MkA' : 'button'" v-else-if="menuDef[item] && (menuDef[item].show !== false)" v-click-anime v-tooltip="$ts[menuDef[item].title]" class="item _button" :class="item" active-class="active" :to="menuDef[item].to" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}">
-					<i class="fa-fw" :class="menuDef[item].icon"></i>
-					<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
+				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime v-tooltip="$ts[navbarItemDef[item].title]" class="item _button" :class="item" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
+					<i class="fa-fw" :class="navbarItemDef[item].icon"></i>
+					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
 				</component>
 			</template>
 			<div class="divider"></div>
@@ -43,7 +43,7 @@ import { defineAsyncComponent, defineComponent } from 'vue';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
+import { navbarItemDef } from '@/navbar';
 import { openAccountMenu } from '@/account';
 import MkButton from '@/components/ui/button.vue';
 
@@ -57,7 +57,7 @@ export default defineComponent({
 			host: host,
 			accounts: [],
 			connection: null,
-			menuDef: menuDef,
+			navbarItemDef: navbarItemDef,
 			settingsWindowed: false,
 		};
 	},
@@ -68,9 +68,9 @@ export default defineComponent({
 		},
 
 		otherNavItemIndicated(): boolean {
-			for (const def in this.menuDef) {
+			for (const def in this.navbarItemDef) {
 				if (this.menu.includes(def)) continue;
-				if (this.menuDef[def].indicated) return true;
+				if (this.navbarItemDef[def].indicated) return true;
 			}
 			return false;
 		},
@@ -113,7 +113,7 @@ export default defineComponent({
 				withExtraOperation: true,
 			}, ev);
 		},
-	}
+	},
 });
 </script>
 
