@@ -99,12 +99,12 @@
 		"@types/ws": "8.5.3",
 		"@typescript-eslint/eslint-plugin": "5.30.6",
 		"@typescript-eslint/parser": "5.30.6",
-		"rollup": "2.76.0",
 		"cross-env": "7.0.3",
 		"cypress": "10.3.0",
 		"eslint": "8.19.0",
 		"eslint-plugin-import": "2.26.0",
 		"eslint-plugin-vue": "9.2.0",
+		"rollup": "2.76.0",
 		"start-server-and-test": "1.14.0"
 	}
 }
