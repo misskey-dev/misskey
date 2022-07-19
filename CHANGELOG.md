@@ -9,6 +9,15 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+- Client: UIのブラッシュアップ @syuilo
+
+### Bugfixes
+- Client: リアクションピッカーがアプリ内ウィンドウの後ろに表示されてしまう問題を修正 @syuilo
+- Client: ユーザー情報の取得の再試行を修正する @xianonn
+
 ## 12.117.0 (2022/07/18)
 
 ### Improvements
