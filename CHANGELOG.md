@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
+
 ## 12.117.1 (2022/07/19)
 
 ### Improvements
