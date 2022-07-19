@@ -1024,6 +1024,8 @@ _mfm:
   sparkleDescription: "Verleiht Inhalt einen glitzernden Partikeleffekt."
   rotate: "Drehen"
   rotateDescription: "Dreht den Inhalt um einen angegebenen Winkel."
+  plain: "Schlicht"
+  plainDescription: "Deaktiviert jegliche MFM-Syntax, die sich innerhalb dieses MFM-Effekts befindet."
 _instanceTicker:
   none: "Nie anzeigen"
   remote: "Für Benutzer fremder Instanzen anzeigen"
