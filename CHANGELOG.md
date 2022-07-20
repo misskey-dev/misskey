@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Client: Add vi-VN language support
 
 ### Bugfixes
 - Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
