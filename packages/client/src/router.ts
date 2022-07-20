@@ -82,6 +82,14 @@ export const routes = [{
 		name: 'general',
 		component: page(() => import('./pages/settings/general.vue')),
 	}, {
+		path: '/theme/install',
+		name: 'theme',
+		component: page(() => import('./pages/settings/theme.install.vue')),
+	}, {
+		path: '/theme/manage',
+		name: 'theme',
+		component: page(() => import('./pages/settings/theme.manage.vue')),
+	}, {
 		path: '/theme',
 		name: 'theme',
 		component: page(() => import('./pages/settings/theme.vue')),
@@ -121,6 +129,14 @@ export const routes = [{
 		path: '/api',
 		name: 'api',
 		component: page(() => import('./pages/settings/api.vue')),
+	}, {
+		path: '/webhook/edit/:webhookId',
+		name: 'webhook',
+		component: page(() => import('./pages/settings/webhook.edit.vue')),
+	}, {
+		path: '/webhook/new',
+		name: 'webhook',
+		component: page(() => import('./pages/settings/webhook.new.vue')),
 	}, {
 		path: '/webhook',
 		name: 'webhook',
