@@ -145,6 +145,8 @@ const onClick = (ev: MouseEvent) => {
 			} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
 				const fragment = vnode;
 				scanOptions(fragment.children);
+			} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
+				// nop?
 			} else {
 				const option = vnode;
 				pushOption(option);
