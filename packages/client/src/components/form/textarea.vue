@@ -168,6 +168,7 @@ export default defineComponent({
 			onInput,
 			onKeydown,
 			updated,
+			i18n,
 		};
 	},
 });

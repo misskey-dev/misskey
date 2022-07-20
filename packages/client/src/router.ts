@@ -142,6 +142,10 @@ export const routes = [{
 		name: 'webhook',
 		component: page(() => import('./pages/settings/webhook.vue')),
 	}, {
+		path: '/deck',
+		name: 'deck',
+		component: page(() => import('./pages/settings/deck.vue')),
+	}, {
 		path: '/other',
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
