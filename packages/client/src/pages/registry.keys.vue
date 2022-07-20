@@ -4,11 +4,11 @@
 	<MkSpacer :content-max="600" :margin-min="16">
 		<FormSplit>
 			<MkKeyValue class="_formBlock">
-				<template #key>{{ $ts._registry.domain }}</template>
-				<template #value>{{ $ts.system }}</template>
+				<template #key>{{ i18n.ts._registry.domain }}</template>
+				<template #value>{{ i18n.ts.system }}</template>
 			</MkKeyValue>
 			<MkKeyValue class="_formBlock">
-				<template #key>{{ $ts._registry.scope }}</template>
+				<template #key>{{ i18n.ts._registry.scope }}</template>
 				<template #value>{{ scope.join('/') }}</template>
 			</MkKeyValue>
 		</FormSplit>

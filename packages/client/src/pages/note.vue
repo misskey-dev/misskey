@@ -16,7 +16,7 @@
 							<XNoteDetailed :key="note.id" v-model:note="note" class="note"/>
 						</div>
 						<div v-if="clips && clips.length > 0" class="_content clips _gap">
-							<div class="title">{{ $ts.clip }}</div>
+							<div class="title">{{ i18n.ts.clip }}</div>
 							<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
 								<b>{{ item.name }}</b>
 								<div v-if="item.description" class="description">{{ item.description }}</div>

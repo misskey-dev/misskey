@@ -16,7 +16,7 @@
 				class="_panel"
 				@posted="state = 'posted'"
 			/>
-			<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ $ts.close }}</MkButton>
+			<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ i18n.ts.close }}</MkButton>
 		</div>
 	</section>
 </div>
@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 // SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
-import { defineComponent } from 'vue';
+import { } from 'vue';
 import { noteVisibilities } from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import * as Misskey from 'misskey-js';

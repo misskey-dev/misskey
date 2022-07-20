@@ -5,8 +5,8 @@
 			<div class="toggleWrapper">
 				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
 				<label for="dn" class="toggle">
-					<span class="before">{{ $ts.light }}</span>
-					<span class="after">{{ $ts.dark }}</span>
+					<span class="before">{{ i18n.ts.light }}</span>
+					<span class="after">{{ i18n.ts.dark }}</span>
 					<span class="toggle__handler">
 						<span class="crater crater--1"></span>
 						<span class="crater crater--2"></span>
@@ -22,28 +22,28 @@
 			</div>
 		</div>
 		<div class="sync">
-			<FormSwitch v-model="syncDeviceDarkMode">{{ $ts.syncDeviceDarkMode }}</FormSwitch>
+			<FormSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</FormSwitch>
 		</div>
 	</div>
 
 	<div class="selects _formBlock">
 		<FormSelect v-model="lightThemeId" large class="select">
-			<template #label>{{ $ts.themeForLightMode }}</template>
+			<template #label>{{ i18n.ts.themeForLightMode }}</template>
 			<template #prefix><i class="fas fa-sun"></i></template>
-			<optgroup :label="$ts.lightThemes">
+			<optgroup :label="i18n.ts.lightThemes">
 				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup :label="$ts.darkThemes">
+			<optgroup :label="i18n.ts.darkThemes">
 				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
 		<FormSelect v-model="darkThemeId" large class="select">
-			<template #label>{{ $ts.themeForDarkMode }}</template>
+			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
 			<template #prefix><i class="fas fa-moon"></i></template>
-			<optgroup :label="$ts.darkThemes">
+			<optgroup :label="i18n.ts.darkThemes">
 				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
-			<optgroup :label="$ts.lightThemes">
+			<optgroup :label="i18n.ts.lightThemes">
 				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
@@ -51,15 +51,15 @@
 
 	<FormSection>
 		<div class="_formLinksGrid">
-			<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ $ts._theme.explore }}</FormLink>
-			<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ $ts._theme.install }}</FormLink>
-			<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }}</FormLink>
+			<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
+			<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
+			<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ i18n.ts._theme.make }}</FormLink>
 		</div>
 	</FormSection>
 
-	<FormButton v-if="wallpaper == null" class="_formBlock" @click="setWallpaper">{{ $ts.setWallpaper }}</FormButton>
-	<FormButton v-else class="_formBlock" @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
+	<FormButton v-if="wallpaper == null" class="_formBlock" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</FormButton>
+	<FormButton v-else class="_formBlock" @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</FormButton>
 </div>
 </template>
 

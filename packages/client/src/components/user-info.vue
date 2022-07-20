@@ -10,17 +10,17 @@
 		<div v-if="user.description" class="mfm">
 			<Mfm :text="user.description" :author="user" :i="$i" :custom-emojis="user.emojis"/>
 		</div>
-		<span v-else style="opacity: 0.7;">{{ $ts.noAccountDescription }}</span>
+		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
 	</div>
 	<div class="status">
 		<div>
-			<p>{{ $ts.notes }}</p><span>{{ user.notesCount }}</span>
+			<p>{{ i18n.ts.notes }}</p><span>{{ user.notesCount }}</span>
 		</div>
 		<div>
-			<p>{{ $ts.following }}</p><span>{{ user.followingCount }}</span>
+			<p>{{ i18n.ts.following }}</p><span>{{ user.followingCount }}</span>
 		</div>
 		<div>
-			<p>{{ $ts.followers }}</p><span>{{ user.followersCount }}</span>
+			<p>{{ i18n.ts.followers }}</p><span>{{ user.followersCount }}</span>
 		</div>
 	</div>
 	<MkFollowButton v-if="$i && user.id != $i.id" class="koudoku-button" :user="user" mini/>
@@ -31,6 +31,7 @@
 import * as misskey from 'misskey-js';
 import MkFollowButton from './follow-button.vue';
 import { userPage } from '@/filters/user';
+import { i18n } from '@/i18n';
 
 defineProps<{
 	user: misskey.entities.UserDetailed;

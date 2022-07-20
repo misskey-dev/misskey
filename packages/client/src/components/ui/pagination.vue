@@ -8,7 +8,7 @@
 		<slot name="empty">
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $ts.nothing }}</div>
+				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</slot>
 	</div>
@@ -16,14 +16,14 @@
 	<div v-else ref="rootEl">
 		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMoreAhead">
-				{{ $ts.loadMore }}
+				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
-				{{ $ts.loadMore }}
+				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
@@ -37,6 +37,7 @@ import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
+import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
 

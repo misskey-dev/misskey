@@ -1,5 +1,6 @@
 <template>
-<XModalWindow ref="dialogEl"
+<XModalWindow
+	ref="dialogEl"
 	:with-ok-button="true"
 	:ok-button-disabled="selected == null"
 	@click="cancel()"
@@ -7,16 +8,16 @@
 	@ok="ok()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ $ts.selectUser }}</template>
+	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div class="tbhwbxda">
 		<div class="form">
 			<FormSplit :min-width="170">
 				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
-					<template #label>{{ $ts.username }}</template>
+					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
 				<MkInput v-model="host" @update:modelValue="search">
-					<template #label>{{ $ts.host }}</template>
+					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
 			</FormSplit>
@@ -32,7 +33,7 @@
 				</div>
 			</div>
 			<div v-else class="empty">
-				<span>{{ $ts.noUsers }}</span>
+				<span>{{ i18n.ts.noUsers }}</span>
 			</div>
 		</div>
 		<div v-if="username == '' && host == ''" class="recent">
@@ -58,6 +59,7 @@ import FormSplit from '@/components/form/split.vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
@@ -81,7 +83,7 @@ const search = () => {
 		username: username,
 		host: host,
 		limit: 10,
-		detail: false
+		detail: false,
 	}).then(_users => {
 		users = _users;
 	});

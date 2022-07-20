@@ -3,7 +3,7 @@
 	<template #empty>
 		<div class="_fullinfo">
 			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ $ts.noUsers }}</div>
+			<div>{{ i18n.ts.noUsers }}</div>
 		</div>
 	</template>
 
@@ -18,9 +18,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MkUserInfo from '@/components/user-info.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import { Paging } from '@/components/ui/pagination.vue';
+import MkPagination, { Paging } from '@/components/ui/pagination.vue';
 import { userPage } from '@/filters/user';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	pagination: Paging;

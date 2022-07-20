@@ -13,7 +13,7 @@
 			</div>
 
 			<MkKeyValue class="_formBlock">
-				<template #key>{{ $ts.description }}</template>
+				<template #key>{{ i18n.ts.description }}</template>
 				<template #value>{{ $instance.description }}</template>
 			</MkKeyValue>
 
@@ -22,33 +22,33 @@
 					<template #key>Misskey</template>
 					<template #value>{{ version }}</template>
 				</MkKeyValue>
-				<FormLink to="/about-misskey">{{ $ts.aboutMisskey }}</FormLink>
+				<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
 			</FormSection>
 
 			<FormSection>
 				<FormSplit>
 					<MkKeyValue class="_formBlock">
-						<template #key>{{ $ts.administrator }}</template>
+						<template #key>{{ i18n.ts.administrator }}</template>
 						<template #value>{{ $instance.maintainerName }}</template>
 					</MkKeyValue>
 					<MkKeyValue class="_formBlock">
-						<template #key>{{ $ts.contact }}</template>
+						<template #key>{{ i18n.ts.contact }}</template>
 						<template #value>{{ $instance.maintainerEmail }}</template>
 					</MkKeyValue>
 				</FormSplit>
-				<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" class="_formBlock" external>{{ $ts.tos }}</FormLink>
+				<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" class="_formBlock" external>{{ i18n.ts.tos }}</FormLink>
 			</FormSection>
 
 			<FormSuspense :p="initStats">
 				<FormSection>
-					<template #label>{{ $ts.statistics }}</template>
+					<template #label>{{ i18n.ts.statistics }}</template>
 					<FormSplit>
 						<MkKeyValue class="_formBlock">
-							<template #key>{{ $ts.users }}</template>
+							<template #key>{{ i18n.ts.users }}</template>
 							<template #value>{{ number(stats.originalUsersCount) }}</template>
 						</MkKeyValue>
 						<MkKeyValue class="_formBlock">
-							<template #key>{{ $ts.notes }}</template>
+							<template #key>{{ i18n.ts.notes }}</template>
 							<template #value>{{ number(stats.originalNotesCount) }}</template>
 						</MkKeyValue>
 					</FormSplit>

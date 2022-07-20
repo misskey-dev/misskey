@@ -46,7 +46,7 @@
 			</button>
 		</template>
 		<span v-if="items2.length === 0" class="none item">
-			<span>{{ $ts.none }}</span>
+			<span>{{ i18n.ts.none }}</span>
 		</span>
 	</div>
 	<div v-if="childMenu" class="child">
@@ -61,6 +61,8 @@ import { focusPrev, focusNext } from '@/scripts/focus';
 import FormSwitch from '@/components/form/switch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
+
 const XChild = defineAsyncComponent(() => import('./menu.child.vue'));
 
 const props = defineProps<{
