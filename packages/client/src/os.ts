@@ -32,7 +32,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 			body: JSON.stringify(data),
 			credentials: 'omit',
 			cache: 'no-cache',
-			headers: { authorization },
+			headers: authorization ? { authorization } : {},
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 
@@ -69,7 +69,7 @@ export const apiGet = ((endpoint: string, data: Record<string, any> = {}, token?
 			method: 'GET',
 			credentials: 'omit',
 			cache: 'default',
-			headers: { authorization },
+			headers: authorization ? { authorization } : {},
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 
