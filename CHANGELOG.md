@@ -16,6 +16,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
+- Client: MiAuth認証ページが機能していない @syuilo
 
 ## 12.117.1 (2022/07/19)
 
