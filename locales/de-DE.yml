@@ -862,7 +862,7 @@ requireAdminForView: "Melde dich mit einem Administratorkonto an, um dies einzus
 isSystemAccount: "Ein Benutzerkonto, dass durch das System erstellt und automatisch kontrolliert wird."
 typeToConfirm: "Bitte gib zur Bestätigung {x} ein"
 deleteAccount: "Benutzerkonto löschen"
-document: "Dokument"
+document: "Dokumentation"
 numberOfPageCache: "Seitencachegröße"
 numberOfPageCacheDescription: "Das Erhöhen dieses Caches führt zu einer angenehmerern Benutzererfahrung, erhöht aber Serverlast und Arbeitsspeicherauslastung."
 logoutConfirm: "Wirklich abmelden?"
