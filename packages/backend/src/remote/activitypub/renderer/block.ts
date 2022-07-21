@@ -7,7 +7,7 @@ import { Blocking } from '@/models/entities/blocking.js';
  * @param block The block to be rendered. The blockee relation must be loaded.
  */
 export function renderBlock(block: Blocking) {
-	if (block.blockee?.url == null) {
+	if (block.blockee?.uri == null) {
 		throw new Error('renderBlock: missing blockee uri');
 	}
 
