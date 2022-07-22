@@ -888,6 +888,7 @@ enableAutoSensitive: "自动 NSFW 识别"
 navbar: "导航栏"
 shuffle: "随机"
 account: "账户"
+move: "移动"
 _sensitiveMediaDetection:
   description: "可以使用机器学习技术自动检测敏感媒体，以便进行审核。服务器负载将略微增加。"
   sensitivity: "检测敏感度"
@@ -1022,6 +1023,7 @@ _mfm:
   rotate: "旋转"
   rotateDescription: "旋转指定的角度。"
   plain: "简洁"
+  plainDescription: "禁用所有内部语法。"
 _instanceTicker:
   none: "不显示"
   remote: "仅远程用户"
