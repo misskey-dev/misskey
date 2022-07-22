@@ -1021,6 +1021,7 @@ _mfm:
   sparkleDescription: "添加发光粒子效果。"
   rotate: "旋转"
   rotateDescription: "旋转指定的角度。"
+  plain: "简洁"
 _instanceTicker:
   none: "不显示"
   remote: "仅远程用户"
