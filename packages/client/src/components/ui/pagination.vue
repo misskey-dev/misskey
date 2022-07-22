@@ -197,21 +197,23 @@ const prepend = (item: Item): void => {
 	if (props.pagination.reversed) {
 		if (rootEl.value) {
 			const container = getScrollContainer(rootEl.value);
-			if (container == null) return; // TODO?
-
-			const pos = getScrollPosition(rootEl.value);
-			const viewHeight = container.clientHeight;
-			const height = container.scrollHeight;
-			const isBottom = (pos + viewHeight > height - 32);
-			if (isBottom) {
-				// オーバーフローしたら古いアイテムは捨てる
-				if (items.value.length >= props.displayLimit) {
-					// このやり方だとVue 3.2以降アニメーションが動かなくなる
-					//items.value = items.value.slice(-props.displayLimit);
-					while (items.value.length >= props.displayLimit) {
-						items.value.shift();
+			if (container == null) {
+				// TODO?
+			} else {
+				const pos = getScrollPosition(rootEl.value);
+				const viewHeight = container.clientHeight;
+				const height = container.scrollHeight;
+				const isBottom = (pos + viewHeight > height - 32);
+				if (isBottom) {
+					// オーバーフローしたら古いアイテムは捨てる
+					if (items.value.length >= props.displayLimit) {
+						// このやり方だとVue 3.2以降アニメーションが動かなくなる
+						//items.value = items.value.slice(-props.displayLimit);
+						while (items.value.length >= props.displayLimit) {
+							items.value.shift();
+						}
+						more.value = true;
 					}
-					more.value = true;
 				}
 			}
 		}
