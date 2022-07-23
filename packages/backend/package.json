@@ -14,7 +14,7 @@
 		"lodash": "^4.17.21"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-node": "3.18.0"
+		"@tensorflow/tfjs-node": "3.19.0"
 	},
 	"dependencies": {
 		"@bull-board/koa": "4.0.0",
