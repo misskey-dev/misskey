@@ -43,7 +43,7 @@ watch($$(available), () => {
 			stretchX: 0.8,
 			stretchY: 0.8,
 		});
-	} catch (e) {}
+	} catch (err) {}
 });
 
 onMounted(() => {
