@@ -1,25 +1,25 @@
 <template>
-<div class="">
-	<section class="_section">
-		<div class="_content">
-			<XPostForm
-				v-if="state === 'writing'"
-				fixed
-				:instant="true"
-				:initial-text="initialText"
-				:initial-visibility="visibility"
-				:initial-files="files"
-				:initial-local-only="localOnly"
-				:reply="reply"
-				:renote="renote"
-				:initial-visible-users="visibleUsers"
-				class="_panel"
-				@posted="state = 'posted'"
-			/>
-			<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ i18n.ts.close }}</MkButton>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800">
+		<XPostForm
+			v-if="state === 'writing'"
+			fixed
+			:instant="true"
+			:initial-text="initialText"
+			:initial-visibility="visibility"
+			:initial-files="files"
+			:initial-local-only="localOnly"
+			:reply="reply"
+			:renote="renote"
+			:initial-visible-users="visibleUsers"
+			class="_panel"
+			@posted="state = 'posted'"
+		/>
+		<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ i18n.ts.close }}</MkButton>
 		</div>
-	</section>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>

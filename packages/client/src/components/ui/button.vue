@@ -141,7 +141,7 @@ export default defineComponent({
 	display: block;
 	min-width: 100px;
 	width: max-content;
-	padding: 8px 14px;
+	padding: 8px 16px;
 	text-align: center;
 	font-weight: normal;
 	font-size: 1em;
