@@ -17,7 +17,6 @@
 			@posted="state = 'posted'"
 		/>
 		<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ i18n.ts.close }}</MkButton>
-		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
