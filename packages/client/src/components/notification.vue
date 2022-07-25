@@ -61,10 +61,10 @@
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 			<i class="fas fa-quote-right"></i>
 		</MkA>
-		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
-		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $ts.followRequestAccepted }}</span>
-		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $ts.receiveFollowRequest }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $ts.reject }}</button></div></span>
-		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ $ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ $ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ $ts.reject }}</button></div></span>
+		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
+		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
+		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ i18n.ts.reject }}</button></div></span>
+		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ i18n.ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ i18n.ts.reject }}</button></div></span>
 		<span v-if="notification.type === 'app'" class="text">
 			<Mfm :text="notification.body" :nowrap="!full"/>
 		</span>
@@ -72,8 +72,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted, watch } from 'vue';
+<script lang="ts" setup>
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
@@ -86,105 +86,77 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { useTooltip } from '@/scripts/use-tooltip';
 
-export default defineComponent({
-	components: {
-		XReactionIcon, MkFollowButton,
-	},
+const props = withDefaults(defineProps<{
+	notification: misskey.entities.Notification;
+	withTime?: boolean;
+	full?: boolean;
+}>(), {
+	withTime: false,
+	full: false,
+});
 
-	props: {
-		notification: {
-			type: Object,
-			required: true,
-		},
-		withTime: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		full: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
+const elRef = ref<HTMLElement>(null);
+const reactionRef = ref(null);
 
-	setup(props) {
-		const elRef = ref<HTMLElement>(null);
-		const reactionRef = ref(null);
+let readObserver: IntersectionObserver | undefined;
+let connection;
 
-		onMounted(() => {
-			if (!props.notification.isRead) {
-				const readObserver = new IntersectionObserver((entries, observer) => {
-					if (!entries.some(entry => entry.isIntersecting)) return;
-					stream.send('readNotification', {
-						id: props.notification.id,
-					});
-					observer.disconnect();
-				});
-
-				readObserver.observe(elRef.value);
-
-				const connection = stream.useChannel('main');
-				connection.on('readAllNotifications', () => readObserver.disconnect());
-
-				watch(props.notification.isRead, () => {
-					readObserver.disconnect();
-				});
-
-				onUnmounted(() => {
-					readObserver.disconnect();
-					connection.dispose();
-				});
-			}
+onMounted(() => {
+	if (!props.notification.isRead) {
+		readObserver = new IntersectionObserver((entries, observer) => {
+			if (!entries.some(entry => entry.isIntersecting)) return;
+			stream.send('readNotification', {
+				id: props.notification.id,
+			});
+			observer.disconnect();
 		});
 
-		const followRequestDone = ref(false);
-		const groupInviteDone = ref(false);
+		readObserver.observe(elRef.value);
 
-		const acceptFollowRequest = () => {
-			followRequestDone.value = true;
-			os.api('following/requests/accept', { userId: props.notification.user.id });
-		};
+		connection = stream.useChannel('main');
+		connection.on('readAllNotifications', () => readObserver.disconnect());
 
-		const rejectFollowRequest = () => {
-			followRequestDone.value = true;
-			os.api('following/requests/reject', { userId: props.notification.user.id });
-		};
-
-		const acceptGroupInvitation = () => {
-			groupInviteDone.value = true;
-			os.apiWithDialog('users/groups/invitations/accept', { invitationId: props.notification.invitation.id });
-		};
-
-		const rejectGroupInvitation = () => {
-			groupInviteDone.value = true;
-			os.api('users/groups/invitations/reject', { invitationId: props.notification.invitation.id });
-		};
-
-		useTooltip(reactionRef, (showing) => {
-			os.popup(XReactionTooltip, {
-				showing,
-				reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
-				emojis: props.notification.note.emojis,
-				targetElement: reactionRef.value.$el,
-			}, {}, 'closed');
+		watch(props.notification.isRead, () => {
+			readObserver.disconnect();
 		});
+	}
+});
 
-		return {
-			getNoteSummary: (note: misskey.entities.Note) => getNoteSummary(note),
-			followRequestDone,
-			groupInviteDone,
-			notePage,
-			userPage,
-			acceptFollowRequest,
-			rejectFollowRequest,
-			acceptGroupInvitation,
-			rejectGroupInvitation,
-			elRef,
-			reactionRef,
-			i18n,
-		};
-	},
+onUnmounted(() => {
+	if (readObserver) readObserver.disconnect();
+	if (connection) connection.dispose();
+});
+
+const followRequestDone = ref(false);
+const groupInviteDone = ref(false);
+
+const acceptFollowRequest = () => {
+	followRequestDone.value = true;
+	os.api('following/requests/accept', { userId: props.notification.user.id });
+};
+
+const rejectFollowRequest = () => {
+	followRequestDone.value = true;
+	os.api('following/requests/reject', { userId: props.notification.user.id });
+};
+
+const acceptGroupInvitation = () => {
+	groupInviteDone.value = true;
+	os.apiWithDialog('users/groups/invitations/accept', { invitationId: props.notification.invitation.id });
+};
+
+const rejectGroupInvitation = () => {
+	groupInviteDone.value = true;
+	os.api('users/groups/invitations/reject', { invitationId: props.notification.invitation.id });
+};
+
+useTooltip(reactionRef, (showing) => {
+	os.popup(XReactionTooltip, {
+		showing,
+		reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
+		emojis: props.notification.note.emojis,
+		targetElement: reactionRef.value.$el,
+	}, {}, 'closed');
 });
 </script>
 
@@ -205,13 +177,7 @@ export default defineComponent({
 
 	&.max-width_500px {
 		padding: 12px;
-		font-size: 0.8em;
-	}
-
-	&:after {
-		content: "";
-		display: block;
-		clear: both;
+		font-size: 0.85em;
 	}
 
 	> .head {

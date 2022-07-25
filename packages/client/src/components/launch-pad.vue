@@ -15,32 +15,19 @@
 				</MkA>
 			</template>
 		</div>
-		<div class="sub">
-			<a v-click-anime href="https://misskey-hub.net/help.html" target="_blank" @click.passive="close()">
-				<i class="fas fa-question-circle icon"></i>
-				<div class="text">{{ $ts.help }}</div>
-			</a>
-			<MkA v-click-anime to="/about" @click.passive="close()">
-				<i class="fas fa-info-circle icon"></i>
-				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>
-			</MkA>
-			<MkA v-click-anime to="/about-misskey" @click.passive="close()">
-				<img src="/static-assets/favicon.png" class="icon"/>
-				<div class="text">{{ $ts.aboutMisskey }}</div>
-			</MkA>
-		</div>
 	</div>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import {  } from 'vue';
+import { } from 'vue';
 import MkModal from '@/components/ui/modal.vue';
-import { menuDef } from '@/menu';
+import { navbarItemDef } from '@/navbar';
 import { instanceName } from '@/config';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { deviceKind } from '@/scripts/device-kind';
+import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
@@ -61,7 +48,7 @@ const modal = $ref<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 
-const items = Object.keys(menuDef).filter(k => !menu.includes(k)).map(k => menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
+const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k => navbarItemDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 	type: def.to ? 'link' : 'button',
 	text: i18n.ts[def.title],
 	icon: def.icon,

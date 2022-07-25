@@ -3,7 +3,7 @@
 	<template #empty>
 		<div class="_fullinfo">
 			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ $ts.noNotifications }}</div>
+			<div>{{ i18n.ts.noNotifications }}</div>
 		</div>
 	</template>
 
@@ -26,6 +26,7 @@ import XNote from '@/components/note.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	includeTypes?: typeof notificationTypes[number][];
@@ -60,8 +61,10 @@ const onNotification = (notification) => {
 	}
 };
 
+let connection;
+
 onMounted(() => {
-	const connection = stream.useChannel('main');
+	connection = stream.useChannel('main');
 	connection.on('notification', onNotification);
 	connection.on('readAllNotifications', () => {
 		if (pagingComponent.value) {
@@ -87,10 +90,10 @@ onMounted(() => {
 			}
 		}
 	});
+});
 
-	onUnmounted(() => {
-		connection.dispose();
-	});
+onUnmounted(() => {
+	if (connection) connection.dispose();
 });
 </script>
 

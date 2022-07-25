@@ -5,51 +5,33 @@
 	</div>
 	<div class="value">
 		<slot name="value"></slot>
-		<button v-if="copy" v-tooltip="$ts.copy" class="_textButton" style="margin-left: 0.5em;" @click="copy_"><i class="far fa-copy"></i></button>
+		<button v-if="copy" v-tooltip="i18n.ts.copy" class="_textButton" style="margin-left: 0.5em;" @click="copy_"><i class="far fa-copy"></i></button>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	props: {
-		copy: {
-			type: String,
-			required: false,
-			default: null,
-		},
-		oneline: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
-
-	setup(props) {
-		const copy_ = () => {
-			copyToClipboard(props.copy);
-			os.success();
-		};
-
-		return {
-			copy_
-		};
-	},
+const props = withDefaults(defineProps<{
+	copy?: string | null;
+	oneline?: boolean;
+}>(), {
+	copy: null,
+	oneline: false,
 });
+
+const copy_ = () => {
+	copyToClipboard(props.copy);
+	os.success();
+};
 </script>
 
 <style lang="scss" scoped>
 .alqyeyti {
-	> .key, > .value {
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
 	> .key {
 		font-size: 0.85em;
 		padding: 0 0 0.25em 0;
@@ -67,6 +49,9 @@ export default defineComponent({
 
 		> .value {
 			width: 70%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 }

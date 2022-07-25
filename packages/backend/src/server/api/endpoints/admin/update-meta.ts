@@ -1,8 +1,8 @@
-import define from '../../define.js';
 import { Meta } from '@/models/entities/meta.js';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { db } from '@/db/postgre.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -48,6 +48,10 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
+		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
+		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
+		setSensitiveFlagAutomatically: { type: 'boolean' },
+		enableSensitiveMediaDetectionForVideos: { type: 'boolean' },
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
@@ -96,6 +100,8 @@ export const paramDef = {
 		objectStorageUseProxy: { type: 'boolean' },
 		objectStorageSetPublicRead: { type: 'boolean' },
 		objectStorageS3ForcePathStyle: { type: 'boolean' },
+		enableIpLogging: { type: 'boolean' },
+		enableActiveEmailValidation: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -210,6 +216,22 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.recaptchaSecretKey !== undefined) {
 		set.recaptchaSecretKey = ps.recaptchaSecretKey;
+	}
+
+	if (ps.sensitiveMediaDetection !== undefined) {
+		set.sensitiveMediaDetection = ps.sensitiveMediaDetection;
+	}
+
+	if (ps.sensitiveMediaDetectionSensitivity !== undefined) {
+		set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
+	}
+
+	if (ps.setSensitiveFlagAutomatically !== undefined) {
+		set.setSensitiveFlagAutomatically = ps.setSensitiveFlagAutomatically;
+	}
+
+	if (ps.enableSensitiveMediaDetectionForVideos !== undefined) {
+		set.enableSensitiveMediaDetectionForVideos = ps.enableSensitiveMediaDetectionForVideos;
 	}
 
 	if (ps.proxyAccountId !== undefined) {
@@ -394,6 +416,14 @@ export default define(meta, paramDef, async (ps, me) => {
 
 	if (ps.deeplIsPro !== undefined) {
 		set.deeplIsPro = ps.deeplIsPro;
+	}
+
+	if (ps.enableIpLogging !== undefined) {
+		set.enableIpLogging = ps.enableIpLogging;
+	}
+
+	if (ps.enableActiveEmailValidation !== undefined) {
+		set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
 	}
 
 	await db.transaction(async transactionalEntityManager => {

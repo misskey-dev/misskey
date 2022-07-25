@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'overview'" :content-max="600" :margin-min="20">
 		<div class="_formRoot">
 			<div class="_formBlock fwhjspax" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
@@ -13,7 +13,7 @@
 			</div>
 
 			<MkKeyValue class="_formBlock">
-				<template #key>{{ $ts.description }}</template>
+				<template #key>{{ i18n.ts.description }}</template>
 				<template #value>{{ $instance.description }}</template>
 			</MkKeyValue>
 
@@ -22,33 +22,33 @@
 					<template #key>Misskey</template>
 					<template #value>{{ version }}</template>
 				</MkKeyValue>
-				<FormLink to="/about-misskey">{{ $ts.aboutMisskey }}</FormLink>
+				<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
 			</FormSection>
 
 			<FormSection>
 				<FormSplit>
 					<MkKeyValue class="_formBlock">
-						<template #key>{{ $ts.administrator }}</template>
+						<template #key>{{ i18n.ts.administrator }}</template>
 						<template #value>{{ $instance.maintainerName }}</template>
 					</MkKeyValue>
 					<MkKeyValue class="_formBlock">
-						<template #key>{{ $ts.contact }}</template>
+						<template #key>{{ i18n.ts.contact }}</template>
 						<template #value>{{ $instance.maintainerEmail }}</template>
 					</MkKeyValue>
 				</FormSplit>
-				<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" class="_formBlock" external>{{ $ts.tos }}</FormLink>
+				<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" class="_formBlock" external>{{ i18n.ts.tos }}</FormLink>
 			</FormSection>
 
 			<FormSuspense :p="initStats">
 				<FormSection>
-					<template #label>{{ $ts.statistics }}</template>
+					<template #label>{{ i18n.ts.statistics }}</template>
 					<FormSplit>
 						<MkKeyValue class="_formBlock">
-							<template #key>{{ $ts.users }}</template>
+							<template #key>{{ i18n.ts.users }}</template>
 							<template #value>{{ number(stats.originalUsersCount) }}</template>
 						</MkKeyValue>
 						<MkKeyValue class="_formBlock">
-							<template #key>{{ $ts.notes }}</template>
+							<template #key>{{ i18n.ts.notes }}</template>
 							<template #value>{{ number(stats.originalNotesCount) }}</template>
 						</MkKeyValue>
 					</FormSplit>
@@ -67,7 +67,13 @@
 			</FormSection>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'charts'" :content-max="1200" :margin-min="20">
+	<MkSpacer v-else-if="tab === 'emojis'" :content-max="1000" :margin-min="20">
+		<XEmojis/>
+	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'federation'" :content-max="1000" :margin-min="20">
+		<XFederation/>
+	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'charts'" :content-max="1000" :margin-min="20">
 		<MkInstanceStats :chart-limit="500" :detailed="true"/>
 	</MkSpacer>
 </MkStickyContainer>
@@ -75,6 +81,8 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import XEmojis from './about.emojis.vue';
+import XFederation from './about.federation.vue';
 import { version, instanceName , host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -87,8 +95,14 @@ import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const props = withDefaults(defineProps<{
+	initialTab?: string;
+}>(), {
+	initialTab: 'overview',
+});
+
 let stats = $ref(null);
-let tab = $ref('overview');
+let tab = $ref(props.initialTab);
 
 const initStats = () => os.api('stats', {
 }).then((res) => {
@@ -98,20 +112,25 @@ const initStats = () => os.api('stats', {
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'overview',
+	key: 'overview',
 	title: i18n.ts.overview,
-	onClick: () => { tab = 'overview'; },
 }, {
-	active: tab === 'charts',
+	key: 'emojis',
+	title: i18n.ts.customEmojis,
+	icon: 'fas fa-laugh',
+}, {
+	key: 'federation',
+	title: i18n.ts.federation,
+	icon: 'fas fa-globe',
+}, {
+	key: 'charts',
 	title: i18n.ts.charts,
-	icon: 'fas fa-chart-bar',
-	onClick: () => { tab = 'charts'; },
+	icon: 'fas fa-chart-simple',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.instanceInfo,
 	icon: 'fas fa-info-circle',
-	bg: 'var(--bg)',
 })));
 </script>
 

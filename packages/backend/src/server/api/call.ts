@@ -94,7 +94,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 	}
 
 	// Cast non JSON input
-	if (ep.meta.requireFile && ep.params.properties) {
+	if ((ep.meta.requireFile || ctx?.method === 'GET') && ep.params.properties) {
 		for (const k of Object.keys(ep.params.properties)) {
 			const param = ep.params.properties![k];
 			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
@@ -116,7 +116,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, token, ctx?.file).catch((e: Error) => {
+	return await ep.exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {

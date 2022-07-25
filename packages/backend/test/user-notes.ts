@@ -2,12 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { async, signup, request, post, uploadFile, startServer, shutdownServer } from './utils.js';
-
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
+import { async, signup, request, post, uploadUrl, startServer, shutdownServer } from './utils.js';
 
 describe('users/notes', () => {
 	let p: childProcess.ChildProcess;
@@ -20,8 +15,8 @@ describe('users/notes', () => {
 	before(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
-		const jpg = await uploadFile(alice, _dirname + '/resources/Lenna.jpg');
-		const png = await uploadFile(alice, _dirname + '/resources/Lenna.png');
+		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
+		const png = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.png');
 		jpgNote = await post(alice, {
 			fileIds: [jpg.id],
 		});

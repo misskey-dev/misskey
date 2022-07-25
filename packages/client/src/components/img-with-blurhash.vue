@@ -11,7 +11,7 @@ import { decode } from 'blurhash';
 
 const props = withDefaults(defineProps<{
 	src?: string | null;
-	hash: string;
+	hash?: string;
 	alt?: string;
 	title?: string | null;
 	size?: number;

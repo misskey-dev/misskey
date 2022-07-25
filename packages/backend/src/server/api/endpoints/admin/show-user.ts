@@ -25,7 +25,7 @@ export const paramDef = {
 export default define(meta, paramDef, async (ps, me) => {
 	const [user, profile] = await Promise.all([
 		Users.findOneBy({ id: ps.userId }),
-		UserProfiles.findOneBy({ userId: ps.userId })
+		UserProfiles.findOneBy({ userId: ps.userId }),
 	]);
 
 	if (user == null || profile == null) {
@@ -58,6 +58,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		autoAcceptFollowed: profile.autoAcceptFollowed,
 		noCrawle: profile.noCrawle,
 		alwaysMarkNsfw: profile.alwaysMarkNsfw,
+		autoSensitive: profile.autoSensitive,
 		carefulBot: profile.carefulBot,
 		injectFeaturedNote: profile.injectFeaturedNote,
 		receiveAnnouncementEmail: profile.receiveAnnouncementEmail,
@@ -68,6 +69,8 @@ export default define(meta, paramDef, async (ps, me) => {
 		isModerator: user.isModerator,
 		isSilenced: user.isSilenced,
 		isSuspended: user.isSuspended,
+		lastActiveDate: user.lastActiveDate,
+		moderationNote: profile.moderationNote,
 		signins,
 	};
 });

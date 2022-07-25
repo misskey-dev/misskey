@@ -1,45 +1,45 @@
 <template>
 <div class="zmdxowus">
 	<p v-if="choices.length < 2" class="caution">
-		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
+		<i class="fas fa-exclamation-triangle"></i>{{ i18n.ts._poll.noOnlyOneChoice }}
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
+			<MkInput class="input" small :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="fas fa-times"></i>
 			</button>
 		</li>
 	</ul>
-	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ $ts.add }}</MkButton>
-	<MkButton v-else class="add" disabled>{{ $ts._poll.noMore }}</MkButton>
-	<MkSwitch v-model="multiple">{{ $ts._poll.canMultipleVote }}</MkSwitch>
+	<MkButton v-if="choices.length < 10" class="add" @click="add">{{ i18n.ts.add }}</MkButton>
+	<MkButton v-else class="add" disabled>{{ i18n.ts._poll.noMore }}</MkButton>
+	<MkSwitch v-model="multiple">{{ i18n.ts._poll.canMultipleVote }}</MkSwitch>
 	<section>
 		<div>
-			<MkSelect v-model="expiration">
-				<template #label>{{ $ts._poll.expiration }}</template>
-				<option value="infinite">{{ $ts._poll.infinite }}</option>
-				<option value="at">{{ $ts._poll.at }}</option>
-				<option value="after">{{ $ts._poll.after }}</option>
+			<MkSelect v-model="expiration" small>
+				<template #label>{{ i18n.ts._poll.expiration }}</template>
+				<option value="infinite">{{ i18n.ts._poll.infinite }}</option>
+				<option value="at">{{ i18n.ts._poll.at }}</option>
+				<option value="after">{{ i18n.ts._poll.after }}</option>
 			</MkSelect>
 			<section v-if="expiration === 'at'">
-				<MkInput v-model="atDate" type="date" class="input">
-					<template #label>{{ $ts._poll.deadlineDate }}</template>
+				<MkInput v-model="atDate" small type="date" class="input">
+					<template #label>{{ i18n.ts._poll.deadlineDate }}</template>
 				</MkInput>
-				<MkInput v-model="atTime" type="time" class="input">
-					<template #label>{{ $ts._poll.deadlineTime }}</template>
+				<MkInput v-model="atTime" small type="time" class="input">
+					<template #label>{{ i18n.ts._poll.deadlineTime }}</template>
 				</MkInput>
 			</section>
 			<section v-else-if="expiration === 'after'">
-				<MkInput v-model="after" type="number" class="input">
-					<template #label>{{ $ts._poll.duration }}</template>
+				<MkInput v-model="after" small type="number" class="input">
+					<template #label>{{ i18n.ts._poll.duration }}</template>
 				</MkInput>
-				<MkSelect v-model="unit">
-					<option value="second">{{ $ts._time.second }}</option>
-					<option value="minute">{{ $ts._time.minute }}</option>
-					<option value="hour">{{ $ts._time.hour }}</option>
-					<option value="day">{{ $ts._time.day }}</option>
+				<MkSelect v-model="unit" small>
+					<option value="second">{{ i18n.ts._time.second }}</option>
+					<option value="minute">{{ i18n.ts._time.minute }}</option>
+					<option value="hour">{{ i18n.ts._time.hour }}</option>
+					<option value="day">{{ i18n.ts._time.day }}</option>
 				</MkSelect>
 			</section>
 		</div>
@@ -49,12 +49,13 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { addTime } from '@/scripts/time';
-import { formatDateTimeString } from '@/scripts/format-time-string';
 import MkInput from './form/input.vue';
 import MkSelect from './form/select.vue';
 import MkSwitch from './form/switch.vue';
 import MkButton from './ui/button.vue';
+import { formatDateTimeString } from '@/scripts/format-time-string';
+import { addTime } from '@/scripts/time';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: {
@@ -116,8 +117,11 @@ function get() {
 		let base = parseInt(after.value);
 		switch (unit.value) {
 			case 'day': base *= 24;
+				// fallthrough
 			case 'hour': base *= 60;
+				// fallthrough
 			case 'minute': base *= 60;
+				// fallthrough
 			case 'second': return base *= 1000;
 			default: return null;
 		}
@@ -129,7 +133,7 @@ function get() {
 		...(
 			expiration.value === 'at' ? { expiresAt: calcAt() } :
 			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
-		)
+		),
 	};
 }
 

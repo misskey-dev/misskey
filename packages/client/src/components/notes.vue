@@ -3,7 +3,7 @@
 	<template #empty>
 		<div class="_fullinfo">
 			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ $ts.noNotes }}</div>
+			<div>{{ i18n.ts.noNotes }}</div>
 		</div>
 	</template>
 
@@ -21,8 +21,8 @@
 import { ref } from 'vue';
 import XNote from '@/components/note.vue';
 import XList from '@/components/date-separated-list.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import { Paging } from '@/components/ui/pagination.vue';
+import MkPagination, { Paging } from '@/components/ui/pagination.vue';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	pagination: Paging;

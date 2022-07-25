@@ -657,6 +657,8 @@ hashtags: "ハッシュタグ"
 hide: "隠す"
 searchByGoogle: "探す"
 indefinitely: "無期限"
+file: "ファイル"
+colored: "色付き"
 _ad:
   back: "戻る"
 _gallery:
@@ -1207,8 +1209,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "いつもメインカラムを表示"
   columnAlign: "カラムの寄せ"
-  columnMargin: "カラム間のマージン"
-  columnHeaderHeight: "カラムのヘッダー幅"
   addColumn: "カラムを追加"
   swapLeft: "左に移動"
   swapRight: "右に移動"

@@ -1,7 +1,10 @@
 <template>
-<div class="_section">
-	<XNotes class="_content" :pagination="pagination"/>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800">
+		<XNotes class="_content" :pagination="pagination"/>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -28,6 +31,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => ({
 	title: props.tag,
 	icon: 'fas fa-hashtag',
-	bg: 'var(--bg)',
 })));
 </script>

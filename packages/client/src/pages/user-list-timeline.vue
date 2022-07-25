@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div ref="rootEl" v-size="{ min: [800] }" class="eqqrhokj">
-		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 		<div class="tl _block">
 			<XTimeline
 				ref="tlEl" :key="listId"
@@ -79,7 +79,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => list ? {
 	title: list.name,
 	icon: 'fas fa-list-ul',
-	bg: 'var(--bg)',
 } : null));
 </script>
 

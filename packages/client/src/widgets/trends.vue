@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-trends">
-	<template #header><i class="fas fa-hashtag"></i>{{ $ts._widgets.trends }}</template>
+	<template #header><i class="fas fa-hashtag"></i>{{ i18n.ts._widgets.trends }}</template>
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
@@ -19,11 +19,13 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/ui/container.vue';
 import MkMiniChart from '@/components/mini-chart.vue';
 import * as os from '@/os';
+import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
 const name = 'hashtags';
 
@@ -58,12 +60,9 @@ const fetch = () => {
 	});
 };
 
-onMounted(() => {
-	fetch();
-	const intervalId = window.setInterval(fetch, 1000 * 60);
-	onUnmounted(() => {
-		window.clearInterval(intervalId);
-	});
+useInterval(fetch, 1000 * 60, {
+	immediate: true,
+	afterMounted: true,
 });
 
 defineExpose<WidgetComponentExpose>({

@@ -6,7 +6,7 @@
 			<template #empty>
 				<div class="_fullinfo">
 					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-					<div>{{ $ts.noNotes }}</div>
+					<div>{{ i18n.ts.noNotes }}</div>
 				</div>
 			</template>
 
@@ -38,7 +38,6 @@ const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 definePageMetadata({
 	title: i18n.ts.favorites,
 	icon: 'fas fa-star',
-	bg: 'var(--bg)',
 });
 </script>
 

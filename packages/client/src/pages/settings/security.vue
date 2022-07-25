@@ -12,7 +12,7 @@
 	
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
-		<MkPagination :pagination="pagination">
+		<MkPagination :pagination="pagination" disable-auto-load>
 			<template #default="{items}">
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
@@ -104,7 +104,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.security,
 	icon: 'fas fa-lock',
-	bg: 'var(--bg)',
 });
 </script>
 

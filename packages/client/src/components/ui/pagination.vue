@@ -8,7 +8,7 @@
 		<slot name="empty">
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $ts.nothing }}</div>
+				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</slot>
 	</div>
@@ -16,14 +16,14 @@
 	<div v-else ref="rootEl">
 		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMoreAhead">
-				{{ $ts.loadMore }}
+				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
-				{{ $ts.loadMore }}
+				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
@@ -37,6 +37,7 @@ import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
 import MkButton from '@/components/ui/button.vue';
+import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
 
@@ -133,8 +134,10 @@ const fetchMore = async (): Promise<void> => {
 		limit: SECOND_FETCH_LIMIT + 1,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
+		} : props.pagination.reversed ? {
+			sinceId: items.value[0].id,
 		} : {
-			untilId: props.pagination.reversed ? items.value[0].id : items.value[items.value.length - 1].id,
+			untilId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
@@ -169,8 +172,10 @@ const fetchMoreAhead = async (): Promise<void> => {
 		limit: SECOND_FETCH_LIMIT + 1,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
+		} : props.pagination.reversed ? {
+			untilId: items.value[0].id,
 		} : {
-			sinceId: props.pagination.reversed ? items.value[0].id : items.value[items.value.length - 1].id,
+			sinceId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
 		if (res.length > SECOND_FETCH_LIMIT) {
@@ -192,21 +197,23 @@ const prepend = (item: Item): void => {
 	if (props.pagination.reversed) {
 		if (rootEl.value) {
 			const container = getScrollContainer(rootEl.value);
-			if (container == null) return; // TODO?
-
-			const pos = getScrollPosition(rootEl.value);
-			const viewHeight = container.clientHeight;
-			const height = container.scrollHeight;
-			const isBottom = (pos + viewHeight > height - 32);
-			if (isBottom) {
-				// オーバーフローしたら古いアイテムは捨てる
-				if (items.value.length >= props.displayLimit) {
-					// このやり方だとVue 3.2以降アニメーションが動かなくなる
-					//items.value = items.value.slice(-props.displayLimit);
-					while (items.value.length >= props.displayLimit) {
-						items.value.shift();
+			if (container == null) {
+				// TODO?
+			} else {
+				const pos = getScrollPosition(rootEl.value);
+				const viewHeight = container.clientHeight;
+				const height = container.scrollHeight;
+				const isBottom = (pos + viewHeight > height - 32);
+				if (isBottom) {
+					// オーバーフローしたら古いアイテムは捨てる
+					if (items.value.length >= props.displayLimit) {
+						// このやり方だとVue 3.2以降アニメーションが動かなくなる
+						//items.value = items.value.slice(-props.displayLimit);
+						while (items.value.length >= props.displayLimit) {
+							items.value.shift();
+						}
+						more.value = true;
 					}
-					more.value = true;
 				}
 			}
 		}

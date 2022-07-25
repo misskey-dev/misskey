@@ -17,12 +17,15 @@ const accountData = localStorage.getItem('account');
 export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+export const iAmAdmin = $i != null && $i.isAdmin;
 
 export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
 
 	await removeAccount($i.id);
+
+	const accounts = await getAccounts();
 
 	//#region Remove service worker registration
 	try {
@@ -203,17 +206,16 @@ export async function openAccountMenu(opts: {
 			to: `/@${ $i.username }`,
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+			type: 'parent',
 			icon: 'fas fa-plus',
 			text: i18n.ts.addAccount,
-			action: () => {
-				popupMenu([{
-					text: i18n.ts.existingAccount,
-					action: () => { showSigninDialog(); },
-				}, {
-					text: i18n.ts.createAccount,
-					action: () => { createAccount(); },
-				}], ev.currentTarget ?? ev.target);
-			},
+			children: [{
+				text: i18n.ts.existingAccount,
+				action: () => { showSigninDialog(); },
+			}, {
+				text: i18n.ts.createAccount,
+				action: () => { createAccount(); },
+			}],
 		}, {
 			type: 'link',
 			icon: 'fas fa-users',

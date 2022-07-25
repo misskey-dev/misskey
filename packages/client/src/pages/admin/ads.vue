@@ -116,7 +116,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.ads,
 	icon: 'fas fa-audio-description',
-	bg: 'var(--bg)',
 });
 </script>
 

@@ -102,7 +102,6 @@ const headerActions = $computed(() => clip && isOwned ? [{
 definePageMetadata(computed(() => clip ? {
 	title: clip.name,
 	icon: 'fas fa-paperclip',
-	bg: 'var(--bg)',
 } : null));
 </script>
 

@@ -14,7 +14,7 @@
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="fas fa-retweet"></i>
-		<I18n :src="$ts.renotedBy" tag="span">
+		<I18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
 				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
@@ -26,12 +26,7 @@
 				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" class="visibility">
-				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
-				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
-				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
-			</span>
-			<span v-if="note.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
+			<MkVisibility :note="note"/>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -43,12 +38,9 @@
 						<MkUserName :user="appearNote.user"/>
 					</MkA>
 					<span v-if="appearNote.user.isBot" class="is-bot">bot</span>
-					<span v-if="appearNote.visibility !== 'public'" class="visibility">
-						<i v-if="appearNote.visibility === 'home'" class="fas fa-home"></i>
-						<i v-else-if="appearNote.visibility === 'followers'" class="fas fa-unlock"></i>
-						<i v-else-if="appearNote.visibility === 'specified'" class="fas fa-envelope"></i>
-					</span>
-					<span v-if="appearNote.localOnly" class="localOnly"><i class="fas fa-biohazard"></i></span>
+					<div class="info">
+						<MkVisibility :note="appearNote"/>
+					</div>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
@@ -62,7 +54,7 @@
 				</p>
 				<div v-show="appearNote.cw == null || showContent" class="content">
 					<div class="text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
@@ -111,7 +103,7 @@
 	<MkNoteSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
 <div v-else class="_panel muted" @click="muted = false">
-	<I18n :src="$ts.userSaysSomething" tag="small">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
@@ -134,6 +126,7 @@ import XPoll from './poll.vue';
 import XRenoteButton from './renote-button.vue';
 import MkUrlPreview from '@/components/url-preview.vue';
 import MkInstanceTicker from '@/components/instance-ticker.vue';
+import MkVisibility from '@/components/visibility.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { checkWordMute } from '@/scripts/check-word-mute';
 import { userPage } from '@/filters/user';
@@ -388,14 +381,6 @@ if (appearNote.replyId) {
 					margin-right: 4px;
 				}
 			}
-
-			> .visibility {
-				margin-left: 8px;
-			}
-
-			> .localOnly {
-				margin-left: 8px;
-			}
 		}
 	}
 
@@ -405,7 +390,7 @@ if (appearNote.replyId) {
 
 	> .article {
 		padding: 32px;
-		font-size: 1.1em;
+		font-size: 1.2em;
 
 		> .header {
 			display: flex;
@@ -440,6 +425,10 @@ if (appearNote.replyId) {
 						font-size: 80%;
 						border: solid 0.5px var(--divider);
 						border-radius: 4px;
+					}
+
+					> .info {
+						float: right;
 					}
 				}
 			}

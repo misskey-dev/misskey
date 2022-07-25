@@ -2,7 +2,7 @@
 <div v-show="files.length != 0" class="skeikyzd">
 	<XDraggable v-model="_files" class="files" item-key="id" animation="150" delay="100" delay-on-touch-only="true">
 		<template #item="{element}">
-			<div @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
+			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" class="sensitive">
 					<i class="fas fa-exclamation-triangle icon"></i>
@@ -22,18 +22,18 @@ import * as os from '@/os';
 export default defineComponent({
 	components: {
 		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
-		MkDriveFileThumbnail
+		MkDriveFileThumbnail,
 	},
 
 	props: {
 		files: {
 			type: Array,
-			required: true
+			required: true,
 		},
 		detachMediaFn: {
 			type: Function,
-			required: false
-		}
+			required: false,
+		},
 	},
 
 	emits: ['updated', 'detach', 'changeSensitive', 'changeName'],
@@ -51,8 +51,8 @@ export default defineComponent({
 			},
 			set(value) {
 				this.$emit('updated', value);
-			}
-		}
+			},
+		},
 	},
 
 	methods: {
@@ -66,7 +66,7 @@ export default defineComponent({
 		toggleSensitive(file) {
 			os.api('drive/files/update', {
 				fileId: file.id,
-				isSensitive: !file.isSensitive
+				isSensitive: !file.isSensitive,
 			}).then(() => {
 				this.$emit('changeSensitive', file, !file.isSensitive);
 			});
@@ -75,12 +75,12 @@ export default defineComponent({
 			const { canceled, result } = await os.inputText({
 				title: this.$ts.enterFileName,
 				default: file.name,
-				allowEmpty: false
+				allowEmpty: false,
 			});
 			if (canceled) return;
 			os.api('drive/files/update', {
 				fileId: file.id,
-				name: result
+				name: result,
 			}).then(() => {
 				this.$emit('changeName', file, result);
 				file.name = result;
@@ -88,13 +88,13 @@ export default defineComponent({
 		},
 
 		async describe(file) {
-			os.popup(defineAsyncComponent(() => import("@/components/media-caption.vue")), {
+			os.popup(defineAsyncComponent(() => import('@/components/media-caption.vue')), {
 				title: this.$ts.describeFile,
 				input: {
 					placeholder: this.$ts.inputNewDescription,
-					default: file.comment !== null ? file.comment : "",
+					default: file.comment !== null ? file.comment : '',
 				},
-				image: file
+				image: file,
 			}, {
 				done: result => {
 					if (!result || result.canceled) return;
@@ -105,7 +105,7 @@ export default defineComponent({
 					}).then(() => {
 						file.comment = comment;
 					});
-				}
+				},
 			}, 'closed');
 		},
 
@@ -114,22 +114,22 @@ export default defineComponent({
 			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,
 				icon: 'fas fa-i-cursor',
-				action: () => { this.rename(file); }
+				action: () => { this.rename(file); },
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
 				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
-				action: () => { this.toggleSensitive(file); }
+				action: () => { this.toggleSensitive(file); },
 			}, {
 				text: this.$ts.describeFile,
 				icon: 'fas fa-i-cursor',
-				action: () => { this.describe(file); }
+				action: () => { this.describe(file); },
 			}, {
 				text: this.$ts.attachCancel,
 				icon: 'fas fa-times-circle',
-				action: () => { this.detachMedia(file.id); }
+				action: () => { this.detachMedia(file.id); },
 			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
-		}
-	}
+		},
+	},
 });
 </script>
 
@@ -142,7 +142,7 @@ export default defineComponent({
 		display: flex;
 		flex-wrap: wrap;
 
-		> div {
+		> .file {
 			position: relative;
 			width: 64px;
 			height: 64px;
