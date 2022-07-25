@@ -43,8 +43,12 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const props = defineProps<{
+	webhookId: string;
+}>();
+
 const webhook = await os.api('i/webhooks/show', {
-	webhookId: new URLSearchParams(window.location.search).get('id'),
+	webhookId: props.webhookId,
 });
 
 let name = $ref(webhook.name);

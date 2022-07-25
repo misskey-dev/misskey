@@ -1,5 +1,5 @@
 <template>
-<XColumn :func="{ handler: setAntenna, title: $ts.selectAntenna }" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<i class="fas fa-satellite"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -11,9 +11,9 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
+import { updateColumn, Column } from './deck-store';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
-import { updateColumn, Column } from './deck-store';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -39,15 +39,22 @@ async function setAntenna() {
 	const { canceled, result: antenna } = await os.select({
 		title: i18n.ts.selectAntenna,
 		items: antennas.map(x => ({
-			value: x, text: x.name
+			value: x, text: x.name,
 		})),
-		default: props.column.antennaId
+		default: props.column.antennaId,
 	});
 	if (canceled) return;
 	updateColumn(props.column.id, {
-		antennaId: antenna.id
+		antennaId: antenna.id,
 	});
 }
+
+const menu = [{
+	icon: 'fas fa-pencil-alt',
+	text: i18n.ts.selectAntenna,
+	action: setAntenna,
+}];
+
 /*
 function focus() {
 	timeline.focus();

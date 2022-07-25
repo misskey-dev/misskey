@@ -1,11 +1,12 @@
 <template>
-<XModalWindow ref="dialog"
+<XModalWindow
+	ref="dialog"
 	:width="370"
 	:height="400"
 	@close="onClose"
 	@closed="emit('closed')"
 >
-	<template #header>{{ $ts.login }}</template>
+	<template #header>{{ i18n.ts.login }}</template>
 
 	<MkSignin :auto-set="autoSet" :message="message" @login="onLogin"/>
 </XModalWindow>
@@ -13,15 +14,16 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
 import MkSignin from './signin.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 }>(), {
 	autoSet: false,
-	message: ''
+	message: '',
 });
 
 const emit = defineEmits<{

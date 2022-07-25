@@ -888,6 +888,9 @@ enableAutoSensitive: "自動NSFW判定"
 enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにNSFWフラグを設定します。この機能をオフにしても、インスタンスによっては自動で設定されることがあります。"
 activeEmailValidationDescription: "ユーザーのメールアドレスのバリデーションを、捨てアドかどうかや実際に通信可能かどうかなどを判定しより積極的に行います。オフにすると単に文字列として正しいかどうかのみチェックされます。"
 navbar: "ナビゲーションバー"
+shuffle: "シャッフル"
+account: "アカウント"
+move: "移動"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -1035,6 +1038,8 @@ _mfm:
   sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
   rotate: "回転"
   rotateDescription: "指定した角度で回転させます。"
+  plain: "プレーン"
+  plainDescription: "内側の構文を全て無効にします。"
 
 _instanceTicker:
   none: "表示しない"
@@ -1753,6 +1758,7 @@ _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
   addColumn: "カラムを追加"
+  configureColumn: "カラムの設定"
   swapLeft: "左に移動"
   swapRight: "右に移動"
   swapUp: "上に移動"
@@ -1760,6 +1766,8 @@ _deck:
   stackLeft: "左に重ねる"
   popRight: "右に出す"
   profile: "プロファイル"
+  newProfile: "新規プロファイル"
+  deleteProfile: "プロファイルを削除"
   introduction: "カラムを組み合わせて自分だけのインターフェイスを作りましょう！"
   introduction2: "画面の右にある + を押して、いつでもカラムを追加できます。"
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選択してウィジェットを追加してください"

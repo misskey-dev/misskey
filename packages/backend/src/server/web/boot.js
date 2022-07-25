@@ -138,6 +138,8 @@
 			</button>
 			<p class="dont-worry">Don't worry, it's (probably) not your fault.</p>
 			<p>If the problem persists after refreshing, please contact your instance's administrator.<br>You may also try the following options:</p>
+			<p>Update your os and browser.</p>
+			<p>Disable an adblocker.</p>
 			<a href="/flush">
 				<button class="button-small">
 					<span class="button-label-small">Clear preferences and cache</span>

@@ -554,6 +554,13 @@ function readPromo() {
 
 	&.max-width_500px {
 		font-size: 0.9em;
+
+		> .article {
+			> .avatar {
+				width: 50px;
+				height: 50px;
+			}
+		}
 	}
 
 	&.max-width_450px {
@@ -570,8 +577,8 @@ function readPromo() {
 
 			> .avatar {
 				margin: 0 10px 8px 0;
-				width: 50px;
-				height: 50px;
+				width: 46px;
+				height: 46px;
 				top: calc(14px + var(--stickyTop, 0px));
 			}
 		}
@@ -592,8 +599,6 @@ function readPromo() {
 	}
 
 	&.max-width_300px {
-		font-size: 0.825em;
-
 		> .article {
 			> .avatar {
 				width: 44px;

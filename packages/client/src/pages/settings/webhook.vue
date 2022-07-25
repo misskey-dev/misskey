@@ -9,7 +9,7 @@
 	<FormSection>
 		<MkPagination :pagination="pagination">
 			<template #default="{items}">
-				<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit?id=${webhook.id}`" class="_formBlock">
+				<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`" class="_formBlock">
 					<template #icon>
 						<i v-if="webhook.active === false" class="fas fa-circle-pause"></i>
 						<i v-else-if="webhook.latestStatus === null" class="far fa-circle"></i>

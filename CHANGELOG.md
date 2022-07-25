@@ -12,6 +12,59 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Client: Add vi-VN language support
+
+### Bugfixes
+- Server: リモートユーザーを正しくブロックできるように修正する @xianonn
+- Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
+- Client: MiAuth認証ページが機能していない @syuilo
+
+## 12.117.1 (2022/07/19)
+
+### Improvements
+- Client: UIのブラッシュアップ @syuilo
+
+### Bugfixes
+- Server: ファイルのアップロードに失敗することがある問題を修正 @acid-chicken
+- Client: リアクションピッカーがアプリ内ウィンドウの後ろに表示されてしまう問題を修正 @syuilo
+- Client: ユーザー情報の取得の再試行を修正 @xianonn
+- Client: MFMチートシートの挙動を修正 @syuilo
+- Client: 「インスタンスからのお知らせを受け取る」の設定を変更できない問題を修正 @syuilo
+
+## 12.117.0 (2022/07/18)
+
+### Improvements
+- Client: ウィンドウを最大化できるように @syuilo
+- Client: Shiftキーを押した状態でリンクをクリックするとアプリ内ウィンドウで開くように @syuilo
+- Client: デッキを使用している際、Ctrlキーを押した状態でリンクをクリックするとページ遷移を強制できるように @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+## 12.116.1 (2022/07/17)
+
+### Bugfixes
+- Client: デッキUI時に ページで表示 ボタンが機能しない問題を修正 @syuilo
+- Error During Migration Run to 12.111.x
+
+## 12.116.0 (2022/07/16)
+
+### Improvements
+- Client: registry editor @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+### Bugfixes
+- Error During Migration Run to 12.111.x
+- Server: TypeError: Cannot convert undefined or null to object @syuilo
+
+## 12.115.0 (2022/07/16)
+
+### Improvements
+- Client: Deckのプロファイル切り替えを簡単に @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+## 12.114.0 (2022/07/15)
+
+### Improvements
+- RSSティッカーで表示順序をシャッフルできるように @syuilo
 
 ### Bugfixes
 - クライアントが起動しなくなることがある問題を修正 @syuilo

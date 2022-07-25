@@ -4,29 +4,29 @@
 		<div class="body">
 			<div class="selects" style="display: flex;">
 				<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
-					<optgroup :label="$ts.federation">
-						<option value="federation">{{ $ts._charts.federation }}</option>
-						<option value="ap-request">{{ $ts._charts.apRequest }}</option>
+					<optgroup :label="i18n.ts.federation">
+						<option value="federation">{{ i18n.ts._charts.federation }}</option>
+						<option value="ap-request">{{ i18n.ts._charts.apRequest }}</option>
 					</optgroup>
-					<optgroup :label="$ts.users">
-						<option value="users">{{ $ts._charts.usersIncDec }}</option>
-						<option value="users-total">{{ $ts._charts.usersTotal }}</option>
-						<option value="active-users">{{ $ts._charts.activeUsers }}</option>
+					<optgroup :label="i18n.ts.users">
+						<option value="users">{{ i18n.ts._charts.usersIncDec }}</option>
+						<option value="users-total">{{ i18n.ts._charts.usersTotal }}</option>
+						<option value="active-users">{{ i18n.ts._charts.activeUsers }}</option>
 					</optgroup>
-					<optgroup :label="$ts.notes">
-						<option value="notes">{{ $ts._charts.notesIncDec }}</option>
-						<option value="local-notes">{{ $ts._charts.localNotesIncDec }}</option>
-						<option value="remote-notes">{{ $ts._charts.remoteNotesIncDec }}</option>
-						<option value="notes-total">{{ $ts._charts.notesTotal }}</option>
+					<optgroup :label="i18n.ts.notes">
+						<option value="notes">{{ i18n.ts._charts.notesIncDec }}</option>
+						<option value="local-notes">{{ i18n.ts._charts.localNotesIncDec }}</option>
+						<option value="remote-notes">{{ i18n.ts._charts.remoteNotesIncDec }}</option>
+						<option value="notes-total">{{ i18n.ts._charts.notesTotal }}</option>
 					</optgroup>
-					<optgroup :label="$ts.drive">
-						<option value="drive-files">{{ $ts._charts.filesIncDec }}</option>
-						<option value="drive">{{ $ts._charts.storageUsageIncDec }}</option>
+					<optgroup :label="i18n.ts.drive">
+						<option value="drive-files">{{ i18n.ts._charts.filesIncDec }}</option>
+						<option value="drive">{{ i18n.ts._charts.storageUsageIncDec }}</option>
 					</optgroup>
 				</MkSelect>
 				<MkSelect v-model="chartSpan" style="margin: 0 0 0 10px;">
-					<option value="hour">{{ $ts.perHour }}</option>
-					<option value="day">{{ $ts.perDay }}</option>
+					<option value="hour">{{ i18n.ts.perHour }}</option>
+					<option value="day">{{ i18n.ts.perDay }}</option>
 				</MkSelect>
 			</div>
 			<div class="chart">
@@ -71,6 +71,7 @@ import MkSelect from '@/components/form/select.vue';
 import MkChart from '@/components/chart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 Chart.register(
 	ArcElement,

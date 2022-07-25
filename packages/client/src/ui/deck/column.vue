@@ -23,7 +23,7 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="fas fa-cog"></i></button>
+		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="fas fa-ellipsis"></i></button>
 	</header>
 	<div v-show="active" ref="body">
 		<slot></slot>
@@ -31,31 +31,25 @@
 </section>
 </template>
 
-<script lang="ts">
-export type DeckFunc = {
-	title: string;
-	handler: (payload: MouseEvent) => void;
-	icon?: string;
-};
-</script>
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
+import { onBeforeUnmount, onMounted, provide, Ref, watch } from 'vue';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column , deckStore } from './deck-store';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { MenuItem } from '@/types/menu';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
+provide('shouldSpacerMin', true);
 
 const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
-	func?: DeckFunc | null;
 	naked?: boolean;
 	indicated?: boolean;
+	menu?: MenuItem[];
 }>(), {
 	isStacked: false,
-	func: null,
 	naked: false,
 	indicated: false,
 });
@@ -110,9 +104,9 @@ function toggleActive() {
 }
 
 function getMenu() {
-	const items = [{
-		icon: 'fas fa-pencil-alt',
-		text: i18n.ts.edit,
+	let items = [{
+		icon: 'fas fa-cog',
+		text: i18n.ts._deck.configureColumn,
 		action: async () => {
 			const { canceled, result } = await os.form(props.column.name, {
 				name: {
@@ -134,31 +128,36 @@ function getMenu() {
 			if (canceled) return;
 			updateColumn(props.column.id, result);
 		},
-	}, null, {
-		icon: 'fas fa-arrow-left',
-		text: i18n.ts._deck.swapLeft,
-		action: () => {
-			swapLeftColumn(props.column.id);
-		},
 	}, {
-		icon: 'fas fa-arrow-right',
-		text: i18n.ts._deck.swapRight,
-		action: () => {
-			swapRightColumn(props.column.id);
-		},
-	}, props.isStacked ? {
-		icon: 'fas fa-arrow-up',
-		text: i18n.ts._deck.swapUp,
-		action: () => {
-			swapUpColumn(props.column.id);
-		},
-	} : undefined, props.isStacked ? {
-		icon: 'fas fa-arrow-down',
-		text: i18n.ts._deck.swapDown,
-		action: () => {
-			swapDownColumn(props.column.id);
-		},
-	} : undefined, null, {
+		type: 'parent',
+		text: i18n.ts.move + '...',
+		icon: 'fas fa-arrows-up-down-left-right',
+		children: [{
+			icon: 'fas fa-arrow-left',
+			text: i18n.ts._deck.swapLeft,
+			action: () => {
+				swapLeftColumn(props.column.id);
+			},
+		}, {
+			icon: 'fas fa-arrow-right',
+			text: i18n.ts._deck.swapRight,
+			action: () => {
+				swapRightColumn(props.column.id);
+			},
+		}, props.isStacked ? {
+			icon: 'fas fa-arrow-up',
+			text: i18n.ts._deck.swapUp,
+			action: () => {
+				swapUpColumn(props.column.id);
+			},
+		} : undefined, props.isStacked ? {
+			icon: 'fas fa-arrow-down',
+			text: i18n.ts._deck.swapDown,
+			action: () => {
+				swapDownColumn(props.column.id);
+			},
+		} : undefined],
+	}, {
 		icon: 'fas fa-window-restore',
 		text: i18n.ts._deck.stackLeft,
 		action: () => {
@@ -179,13 +178,9 @@ function getMenu() {
 		},
 	}];
 
-	if (props.func) {
+	if (props.menu) {
 		items.unshift(null);
-		items.unshift({
-			icon: props.func.icon,
-			text: props.func.title,
-			action: props.func.handler,
-		});
+		items = props.menu.concat(items);
 	}
 
 	return items;
@@ -361,7 +356,6 @@ function onDrop(ev) {
 			z-index: 1;
 			width: var(--deckColumnHeaderHeight);
 			line-height: var(--deckColumnHeaderHeight);
-			font-size: 16px;
 			color: var(--faceTextButton);
 
 			&:hover {

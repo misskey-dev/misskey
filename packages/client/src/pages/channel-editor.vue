@@ -4,22 +4,22 @@
 	<MkSpacer :content-max="700">
 		<div class="_formRoot">
 			<MkInput v-model="name" class="_formBlock">
-				<template #label>{{ $ts.name }}</template>
+				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
 			<MkTextarea v-model="description" class="_formBlock">
-				<template #label>{{ $ts.description }}</template>
+				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
 			<div class="banner">
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ $ts._channel.removeBanner }}</MkButton>
+					<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
 			<div class="_formBlock">
-				<MkButton primary @click="save()"><i class="fas fa-save"></i> {{ channelId ? $ts.save : $ts.create }}</MkButton>
+				<MkButton primary @click="save()"><i class="fas fa-save"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>

@@ -865,6 +865,7 @@ reverse: "Echar de un capirotazo"
 colored: "Color"
 label: "Etiqueta"
 localOnly: "Solo local"
+account: "Cuentas"
 _emailUnavailable:
   used: "Ya fue usado"
   format: "Formato no válido."

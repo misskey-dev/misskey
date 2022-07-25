@@ -98,7 +98,7 @@ defineExpose({
 	}
 
 	> .header {
-		$height: 58px;
+		$height: 46px;
 		$height-narrow: 42px;
 		display: flex;
 		flex-shrink: 0;
@@ -138,6 +138,7 @@ defineExpose({
 	}
 
 	> .body {
+		flex: 1;
 		overflow: auto;
 		background: var(--panel);
 	}
