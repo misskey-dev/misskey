@@ -146,6 +146,10 @@ export const routes = [{
 		name: 'deck',
 		component: page(() => import('./pages/settings/deck.vue')),
 	}, {
+		path: '/preferences-registry',
+		name: 'preferences-registry',
+		component: page(() => import('./pages/settings/preferences-registry.vue')),
+	}, {
 		path: '/other',
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
