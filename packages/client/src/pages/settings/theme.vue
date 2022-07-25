@@ -186,6 +186,7 @@ definePageMetadata({
 			text-align: left;
 			overflow: clip;
 			padding: 0 100px;
+			vertical-align: bottom;
 
 			input {
 				position: absolute;
