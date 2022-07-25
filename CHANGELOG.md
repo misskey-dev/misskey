@@ -18,6 +18,7 @@ You should also include the user name that made the change.
 - Server: リモートユーザーを正しくブロックできるように修正する @xianonn
 - Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
 - Client: MiAuth認証ページが機能していない @syuilo
+- Client: 一部のアプリからファイルを投稿フォームへドロップできない場合がある問題を修正 @m-hayabusa
 
 ## 12.117.1 (2022/07/19)
 
