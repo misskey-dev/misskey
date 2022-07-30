@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" v-slot="{ type, maxHeight }" :z-priority="'high'" :src="src" :transparent-bg="true" @click="modal.close()" @closed="emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq _popup _shadow" :class="{ drawer: type === 'drawer' }" @close="modal.close()"/>
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq" :class="{ drawer: type === 'drawer' }" @close="modal.close()"/>
 </MkModal>
 </template>
 
