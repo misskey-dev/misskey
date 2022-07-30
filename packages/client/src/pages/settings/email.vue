@@ -10,7 +10,7 @@
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch :value="$i.receiveAnnouncementEmail" @update:modelValue="onChangeReceiveAnnouncementEmail">
+		<FormSwitch :model-value="$i.receiveAnnouncementEmail" @update:modelValue="onChangeReceiveAnnouncementEmail">
 			{{ $ts.receiveAnnouncementFromInstance }}
 		</FormSwitch>
 	</FormSection>
@@ -40,27 +40,27 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const emailAddress = ref($i!.email);
 
 const onChangeReceiveAnnouncementEmail = (v) => {
 	os.api('i/update', {
-		receiveAnnouncementEmail: v
+		receiveAnnouncementEmail: v,
 	});
 };
 
 const saveEmailAddress = () => {
 	os.inputText({
 		title: i18n.ts.password,
-		type: 'password'
+		type: 'password',
 	}).then(({ canceled, result: password }) => {
 		if (canceled) return;
 		os.apiWithDialog('i/update-email', {
@@ -86,7 +86,7 @@ const saveNotificationSettings = () => {
 			...[emailNotification_follow.value ? 'follow' : null],
 			...[emailNotification_receiveFollowRequest.value ? 'receiveFollowRequest' : null],
 			...[emailNotification_groupInvited.value ? 'groupInvited' : null],
-		].filter(x => x != null)
+		].filter(x => x != null),
 	});
 };
 
@@ -100,11 +100,12 @@ onMounted(() => {
 	});
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.email,
-		icon: 'fas fa-envelope',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.email,
+	icon: 'fas fa-envelope',
 });
 </script>

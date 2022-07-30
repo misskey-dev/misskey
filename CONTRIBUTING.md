@@ -74,8 +74,6 @@ The `/deploy` command by issue comment can be used to deploy the contents of a P
 An actual domain will be assigned so you can test the federation.
 
 ## Merge
-For now, basically only @syuilo has the authority to merge PRs into develop because he is most familiar with the codebase.
-However, minor fixes, refactoring, and urgent changes may be merged at the discretion of a contributor.
 
 ## Release
 ### Release Instructions

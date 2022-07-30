@@ -12,8 +12,8 @@
 	
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
-		<MkPagination :pagination="pagination">
-			<template v-slot="{items}">
+		<MkPagination :pagination="pagination" disable-auto-load>
+			<template #default="{items}">
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
 						<header>
@@ -38,15 +38,14 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose } from 'vue';
+import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormButton from '@/components/ui/button.vue';
 import MkPagination from '@/components/ui/pagination.vue';
-import X2fa from './2fa.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'i/signin-history' as const,
@@ -56,54 +55,55 @@ const pagination = {
 async function change() {
 	const { canceled: canceled1, result: currentPassword } = await os.inputText({
 		title: i18n.ts.currentPassword,
-		type: 'password'
+		type: 'password',
 	});
 	if (canceled1) return;
 
 	const { canceled: canceled2, result: newPassword } = await os.inputText({
 		title: i18n.ts.newPassword,
-		type: 'password'
+		type: 'password',
 	});
 	if (canceled2) return;
 
 	const { canceled: canceled3, result: newPassword2 } = await os.inputText({
 		title: i18n.ts.newPasswordRetype,
-		type: 'password'
+		type: 'password',
 	});
 	if (canceled3) return;
 
 	if (newPassword !== newPassword2) {
 		os.alert({
 			type: 'error',
-			text: i18n.ts.retypedNotMatch
+			text: i18n.ts.retypedNotMatch,
 		});
 		return;
 	}
 	
 	os.apiWithDialog('i/change-password', {
 		currentPassword,
-		newPassword
+		newPassword,
 	});
 }
 
 function regenerateToken() {
 	os.inputText({
 		title: i18n.ts.password,
-		type: 'password'
+		type: 'password',
 	}).then(({ canceled, result: password }) => {
 		if (canceled) return;
 		os.api('i/regenerate_token', {
-			password: password
+			password: password,
 		});
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.security,
-		icon: 'fas fa-lock',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.security,
+	icon: 'fas fa-lock',
 });
 </script>
 

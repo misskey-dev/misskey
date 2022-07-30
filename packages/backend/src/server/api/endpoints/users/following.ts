@@ -1,9 +1,9 @@
+import { IsNull } from 'typeorm';
+import { Users, Followings, UserProfiles } from '@/models/index.js';
+import { toPunyNullable } from '@/misc/convert-host.js';
 import define from '../../define.js';
 import { ApiError } from '../../error.js';
-import { Users, Followings, UserProfiles } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { toPunyNullable } from '@/misc/convert-host.js';
-import { IsNull } from 'typeorm';
 
 export const meta = {
 	tags: ['users'],
@@ -96,7 +96,7 @@ export default define(meta, paramDef, async (ps, me) => {
 	}
 
 	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
-		.andWhere(`following.followerId = :userId`, { userId: user.id })
+		.andWhere('following.followerId = :userId', { userId: user.id })
 		.innerJoinAndSelect('following.followee', 'followee');
 
 	const followings = await query

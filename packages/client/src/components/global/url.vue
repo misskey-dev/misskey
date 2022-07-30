@@ -1,5 +1,6 @@
 <template>
-<component :is="self ? 'MkA' : 'a'" ref="el" class="ieqqeuvs _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
+<component
+	:is="self ? 'MkA' : 'a'" ref="el" class="ieqqeuvs _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
@@ -23,14 +24,7 @@ import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@/config';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
-
-function safeURIDecode(str: string) {
-	try {
-		return decodeURIComponent(str);
-	} catch {
-		return str;
-	}
-}
+import { safeURIDecode } from '@/scripts/safe-uri-decode';
 
 export default defineComponent({
 	props: {
@@ -42,7 +36,7 @@ export default defineComponent({
 			type: String,
 			required: false,
 			default: null,
-		}
+		},
 	},
 	setup(props) {
 		const self = props.url.startsWith(local);

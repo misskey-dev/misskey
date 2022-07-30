@@ -1,12 +1,12 @@
-import Koa from 'koa';
 import { performance } from 'perf_hooks';
-import { limiter } from './limiter.js';
+import Koa from 'koa';
 import { CacheableLocalUser, User } from '@/models/entities/user.js';
+import { AccessToken } from '@/models/entities/access-token.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
+import { limiter } from './limiter.js';
 import endpoints, { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 import { apiLogger } from './logger.js';
-import { AccessToken } from '@/models/entities/access-token.js';
-import { getIpHash } from '@/misc/get-ip-hash.js';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -33,7 +33,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 		throw new ApiError(accessDenied);
 	}
 
-	if (ep.meta.limit && !isModerator) {
+	if (ep.meta.limit) {
 		// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
 		let limitActor: string;
 		if (user) {
@@ -94,7 +94,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 	}
 
 	// Cast non JSON input
-	if (ep.meta.requireFile && ep.params.properties) {
+	if ((ep.meta.requireFile || ctx?.method === 'GET') && ep.params.properties) {
 		for (const k of Object.keys(ep.params.properties)) {
 			const param = ep.params.properties![k];
 			if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
@@ -116,24 +116,24 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, token, ctx?.file).catch((e: Error) => {
+	return await ep.exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
-			apiLogger.error(`Internal error occurred in ${ep.name}: ${e?.message}`, {
+			apiLogger.error(`Internal error occurred in ${ep.name}: ${e.message}`, {
 				ep: ep.name,
 				ps: data,
 				e: {
-					message: e?.message,
-					code: e?.name,
-					stack: e?.stack,
+					message: e.message,
+					code: e.name,
+					stack: e.stack,
 				},
 			});
 			throw new ApiError(null, {
 				e: {
-					message: e?.message,
-					code: e?.name,
-					stack: e?.stack,
+					message: e.message,
+					code: e.name,
+					stack: e.stack,
 				},
 			});
 		}

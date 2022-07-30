@@ -7,7 +7,7 @@
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</template>
-		<template v-slot="{items}">
+		<template #default="{items}">
 			<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
 				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
 				<div class="body">
@@ -38,11 +38,11 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, ref } from 'vue';
+import { ref } from 'vue';
 import FormPagination from '@/components/ui/pagination.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const list = ref<any>(null);
 
@@ -50,8 +50,8 @@ const pagination = {
 	endpoint: 'i/apps' as const,
 	limit: 100,
 	params: {
-		sort: '+lastUsedAt'
-	}
+		sort: '+lastUsedAt',
+	},
 };
 
 function revoke(token) {
@@ -60,12 +60,13 @@ function revoke(token) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.installedApps,
-		icon: 'fas fa-plug',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.installedApps,
+	icon: 'fas fa-plug',
 });
 </script>
 

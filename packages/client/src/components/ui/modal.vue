@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, computed, ref, watch, provide } from 'vue';
+import { nextTick, onMounted, watch, provide } from 'vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
@@ -57,13 +57,13 @@ const emit = defineEmits<{
 
 provide('modal', true);
 
-const maxHeight = ref<number>();
-const fixed = ref(false);
-const transformOrigin = ref('center');
-const showing = ref(true);
-const content = ref<HTMLElement>();
+let maxHeight = $ref<number>();
+let fixed = $ref(false);
+let transformOrigin = $ref('center');
+let showing = $ref(true);
+let content = $ref<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
-const type = computed(() => {
+const type = $computed(() => {
 	if (props.preferType === 'auto') {
 		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
 			return 'drawer';
@@ -80,7 +80,7 @@ let contentClicking = false;
 const close = () => {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
-	showing.value = false;
+	showing = false;
 	emit('close');
 };
 
@@ -89,8 +89,8 @@ const onBgClick = () => {
 	emit('click');
 };
 
-if (type.value === 'drawer') {
-	maxHeight.value = window.innerHeight / 1.5;
+if (type === 'drawer') {
+	maxHeight = window.innerHeight / 1.5;
 }
 
 const keymap = {
@@ -101,22 +101,21 @@ const MARGIN = 16;
 
 const align = () => {
 	if (props.src == null) return;
-	if (type.value === 'drawer') return;
-	if (type.value === 'dialog') return;
+	if (type === 'drawer') return;
+	if (type === 'dialog') return;
 
-	const popover = content.value!;
-	if (popover == null) return;
+	if (content == null) return;
 
 	const srcRect = props.src.getBoundingClientRect();
-	
-	const width = popover.offsetWidth;
-	const height = popover.offsetHeight;
+
+	const width = content!.offsetWidth;
+	const height = content!.offsetHeight;
 
 	let left;
 	let top;
 
-	const x = srcRect.left + (fixed.value ? 0 : window.pageXOffset);
-	const y = srcRect.top + (fixed.value ? 0 : window.pageYOffset);
+	const x = srcRect.left + (fixed ? 0 : window.pageXOffset);
+	const y = srcRect.top + (fixed ? 0 : window.pageYOffset);
 
 	if (props.anchor.x === 'center') {
 		left = x + (props.src.offsetWidth / 2) - (width / 2);
@@ -134,7 +133,7 @@ const align = () => {
 		top = y + props.src.offsetHeight;
 	}
 
-	if (fixed.value) {
+	if (fixed) {
 		// 画面から横にはみ出る場合
 		if (left + width > window.innerWidth) {
 			left = window.innerWidth - width;
@@ -147,16 +146,16 @@ const align = () => {
 		if (top + height > (window.innerHeight - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value = underSpace;
+					maxHeight = underSpace;
 				} else {
-					maxHeight.value = upperSpace;
+					maxHeight = upperSpace;
 					top = (upperSpace + MARGIN) - height;
 				}
 			} else {
 				top = (window.innerHeight - MARGIN) - height;
 			}
 		} else {
-			maxHeight.value = underSpace;
+			maxHeight = underSpace;
 		}
 	} else {
 		// 画面から横にはみ出る場合
@@ -171,16 +170,16 @@ const align = () => {
 		if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value = underSpace;
+					maxHeight = underSpace;
 				} else {
-					maxHeight.value = upperSpace;
+					maxHeight = upperSpace;
 					top = window.pageYOffset + ((upperSpace + MARGIN) - height);
 				}
 			} else {
 				top = (window.innerHeight - MARGIN) - height + window.pageYOffset - 1;
 			}
 		} else {
-			maxHeight.value = underSpace;
+			maxHeight = underSpace;
 		}
 	}
 
@@ -195,29 +194,29 @@ const align = () => {
 	let transformOriginX = 'center';
 	let transformOriginY = 'center';
 
-	if (top >= srcRect.top + props.src.offsetHeight + (fixed.value ? 0 : window.pageYOffset)) {
+	if (top >= srcRect.top + props.src.offsetHeight + (fixed ? 0 : window.pageYOffset)) {
 		transformOriginY = 'top';
-	} else if ((top + height) <= srcRect.top + (fixed.value ? 0 : window.pageYOffset)) {
+	} else if ((top + height) <= srcRect.top + (fixed ? 0 : window.pageYOffset)) {
 		transformOriginY = 'bottom';
 	}
 
-	if (left >= srcRect.left + props.src.offsetWidth + (fixed.value ? 0 : window.pageXOffset)) {
+	if (left >= srcRect.left + props.src.offsetWidth + (fixed ? 0 : window.pageXOffset)) {
 		transformOriginX = 'left';
-	} else if ((left + width) <= srcRect.left + (fixed.value ? 0 : window.pageXOffset)) {
+	} else if ((left + width) <= srcRect.left + (fixed ? 0 : window.pageXOffset)) {
 		transformOriginX = 'right';
 	}
 
-	transformOrigin.value = `${transformOriginX} ${transformOriginY}`;
+	transformOrigin = `${transformOriginX} ${transformOriginY}`;
 
-	popover.style.left = left + 'px';
-	popover.style.top = top + 'px';
+	content.style.left = left + 'px';
+	content.style.top = top + 'px';
 };
 
 const onOpened = () => {
 	emit('opened');
 
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
-	const el = content.value!.children[0];
+	const el = content!.children[0];
 	el.addEventListener('mousedown', ev => {
 		contentClicking = true;
 		window.addEventListener('mouseup', ev => {
@@ -235,7 +234,7 @@ onMounted(() => {
 			// eslint-disable-next-line vue/no-mutating-props
 			props.src.style.pointerEvents = 'none';
 		}
-		fixed.value = (type.value === 'drawer') || (getFixedContainer(props.src) != null);
+		fixed = (type === 'drawer') || (getFixedContainer(props.src) != null);
 
 		await nextTick();
 		
@@ -243,10 +242,9 @@ onMounted(() => {
 	}, { immediate: true });
 
 	nextTick(() => {
-		const popover = content.value;
 		new ResizeObserver((entries, observer) => {
 			align();
-		}).observe(popover!);
+		}).observe(content!);
 	});
 });
 

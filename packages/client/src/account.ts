@@ -1,11 +1,11 @@
-import { del, get, set } from '@/scripts/idb-proxy';
 import { defineAsyncComponent, reactive } from 'vue';
 import * as misskey from 'misskey-js';
+import { showSuspendedDialog } from './scripts/show-suspended-dialog';
+import { i18n } from './i18n';
+import { del, get, set } from '@/scripts/idb-proxy';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
-import { showSuspendedDialog } from './scripts/show-suspended-dialog';
-import { i18n } from './i18n';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -17,18 +17,15 @@ const accountData = localStorage.getItem('account');
 export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+export const iAmAdmin = $i != null && $i.isAdmin;
 
 export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
 
-	//#region Remove account
-	const accounts = await getAccounts();
-	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1);
+	await removeAccount($i.id);
 
-	if (accounts.length > 0) await set('accounts', accounts);
-	else await del('accounts');
-	//#endregion
+	const accounts = await getAccounts();
 
 	//#region Remove service worker registration
 	try {
@@ -55,7 +52,7 @@ export async function signout() {
 	} catch (err) {}
 	//#endregion
 
-	document.cookie = `igi=; path=/`;
+	document.cookie = 'igi=; path=/';
 
 	if (accounts.length > 0) login(accounts[0].token);
 	else unisonReload('/');
@@ -72,14 +69,22 @@ export async function addAccount(id: Account['id'], token: Account['token']) {
 	}
 }
 
+export async function removeAccount(id: Account['id']) {
+	const accounts = await getAccounts();
+	accounts.splice(accounts.findIndex(x => x.id === id), 1);
+
+	if (accounts.length > 0) await set('accounts', accounts);
+	else await del('accounts');
+}
+
 function fetchAccount(token: string): Promise<Account> {
 	return new Promise((done, fail) => {
 		// Fetch user
 		fetch(`${apiUrl}/i`, {
 			method: 'POST',
 			body: JSON.stringify({
-				i: token
-			})
+				i: token,
+			}),
 		})
 		.then(res => res.json())
 		.then(res => {
@@ -201,28 +206,27 @@ export async function openAccountMenu(opts: {
 			to: `/@${ $i.username }`,
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+			type: 'parent',
 			icon: 'fas fa-plus',
 			text: i18n.ts.addAccount,
-			action: () => {
-				popupMenu([{
-					text: i18n.ts.existingAccount,
-					action: () => { showSigninDialog(); },
-				}, {
-					text: i18n.ts.createAccount,
-					action: () => { createAccount(); },
-				}], ev.currentTarget ?? ev.target);
-			},
+			children: [{
+				text: i18n.ts.existingAccount,
+				action: () => { showSigninDialog(); },
+			}, {
+				text: i18n.ts.createAccount,
+				action: () => { createAccount(); },
+			}],
 		}, {
 			type: 'link',
 			icon: 'fas fa-users',
 			text: i18n.ts.manageAccounts,
-			to: `/settings/accounts`,
+			to: '/settings/accounts',
 		}]], ev.currentTarget ?? ev.target, {
-			align: 'left'
+			align: 'left',
 		});
 	} else {
 		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget ?? ev.target, {
-			align: 'left'
+			align: 'left',
 		});
 	}
 }

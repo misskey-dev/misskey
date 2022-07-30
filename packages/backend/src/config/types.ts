@@ -19,6 +19,7 @@ export type Source = {
 	redis: {
 		host: string;
 		port: number;
+		family?: number;
 		pass: string;
 		db?: number;
 		prefix?: string;

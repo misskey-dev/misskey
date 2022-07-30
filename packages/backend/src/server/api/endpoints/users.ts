@@ -1,5 +1,5 @@
-import define from '../define.js';
 import { Users } from '@/models/index.js';
+import define from '../define.js';
 import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query.js';
 import { generateBlockQueryForUsers } from '../common/generate-block-query.js';
 
@@ -25,8 +25,14 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
-		state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: "all" },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "local" },
+		state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: 'all' },
+		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
+		hostname: {
+			type: 'string',
+			nullable: true,
+			default: null,
+			description: 'The local host is represented with `null`.',
+		},
 	},
 	required: [],
 } as const;
@@ -46,6 +52,10 @@ export default define(meta, paramDef, async (ps, me) => {
 	switch (ps.origin) {
 		case 'local': query.andWhere('user.host IS NULL'); break;
 		case 'remote': query.andWhere('user.host IS NOT NULL'); break;
+	}
+
+	if (ps.hostname) {
+		query.andWhere('user.host = :hostname', { hostname: ps.hostname.toLowerCase() });
 	}
 
 	switch (ps.sort) {

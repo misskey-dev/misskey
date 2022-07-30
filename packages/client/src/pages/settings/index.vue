@@ -1,58 +1,54 @@
 <template>
-<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
-	<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
-		<div class="header">
-			<div class="title">
-				<MkA v-if="narrow" to="/settings">{{ $ts.settings }}</MkA>
-				<template v-else>{{ $ts.settings }}</template>
-			</div>
-			<div v-if="childInfo" class="subtitle">{{ childInfo.title }}</div>
-		</div>
-		<div class="body">
-			<div v-if="!narrow || initialPage == null" class="nav">
-				<div class="baaadecd">
-					<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-					<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
+		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
+			<div class="body">
+				<div v-if="!narrow || initialPage == null" class="nav">
+					<div class="baaadecd">
+						<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+						<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
+					</div>
 				</div>
-			</div>
-			<div v-if="!(narrow && initialPage == null)" class="main">
-				<div class="bkzroven">
-					<component :is="component" :ref="el => pageChanged(el)" :key="initialPage" v-bind="pageProps"/>
+				<div v-if="!(narrow && initialPage == null)" class="main">
+					<div class="bkzroven">
+						<component :is="component" :key="initialPage" v-bind="pageProps"/>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</mkstickycontainer>
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/ui/info.vue';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
 import { scroll } from '@/scripts/scroll';
-import { signout } from '@/account';
+import { signout , $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
-import * as symbols from '@/symbols';
 import { instance } from '@/instance';
-import { $i } from '@/account';
-import { MisskeyNavigator } from '@/scripts/navigate';
+import { useRouter } from '@/router';
+import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os';
 
-const props = defineProps<{
-  initialPage?: string
-}>();
+const props = withDefaults(defineProps<{
+  initialPage?: string;
+}>(), {
+});
 
 const indexInfo = {
 	title: i18n.ts.settings,
 	icon: 'fas fa-cog',
-	bg: 'var(--bg)',
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
 const el = ref<HTMLElement | null>(null);
 const childInfo = ref(null);
 
-const nav = new MisskeyNavigator();
+const router = useRouter();
 
 const narrow = ref(false);
 const NARROW_THRESHOLD = 600;
@@ -118,10 +114,15 @@ const menuDef = computed(() => [{
 		to: '/settings/theme',
 		active: props.initialPage === 'theme',
 	}, {
-		icon: 'fas fa-list-ul',
-		text: i18n.ts.menu,
-		to: '/settings/menu',
-		active: props.initialPage === 'menu',
+		icon: 'fas fa-bars',
+		text: i18n.ts.navbar,
+		to: '/settings/navbar',
+		active: props.initialPage === 'navbar',
+	}, {
+		icon: 'fas fa-bars-progress',
+		text: i18n.ts.statusbar,
+		to: '/settings/statusbars',
+		active: props.initialPage === 'statusbars',
 	}, {
 		icon: 'fas fa-music',
 		text: i18n.ts.sounds,
@@ -185,11 +186,16 @@ const menuDef = computed(() => [{
 		type: 'button',
 		icon: 'fas fa-sign-in-alt fa-flip-horizontal',
 		text: i18n.ts.logout,
-		action: () => {
+		action: async () => {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: i18n.ts.logoutConfirm,
+			});
+			if (canceled) return;
 			signout();
 		},
 		danger: true,
-	},],
+	}],
 }]);
 
 const pageProps = ref({});
@@ -219,7 +225,8 @@ const component = computed(() => {
 		case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
 		case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 		case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
-		case 'menu': return defineAsyncComponent(() => import('./menu.vue'));
+		case 'navbar': return defineAsyncComponent(() => import('./navbar.vue'));
+		case 'statusbars': return defineAsyncComponent(() => import('./statusbars.vue'));
 		case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
 		case 'custom-css': return defineAsyncComponent(() => import('./custom-css.vue'));
 		case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
@@ -242,7 +249,7 @@ watch(component, () => {
 
 watch(() => props.initialPage, () => {
 	if (props.initialPage == null && !narrow.value) {
-		nav.push('/settings/profile');
+		router.push('/settings/profile');
 	} else {
 		if (props.initialPage == null) {
 			INFO.value = indexInfo;
@@ -252,7 +259,7 @@ watch(() => props.initialPage, () => {
 
 watch(narrow, () => {
 	if (props.initialPage == null && !narrow.value) {
-		nav.push('/settings/profile');
+		router.push('/settings/profile');
 	}
 });
 
@@ -261,7 +268,7 @@ onMounted(() => {
 
 	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
 	if (props.initialPage == null && !narrow.value) {
-		nav.push('/settings/profile');
+		router.push('/settings/profile');
 	}
 });
 
@@ -271,38 +278,25 @@ onUnmounted(() => {
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
-const pageChanged = (page) => {
-	if (page == null) {
+provideMetadataReceiver((info) => {
+	if (info == null) {
 		childInfo.value = null;
 	} else {
-		childInfo.value = page[symbols.PAGE_INFO];
+		childInfo.value = info;
 	}
-};
-
-defineExpose({
-	[symbols.PAGE_INFO]: INFO,
 });
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(INFO);
+// w 890
+// h 700
 </script>
 
 <style lang="scss" scoped>
 .vvcocwet {
-	> .header {
-		display: flex;
-		margin-bottom: 24px;
-		font-size: 1.3em;
-		font-weight: bold;
-
-		> .title {
-			display: block;
-			width: 34%;
-		}
-
-		> .subtitle {
-			flex: 1;
-			min-width: 0;
-		}
-	}
-
 	> .body {
 		> .nav {
 			.baaadecd {
@@ -336,13 +330,11 @@ defineExpose({
 				width: 34%;
 				padding-right: 32px;
 				box-sizing: border-box;
-				overflow: auto;
 			}
 
 			> .main {
 				flex: 1;
 				min-width: 0;
-				overflow: auto;
 			}
 		}
 	}

@@ -3,17 +3,17 @@ import * as mfm from 'mfm-js';
 import { publishMainStream, publishUserEvent } from '@/services/stream.js';
 import acceptAllFollowRequests from '@/services/following/requests/accept-all.js';
 import { publishToFollowers } from '@/services/i/update.js';
-import define from '../../define.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import { updateUsertags } from '@/services/update-hashtag.js';
-import { ApiError } from '../../error.js';
 import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index.js';
 import { User } from '@/models/entities/user.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
 import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
+import { ApiError } from '../../error.js';
+import define from '../../define.js';
 
 export const meta = {
 	tags: ['account'],
@@ -57,7 +57,7 @@ export const meta = {
 			message: 'Invalid Regular Expression.',
 			code: 'INVALID_REGEXP',
 			id: '0d786918-10df-41cd-8f33-8dec7d9a89a5',
-		}
+		},
 	},
 
 	res: {
@@ -77,7 +77,8 @@ export const paramDef = {
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
-		fields: { type: 'array',
+		fields: {
+			type: 'array',
 			minItems: 0,
 			maxItems: 16,
 			items: {
@@ -102,6 +103,7 @@ export const paramDef = {
 		injectFeaturedNote: { type: 'boolean' },
 		receiveAnnouncementEmail: { type: 'boolean' },
 		alwaysMarkNsfw: { type: 'boolean' },
+		autoSensitive: { type: 'boolean' },
 		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		pinnedPageId: { type: 'array', items: {
 			type: 'string', format: 'misskey:id',
@@ -168,6 +170,7 @@ export default define(meta, paramDef, async (ps, _user, token) => {
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (typeof ps.autoSensitive === 'boolean') profileUpdates.autoSensitive = ps.autoSensitive;
 	if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 	if (ps.avatarId) {
@@ -211,7 +214,7 @@ export default define(meta, paramDef, async (ps, _user, token) => {
 	const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 
 	if (newName != null) {
-		const tokens = mfm.parsePlain(newName);
+		const tokens = mfm.parseSimple(newName);
 		emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
 	}
 

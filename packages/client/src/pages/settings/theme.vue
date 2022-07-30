@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_formRoot rsljpzjq">
 	<div v-adaptive-border class="rfqxtzch _panel _formBlock">
 		<div class="toggle">
 			<div class="toggleWrapper">
@@ -26,18 +26,8 @@
 		</div>
 	</div>
 
-	<template v-if="darkMode">
-		<FormSelect v-model="darkThemeId" class="_formBlock">
-			<template #label>{{ $ts.themeForDarkMode }}</template>
-			<template #prefix><i class="fas fa-moon"></i></template>
-			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</FormSelect>
-		<FormSelect v-model="lightThemeId" class="_formBlock">
+	<div class="selects _formBlock">
+		<FormSelect v-model="lightThemeId" large class="select">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<template #prefix><i class="fas fa-sun"></i></template>
 			<optgroup :label="$ts.lightThemes">
@@ -47,19 +37,7 @@
 				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-	</template>
-	<template v-else>
-		<FormSelect v-model="lightThemeId" class="_formBlock">
-			<template #label>{{ $ts.themeForLightMode }}</template>
-			<template #prefix><i class="fas fa-sun"></i></template>
-			<optgroup :label="$ts.lightThemes">
-				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="$ts.darkThemes">
-				<option v-for="x in darkThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</FormSelect>
-		<FormSelect v-model="darkThemeId" class="_formBlock">
+		<FormSelect v-model="darkThemeId" large class="select">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<template #prefix><i class="fas fa-moon"></i></template>
 			<optgroup :label="$ts.darkThemes">
@@ -69,7 +47,7 @@
 				<option v-for="x in lightThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-	</template>
+	</div>
 
 	<FormSection>
 		<div class="_formLinksGrid">
@@ -96,13 +74,12 @@ import FormButton from '@/components/ui/button.vue';
 import { getBuiltinThemesRef } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage } from '@/store';
+import { ColdDeviceStorage , defaultStore } from '@/store';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
 import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
-import * as symbols from '@/symbols';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -120,8 +97,11 @@ const darkThemeId = computed({
 		return darkTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id));
-	}
+		const t = themes.value.find(x => x.id === id);
+		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
+			ColdDeviceStorage.set('darkTheme', t);
+		}
+	},
 });
 const lightTheme = ColdDeviceStorage.ref('lightTheme');
 const lightThemeId = computed({
@@ -129,8 +109,11 @@ const lightThemeId = computed({
 		return lightTheme.value.id;
 	},
 	set(id) {
-		ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id));
-	}
+		const t = themes.value.find(x => x.id === id);
+		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
+			ColdDeviceStorage.set('lightTheme', t);
+		}
+	},
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
@@ -168,12 +151,13 @@ function setWallpaper(event) {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.theme,
-		icon: 'fas fa-palette',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.theme,
+	icon: 'fas fa-palette',
 });
 </script>
 
@@ -403,6 +387,19 @@ defineExpose({
 	> .sync {
 		padding: 14px 16px;
 		border-top: solid 0.5px var(--divider);
+	}
+}
+
+.rsljpzjq {
+	> .selects {
+		display: flex;
+		gap: 1.5em var(--margin);
+		flex-wrap: wrap;
+
+		> .select {
+			flex: 1;
+			min-width: 280px;
+		}
 	}
 }
 </style>

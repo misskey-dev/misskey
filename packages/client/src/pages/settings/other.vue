@@ -10,35 +10,38 @@
 
 	<FormLink to="/settings/account-info" class="_formBlock">{{ i18n.ts.accountInfo }}</FormLink>
 
+	<FormLink to="/registry" class="_formBlock"><template #icon><i class="fas fa-cogs"></i></template>{{ i18n.ts.registry }}</FormLink>
+
 	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineExpose } from 'vue';
+import { computed } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {
-		injectFeaturedNote: v
+		injectFeaturedNote: v,
 	}).then((i) => {
 		$i!.injectFeaturedNote = i.injectFeaturedNote;
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.other,
-		icon: 'fas fa-ellipsis-h',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.other,
+	icon: 'fas fa-ellipsis-h',
 });
 </script>

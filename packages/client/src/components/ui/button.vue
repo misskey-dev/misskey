@@ -1,5 +1,6 @@
 <template>
-<button v-if="!link" class="bghgjjyj _button"
+<button
+	v-if="!link" class="bghgjjyj _button"
 	:class="{ inline, primary, gradate, danger, rounded, full }"
 	:type="type"
 	@click="$emit('click', $event)"
@@ -10,7 +11,8 @@
 		<slot></slot>
 	</div>
 </button>
-<MkA v-else class="bghgjjyj _button"
+<MkA
+	v-else class="bghgjjyj _button"
 	:class="{ inline, primary, gradate, danger, rounded, full }"
 	:to="to"
 	@mousedown="onMousedown"
@@ -29,56 +31,56 @@ export default defineComponent({
 	props: {
 		type: {
 			type: String,
-			required: false
+			required: false,
 		},
 		primary: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		gradate: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		rounded: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: true,
 		},
 		inline: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		link: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		to: {
 			type: String,
-			required: false
+			required: false,
 		},
 		autofocus: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		wait: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		danger: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		full: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 	},
 	emits: ['click'],
@@ -127,8 +129,8 @@ export default defineComponent({
 			window.setTimeout(() => {
 				if (this.$refs.ripples) this.$refs.ripples.removeChild(ripple);
 			}, 2000);
-		}
-	}
+		},
+	},
 });
 </script>
 
@@ -142,8 +144,7 @@ export default defineComponent({
 	padding: 8px 14px;
 	text-align: center;
 	font-weight: normal;
-	font-size: 0.9em;
-	line-height: 22px;
+	font-size: 1em;
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);

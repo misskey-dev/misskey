@@ -1,27 +1,25 @@
 <template>
-<MkSpacer :content-max="800">
-	<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
-		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
-		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
+<MkStickyContainer>
+	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800">
+		<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
+			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
-		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-		<div class="tl _block">
-			<XTimeline ref="tl" :key="src"
-				class="tl"
-				:src="src"
-				:sound="true"
-				@queue="queueUpdated"
-			/>
+			<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+			<div class="tl _block">
+				<XTimeline
+					ref="tl" :key="src"
+					class="tl"
+					:src="src"
+					:sound="true"
+					@queue="queueUpdated"
+				/>
+			</div>
 		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
-
-<script lang="ts">
-export default {
-	name: 'MkTimelinePage',
-};
-</script>
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch } from 'vue';
@@ -29,11 +27,11 @@ import XTimeline from '@/components/timeline.vue';
 import XPostForm from '@/components/post-form.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
@@ -47,7 +45,7 @@ const tlComponent = $ref<InstanceType<typeof XTimeline>>();
 const rootEl = $ref<HTMLElement>();
 
 let queue = $ref(0);
-const src = $computed(() => defaultStore.reactiveState.tl.value.src);
+const src = $computed({ get: () => defaultStore.reactiveState.tl.value.src, set: (x) => saveSrc(x) });
 
 watch ($$(src), () => queue = 0);
 
@@ -111,55 +109,49 @@ function focus(): void {
 	tlComponent.focus();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: i18n.ts.timeline,
-		icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
-		bg: 'var(--bg)',
-		actions: [{
-			icon: 'fas fa-list-ul',
-			text: i18n.ts.lists,
-			handler: chooseList,
-		}, {
-			icon: 'fas fa-satellite',
-			text: i18n.ts.antennas,
-			handler: chooseAntenna,
-		}, {
-			icon: 'fas fa-satellite-dish',
-			text: i18n.ts.channel,
-			handler: chooseChannel,
-		}, {
-			icon: 'fas fa-calendar-alt',
-			text: i18n.ts.jumpToSpecifiedDate,
-			handler: timetravel,
-		}],
-		tabs: [{
-			active: src === 'home',
-			title: i18n.ts._timelines.home,
-			icon: 'fas fa-home',
-			iconOnly: true,
-			onClick: () => { saveSrc('home'); },
-		}, ...(isLocalTimelineAvailable ? [{
-			active: src === 'local',
-			title: i18n.ts._timelines.local,
-			icon: 'fas fa-comments',
-			iconOnly: true,
-			onClick: () => { saveSrc('local'); },
-		}, {
-			active: src === 'social',
-			title: i18n.ts._timelines.social,
-			icon: 'fas fa-share-alt',
-			iconOnly: true,
-			onClick: () => { saveSrc('social'); },
-		}] : []), ...(isGlobalTimelineAvailable ? [{
-			active: src === 'global',
-			title: i18n.ts._timelines.global,
-			icon: 'fas fa-globe',
-			iconOnly: true,
-			onClick: () => { saveSrc('global'); },
-		}] : [])],
-	})),
-});
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => [{
+	key: 'home',
+	title: i18n.ts._timelines.home,
+	icon: 'fas fa-home',
+	iconOnly: true,
+}, ...(isLocalTimelineAvailable ? [{
+	key: 'local',
+	title: i18n.ts._timelines.local,
+	icon: 'fas fa-comments',
+	iconOnly: true,
+}, {
+	key: 'social',
+	title: i18n.ts._timelines.social,
+	icon: 'fas fa-share-alt',
+	iconOnly: true,
+}] : []), ...(isGlobalTimelineAvailable ? [{
+	key: 'global',
+	title: i18n.ts._timelines.global,
+	icon: 'fas fa-globe',
+	iconOnly: true,
+}] : []), {
+	icon: 'fas fa-list-ul',
+	title: i18n.ts.lists,
+	iconOnly: true,
+	onClick: chooseList,
+}, {
+	icon: 'fas fa-satellite',
+	title: i18n.ts.antennas,
+	iconOnly: true,
+	onClick: chooseAntenna,
+}, {
+	icon: 'fas fa-satellite-dish',
+	title: i18n.ts.channel,
+	iconOnly: true,
+	onClick: chooseChannel,
+}]);
+
+definePageMetadata(computed(() => ({
+	title: i18n.ts.timeline,
+	icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
+})));
 </script>
 
 <style lang="scss" scoped>

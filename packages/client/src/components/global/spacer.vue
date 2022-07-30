@@ -6,78 +6,61 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { inject, onMounted, onUnmounted, ref } from 'vue';
 import { deviceKind } from '@/scripts/device-kind';
-import { defineComponent, inject, onMounted, onUnmounted, ref } from 'vue';
 
-export default defineComponent({
-	props: {
-		contentMax: {
-			type: Number,
-			required: false,
-			default: null,
-		},
-		marginMin: {
-			type: Number,
-			required: false,
-			default: 12,
-		},
-		marginMax: {
-			type: Number,
-			required: false,
-			default: 24,
-		},
-	},
+const props = withDefaults(defineProps<{
+	contentMax?: number | null;
+	marginMin?: number;
+	marginMax?: number;
+}>(), {
+	contentMax: null,
+	marginMin: 12,
+	marginMax: 24,
+});
 
-	setup(props, context) {
-		let ro: ResizeObserver;
-		const root = ref<HTMLElement>();
-		const content = ref<HTMLElement>();
-		const margin = ref(0);
-		const shouldSpacerMin = inject('shouldSpacerMin', false);
-		const adjust = (rect: { width: number; height: number; }) => {
-			if (shouldSpacerMin || deviceKind === 'smartphone') {
-				margin.value = props.marginMin;
-				return;
-			}
+let ro: ResizeObserver;
+let root = $ref<HTMLElement>();
+let content = $ref<HTMLElement>();
+let margin = $ref(0);
+const shouldSpacerMin = inject('shouldSpacerMin', false);
 
-			if (rect.width > props.contentMax || (rect.width > 360 && window.innerWidth > 400)) {
-				margin.value = props.marginMax;
-			} else {
-				margin.value = props.marginMin;
-			}
-		};
+const adjust = (rect: { width: number; height: number; }) => {
+	if (shouldSpacerMin || deviceKind === 'smartphone') {
+		margin = props.marginMin;
+		return;
+	}
 
-		onMounted(() => {
-			ro = new ResizeObserver((entries) => {
-				/* iOSが対応していない
-				adjust({
-					width: entries[0].borderBoxSize[0].inlineSize,
-					height: entries[0].borderBoxSize[0].blockSize,
-				});
-				*/
-				adjust({
-					width: root.value!.offsetWidth,
-					height: root.value!.offsetHeight,
-				});
-			});
-			ro.observe(root.value!);
+	if (rect.width > (props.contentMax ?? 0) || (rect.width > 360 && window.innerWidth > 400)) {
+		margin = props.marginMax;
+	} else {
+		margin = props.marginMin;
+	}
+};
 
-			if (props.contentMax) {
-				content.value!.style.maxWidth = `${props.contentMax}px`;
-			}
+onMounted(() => {
+	ro = new ResizeObserver((entries) => {
+		/* iOSが対応していない
+		adjust({
+			width: entries[0].borderBoxSize[0].inlineSize,
+			height: entries[0].borderBoxSize[0].blockSize,
 		});
-
-		onUnmounted(() => {
-			ro.disconnect();
+		*/
+		adjust({
+			width: root!.offsetWidth,
+			height: root!.offsetHeight,
 		});
+	});
+	ro.observe(root!);
 
-		return {
-			root,
-			content,
-			margin,
-		};
-	},
+	if (props.contentMax) {
+		content!.style.maxWidth = `${props.contentMax}px`;
+	}
+});
+
+onUnmounted(() => {
+	ro.disconnect();
 });
 </script>
 

@@ -8,13 +8,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose } from 'vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { signout } from '@/account';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 async function deleteAccount() {
 	{
@@ -27,12 +26,12 @@ async function deleteAccount() {
 
 	const { canceled, result: password } = await os.inputText({
 		title: i18n.ts.password,
-		type: 'password'
+		type: 'password',
 	});
 	if (canceled) return;
 
 	await os.apiWithDialog('i/delete-account', {
-		password: password
+		password: password,
 	});
 
 	await os.alert({
@@ -42,11 +41,12 @@ async function deleteAccount() {
 	await signout();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts._accountDelete.accountDelete,
-		icon: 'fas fa-exclamation-triangle',
-		bg: 'var(--bg)',
-	}
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts._accountDelete.accountDelete,
+	icon: 'fas fa-exclamation-triangle',
 });
 </script>

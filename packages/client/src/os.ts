@@ -8,7 +8,6 @@ import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { MenuItem } from '@/types/menu';
-import { resolve } from '@/router';
 import { $i } from '@/account';
 
 export const pendingApiRequestsCount = ref(0);
@@ -35,6 +34,39 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 			body: JSON.stringify(data),
 			credentials: 'omit',
 			cache: 'no-cache',
+		}).then(async (res) => {
+			const body = res.status === 204 ? null : await res.json();
+
+			if (res.status === 200) {
+				resolve(body);
+			} else if (res.status === 204) {
+				resolve();
+			} else {
+				reject(body.error);
+			}
+		}).catch(reject);
+	});
+
+	promise.then(onFinally, onFinally);
+
+	return promise;
+}) as typeof apiClient.request;
+
+export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
+	pendingApiRequestsCount.value++;
+
+	const onFinally = () => {
+		pendingApiRequestsCount.value--;
+	};
+
+	const query = new URLSearchParams(data);
+
+	const promise = new Promise((resolve, reject) => {
+		// Send request
+		fetch(`${apiUrl}/${endpoint}?${query}`, {
+			method: 'GET',
+			credentials: 'omit',
+			cache: 'default',
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 
@@ -155,20 +187,14 @@ export async function popup(component: Component, props: Record<string, any>, ev
 }
 
 export function pageWindow(path: string) {
-	const { component, props } = resolve(path);
 	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		initialPath: path,
-		initialComponent: markRaw(component),
-		initialProps: props,
 	}, {}, 'closed');
 }
 
 export function modalPageWindow(path: string) {
-	const { component, props } = resolve(path);
 	popup(defineAsyncComponent(() => import('@/components/modal-page-window.vue')), {
 		initialPath: path,
-		initialComponent: markRaw(component),
-		initialProps: props,
 	}, {}, 'closed');
 }
 

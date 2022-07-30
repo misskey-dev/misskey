@@ -12,12 +12,14 @@ export async function readNotification(
 	if (notificationIds.length === 0) return;
 
 	// Update documents
-	await Notifications.update({
+	const result = await Notifications.update({
 		id: In(notificationIds),
 		isRead: false,
 	}, {
 		isRead: true,
 	});
+
+	if (result.affected === 0) return;
 
 	if (!await Users.getHasUnreadNotification(userId)) return postReadAllNotifications(userId);
 	else return postReadNotifications(userId, notificationIds);
@@ -27,7 +29,7 @@ export async function readNotificationByQuery(
 	userId: User['id'],
 	query: Record<string, any>
 ) {
-	const notificationIds = await Notifications.find({
+	const notificationIds = await Notifications.findBy({
 		...query,
 		notifieeId: userId,
 		isRead: false,

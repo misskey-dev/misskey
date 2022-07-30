@@ -315,6 +315,7 @@ export const UserRepository = db.getRepository(User).extend({
 			} : undefined) : undefined,
 			emojis: populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
+			driveCapacityOverrideMb: user.driveCapacityOverrideMb,
 
 			...(opts.detail ? {
 				url: profile!.url,
@@ -359,6 +360,7 @@ export const UserRepository = db.getRepository(User).extend({
 				injectFeaturedNote: profile!.injectFeaturedNote,
 				receiveAnnouncementEmail: profile!.receiveAnnouncementEmail,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
+				autoSensitive: profile!.autoSensitive,
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
 				noCrawle: profile!.noCrawle,
