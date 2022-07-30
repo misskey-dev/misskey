@@ -1,10 +1,10 @@
 {
 	"name": "misskey",
-	"version": "12.117.1",
+	"version": "12.117.1-usuyukey-1.0.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/Usuyuki/usuyukey.git"
 	},
 	"private": true,
 	"scripts": {
