@@ -171,6 +171,11 @@ const menuDef = computed(() => [{
 	}],
 }, {
 	items: [{
+		icon: 'fas fa-floppy-disk',
+		text: i18n.ts.preferencesBackups,
+		to: '/settings/preferences-backups',
+		active: currentPage?.route.name === 'preferences-backups',
+	}, {
 		type: 'button',
 		icon: 'fas fa-trash',
 		text: i18n.ts.clearCache,

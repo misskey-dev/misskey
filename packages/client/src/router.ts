@@ -146,6 +146,10 @@ export const routes = [{
 		name: 'deck',
 		component: page(() => import('./pages/settings/deck.vue')),
 	}, {
+		path: '/preferences-backups',
+		name: 'preferences-backups',
+		component: page(() => import('./pages/settings/preferences-backups.vue')),
+	}, {
 		path: '/other',
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
