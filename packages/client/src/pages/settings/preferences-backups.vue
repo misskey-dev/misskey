@@ -41,7 +41,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { version } from '@/config';
+import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
 const { t, ts } = i18n;
 
@@ -108,6 +108,7 @@ type Profile = {
 	createdAt: string;
 	updatedAt: string | null;
 	misskeyVersion: string;
+	host: string;
 	settings: {
 		hot: Record<keyof typeof defaultStoreSaveKeys, unknown>;
 		cold: Record<keyof typeof coldDeviceStorageSaveKeys, unknown>;
@@ -117,13 +118,9 @@ type Profile = {
 	};
 };
 
-type Profiles = {
-	[key: string]: Profile;
-};
-
 const connection = $i && stream.useChannel('main');
 
-let profiles = $ref<Profiles | null>(null);
+let profiles = $ref<Record<string, Profile> | null>(null);
 
 os.api('i/registry/get-all', { scope })
 	.then(res => {
@@ -183,7 +180,6 @@ async function saveNew(): Promise<void> {
 
 	const { canceled, result: name } = await os.inputText({
 		title: ts._preferencesBackups.inputName,
-		text: ts._preferencesBackups.saveNewDescription,
 	});
 	if (canceled) return;
 
@@ -200,6 +196,7 @@ async function saveNew(): Promise<void> {
 		createdAt: (new Date()).toISOString(),
 		updatedAt: null,
 		misskeyVersion: version,
+		host,
 		settings: getSettings(),
 	};
 	await os.apiWithDialog('i/registry/set', { scope, key: id, value: profile });
@@ -261,7 +258,7 @@ async function applyProfile(id: string): Promise<void> {
 	});
 	if (cancel1) return;
 
-	// TODO: バージョンが違ったらさらに警告を表示
+	// TODO: バージョン or ホストが違ったらさらに警告を表示
 
 	const settings = profile.settings;
 
@@ -314,8 +311,8 @@ async function deleteProfile(id: string): Promise<void> {
 
 	const { canceled } = await os.confirm({
 		type: 'info',
-		title: ts._preferencesBackups.delete,
-		text: t('_preferencesBackups.deleteConfirm', { name: profiles[id].name }),
+		title: ts.delete,
+		text: t('deleteAreYouSure', { x: profiles[id].name }),
 	});
 	if (canceled) return;
 
@@ -340,6 +337,7 @@ async function save(id: string): Promise<void> {
 		createdAt,
 		updatedAt: (new Date()).toISOString(),
 		misskeyVersion: version,
+		host,
 		settings: getSettings(),
 	};
 	await os.apiWithDialog('i/registry/set', { scope, key: id, value: profile });
@@ -382,12 +380,12 @@ function menu(ev: MouseEvent, profileId: string) {
 		action: () => applyProfile(profileId),
 	}, {
 		type: 'a',
-		text: ts._preferencesBackups.download,
+		text: ts.download,
 		icon: 'fas fa-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profiles[profileId], null, 2)], { type: 'application/json' })),
 		download: `${profiles[profileId].name}.json`,
 	}, null, {
-		text: ts._preferencesBackups.rename,
+		text: ts.rename,
 		icon: 'fas fa-i-cursor',
 		action: () => rename(profileId),
 	}, {

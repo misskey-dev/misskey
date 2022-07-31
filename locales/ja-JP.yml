@@ -954,15 +954,11 @@ _plugin:
   manage: "プラグインの管理"
 
 _preferencesBackups:
-  list: "一覧"
+  list: "作成したバックアップ"
   saveNew: "新規保存"
   loadFile: "ファイルを読み込み"
   apply: "このデバイスに適用"
-  delete: "削除"
   save: "上書き保存"
-  rename: "名称変更"
-  download: "ダウンロード"
-  saveNewDescription: "現在のデバイスの状態をサーバーに保存します。"
   inputName: "バックアップ名を入力"
   cannotSave: "保存できません"
   nameAlreadyExists: "バックアップ名「{name}」は既に存在します。違う名前を指定してください。"
