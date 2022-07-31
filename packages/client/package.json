@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "14.0.2",
-		"@fortawesome/fontawesome-free": "6.1.1",
+		"@fortawesome/fontawesome-free": "6.1.2",
 		"@rollup/plugin-alias": "3.1.9",
 		"@rollup/plugin-json": "4.1.0",
 		"@syuilo/aiscript": "0.11.1",
@@ -50,7 +50,7 @@
 		"stringz": "2.1.0",
 		"syuilo-password-strength": "0.0.1",
 		"textarea-caret": "3.1.0",
-		"three": "0.142.0",
+		"three": "0.143.0",
 		"throttle-debounce": "5.0.0",
 		"tinycolor2": "1.4.2",
 		"tsc-alias": "1.7.0",
@@ -59,7 +59,7 @@
 		"typescript": "4.7.4",
 		"uuid": "8.3.2",
 		"vanilla-tilt": "1.7.2",
-		"vite": "3.0.3",
+		"vite": "3.0.4",
 		"vue": "3.2.37",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vuedraggable": "4.0.1"
@@ -76,14 +76,14 @@
 		"@types/throttle-debounce": "5.0.0",
 		"@types/tinycolor2": "1.4.3",
 		"@types/uuid": "8.3.4",
-		"@typescript-eslint/eslint-plugin": "5.30.7",
-		"@typescript-eslint/parser": "5.30.7",
+		"@typescript-eslint/eslint-plugin": "5.31.0",
+		"@typescript-eslint/parser": "5.31.0",
 		"cross-env": "7.0.3",
 		"cypress": "10.3.1",
 		"eslint": "8.20.0",
 		"eslint-plugin-import": "2.26.0",
 		"eslint-plugin-vue": "9.3.0",
-		"rollup": "2.77.0",
+		"rollup": "2.77.2",
 		"start-server-and-test": "1.14.0"
 	}
 }
