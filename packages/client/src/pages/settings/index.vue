@@ -130,11 +130,6 @@ const menuDef = computed(() => [{
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
 		active: currentPage?.route.name === 'plugin',
-	}, {
-		icon: 'fas fa-floppy-disk',
-		text: i18n.ts.preferencesRegistryShort,
-		to: '/settings/preferences-registry',
-		active: currentPage?.route.name === 'preferences-registry',
 	}],
 }, {
 	title: i18n.ts.otherSettings,
@@ -176,6 +171,11 @@ const menuDef = computed(() => [{
 	}],
 }, {
 	items: [{
+		icon: 'fas fa-floppy-disk',
+		text: i18n.ts.preferencesBackups,
+		to: '/settings/preferences-backups',
+		active: currentPage?.route.name === 'preferences-backups',
+	}, {
 		type: 'button',
 		icon: 'fas fa-trash',
 		text: i18n.ts.clearCache,
