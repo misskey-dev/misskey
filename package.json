@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.118.0-beta.3",
+	"version": "12.118.0-beta.4",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -41,9 +41,9 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.9",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/parser": "5.30.6",
+		"@typescript-eslint/parser": "5.30.7",
 		"cross-env": "7.0.3",
-		"cypress": "10.3.0",
+		"cypress": "10.3.1",
 		"start-server-and-test": "1.14.0",
 		"typescript": "4.7.4"
 	}
