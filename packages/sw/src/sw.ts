@@ -26,7 +26,13 @@ self.addEventListener('activate', ev => {
 self.addEventListener('fetch', ev => {
 	ev.respondWith(
 		fetch(ev.request)
-		.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 }))
+		.catch(() => {
+			// prevent unexpected identifier error when loading javascript file
+			if (ev.request.url.endsWith('.js')) {
+				return new Response('', { status: 503 });
+			}
+			return new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 });
+		})
 	);
 });
 
