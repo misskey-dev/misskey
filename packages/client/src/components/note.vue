@@ -455,14 +455,15 @@ function readPromo() {
 
 							> span {
 								display: inline-block;
-								background: var(--panel);
+								background: var(--popup);
 								padding: 6px 10px;
 								font-size: 0.8em;
 								border-radius: 999px;
-								box-shadow: 0 0 7px 7px var(--bg);
+								box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 							}
 						}
 					}
+
 					&.collapsed {
 						position: relative;
 						max-height: 9em;
