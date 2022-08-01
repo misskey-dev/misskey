@@ -562,6 +562,7 @@ author: "作者"
 leaveConfirm: "未保存の変更があります。破棄しますか？"
 manage: "管理"
 plugins: "プラグイン"
+preferencesBackups: "設定のバックアップ"
 deck: "デッキ"
 undeck: "デッキ解除"
 useBlurEffectForModal: "モーダルにぼかし効果を使用"
@@ -891,6 +892,7 @@ activeEmailValidationDescription: "ユーザーのメールアドレスのバリ
 navbar: "ナビゲーションバー"
 shuffle: "シャッフル"
 account: "アカウント"
+move: "移動"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -951,6 +953,25 @@ _plugin:
   install: "プラグインのインストール"
   installWarn: "信頼できないプラグインはインストールしないでください。"
   manage: "プラグインの管理"
+
+_preferencesBackups:
+  list: "作成したバックアップ"
+  saveNew: "新規保存"
+  loadFile: "ファイルを読み込み"
+  apply: "このデバイスに適用"
+  save: "上書き保存"
+  inputName: "バックアップ名を入力"
+  cannotSave: "保存できません"
+  nameAlreadyExists: "バックアップ名「{name}」は既に存在します。違う名前を指定してください。"
+  applyConfirm: "バックアップ「{name}」を現在のデバイスに適用しますか？現在のデバイス設定は失われます。"
+  saveConfirm: "{name}に上書き保存しますか？"
+  deleteConfirm: "{name}を削除しますか？"
+  renameConfirm: "「{old}」を「{new}」に変更しますか？"
+  noBackups: "バックアップはありません。「新規保存」で現在のクライアント設定をサーバーに保存できます。"
+  createdAt: "作成日時: {date} {time}"
+  updatedAt: "更新日時: {date} {time}"
+  cannotLoad: "読み込みできません"
+  invalidFile: "ファイル形式が違います。"
 
 _registry:
   scope: "スコープ"
@@ -1038,6 +1059,8 @@ _mfm:
   sparkleDescription: "キラキラしたパーティクルのエフェクトを追加します。"
   rotate: "回転"
   rotateDescription: "指定した角度で回転させます。"
+  plain: "プレーン"
+  plainDescription: "内側の構文を全て無効にします。"
 
 _instanceTicker:
   none: "表示しない"
@@ -1756,6 +1779,7 @@ _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
   addColumn: "カラムを追加"
+  configureColumn: "カラムの設定"
   swapLeft: "左に移動"
   swapRight: "右に移動"
   swapUp: "上に移動"
@@ -1763,6 +1787,8 @@ _deck:
   stackLeft: "左に重ねる"
   popRight: "右に出す"
   profile: "プロファイル"
+  newProfile: "新規プロファイル"
+  deleteProfile: "プロファイルを削除"
   introduction: "カラムを組み合わせて自分だけのインターフェイスを作りましょう！"
   introduction2: "画面の右にある + を押して、いつでもカラムを追加できます。"
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選択してウィジェットを追加してください"

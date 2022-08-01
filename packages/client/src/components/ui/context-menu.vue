@@ -1,16 +1,16 @@
 <template>
 <transition :name="$store.state.animation ? 'fade' : ''" appear>
 	<div ref="rootEl" class="nvlagfpb" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" class="_popup _shadow" :align="'left'" @close="$emit('closed')"/>
+		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
 	</div>
 </transition>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue';
-import contains from '@/scripts/contains';
 import MkMenu from './menu.vue';
 import { MenuItem } from './types/menu.vue';
+import contains from '@/scripts/contains';
 import * as os from '@/os';
 
 const props = defineProps<{

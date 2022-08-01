@@ -50,7 +50,7 @@ function onContextmenu(ev) {
 		icon: 'fas fa-expand-alt',
 		text: i18n.ts.showInPage,
 		action: () => {
-			router.push(props.to);
+			router.push(props.to, 'forcePage');
 		},
 	}, null, {
 		icon: 'fas fa-external-link-alt',
@@ -79,7 +79,7 @@ function popout() {
 	popout_(props.to);
 }
 
-function nav() {
+function nav(ev: MouseEvent) {
 	if (props.behavior === 'browser') {
 		location.href = props.to;
 		return;
@@ -93,6 +93,10 @@ function nav() {
 		}
 	}
 
-	router.push(props.to);
+	if (ev.shiftKey) {
+		return openWindow();
+	}
+
+	router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
 }
 </script>

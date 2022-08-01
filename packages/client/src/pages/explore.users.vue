@@ -1,32 +1,32 @@
 <template>
 <MkSpacer :content-max="1200">
 	<MkTab v-model="origin" style="margin-bottom: var(--margin);">
-		<option value="local">{{ $ts.local }}</option>
-		<option value="remote">{{ $ts.remote }}</option>
+		<option value="local">{{ i18n.ts.local }}</option>
+		<option value="remote">{{ i18n.ts.remote }}</option>
 	</MkTab>
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
 			<MkFolder class="_gap" persist-key="explore-pinned-users">
-				<template #header><i class="fas fa-bookmark fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.pinnedUsers }}</template>
+				<template #header><i class="fas fa-bookmark fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
 				<XUserList :pagination="pinnedUsers"/>
 			</MkFolder>
 			<MkFolder class="_gap" persist-key="explore-popular-users">
-				<template #header><i class="fas fa-chart-line fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularUsers }}</template>
+				<template #header><i class="fas fa-chart-line fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsers"/>
 			</MkFolder>
 			<MkFolder class="_gap" persist-key="explore-recently-updated-users">
-				<template #header><i class="fas fa-comment-alt fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyUpdatedUsers }}</template>
+				<template #header><i class="fas fa-comment-alt fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsers"/>
 			</MkFolder>
 			<MkFolder class="_gap" persist-key="explore-recently-registered-users">
-				<template #header><i class="fas fa-plus fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyRegisteredUsers }}</template>
+				<template #header><i class="fas fa-plus fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsers"/>
 			</MkFolder>
 		</template>
 	</div>
 	<div v-else>
 		<MkFolder ref="tagsEl" :foldable="true" :expanded="false" class="_gap">
-			<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularTags }}</template>
+			<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
 				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/explore/tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
@@ -41,15 +41,15 @@
 
 		<template v-if="tag == null">
 			<MkFolder class="_gap">
-				<template #header><i class="fas fa-chart-line fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.popularUsers }}</template>
+				<template #header><i class="fas fa-chart-line fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsersF"/>
 			</MkFolder>
 			<MkFolder class="_gap">
-				<template #header><i class="fas fa-comment-alt fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyUpdatedUsers }}</template>
+				<template #header><i class="fas fa-comment-alt fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsersF"/>
 			</MkFolder>
 			<MkFolder class="_gap">
-				<template #header><i class="fas fa-rocket fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.recentlyDiscoveredUsers }}</template>
+				<template #header><i class="fas fa-rocket fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyDiscoveredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsersF"/>
 			</MkFolder>
 		</template>

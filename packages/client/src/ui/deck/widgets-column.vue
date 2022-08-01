@@ -1,5 +1,5 @@
 <template>
-<XColumn :func="{ handler: func, title: $ts.editWidgets }" :naked="true" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :naked="true" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header><i class="fas fa-window-maximize" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
@@ -46,6 +46,12 @@ function updateWidgets(widgets) {
 function func() {
 	edit = !edit;
 }
+
+const menu = [{
+	icon: 'fas fa-pencil-alt',
+	text: i18n.ts.editWidgets,
+	action: func,
+}];
 </script>
 
 <style lang="scss" scoped>

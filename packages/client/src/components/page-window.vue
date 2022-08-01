@@ -114,7 +114,7 @@ function menu(ev) {
 
 function back() {
 	history.pop();
-	router.change(history[history.length - 1].path, history[history.length - 1].key);
+	router.replace(history[history.length - 1].path, history[history.length - 1].key);
 }
 
 function close() {
@@ -122,7 +122,7 @@ function close() {
 }
 
 function expand() {
-	mainRouter.push(router.getCurrentPath());
+	mainRouter.push(router.getCurrentPath(), 'forcePage');
 	windowEl.close();
 }
 

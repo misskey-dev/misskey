@@ -18,7 +18,7 @@
 			</div>
 		</div>
 		<div v-if="!narrow || hideTitle" class="tabs">
-			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = el" v-tooltip="tab.title" class="tab _button" :class="{ active: tab.key != null && tab.key === props.tab }" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
+			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = el" v-tooltip.noDelay="tab.title" class="tab _button" :class="{ active: tab.key != null && tab.key === props.tab }" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
 			</button>
@@ -27,7 +27,7 @@
 	</template>
 	<div class="buttons right">
 		<template v-for="action in actions">
-			<button v-tooltip="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+			<button v-tooltip.noDelay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 		</template>
 	</div>
 </div>

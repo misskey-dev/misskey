@@ -70,6 +70,7 @@ import { $i } from '@/account';
 import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { deviceKind } from '@/scripts/device-kind';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -77,10 +78,11 @@ const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
 
+// デスクトップでウィンドウを狭くしたときモバイルUIが表示されて欲しいことはあるので deviceKind === 'desktop' の判定は行わない
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
-const isMobile = ref(window.innerWidth <= MOBILE_THRESHOLD);
+const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 window.addEventListener('resize', () => {
-	isMobile.value = window.innerWidth <= MOBILE_THRESHOLD;
+	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 });
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();

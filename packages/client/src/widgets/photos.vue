@@ -1,11 +1,12 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" class="mkw-photos">
-	<template #header><i class="fas fa-camera"></i>{{ $ts._widgets.photos }}</template>
+	<template #header><i class="fas fa-camera"></i>{{ i18n.ts._widgets.photos }}</template>
 
 	<div class="">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.stream">
-			<div v-for="(image, i) in images" :key="i"
+			<div
+				v-for="(image, i) in images" :key="i"
 				:class="$style.img"
 				:style="`background-image: url(${thumbnail(image)})`"
 			></div>
@@ -16,13 +17,14 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import { stream } from '@/stream';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import * as os from '@/os';
 import MkContainer from '@/components/ui/container.vue';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const name = 'photos';
 
@@ -70,7 +72,7 @@ const thumbnail = (image: any): string => {
 
 os.api('drive/stream', {
 	type: 'image/*',
-	limit: 9
+	limit: 9,
 }).then(res => {
 	images.value = res;
 	fetching.value = false;

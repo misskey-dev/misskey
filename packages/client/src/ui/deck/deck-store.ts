@@ -72,18 +72,8 @@ export const loadDeck = async () => {
 				return;
 			}
 
-			deckStore.set('columns', [{
-				id: 'a',
-				type: 'main',
-				name: i18n.ts._deck._columns.main,
-				width: 350,
-			}, {
-				id: 'b',
-				type: 'notifications',
-				name: i18n.ts._deck._columns.notifications,
-				width: 330,
-			}]);
-			deckStore.set('layout', [['a'], ['b']]);
+			deckStore.set('columns', []);
+			deckStore.set('layout', []);
 			return;
 		}
 		throw err;
@@ -104,6 +94,19 @@ export const saveDeck = throttle(1000, () => {
 		},
 	});
 });
+
+export async function getProfiles(): Promise<string[]> {
+	return await api('i/registry/keys', {
+		scope: ['client', 'deck', 'profiles'],
+	});
+}
+
+export async function deleteProfile(key: string): Promise<void> {
+	return await api('i/registry/remove', {
+		scope: ['client', 'deck', 'profiles'],
+		key: key,
+	});
+}
 
 export function addColumn(column: Column) {
 	if (column.name === undefined) column.name = null;

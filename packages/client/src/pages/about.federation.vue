@@ -3,35 +3,35 @@
 	<div class="query">
 		<MkInput v-model="host" :debounce="true" class="">
 			<template #prefix><i class="fas fa-search"></i></template>
-			<template #label>{{ $ts.host }}</template>
+			<template #label>{{ i18n.ts.host }}</template>
 		</MkInput>
 		<FormSplit style="margin-top: var(--margin);">
 			<MkSelect v-model="state">
-				<template #label>{{ $ts.state }}</template>
-				<option value="all">{{ $ts.all }}</option>
-				<option value="federating">{{ $ts.federating }}</option>
-				<option value="subscribing">{{ $ts.subscribing }}</option>
-				<option value="publishing">{{ $ts.publishing }}</option>
-				<option value="suspended">{{ $ts.suspended }}</option>
-				<option value="blocked">{{ $ts.blocked }}</option>
-				<option value="notResponding">{{ $ts.notResponding }}</option>
+				<template #label>{{ i18n.ts.state }}</template>
+				<option value="all">{{ i18n.ts.all }}</option>
+				<option value="federating">{{ i18n.ts.federating }}</option>
+				<option value="subscribing">{{ i18n.ts.subscribing }}</option>
+				<option value="publishing">{{ i18n.ts.publishing }}</option>
+				<option value="suspended">{{ i18n.ts.suspended }}</option>
+				<option value="blocked">{{ i18n.ts.blocked }}</option>
+				<option value="notResponding">{{ i18n.ts.notResponding }}</option>
 			</MkSelect>
 			<MkSelect v-model="sort">
-				<template #label>{{ $ts.sort }}</template>
-				<option value="+pubSub">{{ $ts.pubSub }} ({{ $ts.descendingOrder }})</option>
-				<option value="-pubSub">{{ $ts.pubSub }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+notes">{{ $ts.notes }} ({{ $ts.descendingOrder }})</option>
-				<option value="-notes">{{ $ts.notes }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+users">{{ $ts.users }} ({{ $ts.descendingOrder }})</option>
-				<option value="-users">{{ $ts.users }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+following">{{ $ts.following }} ({{ $ts.descendingOrder }})</option>
-				<option value="-following">{{ $ts.following }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+followers">{{ $ts.followers }} ({{ $ts.descendingOrder }})</option>
-				<option value="-followers">{{ $ts.followers }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+caughtAt">{{ $ts.registeredAt }} ({{ $ts.descendingOrder }})</option>
-				<option value="-caughtAt">{{ $ts.registeredAt }} ({{ $ts.ascendingOrder }})</option>
-				<option value="+lastCommunicatedAt">{{ $ts.lastCommunication }} ({{ $ts.descendingOrder }})</option>
-				<option value="-lastCommunicatedAt">{{ $ts.lastCommunication }} ({{ $ts.ascendingOrder }})</option>
+				<template #label>{{ i18n.ts.sort }}</template>
+				<option value="+pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+notes">{{ i18n.ts.notes }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-notes">{{ i18n.ts.notes }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+users">{{ i18n.ts.users }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-users">{{ i18n.ts.users }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+following">{{ i18n.ts.following }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-following">{{ i18n.ts.following }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+followers">{{ i18n.ts.followers }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+lastCommunicatedAt">{{ i18n.ts.lastCommunication }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-lastCommunicatedAt">{{ i18n.ts.lastCommunication }} ({{ i18n.ts.ascendingOrder }})</option>
 			</MkSelect>
 		</FormSplit>
 	</div>
