@@ -7,7 +7,7 @@
 				<div v-if="tab === 'local'" class="local">
 					<MkInput v-model="query" :debounce="true" type="search">
 						<template #prefix><i class="fas fa-search"></i></template>
-						<template #label>{{ $ts.search }}</template>
+						<template #label>{{ i18n.ts.search }}</template>
 					</MkInput>
 					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
 						<template #label>Select mode</template>
@@ -21,7 +21,7 @@
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
-						<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
 								<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
@@ -40,14 +40,14 @@
 					<FormSplit>
 						<MkInput v-model="queryRemote" :debounce="true" type="search">
 							<template #prefix><i class="fas fa-search"></i></template>
-							<template #label>{{ $ts.search }}</template>
+							<template #label>{{ i18n.ts.search }}</template>
 						</MkInput>
 						<MkInput v-model="host" :debounce="true">
-							<template #label>{{ $ts.host }}</template>
+							<template #label>{{ i18n.ts.host }}</template>
 						</MkInput>
 					</FormSplit>
 					<MkPagination :pagination="remotePagination">
-						<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
 								<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">

@@ -170,6 +170,7 @@ function onHeaderMousedown(evt: MouseEvent) {
 	beforeClickedAt = Date.now();
 
 	const main = rootEl;
+	if (main == null) return;
 
 	if (!contains(main, document.activeElement)) main.focus();
 

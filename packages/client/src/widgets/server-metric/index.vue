@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent">
-	<template #header><i class="fas fa-server"></i>{{ $ts._widgets.serverMetric }}</template>
+	<template #header><i class="fas fa-server"></i>{{ i18n.ts._widgets.serverMetric }}</template>
 	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
 
 	<div v-if="meta" class="mkw-serverMetric">
@@ -15,16 +15,17 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from '../widget';
-import MkContainer from '@/components/ui/container.vue';
 import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
 import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
+import MkContainer from '@/components/ui/container.vue';
+import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { stream } from '@/stream';
+import { i18n } from '@/i18n';
 
 const name = 'serverMetric';
 

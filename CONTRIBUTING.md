@@ -140,6 +140,34 @@ Misskey uses Vue(v3) as its front-end framework.
 - **When creating a new component, please use the Composition API (with [setup sugar](https://v3.vuejs.org/api/sfc-script-setup.html) and [ref sugar](https://github.com/vuejs/rfcs/discussions/369)) instead of the Options API.**
 	- Some of the existing components are implemented in the Options API, but it is an old implementation. Refactors that migrate those components to the Composition API are also welcome.
 
+## nirax
+niraxは、Misskeyで使用しているオリジナルのフロントエンドルーティングシステムです。
+**vue-routerから影響を多大に受けているので、まずはvue-routerについて学ぶことをお勧めします。**
+
+### ルート定義
+ルート定義は、以下の形式のオブジェクトの配列です。
+
+``` ts
+{
+	name?: string;
+	path: string;
+	component: Component;
+	query?: Record<string, string>;
+	loginRequired?: boolean;
+	hash?: string;
+	globalCacheKey?: string;
+	children?: RouteDef[];
+}
+```
+
+> **Warning**
+> 現状、ルートは定義された順に評価されます。
+> たとえば、`/foo/:id`ルート定義の次に`/foo/bar`ルート定義がされていた場合、後者がマッチすることはありません。
+
+### 複数のルーター
+vue-routerとの最大の違いは、niraxは複数のルーターが存在することを許可している点です。
+これにより、アプリ内ウィンドウでブラウザとは個別にルーティングすることなどが可能になります。
+
 ## Notes
 ### How to resolve conflictions occurred at yarn.lock?
 

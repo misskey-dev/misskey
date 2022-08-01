@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.117.0",
+	"version": "12.118.0-beta.4",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -52,9 +52,9 @@
 		"@types/gulp": "4.0.9",
 		"@types/gulp-rename": "2.0.1",
 		"@typescript-eslint/eslint-plugin": "latest",
-		"@typescript-eslint/parser": "5.30.6",
+		"@typescript-eslint/parser": "5.31.0",
 		"cross-env": "7.0.3",
-		"cypress": "10.3.0",
+		"cypress": "10.3.1",
 		"eslint-plugin-import": "^2.26.0",
 		"eslint-plugin-vue": "latest",
 		"start-server-and-test": "1.14.0",

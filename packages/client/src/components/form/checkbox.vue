@@ -9,7 +9,7 @@
 		:disabled="disabled"
 		@keydown.enter="toggle"
 	>
-	<span ref="button" v-adaptive-border v-tooltip="checked ? $ts.itsOn : $ts.itsOff" class="button" @click.prevent="toggle">
+	<span ref="button" v-adaptive-border v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff" class="button" @click.prevent="toggle">
 		<i class="check fas fa-check"></i>
 	</span>
 	<span class="label">
@@ -24,6 +24,7 @@
 import { toRefs, Ref } from 'vue';
 import * as os from '@/os';
 import Ripple from '@/components/ripple.vue';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;

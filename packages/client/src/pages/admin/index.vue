@@ -1,23 +1,23 @@
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
-	<div v-if="!narrow || initialPage == null" class="nav">	
+	<div v-if="!narrow || currentPage?.route.name == null" class="nav">	
 		<MkSpacer :content-max="700" :margin-min="16">
 			<div class="lxpfedzu">
 				<div class="banner">
 					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 				</div>
 
-				<MkInfo v-if="thereIsUnresolvedAbuseReport" warn class="info">{{ $ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ $ts.check }}</MkA></MkInfo>
-				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ $ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-				<MkInfo v-if="noBotProtection" warn class="info">{{ $ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-				<MkInfo v-if="noEmailServer" warn class="info">{{ $ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ $ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="thereIsUnresolvedAbuseReport" warn class="info">{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
+				<MkInfo v-if="noMaintainerInformation" warn class="info">{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noBotProtection" warn class="info">{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+				<MkInfo v-if="noEmailServer" warn class="info">{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 
-				<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
+				<MkSuperMenu :def="menuDef" :grid="currentPage?.route.name == null"></MkSuperMenu>
 			</div>
 		</MkSpacer>
 	</div>
-	<div v-if="!(narrow && initialPage == null)" class="main">
-		<component :is="component" :key="initialPage" v-bind="pageProps"/>
+	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
+		<RouterView/>
 	</div>
 </div>
 </template>
@@ -44,15 +44,10 @@ const indexInfo = {
 	hideHeader: true,
 };
 
-const props = defineProps<{
-	initialPage?: string,
-}>();
-
 provide('shouldOmitHeaderTitle', false);
 
 let INFO = $ref(indexInfo);
 let childInfo = $ref(null);
-let page = $ref(props.initialPage);
 let narrow = $ref(false);
 let view = $ref(null);
 let el = $ref(null);
@@ -61,6 +56,7 @@ let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instan
 let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha;
 let noEmailServer = !instance.enableEmail;
 let thereIsUnresolvedAbuseReport = $ref(false);
+let currentPage = $computed(() => router.currentRef.value.child);
 
 os.api('admin/abuse-user-reports', {
 	state: 'unresolved',
@@ -94,47 +90,47 @@ const menuDef = $computed(() => [{
 		icon: 'fas fa-tachometer-alt',
 		text: i18n.ts.dashboard,
 		to: '/admin/overview',
-		active: props.initialPage === 'overview',
+		active: currentPage?.route.name === 'overview',
 	}, {
 		icon: 'fas fa-users',
 		text: i18n.ts.users,
 		to: '/admin/users',
-		active: props.initialPage === 'users',
+		active: currentPage?.route.name === 'users',
 	}, {
 		icon: 'fas fa-laugh',
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
-		active: props.initialPage === 'emojis',
+		active: currentPage?.route.name === 'emojis',
 	}, {
 		icon: 'fas fa-globe',
 		text: i18n.ts.federation,
 		to: '/about#federation',
-		active: props.initialPage === 'federation',
+		active: currentPage?.route.name === 'federation',
 	}, {
 		icon: 'fas fa-clipboard-list',
 		text: i18n.ts.jobQueue,
 		to: '/admin/queue',
-		active: props.initialPage === 'queue',
+		active: currentPage?.route.name === 'queue',
 	}, {
 		icon: 'fas fa-cloud',
 		text: i18n.ts.files,
 		to: '/admin/files',
-		active: props.initialPage === 'files',
+		active: currentPage?.route.name === 'files',
 	}, {
 		icon: 'fas fa-broadcast-tower',
 		text: i18n.ts.announcements,
 		to: '/admin/announcements',
-		active: props.initialPage === 'announcements',
+		active: currentPage?.route.name === 'announcements',
 	}, {
 		icon: 'fas fa-audio-description',
 		text: i18n.ts.ads,
 		to: '/admin/ads',
-		active: props.initialPage === 'ads',
+		active: currentPage?.route.name === 'ads',
 	}, {
 		icon: 'fas fa-exclamation-circle',
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
-		active: props.initialPage === 'abuses',
+		active: currentPage?.route.name === 'abuses',
 	}],
 }, {
 	title: i18n.ts.settings,
@@ -142,47 +138,47 @@ const menuDef = $computed(() => [{
 		icon: 'fas fa-cog',
 		text: i18n.ts.general,
 		to: '/admin/settings',
-		active: props.initialPage === 'settings',
+		active: currentPage?.route.name === 'settings',
 	}, {
 		icon: 'fas fa-envelope',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',
-		active: props.initialPage === 'email-settings',
+		active: currentPage?.route.name === 'email-settings',
 	}, {
 		icon: 'fas fa-cloud',
 		text: i18n.ts.objectStorage,
 		to: '/admin/object-storage',
-		active: props.initialPage === 'object-storage',
+		active: currentPage?.route.name === 'object-storage',
 	}, {
 		icon: 'fas fa-lock',
 		text: i18n.ts.security,
 		to: '/admin/security',
-		active: props.initialPage === 'security',
+		active: currentPage?.route.name === 'security',
 	}, {
 		icon: 'fas fa-globe',
 		text: i18n.ts.relays,
 		to: '/admin/relays',
-		active: props.initialPage === 'relays',
+		active: currentPage?.route.name === 'relays',
 	}, {
 		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/admin/integrations',
-		active: props.initialPage === 'integrations',
+		active: currentPage?.route.name === 'integrations',
 	}, {
 		icon: 'fas fa-ban',
 		text: i18n.ts.instanceBlocking,
 		to: '/admin/instance-block',
-		active: props.initialPage === 'instance-block',
+		active: currentPage?.route.name === 'instance-block',
 	}, {
 		icon: 'fas fa-ghost',
 		text: i18n.ts.proxyAccount,
 		to: '/admin/proxy-account',
-		active: props.initialPage === 'proxy-account',
+		active: currentPage?.route.name === 'proxy-account',
 	}, {
 		icon: 'fas fa-cogs',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',
-		active: props.initialPage === 'other-settings',
+		active: currentPage?.route.name === 'other-settings',
 	}],
 }, {
 	title: i18n.ts.info,
@@ -190,55 +186,12 @@ const menuDef = $computed(() => [{
 		icon: 'fas fa-database',
 		text: i18n.ts.database,
 		to: '/admin/database',
-		active: props.initialPage === 'database',
+		active: currentPage?.route.name === 'database',
 	}],
 }]);
 
-const component = $computed(() => {
-	if (props.initialPage == null) return null;
-	switch (props.initialPage) {
-		case 'overview': return defineAsyncComponent(() => import('./overview.vue'));
-		case 'users': return defineAsyncComponent(() => import('./users.vue'));
-		case 'emojis': return defineAsyncComponent(() => import('./emojis.vue'));
-		//case 'federation': return defineAsyncComponent(() => import('../federation.vue'));
-		case 'queue': return defineAsyncComponent(() => import('./queue.vue'));
-		case 'files': return defineAsyncComponent(() => import('./files.vue'));
-		case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));
-		case 'ads': return defineAsyncComponent(() => import('./ads.vue'));
-		case 'database': return defineAsyncComponent(() => import('./database.vue'));
-		case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
-		case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
-		case 'email-settings': return defineAsyncComponent(() => import('./email-settings.vue'));
-		case 'object-storage': return defineAsyncComponent(() => import('./object-storage.vue'));
-		case 'security': return defineAsyncComponent(() => import('./security.vue'));
-		case 'relays': return defineAsyncComponent(() => import('./relays.vue'));
-		case 'integrations': return defineAsyncComponent(() => import('./integrations.vue'));
-		case 'instance-block': return defineAsyncComponent(() => import('./instance-block.vue'));
-		case 'proxy-account': return defineAsyncComponent(() => import('./proxy-account.vue'));
-		case 'other-settings': return defineAsyncComponent(() => import('./other-settings.vue'));
-	}
-});
-
-watch(component, () => {
-	pageProps = {};
-
-	nextTick(() => {
-		scroll(el, { top: 0 });
-	});
-}, { immediate: true });
-
-watch(() => props.initialPage, () => {
-	if (props.initialPage == null && !narrow) {
-		router.push('/admin/overview');
-	} else {
-		if (props.initialPage == null) {
-			INFO = indexInfo;
-		}
-	}
-});
-
 watch(narrow, () => {
-	if (props.initialPage == null && !narrow) {
+	if (currentPage?.route.name == null && !narrow) {
 		router.push('/admin/overview');
 	}
 });
@@ -247,7 +200,7 @@ onMounted(() => {
 	ro.observe(el);
 
 	narrow = el.offsetWidth < NARROW_THRESHOLD;
-	if (props.initialPage == null && !narrow) {
+	if (currentPage?.route.name == null && !narrow) {
 		router.push('/admin/overview');
 	}
 });

@@ -1,6 +1,6 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" :title="$ts.disablePlayer" @click="playerEnabled = false"><i class="fas fa-times"></i></button>
+	<button class="disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="fas fa-times"></i></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 </div>
 <div v-else-if="tweetId && tweetExpanded" ref="twitter" class="twitter">
@@ -10,7 +10,7 @@
 	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button v-if="!playerEnabled && player.url" class="_button" :title="$ts.enablePlayer" @click.prevent="playerEnabled = true"><i class="fas fa-play-circle"></i></button>
+				<button v-if="!playerEnabled && player.url" class="_button" :title="i18n.ts.enablePlayer" @click.prevent="playerEnabled = true"><i class="fas fa-play-circle"></i></button>
 			</div>
 			<article>
 				<header>
@@ -26,7 +26,7 @@
 	</transition>
 	<div v-if="tweetId" class="expandTweet">
 		<a @click="tweetExpanded = true">
-			<i class="fab fa-twitter"></i> {{ $ts.expandTweet }}
+			<i class="fab fa-twitter"></i> {{ i18n.ts.expandTweet }}
 		</a>
 	</div>
 </div>
@@ -35,6 +35,7 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted } from 'vue';
 import { url as local, lang } from '@/config';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	url: string;

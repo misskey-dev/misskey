@@ -5,7 +5,7 @@
 	</div>
 	<div class="value">
 		<slot name="value"></slot>
-		<button v-if="copy" v-tooltip="$ts.copy" class="_textButton" style="margin-left: 0.5em;" @click="copy_"><i class="far fa-copy"></i></button>
+		<button v-if="copy" v-tooltip="i18n.ts.copy" class="_textButton" style="margin-left: 0.5em;" @click="copy_"><i class="far fa-copy"></i></button>
 	</div>
 </div>
 </template>
@@ -14,6 +14,7 @@
 import { } from 'vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	copy?: string | null;

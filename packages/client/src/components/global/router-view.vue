@@ -1,12 +1,18 @@
 <template>
 <KeepAlive :max="defaultStore.state.numberOfPageCache">
-	<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
+	<Suspense>
+		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
+
+		<template #fallback>
+			Loading...
+		</template>
+	</Suspense>
 </KeepAlive>
 </template>
 
 <script lang="ts" setup>
-import { inject, nextTick, onMounted, onUnmounted, watch } from 'vue';
-import { Router } from '@/nirax';
+import { inject, nextTick, onBeforeUnmount, onMounted, onUnmounted, provide, watch } from 'vue';
+import { Resolved, Router } from '@/nirax';
 import { defaultStore } from '@/store';
 
 const props = defineProps<{
@@ -19,19 +25,37 @@ if (router == null) {
 	throw new Error('no router provided');
 }
 
-let currentPageComponent = $shallowRef(router.getCurrentComponent());
-let currentPageProps = $ref(router.getCurrentProps());
-let key = $ref(router.getCurrentKey());
+const currentDepth = inject('routerCurrentDepth', 0);
+provide('routerCurrentDepth', currentDepth + 1);
 
-function onChange({ route, props: newProps, key: newKey }) {
-	currentPageComponent = route.component;
-	currentPageProps = newProps;
-	key = newKey;
+function resolveNested(current: Resolved, d = 0): Resolved | null {
+	if (d === currentDepth) {
+		return current;
+	} else {
+		if (current.child) {
+			return resolveNested(current.child, d + 1);
+		} else {
+			return null;
+		}
+	}
+}
+
+const current = resolveNested(router.current)!;
+let currentPageComponent = $shallowRef(current.route.component);
+let currentPageProps = $ref(current.props);
+let key = $ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
+
+function onChange({ resolved, key: newKey }) {
+	const current = resolveNested(resolved);
+	if (current == null) return;
+	currentPageComponent = current.route.component;
+	currentPageProps = current.props;
+	key = current.route.path + JSON.stringify(Object.fromEntries(current.props));
 }
 
 router.addListener('change', onChange);
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
 	router.removeListener('change', onChange);
 });
 </script>
