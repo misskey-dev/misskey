@@ -562,6 +562,7 @@ author: "Tác giả"
 leaveConfirm: "Có những thay đổi chưa được lưu. Bạn có muốn bỏ chúng không?"
 manage: "Quản lý"
 plugins: "Plugin"
+preferencesBackups: "Sao lưu thiết lập"
 deck: "Deck"
 undeck: "Bỏ Deck"
 useBlurEffectForModal: "Sử dụng hiệu ứng mờ cho các hộp thoại"
@@ -942,6 +943,10 @@ _plugin:
   install: "Cài đặt tiện ích"
   installWarn: "Vui lòng không cài đặt những tiện ích đáng ngờ."
   manage: "Quản lý plugin"
+_preferencesBackups:
+  list: "Tạo sao lưu"
+  saveNew: "Lưu bản sao lưu"
+  loadFile: "Nhập tập tin"
 _registry:
   scope: "Phạm vi"
   key: "Mã"
