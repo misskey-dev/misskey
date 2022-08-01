@@ -132,27 +132,27 @@ function isObject(value: unknown): value is Record<string, unknown> {
 }
 
 function validate(profile: unknown): void {
-	if (!isObject(profile)) throw Error('not an object');
+	if (!isObject(profile)) throw new Error('not an object');
 
 	// Check if unnecessary properties exist
-	if (Object.keys(profile).some(key => !profileProps.includes(key))) throw Error('Unnecessary properties exist');
+	if (Object.keys(profile).some(key => !profileProps.includes(key))) throw new Error('Unnecessary properties exist');
 
-	if (!profile.name) throw Error('Missing required prop: name');
-	if (!profile.misskeyVersion) throw Error('Missing required prop: misskeyVersion');
+	if (!profile.name) throw new Error('Missing required prop: name');
+	if (!profile.misskeyVersion) throw new Error('Missing required prop: misskeyVersion');
 	
 	// Check if createdAt and updatedAt is Date
 	// https://zenn.dev/lollipop_onl/articles/eoz-judge-js-invalid-date
-	if (!profile.createdAt || Number.isNaN(new Date(profile.createdAt).getTime())) throw Error('createdAt is falsy or not Date');
+	if (!profile.createdAt || Number.isNaN(new Date(profile.createdAt).getTime())) throw new Error('createdAt is falsy or not Date');
 	if (profile.updatedAt) {
 		if (Number.isNaN(new Date(profile.updatedAt).getTime())) {
-			throw Error('updatedAt is not Date');
+			throw new Error('updatedAt is not Date');
 		}
 	} else if (profile.updatedAt !== null) {
-		throw Error('updatedAt is not null');
+		throw new Error('updatedAt is not null');
 	}
 
-	if (!profile.settings) throw Error('Missing required prop: settings');
-	if (!isObject(profile.settings)) throw Error('Invalid prop: settings');
+	if (!profile.settings) throw new Error('Missing required prop: settings');
+	if (!isObject(profile.settings)) throw new Error('Invalid prop: settings');
 }
 
 function getSettings(): Profile['settings'] {
