@@ -1279,6 +1279,7 @@ _widgets:
   activity: "Activity"
   photos: "Photos"
   digitalClock: "Digital clock"
+  unixClock: "UNIX clock"
   federation: "Federation"
   instanceCloud: "Instance cloud"
   postForm: "Posting form"
