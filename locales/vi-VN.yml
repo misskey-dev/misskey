@@ -1279,6 +1279,7 @@ _widgets:
   activity: "Hoạt động"
   photos: "Kho ảnh"
   digitalClock: "Đồng hồ số"
+  unixClock: "Đồng hồ UNIX"
   federation: "Liên hợp"
   instanceCloud: "Instance cloud"
   postForm: "Mẫu đăng"
