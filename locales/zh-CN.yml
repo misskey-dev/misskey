@@ -1279,6 +1279,7 @@ _widgets:
   activity: "活动"
   photos: "照片"
   digitalClock: "数字时钟"
+  unixClock: "UNIX时钟"
   federation: "联邦宇宙"
   instanceCloud: "实例云"
   postForm: "投稿窗口"
