@@ -1274,6 +1274,7 @@ _widgets:
   activity: "Aktivita"
   photos: "Fotky"
   digitalClock: "Digitálne hodiny"
+  unixClock: "UNIX čas"
   federation: "Federácia"
   instanceCloud: "Cloud serverov"
   postForm: "Napísať poznámku"
