@@ -1279,6 +1279,7 @@ _widgets:
   activity: "動態"
   photos: "照片"
   digitalClock: "電子時鐘"
+  unixClock: "UNIX時間"
   federation: "聯邦宇宙"
   instanceCloud: "實例雲"
   postForm: "發佈窗口"
