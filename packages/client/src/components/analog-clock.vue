@@ -112,46 +112,50 @@ const texts = computed(() => {
 	return angles;
 });
 
-const now = shallowRef(new Date());
-now.value.setMinutes(now.value.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
-
-const enabled = ref(true);
-const majorGraduationColor = ref<string>();
-const minorGraduationColor = ref<string>();
-const sHandColor = ref<string>();
-const mHandColor = ref<string>();
-const hHandColor = ref<string>();
-const nowColor = ref<string>();
-const s = computed(() => now.value.getSeconds());
-const m = computed(() => now.value.getMinutes());
-const h = computed(() => now.value.getHours());
-const hAngle = computed(() => Math.PI * (h.value % (props.twentyfour ? 24 : 12) + (m.value + s.value / 60) / 60) / (props.twentyfour ? 12 : 6));
-const mAngle = computed(() => Math.PI * (m.value + s.value / 60) / 30);
-const sAngle = computed(() => Math.PI * s.value / 30);
+let enabled = true;
+let majorGraduationColor = $ref<string>();
+//let minorGraduationColor = $ref<string>();
+let sHandColor = $ref<string>();
+let mHandColor = $ref<string>();
+let hHandColor = $ref<string>();
+let nowColor = $ref<string>();
+let h = $ref<number>(0);
+let m = $ref<number>(0);
+let s = $ref<number>(0);
+let hAngle = $ref<number>(0);
+let mAngle = $ref<number>(0);
+let sAngle = $ref<number>(0);
 
 function tick() {
-	const date = new Date();
-	date.setMinutes(now.value.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
-	now.value = date;
+	const now = new Date();
+	now.setMinutes(now.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+	s = now.getSeconds();
+	m = now.getMinutes();
+	h = now.getHours();
+	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
+	mAngle = Math.PI * (m + s / 60) / 30;
+	sAngle = Math.PI * s / 30;
 }
+
+tick();
 
 function calcColors() {
 	const computedStyle = getComputedStyle(document.documentElement);
 	const dark = tinycolor(computedStyle.getPropertyValue('--bg')).isDark();
 	const accent = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
-	majorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
-	minorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-	sHandColor.value = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
-	mHandColor.value = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
-	hHandColor.value = accent;
-	nowColor.value = accent;
+	majorGraduationColor = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
+	//minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	sHandColor = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
+	mHandColor = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
+	hHandColor = accent;
+	nowColor = accent;
 }
 
 calcColors();
 
 onMounted(() => {
 	const update = () => {
-		if (enabled.value) {
+		if (enabled) {
 			tick();
 			window.setTimeout(update, 1000);
 		}
@@ -162,7 +166,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	enabled.value = false;
+	enabled = false;
 
 	globalEvents.off('themeChanged', calcColors);
 });
