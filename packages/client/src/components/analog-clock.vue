@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, shallowRef } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
 
@@ -112,7 +112,7 @@ const texts = computed(() => {
 	return angles;
 });
 
-const now = ref(new Date());
+const now = shallowRef(new Date());
 now.value.setMinutes(now.value.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
 
 const enabled = ref(true);
@@ -130,8 +130,9 @@ const mAngle = computed(() => Math.PI * (m.value + s.value / 60) / 30);
 const sAngle = computed(() => Math.PI * s.value / 30);
 
 function tick() {
-	now.value = new Date();
-	now.value.setMinutes(now.value.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+	const date = new Date();
+	date.setMinutes(now.value.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+	now.value = date;
 }
 
 function calcColors() {
