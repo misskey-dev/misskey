@@ -4,27 +4,27 @@
 	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<FormInput v-model="title">
-				<template #label>{{ $ts.title }}</template>
+				<template #label>{{ i18n.ts.title }}</template>
 			</FormInput>
 
 			<FormTextarea v-model="description" :max="500">
-				<template #label>{{ $ts.description }}</template>
+				<template #label>{{ i18n.ts.description }}</template>
 			</FormTextarea>
 
 			<div class="">
 				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 					<div class="name">{{ file.name }}</div>
-					<button v-tooltip="$ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
+					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
 				</div>
-				<FormButton primary @click="selectFile"><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
+				<FormButton primary @click="selectFile"><i class="fas fa-plus"></i> {{ i18n.ts.attachFile }}</FormButton>
 			</div>
 
-			<FormSwitch v-model="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
+			<FormSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</FormSwitch>
 
-			<FormButton v-if="postId" primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-			<FormButton v-else primary @click="save"><i class="fas fa-save"></i> {{ $ts.publish }}</FormButton>
+			<FormButton v-if="postId" primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+			<FormButton v-else primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.publish }}</FormButton>
 
-			<FormButton v-if="postId" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</FormButton>
+			<FormButton v-if="postId" danger @click="del"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</FormButton>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>

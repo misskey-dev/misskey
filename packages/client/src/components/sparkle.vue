@@ -63,63 +63,51 @@
 </span>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref } from 'vue';
 
-export default defineComponent({
-	setup() {
-		const particles = ref([]);
-		const el = ref<HTMLElement>();
-		const width = ref(0);
-		const height = ref(0);
-		const colors = ['#FF1493', '#00FFFF', '#FFE202', '#FFE202', '#FFE202'];
-		let stop = false;
-		let ro: ResizeObserver | undefined;
+const particles = ref([]);
+const el = ref<HTMLElement>();
+const width = ref(0);
+const height = ref(0);
+const colors = ['#FF1493', '#00FFFF', '#FFE202', '#FFE202', '#FFE202'];
+let stop = false;
+let ro: ResizeObserver | undefined;
 
-		onMounted(() => {
-			ro = new ResizeObserver((entries, observer) => {
-				width.value = el.value?.offsetWidth + 64;
-				height.value = el.value?.offsetHeight + 64;
-			});
-			ro.observe(el.value);
-			const add = () => {
-				if (stop) return;
-				const x = (Math.random() * (width.value - 64));
-				const y = (Math.random() * (height.value - 64));
-				const sizeFactor = Math.random();
-				const particle = {
-					id: Math.random().toString(),
-					x,
-					y,
-					size: 0.2 + ((sizeFactor / 10) * 3),
-					dur: 1000 + (sizeFactor * 1000),
-					color: colors[Math.floor(Math.random() * colors.length)],
-				};
-				particles.value.push(particle);
-				window.setTimeout(() => {
-					particles.value = particles.value.filter(x => x.id !== particle.id);
-				}, particle.dur - 100);
-
-				window.setTimeout(() => {
-					add();
-				}, 500 + (Math.random() * 500));
-			};
-			add();
-		});
-		
-		onUnmounted(() => {
-			if (ro) ro.disconnect();
-			stop = true;
-		});
-
-		return {
-			el,
-			width,
-			height,
-			particles,
+onMounted(() => {
+	ro = new ResizeObserver((entries, observer) => {
+		width.value = el.value?.offsetWidth + 64;
+		height.value = el.value?.offsetHeight + 64;
+	});
+	ro.observe(el.value);
+	const add = () => {
+		if (stop) return;
+		const x = (Math.random() * (width.value - 64));
+		const y = (Math.random() * (height.value - 64));
+		const sizeFactor = Math.random();
+		const particle = {
+			id: Math.random().toString(),
+			x,
+			y,
+			size: 0.2 + ((sizeFactor / 10) * 3),
+			dur: 1000 + (sizeFactor * 1000),
+			color: colors[Math.floor(Math.random() * colors.length)],
 		};
-	},
+		particles.value.push(particle);
+		window.setTimeout(() => {
+			particles.value = particles.value.filter(x => x.id !== particle.id);
+		}, particle.dur - 100);
+
+		window.setTimeout(() => {
+			add();
+		}, 500 + (Math.random() * 500));
+	};
+	add();
+});
+
+onUnmounted(() => {
+	if (ro) ro.disconnect();
+	stop = true;
 });
 </script>
 

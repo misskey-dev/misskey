@@ -1,12 +1,12 @@
 <template>
 <div class="_formRoot">
 	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
-		<option value="mute">{{ $ts.mutedUsers }}</option>
-		<option value="block">{{ $ts.blockedUsers }}</option>
+		<option value="mute">{{ i18n.ts.mutedUsers }}</option>
+		<option value="block">{{ i18n.ts.blockedUsers }}</option>
 	</MkTab>
 	<div v-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination" class="muting">
-			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
+			<template #empty><FormInfo>{{ i18n.ts.noUsers }}</FormInfo></template>
 			<template #default="{items}">
 				<FormLink v-for="mute in items" :key="mute.id" :to="userPage(mute.mutee)">
 					<MkAcct :user="mute.mutee"/>
@@ -16,7 +16,7 @@
 	</div>
 	<div v-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination" class="blocking">
-			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
+			<template #empty><FormInfo>{{ i18n.ts.noUsers }}</FormInfo></template>
 			<template #default="{items}">
 				<FormLink v-for="block in items" :key="block.id" :to="userPage(block.blockee)">
 					<MkAcct :user="block.blockee"/>

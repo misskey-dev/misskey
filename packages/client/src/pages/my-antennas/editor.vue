@@ -2,44 +2,44 @@
 <div class="shaynizk">
 	<div class="form">
 		<MkInput v-model="name" class="_formBlock">
-			<template #label>{{ $ts.name }}</template>
+			<template #label>{{ i18n.ts.name }}</template>
 		</MkInput>
 		<MkSelect v-model="src" class="_formBlock">
-			<template #label>{{ $ts.antennaSource }}</template>
-			<option value="all">{{ $ts._antennaSources.all }}</option>
-			<!--<option value="home">{{ $ts._antennaSources.homeTimeline }}</option>-->
-			<option value="users">{{ $ts._antennaSources.users }}</option>
-			<!--<option value="list">{{ $ts._antennaSources.userList }}</option>-->
-			<!--<option value="group">{{ $ts._antennaSources.userGroup }}</option>-->
+			<template #label>{{ i18n.ts.antennaSource }}</template>
+			<option value="all">{{ i18n.ts._antennaSources.all }}</option>
+			<!--<option value="home">{{ i18n.ts._antennaSources.homeTimeline }}</option>-->
+			<option value="users">{{ i18n.ts._antennaSources.users }}</option>
+			<!--<option value="list">{{ i18n.ts._antennaSources.userList }}</option>-->
+			<!--<option value="group">{{ i18n.ts._antennaSources.userGroup }}</option>-->
 		</MkSelect>
 		<MkSelect v-if="src === 'list'" v-model="userListId" class="_formBlock">
-			<template #label>{{ $ts.userList }}</template>
+			<template #label>{{ i18n.ts.userList }}</template>
 			<option v-for="list in userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
 		</MkSelect>
 		<MkSelect v-else-if="src === 'group'" v-model="userGroupId" class="_formBlock">
-			<template #label>{{ $ts.userGroup }}</template>
+			<template #label>{{ i18n.ts.userGroup }}</template>
 			<option v-for="group in userGroups" :key="group.id" :value="group.id">{{ group.name }}</option>
 		</MkSelect>
 		<MkTextarea v-else-if="src === 'users'" v-model="users" class="_formBlock">
-			<template #label>{{ $ts.users }}</template>
-			<template #caption>{{ $ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ $ts.addUser }}</button></template>
+			<template #label>{{ i18n.ts.users }}</template>
+			<template #caption>{{ i18n.ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ i18n.ts.addUser }}</button></template>
 		</MkTextarea>
-		<MkSwitch v-model="withReplies" class="_formBlock">{{ $ts.withReplies }}</MkSwitch>
+		<MkSwitch v-model="withReplies" class="_formBlock">{{ i18n.ts.withReplies }}</MkSwitch>
 		<MkTextarea v-model="keywords" class="_formBlock">
-			<template #label>{{ $ts.antennaKeywords }}</template>
-			<template #caption>{{ $ts.antennaKeywordsDescription }}</template>
+			<template #label>{{ i18n.ts.antennaKeywords }}</template>
+			<template #caption>{{ i18n.ts.antennaKeywordsDescription }}</template>
 		</MkTextarea>
 		<MkTextarea v-model="excludeKeywords" class="_formBlock">
-			<template #label>{{ $ts.antennaExcludeKeywords }}</template>
-			<template #caption>{{ $ts.antennaKeywordsDescription }}</template>
+			<template #label>{{ i18n.ts.antennaExcludeKeywords }}</template>
+			<template #caption>{{ i18n.ts.antennaKeywordsDescription }}</template>
 		</MkTextarea>
-		<MkSwitch v-model="caseSensitive" class="_formBlock">{{ $ts.caseSensitive }}</MkSwitch>
-		<MkSwitch v-model="withFile" class="_formBlock">{{ $ts.withFileAntenna }}</MkSwitch>
-		<MkSwitch v-model="notify" class="_formBlock">{{ $ts.notifyAntenna }}</MkSwitch>
+		<MkSwitch v-model="caseSensitive" class="_formBlock">{{ i18n.ts.caseSensitive }}</MkSwitch>
+		<MkSwitch v-model="withFile" class="_formBlock">{{ i18n.ts.withFileAntenna }}</MkSwitch>
+		<MkSwitch v-model="notify" class="_formBlock">{{ i18n.ts.notifyAntenna }}</MkSwitch>
 	</div>
 	<div class="actions">
-		<MkButton inline primary @click="saveAntenna()"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-		<MkButton v-if="antenna.id != null" inline danger @click="deleteAntenna()"><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
+		<MkButton inline primary @click="saveAntenna()"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton v-if="antenna.id != null" inline danger @click="deleteAntenna()"><i class="fas fa-trash"></i> {{ i18n.ts.delete }}</MkButton>
 	</div>
 </div>
 </template>

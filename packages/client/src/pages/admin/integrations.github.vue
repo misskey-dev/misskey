@@ -2,7 +2,7 @@
 <FormSuspense :p="init">
 	<div class="_formRoot">
 		<FormSwitch v-model="enableGithubIntegration" class="_formBlock">
-			<template #label>{{ $ts.enable }}</template>
+			<template #label>{{ i18n.ts.enable }}</template>
 		</FormSwitch>
 
 		<template v-if="enableGithubIntegration">
@@ -19,7 +19,7 @@
 			</FormInput>
 		</template>
 
-		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </FormSuspense>
 </template>
@@ -33,6 +33,7 @@ import FormInfo from '@/components/ui/info.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
+import { i18n } from '@/i18n';
 
 let uri: string = $ref('');
 let enableGithubIntegration: boolean = $ref(false);

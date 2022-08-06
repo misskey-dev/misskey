@@ -292,6 +292,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 <style lang="scss" scoped>
 .mk-messaging-room {
 	position: relative;
+	overflow: auto;
 
 	> .body {
 		.more {
@@ -335,10 +336,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 		z-index: 2;
 		bottom: 0;
 		padding-top: 8px;
-
-		@media (max-width: 500px) {
-			bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
-		}
+		bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
 
 		> .new-message {
 			width: 100%;

@@ -7,31 +7,31 @@
 				<div class="_content">
 					<div class="inputs" style="display: flex;">
 						<MkSelect v-model="state" style="margin: 0; flex: 1;">
-							<template #label>{{ $ts.state }}</template>
-							<option value="all">{{ $ts.all }}</option>
-							<option value="unresolved">{{ $ts.unresolved }}</option>
-							<option value="resolved">{{ $ts.resolved }}</option>
+							<template #label>{{ i18n.ts.state }}</template>
+							<option value="all">{{ i18n.ts.all }}</option>
+							<option value="unresolved">{{ i18n.ts.unresolved }}</option>
+							<option value="resolved">{{ i18n.ts.resolved }}</option>
 						</MkSelect>
 						<MkSelect v-model="targetUserOrigin" style="margin: 0; flex: 1;">
-							<template #label>{{ $ts.reporteeOrigin }}</template>
-							<option value="combined">{{ $ts.all }}</option>
-							<option value="local">{{ $ts.local }}</option>
-							<option value="remote">{{ $ts.remote }}</option>
+							<template #label>{{ i18n.ts.reporteeOrigin }}</template>
+							<option value="combined">{{ i18n.ts.all }}</option>
+							<option value="local">{{ i18n.ts.local }}</option>
+							<option value="remote">{{ i18n.ts.remote }}</option>
 						</MkSelect>
 						<MkSelect v-model="reporterOrigin" style="margin: 0; flex: 1;">
-							<template #label>{{ $ts.reporterOrigin }}</template>
-							<option value="combined">{{ $ts.all }}</option>
-							<option value="local">{{ $ts.local }}</option>
-							<option value="remote">{{ $ts.remote }}</option>
+							<template #label>{{ i18n.ts.reporterOrigin }}</template>
+							<option value="combined">{{ i18n.ts.all }}</option>
+							<option value="local">{{ i18n.ts.local }}</option>
+							<option value="remote">{{ i18n.ts.remote }}</option>
 						</MkSelect>
 					</div>
 					<!-- TODO
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
 				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" :spellcheck="false">
-					<span>{{ $ts.username }}</span>
+					<span>{{ i18n.ts.username }}</span>
 				</MkInput>
 				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params().origin === 'local'">
-					<span>{{ $ts.host }}</span>
+					<span>{{ i18n.ts.host }}</span>
 				</MkInput>
 			</div>
 			-->

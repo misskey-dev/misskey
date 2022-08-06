@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<{
 const _time = typeof props.time === 'string' ? new Date(props.time) : props.time;
 const absolute = _time.toLocaleString();
 
-let now = $ref(new Date());
+let now = $shallowRef(new Date());
 const relative = $computed(() => {
 	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
 	return (

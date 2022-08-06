@@ -1,6 +1,6 @@
 <template>
 <MkContainer :style="`height: ${widgetProps.height}px;`" :show-header="widgetProps.showHeader" :scrollable="true" class="mkw-notifications">
-	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
+	<template #header><i class="fas fa-bell"></i>{{ i18n.ts.notifications }}</template>
 	<template #func><button class="_button" @click="configureNotification()"><i class="fas fa-cog"></i></button></template>
 
 	<div>
@@ -10,12 +10,13 @@
 </template>
 
 <script lang="ts" setup>
-import { GetFormResultType } from '@/scripts/form';
+import { defineAsyncComponent } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/ui/container.vue';
 import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
-import { defineAsyncComponent } from 'vue';
+import { i18n } from '@/i18n';
 
 const name = 'notifications';
 
@@ -57,7 +58,7 @@ const configureNotification = () => {
 			const { includingTypes } = res;
 			widgetProps.includingTypes = includingTypes;
 			save();
-		}
+		},
 	}, 'closed');
 };
 
