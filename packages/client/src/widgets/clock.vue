@@ -1,7 +1,7 @@
 <template>
 <MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-clock">
 	<div class="vubelbmv" :class="widgetProps.size">
-		<div v-if="widgetProps.showLabel" class="label abbrev">{{ tzAbbrev }}</div>
+		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label a abbrev">{{ tzAbbrev }}</div>
 		<MkAnalogClock
 			class="clock"
 			:thickness="widgetProps.thickness"
@@ -10,7 +10,8 @@
 			:fade-graduations="widgetProps.fadeGraduations"
 			:twentyfour="widgetProps.twentyFour"
 		/>
-		<div v-if="widgetProps.showLabel" class="label offset">{{ tzOffsetLabel }}</div>
+		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" class="_monospace label c time" :show-s="false" :offset="tzOffset"/>
+		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label d offset">{{ tzOffsetLabel }}</div>
 	</div>
 </MkContainer>
 </template>
@@ -21,6 +22,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExp
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/ui/container.vue';
 import MkAnalogClock from '@/components/analog-clock.vue';
+import MkDigitalClock from '@/components/digital-clock.vue';
 import { timezones } from '@/scripts/timezones';
 import { i18n } from '@/i18n';
 
@@ -72,9 +74,18 @@ const widgetPropsDef = {
 		type: 'boolean' as const,
 		default: false,
 	},
-	showLabel: {
-		type: 'boolean' as const,
-		default: true,
+	label: {
+		type: 'radio' as const,
+		default: 'none',
+		options: [{
+			value: 'none', label: 'None',
+		}, {
+			value: 'time', label: 'Time',
+		}, {
+			value: 'tz', label: 'TZ',
+		}, {
+			value: 'timeAndTz', label: 'Time + TZ',
+		}],
 	},
 	timezone: {
 		type: 'enum' as const,
@@ -125,16 +136,25 @@ defineExpose<WidgetComponentExpose>({
 	position: relative;
 
 	> .label {
+		position: absolute;
 		opacity: 0.7;
 
-		&.abbrev {
-			position: absolute;
+		&.a {
 			top: 14px;
 			left: 14px;
 		}
 
-		&.offset {
-			position: absolute;
+		&.b {
+			top: 14px;
+			right: 14px;
+		}
+
+		&.c {
+			bottom: 14px;
+			left: 14px;
+		}
+
+		&.d {
 			bottom: 14px;
 			right: 14px;
 		}
@@ -145,7 +165,7 @@ defineExpose<WidgetComponentExpose>({
 	}
 
 	&.small {
-		padding: 8px;
+		padding: 12px;
 
 		> .clock {
 			height: 100px;
@@ -153,7 +173,7 @@ defineExpose<WidgetComponentExpose>({
 	}
 
 	&.medium {
-		padding: 8px;
+		padding: 14px;
 
 		> .clock {
 			height: 150px;
