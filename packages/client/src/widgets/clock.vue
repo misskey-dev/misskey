@@ -7,6 +7,7 @@
 			:thickness="widgetProps.thickness"
 			:offset="tzOffset"
 			:graduations="widgetProps.graduations"
+			:fade-graduations="widgetProps.fadeGraduations"
 			:twentyfour="widgetProps.twentyFour"
 		/>
 		<div v-if="widgetProps.showLabel" class="label offset">{{ tzOffsetLabel }}</div>
@@ -43,7 +44,7 @@ const widgetPropsDef = {
 	},
 	thickness: {
 		type: 'radio' as const,
-		default: 0.1,
+		default: 0.2,
 		options: [{
 			value: 0.1, label: 'thin',
 		}, {
@@ -54,18 +55,18 @@ const widgetPropsDef = {
 	},
 	graduations: {
 		type: 'radio' as const,
-		default: 'dots',
+		default: 'numbers',
 		options: [{
 			value: 'none', label: 'None',
 		}, {
 			value: 'dots', label: 'Dots',
 		}, {
-			value: 'dotsMajor', label: 'Dots (major)',
-		}, {
 			value: 'numbers', label: 'Numbers',
-		}, {
-			value: 'numbersCurrent', label: 'Numbers (current)',
 		}],
+	},
+	fadeGraduations: {
+		type: 'boolean' as const,
+		default: true,
 	},
 	twentyFour: {
 		type: 'boolean' as const,
