@@ -1,8 +1,14 @@
 <template>
 <MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-clock">
-	<div class="vubelbmv">
+	<div class="vubelbmv" :class="widgetProps.size">
 		<div v-if="widgetProps.showLabel" class="label abbrev">{{ tzAbbrev }}</div>
-		<MkAnalogClock class="clock" :thickness="widgetProps.thickness" :offset="tzOffset" :numbers="widgetProps.numbers" :twentyfour="widgetProps.twentyFour"/>
+		<MkAnalogClock
+			class="clock"
+			:thickness="widgetProps.thickness"
+			:offset="tzOffset"
+			:graduations="widgetProps.graduations"
+			:twentyfour="widgetProps.twentyFour"
+		/>
 		<div v-if="widgetProps.showLabel" class="label offset">{{ tzOffsetLabel }}</div>
 	</div>
 </MkContainer>
@@ -15,6 +21,7 @@ import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/ui/container.vue';
 import MkAnalogClock from '@/components/analog-clock.vue';
 import { timezones } from '@/scripts/timezones';
+import { i18n } from '@/i18n';
 
 const name = 'clock';
 
@@ -22,6 +29,17 @@ const widgetPropsDef = {
 	transparent: {
 		type: 'boolean' as const,
 		default: false,
+	},
+	size: {
+		type: 'radio' as const,
+		default: 'medium',
+		options: [{
+			value: 'small', label: i18n.ts.small,
+		}, {
+			value: 'medium', label: i18n.ts.medium,
+		}, {
+			value: 'large', label: i18n.ts.large,
+		}],
 	},
 	thickness: {
 		type: 'radio' as const,
@@ -34,9 +52,20 @@ const widgetPropsDef = {
 			value: 0.3, label: 'thick',
 		}],
 	},
-	numbers: {
-		type: 'boolean' as const,
-		default: false,
+	graduations: {
+		type: 'radio' as const,
+		default: 'dots',
+		options: [{
+			value: 'none', label: 'None',
+		}, {
+			value: 'dots', label: 'Dots',
+		}, {
+			value: 'dotsMajor', label: 'Dots (major)',
+		}, {
+			value: 'numbers', label: 'Numbers',
+		}, {
+			value: 'numbersCurrent', label: 'Numbers (current)',
+		}],
 	},
 	twentyFour: {
 		type: 'boolean' as const,
@@ -92,7 +121,6 @@ defineExpose<WidgetComponentExpose>({
 
 <style lang="scss" scoped>
 .vubelbmv {
-	padding: 8px;
 	position: relative;
 
 	> .label {
@@ -112,8 +140,31 @@ defineExpose<WidgetComponentExpose>({
 	}
 
 	> .clock {
-		height: 150px;
 		margin: auto;
+	}
+
+	&.small {
+		padding: 8px;
+
+		> .clock {
+			height: 100px;
+		}
+	}
+
+	&.medium {
+		padding: 8px;
+
+		> .clock {
+			height: 150px;
+		}
+	}
+
+	&.large {
+		padding: 16px;
+
+		> .clock {
+			height: 200px;
+		}
 	}
 }
 </style>
