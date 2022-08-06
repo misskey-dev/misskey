@@ -451,7 +451,7 @@ mainRouter.addListener('push', ctx => {
 	if (scrollPos !== 0) {
 		window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 			window.scroll({ top: scrollPos, behavior: 'instant' });
-		}, 1000);
+		}, 100);
 	}
 });
 
@@ -469,7 +469,7 @@ window.addEventListener('popstate', (event) => {
 	window.scroll({ top: scrollPos, behavior: 'instant' });
 	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 		window.scroll({ top: scrollPos, behavior: 'instant' });
-	}, 1000);
+	}, 100);
 });
 
 export function useRouter(): Router {
