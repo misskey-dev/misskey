@@ -19,33 +19,16 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		to: {
-			type: String,
-			required: true
-		},
-		active: {
-			type: Boolean,
-			required: false
-		},
-		external: {
-			type: Boolean,
-			required: false
-		},
-		behavior: {
-			type: String,
-			required: false,
-		},
-		inline: {
-			type: Boolean,
-			required: false
-		},
-	},
-});
+const props = defineProps<{
+	to: string;
+	active?: boolean;
+	external?: boolean;
+	behavior?: null | 'window' | 'browser' | 'modalWindow';
+	inline?: boolean;
+}>();
 </script>
 
 <style lang="scss" scoped>
@@ -61,7 +44,7 @@ export default defineComponent({
 		align-items: center;
 		width: 100%;
 		box-sizing: border-box;
-		padding: 12px 14px 12px 14px;
+		padding: 10px 14px;
 		background: var(--buttonBg);
 		border-radius: 6px;
 		font-size: 0.9em;

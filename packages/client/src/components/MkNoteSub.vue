@@ -6,7 +6,7 @@
 			<XNoteHeader class="header" :note="note" :mini="true"/>
 			<div class="body">
 				<p v-if="note.cw != null" class="cw">
-					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i" :custom-emojis="note.emojis" />
+					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
 					<XCwButton v-model="showContent" :note="note"/>
 				</p>
 				<div v-show="note.cw == null || showContent" class="content">
@@ -19,7 +19,7 @@
 		<MkNoteSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :depth="depth + 1"/>
 	</template>
 	<div v-else class="more">
-		<MkA class="text _link" :to="notePage(note)">{{ $ts.continueThread }} <i class="fas fa-angle-double-right"></i></MkA>
+		<MkA class="text _link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="fas fa-angle-double-right"></i></MkA>
 	</div>
 </div>
 </template>
@@ -27,11 +27,12 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
-import { notePage } from '@/filters/note';
 import XNoteHeader from './note-header.vue';
 import MkNoteSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
+import { notePage } from '@/filters/note';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	note: misskey.entities.Note;
@@ -49,7 +50,7 @@ let replies: misskey.entities.Note[] = $ref([]);
 if (props.detail) {
 	os.api('notes/children', {
 		noteId: props.note.id,
-		limit: 5
+		limit: 5,
 	}).then(res => {
 		replies = res;
 	});

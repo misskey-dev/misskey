@@ -9,7 +9,7 @@
 	@ok="ok()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ $ts.cropImage }}</template>
+	<template #header>{{ i18n.ts.cropImage }}</template>
 	<template #default="{ width, height }">
 		<div class="mk-cropper-dialog" :style="`--vw: ${width}px; --vh: ${height}px;`">
 			<Transition name="fade">
@@ -36,6 +36,7 @@ import { $i } from '@/account';
 import { defaultStore } from '@/store';
 import { apiUrl, url } from '@/config';
 import { query } from '@/scripts/url';
+import { i18n } from '@/i18n';
 
 const emit = defineEmits<{
 	(ev: 'ok', cropped: misskey.entities.DriveFile): void;

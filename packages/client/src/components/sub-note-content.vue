@@ -1,8 +1,8 @@
 <template>
 <div class="wrmlmaau" :class="{ collapsed }">
 	<div class="body">
-		<span v-if="note.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
-		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $ts.deleted }})</span>
+		<span v-if="note.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+		<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deleted }})</span>
 		<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="fas fa-reply"></i></MkA>
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
 		<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
@@ -12,20 +12,21 @@
 		<XMediaList :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
-		<summary>{{ $ts.poll }}</summary>
+		<summary>{{ i18n.ts.poll }}</summary>
 		<XPoll :note="note"/>
 	</details>
 	<button v-if="collapsed" class="fade _button" @click="collapsed = false">
-		<span>{{ $ts.showMore }}</span>
+		<span>{{ i18n.ts.showMore }}</span>
 	</button>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
+import * as misskey from 'misskey-js';
 import XPoll from './poll.vue';
 import XMediaList from './media-list.vue';
-import * as misskey from 'misskey-js';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	note: misskey.entities.Note;

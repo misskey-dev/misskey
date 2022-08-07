@@ -5,51 +5,51 @@
 		<div v-if="tab === 'overview'" class="_formRoot">
 			<div class="fnfelxur">
 				<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
-				<span class="name">{{ instance.name || `(${$ts.unknown})` }}</span>
+				<span class="name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
 			</div>
 			<MkKeyValue :copy="host" oneline style="margin: 1em 0;">
 				<template #key>Host</template>
 				<template #value><span class="_monospace"><MkLink :url="`https://${host}`">{{ host }}</MkLink></span></template>
 			</MkKeyValue>
 			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>{{ $ts.software }}</template>
-				<template #value><span class="_monospace">{{ instance.softwareName || `(${$ts.unknown})` }} / {{ instance.softwareVersion || `(${$ts.unknown})` }}</span></template>
+				<template #key>{{ i18n.ts.software }}</template>
+				<template #value><span class="_monospace">{{ instance.softwareName || `(${i18n.ts.unknown})` }} / {{ instance.softwareVersion || `(${i18n.ts.unknown})` }}</span></template>
 			</MkKeyValue>
 			<MkKeyValue oneline style="margin: 1em 0;">
-				<template #key>{{ $ts.administrator }}</template>
-				<template #value>{{ instance.maintainerName || `(${$ts.unknown})` }} ({{ instance.maintainerEmail || `(${$ts.unknown})` }})</template>
+				<template #key>{{ i18n.ts.administrator }}</template>
+				<template #value>{{ instance.maintainerName || `(${i18n.ts.unknown})` }} ({{ instance.maintainerEmail || `(${i18n.ts.unknown})` }})</template>
 			</MkKeyValue>
 			<MkKeyValue>
-				<template #key>{{ $ts.description }}</template>
+				<template #key>{{ i18n.ts.description }}</template>
 				<template #value>{{ instance.description }}</template>
 			</MkKeyValue>
 
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
-				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ $ts.stopActivityDelivery }}</FormSwitch>
-				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ $ts.blockThisInstance }}</FormSwitch>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
+				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
 				<MkButton @click="refreshMetadata"><i class="fas fa-refresh"></i> Refresh metadata</MkButton>
 			</FormSection>
 
 			<FormSection>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ $ts.registeredAt }}</template>
+					<template #key>{{ i18n.ts.registeredAt }}</template>
 					<template #value><MkTime mode="detail" :time="instance.caughtAt"/></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ $ts.updatedAt }}</template>
+					<template #key>{{ i18n.ts.updatedAt }}</template>
 					<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ $ts.latestRequestSentAt }}</template>
+					<template #key>{{ i18n.ts.latestRequestSentAt }}</template>
 					<template #value><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ $ts.latestStatus }}</template>
+					<template #key>{{ i18n.ts.latestStatus }}</template>
 					<template #value>{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ $ts.latestRequestReceivedAt }}</template>
+					<template #key>{{ i18n.ts.latestRequestReceivedAt }}</template>
 					<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
 				</MkKeyValue>
 			</FormSection>
@@ -78,17 +78,17 @@
 			<div class="cmhjzshl">
 				<div class="selects">
 					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
-						<option value="instance-requests">{{ $ts._instanceCharts.requests }}</option>
-						<option value="instance-users">{{ $ts._instanceCharts.users }}</option>
-						<option value="instance-users-total">{{ $ts._instanceCharts.usersTotal }}</option>
-						<option value="instance-notes">{{ $ts._instanceCharts.notes }}</option>
-						<option value="instance-notes-total">{{ $ts._instanceCharts.notesTotal }}</option>
-						<option value="instance-ff">{{ $ts._instanceCharts.ff }}</option>
-						<option value="instance-ff-total">{{ $ts._instanceCharts.ffTotal }}</option>
-						<option value="instance-drive-usage">{{ $ts._instanceCharts.cacheSize }}</option>
-						<option value="instance-drive-usage-total">{{ $ts._instanceCharts.cacheSizeTotal }}</option>
-						<option value="instance-drive-files">{{ $ts._instanceCharts.files }}</option>
-						<option value="instance-drive-files-total">{{ $ts._instanceCharts.filesTotal }}</option>
+						<option value="instance-requests">{{ i18n.ts._instanceCharts.requests }}</option>
+						<option value="instance-users">{{ i18n.ts._instanceCharts.users }}</option>
+						<option value="instance-users-total">{{ i18n.ts._instanceCharts.usersTotal }}</option>
+						<option value="instance-notes">{{ i18n.ts._instanceCharts.notes }}</option>
+						<option value="instance-notes-total">{{ i18n.ts._instanceCharts.notesTotal }}</option>
+						<option value="instance-ff">{{ i18n.ts._instanceCharts.ff }}</option>
+						<option value="instance-ff-total">{{ i18n.ts._instanceCharts.ffTotal }}</option>
+						<option value="instance-drive-usage">{{ i18n.ts._instanceCharts.cacheSize }}</option>
+						<option value="instance-drive-usage-total">{{ i18n.ts._instanceCharts.cacheSizeTotal }}</option>
+						<option value="instance-drive-files">{{ i18n.ts._instanceCharts.files }}</option>
+						<option value="instance-drive-files-total">{{ i18n.ts._instanceCharts.filesTotal }}</option>
 					</MkSelect>
 				</div>
 				<div class="charts">

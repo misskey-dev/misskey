@@ -3,7 +3,7 @@
 	<FormSuspense :p="init">
 		<div class="_formRoot">
 			<FormRadios v-model="provider" class="_formBlock">
-				<option :value="null">{{ $ts.none }} ({{ $ts.notRecommended }})</option>
+				<option :value="null">{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</option>
 				<option value="hcaptcha">hCaptcha</option>
 				<option value="recaptcha">reCAPTCHA</option>
 			</FormRadios>
@@ -11,33 +11,33 @@
 			<template v-if="provider === 'hcaptcha'">
 				<FormInput v-model="hcaptchaSiteKey" class="_formBlock">
 					<template #prefix><i class="fas fa-key"></i></template>
-					<template #label>{{ $ts.hcaptchaSiteKey }}</template>
+					<template #label>{{ i18n.ts.hcaptchaSiteKey }}</template>
 				</FormInput>
 				<FormInput v-model="hcaptchaSecretKey" class="_formBlock">
 					<template #prefix><i class="fas fa-key"></i></template>
-					<template #label>{{ $ts.hcaptchaSecretKey }}</template>
+					<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
 				</FormInput>
 				<FormSlot class="_formBlock">
-					<template #label>{{ $ts.preview }}</template>
+					<template #label>{{ i18n.ts.preview }}</template>
 					<MkCaptcha provider="hcaptcha" :sitekey="hcaptchaSiteKey || '10000000-ffff-ffff-ffff-000000000001'"/>
 				</FormSlot>
 			</template>
 			<template v-else-if="provider === 'recaptcha'">
 				<FormInput v-model="recaptchaSiteKey" class="_formBlock">
 					<template #prefix><i class="fas fa-key"></i></template>
-					<template #label>{{ $ts.recaptchaSiteKey }}</template>
+					<template #label>{{ i18n.ts.recaptchaSiteKey }}</template>
 				</FormInput>
 				<FormInput v-model="recaptchaSecretKey" class="_formBlock">
 					<template #prefix><i class="fas fa-key"></i></template>
-					<template #label>{{ $ts.recaptchaSecretKey }}</template>
+					<template #label>{{ i18n.ts.recaptchaSecretKey }}</template>
 				</FormInput>
 				<FormSlot v-if="recaptchaSiteKey" class="_formBlock">
-					<template #label>{{ $ts.preview }}</template>
+					<template #label>{{ i18n.ts.preview }}</template>
 					<MkCaptcha provider="recaptcha" :sitekey="recaptchaSiteKey"/>
 				</FormSlot>
 			</template>
 
-			<FormButton primary @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+			<FormButton primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 		</div>
 	</FormSuspense>
 </div>
@@ -52,6 +52,7 @@ import FormSuspense from '@/components/form/suspense.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
+import { i18n } from '@/i18n';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/captcha.vue'));
 

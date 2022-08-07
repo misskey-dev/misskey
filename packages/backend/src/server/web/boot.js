@@ -138,6 +138,8 @@
 			</button>
 			<p class="dont-worry">不用担心，这(应该)不是您的错。</p>
 			<p>如果该错误在刷新后仍然出现，请联系您实例的管理员。<br>您也可以尝试以下的选项：</p>
+			<p>更新您的操作系统和浏览器</p>
+			<p>停用广告拦截器</p>
 			<a href="/flush">
 				<button class="button-small">
 					<span class="button-label-small">清理偏好设置与缓存</span>

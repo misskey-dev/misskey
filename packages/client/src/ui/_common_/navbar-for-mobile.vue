@@ -9,30 +9,30 @@
 		</div>
 		<div class="middle">
 			<MkA v-click-anime class="item index" active-class="active" to="/" exact>
-				<i class="icon fas fa-home fa-fw"></i><span class="text">{{ $ts.timeline }}</span>
+				<i class="icon fas fa-home fa-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
 			</MkA>
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>
 				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="[item, { active: navbarItemDef[item].active }]" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
-					<i class="icon fa-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ $ts[navbarItemDef[item].title] }}</span>
+					<i class="icon fa-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ i18n.ts[navbarItemDef[item].title] }}</span>
 					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="icon fas fa-circle"></i></span>
 				</component>
 			</template>
 			<div class="divider"></div>
 			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin">
-				<i class="icon fas fa-door-open fa-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
+				<i class="icon fas fa-door-open fa-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
 			<button v-click-anime class="item _button" @click="more">
-				<i class="icon fa fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
+				<i class="icon fa fa-ellipsis-h fa-fw"></i><span class="text">{{ i18n.ts.more }}</span>
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon fas fa-circle"></i></span>
 			</button>
 			<MkA v-click-anime class="item" active-class="active" to="/settings">
-				<i class="icon fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
+				<i class="icon fas fa-cog fa-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
 			</MkA>
 		</div>
 		<div class="bottom">
 			<button class="item _button post" data-cy-open-post-form @click="os.post">
-				<i class="icon fas fa-pencil-alt fa-fw"></i><span class="text">{{ $ts.note }}</span>
+				<i class="icon fas fa-pencil-alt fa-fw"></i><span class="text">{{ i18n.ts.note }}</span>
 			</button>
 			<button v-click-anime class="item _button account" @click="openAccountMenu">
 				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>

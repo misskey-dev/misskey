@@ -2,12 +2,26 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Client: Preferences Registry
 
 ### Bugfixes
 - 
 
 You should also include the user name that made the change.
 -->
+
+## 12.118.0 (2022/08/07)
+
+### Improvements
+- Client: 設定のバックアップ/リストア機能
+- Client: Add vi-VN language support
+- Client: Add unix time widget @syuilo
+
+### Bugfixes
+- Server: リモートユーザーを正しくブロックできるように修正する @xianonn
+- Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
+- Client: MiAuth認証ページが機能していない @syuilo
+- Client: 一部のアプリからファイルを投稿フォームへドロップできない場合がある問題を修正 @m-hayabusa
 
 ## 12.117.1 (2022/07/19)
 

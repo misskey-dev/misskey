@@ -4,37 +4,37 @@
 		<button key="public" class="_button" :class="{ active: v === 'public' }" data-index="1" @click="choose('public')">
 			<div><i class="fas fa-globe"></i></div>
 			<div>
-				<span>{{ $ts._visibility.public }}</span>
-				<span>{{ $ts._visibility.publicDescription }}</span>
+				<span>{{ i18n.ts._visibility.public }}</span>
+				<span>{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
 		<button key="home" class="_button" :class="{ active: v === 'home' }" data-index="2" @click="choose('home')">
 			<div><i class="fas fa-home"></i></div>
 			<div>
-				<span>{{ $ts._visibility.home }}</span>
-				<span>{{ $ts._visibility.homeDescription }}</span>
+				<span>{{ i18n.ts._visibility.home }}</span>
+				<span>{{ i18n.ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
 		<button key="followers" class="_button" :class="{ active: v === 'followers' }" data-index="3" @click="choose('followers')">
 			<div><i class="fas fa-unlock"></i></div>
 			<div>
-				<span>{{ $ts._visibility.followers }}</span>
-				<span>{{ $ts._visibility.followersDescription }}</span>
+				<span>{{ i18n.ts._visibility.followers }}</span>
+				<span>{{ i18n.ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
 		<button key="specified" :disabled="localOnly" class="_button" :class="{ active: v === 'specified' }" data-index="4" @click="choose('specified')">
 			<div><i class="fas fa-envelope"></i></div>
 			<div>
-				<span>{{ $ts._visibility.specified }}</span>
-				<span>{{ $ts._visibility.specifiedDescription }}</span>
+				<span>{{ i18n.ts._visibility.specified }}</span>
+				<span>{{ i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
 		<div class="divider"></div>
 		<button key="localOnly" class="_button localOnly" :class="{ active: localOnly }" data-index="5" @click="localOnly = !localOnly">
 			<div><i class="fas fa-biohazard"></i></div>
 			<div>
-				<span>{{ $ts._visibility.localOnly }}</span>
-				<span>{{ $ts._visibility.localOnlyDescription }}</span>
+				<span>{{ i18n.ts._visibility.localOnly }}</span>
+				<span>{{ i18n.ts._visibility.localOnlyDescription }}</span>
 			</div>
 			<div><i :class="localOnly ? 'fas fa-toggle-on' : 'fas fa-toggle-off'"></i></div>
 		</button>
@@ -46,6 +46,7 @@
 import { nextTick, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkModal from '@/components/ui/modal.vue';
+import { i18n } from '@/i18n';
 
 const modal = $ref<InstanceType<typeof MkModal>>();
 

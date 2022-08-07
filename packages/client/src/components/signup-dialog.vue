@@ -1,11 +1,12 @@
 <template>
-<XModalWindow ref="dialog"
+<XModalWindow
+	ref="dialog"
 	:width="366"
 	:height="500"
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ $ts.signup }}</template>
+	<template #header>{{ i18n.ts.signup }}</template>
 
 	<div class="_monolithic_">
 		<div class="_section">
@@ -17,8 +18,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
 import XSignup from './signup.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
