@@ -106,6 +106,10 @@ export const routes = [{
 		name: 'sounds',
 		component: page(() => import('./pages/settings/sounds.vue')),
 	}, {
+		path: '/plugin/install',
+		name: 'plugin',
+		component: page(() => import('./pages/settings/plugin.install.vue')),
+	}, {
 		path: '/plugin',
 		name: 'plugin',
 		component: page(() => import('./pages/settings/plugin.vue')),
@@ -149,6 +153,18 @@ export const routes = [{
 		path: '/preferences-backups',
 		name: 'preferences-backups',
 		component: page(() => import('./pages/settings/preferences-backups.vue')),
+	}, {
+		path: '/custom-css',
+		name: 'general',
+		component: page(() => import('./pages/settings/custom-css.vue')),
+	}, {
+		path: '/account-info',
+		name: 'other',
+		component: page(() => import('./pages/settings/account-info.vue')),
+	}, {
+		path: '/delete-account',
+		name: 'other',
+		component: page(() => import('./pages/settings/delete-account.vue')),
 	}, {
 		path: '/other',
 		name: 'other',
