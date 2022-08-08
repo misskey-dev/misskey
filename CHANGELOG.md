@@ -2,13 +2,17 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
-- Client: Preferences Registry
 
 ### Bugfixes
 - 
 
 You should also include the user name that made the change.
 -->
+
+## 12.118.1 (2022/08/08)
+
+### Bugfixes
+- Client: can not show some setting pages @syuilo
 
 ## 12.118.0 (2022/08/07)
 
