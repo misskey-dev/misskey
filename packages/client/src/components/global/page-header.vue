@@ -1,6 +1,9 @@
 <template>
 <div v-if="show" ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
 	<template v-if="metadata">
+		<div class="buttons left">
+			<MkAvatar v-if="metadata.user" class="avatar" :user="metadata.user" :disable-preview="true"/>
+		</div>
 		<div v-if="!hideTitle" class="titleContainer" @click="showTabsPopup">
 			<MkAvatar v-if="metadata.avatar" class="avatar" :user="metadata.avatar" :disable-preview="true" :show-indicator="true"/>
 			<i v-else-if="metadata.icon" class="icon" :class="metadata.icon"></i>
@@ -194,10 +197,26 @@ onUnmounted(() => {
 	&.slim {
 		text-align: center;
 
+		> .buttons {
+			&.left {
+				display: inherit;
+				margin-right: auto;
+
+				> .avatar {
+					$size: 32px;
+					display: inline-block;
+					width: $size;
+					height: $size;
+					vertical-align: bottom;
+					margin: 0 8px;
+					pointer-events: none;
+				}
+			}
+		}
+
 		> .titleContainer {
 			flex: 1;
 			margin: 0 auto;
-			margin-left: var(--height);
 
 			> *:first-child {
 				margin-left: auto;
@@ -213,8 +232,13 @@ onUnmounted(() => {
 		--margin: 8px;
 		display: flex;
     align-items: center;
+		min-width: var(--height);
 		height: var(--height);
 		margin: 0 var(--margin);
+
+		&.left {
+			display: none;
+		}
 
 		&.right {
 			margin-left: auto;
