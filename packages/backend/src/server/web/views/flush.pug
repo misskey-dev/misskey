@@ -27,7 +27,7 @@ html
 						.then(registrations => {
 							return Promise.all(registrations.map(registration => registration.unregister()));
 						})
-						.catch(e => { throw Error(e) });
+						.catch(e => { throw new Error(e) });
 				}
 
 				message(successText);

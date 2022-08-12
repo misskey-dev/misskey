@@ -42,9 +42,137 @@ export const routes = [{
 	component: page(() => import('./pages/instance-info.vue')),
 }, {
 	name: 'settings',
-	path: '/settings/:initialPage(*)?',
+	path: '/settings',
 	component: page(() => import('./pages/settings/index.vue')),
 	loginRequired: true,
+	children: [{
+		path: '/profile',
+		name: 'profile',
+		component: page(() => import('./pages/settings/profile.vue')),
+	}, {
+		path: '/privacy',
+		name: 'privacy',
+		component: page(() => import('./pages/settings/privacy.vue')),
+	}, {
+		path: '/reaction',
+		name: 'reaction',
+		component: page(() => import('./pages/settings/reaction.vue')),
+	}, {
+		path: '/drive',
+		name: 'drive',
+		component: page(() => import('./pages/settings/drive.vue')),
+	}, {
+		path: '/notifications',
+		name: 'notifications',
+		component: page(() => import('./pages/settings/notifications.vue')),
+	}, {
+		path: '/email',
+		name: 'email',
+		component: page(() => import('./pages/settings/email.vue')),
+	}, {
+		path: '/integration',
+		name: 'integration',
+		component: page(() => import('./pages/settings/integration.vue')),
+	}, {
+		path: '/security',
+		name: 'security',
+		component: page(() => import('./pages/settings/security.vue')),
+	}, {
+		path: '/general',
+		name: 'general',
+		component: page(() => import('./pages/settings/general.vue')),
+	}, {
+		path: '/theme/install',
+		name: 'theme',
+		component: page(() => import('./pages/settings/theme.install.vue')),
+	}, {
+		path: '/theme/manage',
+		name: 'theme',
+		component: page(() => import('./pages/settings/theme.manage.vue')),
+	}, {
+		path: '/theme',
+		name: 'theme',
+		component: page(() => import('./pages/settings/theme.vue')),
+	}, {
+		path: '/navbar',
+		name: 'navbar',
+		component: page(() => import('./pages/settings/navbar.vue')),
+	}, {
+		path: '/statusbar',
+		name: 'statusbar',
+		component: page(() => import('./pages/settings/statusbar.vue')),
+	}, {
+		path: '/sounds',
+		name: 'sounds',
+		component: page(() => import('./pages/settings/sounds.vue')),
+	}, {
+		path: '/plugin/install',
+		name: 'plugin',
+		component: page(() => import('./pages/settings/plugin.install.vue')),
+	}, {
+		path: '/plugin',
+		name: 'plugin',
+		component: page(() => import('./pages/settings/plugin.vue')),
+	}, {
+		path: '/import-export',
+		name: 'import-export',
+		component: page(() => import('./pages/settings/import-export.vue')),
+	}, {
+		path: '/instance-mute',
+		name: 'instance-mute',
+		component: page(() => import('./pages/settings/instance-mute.vue')),
+	}, {
+		path: '/mute-block',
+		name: 'mute-block',
+		component: page(() => import('./pages/settings/mute-block.vue')),
+	}, {
+		path: '/word-mute',
+		name: 'word-mute',
+		component: page(() => import('./pages/settings/word-mute.vue')),
+	}, {
+		path: '/api',
+		name: 'api',
+		component: page(() => import('./pages/settings/api.vue')),
+	}, {
+		path: '/webhook/edit/:webhookId',
+		name: 'webhook',
+		component: page(() => import('./pages/settings/webhook.edit.vue')),
+	}, {
+		path: '/webhook/new',
+		name: 'webhook',
+		component: page(() => import('./pages/settings/webhook.new.vue')),
+	}, {
+		path: '/webhook',
+		name: 'webhook',
+		component: page(() => import('./pages/settings/webhook.vue')),
+	}, {
+		path: '/deck',
+		name: 'deck',
+		component: page(() => import('./pages/settings/deck.vue')),
+	}, {
+		path: '/preferences-backups',
+		name: 'preferences-backups',
+		component: page(() => import('./pages/settings/preferences-backups.vue')),
+	}, {
+		path: '/custom-css',
+		name: 'general',
+		component: page(() => import('./pages/settings/custom-css.vue')),
+	}, {
+		path: '/account-info',
+		name: 'other',
+		component: page(() => import('./pages/settings/account-info.vue')),
+	}, {
+		path: '/delete-account',
+		name: 'other',
+		component: page(() => import('./pages/settings/delete-account.vue')),
+	}, {
+		path: '/other',
+		name: 'other',
+		component: page(() => import('./pages/settings/other.vue')),
+	}, {
+		path: '/',
+		component: page(() => import('./pages/_empty_.vue')),
+	}],
 }, {
 	path: '/reset-password/:token?',
 	component: page(() => import('./pages/reset-password.vue')),
@@ -166,8 +294,84 @@ export const routes = [{
 	path: '/admin/file/:fileId',
 	component: iAmModerator ? page(() => import('./pages/admin-file.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
-	path: '/admin/:initialPage(*)?',
+	path: '/admin',
 	component: iAmModerator ? page(() => import('./pages/admin/index.vue')) : page(() => import('./pages/not-found.vue')),
+	children: [{
+		path: '/overview',
+		name: 'overview',
+		component: page(() => import('./pages/admin/overview.vue')),
+	}, {
+		path: '/users',
+		name: 'users',
+		component: page(() => import('./pages/admin/users.vue')),
+	}, {
+		path: '/emojis',
+		name: 'emojis',
+		component: page(() => import('./pages/admin/emojis.vue')),
+	}, {
+		path: '/queue',
+		name: 'queue',
+		component: page(() => import('./pages/admin/queue.vue')),
+	}, {
+		path: '/files',
+		name: 'files',
+		component: page(() => import('./pages/admin/files.vue')),
+	}, {
+		path: '/announcements',
+		name: 'announcements',
+		component: page(() => import('./pages/admin/announcements.vue')),
+	}, {
+		path: '/ads',
+		name: 'ads',
+		component: page(() => import('./pages/admin/ads.vue')),
+	}, {
+		path: '/database',
+		name: 'database',
+		component: page(() => import('./pages/admin/database.vue')),
+	}, {
+		path: '/abuses',
+		name: 'abuses',
+		component: page(() => import('./pages/admin/abuses.vue')),
+	}, {
+		path: '/settings',
+		name: 'settings',
+		component: page(() => import('./pages/admin/settings.vue')),
+	}, {
+		path: '/email-settings',
+		name: 'email-settings',
+		component: page(() => import('./pages/admin/email-settings.vue')),
+	}, {
+		path: '/object-storage',
+		name: 'object-storage',
+		component: page(() => import('./pages/admin/object-storage.vue')),
+	}, {
+		path: '/security',
+		name: 'security',
+		component: page(() => import('./pages/admin/security.vue')),
+	}, {
+		path: '/relays',
+		name: 'relays',
+		component: page(() => import('./pages/admin/relays.vue')),
+	}, {
+		path: '/integrations',
+		name: 'integrations',
+		component: page(() => import('./pages/admin/integrations.vue')),
+	}, {
+		path: '/instance-block',
+		name: 'instance-block',
+		component: page(() => import('./pages/admin/instance-block.vue')),
+	}, {
+		path: '/proxy-account',
+		name: 'proxy-account',
+		component: page(() => import('./pages/admin/proxy-account.vue')),
+	}, {
+		path: '/other-settings',
+		name: 'other-settings',
+		component: page(() => import('./pages/admin/other-settings.vue')),
+	}, {
+		path: '/',
+		component: page(() => import('./pages/_empty_.vue')),
+	}],
 }, {
 	path: '/my/notifications',
 	component: page(() => import('./pages/notifications.vue')),
@@ -263,8 +467,12 @@ mainRouter.addListener('push', ctx => {
 	if (scrollPos !== 0) {
 		window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 			window.scroll({ top: scrollPos, behavior: 'instant' });
-		}, 1000);
+		}, 100);
 	}
+});
+
+mainRouter.addListener('replace', ctx => {
+	window.history.replaceState({ key: ctx.key }, '', ctx.path);
 });
 
 mainRouter.addListener('same', () => {
@@ -272,12 +480,12 @@ mainRouter.addListener('same', () => {
 });
 
 window.addEventListener('popstate', (event) => {
-	mainRouter.change(location.pathname + location.search + location.hash, event.state?.key);
+	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
 	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
 	window.scroll({ top: scrollPos, behavior: 'instant' });
 	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 		window.scroll({ top: scrollPos, behavior: 'instant' });
-	}, 1000);
+	}, 100);
 });
 
 export function useRouter(): Router {

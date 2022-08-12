@@ -1,42 +1,44 @@
-<template><MkStickyContainer>
+<template>
+<MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
-	<div class="mk-list-page">
-		<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
-			<div v-if="list" class="_section">
-				<div class="_content">
-					<MkButton inline @click="addUser()">{{ $ts.addUser }}</MkButton>
-					<MkButton inline @click="renameList()">{{ $ts.rename }}</MkButton>
-					<MkButton inline @click="deleteList()">{{ $ts.delete }}</MkButton>
+	<MkSpacer :content-max="700">
+		<div class="mk-list-page">
+			<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+				<div v-if="list" class="_section">
+					<div class="_content">
+						<MkButton inline @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
+						<MkButton inline @click="renameList()">{{ i18n.ts.rename }}</MkButton>
+						<MkButton inline @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
+					</div>
 				</div>
-			</div>
-		</transition>
+			</transition>
 
-		<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
-			<div v-if="list" class="_section members _gap">
-				<div class="_title">{{ $ts.members }}</div>
-				<div class="_content">
-					<div class="users">
-						<div v-for="user in users" :key="user.id" class="user _panel">
-							<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
-							<div class="body">
-								<MkUserName :user="user" class="name"/>
-								<MkAcct :user="user" class="acct"/>
-							</div>
-							<div class="action">
-								<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
+			<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+				<div v-if="list" class="_section members _gap">
+					<div class="_title">{{ i18n.ts.members }}</div>
+					<div class="_content">
+						<div class="users">
+							<div v-for="user in users" :key="user.id" class="user _panel">
+								<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
+								<div class="body">
+									<MkUserName :user="user" class="name"/>
+									<MkAcct :user="user" class="acct"/>
+								</div>
+								<div class="action">
+									<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</transition>
-	</div>
-</MkSpacer></MkStickyContainer>
+			</transition>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, watch } from 'vue';
+import { computed, watch } from 'vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { mainRouter } from '@/router';

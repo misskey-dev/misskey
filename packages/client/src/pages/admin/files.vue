@@ -7,13 +7,13 @@
 				<div>
 					<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 						<MkSelect v-model="origin" style="margin: 0; flex: 1;">
-							<template #label>{{ $ts.instance }}</template>
-							<option value="combined">{{ $ts.all }}</option>
-							<option value="local">{{ $ts.local }}</option>
-							<option value="remote">{{ $ts.remote }}</option>
+							<template #label>{{ i18n.ts.instance }}</template>
+							<option value="combined">{{ i18n.ts.all }}</option>
+							<option value="local">{{ i18n.ts.local }}</option>
+							<option value="remote">{{ i18n.ts.remote }}</option>
 						</MkSelect>
 						<MkInput v-model="searchHost" :debounce="true" type="search" style="margin: 0; flex: 1;" :disabled="pagination.params.origin === 'local'">
-							<template #label>{{ $ts.host }}</template>
+							<template #label>{{ i18n.ts.host }}</template>
 						</MkInput>
 					</div>
 					<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap; padding-top: 1.2em;">

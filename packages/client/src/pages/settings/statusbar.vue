@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
-import XStatusbar from './statusbars.statusbar.vue';
+import XStatusbar from './statusbar.statusbar.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormButton from '@/components/ui/button.vue';

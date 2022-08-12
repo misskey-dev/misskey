@@ -3,11 +3,11 @@
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :content-max="800">
 		<div class="mwysmxbg">
-			<div>{{ $ts._mfm.intro }}</div>
+			<div>{{ i18n.ts._mfm.intro }}</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.mention }}</div>
+				<div class="title">{{ i18n.ts._mfm.mention }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.mentionDescription }}</p>
+					<p>{{ i18n.ts._mfm.mentionDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_mention"/>
 						<MkTextarea v-model="preview_mention"><template #label>MFM</template></MkTextarea>
@@ -15,9 +15,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.hashtag }}</div>
+				<div class="title">{{ i18n.ts._mfm.hashtag }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.hashtagDescription }}</p>
+					<p>{{ i18n.ts._mfm.hashtagDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_hashtag"/>
 						<MkTextarea v-model="preview_hashtag"><template #label>MFM</template></MkTextarea>
@@ -25,9 +25,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.url }}</div>
+				<div class="title">{{ i18n.ts._mfm.url }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.urlDescription }}</p>
+					<p>{{ i18n.ts._mfm.urlDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_url"/>
 						<MkTextarea v-model="preview_url"><template #label>MFM</template></MkTextarea>
@@ -35,9 +35,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.link }}</div>
+				<div class="title">{{ i18n.ts._mfm.link }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.linkDescription }}</p>
+					<p>{{ i18n.ts._mfm.linkDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_link"/>
 						<MkTextarea v-model="preview_link"><template #label>MFM</template></MkTextarea>
@@ -45,9 +45,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.emoji }}</div>
+				<div class="title">{{ i18n.ts._mfm.emoji }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.emojiDescription }}</p>
+					<p>{{ i18n.ts._mfm.emojiDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_emoji"/>
 						<MkTextarea v-model="preview_emoji"><template #label>MFM</template></MkTextarea>
@@ -55,9 +55,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.bold }}</div>
+				<div class="title">{{ i18n.ts._mfm.bold }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.boldDescription }}</p>
+					<p>{{ i18n.ts._mfm.boldDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_bold"/>
 						<MkTextarea v-model="preview_bold"><template #label>MFM</template></MkTextarea>
@@ -65,9 +65,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.small }}</div>
+				<div class="title">{{ i18n.ts._mfm.small }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.smallDescription }}</p>
+					<p>{{ i18n.ts._mfm.smallDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_small"/>
 						<MkTextarea v-model="preview_small"><template #label>MFM</template></MkTextarea>
@@ -75,9 +75,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.quote }}</div>
+				<div class="title">{{ i18n.ts._mfm.quote }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.quoteDescription }}</p>
+					<p>{{ i18n.ts._mfm.quoteDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_quote"/>
 						<MkTextarea v-model="preview_quote"><template #label>MFM</template></MkTextarea>
@@ -85,9 +85,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.center }}</div>
+				<div class="title">{{ i18n.ts._mfm.center }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.centerDescription }}</p>
+					<p>{{ i18n.ts._mfm.centerDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_center"/>
 						<MkTextarea v-model="preview_center"><template #label>MFM</template></MkTextarea>
@@ -95,9 +95,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.inlineCode }}</div>
+				<div class="title">{{ i18n.ts._mfm.inlineCode }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.inlineCodeDescription }}</p>
+					<p>{{ i18n.ts._mfm.inlineCodeDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_inlineCode"/>
 						<MkTextarea v-model="preview_inlineCode"><template #label>MFM</template></MkTextarea>
@@ -105,9 +105,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.blockCode }}</div>
+				<div class="title">{{ i18n.ts._mfm.blockCode }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.blockCodeDescription }}</p>
+					<p>{{ i18n.ts._mfm.blockCodeDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_blockCode"/>
 						<MkTextarea v-model="preview_blockCode"><template #label>MFM</template></MkTextarea>
@@ -115,9 +115,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.inlineMath }}</div>
+				<div class="title">{{ i18n.ts._mfm.inlineMath }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.inlineMathDescription }}</p>
+					<p>{{ i18n.ts._mfm.inlineMathDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_inlineMath"/>
 						<MkTextarea v-model="preview_inlineMath"><template #label>MFM</template></MkTextarea>
@@ -126,9 +126,9 @@
 			</div>
 			<!-- deprecated
 		<div class="section _block">
-			<div class="title">{{ $ts._mfm.search }}</div>
+			<div class="title">{{ i18n.ts._mfm.search }}</div>
 			<div class="content">
-				<p>{{ $ts._mfm.searchDescription }}</p>
+				<p>{{ i18n.ts._mfm.searchDescription }}</p>
 				<div class="preview">
 					<Mfm :text="preview_search"/>
 					<MkTextarea v-model="preview_search"><template #label>MFM</template></MkTextarea>
@@ -137,9 +137,9 @@
 		</div>
 		-->
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.flip }}</div>
+				<div class="title">{{ i18n.ts._mfm.flip }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.flipDescription }}</p>
+					<p>{{ i18n.ts._mfm.flipDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_flip"/>
 						<MkTextarea v-model="preview_flip"><template #label>MFM</template></MkTextarea>
@@ -147,9 +147,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.font }}</div>
+				<div class="title">{{ i18n.ts._mfm.font }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.fontDescription }}</p>
+					<p>{{ i18n.ts._mfm.fontDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_font"/>
 						<MkTextarea v-model="preview_font"><template #label>MFM</template></MkTextarea>
@@ -157,9 +157,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.x2 }}</div>
+				<div class="title">{{ i18n.ts._mfm.x2 }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.x2Description }}</p>
+					<p>{{ i18n.ts._mfm.x2Description }}</p>
 					<div class="preview">
 						<Mfm :text="preview_x2"/>
 						<MkTextarea v-model="preview_x2"><template #label>MFM</template></MkTextarea>
@@ -167,9 +167,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.x3 }}</div>
+				<div class="title">{{ i18n.ts._mfm.x3 }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.x3Description }}</p>
+					<p>{{ i18n.ts._mfm.x3Description }}</p>
 					<div class="preview">
 						<Mfm :text="preview_x3"/>
 						<MkTextarea v-model="preview_x3"><template #label>MFM</template></MkTextarea>
@@ -177,9 +177,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.x4 }}</div>
+				<div class="title">{{ i18n.ts._mfm.x4 }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.x4Description }}</p>
+					<p>{{ i18n.ts._mfm.x4Description }}</p>
 					<div class="preview">
 						<Mfm :text="preview_x4"/>
 						<MkTextarea v-model="preview_x4"><template #label>MFM</template></MkTextarea>
@@ -187,9 +187,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.blur }}</div>
+				<div class="title">{{ i18n.ts._mfm.blur }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.blurDescription }}</p>
+					<p>{{ i18n.ts._mfm.blurDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_blur"/>
 						<MkTextarea v-model="preview_blur"><template #label>MFM</template></MkTextarea>
@@ -197,9 +197,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.jelly }}</div>
+				<div class="title">{{ i18n.ts._mfm.jelly }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.jellyDescription }}</p>
+					<p>{{ i18n.ts._mfm.jellyDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_jelly"/>
 						<MkTextarea v-model="preview_jelly"><template #label>MFM</template></MkTextarea>
@@ -207,9 +207,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.tada }}</div>
+				<div class="title">{{ i18n.ts._mfm.tada }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.tadaDescription }}</p>
+					<p>{{ i18n.ts._mfm.tadaDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_tada"/>
 						<MkTextarea v-model="preview_tada"><template #label>MFM</template></MkTextarea>
@@ -217,9 +217,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.jump }}</div>
+				<div class="title">{{ i18n.ts._mfm.jump }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.jumpDescription }}</p>
+					<p>{{ i18n.ts._mfm.jumpDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_jump"/>
 						<MkTextarea v-model="preview_jump"><template #label>MFM</template></MkTextarea>
@@ -227,9 +227,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.bounce }}</div>
+				<div class="title">{{ i18n.ts._mfm.bounce }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.bounceDescription }}</p>
+					<p>{{ i18n.ts._mfm.bounceDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_bounce"/>
 						<MkTextarea v-model="preview_bounce"><template #label>MFM</template></MkTextarea>
@@ -237,9 +237,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.spin }}</div>
+				<div class="title">{{ i18n.ts._mfm.spin }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.spinDescription }}</p>
+					<p>{{ i18n.ts._mfm.spinDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_spin"/>
 						<MkTextarea v-model="preview_spin"><template #label>MFM</template></MkTextarea>
@@ -247,9 +247,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.shake }}</div>
+				<div class="title">{{ i18n.ts._mfm.shake }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.shakeDescription }}</p>
+					<p>{{ i18n.ts._mfm.shakeDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_shake"/>
 						<MkTextarea v-model="preview_shake"><template #label>MFM</template></MkTextarea>
@@ -257,9 +257,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.twitch }}</div>
+				<div class="title">{{ i18n.ts._mfm.twitch }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.twitchDescription }}</p>
+					<p>{{ i18n.ts._mfm.twitchDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_twitch"/>
 						<MkTextarea v-model="preview_twitch"><template #label>MFM</template></MkTextarea>
@@ -267,9 +267,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.rainbow }}</div>
+				<div class="title">{{ i18n.ts._mfm.rainbow }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.rainbowDescription }}</p>
+					<p>{{ i18n.ts._mfm.rainbowDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_rainbow"/>
 						<MkTextarea v-model="preview_rainbow"><template #label>MFM</template></MkTextarea>
@@ -277,9 +277,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.sparkle }}</div>
+				<div class="title">{{ i18n.ts._mfm.sparkle }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.sparkleDescription }}</p>
+					<p>{{ i18n.ts._mfm.sparkleDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_sparkle"/>
 						<MkTextarea v-model="preview_sparkle"><span>MFM</span></MkTextarea>
@@ -287,9 +287,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.rotate }}</div>
+				<div class="title">{{ i18n.ts._mfm.rotate }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.rotateDescription }}</p>
+					<p>{{ i18n.ts._mfm.rotateDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_rotate"/>
 						<MkTextarea v-model="preview_rotate"><span>MFM</span></MkTextarea>
@@ -297,9 +297,9 @@
 				</div>
 			</div>
 			<div class="section _block">
-				<div class="title">{{ $ts._mfm.plain }}</div>
+				<div class="title">{{ i18n.ts._mfm.plain }}</div>
 				<div class="content">
-					<p>{{ $ts._mfm.plainDescription }}</p>
+					<p>{{ i18n.ts._mfm.plainDescription }}</p>
 					<div class="preview">
 						<Mfm :text="preview_plain"/>
 						<MkTextarea v-model="preview_plain"><span>MFM</span></MkTextarea>

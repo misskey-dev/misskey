@@ -12,6 +12,7 @@ export default function(app: App) {
 	app.component('MkwActivity', defineAsyncComponent(() => import('./activity.vue')));
 	app.component('MkwPhotos', defineAsyncComponent(() => import('./photos.vue')));
 	app.component('MkwDigitalClock', defineAsyncComponent(() => import('./digital-clock.vue')));
+	app.component('MkwUnixClock', defineAsyncComponent(() => import('./unix-clock.vue')));
 	app.component('MkwFederation', defineAsyncComponent(() => import('./federation.vue')));
 	app.component('MkwPostForm', defineAsyncComponent(() => import('./post-form.vue')));
 	app.component('MkwSlideshow', defineAsyncComponent(() => import('./slideshow.vue')));
@@ -36,6 +37,7 @@ export const widgets = [
 	'activity',
 	'photos',
 	'digitalClock',
+	'unixClock',
 	'federation',
 	'instanceCloud',
 	'postForm',
