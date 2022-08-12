@@ -25,23 +25,25 @@ let tagsEl = $ref<HTMLElement | null>(null);
 let width = $ref(300);
 
 watch($$(available), () => {
-	window.TagCanvas.Start(idForCanvas, idForTags, {
-		textColour: '#ffffff',
-		outlineColour: tinycolor(computedStyle.getPropertyValue('--accent')).toHexString(),
-		outlineRadius: 10,
-		initial: [-0.030, -0.010],
-		frontSelect: true,
-		imageRadius: 8,
-		//dragControl: true,
-		dragThreshold: 3,
-		wheelZoom: false,
-		reverse: true,
-		depth: 0.5,
-		maxSpeed: 0.2,
-		minSpeed: 0.003,
-		stretchX: 0.8,
-		stretchY: 0.8,
-	});
+	try {
+		window.TagCanvas.Start(idForCanvas, idForTags, {
+			textColour: '#ffffff',
+			outlineColour: tinycolor(computedStyle.getPropertyValue('--accent')).toHexString(),
+			outlineRadius: 10,
+			initial: [-0.030, -0.010],
+			frontSelect: true,
+			imageRadius: 8,
+			//dragControl: true,
+			dragThreshold: 3,
+			wheelZoom: false,
+			reverse: true,
+			depth: 0.5,
+			maxSpeed: 0.2,
+			minSpeed: 0.003,
+			stretchX: 0.8,
+			stretchY: 0.8,
+		});
+	} catch (err) {}
 });
 
 onMounted(() => {
@@ -58,7 +60,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	window.TagCanvas.Delete(idForCanvas);
+	if (window.TagCanvas) window.TagCanvas.Delete(idForCanvas);
 });
 
 defineExpose({

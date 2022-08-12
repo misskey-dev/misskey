@@ -4,15 +4,15 @@
 	<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
-				<div v-if="!narrow || initialPage == null" class="nav">
+				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="baaadecd">
-						<MkInfo v-if="emailNotConfigured" warn class="info">{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="initialPage == null"></MkSuperMenu>
+						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkSuperMenu :def="menuDef" :grid="currentPage?.route.name == null"></MkSuperMenu>
 					</div>
 				</div>
-				<div v-if="!(narrow && initialPage == null)" class="main">
+				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
 					<div class="bkzroven">
-						<component :is="component" :key="initialPage" v-bind="pageProps"/>
+						<RouterView/>
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/ui/info.vue';
 import MkSuperMenu from '@/components/ui/super-menu.vue';
@@ -33,11 +33,6 @@ import { instance } from '@/instance';
 import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-
-const props = withDefaults(defineProps<{
-  initialPage?: string;
-}>(), {
-});
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -50,12 +45,14 @@ const childInfo = ref(null);
 
 const router = useRouter();
 
-const narrow = ref(false);
+let narrow = $ref(false);
 const NARROW_THRESHOLD = 600;
+
+let currentPage = $computed(() => router.currentRef.value.child);
 
 const ro = new ResizeObserver((entries, observer) => {
 	if (entries.length === 0) return;
-	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
+	narrow = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
 });
 
 const menuDef = computed(() => [{
@@ -64,42 +61,42 @@ const menuDef = computed(() => [{
 		icon: 'fas fa-user',
 		text: i18n.ts.profile,
 		to: '/settings/profile',
-		active: props.initialPage === 'profile',
+		active: currentPage?.route.name === 'profile',
 	}, {
 		icon: 'fas fa-lock-open',
 		text: i18n.ts.privacy,
 		to: '/settings/privacy',
-		active: props.initialPage === 'privacy',
+		active: currentPage?.route.name === 'privacy',
 	}, {
 		icon: 'fas fa-laugh',
 		text: i18n.ts.reaction,
 		to: '/settings/reaction',
-		active: props.initialPage === 'reaction',
+		active: currentPage?.route.name === 'reaction',
 	}, {
 		icon: 'fas fa-cloud',
 		text: i18n.ts.drive,
 		to: '/settings/drive',
-		active: props.initialPage === 'drive',
+		active: currentPage?.route.name === 'drive',
 	}, {
 		icon: 'fas fa-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
-		active: props.initialPage === 'notifications',
+		active: currentPage?.route.name === 'notifications',
 	}, {
 		icon: 'fas fa-envelope',
 		text: i18n.ts.email,
 		to: '/settings/email',
-		active: props.initialPage === 'email',
+		active: currentPage?.route.name === 'email',
 	}, {
 		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/settings/integration',
-		active: props.initialPage === 'integration',
+		active: currentPage?.route.name === 'integration',
 	}, {
 		icon: 'fas fa-lock',
 		text: i18n.ts.security,
 		to: '/settings/security',
-		active: props.initialPage === 'security',
+		active: currentPage?.route.name === 'security',
 	}],
 }, {
 	title: i18n.ts.clientSettings,
@@ -107,32 +104,32 @@ const menuDef = computed(() => [{
 		icon: 'fas fa-cogs',
 		text: i18n.ts.general,
 		to: '/settings/general',
-		active: props.initialPage === 'general',
+		active: currentPage?.route.name === 'general',
 	}, {
 		icon: 'fas fa-palette',
 		text: i18n.ts.theme,
 		to: '/settings/theme',
-		active: props.initialPage === 'theme',
+		active: currentPage?.route.name === 'theme',
 	}, {
 		icon: 'fas fa-bars',
 		text: i18n.ts.navbar,
 		to: '/settings/navbar',
-		active: props.initialPage === 'navbar',
+		active: currentPage?.route.name === 'navbar',
 	}, {
 		icon: 'fas fa-bars-progress',
 		text: i18n.ts.statusbar,
-		to: '/settings/statusbars',
-		active: props.initialPage === 'statusbars',
+		to: '/settings/statusbar',
+		active: currentPage?.route.name === 'statusbar',
 	}, {
 		icon: 'fas fa-music',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
-		active: props.initialPage === 'sounds',
+		active: currentPage?.route.name === 'sounds',
 	}, {
 		icon: 'fas fa-plug',
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
-		active: props.initialPage === 'plugin',
+		active: currentPage?.route.name === 'plugin',
 	}],
 }, {
 	title: i18n.ts.otherSettings,
@@ -140,40 +137,45 @@ const menuDef = computed(() => [{
 		icon: 'fas fa-boxes',
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
-		active: props.initialPage === 'import-export',
+		active: currentPage?.route.name === 'import-export',
 	}, {
 		icon: 'fas fa-volume-mute',
 		text: i18n.ts.instanceMute,
 		to: '/settings/instance-mute',
-		active: props.initialPage === 'instance-mute',
+		active: currentPage?.route.name === 'instance-mute',
 	}, {
 		icon: 'fas fa-ban',
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
-		active: props.initialPage === 'mute-block',
+		active: currentPage?.route.name === 'mute-block',
 	}, {
 		icon: 'fas fa-comment-slash',
 		text: i18n.ts.wordMute,
 		to: '/settings/word-mute',
-		active: props.initialPage === 'word-mute',
+		active: currentPage?.route.name === 'word-mute',
 	}, {
 		icon: 'fas fa-key',
 		text: 'API',
 		to: '/settings/api',
-		active: props.initialPage === 'api',
+		active: currentPage?.route.name === 'api',
 	}, {
 		icon: 'fas fa-bolt',
 		text: 'Webhook',
 		to: '/settings/webhook',
-		active: props.initialPage === 'webhook',
+		active: currentPage?.route.name === 'webhook',
 	}, {
 		icon: 'fas fa-ellipsis-h',
 		text: i18n.ts.other,
 		to: '/settings/other',
-		active: props.initialPage === 'other',
+		active: currentPage?.route.name === 'other',
 	}],
 }, {
 	items: [{
+		icon: 'fas fa-floppy-disk',
+		text: i18n.ts.preferencesBackups,
+		to: '/settings/preferences-backups',
+		active: currentPage?.route.name === 'preferences-backups',
+	}, {
 		type: 'button',
 		icon: 'fas fa-trash',
 		text: i18n.ts.clearCache,
@@ -198,77 +200,24 @@ const menuDef = computed(() => [{
 	}],
 }]);
 
-const pageProps = ref({});
-const component = computed(() => {
-	if (props.initialPage == null) return null;
-	switch (props.initialPage) {
-		case 'accounts': return defineAsyncComponent(() => import('./accounts.vue'));
-		case 'profile': return defineAsyncComponent(() => import('./profile.vue'));
-		case 'privacy': return defineAsyncComponent(() => import('./privacy.vue'));
-		case 'reaction': return defineAsyncComponent(() => import('./reaction.vue'));
-		case 'drive': return defineAsyncComponent(() => import('./drive.vue'));
-		case 'notifications': return defineAsyncComponent(() => import('./notifications.vue'));
-		case 'mute-block': return defineAsyncComponent(() => import('./mute-block.vue'));
-		case 'word-mute': return defineAsyncComponent(() => import('./word-mute.vue'));
-		case 'instance-mute': return defineAsyncComponent(() => import('./instance-mute.vue'));
-		case 'integration': return defineAsyncComponent(() => import('./integration.vue'));
-		case 'security': return defineAsyncComponent(() => import('./security.vue'));
-		case '2fa': return defineAsyncComponent(() => import('./2fa.vue'));
-		case 'api': return defineAsyncComponent(() => import('./api.vue'));
-		case 'webhook': return defineAsyncComponent(() => import('./webhook.vue'));
-		case 'webhook/new': return defineAsyncComponent(() => import('./webhook.new.vue'));
-		case 'webhook/edit': return defineAsyncComponent(() => import('./webhook.edit.vue'));
-		case 'apps': return defineAsyncComponent(() => import('./apps.vue'));
-		case 'other': return defineAsyncComponent(() => import('./other.vue'));
-		case 'general': return defineAsyncComponent(() => import('./general.vue'));
-		case 'email': return defineAsyncComponent(() => import('./email.vue'));
-		case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
-		case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
-		case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
-		case 'navbar': return defineAsyncComponent(() => import('./navbar.vue'));
-		case 'statusbars': return defineAsyncComponent(() => import('./statusbars.vue'));
-		case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
-		case 'custom-css': return defineAsyncComponent(() => import('./custom-css.vue'));
-		case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
-		case 'plugin': return defineAsyncComponent(() => import('./plugin.vue'));
-		case 'plugin/install': return defineAsyncComponent(() => import('./plugin.install.vue'));
-		case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
-		case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
-		case 'delete-account': return defineAsyncComponent(() => import('./delete-account.vue'));
-	}
-	return null;
-});
-
-watch(component, () => {
-	pageProps.value = {};
-
-	nextTick(() => {
-		scroll(el.value, { top: 0 });
-	});
-}, { immediate: true });
-
-watch(() => props.initialPage, () => {
-	if (props.initialPage == null && !narrow.value) {
-		router.push('/settings/profile');
-	} else {
-		if (props.initialPage == null) {
-			INFO.value = indexInfo;
-		}
-	}
-});
-
-watch(narrow, () => {
-	if (props.initialPage == null && !narrow.value) {
-		router.push('/settings/profile');
-	}
+watch($$(narrow), () => {
 });
 
 onMounted(() => {
 	ro.observe(el.value);
 
-	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
-	if (props.initialPage == null && !narrow.value) {
-		router.push('/settings/profile');
+	narrow = el.value.offsetWidth < NARROW_THRESHOLD;
+
+	if (!narrow && currentPage?.route.name == null) {
+		router.replace('/settings/profile');
+	}
+});
+
+onActivated(() => {
+	narrow = el.value.offsetWidth < NARROW_THRESHOLD;
+
+	if (!narrow && currentPage?.route.name == null) {
+		router.replace('/settings/profile');
 	}
 });
 

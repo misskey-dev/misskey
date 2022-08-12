@@ -29,7 +29,7 @@
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-check"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-check"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
@@ -38,6 +38,7 @@ import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from '
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/ui/button.vue';
 import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: string | number;

@@ -1,5 +1,6 @@
 <template>
-<button v-if="canRenote"
+<button
+	v-if="canRenote"
 	ref="buttonRef"
 	class="eddddedb _button canRenote"
 	@click="renote()"
@@ -12,8 +13,9 @@
 </button>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { computed, ref } from 'vue';
+import * as misskey from 'misskey-js';
 import XDetails from '@/components/users-tooltip.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import * as os from '@/os';
@@ -21,71 +23,55 @@ import { $i } from '@/account';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	props: {
-		count: {
-			type: Number,
-			required: true,
-		},
-		note: {
-			type: Object,
-			required: true,
-		},
-	},
+const props = defineProps<{
+	note: misskey.entities.Note;
+	count: number;
+}>();
 
-	setup(props) {
-		const buttonRef = ref<HTMLElement>();
+const buttonRef = ref<HTMLElement>();
 
-		const canRenote = computed(() => ['public', 'home'].includes(props.note.visibility) || props.note.userId === $i.id);
+const canRenote = computed(() => ['public', 'home'].includes(props.note.visibility) || props.note.userId === $i.id);
 
-		useTooltip(buttonRef, async (showing) => {
-			const renotes = await os.api('notes/renotes', {
-				noteId: props.note.id,
-				limit: 11
-			});
+useTooltip(buttonRef, async (showing) => {
+	const renotes = await os.api('notes/renotes', {
+		noteId: props.note.id,
+		limit: 11,
+	});
 
-			const users = renotes.map(x => x.user);
+	const users = renotes.map(x => x.user);
 
-			if (users.length < 1) return;
+	if (users.length < 1) return;
 
-			os.popup(XDetails, {
-				showing,
-				users,
-				count: props.count,
-				targetElement: buttonRef.value
-			}, {}, 'closed');
-		});
-
-		const renote = (viaKeyboard = false) => {
-			pleaseLogin();
-			os.popupMenu([{
-				text: i18n.ts.renote,
-				icon: 'fas fa-retweet',
-				action: () => {
-					os.api('notes/create', {
-						renoteId: props.note.id
-					});
-				}
-			}, {
-				text: i18n.ts.quote,
-				icon: 'fas fa-quote-right',
-				action: () => {
-					os.post({
-						renote: props.note,
-					});
-				}
-			}], buttonRef.value, {
-				viaKeyboard
-			});
-		};
-
-		return {
-			buttonRef,
-			canRenote,
-			renote,
-		};
-	},
+	os.popup(XDetails, {
+		showing,
+		users,
+		count: props.count,
+		targetElement: buttonRef.value,
+	}, {}, 'closed');
 });
+
+const renote = (viaKeyboard = false) => {
+	pleaseLogin();
+	os.popupMenu([{
+		text: i18n.ts.renote,
+		icon: 'fas fa-retweet',
+		action: () => {
+			os.api('notes/create', {
+				renoteId: props.note.id,
+			});
+		},
+	}, {
+		text: i18n.ts.quote,
+		icon: 'fas fa-quote-right',
+		action: () => {
+			os.post({
+				renote: props.note,
+			});
+		},
+	}], buttonRef.value, {
+		viaKeyboard,
+	});
+};
 </script>
 
 <style lang="scss" scoped>

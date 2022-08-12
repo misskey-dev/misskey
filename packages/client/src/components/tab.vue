@@ -18,13 +18,13 @@ export default defineComponent({
 			disabled: this.modelValue === option.props.value,
 			onClick: () => {
 				this.$emit('update:modelValue', option.props.value);
-			}
+			},
 		}, option.children), [
-			[resolveDirective('click-anime')]
+			[resolveDirective('click-anime')],
 		]))), [
-			[resolveDirective('size'), { max: [500] }]
+			[resolveDirective('size'), { max: [500] }],
 		]);
-	}
+	},
 });
 </script>
 

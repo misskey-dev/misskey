@@ -22,7 +22,7 @@
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
@@ -31,6 +31,7 @@ import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, VNode, 
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: string;
@@ -144,6 +145,8 @@ const onClick = (ev: MouseEvent) => {
 			} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
 				const fragment = vnode;
 				scanOptions(fragment.children);
+			} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
+				// nop?
 			} else {
 				const option = vnode;
 				pushOption(option);

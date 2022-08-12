@@ -1,5 +1,6 @@
 <template>
-<XModalWindow ref="dialog"
+<XModalWindow
+	ref="dialog"
 	:width="370"
 	:with-ok-button="true"
 	@close="$refs.dialog.close()"
@@ -12,16 +13,16 @@
 		<div class="yigymqpb _section">
 			<img :src="emoji.url" class="img"/>
 			<MkInput v-model="name" class="_formBlock">
-				<template #label>{{ $ts.name }}</template>
+				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 			<MkInput v-model="category" class="_formBlock" :datalist="categories">
-				<template #label>{{ $ts.category }}</template>
+				<template #label>{{ i18n.ts.category }}</template>
 			</MkInput>
 			<MkInput v-model="aliases" class="_formBlock">
-				<template #label>{{ $ts.tags }}</template>
-				<template #caption>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
+				<template #label>{{ i18n.ts.tags }}</template>
+				<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 			</MkInput>
-			<MkButton danger @click="del()"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+			<MkButton danger @click="del()"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</div>
 </XModalWindow>
@@ -70,7 +71,7 @@ async function update() {
 			name,
 			category,
 			aliases: aliases.split(' '),
-		}
+		},
 	});
 
 	dialog.close();
@@ -84,10 +85,10 @@ async function del() {
 	if (canceled) return;
 
 	os.api('admin/emoji/delete', {
-		id: props.emoji.id
+		id: props.emoji.id,
 	}).then(() => {
 		emit('done', {
-			deleted: true
+			deleted: true,
 		});
 		dialog.close();
 	});

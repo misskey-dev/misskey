@@ -1,12 +1,30 @@
 <template>
 <svg class="mbcofsoe" viewBox="0 0 10 10" preserveAspectRatio="none">
-	<circle v-for="(angle, i) in graduations"
-					:key="i"
-					:cx="5 + (Math.sin(angle) * (5 - graduationsPadding))"
-					:cy="5 - (Math.cos(angle) * (5 - graduationsPadding))"
-					:r="i % 5 == 0 ? 0.125 : 0.05"
-					:fill="i % 5 == 0 ? majorGraduationColor : minorGraduationColor"
-	/>
+	<template v-if="props.graduations === 'dots'">
+		<circle
+			v-for="(angle, i) in graduationsMajor"
+			:cx="5 + (Math.sin(angle) * (5 - graduationsPadding))"
+			:cy="5 - (Math.cos(angle) * (5 - graduationsPadding))"
+			:r="0.125"
+			:fill="(props.twentyfour ? h : h % 12) === i ? nowColor : majorGraduationColor"
+			:opacity="!props.fadeGraduations || (props.twentyfour ? h : h % 12) === i ? 1 : Math.max(0, 1 - (angleDiff(hAngle, angle) / Math.PI) - numbersOpacityFactor)"
+		/>
+	</template>
+	<template v-else-if="props.graduations === 'numbers'">
+		<text
+			v-for="(angle, i) in texts"
+			:x="5 + (Math.sin(angle) * (5 - textsPadding))"
+			:y="5 - (Math.cos(angle) * (5 - textsPadding))"
+			text-anchor="middle"
+			dominant-baseline="middle"
+			:font-size="(props.twentyfour ? h : h % 12) === i ? 1 : 0.7"
+			:font-weight="(props.twentyfour ? h : h % 12) === i ? 'bold' : 'normal'"
+			:fill="(props.twentyfour ? h : h % 12) === i ? nowColor : 'currentColor'"
+			:opacity="!props.fadeGraduations || (props.twentyfour ? h : h % 12) === i ? 1 : Math.max(0, 1 - (angleDiff(hAngle, angle) / Math.PI) - numbersOpacityFactor)"
+		>
+			{{ i === 0 ? (props.twentyfour ? '24' : '12') : i }}
+		</text>
+	</template>
 
 	<line
 		:x1="5 - (Math.sin(sAngle) * (sHandLengthRatio * handsTailLength))"
@@ -41,63 +59,116 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, shallowRef } from 'vue';
 import tinycolor from 'tinycolor2';
+import { globalEvents } from '@/events.js';
 
-withDefaults(defineProps<{
-	thickness: number;
+// https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
+const angleDiff = (a: number, b: number) => {
+	const x = Math.abs(a - b);
+	return Math.abs((x + Math.PI) % (Math.PI * 2) - Math.PI);
+};
+
+const graduationsPadding = 0.5;
+const textsPadding = 0.6;
+const handsPadding = 1;
+const handsTailLength = 0.7;
+const hHandLengthRatio = 0.75;
+const mHandLengthRatio = 1;
+const sHandLengthRatio = 1;
+const numbersOpacityFactor = 0.35;
+
+const props = withDefaults(defineProps<{
+	thickness?: number;
+	offset?: number;
+	twentyfour?: boolean;
+	graduations?: 'none' | 'dots' | 'numbers';
+	fadeGraduations?: boolean;
 }>(), {
+	numbers: false,
 	thickness: 0.1,
+	offset: 0 - new Date().getTimezoneOffset(),
+	twentyfour: false,
+	graduations: 'dots',
+	fadeGraduations: true,
 });
 
-const now = ref(new Date());
-const enabled = ref(true);
-const graduationsPadding = ref(0.5);
-const handsPadding = ref(1);
-const handsTailLength = ref(0.7);
-const hHandLengthRatio = ref(0.75);
-const mHandLengthRatio = ref(1);
-const sHandLengthRatio = ref(1);
-const computedStyle = getComputedStyle(document.documentElement);
-
-const dark = computed(() => tinycolor(computedStyle.getPropertyValue('--bg')).isDark());
-const majorGraduationColor = computed(() => dark.value ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)');
-const minorGraduationColor = computed(() => dark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)');
-const sHandColor = computed(() => dark.value ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)');
-const mHandColor = computed(() => tinycolor(computedStyle.getPropertyValue('--fg')).toHexString());
-const hHandColor = computed(() => tinycolor(computedStyle.getPropertyValue('--accent')).toHexString());
-const s = computed(() => now.value.getSeconds());
-const m = computed(() => now.value.getMinutes());
-const h = computed(() => now.value.getHours());
-const hAngle = computed(() => Math.PI * (h.value % 12 + (m.value + s.value / 60) / 60) / 6);
-const mAngle = computed(() => Math.PI * (m.value + s.value / 60) / 30);
-const sAngle = computed(() => Math.PI * s.value / 30);
-const graduations = computed(() => {
+const graduationsMajor = computed(() => {
 	const angles: number[] = [];
-	for (let i = 0; i < 60; i++) {
-		const angle = Math.PI * i / 30;
+	const times = props.twentyfour ? 24 : 12;
+	for (let i = 0; i < times; i++) {
+		const angle = Math.PI * i / (times / 2);
 		angles.push(angle);
 	}
-
+	return angles;
+});
+const texts = computed(() => {
+	const angles: number[] = [];
+	const times = props.twentyfour ? 24 : 12;
+	for (let i = 0; i < times; i++) {
+		const angle = Math.PI * i / (times / 2);
+		angles.push(angle);
+	}
 	return angles;
 });
 
+let enabled = true;
+let majorGraduationColor = $ref<string>();
+//let minorGraduationColor = $ref<string>();
+let sHandColor = $ref<string>();
+let mHandColor = $ref<string>();
+let hHandColor = $ref<string>();
+let nowColor = $ref<string>();
+let h = $ref<number>(0);
+let m = $ref<number>(0);
+let s = $ref<number>(0);
+let hAngle = $ref<number>(0);
+let mAngle = $ref<number>(0);
+let sAngle = $ref<number>(0);
+
 function tick() {
-	now.value = new Date();
+	const now = new Date();
+	now.setMinutes(now.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+	s = now.getSeconds();
+	m = now.getMinutes();
+	h = now.getHours();
+	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
+	mAngle = Math.PI * (m + s / 60) / 30;
+	sAngle = Math.PI * s / 30;
 }
+
+tick();
+
+function calcColors() {
+	const computedStyle = getComputedStyle(document.documentElement);
+	const dark = tinycolor(computedStyle.getPropertyValue('--bg')).isDark();
+	const accent = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
+	majorGraduationColor = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
+	//minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	sHandColor = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
+	mHandColor = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
+	hHandColor = accent;
+	nowColor = accent;
+}
+
+calcColors();
 
 onMounted(() => {
 	const update = () => {
-		if (enabled.value) {
+		if (enabled) {
 			tick();
 			window.setTimeout(update, 1000);
 		}
 	};
 	update();
+
+	globalEvents.on('themeChanged', calcColors);
 });
 
 onBeforeUnmount(() => {
-	enabled.value = false;
+	enabled = false;
+
+	globalEvents.off('themeChanged', calcColors);
 });
 </script>
 
