@@ -1,9 +1,9 @@
 <template>
 <div v-if="show" ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
+	<div class="buttons left">
+		<MkAvatar v-if="props.displayMyAvatar && $i" class="avatar" :user="$i" :disable-preview="true"/>
+	</div>
 	<template v-if="metadata">
-		<div class="buttons left">
-			<MkAvatar v-if="metadata.user" class="avatar" :user="metadata.user" :disable-preview="true"/>
-		</div>
 		<div v-if="!hideTitle" class="titleContainer" @click="showTabsPopup">
 			<MkAvatar v-if="metadata.avatar" class="avatar" :user="metadata.avatar" :disable-preview="true" :show-indicator="true"/>
 			<i v-else-if="metadata.icon" class="icon" :class="metadata.icon"></i>
@@ -44,6 +44,7 @@ import { scrollToTop } from '@/scripts/scroll';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
 
 type Tab = {
 	key?: string | null;
@@ -62,6 +63,7 @@ const props = defineProps<{
 		handler: (ev: MouseEvent) => void;
 	}[];
 	thin?: boolean;
+	displayMyAvatar?: boolean;
 }>();
 
 const emit = defineEmits<{

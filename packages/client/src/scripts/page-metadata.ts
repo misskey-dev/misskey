@@ -8,7 +8,6 @@ export type PageMetadata = {
 	title: string;
 	subtitle?: string;
 	icon?: string | null;
-	user?: misskey.entities.User | null;
 	avatar?: misskey.entities.User | null;
 	userName?: misskey.entities.User | null;
 	bg?: string;
