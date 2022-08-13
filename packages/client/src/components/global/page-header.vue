@@ -1,6 +1,6 @@
 <template>
 <div v-if="show" ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
-	<div class="buttons left">
+	<div v-if="narrow" class="buttons left">
 		<MkAvatar v-if="props.displayMyAvatar && $i" class="avatar" :user="$i" :disable-preview="true"/>
 	</div>
 	<template v-if="metadata">
@@ -199,23 +199,6 @@ onUnmounted(() => {
 	&.slim {
 		text-align: center;
 
-		> .buttons {
-			&.left {
-				display: inherit;
-				margin-right: auto;
-
-				> .avatar {
-					$size: 32px;
-					display: inline-block;
-					width: $size;
-					height: $size;
-					vertical-align: bottom;
-					margin: 0 8px;
-					pointer-events: none;
-				}
-			}
-		}
-
 		> .titleContainer {
 			flex: 1;
 			margin: 0 auto;
@@ -239,7 +222,17 @@ onUnmounted(() => {
 		margin: 0 var(--margin);
 
 		&.left {
-			display: none;
+			margin-right: auto;
+
+			> .avatar {
+				$size: 32px;
+				display: inline-block;
+				width: $size;
+				height: $size;
+				vertical-align: bottom;
+				margin: 0 8px;
+				pointer-events: none;
+			}
 		}
 
 		&.right {
