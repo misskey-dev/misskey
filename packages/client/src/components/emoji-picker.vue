@@ -433,6 +433,10 @@ defineExpose({
 				}
 			}
 		}
+
+		> .search:not(:focus):not(.filled) {
+			margin-bottom: env(safe-area-inset-bottom);
+		}
 	}
 
 	> .search {
