@@ -38,7 +38,7 @@ onUnmounted(() => {
 .nsbbhtug {
 	position: fixed;
 	z-index: 16385;
-	bottom: 8px;
+	bottom: max(env(safe-area-inset-bottom), 8px);
 	right: 8px;
 	margin: 0;
 	padding: 6px 12px;
