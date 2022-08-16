@@ -1,6 +1,6 @@
 <template>
 <div v-if="show" ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
-	<div v-if="narrow" class="buttons left">
+	<div v-if="narrow" class="buttons left" @click="openAccountMenu">
 		<MkAvatar v-if="props.displayMyAvatar && $i" class="avatar" :user="$i" :disable-preview="true"/>
 	</div>
 	<template v-if="metadata">
@@ -44,7 +44,7 @@ import { scrollToTop } from '@/scripts/scroll';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
 
 type Tab = {
 	key?: string | null;
@@ -86,6 +86,12 @@ const hasActions = $computed(() => props.actions && props.actions.length > 0);
 const show = $computed(() => {
 	return !hideTitle || hasTabs || hasActions;
 });
+
+const openAccountMenu = (ev: MouseEvent) => {
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
+};
 
 const showTabsPopup = (ev: MouseEvent) => {
 	if (!hasTabs) return;
