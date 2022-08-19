@@ -1,5 +1,8 @@
 <template>
 <div v-if="show" ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
+	<div v-if="narrow" class="buttons left">
+		<MkAvatar v-if="props.displayMyAvatar && $i" class="avatar" :user="$i" :disable-preview="true"/>
+	</div>
 	<template v-if="metadata">
 		<div v-if="!hideTitle" class="titleContainer" @click="showTabsPopup">
 			<MkAvatar v-if="metadata.avatar" class="avatar" :user="metadata.avatar" :disable-preview="true" :show-indicator="true"/>
@@ -41,6 +44,7 @@ import { scrollToTop } from '@/scripts/scroll';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
 
 type Tab = {
 	key?: string | null;
@@ -59,6 +63,7 @@ const props = defineProps<{
 		handler: (ev: MouseEvent) => void;
 	}[];
 	thin?: boolean;
+	displayMyAvatar?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -197,7 +202,6 @@ onUnmounted(() => {
 		> .titleContainer {
 			flex: 1;
 			margin: 0 auto;
-			margin-left: var(--height);
 
 			> *:first-child {
 				margin-left: auto;
@@ -213,8 +217,23 @@ onUnmounted(() => {
 		--margin: 8px;
 		display: flex;
     align-items: center;
+		min-width: var(--height);
 		height: var(--height);
 		margin: 0 var(--margin);
+
+		&.left {
+			margin-right: auto;
+
+			> .avatar {
+				$size: 32px;
+				display: inline-block;
+				width: $size;
+				height: $size;
+				vertical-align: bottom;
+				margin: 0 8px;
+				pointer-events: none;
+			}
+		}
 
 		&.right {
 			margin-left: auto;

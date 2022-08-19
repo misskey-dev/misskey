@@ -2,7 +2,9 @@
 <transition :name="$store.state.animation ? 'popup' : ''" appear @after-leave="$emit('closed')">
 	<div v-if="showing" class="fxxzrfni _popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
 		<div v-if="fetched" class="info">
-			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
+			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
+				<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
+			</div>
 			<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 			<div class="title">
 				<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
@@ -120,6 +122,16 @@ export default defineComponent({
 			background-color: rgba(0, 0, 0, 0.1);
 			background-size: cover;
 			background-position: center;
+			> .followed {
+					position: absolute;
+					top: 12px;
+					left: 12px;
+					padding: 4px 8px;
+					color: #fff;
+					background: rgba(0, 0, 0, 0.7);
+					font-size: 0.7em;
+					border-radius: 6px;
+			}
 		}
 
 		> .avatar {
