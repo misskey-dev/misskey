@@ -135,7 +135,7 @@ export const routes = [{
 		component: page(() => import('./pages/settings/api.vue')),
 	}, {
 		path: '/apps',
-		name: 'apps',
+		name: 'api',
 		component: page(() => import('./pages/settings/apps.vue')),
 	}, {
 		path: '/webhook/edit/:webhookId',
@@ -163,7 +163,7 @@ export const routes = [{
 		component: page(() => import('./pages/settings/custom-css.vue')),
 	}, {
 		path: '/accounts',
-		name: 'accounts',
+		name: 'profile',
 		component: page(() => import('./pages/settings/accounts.vue')),
 	}, {
 		path: '/account-info',
