@@ -162,6 +162,10 @@ export const routes = [{
 		name: 'general',
 		component: page(() => import('./pages/settings/custom-css.vue')),
 	}, {
+		path: '/accounts',
+		name: 'accounts',
+		component: page(() => import('./pages/settings/accounts.vue')),
+	}, {
 		path: '/account-info',
 		name: 'other',
 		component: page(() => import('./pages/settings/account-info.vue')),
