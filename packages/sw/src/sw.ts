@@ -24,9 +24,11 @@ self.addEventListener('activate', ev => {
 });
 
 self.addEventListener('fetch', ev => {
+	const url = new URL(ev.request.url);
+
 	ev.respondWith(
 		fetch(ev.request)
-		.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 }))
+		.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: (url.host === location.host && url.pathname === '/') ? 200 : 503 }))
 	);
 });
 
