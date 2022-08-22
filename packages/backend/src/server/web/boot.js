@@ -133,10 +133,10 @@
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
 			<h1>An error has occurred!</h1>
+			<p class="disable-content-blocker">If you are using an ad blocker, disable it.</p>
 			<button class="button-big" onclick="location.reload(true);">
 				<span class="button-label-big">Refresh</span>
 			</button>
-			<p class="dont-worry">Don't worry, it's (probably) not your fault.</p>
 			<p>If the problem persists after refreshing, please contact your instance's administrator.<br>You may also try the following options:</p>
 			<p>Update your os and browser.</p>
 			<p>Disable an adblocker.</p>
@@ -239,9 +239,13 @@
 			font-size: 16px;
 		}
 
-		.dont-worry,
 		#msg {
 			font-size: 18px;
+		}
+
+		.disable-content-blocker {
+			font-size: 18px;
+			font-weight: 700;
 		}
 
 		.icon-warning {
@@ -280,7 +284,7 @@
 			details {
 				width: 50%;
 			}
-		`)
+		}`)
 	}
 
 	// eslint-disable-next-line no-inner-declarations
