@@ -26,10 +26,10 @@ self.addEventListener('activate', ev => {
 self.addEventListener('fetch', ev => {
 	ev.respondWith(
 		fetch(ev.request)
-		.catch(() => {
+		.catch(e => {
 			// prevent unexpected identifier error when loading javascript file
 			if (new URL(ev.request.url).pathname.endsWith('.js')) {
-				return new Response('', { status: 503 });
+				return new Response(`Caught error during script loading. Service Worker @${_VERSION_}\n\n${JSON.stringify(e)}`, { status: 503 });
 			}
 			return new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 });
 		})
