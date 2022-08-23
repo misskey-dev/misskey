@@ -28,7 +28,7 @@ self.addEventListener('fetch', ev => {
 		fetch(ev.request)
 		.catch(() => {
 			// prevent unexpected identifier error when loading javascript file
-			if (new URL(ev.request.url).pathname.includes('.js')) {
+			if (new URL(ev.request.url).pathname.endsWith('.js')) {
 				return new Response('', { status: 503 });
 			}
 			return new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 });
