@@ -25,7 +25,7 @@ self.addEventListener('activate', ev => {
 
 self.addEventListener('fetch', ev => {
 	let isHTMLRequest = false;
-	if (ev.request.headers.get("sec-fetch-dest") === 'document') {
+	if (ev.request.headers.get('sec-fetch-dest') === 'document') {
 		isHTMLRequest = true;
 	} else if (ev.request.headers.get('accept')?.includes('/html')) {
 		isHTMLRequest = true;
