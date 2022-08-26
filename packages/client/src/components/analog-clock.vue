@@ -26,6 +26,7 @@
 		</text>
 	</template>
 
+	<!--
 	<line
 		:x1="5 - (Math.sin(sAngle) * (sHandLengthRatio * handsTailLength))"
 		:y1="5 + (Math.cos(sAngle) * (sHandLengthRatio * handsTailLength))"
@@ -33,6 +34,20 @@
 		:y2="5 - (Math.cos(sAngle) * ((sHandLengthRatio * 5) - handsPadding))"
 		:stroke="sHandColor"
 		:stroke-width="thickness / 2"
+		stroke-linecap="round"
+	/>
+	-->
+
+	<line
+		class="s"
+		:class="{ animate: !disableSAnimate }"
+		:x1="5 - (0 * (sHandLengthRatio * handsTailLength))"
+		:y1="5 + (1 * (sHandLengthRatio * handsTailLength))"
+		:x2="5 + (0 * ((sHandLengthRatio * 5) - handsPadding))"
+		:y2="5 - (1 * ((sHandLengthRatio * 5) - handsPadding))"
+		:stroke="sHandColor"
+		:stroke-width="thickness / 2"
+		:style="`transform: rotateZ(${sAngle}rad)`"
 		stroke-linecap="round"
 	/>
 
@@ -59,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount, shallowRef } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
 
@@ -125,6 +140,8 @@ let s = $ref<number>(0);
 let hAngle = $ref<number>(0);
 let mAngle = $ref<number>(0);
 let sAngle = $ref<number>(0);
+let disableSAnimate = $ref(false);
+let sOneRound = false;
 
 function tick() {
 	const now = new Date();
@@ -134,7 +151,21 @@ function tick() {
 	h = now.getHours();
 	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
 	mAngle = Math.PI * (m + s / 60) / 30;
-	sAngle = Math.PI * s / 30;
+	if (sOneRound) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
+		sAngle = Math.PI * 60 / 30;
+		window.setTimeout(() => {
+			disableSAnimate = true;
+			window.setTimeout(() => {
+				sAngle = 0;
+				window.setTimeout(() => {
+					disableSAnimate = false;
+				}, 100);
+			}, 100);
+		}, 500);
+	} else {
+		sAngle = Math.PI * s / 30;
+	}
+	sOneRound = s === 59;
 }
 
 tick();
@@ -175,5 +206,14 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .mbcofsoe {
 	display: block;
+
+	> .s {
+		will-change: transform;
+		transform-origin: 50% 50%;
+
+		&.animate {
+			transition: transform .2s cubic-bezier(.4,2.08,.55,.44);
+		}
+	}
 }
 </style>
