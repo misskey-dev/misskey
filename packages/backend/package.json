@@ -14,7 +14,7 @@
 		"lodash": "^4.17.21"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-node": "3.19.0"
+		"@tensorflow/tfjs-node": "3.20.0"
 	},
 	"dependencies": {
 		"@bull-board/koa": "4.2.2",
@@ -30,7 +30,7 @@
 		"archiver": "5.3.1",
 		"autobind-decorator": "2.4.0",
 		"autwh": "0.1.0",
-		"aws-sdk": "2.1194.0",
+		"aws-sdk": "2.1204.0",
 		"bcryptjs": "2.4.3",
 		"blurhash": "1.1.5",
 		"bull": "4.8.5",
@@ -42,7 +42,7 @@
 		"cli-highlight": "2.1.11",
 		"color-convert": "2.0.1",
 		"content-disposition": "0.5.4",
-		"date-fns": "2.29.1",
+		"date-fns": "2.29.2",
 		"deep-email-validator": "0.1.21",
 		"escape-regexp": "0.0.1",
 		"feed": "4.2.2",
@@ -58,7 +58,7 @@
 		"json5": "2.2.1",
 		"json5-loader": "4.0.1",
 		"jsonld": "6.0.0",
-		"jsrsasign": "10.5.26",
+		"jsrsasign": "10.5.27",
 		"koa": "2.13.4",
 		"koa-bodyparser": "4.3.0",
 		"koa-favicon": "2.1.0",
@@ -80,7 +80,7 @@
 		"nsfwjs": "2.4.1",
 		"os-utils": "0.0.14",
 		"parse5": "7.0.0",
-		"pg": "8.7.3",
+		"pg": "8.8.0",
 		"private-ip": "2.3.4",
 		"probe-image-size": "7.2.3",
 		"promise-limit": "2.7.0",
@@ -105,7 +105,7 @@
 		"stringz": "2.1.0",
 		"summaly": "2.7.0",
 		"syslog-pro": "1.0.0",
-		"systeminformation": "5.12.5",
+		"systeminformation": "5.12.6",
 		"tinycolor2": "1.4.2",
 		"tmp": "0.2.1",
 		"ts-loader": "9.3.1",
@@ -113,7 +113,7 @@
 		"tsc-alias": "1.7.0",
 		"tsconfig-paths": "4.1.0",
 		"twemoji-parser": "14.0.0",
-		"typeorm": "0.3.7",
+		"typeorm": "0.3.8",
 		"ulid": "2.3.0",
 		"unzipper": "0.10.11",
 		"uuid": "8.3.2",
@@ -123,7 +123,7 @@
 		"xev": "3.0.2"
 	},
 	"devDependencies": {
-		"@redocly/openapi-core": "1.0.0-beta.106",
+		"@redocly/openapi-core": "1.0.0-beta.108",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.15.9",
 		"@types/cbor": "6.0.0",
@@ -145,13 +145,13 @@
 		"@types/koa__multer": "2.0.4",
 		"@types/koa__router": "8.0.11",
 		"@types/mocha": "9.1.1",
-		"@types/node": "18.7.2",
+		"@types/node": "18.7.13",
 		"@types/node-fetch": "3.0.3",
 		"@types/nodemailer": "6.4.5",
 		"@types/oauth": "0.9.1",
 		"@types/pug": "2.0.6",
 		"@types/punycode": "2.1.0",
-		"@types/qrcode": "1.4.2",
+		"@types/qrcode": "1.5.0",
 		"@types/random-seed": "0.3.3",
 		"@types/ratelimiter": "3.4.3",
 		"@types/redis": "4.0.11",
@@ -167,12 +167,12 @@
 		"@types/web-push": "3.3.2",
 		"@types/websocket": "1.0.5",
 		"@types/ws": "8.5.3",
-		"@typescript-eslint/eslint-plugin": "5.33.0",
-		"@typescript-eslint/parser": "5.33.0",
+		"@typescript-eslint/eslint-plugin": "5.35.1",
+		"@typescript-eslint/parser": "5.35.1",
 		"cross-env": "7.0.3",
-		"eslint": "8.21.0",
+		"eslint": "8.23.0",
 		"eslint-plugin-import": "2.26.0",
 		"execa": "6.1.0",
-		"typescript": "4.7.4"
+		"typescript": "4.8.2"
 	}
 }
