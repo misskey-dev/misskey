@@ -1073,6 +1073,7 @@ _wordMute:
   muteWords: "ปิดเสียงคำ"
   muteWordsDescription: "คั่นด้วยช่องว่างสำหรับเงื่อนไข AND หรือด้วยการขึ้นบรรทัดใหม่สำหรับเงื่อนไข OR นะ"
   muteWordsDescription2: "ล้อมรอบคีย์เวิร์ดด้วยเครื่องหมายทับเพื่อใช้นิพจน์ทั่วไป"
+  softDescription: "ซ่อนโน้ตให้ตรงตามเงื่อนไขที่ตั้งไว้จากไทม์ไลน์"
 _instanceMute:
   instanceMuteDescription2: "คั่นด้วยการขึ้นบรรทัดใหม่"
 _theme:
