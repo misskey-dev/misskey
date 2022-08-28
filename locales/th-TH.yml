@@ -1043,6 +1043,36 @@ _mfm:
   sparkle: "กลิตเตอร์"
   sparkleDescription: "ให้เนื้อหานั้นมีเอฟเฟกต์แบบอนุภาคประกาย"
   rotate: "หมุนหน้าจอ"
+  rotateDescription: "เปลี่ยนเนื้อหาตามด้วยมุมที่ระบุไว้"
+  plain: "เรียบง่าย"
+  plainDescription: "ปิดการใช้งานเอฟเฟกต์ของ MFM ทั้งหมดที่มีอยู่ในเอฟเฟกต์ MFM นี้"
+_instanceTicker:
+  none: "ไม่ต้องแสดง"
+  remote: "แสดงสำหรับผู้ใช้ระยะไกล"
+  always: "แสดงเสมอ"
+_serverDisconnectedBehavior:
+  reload: "โหลดใหม่โดยอัตโนมัติ"
+  dialog: "แสดงกล่องโต้ตอบคำเตือน"
+  quiet: "แสดงคำเตือนที่ไม่เป็นการรบกวน"
+_channel:
+  create: "สร้างแชนแนลใหม่"
+  edit: "แก้ไขแชนแนล"
+  setBanner: "เซตแบนเนอร์"
+  removeBanner: "ลบแบนเนอร์"
+  featured: "เทรนด์"
+  owned: "เจ้าของ"
+  following: "ติดตามแล้ว"
+  usersCount: "{n} ผู้เข้าร่วม"
+  notesCount: "{n} โน้ต"
+_menuDisplay:
+  sideFull: "ด้านข้าง"
+  sideIcon: "ด้านข้าง (ไอคอน)"
+  top: "ท็อป"
+  hide: "ซ่อน"
+_wordMute:
+  muteWords: "ปิดเสียงคำ"
+  muteWordsDescription: "คั่นด้วยช่องว่างสำหรับเงื่อนไข AND หรือด้วยการขึ้นบรรทัดใหม่สำหรับเงื่อนไข OR นะ"
+  muteWordsDescription2: "ล้อมรอบคีย์เวิร์ดด้วยเครื่องหมายทับเพื่อใช้นิพจน์ทั่วไป"
 _instanceMute:
   instanceMuteDescription2: "คั่นด้วยการขึ้นบรรทัดใหม่"
 _theme:
