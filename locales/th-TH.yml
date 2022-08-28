@@ -1023,6 +1023,20 @@ _mfm:
   bounce: "อนิเมชั่น (เด้ง)"
   bounceDescription: "ให้เนื้อหามีอนิเมชั่นเด้ง"
   shake: "อนิเมชั่น (เขย่า)"
+  shakeDescription: "ให้เนื้อหามีภาพเคลื่อนไหวสั่น"
+  twitch: "แอนิเมชั่น (Twitch)"
+  twitchDescription: "ให้เนื้อหามีแอนิเมชั่นกระตุกอย่างแรง"
+  spin: "แอนิเมชั่น (สปิน)"
+  spinDescription: "ให้เนื้อหาเป็นภาพเคลื่อนไหวแบบหมุน"
+  x2: "ขนาดใหญ่"
+  x2Description: "แสดงเนื้อหาที่ใหญ่ขึ้น"
+  x3: "ใหญ่มาก"
+  x3Description: "แสดงเนื้อหาอีเว้นท์ที่ใหญ่ขึ้น"
+  x4: "ใหญ่อย่างไม่น่าเชื่อ"
+  x4Description: "แสดงผลเนื้อหาที่ใหญ่กว่าใหญ่กว่าขนาดใหญ่"
+  blur: "เบลอ"
+_instanceMute:
+  instanceMuteDescription2: "คั่นด้วยการขึ้นบรรทัดใหม่"
 _theme:
   description: "รายละเอียด"
   keys:
