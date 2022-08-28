@@ -4,7 +4,7 @@
 		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
 
 		<template #fallback>
-			Loading...
+			<MkLoading/>
 		</template>
 	</Suspense>
 </KeepAlive>

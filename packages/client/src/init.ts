@@ -14,7 +14,7 @@ if (localStorage.getItem('accounts') != null) {
 //#endregion
 
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
-import compareVersions from 'compare-versions';
+import { compareVersions } from 'compare-versions';
 import JSON5 from 'json5';
 
 import widgets from '@/widgets';

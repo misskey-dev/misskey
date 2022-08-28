@@ -91,7 +91,6 @@ const widgetsShowing = $ref(false);
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
-	console.log(info);
 	pageMetadata = info;
 	if (pageMetadata.value) {
 		document.title = `${pageMetadata.value.title} | ${instanceName}`;
