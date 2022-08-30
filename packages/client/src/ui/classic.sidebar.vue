@@ -121,7 +121,7 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			os.popup(defineAsyncComponent(() => import('@/components/launch-pad.vue')), {
+			os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
 				src: ev.currentTarget ?? ev.target,
 			}, {}, 'closed');
 		},

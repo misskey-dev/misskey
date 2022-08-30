@@ -20,7 +20,7 @@
 import { } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
-import MkAvatars from '@/components/avatars.vue';
+import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

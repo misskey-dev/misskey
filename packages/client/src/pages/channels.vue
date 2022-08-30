@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, inject } from 'vue';
-import MkChannelPreview from '@/components/channel-preview.vue';
+import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import { useRouter } from '@/router';

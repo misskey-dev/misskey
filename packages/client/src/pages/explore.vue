@@ -41,7 +41,7 @@ import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
-import XUserList from '@/components/user-list.vue';
+import XUserList from '@/components/MkUserList.vue';
 
 const props = defineProps<{
 	tag?: string;

@@ -39,7 +39,7 @@ async function save() {
 
 onMounted(() => {
 	if (props.token == null) {
-		os.popup(defineAsyncComponent(() => import('@/components/forgot-password.vue')), {}, {}, 'closed');
+		os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {}, 'closed');
 		mainRouter.push('/');
 	}
 });

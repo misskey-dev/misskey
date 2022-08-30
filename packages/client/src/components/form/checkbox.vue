@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { toRefs, Ref } from 'vue';
 import * as os from '@/os';
-import Ripple from '@/components/ripple.vue';
+import Ripple from '@/components/MkRipple.vue';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{

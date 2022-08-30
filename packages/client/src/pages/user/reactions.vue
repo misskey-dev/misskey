@@ -17,8 +17,8 @@
 import { computed } from 'vue';
 import * as misskey from 'misskey-js';
 import MkPagination from '@/components/ui/pagination.vue';
-import MkNote from '@/components/note.vue';
-import MkReactionIcon from '@/components/reaction-icon.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
 const props = defineProps<{
 	user: misskey.entities.User;

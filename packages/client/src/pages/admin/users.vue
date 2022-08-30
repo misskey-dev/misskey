@@ -62,7 +62,7 @@ import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import MkUserCardMini from '@/components/user-card-mini.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 let paginationComponent = $ref<InstanceType<typeof MkPagination>>();
 

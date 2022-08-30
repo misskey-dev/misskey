@@ -46,7 +46,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormInfo from '@/components/ui/info.vue';

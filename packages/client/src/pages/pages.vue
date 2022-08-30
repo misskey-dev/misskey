@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
-import MkPagePreview from '@/components/page-preview.vue';
+import MkPagePreview from '@/components/MkPagePreview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import { useRouter } from '@/router';

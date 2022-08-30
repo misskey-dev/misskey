@@ -79,7 +79,7 @@ async function install() {
 	}
 
 	const token = permissions == null || permissions.length === 0 ? null : await new Promise((res, rej) => {
-		os.popup(defineAsyncComponent(() => import('@/components/token-generate-window.vue')), {
+		os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: name,

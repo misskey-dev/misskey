@@ -88,7 +88,7 @@ function remove(reaction, ev: MouseEvent) {
 }
 
 function preview(ev: MouseEvent) {
-	os.popup(defineAsyncComponent(() => import('@/components/emoji-picker-dialog.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 		asReactionPicker: true,
 		src: ev.currentTarget ?? ev.target,
 	}, {}, 'closed');

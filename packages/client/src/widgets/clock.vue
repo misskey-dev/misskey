@@ -21,8 +21,8 @@ import { } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/ui/container.vue';
-import MkAnalogClock from '@/components/analog-clock.vue';
-import MkDigitalClock from '@/components/digital-clock.vue';
+import MkAnalogClock from '@/components/MkAnalogClock.vue';
+import MkDigitalClock from '@/components/MkDigitalClock.vue';
 import { timezones } from '@/scripts/timezones';
 import { i18n } from '@/i18n';
 

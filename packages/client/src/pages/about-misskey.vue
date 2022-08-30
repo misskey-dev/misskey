@@ -68,7 +68,7 @@ import { version } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/ui/button.vue';
-import MkLink from '@/components/link.vue';
+import MkLink from '@/components/MkLink.vue';
 import { physics } from '@/scripts/physics';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';

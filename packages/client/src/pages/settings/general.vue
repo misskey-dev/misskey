@@ -100,7 +100,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FormRange from '@/components/form/range.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
-import MkLink from '@/components/link.vue';
+import MkLink from '@/components/MkLink.vue';
 import { langs } from '@/config';
 import { defaultStore } from '@/store';
 import * as os from '@/os';

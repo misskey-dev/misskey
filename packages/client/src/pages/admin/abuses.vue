@@ -53,7 +53,7 @@ import XHeader from './_header_.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
-import XAbuseReport from '@/components/abuse-report.vue';
+import XAbuseReport from '@/components/MkAbuseReport.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

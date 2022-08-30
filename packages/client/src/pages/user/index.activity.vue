@@ -17,7 +17,7 @@
 import { } from 'vue';
 import * as misskey from 'misskey-js';
 import MkContainer from '@/components/ui/container.vue';
-import MkChart from '@/components/chart.vue';
+import MkChart from '@/components/MkChart.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 

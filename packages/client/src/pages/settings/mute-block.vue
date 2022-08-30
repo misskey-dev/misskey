@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkPagination from '@/components/ui/pagination.vue';
-import MkTab from '@/components/tab.vue';
+import MkTab from '@/components/MkTab.vue';
 import FormInfo from '@/components/ui/info.vue';
 import FormLink from '@/components/form/link.vue';
 import { userPage } from '@/filters/user';

@@ -34,7 +34,7 @@ async function readAllNotifications() {
 
 function configure() {
 	const includingTypes = notificationTypes.filter(x => !$i!.mutingNotificationTypes.includes(x));
-	os.popup(defineAsyncComponent(() => import('@/components/notification-setting-window.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSettingWindow.vue')), {
 		includingTypes,
 		showGlobalToggle: false,
 	}, {

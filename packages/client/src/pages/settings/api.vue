@@ -17,7 +17,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 const isDesktop = ref(window.innerWidth >= 1100);
 
 function generateToken() {
-	os.popup(defineAsyncComponent(() => import('@/components/token-generate-window.vue')), {}, {
+	os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {}, {
 		done: async result => {
 			const { name, permissions } = result;
 			const { token } = await os.api('miauth/gen-token', {

@@ -42,8 +42,8 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import MkPagination from '@/components/ui/pagination.vue';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
+import XSigninDialog from '@/components/MkSigninDialog.vue';
+import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
