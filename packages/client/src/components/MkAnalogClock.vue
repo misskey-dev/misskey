@@ -40,7 +40,7 @@
 
 	<line
 		class="s"
-		:class="{ animate: !disableSAnimate }"
+		:class="{ animate: !disableSAnimate && sAnimation !== 'none', elastic: sAnimation === 'elastic', easeOut: sAnimation === 'easeOut' }"
 		:x1="5 - (0 * (sHandLengthRatio * handsTailLength))"
 		:y1="5 + (1 * (sHandLengthRatio * handsTailLength))"
 		:x2="5 + (0 * ((sHandLengthRatio * 5) - handsPadding))"
@@ -99,6 +99,7 @@ const props = withDefaults(defineProps<{
 	twentyfour?: boolean;
 	graduations?: 'none' | 'dots' | 'numbers';
 	fadeGraduations?: boolean;
+	sAnimation?: 'none' | 'elastic' | 'easeOut';
 }>(), {
 	numbers: false,
 	thickness: 0.1,
@@ -106,6 +107,7 @@ const props = withDefaults(defineProps<{
 	twentyfour: false,
 	graduations: 'dots',
 	fadeGraduations: true,
+	sAnimation: 'elastic',
 });
 
 const graduationsMajor = computed(() => {
@@ -161,7 +163,7 @@ function tick() {
 					disableSAnimate = false;
 				}, 100);
 			}, 100);
-		}, 500);
+		}, 700);
 	} else {
 		sAngle = Math.PI * s / 30;
 	}
@@ -211,8 +213,12 @@ onBeforeUnmount(() => {
 		will-change: transform;
 		transform-origin: 50% 50%;
 
-		&.animate {
+		&.animate.elastic {
 			transition: transform .2s cubic-bezier(.4,2.08,.55,.44);
+		}
+
+		&.animate.easeOut {
+			transition: transform .7s cubic-bezier(0,.7,.3,1);
 		}
 	}
 }

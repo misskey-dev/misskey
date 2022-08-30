@@ -9,6 +9,7 @@
 			:graduations="widgetProps.graduations"
 			:fade-graduations="widgetProps.fadeGraduations"
 			:twentyfour="widgetProps.twentyFour"
+			:s-animation="widgetProps.sAnimation"
 		/>
 		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" class="_monospace label c time" :show-s="false" :offset="tzOffset"/>
 		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label d offset">{{ tzOffsetLabel }}</div>
@@ -69,6 +70,17 @@ const widgetPropsDef = {
 	fadeGraduations: {
 		type: 'boolean' as const,
 		default: true,
+	},
+	sAnimation: {
+		type: 'radio' as const,
+		default: 'elastic',
+		options: [{
+			value: 'none', label: 'None',
+		}, {
+			value: 'elastic', label: 'Elastic',
+		}, {
+			value: 'easeOut', label: 'Ease out',
+		}],
 	},
 	twentyFour: {
 		type: 'boolean' as const,
