@@ -18,54 +18,39 @@
 </component>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent, ref } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@/config';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { safeURIDecode } from '@/scripts/safe-uri-decode';
 
-export default defineComponent({
-	props: {
-		url: {
-			type: String,
-			required: true,
-		},
-		rel: {
-			type: String,
-			required: false,
-			default: null,
-		},
-	},
-	setup(props) {
-		const self = props.url.startsWith(local);
-		const url = new URL(props.url);
-		const el = ref();
-		
-		useTooltip(el, (showing) => {
-			os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-				showing,
-				url: props.url,
-				source: el.value,
-			}, {}, 'closed');
-		});
+const props = defineProps<{
+	url: string;
+	rel?: string;
+}>();
 
-		return {
-			local,
-			schema: url.protocol,
-			hostname: decodePunycode(url.hostname),
-			port: url.port,
-			pathname: safeURIDecode(url.pathname),
-			query: safeURIDecode(url.search),
-			hash: safeURIDecode(url.hash),
-			self: self,
-			attr: self ? 'to' : 'href',
-			target: self ? null : '_blank',
-			el,
-		};
-	},
+const self = props.url.startsWith(local);
+const url = new URL(props.url);
+const el = ref();
+
+useTooltip(el, (showing) => {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+		showing,
+		url: props.url,
+		source: el.value,
+	}, {}, 'closed');
 });
+
+const schema = url.protocol;
+const hostname = decodePunycode(url.hostname);
+const port = url.port;
+const pathname = safeURIDecode(url.pathname);
+const query = safeURIDecode(url.search);
+const hash = safeURIDecode(url.hash);
+const attr = self ? 'to' : 'href';
+const target = self ? null : '_blank';
 </script>
 
 <style lang="scss" scoped>
