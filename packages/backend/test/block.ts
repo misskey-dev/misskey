@@ -12,14 +12,14 @@ describe('Block', () => {
 	let bob: any;
 	let carol: any;
 
-	before(async () => {
+	beforeAll(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 	});
 
-	after(async () => {
+	afterAll(async () => {
 		await shutdownServer(p);
 	});
 

@@ -37,7 +37,7 @@ describe('Streaming', () => {
 		let kyokoNote: any;
 		let list: any;
 
-		before(async () => {
+		beforeAll(async () => {
 			p = await startServer();
 			const connection = await initTestDb(true);
 			Followings = connection.getRepository(Following);
@@ -73,7 +73,7 @@ describe('Streaming', () => {
 			}, chitose);
 		});
 
-		after(async () => {
+		afterAll(async () => {
 			await shutdownServer(p);
 		});
 
@@ -82,7 +82,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					kyoko, 'main',	// kyoko:main
 					() => post(ayano, { text: 'foo @kyoko bar' }),	// ayano mention => kyoko
-					msg => msg.type === 'mention' && msg.body.userId === ayano.id	// wait ayano
+					msg => msg.type === 'mention' && msg.body.userId === ayano.id,	// wait ayano
 				);
 
 				assert.strictEqual(fired, true);
@@ -92,7 +92,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					kyoko, 'main',	// kyoko:main
 					() => post(ayano, { renoteId: kyokoNote.id }),	// ayano renote
-					msg => msg.type === 'renote' && msg.body.renoteId === kyokoNote.id	// wait renote
+					msg => msg.type === 'renote' && msg.body.renoteId === kyokoNote.id,	// wait renote
 				);
 
 				assert.strictEqual(fired, true);
@@ -104,7 +104,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'homeTimeline',	// ayano:Home
 					() => api('notes/create', { text: 'foo' }, ayano),	// ayano posts
-					msg => msg.type === 'note' && msg.body.text === 'foo'
+					msg => msg.type === 'note' && msg.body.text === 'foo',
 				);
 
 				assert.strictEqual(fired, true);
@@ -114,7 +114,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'homeTimeline',		// ayano:home
 					() => api('notes/create', { text: 'foo' }, kyoko),	// kyoko posts
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, true);
@@ -124,7 +124,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					kyoko, 'homeTimeline',	// kyoko:home
 					() => api('notes/create', { text: 'foo' }, ayano),	// ayano posts
-					msg => msg.type === 'note' && msg.body.userId === ayano.id	// wait ayano
+					msg => msg.type === 'note' && msg.body.userId === ayano.id,	// wait ayano
 				);
 
 				assert.strictEqual(fired, false);
@@ -133,8 +133,8 @@ describe('Streaming', () => {
 			it('フォローしているユーザーのダイレクト投稿が流れる', async () => {
 				const fired = await waitFire(
 					ayano, 'homeTimeline',	// ayano:home
-					() => api('notes/create', { text: 'foo', visibility: 'specified', visibleUserIds: [ayano.id], }, kyoko),	// kyoko dm => ayano
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					() => api('notes/create', { text: 'foo', visibility: 'specified', visibleUserIds: [ayano.id] }, kyoko),	// kyoko dm => ayano
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, true);
@@ -143,8 +143,8 @@ describe('Streaming', () => {
 			it('フォローしているユーザーでも自分が指定されていないダイレクト投稿は流れない', async () => {
 				const fired = await waitFire(
 					ayano, 'homeTimeline',	// ayano:home
-					() => api('notes/create', { text: 'foo', visibility: 'specified', visibleUserIds: [chitose.id], }, kyoko),	// kyoko dm => chitose
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					() => api('notes/create', { text: 'foo', visibility: 'specified', visibleUserIds: [chitose.id] }, kyoko),	// kyoko dm => chitose
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, false);
@@ -156,7 +156,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
 					() => api('notes/create', { text: 'foo' }, ayano),	// ayano posts
-					msg => msg.type === 'note' && msg.body.text === 'foo'
+					msg => msg.type === 'note' && msg.body.text === 'foo',
 				);
 
 				assert.strictEqual(fired, true);
@@ -166,7 +166,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
 					() => api('notes/create', { text: 'foo' }, chitose),	// chitose posts
-					msg => msg.type === 'note' && msg.body.userId === chitose.id	// wait chitose
+					msg => msg.type === 'note' && msg.body.userId === chitose.id,	// wait chitose
 				);
 
 				assert.strictEqual(fired, true);
@@ -176,7 +176,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
 					() => api('notes/create', { text: 'foo' }, chinatsu),	// chinatsu posts
-					msg => msg.type === 'note' && msg.body.userId === chinatsu.id	// wait chinatsu
+					msg => msg.type === 'note' && msg.body.userId === chinatsu.id,	// wait chinatsu
 				);
 
 				assert.strictEqual(fired, false);
@@ -186,7 +186,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
 					() => api('notes/create', { text: 'foo' }, akari),	// akari posts
-					msg => msg.type === 'note' && msg.body.userId === akari.id	// wait akari
+					msg => msg.type === 'note' && msg.body.userId === akari.id,	// wait akari
 				);
 
 				assert.strictEqual(fired, false);
@@ -196,7 +196,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
 					() => api('notes/create', { text: 'foo', visibility: 'home' }, kyoko),	// kyoko home posts
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, false);
@@ -206,7 +206,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
 					() => api('notes/create', { text: 'foo', visibility: 'specified', visibleUserIds: [ayano.id] }, kyoko),	// kyoko DM => ayano
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, false);
@@ -216,7 +216,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'localTimeline',	// ayano:Local
 					() => api('notes/create', { text: 'foo', visibility: 'followers' }, chitose),
-					msg => msg.type === 'note' && msg.body.userId === chitose.id	// wait chitose
+					msg => msg.type === 'note' && msg.body.userId === chitose.id,	// wait chitose
 				);
 
 				assert.strictEqual(fired, false);
@@ -228,7 +228,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo' }, ayano),	// ayano posts
-					msg => msg.type === 'note' && msg.body.text === 'foo'
+					msg => msg.type === 'note' && msg.body.text === 'foo',
 				);
 
 				assert.strictEqual(fired, true);
@@ -238,7 +238,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo' }, chitose),	// chitose posts
-					msg => msg.type === 'note' && msg.body.userId === chitose.id	// wait chitose
+					msg => msg.type === 'note' && msg.body.userId === chitose.id,	// wait chitose
 				);
 
 				assert.strictEqual(fired, true);
@@ -248,7 +248,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo' }, akari),	// akari posts
-					msg => msg.type === 'note' && msg.body.userId === akari.id	// wait akari
+					msg => msg.type === 'note' && msg.body.userId === akari.id,	// wait akari
 				);
 
 				assert.strictEqual(fired, true);
@@ -258,7 +258,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo' }, chinatsu),	// chinatsu posts
-					msg => msg.type === 'note' && msg.body.userId === chinatsu.id	// wait chinatsu
+					msg => msg.type === 'note' && msg.body.userId === chinatsu.id,	// wait chinatsu
 				);
 
 				assert.strictEqual(fired, false);
@@ -268,7 +268,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo', visibility: 'specified', visibleUserIds: [ayano.id] }, kyoko),
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, true);
@@ -278,7 +278,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo', visibility: 'home' }, kyoko),
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, true);
@@ -288,17 +288,17 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo', visibility: 'home' }, chitose),
-					msg => msg.type === 'note' && msg.body.userId === chitose.id
+					msg => msg.type === 'note' && msg.body.userId === chitose.id,
 				);
 
 				assert.strictEqual(fired, false);
 			});
 
-			it('フォローしていないローカルユーザーのフォロワー宛て投稿は流れない', () => async () => {
+			it('フォローしていないローカルユーザーのフォロワー宛て投稿は流れない', async () => {
 				const fired = await waitFire(
 					ayano, 'hybridTimeline',	// ayano:Hybrid
 					() => api('notes/create', { text: 'foo', visibility: 'followers' }, chitose),
-					msg => msg.type === 'note' && msg.body.userId === chitose.id
+					msg => msg.type === 'note' && msg.body.userId === chitose.id,
 				);
 
 				assert.strictEqual(fired, false);
@@ -306,31 +306,31 @@ describe('Streaming', () => {
 		});
 
 		describe('Global Timeline', () => {
-			it('フォローしていないローカルユーザーの投稿が流れる', () => async () => {
+			it('フォローしていないローカルユーザーの投稿が流れる', async () => {
 				const fired = await waitFire(
 					ayano, 'globalTimeline',	// ayano:Global
 					() => api('notes/create', { text: 'foo' }, chitose),	// chitose posts
-					msg => msg.type === 'note' && msg.body.userId === chitose.id	// wait chitose
+					msg => msg.type === 'note' && msg.body.userId === chitose.id,	// wait chitose
 				);
 
 				assert.strictEqual(fired, true);
 			});
 
-			it('フォローしていないリモートユーザーの投稿が流れる', () => async () => {
+			it('フォローしていないリモートユーザーの投稿が流れる', async () => {
 				const fired = await waitFire(
 					ayano, 'globalTimeline',	// ayano:Global
 					() => api('notes/create', { text: 'foo' }, chinatsu),	// chinatsu posts
-					msg => msg.type === 'note' && msg.body.userId === chinatsu.id	// wait chinatsu
+					msg => msg.type === 'note' && msg.body.userId === chinatsu.id,	// wait chinatsu
 				);
 
 				assert.strictEqual(fired, true);
 			});
 
-			it('ホーム投稿は流れない', () => async () => {
+			it('ホーム投稿は流れない', async () => {
 				const fired = await waitFire(
 					ayano, 'globalTimeline',	// ayano:Global
 					() => api('notes/create', { text: 'foo', visibility: 'home' }, kyoko),	// kyoko posts
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id	// wait kyoko
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
 
 				assert.strictEqual(fired, false);
@@ -338,47 +338,47 @@ describe('Streaming', () => {
 		});
 
 		describe('UserList Timeline', () => {
-			it('リストに入れているユーザーの投稿が流れる', () => async () => {
+			it('リストに入れているユーザーの投稿が流れる', async () => {
 				const fired = await waitFire(
 					chitose, 'userList',
 					() => api('notes/create', { text: 'foo' }, ayano),
 					msg => msg.type === 'note' && msg.body.userId === ayano.id,
-					{ listId: list.id, }
+					{ listId: list.id },
 				);
 
 				assert.strictEqual(fired, true);
 			});
 
-			it('リストに入れていないユーザーの投稿は流れない', () => async () => {
+			it('リストに入れていないユーザーの投稿は流れない', async () => {
 				const fired = await waitFire(
 					chitose, 'userList',
 					() => api('notes/create', { text: 'foo' }, chinatsu),
 					msg => msg.type === 'note' && msg.body.userId === chinatsu.id,
-					{ listId: list.id, }
+					{ listId: list.id },
 				);
 
 				assert.strictEqual(fired, false);
 			});
 
 			// #4471
-			it('リストに入れているユーザーのダイレクト投稿が流れる', () => async () => {
+			it('リストに入れているユーザーのダイレクト投稿が流れる', async () => {
 				const fired = await waitFire(
 					chitose, 'userList',
 					() => api('notes/create', { text: 'foo', visibility: 'specified', visibleUserIds: [chitose.id] }, ayano),
 					msg => msg.type === 'note' && msg.body.userId === ayano.id,
-					{ listId: list.id, }
+					{ listId: list.id },
 				);
 
 				assert.strictEqual(fired, true);
 			});
 
 			// #4335
-			it('リストに入れているがフォローはしてないユーザーのフォロワー宛て投稿は流れない', () => async () => {
+			it('リストに入れているがフォローはしてないユーザーのフォロワー宛て投稿は流れない', async () => {
 				const fired = await waitFire(
 					chitose, 'userList',
 					() => api('notes/create', { text: 'foo', visibility: 'followers' }, kyoko),
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,
-					{ listId: list.id, }
+					{ listId: list.id },
 				);
 
 				assert.strictEqual(fired, false);
@@ -388,7 +388,7 @@ describe('Streaming', () => {
 		describe('Hashtag Timeline', () => {
 			it('指定したハッシュタグの投稿が流れる', () => new Promise<void>(async done => {
 				const ws = await connectStream(chitose, 'hashtag', ({ type, body }) => {
-					if (type == 'note') {
+					if (type === 'note') {
 						assert.deepStrictEqual(body.text, '#foo');
 						ws.close();
 						done();
@@ -410,7 +410,7 @@ describe('Streaming', () => {
 				let fooBarCount = 0;
 	
 				const ws = await connectStream(chitose, 'hashtag', ({ type, body }) => {
-					if (type == 'note') {
+					if (type === 'note') {
 						if (body.text === '#foo') fooCount++;
 						if (body.text === '#bar') barCount++;
 						if (body.text === '#foo #bar') fooBarCount++;
@@ -449,7 +449,7 @@ describe('Streaming', () => {
 				let piyoCount = 0;
 
 				const ws = await connectStream(chitose, 'hashtag', ({ type, body }) => {
-					if (type == 'note') {
+					if (type === 'note') {
 						if (body.text === '#foo') fooCount++;
 						if (body.text === '#bar') barCount++;
 						if (body.text === '#foo #bar') fooBarCount++;
@@ -496,7 +496,7 @@ describe('Streaming', () => {
 				let waaaCount = 0;
 
 				const ws = await connectStream(chitose, 'hashtag', ({ type, body }) => {
-					if (type == 'note') {
+					if (type === 'note') {
 						if (body.text === '#foo') fooCount++;
 						if (body.text === '#bar') barCount++;
 						if (body.text === '#foo #bar') fooBarCount++;

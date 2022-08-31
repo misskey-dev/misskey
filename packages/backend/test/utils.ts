@@ -10,9 +10,9 @@ import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { DataSource } from 'typeorm';
+import got from 'got';
 import loadConfig from '../src/config/load.js';
 import { entities } from '../src/db/postgre.js';
-import got from 'got';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -32,13 +32,13 @@ export const api = async (endpoint: string, params: any, me?: any) => {
 	endpoint = endpoint.replace(/^\//, '');
 
 	const auth = me ? {
-		i: me.token
+		i: me.token,
 	} : {};
 
 	const res = await got<string>(`http://localhost:${port}/api/${endpoint}`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(Object.assign(auth, params)),
 		retry: {
@@ -50,8 +50,8 @@ export const api = async (endpoint: string, params: any, me?: any) => {
 					const { response } = error;
 					if (response && response.body) console.warn(response.body);
 					return error;
-				}
-			]
+				},
+			],
 		},
 	});
 
@@ -60,7 +60,7 @@ export const api = async (endpoint: string, params: any, me?: any) => {
 
 	return {
 		status,
-		body
+		body,
 	};
 };
 
@@ -217,7 +217,7 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 			if (timer) clearTimeout(timer);
 			rej(e);
 		}
-	})
+	});
 };
 
 export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?: number, type?: string, location?: string }> => {

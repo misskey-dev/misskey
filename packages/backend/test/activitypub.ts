@@ -6,7 +6,7 @@ import { initDb } from '../src/db/postgre.js';
 import { initTestDb } from './utils.js';
 
 describe('ActivityPub', () => {
-	before(async () => {
+	beforeAll(async () => {
 		//await initTestDb();
 		await initDb();
 	});

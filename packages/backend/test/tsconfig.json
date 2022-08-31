@@ -32,7 +32,8 @@
 		],
 		"lib": [
 			"esnext"
-		]
+		],
+		"types": ["jest"]
 	},
 	"compileOnSave": false,
 	"include": [

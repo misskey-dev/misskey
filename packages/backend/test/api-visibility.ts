@@ -7,11 +7,11 @@ import { async, signup, request, post, startServer, shutdownServer } from './uti
 describe('API visibility', () => {
 	let p: childProcess.ChildProcess;
 
-	before(async () => {
+	beforeAll(async () => {
 		p = await startServer();
 	});
 
-	after(async () => {
+	afterAll(async () => {
 		await shutdownServer(p);
 	});
 
@@ -65,7 +65,7 @@ describe('API visibility', () => {
 			}, by);
 		};
 
-		before(async () => {
+		beforeAll(async () => {
 			//#region prepare
 			// signup
 			alice = await signup({ username: 'alice' });
@@ -415,21 +415,21 @@ describe('API visibility', () => {
 		it('[HTL] public-post が 自分が見れる', async(async () => {
 			const res = await request('/notes/timeline', { limit: 100 }, alice);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == pub.id);
+			const notes = res.body.filter((n: any) => n.id === pub.id);
 			assert.strictEqual(notes[0].text, 'x');
 		}));
 
 		it('[HTL] public-post が 非フォロワーから見れない', async(async () => {
 			const res = await request('/notes/timeline', { limit: 100 }, other);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == pub.id);
+			const notes = res.body.filter((n: any) => n.id === pub.id);
 			assert.strictEqual(notes.length, 0);
 		}));
 
 		it('[HTL] followers-post が フォロワーから見れる', async(async () => {
 			const res = await request('/notes/timeline', { limit: 100 }, follower);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == fol.id);
+			const notes = res.body.filter((n: any) => n.id === fol.id);
 			assert.strictEqual(notes[0].text, 'x');
 		}));
 		//#endregion
@@ -438,21 +438,21 @@ describe('API visibility', () => {
 		it('[replies] followers-reply が フォロワーから見れる', async(async () => {
 			const res = await request('/notes/replies', { noteId: tgt.id, limit: 100 }, follower);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == folR.id);
+			const notes = res.body.filter((n: any) => n.id === folR.id);
 			assert.strictEqual(notes[0].text, 'x');
 		}));
 
 		it('[replies] followers-reply が 非フォロワー (リプライ先ではない) から見れない', async(async () => {
 			const res = await request('/notes/replies', { noteId: tgt.id, limit: 100 }, other);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == folR.id);
+			const notes = res.body.filter((n: any) => n.id === folR.id);
 			assert.strictEqual(notes.length, 0);
 		}));
 
 		it('[replies] followers-reply が 非フォロワー (リプライ先である) から見れる', async(async () => {
 			const res = await request('/notes/replies', { noteId: tgt.id, limit: 100 }, target);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == folR.id);
+			const notes = res.body.filter((n: any) => n.id === folR.id);
 			assert.strictEqual(notes[0].text, 'x');
 		}));
 		//#endregion
@@ -461,14 +461,14 @@ describe('API visibility', () => {
 		it('[mentions] followers-reply が 非フォロワー (リプライ先である) から見れる', async(async () => {
 			const res = await request('/notes/mentions', { limit: 100 }, target);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == folR.id);
+			const notes = res.body.filter((n: any) => n.id === folR.id);
 			assert.strictEqual(notes[0].text, 'x');
 		}));
 
 		it('[mentions] followers-mention が 非フォロワー (メンション先である) から見れる', async(async () => {
 			const res = await request('/notes/mentions', { limit: 100 }, target);
 			assert.strictEqual(res.status, 200);
-			const notes = res.body.filter((n: any) => n.id == folM.id);
+			const notes = res.body.filter((n: any) => n.id === folM.id);
 			assert.strictEqual(notes[0].text, '@target x');
 		}));
 		//#endregion

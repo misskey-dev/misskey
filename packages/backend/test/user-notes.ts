@@ -12,7 +12,7 @@ describe('users/notes', () => {
 	let pngNote: any;
 	let jpgPngNote: any;
 
-	before(async () => {
+	beforeAll(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
@@ -28,7 +28,7 @@ describe('users/notes', () => {
 		});
 	});
 
-	after(async() => {
+	afterAll(async() => {
 		await shutdownServer(p);
 	});
 

@@ -22,7 +22,7 @@ describe('Fetch resource', () => {
 	let alice: any;
 	let alicesPost: any;
 
-	before(async () => {
+	beforeAll(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		alicesPost = await post(alice, {
@@ -30,7 +30,7 @@ describe('Fetch resource', () => {
 		});
 	});
 
-	after(async () => {
+	afterAll(async () => {
 		await shutdownServer(p);
 	});
 

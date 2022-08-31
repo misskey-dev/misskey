@@ -12,7 +12,7 @@ describe('Note', () => {
 	let alice: any;
 	let bob: any;
 
-	before(async () => {
+	beforeAll(async () => {
 		p = await startServer();
 		const connection = await initTestDb(true);
 		Notes = connection.getRepository(Note);
@@ -20,7 +20,7 @@ describe('Note', () => {
 		bob = await signup({ username: 'bob' });
 	});
 
-	after(async () => {
+	afterAll(async () => {
 		await shutdownServer(p);
 	});
 
