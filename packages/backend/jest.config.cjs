@@ -119,7 +119,7 @@ module.exports = {
 	// resetModules: false,
 
 	// A path to a custom resolver
-	// resolver: undefined,
+	resolver: './jest-resolver.cjs',
 
 	// Automatically restore mock state between every test
 	// restoreMocks: false,
@@ -158,8 +158,6 @@ module.exports = {
 
 	// The glob patterns Jest uses to detect test files
 	testMatch: [
-		"**/__tests__/**/*.[jt]s?(x)",
-		"**/?(*.)+(spec|test).[tj]s?(x)",
 		"<rootDir>/test/**/*.ts"
 	],
 
