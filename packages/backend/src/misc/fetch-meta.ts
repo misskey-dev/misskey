@@ -37,8 +37,10 @@ export async function fetchMeta(noCache = false): Promise<Meta> {
 	});
 }
 
-setInterval(() => {
-	fetchMeta(true).then(meta => {
-		cache = meta;
-	});
-}, 1000 * 10);
+if (process.env.NODE_ENV !== 'test') {
+	setInterval(() => {
+		fetchMeta(true).then(meta => {
+			cache = meta;
+		});
+	}, 1000 * 10);
+}
