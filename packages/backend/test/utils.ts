@@ -299,7 +299,8 @@ export function startServer(timeout = 60 * 1000): Promise<childProcess.ChildProc
 	});
 }
 
-export function shutdownServer(p: childProcess.ChildProcess, timeout = 20 * 1000) {
+export function shutdownServer(p: childProcess.ChildProcess | undefined, timeout = 20 * 1000) {
+	if (p == null) return Promise.resolve('nop');
 	return new Promise((res, rej) => {
 		const t = setTimeout(() => {
 			p.kill(SIGKILL);

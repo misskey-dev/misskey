@@ -16,7 +16,7 @@ describe('FF visibility', () => {
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
-	});
+	}, 1000 * 30);
 
 	afterAll(async () => {
 		await shutdownServer(p);

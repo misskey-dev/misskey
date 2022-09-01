@@ -71,7 +71,7 @@ describe('Streaming', () => {
 				listId: list.id,
 				userId: kyoko.id,
 			}, chitose);
-		});
+		}, 1000 * 30);
 
 		afterAll(async () => {
 			await shutdownServer(p);

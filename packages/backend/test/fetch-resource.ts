@@ -28,7 +28,7 @@ describe('Fetch resource', () => {
 		alicesPost = await post(alice, {
 			text: 'test',
 		});
-	});
+	}, 1000 * 30);
 
 	afterAll(async () => {
 		await shutdownServer(p);

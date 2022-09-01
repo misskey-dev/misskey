@@ -9,7 +9,7 @@ describe('API visibility', () => {
 
 	beforeAll(async () => {
 		p = await startServer();
-	});
+	}, 1000 * 30);
 
 	afterAll(async () => {
 		await shutdownServer(p);

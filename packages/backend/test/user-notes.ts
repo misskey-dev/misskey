@@ -26,7 +26,7 @@ describe('users/notes', () => {
 		jpgPngNote = await post(alice, {
 			fileIds: [jpg.id, png.id],
 		});
-	});
+	}, 1000 * 30);
 
 	afterAll(async() => {
 		await shutdownServer(p);

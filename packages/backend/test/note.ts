@@ -18,7 +18,7 @@ describe('Note', () => {
 		Notes = connection.getRepository(Note);
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
-	});
+	}, 1000 * 30);
 
 	afterAll(async () => {
 		await shutdownServer(p);
