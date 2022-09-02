@@ -141,19 +141,21 @@ export const uploadFile = async (user: any, _path?: string): Promise<any> => {
 
 export const uploadUrl = async (user: any, url: string) => {
 	let file: any;
+	const marker = Math.random().toString();
 
 	const ws = await connectStream(user, 'main', (msg) => {
-		if (msg.type === 'driveFileCreated') {
-			file = msg.body;
+		if (msg.type === 'urlUploadFinished' && msg.body.marker === marker) {
+			file = msg.body.file;
 		}
 	});
 
 	await api('drive/files/upload-from-url', {
 		url,
+		marker,
 		force: true,
 	}, user);
 
-	await sleep(10000);
+	await sleep(7000);
 	ws.close();
 
 	return file;
