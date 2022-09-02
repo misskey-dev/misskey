@@ -153,7 +153,7 @@ export const uploadUrl = async (user: any, url: string) => {
 		force: true,
 	}, user);
 
-	await sleep(5000);
+	await sleep(10000);
 	ws.close();
 
 	return file;
