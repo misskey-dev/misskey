@@ -20,14 +20,6 @@ const _dirname = dirname(_filename);
 const config = loadConfig();
 export const port = config.port;
 
-export const async = (fn: Function) => (done: Function) => {
-	fn().then(() => {
-		done();
-	}, (err: Error) => {
-		done(err);
-	});
-};
-
 export const api = async (endpoint: string, params: any, me?: any) => {
 	endpoint = endpoint.replace(/^\//, '');
 

@@ -1,3 +1,103 @@
+process.env.NODE_ENV = 'test';
+
+import * as assert from 'assert';
+import * as childProcess from 'child_process';
+import * as openapi from '@redocly/openapi-core';
+import { startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils.js';
+
+describe('Endpoints', () => {
+	let p: childProcess.ChildProcess;
+
+	let alice: any;
+
+	beforeAll(async () => {
+		p = await startServer();
+		alice = await signup({ username: 'alice' });
+	}, 1000 * 30);
+
+	afterAll(async () => {
+		await shutdownServer(p);
+	});
+
+	describe('signup', () => {
+		it('不正なユーザー名でアカウントが作成できない', async () => {
+			const res = await request('/signup', {
+				username: 'test.',
+				password: 'test',
+			});
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('空のパスワードでアカウントが作成できない', async () => {
+			const res = await request('/signup', {
+				username: 'test',
+				password: '',
+			});
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('正しくアカウントが作成できる', async () => {
+			const me = {
+				username: 'test1',
+				password: 'test1',
+			};
+
+			const res = await request('/signup', me);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.username, me.username);
+		});
+
+		it('同じユーザー名のアカウントは作成できない', async () => {
+			const res = await request('/signup', {
+				username: 'test1',
+				password: 'test1',
+			});
+
+			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('signin', () => {
+		it('間違ったパスワードでサインインできない', async () => {
+			const res = await request('/signin', {
+				username: 'test1',
+				password: 'bar',
+			});
+
+			assert.strictEqual(res.status, 403);
+		});
+
+		it('クエリをインジェクションできない', async () => {
+			const res = await request('/signin', {
+				username: 'test1',
+				password: {
+					$gt: '',
+				},
+			});
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('正しい情報でサインインできる', async () => {
+			const res = await request('/signin', {
+				username: 'test1',
+				password: 'test1',
+			});
+
+			assert.strictEqual(res.status, 200);
+		});
+	});
+
+	/*
+	describe('/i', () => {
+		it('', async () => {
+		});
+	});
+	*/
+});
+
 /*
 process.env.NODE_ENV = 'test';
 
@@ -22,97 +122,8 @@ describe('API: Endpoints', () => {
 		await shutdownServer(p);
 	});
 
-	describe('signup', () => {
-		it('不正なユーザー名でアカウントが作成できない', async(async () => {
-			const res = await request('/signup', {
-				username: 'test.',
-				password: 'test'
-			});
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('空のパスワードでアカウントが作成できない', async(async () => {
-			const res = await request('/signup', {
-				username: 'test',
-				password: ''
-			});
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('正しくアカウントが作成できる', async(async () => {
-			const me = {
-				username: 'test1',
-				password: 'test1'
-			};
-
-			const res = await request('/signup', me);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.username, me.username);
-		}));
-
-		it('同じユーザー名のアカウントは作成できない', async(async () => {
-			await signup({
-				username: 'test2'
-			});
-
-			const res = await request('/signup', {
-				username: 'test2',
-				password: 'test2'
-			});
-
-			assert.strictEqual(res.status, 400);
-		}));
-	});
-
-	describe('signin', () => {
-		it('間違ったパスワードでサインインできない', async(async () => {
-			await signup({
-				username: 'test3',
-				password: 'foo'
-			});
-
-			const res = await request('/signin', {
-				username: 'test3',
-				password: 'bar'
-			});
-
-			assert.strictEqual(res.status, 403);
-		}));
-
-		it('クエリをインジェクションできない', async(async () => {
-			await signup({
-				username: 'test4'
-			});
-
-			const res = await request('/signin', {
-				username: 'test4',
-				password: {
-					$gt: ''
-				}
-			});
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('正しい情報でサインインできる', async(async () => {
-			await signup({
-				username: 'test5',
-				password: 'foo'
-			});
-
-			const res = await request('/signin', {
-				username: 'test5',
-				password: 'foo'
-			});
-
-			assert.strictEqual(res.status, 200);
-		}));
-	});
-
 	describe('i/update', () => {
-		it('アカウント設定を更新できる', async(async () => {
+		it('アカウント設定を更新できる', async () => {
 			const myName = '大室櫻子';
 			const myLocation = '七森中';
 			const myBirthday = '2000-09-07';
@@ -130,14 +141,14 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.birthday, myBirthday);
 		}));
 
-		it('名前を空白にできない', async(async () => {
+		it('名前を空白にできない', async () => {
 			const res = await request('/i/update', {
 				name: ' '
 			}, alice);
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('誕生日の設定を削除できる', async(async () => {
+		it('誕生日の設定を削除できる', async () => {
 			await request('/i/update', {
 				birthday: '2000-09-07'
 			}, alice);
@@ -151,7 +162,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.birthday, null);
 		}));
 
-		it('不正な誕生日の形式で怒られる', async(async () => {
+		it('不正な誕生日の形式で怒られる', async () => {
 			const res = await request('/i/update', {
 				birthday: '2000/09/07'
 			}, alice);
@@ -160,7 +171,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('users/show', () => {
-		it('ユーザーが取得できる', async(async () => {
+		it('ユーザーが取得できる', async () => {
 			const res = await request('/users/show', {
 				userId: alice.id
 			}, alice);
@@ -170,14 +181,14 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.id, alice.id);
 		}));
 
-		it('ユーザーが存在しなかったら怒る', async(async () => {
+		it('ユーザーが存在しなかったら怒る', async () => {
 			const res = await request('/users/show', {
 				userId: '000000000000000000000000'
 			});
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('間違ったIDで怒られる', async(async () => {
+		it('間違ったIDで怒られる', async () => {
 			const res = await request('/users/show', {
 				userId: 'kyoppie'
 			});
@@ -186,7 +197,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('notes/show', () => {
-		it('投稿が取得できる', async(async () => {
+		it('投稿が取得できる', async () => {
 			const myPost = await post(alice, {
 				text: 'test'
 			});
@@ -201,14 +212,14 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.text, myPost.text);
 		}));
 
-		it('投稿が存在しなかったら怒る', async(async () => {
+		it('投稿が存在しなかったら怒る', async () => {
 			const res = await request('/notes/show', {
 				noteId: '000000000000000000000000'
 			});
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('間違ったIDで怒られる', async(async () => {
+		it('間違ったIDで怒られる', async () => {
 			const res = await request('/notes/show', {
 				noteId: 'kyoppie'
 			});
@@ -217,7 +228,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('notes/reactions/create', () => {
-		it('リアクションできる', async(async () => {
+		it('リアクションできる', async () => {
 			const bobPost = await post(bob);
 
 			const alice = await signup({ username: 'alice' });
@@ -236,7 +247,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(resNote.body.reactions['🚀'], [alice.id]);
 		}));
 
-		it('自分の投稿にもリアクションできる', async(async () => {
+		it('自分の投稿にもリアクションできる', async () => {
 			const myPost = await post(alice);
 
 			const res = await request('/notes/reactions/create', {
@@ -247,7 +258,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 204);
 		}));
 
-		it('二重にリアクションできない', async(async () => {
+		it('二重にリアクションできない', async () => {
 			const bobPost = await post(bob);
 
 			await react(alice, bobPost, 'like');
@@ -260,7 +271,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('存在しない投稿にはリアクションできない', async(async () => {
+		it('存在しない投稿にはリアクションできない', async () => {
 			const res = await request('/notes/reactions/create', {
 				noteId: '000000000000000000000000',
 				reaction: '🚀',
@@ -269,13 +280,13 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('空のパラメータで怒られる', async(async () => {
+		it('空のパラメータで怒られる', async () => {
 			const res = await request('/notes/reactions/create', {}, alice);
 
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('間違ったIDで怒られる', async(async () => {
+		it('間違ったIDで怒られる', async () => {
 			const res = await request('/notes/reactions/create', {
 				noteId: 'kyoppie',
 				reaction: '🚀',
@@ -286,7 +297,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('following/create', () => {
-		it('フォローできる', async(async () => {
+		it('フォローできる', async () => {
 			const res = await request('/following/create', {
 				userId: alice.id
 			}, bob);
@@ -294,7 +305,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 200);
 		}));
 
-		it('既にフォローしている場合は怒る', async(async () => {
+		it('既にフォローしている場合は怒る', async () => {
 			const res = await request('/following/create', {
 				userId: alice.id
 			}, bob);
@@ -302,7 +313,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('存在しないユーザーはフォローできない', async(async () => {
+		it('存在しないユーザーはフォローできない', async () => {
 			const res = await request('/following/create', {
 				userId: '000000000000000000000000'
 			}, alice);
@@ -310,7 +321,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('自分自身はフォローできない', async(async () => {
+		it('自分自身はフォローできない', async () => {
 			const res = await request('/following/create', {
 				userId: alice.id
 			}, alice);
@@ -318,13 +329,13 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('空のパラメータで怒られる', async(async () => {
+		it('空のパラメータで怒られる', async () => {
 			const res = await request('/following/create', {}, alice);
 
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('間違ったIDで怒られる', async(async () => {
+		it('間違ったIDで怒られる', async () => {
 			const res = await request('/following/create', {
 				userId: 'foo'
 			}, alice);
@@ -334,7 +345,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('following/delete', () => {
-		it('フォロー解除できる', async(async () => {
+		it('フォロー解除できる', async () => {
 			await request('/following/create', {
 				userId: alice.id
 			}, bob);
@@ -346,7 +357,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 200);
 		}));
 
-		it('フォローしていない場合は怒る', async(async () => {
+		it('フォローしていない場合は怒る', async () => {
 			const res = await request('/following/delete', {
 				userId: alice.id
 			}, bob);
@@ -354,7 +365,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('存在しないユーザーはフォロー解除できない', async(async () => {
+		it('存在しないユーザーはフォロー解除できない', async () => {
 			const res = await request('/following/delete', {
 				userId: '000000000000000000000000'
 			}, alice);
@@ -362,7 +373,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('自分自身はフォロー解除できない', async(async () => {
+		it('自分自身はフォロー解除できない', async () => {
 			const res = await request('/following/delete', {
 				userId: alice.id
 			}, alice);
@@ -370,13 +381,13 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('空のパラメータで怒られる', async(async () => {
+		it('空のパラメータで怒られる', async () => {
 			const res = await request('/following/delete', {}, alice);
 
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('間違ったIDで怒られる', async(async () => {
+		it('間違ったIDで怒られる', async () => {
 			const res = await request('/following/delete', {
 				userId: 'kyoppie'
 			}, alice);
@@ -386,7 +397,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('drive', () => {
-		it('ドライブ情報を取得できる', async(async () => {
+		it('ドライブ情報を取得できる', async () => {
 			await uploadFile({
 				userId: alice.id,
 				size: 256
@@ -407,7 +418,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('drive/files/create', () => {
-		it('ファイルを作成できる', async(async () => {
+		it('ファイルを作成できる', async () => {
 			const res = await uploadFile(alice);
 
 			assert.strictEqual(res.status, 200);
@@ -415,7 +426,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.name, 'Lenna.png');
 		}));
 
-		it('ファイルに名前を付けられる', async(async () => {
+		it('ファイルに名前を付けられる', async () => {
 			const res = await assert.request(server)
 				.post('/drive/files/create')
 				.field('i', alice.token)
@@ -427,13 +438,13 @@ describe('API: Endpoints', () => {
 			expect(res.body).have.property('name').eql('Belmond.png');
 		}));
 
-		it('ファイル無しで怒られる', async(async () => {
+		it('ファイル無しで怒られる', async () => {
 			const res = await request('/drive/files/create', {}, alice);
 
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('SVGファイルを作成できる', async(async () => {
+		it('SVGファイルを作成できる', async () => {
 			const res = await uploadFile(alice, __dirname + '/resources/image.svg');
 
 			assert.strictEqual(res.status, 200);
@@ -444,7 +455,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('drive/files/update', () => {
-		it('名前を更新できる', async(async () => {
+		it('名前を更新できる', async () => {
 			const file = await uploadFile(alice);
 			const newName = 'いちごパスタ.png';
 
@@ -458,7 +469,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.name, newName);
 		}));
 
-		it('他人のファイルは更新できない', async(async () => {
+		it('他人のファイルは更新できない', async () => {
 			const file = await uploadFile(bob);
 
 			const res = await request('/drive/files/update', {
@@ -469,7 +480,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('親フォルダを更新できる', async(async () => {
+		it('親フォルダを更新できる', async () => {
 			const file = await uploadFile(alice);
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
@@ -485,7 +496,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.folderId, folder.id);
 		}));
 
-		it('親フォルダを無しにできる', async(async () => {
+		it('親フォルダを無しにできる', async () => {
 			const file = await uploadFile(alice);
 
 			const folder = (await request('/drive/folders/create', {
@@ -507,7 +518,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.folderId, null);
 		}));
 
-		it('他人のフォルダには入れられない', async(async () => {
+		it('他人のフォルダには入れられない', async () => {
 			const file = await uploadFile(alice);
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
@@ -521,7 +532,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('存在しないフォルダで怒られる', async(async () => {
+		it('存在しないフォルダで怒られる', async () => {
 			const file = await uploadFile(alice);
 
 			const res = await request('/drive/files/update', {
@@ -532,7 +543,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('不正なフォルダIDで怒られる', async(async () => {
+		it('不正なフォルダIDで怒られる', async () => {
 			const file = await uploadFile(alice);
 
 			const res = await request('/drive/files/update', {
@@ -543,7 +554,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('ファイルが存在しなかったら怒る', async(async () => {
+		it('ファイルが存在しなかったら怒る', async () => {
 			const res = await request('/drive/files/update', {
 				fileId: '000000000000000000000000',
 				name: 'いちごパスタ.png'
@@ -552,7 +563,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('間違ったIDで怒られる', async(async () => {
+		it('間違ったIDで怒られる', async () => {
 			const res = await request('/drive/files/update', {
 				fileId: 'kyoppie',
 				name: 'いちごパスタ.png'
@@ -563,7 +574,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('drive/folders/create', () => {
-		it('フォルダを作成できる', async(async () => {
+		it('フォルダを作成できる', async () => {
 			const res = await request('/drive/folders/create', {
 				name: 'test'
 			}, alice);
@@ -575,7 +586,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('drive/folders/update', () => {
-		it('名前を更新できる', async(async () => {
+		it('名前を更新できる', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -590,7 +601,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.name, 'new name');
 		}));
 
-		it('他人のフォルダを更新できない', async(async () => {
+		it('他人のフォルダを更新できない', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, bob)).body;
@@ -603,7 +614,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('親フォルダを更新できる', async(async () => {
+		it('親フォルダを更新できる', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -621,7 +632,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.parentId, parentFolder.id);
 		}));
 
-		it('親フォルダを無しに更新できる', async(async () => {
+		it('親フォルダを無しに更新できる', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -643,7 +654,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.parentId, null);
 		}));
 
-		it('他人のフォルダを親フォルダに設定できない', async(async () => {
+		it('他人のフォルダを親フォルダに設定できない', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -659,7 +670,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('フォルダが循環するような構造にできない', async(async () => {
+		it('フォルダが循環するような構造にできない', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -679,7 +690,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('フォルダが循環するような構造にできない(再帰的)', async(async () => {
+		it('フォルダが循環するような構造にできない(再帰的)', async () => {
 			const folderA = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -706,7 +717,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('フォルダが循環するような構造にできない(自身)', async(async () => {
+		it('フォルダが循環するような構造にできない(自身)', async () => {
 			const folderA = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -719,7 +730,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('存在しない親フォルダを設定できない', async(async () => {
+		it('存在しない親フォルダを設定できない', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -732,7 +743,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('不正な親フォルダIDで怒られる', async(async () => {
+		it('不正な親フォルダIDで怒られる', async () => {
 			const folder = (await request('/drive/folders/create', {
 				name: 'test'
 			}, alice)).body;
@@ -745,7 +756,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('存在しないフォルダを更新できない', async(async () => {
+		it('存在しないフォルダを更新できない', async () => {
 			const res = await request('/drive/folders/update', {
 				folderId: '000000000000000000000000'
 			}, alice);
@@ -753,7 +764,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('不正なフォルダIDで怒られる', async(async () => {
+		it('不正なフォルダIDで怒られる', async () => {
 			const res = await request('/drive/folders/update', {
 				folderId: 'foo'
 			}, alice);
@@ -763,7 +774,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('messaging/messages/create', () => {
-		it('メッセージを送信できる', async(async () => {
+		it('メッセージを送信できる', async () => {
 			const res = await request('/messaging/messages/create', {
 				userId: bob.id,
 				text: 'test'
@@ -774,7 +785,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.body.text, 'test');
 		}));
 
-		it('自分自身にはメッセージを送信できない', async(async () => {
+		it('自分自身にはメッセージを送信できない', async () => {
 			const res = await request('/messaging/messages/create', {
 				userId: alice.id,
 				text: 'Yo'
@@ -783,7 +794,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('存在しないユーザーにはメッセージを送信できない', async(async () => {
+		it('存在しないユーザーにはメッセージを送信できない', async () => {
 			const res = await request('/messaging/messages/create', {
 				userId: '000000000000000000000000',
 				text: 'test'
@@ -792,7 +803,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('不正なユーザーIDで怒られる', async(async () => {
+		it('不正なユーザーIDで怒られる', async () => {
 			const res = await request('/messaging/messages/create', {
 				userId: 'foo',
 				text: 'test'
@@ -801,7 +812,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('テキストが無くて怒られる', async(async () => {
+		it('テキストが無くて怒られる', async () => {
 			const res = await request('/messaging/messages/create', {
 				userId: bob.id
 			}, alice);
@@ -809,7 +820,7 @@ describe('API: Endpoints', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
-		it('文字数オーバーで怒られる', async(async () => {
+		it('文字数オーバーで怒られる', async () => {
 			const res = await request('/messaging/messages/create', {
 				userId: bob.id,
 				text: '!'.repeat(1001)
@@ -820,7 +831,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('notes/replies', () => {
-		it('自分に閲覧権限のない投稿は含まれない', async(async () => {
+		it('自分に閲覧権限のない投稿は含まれない', async () => {
 			const alicePost = await post(alice, {
 				text: 'foo'
 			});
@@ -843,7 +854,7 @@ describe('API: Endpoints', () => {
 	});
 
 	describe('notes/timeline', () => {
-		it('フォロワー限定投稿が含まれる', async(async () => {
+		it('フォロワー限定投稿が含まれる', async () => {
 			await request('/following/create', {
 				userId: alice.id
 			}, bob);

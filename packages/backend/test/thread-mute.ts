@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, react, connectStream, startServer, shutdownServer } from './utils.js';
+import { signup, request, post, react, connectStream, startServer, shutdownServer } from './utils.js';
 
 describe('Note thread mute', () => {
 	let p: childProcess.ChildProcess;
@@ -22,7 +22,7 @@ describe('Note thread mute', () => {
 		await shutdownServer(p);
 	});
 
-	it('notes/mentions にミュートしているスレッドの投稿が含まれない', async(async () => {
+	it('notes/mentions にミュートしているスレッドの投稿が含まれない', async () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
@@ -38,9 +38,9 @@ describe('Note thread mute', () => {
 		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
 		assert.strictEqual(res.body.some((note: any) => note.id === carolReply.id), false);
 		assert.strictEqual(res.body.some((note: any) => note.id === carolReplyWithoutMention.id), false);
-	}));
+	});
 
-	it('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async(async () => {
+	it('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async () => {
 		// 状態リセット
 		await request('/i/read-all-unread-notes', {}, alice);
 
@@ -54,7 +54,7 @@ describe('Note thread mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.hasUnreadMentions, false);
-	}));
+	});
 
 	it('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise(async done => {
 		// 状態リセット
@@ -82,7 +82,7 @@ describe('Note thread mute', () => {
 		}, 5000);
 	}));
 
-	it('i/notifications にミュートしているスレッドの通知が含まれない', async(async () => {
+	it('i/notifications にミュートしているスレッドの通知が含まれない', async () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
@@ -99,5 +99,5 @@ describe('Note thread mute', () => {
 		assert.strictEqual(res.body.some((notification: any) => notification.note.id === carolReplyWithoutMention.id), false);
 
 		// NOTE: bobの投稿はスレッドミュート前に行われたため通知に含まれていてもよい
-	}));
+	});
 });

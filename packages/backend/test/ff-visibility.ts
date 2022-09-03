@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, react, connectStream, startServer, shutdownServer, simpleGet } from './utils.js';
+import { signup, request, post, react, connectStream, startServer, shutdownServer, simpleGet } from './utils.js';
 
 describe('FF visibility', () => {
 	let p: childProcess.ChildProcess;
@@ -22,7 +22,7 @@ describe('FF visibility', () => {
 		await shutdownServer(p);
 	});
 
-	it('ffVisibility が public なユーザーのフォロー/フォロワーを誰でも見れる', async(async () => {
+	it('ffVisibility が public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'public',
 		}, alice);
@@ -38,9 +38,9 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followingRes.body), true);
 		assert.strictEqual(followersRes.status, 200);
 		assert.strictEqual(Array.isArray(followersRes.body), true);
-	}));
+	});
 
-	it('ffVisibility が followers なユーザーのフォロー/フォロワーを自分で見れる', async(async () => {
+	it('ffVisibility が followers なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'followers',
 		}, alice);
@@ -56,9 +56,9 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followingRes.body), true);
 		assert.strictEqual(followersRes.status, 200);
 		assert.strictEqual(Array.isArray(followersRes.body), true);
-	}));
+	});
 
-	it('ffVisibility が followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async(async () => {
+	it('ffVisibility が followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async () => {
 		await request('/i/update', {
 			ffVisibility: 'followers',
 		}, alice);
@@ -72,9 +72,9 @@ describe('FF visibility', () => {
 
 		assert.strictEqual(followingRes.status, 400);
 		assert.strictEqual(followersRes.status, 400);
-	}));
+	});
 
-	it('ffVisibility が followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async(async () => {
+	it('ffVisibility が followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'followers',
 		}, alice);
@@ -94,9 +94,9 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followingRes.body), true);
 		assert.strictEqual(followersRes.status, 200);
 		assert.strictEqual(Array.isArray(followersRes.body), true);
-	}));
+	});
 
-	it('ffVisibility が private なユーザーのフォロー/フォロワーを自分で見れる', async(async () => {
+	it('ffVisibility が private なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'private',
 		}, alice);
@@ -112,9 +112,9 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followingRes.body), true);
 		assert.strictEqual(followersRes.status, 200);
 		assert.strictEqual(Array.isArray(followersRes.body), true);
-	}));
+	});
 
-	it('ffVisibility が private なユーザーのフォロー/フォロワーを他人が見れない', async(async () => {
+	it('ffVisibility が private なユーザーのフォロー/フォロワーを他人が見れない', async () => {
 		await request('/i/update', {
 			ffVisibility: 'private',
 		}, alice);
@@ -128,10 +128,10 @@ describe('FF visibility', () => {
 
 		assert.strictEqual(followingRes.status, 400);
 		assert.strictEqual(followersRes.status, 400);
-	}));
+	});
 
 	describe('AP', () => {
-		it('ffVisibility が public 以外ならばAPからは取得できない', async(async () => {
+		it('ffVisibility が public 以外ならばAPからは取得できない', async () => {
 			{
 				await request('/i/update', {
 					ffVisibility: 'public',
@@ -162,6 +162,6 @@ describe('FF visibility', () => {
 				assert.strictEqual(followingRes.status, 403);
 				assert.strictEqual(followersRes.status, 403);
 			}
-		}));
+		});
 	});
 });

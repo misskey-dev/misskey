@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import * as openapi from '@redocly/openapi-core';
-import { async, startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils.js';
+import { startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils.js';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -35,38 +35,38 @@ describe('Fetch resource', () => {
 	});
 
 	describe('Common', () => {
-		it('meta', async(async () => {
+		it('meta', async () => {
 			const res = await request('/meta', {
 			});
 
 			assert.strictEqual(res.status, 200);
-		}));
+		});
 
-		it('GET root', async(async () => {
+		it('GET root', async () => {
 			const res = await simpleGet('/');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
-		}));
+		});
 
-		it('GET docs', async(async () => {
+		it('GET docs', async () => {
 			const res = await simpleGet('/docs/ja-JP/about');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
-		}));
+		});
 
-		it('GET api-doc', async(async () => {
+		it('GET api-doc', async () => {
 			const res = await simpleGet('/api-doc');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
-		}));
+		});
 
-		it('GET api.json', async(async () => {
+		it('GET api.json', async () => {
 			const res = await simpleGet('/api.json');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, JSON);
-		}));
+		});
 
-		it('Validate api.json', async(async () => {
+		it('Validate api.json', async () => {
 			const config = await openapi.loadConfig();
 			const result = await openapi.bundle({
 				config,
@@ -78,128 +78,128 @@ describe('Fetch resource', () => {
 			}
 
 			assert.strictEqual(result.problems.length, 0);
-		}));
+		});
 
-		it('GET favicon.ico', async(async () => {
+		it('GET favicon.ico', async () => {
 			const res = await simpleGet('/favicon.ico');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/x-icon');
-		}));
+		});
 
-		it('GET apple-touch-icon.png', async(async () => {
+		it('GET apple-touch-icon.png', async () => {
 			const res = await simpleGet('/apple-touch-icon.png');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/png');
-		}));
+		});
 
-		it('GET twemoji svg', async(async () => {
+		it('GET twemoji svg', async () => {
 			const res = await simpleGet('/twemoji/2764.svg');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/svg+xml');
-		}));
+		});
 
-		it('GET twemoji svg with hyphen', async(async () => {
+		it('GET twemoji svg with hyphen', async () => {
 			const res = await simpleGet('/twemoji/2764-fe0f-200d-1f525.svg');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/svg+xml');
-		}));
+		});
 	});
 
 	describe('/@:username', () => {
-		it('Only AP => AP', async(async () => {
+		it('Only AP => AP', async () => {
 			const res = await simpleGet(`/@${alice.username}`, ONLY_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
-		}));
+		});
 
-		it('Prefer AP => AP', async(async () => {
+		it('Prefer AP => AP', async () => {
 			const res = await simpleGet(`/@${alice.username}`, PREFER_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
-		}));
+		});
 
-		it('Prefer HTML => HTML', async(async () => {
+		it('Prefer HTML => HTML', async () => {
 			const res = await simpleGet(`/@${alice.username}`, PREFER_HTML);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
-		}));
+		});
 
-		it('Unspecified => HTML', async(async () => {
+		it('Unspecified => HTML', async () => {
 			const res = await simpleGet(`/@${alice.username}`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
-		}));
+		});
 	});
 
 	describe('/users/:id', () => {
-		it('Only AP => AP', async(async () => {
+		it('Only AP => AP', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, ONLY_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
-		}));
+		});
 
-		it('Prefer AP => AP', async(async () => {
+		it('Prefer AP => AP', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, PREFER_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
-		}));
+		});
 
-		it('Prefer HTML => Redirect to /@:username', async(async () => {
+		it('Prefer HTML => Redirect to /@:username', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, PREFER_HTML);
 			assert.strictEqual(res.status, 302);
 			assert.strictEqual(res.location, `/@${alice.username}`);
-		}));
+		});
 
-		it('Undecided => HTML', async(async () => {
+		it('Undecided => HTML', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, UNSPECIFIED);
 			assert.strictEqual(res.status, 302);
 			assert.strictEqual(res.location, `/@${alice.username}`);
-		}));
+		});
 	});
 
 	describe('/notes/:id', () => {
-		it('Only AP => AP', async(async () => {
+		it('Only AP => AP', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, ONLY_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
-		}));
+		});
 
-		it('Prefer AP => AP', async(async () => {
+		it('Prefer AP => AP', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, PREFER_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
-		}));
+		});
 
-		it('Prefer HTML => HTML', async(async () => {
+		it('Prefer HTML => HTML', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, PREFER_HTML);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
-		}));
+		});
 
-		it('Unspecified => HTML', async(async () => {
+		it('Unspecified => HTML', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
-		}));
+		});
 	});
 
 	describe('Feeds', () => {
-		it('RSS', async(async () => {
+		it('RSS', async () => {
 			const res = await simpleGet(`/@${alice.username}.rss`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'application/rss+xml; charset=utf-8');
-		}));
+		});
 
-		it('ATOM', async(async () => {
+		it('ATOM', async () => {
 			const res = await simpleGet(`/@${alice.username}.atom`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'application/atom+xml; charset=utf-8');
-		}));
+		});
 
-		it('JSON', async(async () => {
+		it('JSON', async () => {
 			const res = await simpleGet(`/@${alice.username}.json`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'application/json; charset=utf-8');
-		}));
+		});
 	});
 });

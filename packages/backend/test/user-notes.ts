@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, uploadUrl, startServer, shutdownServer } from './utils.js';
+import { signup, request, post, uploadUrl, startServer, shutdownServer } from './utils.js';
 
 describe('users/notes', () => {
 	let p: childProcess.ChildProcess;
@@ -32,7 +32,7 @@ describe('users/notes', () => {
 		await shutdownServer(p);
 	});
 
-	it('ファイルタイプ指定 (jpg)', async(async () => {
+	it('ファイルタイプ指定 (jpg)', async () => {
 		const res = await request('/users/notes', {
 			userId: alice.id,
 			fileType: ['image/jpeg'],
@@ -43,9 +43,9 @@ describe('users/notes', () => {
 		assert.strictEqual(res.body.length, 2);
 		assert.strictEqual(res.body.some((note: any) => note.id === jpgNote.id), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
-	}));
+	});
 
-	it('ファイルタイプ指定 (jpg or png)', async(async () => {
+	it('ファイルタイプ指定 (jpg or png)', async () => {
 		const res = await request('/users/notes', {
 			userId: alice.id,
 			fileType: ['image/jpeg', 'image/png'],
@@ -57,5 +57,5 @@ describe('users/notes', () => {
 		assert.strictEqual(res.body.some((note: any) => note.id === jpgNote.id), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === pngNote.id), true);
 		assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
-	}));
+	});
 });
