@@ -10,7 +10,7 @@ import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { DataSource } from 'typeorm';
-import got from 'got';
+import got, { RequestError } from 'got';
 import loadConfig from '../src/config/load.js';
 import { entities } from '../src/db/postgre.js';
 
@@ -27,41 +27,46 @@ export const api = async (endpoint: string, params: any, me?: any) => {
 		i: me.token,
 	} : {};
 
-	const res = await got<string>(`http://localhost:${port}/api/${endpoint}`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(Object.assign(auth, params)),
-		retry: {
-			limit: 0,
-		},
-		hooks: {
-			beforeError: [
-				error => {
-					const { response } = error;
-					if (response && response.body) console.warn(response.body);
-					return error;
-				},
-			],
-		},
-	});
+	try {
+		const res = await got<string>(`http://localhost:${port}/api/${endpoint}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(Object.assign(auth, params)),
+			retry: {
+				limit: 0,
+			},
+		});
 
-	const status = res.statusCode;
-	const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
+		const status = res.statusCode;
+		const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
 
-	return {
-		status,
-		body,
-	};
+		return {
+			status,
+			body,
+		};
+	} catch (err: unknown) {
+		if (err instanceof RequestError && err.response) {
+			const status = err.response.statusCode;
+			const body = await JSON.parse(err.response.body as string);
+
+			return {
+				status,
+				body,
+			};
+		} else {
+			throw err;
+		}
+	}
 };
 
-export const request = async (endpoint: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
+export const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
 	const auth = me ? {
 		i: me.token,
 	} : {};
 
-	const res = await fetch(`http://localhost:${port}/api${endpoint}`, {
+	const res = await fetch(`http://localhost:${port}/${path}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -70,7 +75,7 @@ export const request = async (endpoint: string, params: any, me?: any): Promise<
 	});
 
 	const status = res.status;
-	const body = res.status !== 204 ? await res.json().catch() : null;
+	const body = res.status === 200 ? await res.json().catch() : null;
 
 	return {
 		body, status,
