@@ -9,10 +9,12 @@ describe('Endpoints', () => {
 	let p: childProcess.ChildProcess;
 
 	let alice: any;
+	let bob: any;
 
 	beforeAll(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
+		bob = await signup({ username: 'bob' });
 	}, 1000 * 30);
 
 	afterAll(async () => {
@@ -90,6 +92,283 @@ describe('Endpoints', () => {
 		});
 	});
 
+	describe('i/update', () => {
+		it('アカウント設定を更新できる', async () => {
+			const myName = '大室櫻子';
+			const myLocation = '七森中';
+			const myBirthday = '2000-09-07';
+
+			const res = await api('/i/update', {
+				name: myName,
+				location: myLocation,
+				birthday: myBirthday,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.name, myName);
+			assert.strictEqual(res.body.location, myLocation);
+			assert.strictEqual(res.body.birthday, myBirthday);
+		});
+
+		it('名前を空白にできない', async () => {
+			const res = await api('/i/update', {
+				name: ' ',
+			}, alice);
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('誕生日の設定を削除できる', async () => {
+			await api('/i/update', {
+				birthday: '2000-09-07',
+			}, alice);
+
+			const res = await api('/i/update', {
+				birthday: null,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.birthday, null);
+		});
+
+		it('不正な誕生日の形式で怒られる', async () => {
+			const res = await api('/i/update', {
+				birthday: '2000/09/07',
+			}, alice);
+			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('users/show', () => {
+		it('ユーザーが取得できる', async () => {
+			const res = await api('/users/show', {
+				userId: alice.id,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.id, alice.id);
+		});
+
+		it('ユーザーが存在しなかったら怒る', async () => {
+			const res = await api('/users/show', {
+				userId: '000000000000000000000000',
+			});
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('間違ったIDで怒られる', async () => {
+			const res = await api('/users/show', {
+				userId: 'kyoppie',
+			});
+			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('notes/show', () => {
+		it('投稿が取得できる', async () => {
+			const myPost = await post(alice, {
+				text: 'test',
+			});
+
+			const res = await api('/notes/show', {
+				noteId: myPost.id,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.id, myPost.id);
+			assert.strictEqual(res.body.text, myPost.text);
+		});
+
+		it('投稿が存在しなかったら怒る', async () => {
+			const res = await api('/notes/show', {
+				noteId: '000000000000000000000000',
+			});
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('間違ったIDで怒られる', async () => {
+			const res = await api('/notes/show', {
+				noteId: 'kyoppie',
+			});
+			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('notes/reactions/create', () => {
+		it('リアクションできる', async () => {
+			const bobPost = await post(bob);
+
+			const alice = await signup({ username: 'alice' });
+			const res = await api('/notes/reactions/create', {
+				noteId: bobPost.id,
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+
+			const resNote = await api('/notes/show', {
+				noteId: bobPost.id,
+			}, alice);
+
+			assert.strictEqual(resNote.status, 200);
+			assert.strictEqual(resNote.body.reactions['🚀'], [alice.id]);
+		});
+
+		it('自分の投稿にもリアクションできる', async () => {
+			const myPost = await post(alice);
+
+			const res = await api('/notes/reactions/create', {
+				noteId: myPost.id,
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+		});
+
+		it('二重にリアクションできない', async () => {
+			const bobPost = await post(bob);
+
+			await api('/notes/reactions/create', {
+				noteId: bobPost.id,
+				reaction: '🥰',
+			}, alice);
+
+			const res = await api('/notes/reactions/create', {
+				noteId: bobPost.id,
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('存在しない投稿にはリアクションできない', async () => {
+			const res = await api('/notes/reactions/create', {
+				noteId: '000000000000000000000000',
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('空のパラメータで怒られる', async () => {
+			const res = await api('/notes/reactions/create', {}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('間違ったIDで怒られる', async () => {
+			const res = await api('/notes/reactions/create', {
+				noteId: 'kyoppie',
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('following/create', () => {
+		it('フォローできる', async () => {
+			const res = await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+		});
+
+		it('既にフォローしている場合は怒る', async () => {
+			const res = await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('存在しないユーザーはフォローできない', async () => {
+			const res = await api('/following/create', {
+				userId: '000000000000000000000000',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('自分自身はフォローできない', async () => {
+			const res = await api('/following/create', {
+				userId: alice.id,
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('空のパラメータで怒られる', async () => {
+			const res = await api('/following/create', {}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('間違ったIDで怒られる', async () => {
+			const res = await api('/following/create', {
+				userId: 'foo',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('following/delete', () => {
+		it('フォロー解除できる', async () => {
+			await api('/following/create', {
+				userId: alice.id,
+			}, bob);
+
+			const res = await api('/following/delete', {
+				userId: alice.id,
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+		});
+
+		it('フォローしていない場合は怒る', async () => {
+			const res = await api('/following/delete', {
+				userId: alice.id,
+			}, bob);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('存在しないユーザーはフォロー解除できない', async () => {
+			const res = await api('/following/delete', {
+				userId: '000000000000000000000000',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('自分自身はフォロー解除できない', async () => {
+			const res = await api('/following/delete', {
+				userId: alice.id,
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('空のパラメータで怒られる', async () => {
+			const res = await api('/following/delete', {}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+
+		it('間違ったIDで怒られる', async () => {
+			const res = await api('/following/delete', {
+				userId: 'kyoppie',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+		});
+	});
+
 	/*
 	describe('/i', () => {
 		it('', async () => {
@@ -120,280 +399,6 @@ describe('API: Endpoints', () => {
 
 	after(async () => {
 		await shutdownServer(p);
-	});
-
-	describe('i/update', () => {
-		it('アカウント設定を更新できる', async () => {
-			const myName = '大室櫻子';
-			const myLocation = '七森中';
-			const myBirthday = '2000-09-07';
-
-			const res = await api('/i/update', {
-				name: myName,
-				location: myLocation,
-				birthday: myBirthday
-			}, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.name, myName);
-			assert.strictEqual(res.body.location, myLocation);
-			assert.strictEqual(res.body.birthday, myBirthday);
-		}));
-
-		it('名前を空白にできない', async () => {
-			const res = await api('/i/update', {
-				name: ' '
-			}, alice);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('誕生日の設定を削除できる', async () => {
-			await api('/i/update', {
-				birthday: '2000-09-07'
-			}, alice);
-
-			const res = await api('/i/update', {
-				birthday: null
-			}, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.birthday, null);
-		}));
-
-		it('不正な誕生日の形式で怒られる', async () => {
-			const res = await api('/i/update', {
-				birthday: '2000/09/07'
-			}, alice);
-			assert.strictEqual(res.status, 400);
-		}));
-	});
-
-	describe('users/show', () => {
-		it('ユーザーが取得できる', async () => {
-			const res = await api('/users/show', {
-				userId: alice.id
-			}, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.id, alice.id);
-		}));
-
-		it('ユーザーが存在しなかったら怒る', async () => {
-			const res = await api('/users/show', {
-				userId: '000000000000000000000000'
-			});
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('間違ったIDで怒られる', async () => {
-			const res = await api('/users/show', {
-				userId: 'kyoppie'
-			});
-			assert.strictEqual(res.status, 400);
-		}));
-	});
-
-	describe('notes/show', () => {
-		it('投稿が取得できる', async () => {
-			const myPost = await post(alice, {
-				text: 'test'
-			});
-
-			const res = await api('/notes/show', {
-				noteId: myPost.id
-			}, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.id, myPost.id);
-			assert.strictEqual(res.body.text, myPost.text);
-		}));
-
-		it('投稿が存在しなかったら怒る', async () => {
-			const res = await api('/notes/show', {
-				noteId: '000000000000000000000000'
-			});
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('間違ったIDで怒られる', async () => {
-			const res = await api('/notes/show', {
-				noteId: 'kyoppie'
-			});
-			assert.strictEqual(res.status, 400);
-		}));
-	});
-
-	describe('notes/reactions/create', () => {
-		it('リアクションできる', async () => {
-			const bobPost = await post(bob);
-
-			const alice = await signup({ username: 'alice' });
-			const res = await api('/notes/reactions/create', {
-				noteId: bobPost.id,
-				reaction: '🚀',
-			}, alice);
-
-			assert.strictEqual(res.status, 204);
-
-			const resNote = await api('/notes/show', {
-				noteId: bobPost.id,
-			}, alice);
-
-			assert.strictEqual(resNote.status, 200);
-			assert.strictEqual(resNote.body.reactions['🚀'], [alice.id]);
-		}));
-
-		it('自分の投稿にもリアクションできる', async () => {
-			const myPost = await post(alice);
-
-			const res = await api('/notes/reactions/create', {
-				noteId: myPost.id,
-				reaction: '🚀',
-			}, alice);
-
-			assert.strictEqual(res.status, 204);
-		}));
-
-		it('二重にリアクションできない', async () => {
-			const bobPost = await post(bob);
-
-			await react(alice, bobPost, 'like');
-
-			const res = await api('/notes/reactions/create', {
-				noteId: bobPost.id,
-				reaction: '🚀',
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('存在しない投稿にはリアクションできない', async () => {
-			const res = await api('/notes/reactions/create', {
-				noteId: '000000000000000000000000',
-				reaction: '🚀',
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('空のパラメータで怒られる', async () => {
-			const res = await api('/notes/reactions/create', {}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('間違ったIDで怒られる', async () => {
-			const res = await api('/notes/reactions/create', {
-				noteId: 'kyoppie',
-				reaction: '🚀',
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-	});
-
-	describe('following/create', () => {
-		it('フォローできる', async () => {
-			const res = await api('/following/create', {
-				userId: alice.id
-			}, bob);
-
-			assert.strictEqual(res.status, 200);
-		}));
-
-		it('既にフォローしている場合は怒る', async () => {
-			const res = await api('/following/create', {
-				userId: alice.id
-			}, bob);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('存在しないユーザーはフォローできない', async () => {
-			const res = await api('/following/create', {
-				userId: '000000000000000000000000'
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('自分自身はフォローできない', async () => {
-			const res = await api('/following/create', {
-				userId: alice.id
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('空のパラメータで怒られる', async () => {
-			const res = await api('/following/create', {}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('間違ったIDで怒られる', async () => {
-			const res = await api('/following/create', {
-				userId: 'foo'
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-	});
-
-	describe('following/delete', () => {
-		it('フォロー解除できる', async () => {
-			await api('/following/create', {
-				userId: alice.id
-			}, bob);
-
-			const res = await api('/following/delete', {
-				userId: alice.id
-			}, bob);
-
-			assert.strictEqual(res.status, 200);
-		}));
-
-		it('フォローしていない場合は怒る', async () => {
-			const res = await api('/following/delete', {
-				userId: alice.id
-			}, bob);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('存在しないユーザーはフォロー解除できない', async () => {
-			const res = await api('/following/delete', {
-				userId: '000000000000000000000000'
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('自分自身はフォロー解除できない', async () => {
-			const res = await api('/following/delete', {
-				userId: alice.id
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('空のパラメータで怒られる', async () => {
-			const res = await api('/following/delete', {}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('間違ったIDで怒られる', async () => {
-			const res = await api('/following/delete', {
-				userId: 'kyoppie'
-			}, alice);
-
-			assert.strictEqual(res.status, 400);
-		}));
 	});
 
 	describe('drive', () => {
