@@ -27,7 +27,9 @@ async function follow(user): Promise<void> {
 }
 
 const acct = new URL(location.href).searchParams.get('acct');
-if (acct == null) return;
+if (acct == null) {
+	throw new Error('acct required');
+}
 
 let promise;
 
