@@ -14,26 +14,15 @@
 </MkA>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import { userName } from '@/filters/user';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		ImgWithBlurhash,
-	},
-	props: {
-		post: {
-			type: Object,
-			required: true,
-		},
-	},
-	methods: {
-		userName,
-	},
-});
+const props = defineProps<{
+	post: any;
+}>();
 </script>
 
 <style lang="scss" scoped>

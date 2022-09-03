@@ -102,22 +102,6 @@ const menu = [{
 	text: i18n.ts.timeline,
 	action: setType,
 }];
-
-/*
-export default defineComponent({
-	watch: {
-		mediaOnly() {
-			(this.$refs.timeline as any).reload();
-		}
-	},
-
-	methods: {
-		focus() {
-			(this.$refs.timeline as any).focus();
-		}
-	}
-});
-*/
 </script>
 
 <style lang="scss" scoped>
