@@ -49,7 +49,7 @@ jobs:
     - name: Build
       run: yarn build
     - name: Test
-      run: yarn jest
+      run: yarn jest-and-coverage
     - name: Upload Coverage
       uses: codecov/codecov-action@v3
       with:
