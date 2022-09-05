@@ -30,7 +30,7 @@ export default defineComponent({
 			} else {
 				if (nextBracketOpen > 0) parsed.push(str.substr(0, nextBracketOpen));
 				parsed.push({
-					arg: str.substring(nextBracketOpen + 1, nextBracketClose)
+					arg: str.substring(nextBracketOpen + 1, nextBracketClose),
 				});
 			}
 
@@ -38,5 +38,5 @@ export default defineComponent({
 		}
 
 		return h(this.tag, parsed.map(x => typeof x === 'string' ? (this.textTag ? h(this.textTag, x) : x) : this.$slots[x.arg]()));
-	}
+	},
 });
