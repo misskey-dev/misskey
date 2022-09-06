@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import { on } from 'events';
 import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue';
-import MkMenu from './menu.vue';
+import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
 import * as os from '@/os';
 

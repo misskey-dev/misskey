@@ -61,9 +61,9 @@ import FormTextarea from './form/textarea.vue';
 import FormSwitch from './form/switch.vue';
 import FormSelect from './form/select.vue';
 import FormRange from './form/range.vue';
-import MkButton from './ui/button.vue';
+import MkButton from './MkButton.vue';
 import FormRadios from './form/radios.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 
 export default defineComponent({
 	components: {

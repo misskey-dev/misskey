@@ -63,7 +63,7 @@ import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
-const XChild = defineAsyncComponent(() => import('./menu.child.vue'));
+const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
 const props = defineProps<{
 	items: MenuItem[];

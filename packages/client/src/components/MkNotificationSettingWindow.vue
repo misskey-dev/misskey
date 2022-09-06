@@ -31,9 +31,9 @@
 import { } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkSwitch from './form/switch.vue';
-import MkInfo from './ui/info.vue';
-import MkButton from './ui/button.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import MkInfo from './MkInfo.vue';
+import MkButton from './MkButton.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
 const emit = defineEmits<{

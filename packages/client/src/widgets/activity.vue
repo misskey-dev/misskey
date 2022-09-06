@@ -20,7 +20,7 @@ import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 

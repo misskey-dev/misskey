@@ -30,8 +30,8 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import MkButton from '@/components/ui/button.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
 import { unique } from '@/scripts/array';

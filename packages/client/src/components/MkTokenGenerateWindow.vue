@@ -33,9 +33,9 @@ import { } from 'vue';
 import { permissions as kinds } from 'misskey-js';
 import MkInput from './form/input.vue';
 import MkSwitch from './form/switch.vue';
-import MkButton from './ui/button.vue';
-import MkInfo from './ui/info.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import MkButton from './MkButton.vue';
+import MkInfo from './MkInfo.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;

@@ -67,7 +67,7 @@
 import { } from 'vue';
 import getPasswordStrength from 'syuilo-password-strength';
 import { toUnicode } from 'punycode/';
-import MkButton from './ui/button.vue';
+import MkButton from './MkButton.vue';
 import MkInput from './form/input.vue';
 import MkSwitch from './form/switch.vue';
 import MkCaptcha from '@/components/MkCaptcha.vue';

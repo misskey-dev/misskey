@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 </script>
 

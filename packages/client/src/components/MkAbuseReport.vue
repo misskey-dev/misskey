@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import { acct, userPage } from '@/filters/user';

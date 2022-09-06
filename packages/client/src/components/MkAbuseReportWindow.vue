@@ -25,9 +25,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XWindow from '@/components/ui/window.vue';
+import XWindow from '@/components/MkWindow.vue';
 import MkTextarea from '@/components/form/textarea.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 

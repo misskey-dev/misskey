@@ -63,14 +63,14 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSection from '@/components/form/section.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
