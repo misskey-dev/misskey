@@ -6,23 +6,12 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		warn: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-	},
-	data() {
-		return {
-		};
-	}
-});
+const props = defineProps<{
+	warn?: boolean;
+}>();
 </script>
 
 <style lang="scss" scoped>
