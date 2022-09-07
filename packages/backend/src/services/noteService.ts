@@ -8,9 +8,9 @@ import { WebhookService } from './webhookService.js';
 export class NoteService {
 	constructor(
 		@Inject('notesRepository')
-    public notesRepository: typeof Notes,
+    private notesRepository: typeof Notes,
 
-		public webhookService: WebhookService,
+		private webhookService: WebhookService,
 	) {}
 
 	public async create(user: User, data: any) {
