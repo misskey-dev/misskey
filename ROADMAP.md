@@ -14,6 +14,9 @@ This is the phase we are at now. We need to make a high-maintenance environment 
   - Fix random test failures - https://github.com/misskey-dev/misskey/issues/7985 and https://github.com/misskey-dev/misskey/issues/7986
   - Add more tests
     - May need to implement a mechanism that allows for DI
+    	- https://github.com/misskey-dev/misskey/pull/9085
+	- Measure coverage
+		- https://github.com/misskey-dev/misskey/pull/9081
 - Improve documentation
 
 ## (2) Improve functionality
