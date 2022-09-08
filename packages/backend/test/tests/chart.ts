@@ -2,11 +2,11 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as lolex from '@sinonjs/fake-timers';
-import TestChart from '../src/services/chart/charts/test.js';
-import TestGroupedChart from '../src/services/chart/charts/test-grouped.js';
-import TestUniqueChart from '../src/services/chart/charts/test-unique.js';
-import TestIntersectionChart from '../src/services/chart/charts/test-intersection.js';
-import { initDb } from '../src/db/postgre.js';
+import TestChart from '../../src/services/chart/charts/test.js';
+import TestGroupedChart from '../../src/services/chart/charts/test-grouped.js';
+import TestUniqueChart from '../../src/services/chart/charts/test-unique.js';
+import TestIntersectionChart from '../../src/services/chart/charts/test-intersection.js';
+import { initDb } from '../../src/db/postgre.js';
 
 describe('Chart', () => {
 	let testChart: TestChart;
