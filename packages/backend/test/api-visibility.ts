@@ -15,7 +15,7 @@ describe('API visibility', () => {
 		await shutdownServer(p);
 	});
 
-	describe('Note visibility', async () => {
+	describe('Note visibility', () => {
 		//#region vars
 		/** ヒロイン */
 		let alice: any;
