@@ -2,8 +2,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { Note } from '../src/models/entities/note.js';
-import { async, signup, request, post, uploadUrl, startServer, shutdownServer, initTestDb, api } from './utils.js';
+import { Note } from '../../src/models/entities/note.js';
+import { async, signup, request, post, uploadUrl, startServer, shutdownServer, initTestDb, api } from '../utils.js';
 
 describe('Note', () => {
 	let p: childProcess.ChildProcess;

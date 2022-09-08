@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import * as openapi from '@redocly/openapi-core';
-import { startServer, signup, post, request, simpleGet, port, shutdownServer } from './utils.js';
+import { startServer, signup, post, request, simpleGet, port, shutdownServer } from '../utils.js';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';

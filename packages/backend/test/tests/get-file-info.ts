@@ -1,14 +1,13 @@
 import * as assert from 'assert';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { getFileInfo } from '../src/misc/get-file-info.js';
-import { async } from './utils.js';
+import { getFileInfo } from '../../src/misc/get-file-info.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 describe('Get file info', () => {
-	it('Empty file', async (async () => {
+	it('Empty file', async () => {
 		const path = `${_dirname}/resources/emptyfile`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -26,9 +25,9 @@ describe('Get file info', () => {
 			height: undefined,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('Generic JPEG', async (async () => {
+	it('Generic JPEG', async () => {
 		const path = `${_dirname}/resources/Lenna.jpg`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -46,9 +45,9 @@ describe('Get file info', () => {
 			height: 512,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('Generic APNG', async (async () => {
+	it('Generic APNG', async () => {
 		const path = `${_dirname}/resources/anime.png`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -66,9 +65,9 @@ describe('Get file info', () => {
 			height: 256,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('Generic AGIF', async (async () => {
+	it('Generic AGIF', async () => {
 		const path = `${_dirname}/resources/anime.gif`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -86,9 +85,9 @@ describe('Get file info', () => {
 			height: 256,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('PNG with alpha', async (async () => {
+	it('PNG with alpha', async () => {
 		const path = `${_dirname}/resources/with-alpha.png`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -106,9 +105,9 @@ describe('Get file info', () => {
 			height: 256,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('Generic SVG', async (async () => {
+	it('Generic SVG', async () => {
 		const path = `${_dirname}/resources/image.svg`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -126,9 +125,9 @@ describe('Get file info', () => {
 			height: 256,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('SVG with XML definition', async (async () => {
+	it('SVG with XML definition', async () => {
 		// https://github.com/misskey-dev/misskey/issues/4413
 		const path = `${_dirname}/resources/with-xml-def.svg`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
@@ -147,9 +146,9 @@ describe('Get file info', () => {
 			height: 256,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('Dimension limit', async (async () => {
+	it('Dimension limit', async () => {
 		const path = `${_dirname}/resources/25000x25000.png`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -167,9 +166,9 @@ describe('Get file info', () => {
 			height: 25000,
 			orientation: undefined,
 		});
-	}));
+	});
 
-	it('Rotate JPEG', async (async () => {
+	it('Rotate JPEG', async () => {
 		const path = `${_dirname}/resources/rotate.jpg`;
 		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -187,5 +186,5 @@ describe('Get file info', () => {
 			height: 256,
 			orientation: 8,
 		});
-	}));
+	});
 });
