@@ -21,7 +21,7 @@
 import { ref } from 'vue';
 import XNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
-import MkPagination, { Paging } from '@/components/ui/pagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{

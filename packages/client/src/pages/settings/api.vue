@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

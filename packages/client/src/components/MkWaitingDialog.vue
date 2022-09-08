@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { watch, ref } from 'vue';
-import MkModal from '@/components/ui/modal.vue';
+import MkModal from '@/components/MkModal.vue';
 
 const modal = ref<InstanceType<typeof MkModal>>();
 

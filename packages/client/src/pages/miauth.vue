@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { $i, login } from '@/account';
 import { appendQuery, query } from '@/scripts/url';

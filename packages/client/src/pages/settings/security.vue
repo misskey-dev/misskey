@@ -41,8 +41,8 @@
 import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
-import FormButton from '@/components/ui/button.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import FormButton from '@/components/MkButton.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

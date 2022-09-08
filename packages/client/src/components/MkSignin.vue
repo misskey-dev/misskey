@@ -51,9 +51,9 @@
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import { toUnicode } from 'punycode/';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { apiUrl, host as configHost } from '@/config';
 import { byteify, hexify } from '@/scripts/2fa';
 import * as os from '@/os';

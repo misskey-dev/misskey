@@ -22,7 +22,7 @@
 import { ref } from 'vue';
 import { instance } from '@/instance';
 import { host } from '@/config';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
 

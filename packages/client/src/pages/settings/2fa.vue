@@ -68,8 +68,8 @@
 import { ref } from 'vue';
 import { hostname } from '@/config';
 import { byteify, hexify, stringify } from '@/scripts/2fa';
-import MkButton from '@/components/ui/button.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';

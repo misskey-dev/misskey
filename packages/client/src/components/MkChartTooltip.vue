@@ -14,7 +14,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkTooltip from './ui/tooltip.vue';
+import MkTooltip from './MkTooltip.vue';
 
 const props = defineProps<{
 	showing: boolean;

@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { defineComponent, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkPagination, { Paging } from '@/components/ui/pagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import XNote from '@/components/MkNote.vue';

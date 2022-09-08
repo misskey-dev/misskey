@@ -44,11 +44,11 @@
 <script lang="ts" setup>
 import { computed, defineComponent, watch } from 'vue';
 import XUserList from '@/components/MkUserList.vue';
-import MkFolder from '@/components/ui/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/form/input.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkTab from '@/components/MkTab.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import number from '@/filters/number';
 import * as os from '@/os';

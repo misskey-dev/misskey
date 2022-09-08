@@ -45,7 +45,7 @@ import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { openAccountMenu } from '@/account';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 
 export default defineComponent({
 	components: {

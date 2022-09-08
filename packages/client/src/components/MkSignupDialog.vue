@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XSignup from '@/components/MkSignup.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{

@@ -32,8 +32,8 @@
 import { ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
 import number from '@/filters/number';

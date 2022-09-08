@@ -40,8 +40,8 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import MkModal from '@/components/ui/modal.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkModal from '@/components/MkModal.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import { i18n } from '@/i18n';

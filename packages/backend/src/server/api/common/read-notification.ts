@@ -1,18 +1,19 @@
+import { In } from 'typeorm';
 import { publishMainStream } from '@/services/stream.js';
 import { pushNotification } from '@/services/push-notification.js';
 import { User } from '@/models/entities/user.js';
 import { Notification } from '@/models/entities/notification.js';
 import { Notifications, Users } from '@/models/index.js';
-import { In } from 'typeorm';
 
 export async function readNotification(
 	userId: User['id'],
-	notificationIds: Notification['id'][]
+	notificationIds: Notification['id'][],
 ) {
 	if (notificationIds.length === 0) return;
 
 	// Update documents
 	const result = await Notifications.update({
+		notifieeId: userId,
 		id: In(notificationIds),
 		isRead: false,
 	}, {
@@ -27,7 +28,7 @@ export async function readNotification(
 
 export async function readNotificationByQuery(
 	userId: User['id'],
-	query: Record<string, any>
+	query: Record<string, any>,
 ) {
 	const notificationIds = await Notifications.findBy({
 		...query,

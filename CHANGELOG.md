@@ -14,6 +14,9 @@ You should also include the user name that made the change.
 ### Improvements
 - Client: Add following badge to user preview popup @nvisser
 
+### Bugfixes
+- Server: 他人の通知を既読にできる可能性があるのを修正 @syuilo
+
 ## 12.118.1 (2022/08/08)
 
 ### Bugfixes
