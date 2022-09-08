@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkTooltip from './ui/tooltip.vue';
+import MkTooltip from './MkTooltip.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
 
 const props = defineProps<{

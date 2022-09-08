@@ -22,7 +22,7 @@
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
 

@@ -36,7 +36,7 @@ import { computed, ComputedRef, isRef, markRaw, onActivated, onDeactivated, Ref,
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;

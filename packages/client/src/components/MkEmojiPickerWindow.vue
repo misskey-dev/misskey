@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkWindow from '@/components/ui/window.vue';
+import MkWindow from '@/components/MkWindow.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 
 withDefaults(defineProps<{

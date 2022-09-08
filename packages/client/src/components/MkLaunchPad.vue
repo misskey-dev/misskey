@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkModal from '@/components/ui/modal.vue';
+import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar';
 import { instanceName } from '@/config';
 import { defaultStore } from '@/store';

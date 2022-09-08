@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted } from 'vue';
-import MkModal from './modal.vue';
+import MkModal from './MkModal.vue';
 
 const props = withDefaults(defineProps<{
 	withOkButton: boolean;

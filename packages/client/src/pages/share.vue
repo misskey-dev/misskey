@@ -28,7 +28,7 @@ import { } from 'vue';
 import { noteVisibilities } from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import * as Misskey from 'misskey-js';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import XPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os';
 import { mainRouter } from '@/router';

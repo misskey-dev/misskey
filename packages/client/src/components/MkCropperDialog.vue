@@ -30,7 +30,7 @@ import { nextTick, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';

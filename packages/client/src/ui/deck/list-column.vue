@@ -52,20 +52,6 @@ const menu = [{
 	text: i18n.ts.selectList,
 	action: setList,
 }];
-
-/*
-function focus() {
-	timeline.focus();
-}
-
-export default defineComponent({
-	watch: {
-		mediaOnly() {
-			(this.$refs.timeline as any).reload();
-		}
-	}
-});
-*/
 </script>
 
 <style lang="scss" scoped>

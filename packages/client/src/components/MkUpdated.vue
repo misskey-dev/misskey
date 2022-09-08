@@ -11,8 +11,8 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import MkModal from '@/components/ui/modal.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkModal from '@/components/MkModal.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import { version } from '@/config';
 import { i18n } from '@/i18n';

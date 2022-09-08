@@ -12,7 +12,7 @@
 import { computed } from 'vue';
 import * as misskey from 'misskey-js';
 import MkUserInfo from '@/components/MkUserInfo.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
 	user: misskey.entities.User;

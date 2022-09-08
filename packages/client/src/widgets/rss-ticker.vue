@@ -24,7 +24,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExp
 import MarqueeText from '@/components/MkMarquee.vue';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
 import { shuffle } from '@/scripts/shuffle';
 

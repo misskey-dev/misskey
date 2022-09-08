@@ -74,7 +74,7 @@ import tinycolor from 'tinycolor2';
 import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormFolder from '@/components/form/folder.vue';
 

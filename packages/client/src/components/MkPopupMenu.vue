@@ -6,8 +6,8 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkModal from './modal.vue';
-import MkMenu from './menu.vue';
+import MkModal from './MkModal.vue';
+import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
 
 defineProps<{

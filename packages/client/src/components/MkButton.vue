@@ -3,7 +3,7 @@
 	v-if="!link" class="bghgjjyj _button"
 	:class="{ inline, primary, gradate, danger, rounded, full }"
 	:type="type"
-	@click="$emit('click', $event)"
+	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
 	<div ref="ripples" class="ripples"></div>
@@ -24,114 +24,77 @@
 </MkA>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { nextTick, onMounted } from 'vue';
 
-export default defineComponent({
-	props: {
-		type: {
-			type: String,
-			required: false,
-		},
-		primary: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		gradate: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		rounded: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
-		inline: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		link: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		to: {
-			type: String,
-			required: false,
-		},
-		autofocus: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		wait: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		danger: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		full: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
-	emits: ['click'],
-	mounted() {
-		if (this.autofocus) {
-			this.$nextTick(() => {
-				this.$el.focus();
-			});
-		}
-	},
-	methods: {
-		onMousedown(evt: MouseEvent) {
-			function distance(p, q) {
-				return Math.hypot(p.x - q.x, p.y - q.y);
-			}
+const props = defineProps<{
+	type?: 'button' | 'submit' | 'reset';
+	primary?: boolean;
+	gradate?: boolean;
+	rounded?: boolean;
+	inline?: boolean;
+	link?: boolean;
+	to?: string;
+	autofocus?: boolean;
+	wait?: boolean;
+	danger?: boolean;
+	full?: boolean;
+}>();
 
-			function calcCircleScale(boxW, boxH, circleCenterX, circleCenterY) {
-				const origin = { x: circleCenterX, y: circleCenterY };
-				const dist1 = distance({ x: 0, y: 0 }, origin);
-				const dist2 = distance({ x: boxW, y: 0 }, origin);
-				const dist3 = distance({ x: 0, y: boxH }, origin);
-				const dist4 = distance({ x: boxW, y: boxH }, origin);
-				return Math.max(dist1, dist2, dist3, dist4) * 2;
-			}
+const emit = defineEmits<{
+	(ev: 'click', payload: MouseEvent): void;
+}>();
 
-			const rect = evt.target.getBoundingClientRect();
+let el = $ref<HTMLElement | null>(null);
+let ripples = $ref<HTMLElement | null>(null);
 
-			const ripple = document.createElement('div');
-			ripple.style.top = (evt.clientY - rect.top - 1).toString() + 'px';
-			ripple.style.left = (evt.clientX - rect.left - 1).toString() + 'px';
-
-			this.$refs.ripples.appendChild(ripple);
-
-			const circleCenterX = evt.clientX - rect.left;
-			const circleCenterY = evt.clientY - rect.top;
-
-			const scale = calcCircleScale(evt.target.clientWidth, evt.target.clientHeight, circleCenterX, circleCenterY);
-
-			window.setTimeout(() => {
-				ripple.style.transform = 'scale(' + (scale / 2) + ')';
-			}, 1);
-			window.setTimeout(() => {
-				ripple.style.transition = 'all 1s ease';
-				ripple.style.opacity = '0';
-			}, 1000);
-			window.setTimeout(() => {
-				if (this.$refs.ripples) this.$refs.ripples.removeChild(ripple);
-			}, 2000);
-		},
-	},
+onMounted(() => {
+	if (props.autofocus) {
+		nextTick(() => {
+			el!.focus();
+		});
+	}
 });
+
+function distance(p, q): number {
+	return Math.hypot(p.x - q.x, p.y - q.y);
+}
+
+function calcCircleScale(boxW, boxH, circleCenterX, circleCenterY): number {
+	const origin = { x: circleCenterX, y: circleCenterY };
+	const dist1 = distance({ x: 0, y: 0 }, origin);
+	const dist2 = distance({ x: boxW, y: 0 }, origin);
+	const dist3 = distance({ x: 0, y: boxH }, origin);
+	const dist4 = distance({ x: boxW, y: boxH }, origin);
+	return Math.max(dist1, dist2, dist3, dist4) * 2;
+}
+
+function onMousedown(evt: MouseEvent): void {
+	const target = evt.target! as HTMLElement;
+	const rect = target.getBoundingClientRect();
+
+	const ripple = document.createElement('div');
+	ripple.style.top = (evt.clientY - rect.top - 1).toString() + 'px';
+	ripple.style.left = (evt.clientX - rect.left - 1).toString() + 'px';
+
+	ripples!.appendChild(ripple);
+
+	const circleCenterX = evt.clientX - rect.left;
+	const circleCenterY = evt.clientY - rect.top;
+
+	const scale = calcCircleScale(target.clientWidth, target.clientHeight, circleCenterX, circleCenterY);
+
+	window.setTimeout(() => {
+		ripple.style.transform = 'scale(' + (scale / 2) + ')';
+	}, 1);
+	window.setTimeout(() => {
+		ripple.style.transition = 'all 1s ease';
+		ripple.style.opacity = '0';
+	}, 1000);
+	window.setTimeout(() => {
+		if (ripples) ripples.removeChild(ripple);
+	}, 2000);
+}
 </script>
 
 <style lang="scss" scoped>

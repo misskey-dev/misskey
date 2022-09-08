@@ -56,7 +56,7 @@ import { nextTick, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import MkInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
