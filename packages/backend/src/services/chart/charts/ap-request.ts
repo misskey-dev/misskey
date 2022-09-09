@@ -1,3 +1,4 @@
+import { Container, Service, Inject } from 'typedi';
 import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/ap-request.js';
 
@@ -5,6 +6,7 @@ import { name, schema } from './entities/ap-request.js';
  * Chart about ActivityPub requests
  */
 // eslint-disable-next-line import/no-default-export
+@Service()
 export default class ApRequestChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);

@@ -1,13 +1,15 @@
-import Chart, { KVs } from '../core.js';
+import { Container, Service, Inject } from 'typedi';
 import { User } from '@/models/entities/user.js';
 import { Notes } from '@/models/index.js';
 import { Note } from '@/models/entities/note.js';
+import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/per-user-notes.js';
 
 /**
  * ユーザーごとのノートに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Service()
 export default class PerUserNotesChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);

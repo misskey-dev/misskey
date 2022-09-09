@@ -1,12 +1,14 @@
-import Chart, { KVs } from '../core.js';
+import { Container, Service, Inject } from 'typedi';
 import { User } from '@/models/entities/user.js';
 import { Users } from '@/models/index.js';
+import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/hashtag.js';
 
 /**
  * ハッシュタグに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Service()
 export default class HashtagChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);

@@ -1,12 +1,14 @@
-import Chart, { KVs } from '../core.js';
+import { Container, Service, Inject } from 'typedi';
 import { DriveFiles } from '@/models/index.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
+import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/per-user-drive.js';
 
 /**
  * ユーザーごとのドライブに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Service()
 export default class PerUserDriveChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);

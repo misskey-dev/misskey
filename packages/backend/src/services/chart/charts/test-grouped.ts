@@ -1,3 +1,4 @@
+import { Container, Service, Inject } from 'typedi';
 import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/test-grouped.js';
 
@@ -5,6 +6,7 @@ import { name, schema } from './entities/test-grouped.js';
  * For testing
  */
 // eslint-disable-next-line import/no-default-export
+@Service()
 export default class TestGroupedChart extends Chart<typeof schema> {
 	private total = {} as Record<string, number>;
 

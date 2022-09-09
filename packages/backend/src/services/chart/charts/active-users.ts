@@ -1,6 +1,7 @@
-import Chart, { KVs } from '../core.js';
+import { Container, Service, Inject } from 'typedi';
 import { User } from '@/models/entities/user.js';
 import { Users } from '@/models/index.js';
+import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/active-users.js';
 
 const week = 1000 * 60 * 60 * 24 * 7;
@@ -11,6 +12,7 @@ const year = 1000 * 60 * 60 * 24 * 365;
  * アクティブユーザーに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Service()
 export default class ActiveUsersChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);

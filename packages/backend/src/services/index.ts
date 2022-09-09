@@ -1,4 +1,4 @@
 import { Container, Service } from 'typedi';
-import { NoteService } from './noteService.js';
+import { NoteCreateService } from './note/NoteCreateService.js';
 
-export const noteService = Container.get(NoteService);
+export const noteCreateService = Container.get(NoteCreateService);

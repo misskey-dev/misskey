@@ -35,13 +35,13 @@ import { Cache } from '@/misc/cache.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
 import { db } from '@/db/postgre.js';
 import { getActiveWebhooks } from '@/misc/webhook-cache.js';
-import es from '../db/elasticsearch.js';
-import { registerOrFetchInstanceDoc } from './register-or-fetch-instance-doc.js';
-import { updateHashtags } from './update-hashtag.js';
-import { deliverToRelays } from './relay.js';
-import { addNoteToAntenna } from './add-note-to-antenna.js';
-import { createNotification } from './create-notification.js';
-import { WebhookService } from './webhookService.js';
+import es from '../../db/elasticsearch.js';
+import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
+import { updateHashtags } from '../update-hashtag.js';
+import { deliverToRelays } from '../relay.js';
+import { addNoteToAntenna } from '../add-note-to-antenna.js';
+import { createNotification } from '../create-notification.js';
+import { WebhookService } from '../webhookService.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -129,7 +129,7 @@ type Option = {
 };
 
 @Service()
-export class NoteService {
+export class NoteCreateService {
 	constructor(
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,

@@ -7,7 +7,7 @@ import { initDb } from '@/db/postgre.js';
 import { Notes } from '@/models/index.js';
 import { FooService } from '@/services/fooService.js';
 import { WebhookService } from '../../src/services/webhookService.js';
-import { NoteService } from '../../src/services/noteService.js';
+import { NoteService } from '../../src/services/note/NoteCreateService.js';
 
 describe('NoteService', () => {
 	beforeAll(async () => {

@@ -1,14 +1,16 @@
-import Chart, { KVs } from '../core.js';
+import { Container, Service, Inject } from 'typedi';
 import { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
 import { Note } from '@/models/entities/note.js';
 import { toPuny } from '@/misc/convert-host.js';
+import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/instance.js';
 
 /**
  * インスタンスごとのチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Service()
 export default class InstanceChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);
