@@ -36,10 +36,10 @@
 import { computed, defineAsyncComponent } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
 import XHeader from './_header_.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
-import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
+import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

@@ -29,7 +29,7 @@
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
 import MkTextarea from '@/components/form/textarea.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';

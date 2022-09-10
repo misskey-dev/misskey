@@ -22,7 +22,7 @@ import { GetFormResultType } from '@/scripts/form';
 import { stream } from '@/stream';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 

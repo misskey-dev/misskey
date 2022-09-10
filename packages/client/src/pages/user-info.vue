@@ -154,21 +154,21 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import MkChart from '@/components/chart.vue';
-import MkObjectView from '@/components/object-view.vue';
+import MkChart from '@/components/MkChart.vue';
+import MkObjectView from '@/components/MkObjectView.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';

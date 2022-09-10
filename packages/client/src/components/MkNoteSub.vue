@@ -10,7 +10,7 @@
 					<XCwButton v-model="showContent" :note="note"/>
 				</p>
 				<div v-show="note.cw == null || showContent" class="content">
-					<MkNoteSubNoteContent class="text" :note="note"/>
+					<MkSubNoteContent class="text" :note="note"/>
 				</div>
 			</div>
 		</div>
@@ -27,9 +27,9 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
-import XNoteHeader from './note-header.vue';
-import MkNoteSubNoteContent from './sub-note-content.vue';
-import XCwButton from './cw-button.vue';
+import XNoteHeader from '@/components/MkNoteHeader.vue';
+import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
+import XCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

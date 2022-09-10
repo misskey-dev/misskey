@@ -9,8 +9,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as misskey from 'misskey-js';
-import MkPagePreview from '@/components/page-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkPagePreview from '@/components/MkPagePreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
 	user: misskey.entities.User;

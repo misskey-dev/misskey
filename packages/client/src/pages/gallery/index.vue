@@ -43,13 +43,13 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, watch } from 'vue';
-import XUserList from '@/components/user-list.vue';
-import MkFolder from '@/components/ui/folder.vue';
+import XUserList from '@/components/MkUserList.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/form/input.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkTab from '@/components/tab.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkTab from '@/components/MkTab.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
