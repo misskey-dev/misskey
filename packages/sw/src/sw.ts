@@ -24,6 +24,16 @@ self.addEventListener('activate', ev => {
 });
 
 self.addEventListener('fetch', ev => {
+	let isHTMLRequest = false;
+	if (ev.request.headers.get('sec-fetch-dest') === 'document') {
+		isHTMLRequest = true;
+	} else if (ev.request.headers.get('accept')?.includes('/html')) {
+		isHTMLRequest = true;
+	} else if (ev.request.url.endsWith('/')) {
+		isHTMLRequest = true;
+	}
+
+	if (!isHTMLRequest) return;
 	ev.respondWith(
 		fetch(ev.request)
 		.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 }))

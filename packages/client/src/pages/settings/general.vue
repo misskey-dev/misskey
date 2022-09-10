@@ -81,7 +81,7 @@
 		<option value="force">{{ i18n.ts._nsfw.force }}</option>
 	</FormSelect>
 
-	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" class="_formBlock">
+	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing class="_formBlock">
 		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 	</FormRange>
