@@ -5,10 +5,9 @@
  */
 
 import * as nestedProperty from 'nested-property';
-import { EntitySchema, Repository, LessThan, Between } from 'typeorm';
+import { EntitySchema, Repository, LessThan, Between, DataSource } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time.js';
 import { getChartInsertLock } from '@/misc/app-lock.js';
-import { db } from '@/db/postgre.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
@@ -230,7 +229,7 @@ export default abstract class Chart<T extends Schema> {
 		};
 	}
 
-	constructor(name: string, schema: T, grouped = false) {
+	constructor(db: DataSource, name: string, schema: T, grouped = false) {
 		this.name = name;
 		this.schema = schema;
 

@@ -2,13 +2,20 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as lolex from '@sinonjs/fake-timers';
-import TestChart from '../../src/services/chart/charts/test.js';
-import TestGroupedChart from '../../src/services/chart/charts/test-grouped.js';
-import TestUniqueChart from '../../src/services/chart/charts/test-unique.js';
-import TestIntersectionChart from '../../src/services/chart/charts/test-intersection.js';
-import { initDb } from '../../src/db/postgre.js';
+import { DataSource } from 'typeorm';
+import config from '@/config/index.js';
+import TestChart from '@/services/chart/charts/test.js';
+import TestGroupedChart from '@/services/chart/charts/test-grouped.js';
+import TestUniqueChart from '@/services/chart/charts/test-unique.js';
+import TestIntersectionChart from '@/services/chart/charts/test-intersection.js';
+import { entity as TestChartEntity } from '@/services/chart/charts/entities/test.js';
+import { entity as TestGroupedChartEntity } from '@/services/chart/charts/entities/test-grouped.js';
+import { entity as TestUniqueChartEntity } from '@/services/chart/charts/entities/test-unique.js';
+import { entity as TestIntersectionChartEntity } from '@/services/chart/charts/entities/test-intersection.js';
 
 describe('Chart', () => {
+	let db: DataSource;
+
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
@@ -16,12 +23,35 @@ describe('Chart', () => {
 	let clock: lolex.InstalledClock;
 
 	beforeEach(async () => {
-		await initDb(true);
+		db = new DataSource({
+			type: 'postgres',
+			host: config.db.host,
+			port: config.db.port,
+			username: config.db.user,
+			password: config.db.pass,
+			database: config.db.db,
+			extra: {
+				statement_timeout: 1000 * 10,
+				...config.db.extra,
+			},
+			synchronize: true,
+			dropSchema: true,
+			maxQueryExecutionTime: 300,
+			entities: [
+				TestChartEntity.hour, TestChartEntity.day,
+				TestGroupedChartEntity.hour, TestGroupedChartEntity.day,
+				TestUniqueChartEntity.hour, TestUniqueChartEntity.day,
+				TestIntersectionChartEntity.hour, TestIntersectionChartEntity.day,
+			],
+			migrations: ['../../migration/*.js'],
+		});
 
-		testChart = new TestChart();
-		testGroupedChart = new TestGroupedChart();
-		testUniqueChart = new TestUniqueChart();
-		testIntersectionChart = new TestIntersectionChart();
+		await db.initialize();
+
+		testChart = new TestChart(db);
+		testGroupedChart = new TestGroupedChart(db);
+		testUniqueChart = new TestUniqueChart(db);
+		testIntersectionChart = new TestIntersectionChart(db);
 
 		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),

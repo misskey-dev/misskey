@@ -1,4 +1,5 @@
 import { Container, Service, Inject } from 'typedi';
+import { DataSource } from 'typeorm';
 import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/test-unique.js';
 
@@ -8,8 +9,8 @@ import { name, schema } from './entities/test-unique.js';
 // eslint-disable-next-line import/no-default-export
 @Service()
 export default class TestUniqueChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema);
+	constructor(db: DataSource) {
+		super(db, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

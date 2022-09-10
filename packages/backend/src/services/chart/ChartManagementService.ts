@@ -48,7 +48,6 @@ export class ChartManagementService {
 		];
 		
 		// 20分おきにメモリ情報をDBに書き込み
-		// TODO: 専用のサービスに切り出す
 		setInterval(() => {
 			for (const chart of charts) {
 				chart.save();
