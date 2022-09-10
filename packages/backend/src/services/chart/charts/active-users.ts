@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { User } from '@/models/entities/user.js';
 import { Users } from '@/models/index.js';
 import Chart, { KVs } from '../core.js';
@@ -12,7 +12,7 @@ const year = 1000 * 60 * 60 * 24 * 365;
  * アクティブユーザーに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class ActiveUsersChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);

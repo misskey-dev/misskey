@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/test-intersection.js';
@@ -7,7 +7,7 @@ import { name, schema } from './entities/test-intersection.js';
  * For testing
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class TestIntersectionChart extends Chart<typeof schema> {
 	constructor(db: DataSource) {
 		super(db, name, schema);

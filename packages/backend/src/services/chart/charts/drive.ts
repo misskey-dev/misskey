@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
 import { DriveFiles } from '@/models/index.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
@@ -9,7 +9,7 @@ import { name, schema } from './entities/drive.js';
  * ドライブに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class DriveChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);

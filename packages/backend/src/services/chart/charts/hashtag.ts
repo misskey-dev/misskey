@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { User } from '@/models/entities/user.js';
 import { Users } from '@/models/index.js';
 import Chart, { KVs } from '../core.js';
@@ -8,7 +8,7 @@ import { name, schema } from './entities/hashtag.js';
  * ハッシュタグに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class HashtagChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema, true);

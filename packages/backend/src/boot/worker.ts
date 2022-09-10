@@ -1,7 +1,8 @@
 import cluster from 'node:cluster';
-import { Container } from 'typedi';
-import { Notes } from '@/models/index.js';
+import { NestFactory } from '@nestjs/core';
 import { initDb } from '../db/postgre.js';
+import createServer from '../server/index.js';
+import { AppModule } from '../app.module.js';
 
 /**
  * Init worker process
@@ -9,10 +10,10 @@ import { initDb } from '../db/postgre.js';
 export async function workerMain() {
 	await initDb();
 
-	Container.set('notesRepository', Notes);
+	const app = await NestFactory.createApplicationContext(AppModule);
 
 	// start server
-	await import('../server/index.js').then(x => x.default());
+	await createServer(app);
 
 	// start job queue
 	import('../queue/index.js').then(x => x.default());

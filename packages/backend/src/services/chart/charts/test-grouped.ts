@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import Chart, { KVs } from '../core.js';
 import { name, schema } from './entities/test-grouped.js';
@@ -7,7 +7,7 @@ import { name, schema } from './entities/test-grouped.js';
  * For testing
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class TestGroupedChart extends Chart<typeof schema> {
 	private total = {} as Record<string, number>;
 

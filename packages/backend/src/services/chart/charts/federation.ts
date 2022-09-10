@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { Followings, Instances } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import Chart, { KVs } from '../core.js';
@@ -8,7 +8,7 @@ import { name, schema } from './entities/federation.js';
  * フェデレーションに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class FederationChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);

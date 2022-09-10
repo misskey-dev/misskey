@@ -1,7 +1,7 @@
 import { Container, Service } from 'typedi';
 import { FooService } from './fooService.js';
 
-@Service()
+@Injectable()
 export class WebhookService {
 	constructor(
 		private fooService: FooService,

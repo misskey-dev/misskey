@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
 import { Users } from '@/models/index.js';
 import { User } from '@/models/entities/user.js';
@@ -9,7 +9,7 @@ import { name, schema } from './entities/users.js';
  * ユーザー数に関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class UsersChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);

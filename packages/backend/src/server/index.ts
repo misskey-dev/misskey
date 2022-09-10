@@ -31,115 +31,100 @@ import { initializeStreamingServer } from './api/streaming.js';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
-// Init app
-const app = new Koa();
-app.proxy = true;
+export default () => new Promise(resolve => {
+	// Init app
+	const app = new Koa();
+	app.proxy = true;
 
-if (!['production', 'test'].includes(process.env.NODE_ENV || '')) {
-	// Logger
-	app.use(koaLogger(str => {
-		serverLogger.info(str);
-	}));
-
-	// Delay
-	if (envOption.slow) {
-		app.use(slow({
-			delay: 3000,
+	if (!['production', 'test'].includes(process.env.NODE_ENV || '')) {
+		// Logger
+		app.use(koaLogger(str => {
+			serverLogger.info(str);
 		}));
+
+		// Delay
+		if (envOption.slow) {
+			app.use(slow({
+				delay: 3000,
+			}));
+		}
 	}
-}
 
-// HSTS
-// 6months (15552000sec)
-if (config.url.startsWith('https') && !config.disableHsts) {
-	app.use(async (ctx, next) => {
-		ctx.set('strict-transport-security', 'max-age=15552000; preload');
-		await next();
-	});
-}
-
-app.use(mount('/api', apiServer));
-app.use(mount('/files', fileServer));
-app.use(mount('/proxy', proxyServer));
-
-// Init router
-const router = new Router();
-
-// Routing
-router.use(activityPub.routes());
-router.use(nodeinfo.routes());
-router.use(wellKnown.routes());
-
-router.get('/avatar/@:acct', async ctx => {
-	const { username, host } = Acct.parse(ctx.params.acct);
-	const user = await Users.findOne({
-		where: {
-			usernameLower: username.toLowerCase(),
-			host: (host == null) || (host === config.host) ? IsNull() : host,
-			isSuspended: false,
-		},
-		relations: ['avatar'],
-	});
-
-	if (user) {
-		ctx.redirect(Users.getAvatarUrlSync(user));
-	} else {
-		ctx.redirect('/static-assets/user-unknown.png');
+	// HSTS
+	// 6months (15552000sec)
+	if (config.url.startsWith('https') && !config.disableHsts) {
+		app.use(async (ctx, next) => {
+			ctx.set('strict-transport-security', 'max-age=15552000; preload');
+			await next();
+		});
 	}
-});
 
-router.get('/identicon/:x', async ctx => {
-	const [temp, cleanup] = await createTemp();
-	await genIdenticon(ctx.params.x, fs.createWriteStream(temp));
-	ctx.set('Content-Type', 'image/png');
-	ctx.body = fs.createReadStream(temp).on('close', () => cleanup());
-});
+	app.use(mount('/api', apiServer));
+	app.use(mount('/files', fileServer));
+	app.use(mount('/proxy', proxyServer));
 
-router.get('/verify-email/:code', async ctx => {
-	const profile = await UserProfiles.findOneBy({
-		emailVerifyCode: ctx.params.code,
-	});
+	// Init router
+	const router = new Router();
 
-	if (profile != null) {
-		ctx.body = 'Verify succeeded!';
-		ctx.status = 200;
+	// Routing
+	router.use(activityPub.routes());
+	router.use(nodeinfo.routes());
+	router.use(wellKnown.routes());
 
-		await UserProfiles.update({ userId: profile.userId }, {
-			emailVerified: true,
-			emailVerifyCode: null,
+	router.get('/avatar/@:acct', async ctx => {
+		const { username, host } = Acct.parse(ctx.params.acct);
+		const user = await Users.findOne({
+			where: {
+				usernameLower: username.toLowerCase(),
+				host: (host == null) || (host === config.host) ? IsNull() : host,
+				isSuspended: false,
+			},
+			relations: ['avatar'],
 		});
 
-		publishMainStream(profile.userId, 'meUpdated', await Users.pack(profile.userId, { id: profile.userId }, {
-			detail: true,
-			includeSecrets: true,
-		}));
-	} else {
-		ctx.status = 404;
-	}
-});
+		if (user) {
+			ctx.redirect(Users.getAvatarUrlSync(user));
+		} else {
+			ctx.redirect('/static-assets/user-unknown.png');
+		}
+	});
 
-// Register router
-app.use(router.routes());
+	router.get('/identicon/:x', async ctx => {
+		const [temp, cleanup] = await createTemp();
+		await genIdenticon(ctx.params.x, fs.createWriteStream(temp));
+		ctx.set('Content-Type', 'image/png');
+		ctx.body = fs.createReadStream(temp).on('close', () => cleanup());
+	});
 
-app.use(mount(webServer));
+	router.get('/verify-email/:code', async ctx => {
+		const profile = await UserProfiles.findOneBy({
+			emailVerifyCode: ctx.params.code,
+		});
 
-function createServer() {
-	return http.createServer(app.callback());
-}
+		if (profile != null) {
+			ctx.body = 'Verify succeeded!';
+			ctx.status = 200;
 
-// For testing
-export const startServer = () => {
-	const server = createServer();
+			await UserProfiles.update({ userId: profile.userId }, {
+				emailVerified: true,
+				emailVerifyCode: null,
+			});
 
-	initializeStreamingServer(server);
+			publishMainStream(profile.userId, 'meUpdated', await Users.pack(profile.userId, { id: profile.userId }, {
+				detail: true,
+				includeSecrets: true,
+			}));
+		} else {
+			ctx.status = 404;
+		}
+	});
 
-	server.listen(config.port);
+	// Register router
+	app.use(router.routes());
 
-	return server;
-};
+	app.use(mount(webServer));
 
-export default () => new Promise(resolve => {
-	const server = createServer();
+	const server = http.createServer(app.callback());
 
 	initializeStreamingServer(server);
 

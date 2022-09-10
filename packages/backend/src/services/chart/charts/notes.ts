@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
 import { Notes } from '@/models/index.js';
 import { Note } from '@/models/entities/note.js';
@@ -9,7 +9,7 @@ import { name, schema } from './entities/notes.js';
  * ノートに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
-@Service()
+@Injectable()
 export default class NotesChart extends Chart<typeof schema> {
 	constructor() {
 		super(name, schema);

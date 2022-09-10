@@ -1,6 +1,6 @@
-import { Container, Service, Inject } from 'typedi';
 import * as mfm from 'mfm-js';
 import { Not, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
@@ -20,7 +20,6 @@ import DeliverManager from '@/remote/activitypub/deliver-manager.js';
 import { publishMainStream, publishNotesStream } from '@/services/stream.js';
 import { genId } from '@/misc/gen-id.js';
 import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
-import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '@/services/chart/index.js';
 import { Poll, IPoll } from '@/models/entities/poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { checkHitAntenna } from '@/misc/check-hit-antenna.js';
@@ -42,6 +41,10 @@ import { deliverToRelays } from '../relay.js';
 import { addNoteToAntenna } from '../add-note-to-antenna.js';
 import { createNotification } from '../create-notification.js';
 import { WebhookService } from '../webhookService.js';
+import type NotesChart from '../chart/charts/notes.js';
+import type PerUserNotesChart from '../chart/charts/per-user-notes.js';
+import type ActiveUsersChart from '../chart/charts/active-users.js';
+import type InstanceChart from '../chart/charts/instance.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -128,11 +131,16 @@ type Option = {
 	app?: App | null;
 };
 
-@Service()
+@Injectable()
 export class NoteCreateService {
 	constructor(
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private notesChart: NotesChart,
+		private perUserNotesChart: PerUserNotesChart,
+		private activeUsersChart: ActiveUsersChart,
+		private instanceChart: InstanceChart,
 
 		private webhookService: WebhookService,
 	) {}
@@ -360,14 +368,14 @@ export class NoteCreateService {
 		createdAt: User['createdAt'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		// 統計を更新
-		notesChart.update(note, true);
-		perUserNotesChart.update(user, note, true);
+		this.notesChart.update(note, true);
+		this.perUserNotesChart.update(user, note, true);
 
 		// Register host
 		if (Users.isRemoteUser(user)) {
 			registerOrFetchInstanceDoc(user.host).then(i => {
 				Instances.increment({ id: i.id }, 'notesCount', 1);
-				instanceChart.updateNote(i.host, note, true);
+				this.instanceChart.updateNote(i.host, note, true);
 			});
 		}
 
@@ -441,7 +449,7 @@ export class NoteCreateService {
 		}
 
 		if (!silent) {
-			if (Users.isLocalUser(user)) activeUsersChart.write(user);
+			if (Users.isLocalUser(user)) this.activeUsersChart.write(user);
 
 			// 未読通知を作成
 			if (data.visibility === 'specified') {

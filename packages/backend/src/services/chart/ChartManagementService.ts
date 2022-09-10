@@ -1,4 +1,4 @@
-import { Container, Service, Inject } from 'typedi';
+import { Injectable, Inject } from '@nestjs/common';
 import { beforeShutdown } from '@/misc/before-shutdown.js';
 
 import FederationChart from './charts/federation.js';
@@ -14,7 +14,7 @@ import PerUserFollowingChart from './charts/per-user-following.js';
 import PerUserDriveChart from './charts/per-user-drive.js';
 import ApRequestChart from './charts/ap-request.js';
 
-@Service()
+@Injectable()
 export class ChartManagementService {
 	constructor(
 		private federationChart: FederationChart,

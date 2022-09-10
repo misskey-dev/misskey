@@ -7,9 +7,9 @@ import { initDb } from '@/db/postgre.js';
 import { Notes } from '@/models/index.js';
 import { FooService } from '@/services/fooService.js';
 import { WebhookService } from '../../src/services/webhookService.js';
-import { NoteService } from '../../src/services/note/NoteCreateService.js';
+import { NoteCreateService } from '../../src/services/note/NoteCreateService.js';
 
-describe('NoteService', () => {
+describe('NoteCreateService', () => {
 	beforeAll(async () => {
 		//await initTestDb();
 		await initDb();
@@ -23,9 +23,9 @@ describe('NoteService', () => {
 		}
 
 		const webhookService = new WebhookService2();
-		const noteService = new NoteService(Container.get('notesRepository'), webhookService as unknown as jest.Mocked<WebhookService>);
+		const noteCreateService = new NoteCreateService(Container.get('notesRepository'), webhookService as unknown as jest.Mocked<WebhookService>);
 
-		await noteService.create({ id: 'aaa' }, { text: 'test' });
+		await noteCreateService.create({ id: 'aaa' }, { text: 'test' });
 		expect(webhookService.deliver).toBeCalled();
 	});
 });

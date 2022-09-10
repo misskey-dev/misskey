@@ -1,5 +1,5 @@
-import { Container, Service, Inject } from 'typedi';
 import { Brackets, In } from 'typeorm';
+import { Injectable, Inject } from '@nestjs/common';
 import { publishNoteStream } from '@/services/stream.js';
 import renderDelete from '@/remote/activitypub/renderer/delete.js';
 import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
@@ -16,7 +16,7 @@ import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
 import { deliverToRelays } from '../relay.js';
 
-@Service()
+@Injectable()
 export class NoteCreateService {
 	constructor(
 		@Inject('notesRepository')

@@ -1,6 +1,6 @@
 import { Container, Service } from 'typedi';
 
-@Service()
+@Injectable()
 export class FooService {
 	constructor(
 	) {}
