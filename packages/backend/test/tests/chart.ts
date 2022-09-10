@@ -14,7 +14,7 @@ import { entity as TestUniqueChartEntity } from '@/services/chart/charts/entitie
 import { entity as TestIntersectionChartEntity } from '@/services/chart/charts/entities/test-intersection.js';
 
 describe('Chart', () => {
-	let db: DataSource;
+	let db: DataSource | undefined;
 
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
@@ -23,6 +23,8 @@ describe('Chart', () => {
 	let clock: lolex.InstalledClock;
 
 	beforeEach(async () => {
+		if (db) db.destroy();
+
 		db = new DataSource({
 			type: 'postgres',
 			host: config.db.host,
