@@ -18,6 +18,8 @@ This is the phase we are at now. We need to make a high-maintenance environment 
 	- Measure coverage
 		- https://github.com/misskey-dev/misskey/pull/9081
 - Improve documentation
+- Refactoring
+	- Extract the logic of each endpoint definition into a service and just call it
 
 ## (2) Improve functionality
 Once Phase 1 is complete and an environment conducive to the development of a stable system is in place, the implementation of new functions can begin gradually.
