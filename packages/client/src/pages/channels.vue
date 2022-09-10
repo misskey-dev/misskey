@@ -24,9 +24,9 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, inject } from 'vue';
-import MkChannelPreview from '@/components/channel-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkChannelPreview from '@/components/MkChannelPreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';

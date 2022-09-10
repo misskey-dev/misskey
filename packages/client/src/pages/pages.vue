@@ -26,9 +26,9 @@
 
 <script lang="ts" setup>
 import { computed, inject } from 'vue';
-import MkPagePreview from '@/components/page-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkPagePreview from '@/components/MkPagePreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

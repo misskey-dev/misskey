@@ -33,7 +33,7 @@ import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { url } from '@/config';
 import { scrollToTop } from '@/scripts/scroll';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';

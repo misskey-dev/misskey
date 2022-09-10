@@ -38,7 +38,7 @@ const onNotification = notification => {
 			id: notification.id,
 		});
 
-		popup(defineAsyncComponent(() => import('@/components/notification-toast.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/MkNotificationToast.vue')), {
 			notification,
 		}, {}, 'closed');
 	}

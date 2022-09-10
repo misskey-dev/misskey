@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkSelect from '@/components/form/select.vue';

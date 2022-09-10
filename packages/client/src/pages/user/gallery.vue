@@ -11,8 +11,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as misskey from 'misskey-js';
-import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;

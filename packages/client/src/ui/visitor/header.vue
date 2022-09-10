@@ -41,8 +41,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
+import XSigninDialog from '@/components/MkSigninDialog.vue';
+import XSignupDialog from '@/components/MkSignupDialog.vue';
 import * as os from '@/os';
 import { search } from '@/scripts/search';
 

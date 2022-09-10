@@ -28,8 +28,8 @@
 import { defineComponent } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/ui/button.vue';
-import FormInfo from '@/components/ui/info.vue';
+import FormButton from '@/components/MkButton.vue';
+import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';

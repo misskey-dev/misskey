@@ -46,7 +46,7 @@ export default {
 			if (self.text == null) return;
 
 			const showing = ref(true);
-			popup(defineAsyncComponent(() => import('@/components/ui/tooltip.vue')), {
+			popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 				showing,
 				text: self.text,
 				asMfm: binding.modifiers.mfm,

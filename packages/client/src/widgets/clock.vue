@@ -9,6 +9,7 @@
 			:graduations="widgetProps.graduations"
 			:fade-graduations="widgetProps.fadeGraduations"
 			:twentyfour="widgetProps.twentyFour"
+			:s-animation="widgetProps.sAnimation"
 		/>
 		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" class="_monospace label c time" :show-s="false" :offset="tzOffset"/>
 		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label d offset">{{ tzOffsetLabel }}</div>
@@ -20,9 +21,9 @@
 import { } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import MkContainer from '@/components/ui/container.vue';
-import MkAnalogClock from '@/components/analog-clock.vue';
-import MkDigitalClock from '@/components/digital-clock.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkAnalogClock from '@/components/MkAnalogClock.vue';
+import MkDigitalClock from '@/components/MkDigitalClock.vue';
 import { timezones } from '@/scripts/timezones';
 import { i18n } from '@/i18n';
 
@@ -69,6 +70,17 @@ const widgetPropsDef = {
 	fadeGraduations: {
 		type: 'boolean' as const,
 		default: true,
+	},
+	sAnimation: {
+		type: 'radio' as const,
+		default: 'elastic',
+		options: [{
+			value: 'none', label: 'None',
+		}, {
+			value: 'elastic', label: 'Elastic',
+		}, {
+			value: 'easeOut', label: 'Ease out',
+		}],
 	},
 	twentyFour: {
 		type: 'boolean' as const,

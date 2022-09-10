@@ -25,8 +25,8 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
-import MkSuperMenu from '@/components/ui/super-menu.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkSuperMenu from '@/components/MkSuperMenu.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
 import * as os from '@/os';
