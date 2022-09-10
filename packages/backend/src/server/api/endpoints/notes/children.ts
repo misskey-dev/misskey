@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
-import { Notes } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -38,41 +38,46 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(new Brackets(qb => { qb
-			.where('note.replyId = :noteId', { noteId: ps.noteId })
-			.orWhere(new Brackets(qb => { qb
-				.where('note.renoteId = :noteId', { noteId: ps.noteId })
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => { qb
-					.where('note.text IS NOT NULL')
-					.orWhere('note.fileIds != \'{}\'')
-					.orWhere('note.hasPoll = TRUE');
-				}));
-			}));
-		}))
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+					.where('note.replyId = :noteId', { noteId: ps.noteId })
+					.orWhere(new Brackets(qb => { qb
+						.where('note.renoteId = :noteId', { noteId: ps.noteId })
+						.andWhere(new Brackets(qb => { qb
+							.where('note.text IS NOT NULL')
+							.orWhere('note.fileIds != \'{}\'')
+							.orWhere('note.hasPoll = TRUE');
+						}));
+					}));
+				}))
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	generateVisibilityQuery(query, user);
-	if (user) {
-		generateMutedUserQuery(query, user);
-		generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, user);
+			if (user) {
+				generateMutedUserQuery(query, user);
+				generateBlockedUserQuery(query, user);
+			}
+
+			const notes = await query.take(ps.limit).getMany();
+
+			return await Notes.packMany(notes, user);
+		});
 	}
-
-	const notes = await query.take(ps.limit).getMany();
-
-	return await Notes.packMany(notes, user);
-});
+}

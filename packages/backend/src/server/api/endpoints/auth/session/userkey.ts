@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../../error.js';
 import { Apps, AuthSessions, AccessTokens, Users } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['auth'],
@@ -59,46 +59,51 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Lookup app
-	const app = await Apps.findOneBy({
-		secret: ps.appSecret,
-	});
+			// Lookup app
+			const app = await Apps.findOneBy({
+				secret: ps.appSecret,
+			});
 
-	if (app == null) {
-		throw new ApiError(meta.errors.noSuchApp);
+			if (app == null) {
+				throw new ApiError(meta.errors.noSuchApp);
+			}
+
+			// Fetch token
+			const session = await AuthSessions.findOneBy({
+				token: ps.token,
+				appId: app.id,
+			});
+
+			if (session == null) {
+				throw new ApiError(meta.errors.noSuchSession);
+			}
+
+			if (session.userId == null) {
+				throw new ApiError(meta.errors.pendingSession);
+			}
+
+			// Lookup access token
+			const accessToken = await AccessTokens.findOneByOrFail({
+				appId: app.id,
+				userId: session.userId,
+			});
+
+			// Delete session
+			AuthSessions.delete(session.id);
+
+			return {
+				accessToken: accessToken.token,
+				user: await Users.pack(session.userId, null, {
+					detail: true,
+				}),
+			};
+		});
 	}
-
-	// Fetch token
-	const session = await AuthSessions.findOneBy({
-		token: ps.token,
-		appId: app.id,
-	});
-
-	if (session == null) {
-		throw new ApiError(meta.errors.noSuchSession);
-	}
-
-	if (session.userId == null) {
-		throw new ApiError(meta.errors.pendingSession);
-	}
-
-	// Lookup access token
-	const accessToken = await AccessTokens.findOneByOrFail({
-		appId: app.id,
-		userId: session.userId,
-	});
-
-	// Delete session
-	AuthSessions.delete(session.id);
-
-	return {
-		accessToken: accessToken.token,
-		user: await Users.pack(session.userId, null, {
-			detail: true,
-		}),
-	};
-});
+}

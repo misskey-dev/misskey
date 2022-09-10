@@ -61,7 +61,16 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async () => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async () => {
 	const instance = await fetchMeta(true);
 	const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
 

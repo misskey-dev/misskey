@@ -1,10 +1,10 @@
 import { IsNull, MoreThan } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import config from '@/config/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Ads, Emojis, Users } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -308,114 +308,119 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const instance = await fetchMeta(true);
+			const instance = await fetchMeta(true);
 
-	const emojis = await Emojis.find({
-		where: {
-			host: IsNull(),
-		},
-		order: {
-			category: 'ASC',
-			name: 'ASC',
-		},
-		cache: {
-			id: 'meta_emojis',
-			milliseconds: 3600000,	// 1 hour
-		},
-	});
+			const emojis = await Emojis.find({
+				where: {
+					host: IsNull(),
+				},
+				order: {
+					category: 'ASC',
+					name: 'ASC',
+				},
+				cache: {
+					id: 'meta_emojis',
+					milliseconds: 3600000,	// 1 hour
+				},
+			});
 
-	const ads = await Ads.find({
-		where: {
-			expiresAt: MoreThan(new Date()),
-		},
-	});
+			const ads = await Ads.find({
+				where: {
+					expiresAt: MoreThan(new Date()),
+				},
+			});
 
-	const response: any = {
-		maintainerName: instance.maintainerName,
-		maintainerEmail: instance.maintainerEmail,
+			const response: any = {
+				maintainerName: instance.maintainerName,
+				maintainerEmail: instance.maintainerEmail,
 
-		version: config.version,
+				version: config.version,
 
-		name: instance.name,
-		uri: config.url,
-		description: instance.description,
-		langs: instance.langs,
-		tosUrl: instance.ToSUrl,
-		repositoryUrl: instance.repositoryUrl,
-		feedbackUrl: instance.feedbackUrl,
-		disableRegistration: instance.disableRegistration,
-		disableLocalTimeline: instance.disableLocalTimeline,
-		disableGlobalTimeline: instance.disableGlobalTimeline,
-		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
-		emailRequiredForSignup: instance.emailRequiredForSignup,
-		enableHcaptcha: instance.enableHcaptcha,
-		hcaptchaSiteKey: instance.hcaptchaSiteKey,
-		enableRecaptcha: instance.enableRecaptcha,
-		recaptchaSiteKey: instance.recaptchaSiteKey,
-		swPublickey: instance.swPublicKey,
-		themeColor: instance.themeColor,
-		mascotImageUrl: instance.mascotImageUrl,
-		bannerUrl: instance.bannerUrl,
-		errorImageUrl: instance.errorImageUrl,
-		iconUrl: instance.iconUrl,
-		backgroundImageUrl: instance.backgroundImageUrl,
-		logoImageUrl: instance.logoImageUrl,
-		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-		emojis: await Emojis.packMany(emojis),
-		defaultLightTheme: instance.defaultLightTheme,
-		defaultDarkTheme: instance.defaultDarkTheme,
-		ads: ads.map(ad => ({
-			id: ad.id,
-			url: ad.url,
-			place: ad.place,
-			ratio: ad.ratio,
-			imageUrl: ad.imageUrl,
-		})),
-		enableEmail: instance.enableEmail,
+				name: instance.name,
+				uri: config.url,
+				description: instance.description,
+				langs: instance.langs,
+				tosUrl: instance.ToSUrl,
+				repositoryUrl: instance.repositoryUrl,
+				feedbackUrl: instance.feedbackUrl,
+				disableRegistration: instance.disableRegistration,
+				disableLocalTimeline: instance.disableLocalTimeline,
+				disableGlobalTimeline: instance.disableGlobalTimeline,
+				driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
+				driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+				emailRequiredForSignup: instance.emailRequiredForSignup,
+				enableHcaptcha: instance.enableHcaptcha,
+				hcaptchaSiteKey: instance.hcaptchaSiteKey,
+				enableRecaptcha: instance.enableRecaptcha,
+				recaptchaSiteKey: instance.recaptchaSiteKey,
+				swPublickey: instance.swPublicKey,
+				themeColor: instance.themeColor,
+				mascotImageUrl: instance.mascotImageUrl,
+				bannerUrl: instance.bannerUrl,
+				errorImageUrl: instance.errorImageUrl,
+				iconUrl: instance.iconUrl,
+				backgroundImageUrl: instance.backgroundImageUrl,
+				logoImageUrl: instance.logoImageUrl,
+				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
+				emojis: await Emojis.packMany(emojis),
+				defaultLightTheme: instance.defaultLightTheme,
+				defaultDarkTheme: instance.defaultDarkTheme,
+				ads: ads.map(ad => ({
+					id: ad.id,
+					url: ad.url,
+					place: ad.place,
+					ratio: ad.ratio,
+					imageUrl: ad.imageUrl,
+				})),
+				enableEmail: instance.enableEmail,
 
-		enableTwitterIntegration: instance.enableTwitterIntegration,
-		enableGithubIntegration: instance.enableGithubIntegration,
-		enableDiscordIntegration: instance.enableDiscordIntegration,
+				enableTwitterIntegration: instance.enableTwitterIntegration,
+				enableGithubIntegration: instance.enableGithubIntegration,
+				enableDiscordIntegration: instance.enableDiscordIntegration,
 
-		enableServiceWorker: instance.enableServiceWorker,
+				enableServiceWorker: instance.enableServiceWorker,
 
-		translatorAvailable: instance.deeplAuthKey != null,
+				translatorAvailable: instance.deeplAuthKey != null,
 
-		...(ps.detail ? {
-			pinnedPages: instance.pinnedPages,
-			pinnedClipId: instance.pinnedClipId,
-			cacheRemoteFiles: instance.cacheRemoteFiles,
-			requireSetup: (await Users.countBy({
-				host: IsNull(),
-			})) === 0,
-		} : {}),
-	};
+				...(ps.detail ? {
+					pinnedPages: instance.pinnedPages,
+					pinnedClipId: instance.pinnedClipId,
+					cacheRemoteFiles: instance.cacheRemoteFiles,
+					requireSetup: (await Users.countBy({
+						host: IsNull(),
+					})) === 0,
+				} : {}),
+			};
 
-	if (ps.detail) {
-		const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+			if (ps.detail) {
+				const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
 
-		response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
-		response.features = {
-			registration: !instance.disableRegistration,
-			localTimeLine: !instance.disableLocalTimeline,
-			globalTimeLine: !instance.disableGlobalTimeline,
-			emailRequiredForSignup: instance.emailRequiredForSignup,
-			elasticsearch: config.elasticsearch ? true : false,
-			hcaptcha: instance.enableHcaptcha,
-			recaptcha: instance.enableRecaptcha,
-			objectStorage: instance.useObjectStorage,
-			twitter: instance.enableTwitterIntegration,
-			github: instance.enableGithubIntegration,
-			discord: instance.enableDiscordIntegration,
-			serviceWorker: instance.enableServiceWorker,
-			miauth: true,
-		};
+				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
+				response.features = {
+					registration: !instance.disableRegistration,
+					localTimeLine: !instance.disableLocalTimeline,
+					globalTimeLine: !instance.disableGlobalTimeline,
+					emailRequiredForSignup: instance.emailRequiredForSignup,
+					elasticsearch: config.elasticsearch ? true : false,
+					hcaptcha: instance.enableHcaptcha,
+					recaptcha: instance.enableRecaptcha,
+					objectStorage: instance.useObjectStorage,
+					twitter: instance.enableTwitterIntegration,
+					github: instance.enableGithubIntegration,
+					discord: instance.enableDiscordIntegration,
+					serviceWorker: instance.enableServiceWorker,
+					miauth: true,
+				};
+			}
+
+			return response;
+		});
 	}
-
-	return response;
-});
+}

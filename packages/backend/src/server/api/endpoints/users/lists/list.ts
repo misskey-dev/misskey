@@ -1,5 +1,5 @@
-import { UserLists } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { UserLists } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -32,13 +32,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const userLists = await UserLists.findBy({
-		userId: me.id,
-	});
+			const userLists = await UserLists.findBy({
+				userId: me.id,
+			});
 
-	return await Promise.all(userLists.map(x => UserLists.pack(x)));
-});
+			return await Promise.all(userLists.map(x => UserLists.pack(x)));
+		});
+	}
+}

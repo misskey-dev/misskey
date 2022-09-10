@@ -1,5 +1,5 @@
-import { Pages } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Pages } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -37,17 +37,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const page = await Pages.findOneBy({ id: ps.pageId });
-	if (page == null) {
-		throw new ApiError(meta.errors.noSuchPage);
-	}
-	if (page.userId !== user.id) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
+			const page = await Pages.findOneBy({ id: ps.pageId });
+			if (page == null) {
+				throw new ApiError(meta.errors.noSuchPage);
+			}
+			if (page.userId !== user.id) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
 
-	await Pages.delete(page.id);
-});
+			await Pages.delete(page.id);
+		});
+	}
+}

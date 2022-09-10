@@ -1,6 +1,6 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { publishMainStream } from '@/services/stream.js';
 import { Users, Pages } from '@/models/index.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../error.js';
 
@@ -31,22 +31,27 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const page = await Pages.findOneBy({ id: ps.pageId });
-	if (page == null) {
-		throw new ApiError(meta.errors.noSuchPage);
-	}
+			const page = await Pages.findOneBy({ id: ps.pageId });
+			if (page == null) {
+				throw new ApiError(meta.errors.noSuchPage);
+			}
 
-	publishMainStream(page.userId, 'pageEvent', {
-		pageId: ps.pageId,
-		event: ps.event,
-		var: ps.var,
-		userId: user.id,
-		user: await Users.pack(user.id, { id: page.userId }, {
-			detail: true,
-		}),
-	});
-});
+			publishMainStream(page.userId, 'pageEvent', {
+				pageId: ps.pageId,
+				event: ps.event,
+				var: ps.var,
+				userId: user.id,
+				user: await Users.pack(user.id, { id: page.userId }, {
+					detail: true,
+				}),
+			});
+		});
+	}
+}

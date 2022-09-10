@@ -20,16 +20,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const ep = endpoints.find(x => x.name === ps.endpoint);
-	if (ep == null) return null;
-	return {
-		params: Object.entries(ep.params.properties || {}).map(([k, v]) => ({
-			name: k,
-			type: v.type.charAt(0).toUpperCase() + v.type.slice(1),
-		})),
-	};
-});
+			const ep = endpoints.find(x => x.name === ps.endpoint);
+			if (ep == null) return null;
+			return {
+				params: Object.entries(ep.params.properties || {}).map(([k, v]) => ({
+					name: k,
+					type: v.type.charAt(0).toUpperCase() + v.type.slice(1),
+				})),
+			};
+		});
+	}
+}

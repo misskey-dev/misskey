@@ -73,26 +73,31 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
+			const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
 
-	if (ps.host == null) {
-		q.andWhere(`emoji.host IS NOT NULL`);
-	} else {
-		q.andWhere(`emoji.host = :host`, { host: toPuny(ps.host) });
+			if (ps.host == null) {
+				q.andWhere('emoji.host IS NOT NULL');
+			} else {
+				q.andWhere('emoji.host = :host', { host: toPuny(ps.host) });
+			}
+
+			if (ps.query) {
+				q.andWhere('emoji.name like :query', { query: '%' + ps.query + '%' });
+			}
+
+			const emojis = await q
+				.orderBy('emoji.id', 'DESC')
+				.take(ps.limit)
+				.getMany();
+
+			return Emojis.packMany(emojis);
+		});
 	}
-
-	if (ps.query) {
-		q.andWhere('emoji.name like :query', { query: '%' + ps.query + '%' });
-	}
-
-	const emojis = await q
-		.orderBy('emoji.id', 'DESC')
-		.take(ps.limit)
-		.getMany();
-
-	return Emojis.packMany(emojis);
-});
+}

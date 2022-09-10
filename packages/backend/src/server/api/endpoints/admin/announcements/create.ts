@@ -59,18 +59,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const announcement = await Announcements.insert({
-		id: genId(),
-		createdAt: new Date(),
-		updatedAt: null,
-		title: ps.title,
-		text: ps.text,
-		imageUrl: ps.imageUrl,
-	}).then(x => Announcements.findOneByOrFail(x.identifiers[0]));
+			const announcement = await Announcements.insert({
+				id: genId(),
+				createdAt: new Date(),
+				updatedAt: null,
+				title: ps.title,
+				text: ps.text,
+				imageUrl: ps.imageUrl,
+			}).then(x => Announcements.findOneByOrFail(x.identifiers[0]));
 
-	return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
-});
+			return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
+		});
+	}
+}

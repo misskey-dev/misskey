@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Emojis } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { ApiError } from '../../../error.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
 import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
 import { publishBroadcastStream } from '@/services/stream.js';
 import { db } from '@/db/postgre.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -47,43 +47,48 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const emoji = await Emojis.findOneBy({ id: ps.emojiId });
+			const emoji = await Emojis.findOneBy({ id: ps.emojiId });
 
-	if (emoji == null) {
-		throw new ApiError(meta.errors.noSuchEmoji);
+			if (emoji == null) {
+				throw new ApiError(meta.errors.noSuchEmoji);
+			}
+
+			let driveFile: DriveFile;
+
+			try {
+				// Create file
+				driveFile = await uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
+			} catch (e) {
+				throw new ApiError();
+			}
+
+			const copied = await Emojis.insert({
+				id: genId(),
+				updatedAt: new Date(),
+				name: emoji.name,
+				host: null,
+				aliases: [],
+				originalUrl: driveFile.url,
+				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
+				type: driveFile.webpublicType ?? driveFile.type,
+			}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+
+			await db.queryResultCache!.remove(['meta_emojis']);
+
+			publishBroadcastStream('emojiAdded', {
+				emoji: await Emojis.pack(copied.id),
+			});
+
+			return {
+				id: copied.id,
+			};
+		});
 	}
-
-	let driveFile: DriveFile;
-
-	try {
-		// Create file
-		driveFile = await uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
-	} catch (e) {
-		throw new ApiError();
-	}
-
-	const copied = await Emojis.insert({
-		id: genId(),
-		updatedAt: new Date(),
-		name: emoji.name,
-		host: null,
-		aliases: [],
-		originalUrl: driveFile.url,
-		publicUrl: driveFile.webpublicUrl ?? driveFile.url,
-		type: driveFile.webpublicType ?? driveFile.type,
-	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
-
-	await db.queryResultCache!.remove(['meta_emojis']);
-
-	publishBroadcastStream('emojiAdded', {
-		emoji: await Emojis.pack(copied.id),
-	});
-
-	return {
-		id: copied.id,
-	};
-});
+}

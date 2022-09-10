@@ -28,19 +28,24 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	await Ads.insert({
-		id: genId(),
-		createdAt: new Date(),
-		expiresAt: new Date(ps.expiresAt),
-		url: ps.url,
-		imageUrl: ps.imageUrl,
-		priority: ps.priority,
-		ratio: ps.ratio,
-		place: ps.place,
-		memo: ps.memo,
-	});
-});
+			await Ads.insert({
+				id: genId(),
+				createdAt: new Date(),
+				expiresAt: new Date(ps.expiresAt),
+				url: ps.url,
+				imageUrl: ps.imageUrl,
+				priority: ps.priority,
+				ratio: ps.ratio,
+				place: ps.place,
+				memo: ps.memo,
+			});
+		});
+	}
+}

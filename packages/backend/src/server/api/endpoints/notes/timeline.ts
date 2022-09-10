@@ -1,7 +1,7 @@
 import { Brackets } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { Notes, Followings } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -51,88 +51,93 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const hasFollowing = (await Followings.count({
-		where: {
-			followerId: user.id,
-		},
-		take: 1,
-	})) !== 0;
+			const hasFollowing = (await Followings.count({
+				where: {
+					followerId: user.id,
+				},
+				take: 1,
+			})) !== 0;
 
-	//#region Construct query
-	const followingQuery = Followings.createQueryBuilder('following')
-		.select('following.followeeId')
-		.where('following.followerId = :followerId', { followerId: user.id });
+			//#region Construct query
+			const followingQuery = Followings.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: user.id });
 
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
-		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere(new Brackets(qb => { qb
-			.where('note.userId = :meId', { meId: user.id });
-		if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
-		}))
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.setParameters(followingQuery.getParameters());
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere(new Brackets(qb => { qb
+					.where('note.userId = :meId', { meId: user.id });
+				if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
+				}))
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
+				.setParameters(followingQuery.getParameters());
 
-	generateChannelQuery(query, user);
-	generateRepliesQuery(query, user);
-	generateVisibilityQuery(query, user);
-	generateMutedUserQuery(query, user);
-	generateMutedNoteQuery(query, user);
-	generateBlockedUserQuery(query, user);
+			generateChannelQuery(query, user);
+			generateRepliesQuery(query, user);
+			generateVisibilityQuery(query, user);
+			generateMutedUserQuery(query, user);
+			generateMutedNoteQuery(query, user);
+			generateBlockedUserQuery(query, user);
 
-	if (ps.includeMyRenotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.userId != :meId', { meId: user.id });
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
+			if (ps.includeMyRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.userId != :meId', { meId: user.id });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.includeRenotedMyNotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.includeLocalRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteUserHost IS NOT NULL');
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.withFiles) {
+				query.andWhere('note.fileIds != \'{}\'');
+			}
+			//#endregion
+
+			const timeline = await query.take(ps.limit).getMany();
+
+			process.nextTick(() => {
+				activeUsersChart.read(user);
+			});
+
+			return await Notes.packMany(timeline, user);
+		});
 	}
-
-	if (ps.includeRenotedMyNotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.includeLocalRenotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.renoteUserHost IS NOT NULL');
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.withFiles) {
-		query.andWhere('note.fileIds != \'{}\'');
-	}
-	//#endregion
-
-	const timeline = await query.take(ps.limit).getMany();
-
-	process.nextTick(() => {
-		activeUsersChart.read(user);
-	});
-
-	return await Notes.packMany(timeline, user);
-});
+}

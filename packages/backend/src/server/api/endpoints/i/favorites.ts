@@ -35,17 +35,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(NoteFavorites.createQueryBuilder('favorite'), ps.sinceId, ps.untilId)
-		.andWhere(`favorite.userId = :meId`, { meId: user.id })
-		.leftJoinAndSelect('favorite.note', 'note');
+			const query = makePaginationQuery(NoteFavorites.createQueryBuilder('favorite'), ps.sinceId, ps.untilId)
+				.andWhere('favorite.userId = :meId', { meId: user.id })
+				.leftJoinAndSelect('favorite.note', 'note');
 
-	const favorites = await query
-		.take(ps.limit)
-		.getMany();
+			const favorites = await query
+				.take(ps.limit)
+				.getMany();
 
-	return await NoteFavorites.packMany(favorites, user);
-});
+			return await NoteFavorites.packMany(favorites, user);
+		});
+	}
+}

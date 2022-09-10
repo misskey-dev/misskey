@@ -13,7 +13,7 @@ export const paramDef = {
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string', enum: ['desc', 'asc'], default: "desc" },
+		sort: { type: 'string', enum: ['desc', 'asc'], default: 'desc' },
 	},
 	required: [],
 } as const;
@@ -22,23 +22,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Get tokens
-	const tokens = await AccessTokens.find({
-		where: {
-			userId: user.id,
-		},
-		take: ps.limit,
-		skip: ps.offset,
-		order: {
-			id: ps.sort === 'asc' ? 1 : -1,
-		},
-	});
+			// Get tokens
+			const tokens = await AccessTokens.find({
+				where: {
+					userId: user.id,
+				},
+				take: ps.limit,
+				skip: ps.offset,
+				order: {
+					id: ps.sort === 'asc' ? 1 : -1,
+				},
+			});
 
-	return await Promise.all(tokens.map(token => Apps.pack(token.appId, user, {
-		detail: true,
-	})));
-});
+			return await Promise.all(tokens.map(token => Apps.pack(token.appId, user, {
+				detail: true,
+			})));
+		});
+	}
+}

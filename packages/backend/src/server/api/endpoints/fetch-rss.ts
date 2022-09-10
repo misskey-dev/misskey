@@ -1,7 +1,7 @@
 import Parser from 'rss-parser';
+import { Inject, Injectable } from '@nestjs/common';
 import { getResponse } from '@/misc/fetch.js';
 import config from '@/config/index.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 const rssParser = new Parser();
@@ -26,21 +26,26 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const res = await getResponse({
-		url: ps.url,
-		method: 'GET',
-		headers: Object.assign({
-			'User-Agent': config.userAgent,
-			Accept: 'application/rss+xml, */*',
-		}),
-		timeout: 5000,
-	});
+			const res = await getResponse({
+				url: ps.url,
+				method: 'GET',
+				headers: Object.assign({
+					'User-Agent': config.userAgent,
+					Accept: 'application/rss+xml, */*',
+				}),
+				timeout: 5000,
+			});
 
-	const text = await res.text();
+			const text = await res.text();
 
-	return rssParser.parseString(text);
-});
+			return rssParser.parseString(text);
+		});
+	}
+}

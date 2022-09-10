@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { createImportBlockingJob } from '@/queue/index.js';
-import ms from 'ms';
-import { ApiError } from '../../error.js';
 import { DriveFiles } from '@/models/index.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	secure: true,
@@ -53,16 +53,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const file = await DriveFiles.findOneBy({ id: ps.fileId });
+			const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
-	if (file == null) throw new ApiError(meta.errors.noSuchFile);
-	//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
-	if (file.size > 50000) throw new ApiError(meta.errors.tooBigFile);
-	if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
+			if (file == null) throw new ApiError(meta.errors.noSuchFile);
+			//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
+			if (file.size > 50000) throw new ApiError(meta.errors.tooBigFile);
+			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
 
-	createImportBlockingJob(user, file.id);
-});
+			createImportBlockingJob(user, file.id);
+		});
+	}
+}

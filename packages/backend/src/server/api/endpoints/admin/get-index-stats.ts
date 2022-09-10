@@ -16,14 +16,25 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async () => {
-	const stats = await db.query(`SELECT * FROM pg_indexes;`).then(recs => {
-		const res = [] as { tablename: string; indexname: string; }[];
-		for (const rec of recs) {
-			res.push(rec);
-		}
-		return res;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
 
-	return stats;
-});
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async () => {
+			const stats = await db.query('SELECT * FROM pg_indexes;').then(recs => {
+				const res = [] as { tablename: string; indexname: string; }[];
+				for (const rec of recs) {
+					res.push(rec);
+				}
+				return res;
+			});
+
+			return stats;
+		});
+	}
+}

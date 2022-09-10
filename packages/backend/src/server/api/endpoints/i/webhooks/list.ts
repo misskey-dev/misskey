@@ -20,13 +20,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const webhooks = await Webhooks.findBy({
-		userId: me.id,
-	});
+			const webhooks = await Webhooks.findBy({
+				userId: me.id,
+			});
 
-	return webhooks;
-});
+			return webhooks;
+		});
+	}
+}

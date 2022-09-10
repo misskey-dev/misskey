@@ -1,9 +1,9 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { UserGroupJoining } from '@/models/entities/user-group-joining.js';
-import { ApiError } from '../../../../error.js';
-import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupJoining } from '@/models/entities/user-group-joining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ApiError } from '../../../../error.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -35,30 +35,35 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Fetch the invitation
-	const invitation = await UserGroupInvitations.findOneBy({
-		id: ps.invitationId,
-	});
+			// Fetch the invitation
+			const invitation = await UserGroupInvitations.findOneBy({
+				id: ps.invitationId,
+			});
 
-	if (invitation == null) {
-		throw new ApiError(meta.errors.noSuchInvitation);
+			if (invitation == null) {
+				throw new ApiError(meta.errors.noSuchInvitation);
+			}
+
+			if (invitation.userId !== user.id) {
+				throw new ApiError(meta.errors.noSuchInvitation);
+			}
+
+			// Push the user
+			await UserGroupJoinings.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: user.id,
+				userGroupId: invitation.userGroupId,
+			} as UserGroupJoining);
+
+			UserGroupInvitations.delete(invitation.id);
+		});
 	}
-
-	if (invitation.userId !== user.id) {
-		throw new ApiError(meta.errors.noSuchInvitation);
-	}
-
-	// Push the user
-	await UserGroupJoinings.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		userGroupId: invitation.userGroupId,
-	} as UserGroupJoining);
-
-	UserGroupInvitations.delete(invitation.id);
-});
+}

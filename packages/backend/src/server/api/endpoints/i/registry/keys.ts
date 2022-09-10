@@ -22,17 +22,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = RegistryItems.createQueryBuilder('item')
-		.select('item.key')
-		.where('item.domain IS NULL')
-		.andWhere('item.userId = :userId', { userId: user.id })
-		.andWhere('item.scope = :scope', { scope: ps.scope });
+			const query = RegistryItems.createQueryBuilder('item')
+				.select('item.key')
+				.where('item.domain IS NULL')
+				.andWhere('item.userId = :userId', { userId: user.id })
+				.andWhere('item.scope = :scope', { scope: ps.scope });
 
-	const items = await query.getMany();
+			const items = await query.getMany();
 
-	return items.map(x => x.key);
-});
+			return items.map(x => x.key);
+		});
+	}
+}

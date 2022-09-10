@@ -1,6 +1,6 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { publishUserListStream } from '@/services/stream.js';
 import { UserLists, UserListJoinings, Users } from '@/models/index.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 import { getUser } from '../../../common/getters.js';
@@ -42,28 +42,33 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	// Fetch the list
-	const userList = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: me.id,
-	});
+			// Fetch the list
+			const userList = await UserLists.findOneBy({
+				id: ps.listId,
+				userId: me.id,
+			});
 
-	if (userList == null) {
-		throw new ApiError(meta.errors.noSuchList);
+			if (userList == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			// Fetch the user
+			const user = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
+
+			// Pull the user
+			await UserListJoinings.delete({ userListId: userList.id, userId: user.id });
+
+			publishUserListStream(userList.id, 'userRemoved', await Users.pack(user));
+		});
 	}
-
-	// Fetch the user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Pull the user
-	await UserListJoinings.delete({ userListId: userList.id, userId: user.id });
-
-	publishUserListStream(userList.id, 'userRemoved', await Users.pack(user));
-});
+}

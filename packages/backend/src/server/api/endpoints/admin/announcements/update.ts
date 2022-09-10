@@ -33,18 +33,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const announcement = await Announcements.findOneBy({ id: ps.id });
+			const announcement = await Announcements.findOneBy({ id: ps.id });
 
-	if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
+			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
 
-	await Announcements.update(announcement.id, {
-		updatedAt: new Date(),
-		title: ps.title,
-		text: ps.text,
-		imageUrl: ps.imageUrl,
-	});
-});
+			await Announcements.update(announcement.id, {
+				updatedAt: new Date(),
+				title: ps.title,
+				text: ps.text,
+				imageUrl: ps.imageUrl,
+			});
+		});
+	}
+}

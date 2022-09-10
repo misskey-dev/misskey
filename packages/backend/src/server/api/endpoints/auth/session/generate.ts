@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
-import config from '@/config/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../../error.js';
 import { Apps, AuthSessions } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['auth'],
@@ -48,32 +48,37 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Lookup app
-	const app = await Apps.findOneBy({
-		secret: ps.appSecret,
-	});
+			// Lookup app
+			const app = await Apps.findOneBy({
+				secret: ps.appSecret,
+			});
 
-	if (app == null) {
-		throw new ApiError(meta.errors.noSuchApp);
+			if (app == null) {
+				throw new ApiError(meta.errors.noSuchApp);
+			}
+
+			// Generate token
+			const token = uuid();
+
+			// Create session token document
+			const doc = await AuthSessions.insert({
+				id: genId(),
+				createdAt: new Date(),
+				appId: app.id,
+				token: token,
+			}).then(x => AuthSessions.findOneByOrFail(x.identifiers[0]));
+
+			return {
+				token: doc.token,
+				url: `${config.authUrl}/${doc.token}`,
+			};
+		});
 	}
-
-	// Generate token
-	const token = uuid();
-
-	// Create session token document
-	const doc = await AuthSessions.insert({
-		id: genId(),
-		createdAt: new Date(),
-		appId: app.id,
-		token: token,
-	}).then(x => AuthSessions.findOneByOrFail(x.identifiers[0]));
-
-	return {
-		token: doc.token,
-		url: `${config.authUrl}/${doc.token}`,
-	};
-});
+}

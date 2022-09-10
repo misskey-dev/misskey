@@ -1,7 +1,7 @@
 import { IsNull } from 'typeorm';
-import { Pages, Users } from '@/models/index.js';
-import { Page } from '@/models/entities/page.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Pages, Users } from '@/models/index.js';
+import type { Page } from '@/models/entities/page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -48,30 +48,35 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	let page: Page | null = null;
+			let page: Page | null = null;
 
-	if (ps.pageId) {
-		page = await Pages.findOneBy({ id: ps.pageId });
-	} else if (ps.name && ps.username) {
-		const author = await Users.findOneBy({
-			host: IsNull(),
-			usernameLower: ps.username.toLowerCase(),
+			if (ps.pageId) {
+				page = await Pages.findOneBy({ id: ps.pageId });
+			} else if (ps.name && ps.username) {
+				const author = await Users.findOneBy({
+					host: IsNull(),
+					usernameLower: ps.username.toLowerCase(),
+				});
+				if (author) {
+					page = await Pages.findOneBy({
+						name: ps.name,
+						userId: author.id,
+					});
+				}
+			}
+
+			if (page == null) {
+				throw new ApiError(meta.errors.noSuchPage);
+			}
+
+			return await Pages.pack(page, user);
 		});
-		if (author) {
-			page = await Pages.findOneBy({
-				name: ps.name,
-				userId: author.id,
-			});
-		}
 	}
-
-	if (page == null) {
-		throw new ApiError(meta.errors.noSuchPage);
-	}
-
-	return await Pages.pack(page, user);
-});
+}

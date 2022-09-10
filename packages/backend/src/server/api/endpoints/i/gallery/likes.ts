@@ -28,7 +28,7 @@ export const meta = {
 					ref: 'GalleryPost',
 				},
 			},
-		}
+		},
 	},
 } as const;
 
@@ -46,17 +46,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(GalleryLikes.createQueryBuilder('like'), ps.sinceId, ps.untilId)
-		.andWhere(`like.userId = :meId`, { meId: user.id })
-		.leftJoinAndSelect('like.post', 'post');
+			const query = makePaginationQuery(GalleryLikes.createQueryBuilder('like'), ps.sinceId, ps.untilId)
+				.andWhere('like.userId = :meId', { meId: user.id })
+				.leftJoinAndSelect('like.post', 'post');
 
-	const likes = await query
-		.take(ps.limit)
-		.getMany();
+			const likes = await query
+				.take(ps.limit)
+				.getMany();
 
-	return await GalleryLikes.packMany(likes, user);
-});
+			return await GalleryLikes.packMany(likes, user);
+		});
+	}
+}

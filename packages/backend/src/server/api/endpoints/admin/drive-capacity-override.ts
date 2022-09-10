@@ -23,32 +23,37 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+			const user = await Users.findOneBy({ id: ps.userId });
 
-	if (user == null) {
-		throw new Error('user not found');
-	}
+			if (user == null) {
+				throw new Error('user not found');
+			}
 
-	if (!Users.isLocalUser(user)) {
-		throw new Error('user is not local user');
-	} 
+			if (!Users.isLocalUser(user)) {
+				throw new Error('user is not local user');
+			} 
 
-	/*if (user.isAdmin) {
+			/*if (user.isAdmin) {
 		throw new Error('cannot suspend admin');
 	}
 	if (user.isModerator) {
 		throw new Error('cannot suspend moderator');
 	}*/
 
-	await Users.update(user.id, {
-		driveCapacityOverrideMb: ps.overrideMb,
-	});
+			await Users.update(user.id, {
+				driveCapacityOverrideMb: ps.overrideMb,
+			});
 
-	insertModerationLog(me, 'change-drive-capacity-override', {
-		targetId: user.id,
-	});
-});
+			insertModerationLog(me, 'change-drive-capacity-override', {
+				targetId: user.id,
+			});
+		});
+	}
+}

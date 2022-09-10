@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../../error.js';
 import { AuthSessions } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['auth'],
@@ -50,18 +50,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Lookup session
-	const session = await AuthSessions.findOneBy({
-		token: ps.token,
-	});
+			// Lookup session
+			const session = await AuthSessions.findOneBy({
+				token: ps.token,
+			});
 
-	if (session == null) {
-		throw new ApiError(meta.errors.noSuchSession);
+			if (session == null) {
+				throw new ApiError(meta.errors.noSuchSession);
+			}
+
+			return await AuthSessions.pack(session, user);
+		});
 	}
-
-	return await AuthSessions.pack(session, user);
-});
+}

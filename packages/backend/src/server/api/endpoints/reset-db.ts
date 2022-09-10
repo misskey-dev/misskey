@@ -1,5 +1,5 @@
-import { resetDb } from '@/db/postgre.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { resetDb } from '@/db/postgre.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../error.js';
 
@@ -25,13 +25,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
+			if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
-	await resetDb();
+			await resetDb();
 
-	await new Promise(resolve => setTimeout(resolve, 1000));
-});
+			await new Promise(resolve => setTimeout(resolve, 1000));
+		});
+	}
+}

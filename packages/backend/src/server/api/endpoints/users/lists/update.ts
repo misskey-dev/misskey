@@ -1,5 +1,5 @@
-import { UserLists } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { UserLists } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
@@ -40,23 +40,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Fetch the list
-	const userList = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: user.id,
-	});
+			// Fetch the list
+			const userList = await UserLists.findOneBy({
+				id: ps.listId,
+				userId: user.id,
+			});
 
-	if (userList == null) {
-		throw new ApiError(meta.errors.noSuchList);
+			if (userList == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			await UserLists.update(userList.id, {
+				name: ps.name,
+			});
+
+			return await UserLists.pack(userList.id);
+		});
 	}
-
-	await UserLists.update(userList.id, {
-		name: ps.name,
-	});
-
-	return await UserLists.pack(userList.id);
-});
+}

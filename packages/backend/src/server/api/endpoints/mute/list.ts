@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { Mutings } from '@/models/index.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['account'],
@@ -35,16 +35,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const query = makePaginationQuery(Mutings.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
-		.andWhere(`muting.muterId = :meId`, { meId: me.id });
+			const query = makePaginationQuery(Mutings.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
+				.andWhere('muting.muterId = :meId', { meId: me.id });
 
-	const mutings = await query
-		.take(ps.limit)
-		.getMany();
+			const mutings = await query
+				.take(ps.limit)
+				.getMany();
 
-	return await Mutings.packMany(mutings, me);
-});
+			return await Mutings.packMany(mutings, me);
+		});
+	}
+}

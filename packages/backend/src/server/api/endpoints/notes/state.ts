@@ -1,5 +1,5 @@
-import { NoteFavorites, Notes, NoteThreadMutings, NoteWatchings } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { NoteFavorites, Notes, NoteThreadMutings, NoteWatchings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -39,39 +39,44 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const note = await Notes.findOneByOrFail({ id: ps.noteId });
+			const note = await Notes.findOneByOrFail({ id: ps.noteId });
 
-	const [favorite, watching, threadMuting] = await Promise.all([
-		NoteFavorites.count({
-			where: {
-				userId: user.id,
-				noteId: note.id,
-			},
-			take: 1,
-		}),
-		NoteWatchings.count({
-			where: {
-				userId: user.id,
-				noteId: note.id,
-			},
-			take: 1,
-		}),
-		NoteThreadMutings.count({
-			where: {
-				userId: user.id,
-				threadId: note.threadId || note.id,
-			},
-			take: 1,
-		}),
-	]);
+			const [favorite, watching, threadMuting] = await Promise.all([
+				NoteFavorites.count({
+					where: {
+						userId: user.id,
+						noteId: note.id,
+					},
+					take: 1,
+				}),
+				NoteWatchings.count({
+					where: {
+						userId: user.id,
+						noteId: note.id,
+					},
+					take: 1,
+				}),
+				NoteThreadMutings.count({
+					where: {
+						userId: user.id,
+						threadId: note.threadId || note.id,
+					},
+					take: 1,
+				}),
+			]);
 
-	return {
-		isFavorited: favorite !== 0,
-		isWatching: watching !== 0,
-		isMutedThread: threadMuting !== 0,
-	};
-});
+			return {
+				isFavorited: favorite !== 0,
+				isWatching: watching !== 0,
+				isMutedThread: threadMuting !== 0,
+			};
+		});
+	}
+}

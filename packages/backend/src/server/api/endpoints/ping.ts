@@ -25,8 +25,19 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async () => {
-	return {
-		pong: Date.now(),
-	};
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async () => {
+			return {
+				pong: Date.now(),
+			};
+		});
+	}
+}

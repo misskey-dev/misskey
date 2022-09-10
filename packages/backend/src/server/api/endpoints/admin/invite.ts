@@ -32,19 +32,30 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async () => {
-	const code = rndstr({
-		length: 8,
-		chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
 
-	await RegistrationTickets.insert({
-		id: genId(),
-		createdAt: new Date(),
-		code,
-	});
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async () => {
+			const code = rndstr({
+				length: 8,
+				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
+			});
 
-	return {
-		code,
-	};
-});
+			await RegistrationTickets.insert({
+				id: genId(),
+				createdAt: new Date(),
+				code,
+			});
+
+			return {
+				code,
+			};
+		});
+	}
+}

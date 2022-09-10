@@ -1,5 +1,5 @@
-import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '@/queue/queues.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '@/queue/queues.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -42,19 +42,24 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const deliverJobCounts = await deliverQueue.getJobCounts();
-	const inboxJobCounts = await inboxQueue.getJobCounts();
-	const dbJobCounts = await dbQueue.getJobCounts();
-	const objectStorageJobCounts = await objectStorageQueue.getJobCounts();
+			const deliverJobCounts = await deliverQueue.getJobCounts();
+			const inboxJobCounts = await inboxQueue.getJobCounts();
+			const dbJobCounts = await dbQueue.getJobCounts();
+			const objectStorageJobCounts = await objectStorageQueue.getJobCounts();
 
-	return {
-		deliver: deliverJobCounts,
-		inbox: inboxJobCounts,
-		db: dbJobCounts,
-		objectStorage: objectStorageJobCounts,
-	};
-});
+			return {
+				deliver: deliverJobCounts,
+				inbox: inboxJobCounts,
+				db: dbJobCounts,
+				objectStorage: objectStorageJobCounts,
+			};
+		});
+	}
+}

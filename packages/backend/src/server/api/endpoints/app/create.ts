@@ -34,30 +34,35 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Generate secret
-	const secret = secureRndstr(32, true);
+			// Generate secret
+			const secret = secureRndstr(32, true);
 
-	// for backward compatibility
-	const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));
+			// for backward compatibility
+			const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));
 
-	// Create account
-	const app = await Apps.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user ? user.id : null,
-		name: ps.name,
-		description: ps.description,
-		permission,
-		callbackUrl: ps.callbackUrl,
-		secret: secret,
-	}).then(x => Apps.findOneByOrFail(x.identifiers[0]));
+			// Create account
+			const app = await Apps.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: user ? user.id : null,
+				name: ps.name,
+				description: ps.description,
+				permission,
+				callbackUrl: ps.callbackUrl,
+				secret: secret,
+			}).then(x => Apps.findOneByOrFail(x.identifiers[0]));
 
-	return await Apps.pack(app, null, {
-		detail: true,
-		includeSecret: true,
-	});
-});
+			return await Apps.pack(app, null, {
+				detail: true,
+				includeSecret: true,
+			});
+		});
+	}
+}

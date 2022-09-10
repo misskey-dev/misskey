@@ -1,19 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import config from '@/config/index.js';
 import { createPerson } from '@/remote/activitypub/models/person.js';
 import { createNote } from '@/remote/activitypub/models/note.js';
 import DbResolver from '@/remote/activitypub/db-resolver.js';
 import Resolver from '@/remote/activitypub/resolver.js';
-import { ApiError } from '../../error.js';
 import { extractDbHost } from '@/misc/convert-host.js';
 import { Users, Notes } from '@/models/index.js';
-import { Note } from '@/models/entities/note.js';
-import { CacheableLocalUser, User } from '@/models/entities/user.js';
+import type { Note } from '@/models/entities/note.js';
+import type { CacheableLocalUser, User } from '@/models/entities/user.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { isActor, isPost, getApId } from '@/remote/activitypub/type.js';
-import ms from 'ms';
-import { SchemaType } from '@/misc/schema.js';
+import type { SchemaType } from '@/misc/schema.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -48,8 +48,8 @@ export const meta = {
 						type: 'object',
 						optional: false, nullable: false,
 						ref: 'UserDetailedNotMe',
-					}
-				}
+					},
+				},
 			},
 			{
 				type: 'object',
@@ -63,9 +63,9 @@ export const meta = {
 						type: 'object',
 						optional: false, nullable: false,
 						ref: 'Note',
-					}
-				}
-			}
+					},
+				},
+			},
 		],
 	},
 } as const;
@@ -82,17 +82,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const object = await fetchAny(ps.uri, me);
-	if (object) {
-		return object;
-	} else {
-		throw new ApiError(meta.errors.noSuchObject);
+			const object = await fetchAny(ps.uri, me);
+			if (object) {
+				return object;
+			} else {
+				throw new ApiError(meta.errors.noSuchObject);
+			}
+		});
 	}
-});
+}
 
 /***
  * URIからUserかNoteを解決する

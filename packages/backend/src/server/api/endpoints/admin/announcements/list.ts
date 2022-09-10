@@ -1,6 +1,6 @@
-import { Announcements, AnnouncementReads } from '@/models/index.js';
-import { Announcement } from '@/models/entities/announcement.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Announcements, AnnouncementReads } from '@/models/index.js';
+import type { Announcement } from '@/models/entities/announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../../common/make-pagination-query.js';
 
@@ -68,29 +68,34 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
-	const announcements = await query.take(ps.limit).getMany();
+			const announcements = await query.take(ps.limit).getMany();
 
-	const reads = new Map<Announcement, number>();
+			const reads = new Map<Announcement, number>();
 
-	for (const announcement of announcements) {
-		reads.set(announcement, await AnnouncementReads.countBy({
-			announcementId: announcement.id,
-		}));
+			for (const announcement of announcements) {
+				reads.set(announcement, await AnnouncementReads.countBy({
+					announcementId: announcement.id,
+				}));
+			}
+
+			return announcements.map(announcement => ({
+				id: announcement.id,
+				createdAt: announcement.createdAt.toISOString(),
+				updatedAt: announcement.updatedAt?.toISOString() ?? null,
+				title: announcement.title,
+				text: announcement.text,
+				imageUrl: announcement.imageUrl,
+				reads: reads.get(announcement)!,
+			}));
+		});
 	}
-
-	return announcements.map(announcement => ({
-		id: announcement.id,
-		createdAt: announcement.createdAt.toISOString(),
-		updatedAt: announcement.updatedAt?.toISOString() ?? null,
-		title: announcement.title,
-		text: announcement.text,
-		imageUrl: announcement.imageUrl,
-		reads: reads.get(announcement)!,
-	}));
-});
+}

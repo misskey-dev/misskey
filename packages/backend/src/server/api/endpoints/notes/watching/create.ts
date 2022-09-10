@@ -1,5 +1,5 @@
-import watch from '@/services/note/watch.js';
 import { Inject, Injectable } from '@nestjs/common';
+import watch from '@/services/note/watch.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
@@ -32,14 +32,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+			const note = await getNote(ps.noteId).catch(e => {
+				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
 
-	await watch(user.id, note);
-});
+			await watch(user.id, note);
+		});
+	}
+}

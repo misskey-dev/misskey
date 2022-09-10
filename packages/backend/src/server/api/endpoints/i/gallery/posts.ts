@@ -35,16 +35,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(GalleryPosts.createQueryBuilder('post'), ps.sinceId, ps.untilId)
-		.andWhere(`post.userId = :meId`, { meId: user.id });
+			const query = makePaginationQuery(GalleryPosts.createQueryBuilder('post'), ps.sinceId, ps.untilId)
+				.andWhere('post.userId = :meId', { meId: user.id });
 
-	const posts = await query
-		.take(ps.limit)
-		.getMany();
+			const posts = await query
+				.take(ps.limit)
+				.getMany();
 
-	return await GalleryPosts.packMany(posts, user);
-});
+			return await GalleryPosts.packMany(posts, user);
+		});
+	}
+}

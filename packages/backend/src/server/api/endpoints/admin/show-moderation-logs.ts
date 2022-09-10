@@ -63,13 +63,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(ModerationLogs.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+			const query = makePaginationQuery(ModerationLogs.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-	const reports = await query.take(ps.limit).getMany();
+			const reports = await query.take(ps.limit).getMany();
 
-	return await ModerationLogs.packMany(reports);
-});
+			return await ModerationLogs.packMany(reports);
+		});
+	}
+}

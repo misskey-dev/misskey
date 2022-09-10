@@ -1,7 +1,7 @@
 import { Brackets } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import read from '@/services/note/read.js';
 import { Notes, Followings } from '@/models/index.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
@@ -41,48 +41,53 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const followingQuery = Followings.createQueryBuilder('following')
-		.select('following.followeeId')
-		.where('following.followerId = :followerId', { followerId: user.id });
+			const followingQuery = Followings.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: user.id });
 
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(new Brackets(qb => { qb
-			.where(`'{"${user.id}"}' <@ note.mentions`)
-			.orWhere(`'{"${user.id}"}' <@ note.visibleUserIds`);
-		}))
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+				.andWhere(new Brackets(qb => { qb
+					.where(`'{"${user.id}"}' <@ note.mentions`)
+					.orWhere(`'{"${user.id}"}' <@ note.visibleUserIds`);
+				}))
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	generateVisibilityQuery(query, user);
-	generateMutedUserQuery(query, user);
-	generateMutedNoteThreadQuery(query, user);
-	generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, user);
+			generateMutedUserQuery(query, user);
+			generateMutedNoteThreadQuery(query, user);
+			generateBlockedUserQuery(query, user);
 
-	if (ps.visibility) {
-		query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
+			if (ps.visibility) {
+				query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
+			}
+
+			if (ps.following) {
+				query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id });
+				query.setParameters(followingQuery.getParameters());
+			}
+
+			const mentions = await query.take(ps.limit).getMany();
+
+			read(user.id, mentions);
+
+			return await Notes.packMany(mentions, user);
+		});
 	}
-
-	if (ps.following) {
-		query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id });
-		query.setParameters(followingQuery.getParameters());
-	}
-
-	const mentions = await query.take(ps.limit).getMany();
-
-	read(user.id, mentions);
-
-	return await Notes.packMany(mentions, user);
-});
+}

@@ -1,6 +1,6 @@
 import ms from 'ms';
-import { Users, Followings } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Users, Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query.js';
 import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query.js';
@@ -38,32 +38,37 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const query = Users.createQueryBuilder('user')
-		.where('user.isLocked = FALSE')
-		.andWhere('user.isExplorable = TRUE')
-		.andWhere('user.host IS NULL')
-		.andWhere('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
-		.andWhere('user.id != :meId', { meId: me.id })
-		.orderBy('user.followersCount', 'DESC');
+			const query = Users.createQueryBuilder('user')
+				.where('user.isLocked = FALSE')
+				.andWhere('user.isExplorable = TRUE')
+				.andWhere('user.host IS NULL')
+				.andWhere('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
+				.andWhere('user.id != :meId', { meId: me.id })
+				.orderBy('user.followersCount', 'DESC');
 
-	generateMutedUserQueryForUsers(query, me);
-	generateBlockQueryForUsers(query, me);
-	generateBlockedUserQuery(query, me);
+			generateMutedUserQueryForUsers(query, me);
+			generateBlockQueryForUsers(query, me);
+			generateBlockedUserQuery(query, me);
 
-	const followingQuery = Followings.createQueryBuilder('following')
-		.select('following.followeeId')
-		.where('following.followerId = :followerId', { followerId: me.id });
+			const followingQuery = Followings.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: me.id });
 
-	query
-		.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`);
+			query
+				.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`);
 
-	query.setParameters(followingQuery.getParameters());
+			query.setParameters(followingQuery.getParameters());
 
-	const users = await query.take(ps.limit).skip(ps.offset).getMany();
+			const users = await query.take(ps.limit).skip(ps.offset).getMany();
 
-	return await Users.packMany(users, me, { detail: true });
-});
+			return await Users.packMany(users, me, { detail: true });
+		});
+	}
+}

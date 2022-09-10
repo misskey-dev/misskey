@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../../error.js';
 import { Webhooks } from '@/models/index.js';
 import { publishInternalEvent } from '@/services/stream.js';
 import { webhookEventTypes } from '@/models/entities/webhook.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['webhooks'],
@@ -41,26 +41,31 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const webhook = await Webhooks.findOneBy({
-		id: ps.webhookId,
-		userId: user.id,
-	});
+			const webhook = await Webhooks.findOneBy({
+				id: ps.webhookId,
+				userId: user.id,
+			});
 
-	if (webhook == null) {
-		throw new ApiError(meta.errors.noSuchWebhook);
+			if (webhook == null) {
+				throw new ApiError(meta.errors.noSuchWebhook);
+			}
+
+			await Webhooks.update(webhook.id, {
+				name: ps.name,
+				url: ps.url,
+				secret: ps.secret,
+				on: ps.on,
+				active: ps.active,
+			});
+
+			publishInternalEvent('webhookUpdated', webhook);
+		});
 	}
-
-	await Webhooks.update(webhook.id, {
-		name: ps.name,
-		url: ps.url,
-		secret: ps.secret,
-		on: ps.on,
-		active: ps.active,
-	});
-
-	publishInternalEvent('webhookUpdated', webhook);
-});
+}

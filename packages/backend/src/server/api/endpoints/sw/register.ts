@@ -1,7 +1,7 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { genId } from '@/misc/gen-id.js';
 import { SwSubscriptions } from '@/models/index.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -42,38 +42,43 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// if already subscribed
-	const exist = await SwSubscriptions.findOneBy({
-		userId: user.id,
-		endpoint: ps.endpoint,
-		auth: ps.auth,
-		publickey: ps.publickey,
-	});
+			// if already subscribed
+			const exist = await SwSubscriptions.findOneBy({
+				userId: user.id,
+				endpoint: ps.endpoint,
+				auth: ps.auth,
+				publickey: ps.publickey,
+			});
 
-	const instance = await fetchMeta(true);
+			const instance = await fetchMeta(true);
 
-	if (exist != null) {
-		return {
-			state: 'already-subscribed' as const,
-			key: instance.swPublicKey,
-		};
+			if (exist != null) {
+				return {
+					state: 'already-subscribed' as const,
+					key: instance.swPublicKey,
+				};
+			}
+
+			await SwSubscriptions.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: user.id,
+				endpoint: ps.endpoint,
+				auth: ps.auth,
+				publickey: ps.publickey,
+			});
+
+			return {
+				state: 'subscribed' as const,
+				key: instance.swPublicKey,
+			};
+		});
 	}
-
-	await SwSubscriptions.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		endpoint: ps.endpoint,
-		auth: ps.auth,
-		publickey: ps.publickey,
-	});
-
-	return {
-		state: 'subscribed' as const,
-		key: instance.swPublicKey,
-	};
-});
+}

@@ -1,5 +1,5 @@
-import { Clips } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Clips } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
@@ -34,17 +34,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Clips.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
-		.andWhere('clip.userId = :userId', { userId: ps.userId })
-		.andWhere('clip.isPublic = true');
+			const query = makePaginationQuery(Clips.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
+				.andWhere('clip.userId = :userId', { userId: ps.userId })
+				.andWhere('clip.isPublic = true');
 
-	const clips = await query
-		.take(ps.limit)
-		.getMany();
+			const clips = await query
+				.take(ps.limit)
+				.getMany();
 
-	return await Clips.packMany(clips);
-});
+			return await Clips.packMany(clips);
+		});
+	}
+}

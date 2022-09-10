@@ -26,26 +26,31 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const report = await AbuseUserReports.findOneByOrFail({ id: ps.reportId });
+			const report = await AbuseUserReports.findOneByOrFail({ id: ps.reportId });
 
-	if (report == null) {
-		throw new Error('report not found');
+			if (report == null) {
+				throw new Error('report not found');
+			}
+
+			if (ps.forward && report.targetUserHost != null) {
+				const actor = await getInstanceActor();
+				const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
+
+				deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
+			}
+
+			await AbuseUserReports.update(report.id, {
+				resolved: true,
+				assigneeId: me.id,
+				forwarded: ps.forward && report.targetUserHost != null,
+			});
+		});
 	}
-
-	if (ps.forward && report.targetUserHost != null) {
-		const actor = await getInstanceActor();
-		const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
-
-		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
-	}
-
-	await AbuseUserReports.update(report.id, {
-		resolved: true,
-		assigneeId: me.id,
-		forwarded: ps.forward && report.targetUserHost != null,
-	});
-});
+}

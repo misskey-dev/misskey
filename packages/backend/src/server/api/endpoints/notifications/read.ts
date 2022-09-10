@@ -47,10 +47,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	if ('notificationId' in ps) return readNotification(user.id, [ps.notificationId]);
-	return readNotification(user.id, ps.notificationIds);
-});
+			if ('notificationId' in ps) return readNotification(user.id, [ps.notificationId]);
+			return readNotification(user.id, ps.notificationIds);
+		});
+	}
+}

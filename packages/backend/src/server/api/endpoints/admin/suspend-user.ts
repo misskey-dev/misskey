@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import deleteFollowing from '@/services/following/delete.js';
 import { Users, Followings, Notifications } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/user.js';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { doPostSuspend } from '@/services/suspend-user.js';
 import { publishUserEvent } from '@/services/stream.js';
@@ -26,43 +26,48 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+			const user = await Users.findOneBy({ id: ps.userId });
 
-	if (user == null) {
-		throw new Error('user not found');
+			if (user == null) {
+				throw new Error('user not found');
+			}
+
+			if (user.isAdmin) {
+				throw new Error('cannot suspend admin');
+			}
+
+			if (user.isModerator) {
+				throw new Error('cannot suspend moderator');
+			}
+
+			await Users.update(user.id, {
+				isSuspended: true,
+			});
+
+			insertModerationLog(me, 'suspend', {
+				targetId: user.id,
+			});
+
+			// Terminate streaming
+			if (Users.isLocalUser(user)) {
+				publishUserEvent(user.id, 'terminate', {});
+			}
+
+			(async () => {
+				await doPostSuspend(user).catch(e => {});
+				await unFollowAll(user).catch(e => {});
+				await readAllNotify(user).catch(e => {});
+			})();
+		});
 	}
-
-	if (user.isAdmin) {
-		throw new Error('cannot suspend admin');
-	}
-
-	if (user.isModerator) {
-		throw new Error('cannot suspend moderator');
-	}
-
-	await Users.update(user.id, {
-		isSuspended: true,
-	});
-
-	insertModerationLog(me, 'suspend', {
-		targetId: user.id,
-	});
-
-	// Terminate streaming
-	if (Users.isLocalUser(user)) {
-		publishUserEvent(user.id, 'terminate', {});
-	}
-
-	(async () => {
-		await doPostSuspend(user).catch(e => {});
-		await unFollowAll(user).catch(e => {});
-		await readAllNotify(user).catch(e => {});
-	})();
-});
+}
 
 async function unFollowAll(follower: User) {
 	const followings = await Followings.findBy({

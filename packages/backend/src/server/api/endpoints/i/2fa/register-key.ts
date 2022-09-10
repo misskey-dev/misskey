@@ -1,9 +1,9 @@
+import { promisify } from 'node:util';
+import * as crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserProfiles, AttestationChallenges } from '@/models/index.js';
-import { promisify } from 'node:util';
-import * as crypto from 'node:crypto';
 import { genId } from '@/misc/gen-id.js';
 import { hash } from '../../../2fa.js';
 
@@ -27,42 +27,47 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
+			// Compare password
+			const same = await bcrypt.compare(ps.password, profile.password!);
 
-	if (!same) {
-		throw new Error('incorrect password');
+			if (!same) {
+				throw new Error('incorrect password');
+			}
+
+			if (!profile.twoFactorEnabled) {
+				throw new Error('2fa not enabled');
+			}
+
+			// 32 byte challenge
+			const entropy = await randomBytes(32);
+			const challenge = entropy.toString('base64')
+				.replace(/=/g, '')
+				.replace(/\+/g, '-')
+				.replace(/\//g, '_');
+
+			const challengeId = genId();
+
+			await AttestationChallenges.insert({
+				userId: user.id,
+				id: challengeId,
+				challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
+				createdAt: new Date(),
+				registrationChallenge: true,
+			});
+
+			return {
+				challengeId,
+				challenge,
+			};
+		});
 	}
-
-	if (!profile.twoFactorEnabled) {
-		throw new Error('2fa not enabled');
-	}
-
-	// 32 byte challenge
-	const entropy = await randomBytes(32);
-	const challenge = entropy.toString('base64')
-		.replace(/=/g, '')
-		.replace(/\+/g, '-')
-		.replace(/\//g, '_');
-
-	const challengeId = genId();
-
-	await AttestationChallenges.insert({
-		userId: user.id,
-		id: challengeId,
-		challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
-		createdAt: new Date(),
-		registrationChallenge: true,
-	});
-
-	return {
-		challengeId,
-		challenge,
-	};
-});
+}

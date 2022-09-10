@@ -1,9 +1,10 @@
-import { DeepPartial, FindOptionsWhere } from 'typeorm';
-import { NoteReactions } from '@/models/index.js';
-import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { DeepPartial } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import { NoteReactions } from '@/models/index.js';
+import type { NoteReaction } from '@/models/entities/note-reaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
+import type { FindOptionsWhere } from 'typeorm';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
@@ -49,31 +50,36 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = {
-		noteId: ps.noteId,
-	} as FindOptionsWhere<NoteReaction>;
+			const query = {
+				noteId: ps.noteId,
+			} as FindOptionsWhere<NoteReaction>;
 
-	if (ps.type) {
-		// ローカルリアクションはホスト名が . とされているが
-		// DB 上ではそうではないので、必要に応じて変換
-		const suffix = '@.:';
-		const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
-		query.reaction = type;
+			if (ps.type) {
+				// ローカルリアクションはホスト名が . とされているが
+				// DB 上ではそうではないので、必要に応じて変換
+				const suffix = '@.:';
+				const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
+				query.reaction = type;
+			}
+
+			const reactions = await NoteReactions.find({
+				where: query,
+				take: ps.limit,
+				skip: ps.offset,
+				order: {
+					id: -1,
+				},
+				relations: ['user', 'user.avatar', 'user.banner', 'note'],
+			});
+
+			return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
+		});
 	}
-
-	const reactions = await NoteReactions.find({
-		where: query,
-		take: ps.limit,
-		skip: ps.offset,
-		order: {
-			id: -1,
-		},
-		relations: ['user', 'user.avatar', 'user.banner', 'note'],
-	});
-
-	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
-});
+}

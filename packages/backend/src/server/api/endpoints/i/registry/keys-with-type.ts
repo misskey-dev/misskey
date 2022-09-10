@@ -22,22 +22,25 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = RegistryItems.createQueryBuilder('item')
-		.where('item.domain IS NULL')
-		.andWhere('item.userId = :userId', { userId: user.id })
-		.andWhere('item.scope = :scope', { scope: ps.scope });
+			const query = RegistryItems.createQueryBuilder('item')
+				.where('item.domain IS NULL')
+				.andWhere('item.userId = :userId', { userId: user.id })
+				.andWhere('item.scope = :scope', { scope: ps.scope });
 
-	const items = await query.getMany();
+			const items = await query.getMany();
 
-	const res = {} as Record<string, string>;
+			const res = {} as Record<string, string>;
 
-	for (const item of items) {
-		const type = typeof item.value;
-		res[item.key] =
+			for (const item of items) {
+				const type = typeof item.value;
+				res[item.key] =
 			item.value === null ? 'null' :
 			Array.isArray(item.value) ? 'array' :
 			type === 'number' ? 'number' :
@@ -45,7 +48,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			type === 'boolean' ? 'boolean' :
 			type === 'object' ? 'object' :
 			null as never;
-	}
+			}
 
-	return res;
-});
+			return res;
+		});
+	}
+}

@@ -1,14 +1,14 @@
 import rndstr from 'rndstr';
 import ms from 'ms';
 import { IsNull } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { publishMainStream } from '@/services/stream.js';
 import config from '@/config/index.js';
 import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { sendEmail } from '@/services/send-email.js';
 import { genId } from '@/misc/gen-id.js';
-import { ApiError } from '../error.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ApiError } from '../error.js';
 
 export const meta = {
 	tags: ['reset password'],
@@ -40,44 +40,49 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const user = await Users.findOneBy({
-		usernameLower: ps.username.toLowerCase(),
-		host: IsNull(),
-	});
+			const user = await Users.findOneBy({
+				usernameLower: ps.username.toLowerCase(),
+				host: IsNull(),
+			});
 
-	// 合致するユーザーが登録されていなかったら無視
-	if (user == null) {
-		return;
+			// 合致するユーザーが登録されていなかったら無視
+			if (user == null) {
+				return;
+			}
+
+			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+
+			// 合致するメアドが登録されていなかったら無視
+			if (profile.email !== ps.email) {
+				return;
+			}
+
+			// メアドが認証されていなかったら無視
+			if (!profile.emailVerified) {
+				return;
+			}
+
+			const token = rndstr('a-z0-9', 64);
+
+			await PasswordResetRequests.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: profile.userId,
+				token,
+			});
+
+			const link = `${config.url}/reset-password/${token}`;
+
+			sendEmail(ps.email, 'Password reset requested',
+				`To reset password, please click this link:<br><a href="${link}">${link}</a>`,
+				`To reset password, please click this link: ${link}`);
+		});
 	}
-
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
-
-	// 合致するメアドが登録されていなかったら無視
-	if (profile.email !== ps.email) {
-		return;
-	}
-
-	// メアドが認証されていなかったら無視
-	if (!profile.emailVerified) {
-		return;
-	}
-
-	const token = rndstr('a-z0-9', 64);
-
-	await PasswordResetRequests.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: profile.userId,
-		token,
-	});
-
-	const link = `${config.url}/reset-password/${token}`;
-
-	sendEmail(ps.email, 'Password reset requested',
-		`To reset password, please click this link:<br><a href="${link}">${link}</a>`,
-		`To reset password, please click this link: ${link}`);
-});
+}

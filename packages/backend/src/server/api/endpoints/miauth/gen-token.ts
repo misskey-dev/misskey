@@ -41,31 +41,36 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	// Generate access token
-	const accessToken = secureRndstr(32, true);
+			// Generate access token
+			const accessToken = secureRndstr(32, true);
 
-	const now = new Date();
+			const now = new Date();
 
-	// Insert access token doc
-	await AccessTokens.insert({
-		id: genId(),
-		createdAt: now,
-		lastUsedAt: now,
-		session: ps.session,
-		userId: user.id,
-		token: accessToken,
-		hash: accessToken,
-		name: ps.name,
-		description: ps.description,
-		iconUrl: ps.iconUrl,
-		permission: ps.permission,
-	});
+			// Insert access token doc
+			await AccessTokens.insert({
+				id: genId(),
+				createdAt: now,
+				lastUsedAt: now,
+				session: ps.session,
+				userId: user.id,
+				token: accessToken,
+				hash: accessToken,
+				name: ps.name,
+				description: ps.description,
+				iconUrl: ps.iconUrl,
+				permission: ps.permission,
+			});
 
-	return {
-		token: accessToken,
-	};
-});
+			return {
+				token: accessToken,
+			};
+		});
+	}
+}

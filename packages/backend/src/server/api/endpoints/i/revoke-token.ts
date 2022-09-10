@@ -21,19 +21,24 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const token = await AccessTokens.findOneBy({ id: ps.tokenId });
+			const token = await AccessTokens.findOneBy({ id: ps.tokenId });
 
-	if (token) {
-		await AccessTokens.delete({
-			id: ps.tokenId,
-			userId: user.id,
+			if (token) {
+				await AccessTokens.delete({
+					id: ps.tokenId,
+					userId: user.id,
+				});
+
+				// Terminate streaming
+				publishUserEvent(user.id, 'terminate');
+			}
 		});
-
-		// Terminate streaming
-		publishUserEvent(user.id, 'terminate');
 	}
-});
+}

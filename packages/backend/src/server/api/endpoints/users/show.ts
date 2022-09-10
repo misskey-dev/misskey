@@ -1,11 +1,12 @@
-import { FindOptionsWhere, In, IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { resolveUser } from '@/remote/resolve-user.js';
 import { Users } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { Inject, Injectable } from '@nestjs/common';
+import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { apiLogger } from '../../logger.js';
 import { ApiError } from '../../error.js';
+import type { FindOptionsWhere } from 'typeorm';
 
 export const meta = {
 	tags: ['users'],
@@ -82,56 +83,61 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	let user;
+			let user;
 
-	const isAdminOrModerator = me && (me.isAdmin || me.isModerator);
+			const isAdminOrModerator = me && (me.isAdmin || me.isModerator);
 
-	if (ps.userIds) {
-		if (ps.userIds.length === 0) {
-			return [];
-		}
+			if (ps.userIds) {
+				if (ps.userIds.length === 0) {
+					return [];
+				}
 
-		const users = await Users.findBy(isAdminOrModerator ? {
-			id: In(ps.userIds),
-		} : {
-			id: In(ps.userIds),
-			isSuspended: false,
-		});
+				const users = await Users.findBy(isAdminOrModerator ? {
+					id: In(ps.userIds),
+				} : {
+					id: In(ps.userIds),
+					isSuspended: false,
+				});
 
-		// リクエストされた通りに並べ替え
-		const _users: User[] = [];
-		for (const id of ps.userIds) {
-			_users.push(users.find(x => x.id === id)!);
-		}
+				// リクエストされた通りに並べ替え
+				const _users: User[] = [];
+				for (const id of ps.userIds) {
+					_users.push(users.find(x => x.id === id)!);
+				}
 
-		return await Promise.all(_users.map(u => Users.pack(u, me, {
-			detail: true,
-		})));
-	} else {
-		// Lookup user
-		if (typeof ps.host === 'string' && typeof ps.username === 'string') {
-			user = await resolveUser(ps.username, ps.host).catch(e => {
-				apiLogger.warn(`failed to resolve remote user: ${e}`);
-				throw new ApiError(meta.errors.failedToResolveRemoteUser);
-			});
-		} else {
-			const q: FindOptionsWhere<User> = ps.userId != null
-				? { id: ps.userId }
-				: { usernameLower: ps.username!.toLowerCase(), host: IsNull() };
+				return await Promise.all(_users.map(u => Users.pack(u, me, {
+					detail: true,
+				})));
+			} else {
+				// Lookup user
+				if (typeof ps.host === 'string' && typeof ps.username === 'string') {
+					user = await resolveUser(ps.username, ps.host).catch(e => {
+						apiLogger.warn(`failed to resolve remote user: ${e}`);
+						throw new ApiError(meta.errors.failedToResolveRemoteUser);
+					});
+				} else {
+					const q: FindOptionsWhere<User> = ps.userId != null
+						? { id: ps.userId }
+						: { usernameLower: ps.username!.toLowerCase(), host: IsNull() };
 
-			user = await Users.findOneBy(q);
-		}
+					user = await Users.findOneBy(q);
+				}
 
-		if (user == null || (!isAdminOrModerator && user.isSuspended)) {
-			throw new ApiError(meta.errors.noSuchUser);
-		}
+				if (user == null || (!isAdminOrModerator && user.isSuspended)) {
+					throw new ApiError(meta.errors.noSuchUser);
+				}
 
-		return await Users.pack(user, me, {
-			detail: true,
+				return await Users.pack(user, me, {
+					detail: true,
+				});
+			}
 		});
 	}
-});
+}

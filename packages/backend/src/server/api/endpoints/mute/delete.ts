@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
 import { Mutings } from '@/models/index.js';
 import { publishUserEvent } from '@/services/stream.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
 
 export const meta = {
 	tags: ['account'],
@@ -45,37 +45,42 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const muter = user;
+			const muter = user;
 
-	// Check if the mutee is yourself
-	if (user.id === ps.userId) {
-		throw new ApiError(meta.errors.muteeIsYourself);
+			// Check if the mutee is yourself
+			if (user.id === ps.userId) {
+				throw new ApiError(meta.errors.muteeIsYourself);
+			}
+
+			// Get mutee
+			const mutee = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
+
+			// Check not muting
+			const exist = await Mutings.findOneBy({
+				muterId: muter.id,
+				muteeId: mutee.id,
+			});
+
+			if (exist == null) {
+				throw new ApiError(meta.errors.notMuting);
+			}
+
+			// Delete mute
+			await Mutings.delete({
+				id: exist.id,
+			});
+
+			publishUserEvent(user.id, 'unmute', mutee);
+		});
 	}
-
-	// Get mutee
-	const mutee = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Check not muting
-	const exist = await Mutings.findOneBy({
-		muterId: muter.id,
-		muteeId: mutee.id,
-	});
-
-	if (exist == null) {
-		throw new ApiError(meta.errors.notMuting);
-	}
-
-	// Delete mute
-	await Mutings.delete({
-		id: exist.id,
-	});
-
-	publishUserEvent(user.id, 'unmute', mutee);
-});
+}

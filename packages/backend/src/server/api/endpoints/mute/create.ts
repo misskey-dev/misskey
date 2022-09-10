@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
 import { genId } from '@/misc/gen-id.js';
 import { Mutings, NoteWatchings } from '@/models/index.js';
-import { Muting } from '@/models/entities/muting.js';
+import type { Muting } from '@/models/entities/muting.js';
 import { publishUserEvent } from '@/services/stream.js';
+import { getUser } from '../../common/getters.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -52,50 +52,55 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const muter = user;
+			const muter = user;
 
-	// 自分自身
-	if (user.id === ps.userId) {
-		throw new ApiError(meta.errors.muteeIsYourself);
+			// 自分自身
+			if (user.id === ps.userId) {
+				throw new ApiError(meta.errors.muteeIsYourself);
+			}
+
+			// Get mutee
+			const mutee = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
+
+			// Check if already muting
+			const exist = await Mutings.findOneBy({
+				muterId: muter.id,
+				muteeId: mutee.id,
+			});
+
+			if (exist != null) {
+				throw new ApiError(meta.errors.alreadyMuting);
+			}
+
+			if (ps.expiresAt && ps.expiresAt <= Date.now()) {
+				return;
+			}
+
+			// Create mute
+			await Mutings.insert({
+				id: genId(),
+				createdAt: new Date(),
+				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
+				muterId: muter.id,
+				muteeId: mutee.id,
+			} as Muting);
+
+			publishUserEvent(user.id, 'mute', mutee);
+
+			NoteWatchings.delete({
+				userId: muter.id,
+				noteUserId: mutee.id,
+			});
+		});
 	}
-
-	// Get mutee
-	const mutee = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Check if already muting
-	const exist = await Mutings.findOneBy({
-		muterId: muter.id,
-		muteeId: mutee.id,
-	});
-
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyMuting);
-	}
-
-	if (ps.expiresAt && ps.expiresAt <= Date.now()) {
-		return;
-	}
-
-	// Create mute
-	await Mutings.insert({
-		id: genId(),
-		createdAt: new Date(),
-		expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
-		muterId: muter.id,
-		muteeId: mutee.id,
-	} as Muting);
-
-	publishUserEvent(user.id, 'mute', mutee);
-
-	NoteWatchings.delete({
-		userId: muter.id,
-		noteUserId: mutee.id,
-	});
-});
+}

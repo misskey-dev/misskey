@@ -1,5 +1,5 @@
-import { Signins, UserProfiles, Users } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Signins, UserProfiles, Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -26,58 +26,63 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const [user, profile] = await Promise.all([
-		Users.findOneBy({ id: ps.userId }),
-		UserProfiles.findOneBy({ userId: ps.userId }),
-	]);
+			const [user, profile] = await Promise.all([
+				Users.findOneBy({ id: ps.userId }),
+				UserProfiles.findOneBy({ userId: ps.userId }),
+			]);
 
-	if (user == null || profile == null) {
-		throw new Error('user not found');
+			if (user == null || profile == null) {
+				throw new Error('user not found');
+			}
+
+			const _me = await Users.findOneByOrFail({ id: me.id });
+			if ((_me.isModerator && !_me.isAdmin) && user.isAdmin) {
+				throw new Error('cannot show info of admin');
+			}
+
+			if (!_me.isAdmin) {
+				return {
+					isModerator: user.isModerator,
+					isSilenced: user.isSilenced,
+					isSuspended: user.isSuspended,
+				};
+			}
+
+			const maskedKeys = ['accessToken', 'accessTokenSecret', 'refreshToken'];
+			Object.keys(profile.integrations).forEach(integration => {
+				maskedKeys.forEach(key => profile.integrations[integration][key] = '<MASKED>');
+			});
+
+			const signins = await Signins.findBy({ userId: user.id });
+
+			return {
+				email: profile.email,
+				emailVerified: profile.emailVerified,
+				autoAcceptFollowed: profile.autoAcceptFollowed,
+				noCrawle: profile.noCrawle,
+				alwaysMarkNsfw: profile.alwaysMarkNsfw,
+				autoSensitive: profile.autoSensitive,
+				carefulBot: profile.carefulBot,
+				injectFeaturedNote: profile.injectFeaturedNote,
+				receiveAnnouncementEmail: profile.receiveAnnouncementEmail,
+				integrations: profile.integrations,
+				mutedWords: profile.mutedWords,
+				mutedInstances: profile.mutedInstances,
+				mutingNotificationTypes: profile.mutingNotificationTypes,
+				isModerator: user.isModerator,
+				isSilenced: user.isSilenced,
+				isSuspended: user.isSuspended,
+				lastActiveDate: user.lastActiveDate,
+				moderationNote: profile.moderationNote,
+				signins,
+			};
+		});
 	}
-
-	const _me = await Users.findOneByOrFail({ id: me.id });
-	if ((_me.isModerator && !_me.isAdmin) && user.isAdmin) {
-		throw new Error('cannot show info of admin');
-	}
-
-	if (!_me.isAdmin) {
-		return {
-			isModerator: user.isModerator,
-			isSilenced: user.isSilenced,
-			isSuspended: user.isSuspended,
-		};
-	}
-
-	const maskedKeys = ['accessToken', 'accessTokenSecret', 'refreshToken'];
-	Object.keys(profile.integrations).forEach(integration => {
-		maskedKeys.forEach(key => profile.integrations[integration][key] = '<MASKED>');
-	});
-
-	const signins = await Signins.findBy({ userId: user.id });
-
-	return {
-		email: profile.email,
-		emailVerified: profile.emailVerified,
-		autoAcceptFollowed: profile.autoAcceptFollowed,
-		noCrawle: profile.noCrawle,
-		alwaysMarkNsfw: profile.alwaysMarkNsfw,
-		autoSensitive: profile.autoSensitive,
-		carefulBot: profile.carefulBot,
-		injectFeaturedNote: profile.injectFeaturedNote,
-		receiveAnnouncementEmail: profile.receiveAnnouncementEmail,
-		integrations: profile.integrations,
-		mutedWords: profile.mutedWords,
-		mutedInstances: profile.mutedInstances,
-		mutingNotificationTypes: profile.mutingNotificationTypes,
-		isModerator: user.isModerator,
-		isSilenced: user.isSilenced,
-		isSuspended: user.isSuspended,
-		lastActiveDate: user.lastActiveDate,
-		moderationNote: profile.moderationNote,
-		signins,
-	};
-});
+}

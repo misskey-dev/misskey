@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Emojis } from '@/models/index.js';
+import type { Emoji } from '@/models/entities/emoji.js';
 import { makePaginationQuery } from '../../../common/make-pagination-query.js';
-import { Emoji } from '@/models/entities/emoji.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -67,30 +67,35 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
-		.andWhere(`emoji.host IS NULL`);
+			const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
+				.andWhere('emoji.host IS NULL');
 
-	let emojis: Emoji[];
+			let emojis: Emoji[];
 
-	if (ps.query) {
-		//q.andWhere('emoji.name ILIKE :q', { q: `%${ps.query}%` });
-		//const emojis = await q.take(ps.limit).getMany();
+			if (ps.query) {
+				//q.andWhere('emoji.name ILIKE :q', { q: `%${ps.query}%` });
+				//const emojis = await q.take(ps.limit).getMany();
 
-		emojis = await q.getMany();
+				emojis = await q.getMany();
 
-		emojis = emojis.filter(emoji =>
-			emoji.name.includes(ps.query!) ||
+				emojis = emojis.filter(emoji =>
+					emoji.name.includes(ps.query!) ||
 			emoji.aliases.some(a => a.includes(ps.query!)) ||
 			emoji.category?.includes(ps.query!));
 
-		emojis.splice(ps.limit + 1);
-	} else {
-		emojis = await q.take(ps.limit).getMany();
-	}
+				emojis.splice(ps.limit + 1);
+			} else {
+				emojis = await q.take(ps.limit).getMany();
+			}
 
-	return Emojis.packMany(emojis);
-});
+			return Emojis.packMany(emojis);
+		});
+	}
+}

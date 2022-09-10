@@ -1,5 +1,5 @@
-import { NoteReactions, UserProfiles } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { NoteReactions, UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -48,26 +48,31 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: ps.userId });
+			const profile = await UserProfiles.findOneByOrFail({ userId: ps.userId });
 
-	if (me == null || (me.id !== ps.userId && !profile.publicReactions)) {
-		throw new ApiError(meta.errors.reactionsNotPublic);
+			if (me == null || (me.id !== ps.userId && !profile.publicReactions)) {
+				throw new ApiError(meta.errors.reactionsNotPublic);
+			}
+
+			const query = makePaginationQuery(NoteReactions.createQueryBuilder('reaction'),
+				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('reaction.userId = :userId', { userId: ps.userId })
+				.leftJoinAndSelect('reaction.note', 'note');
+
+			generateVisibilityQuery(query, me);
+
+			const reactions = await query
+				.take(ps.limit)
+				.getMany();
+
+			return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me, { withNote: true })));
+		});
 	}
-
-	const query = makePaginationQuery(NoteReactions.createQueryBuilder('reaction'),
-		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere('reaction.userId = :userId', { userId: ps.userId })
-		.leftJoinAndSelect('reaction.note', 'note');
-
-	generateVisibilityQuery(query, me);
-
-	const reactions = await query
-		.take(ps.limit)
-		.getMany();
-
-	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me, { withNote: true })));
-});
+}

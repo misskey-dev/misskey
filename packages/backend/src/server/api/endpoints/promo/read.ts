@@ -1,6 +1,6 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { PromoReads } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { getNote } from '../../common/getters.js';
@@ -31,28 +31,33 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+			const note = await getNote(ps.noteId).catch(e => {
+				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
 
-	const exist = await PromoReads.findOneBy({
-		noteId: note.id,
-		userId: user.id,
-	});
+			const exist = await PromoReads.findOneBy({
+				noteId: note.id,
+				userId: user.id,
+			});
 
-	if (exist != null) {
-		return;
+			if (exist != null) {
+				return;
+			}
+
+			await PromoReads.insert({
+				id: genId(),
+				createdAt: new Date(),
+				noteId: note.id,
+				userId: user.id,
+			});
+		});
 	}
-
-	await PromoReads.insert({
-		id: genId(),
-		createdAt: new Date(),
-		noteId: note.id,
-		userId: user.id,
-	});
-});
+}

@@ -1,4 +1,5 @@
 import { Not } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { publishNoteStream } from '@/services/stream.js';
 import { createNotification } from '@/services/create-notification.js';
 import { deliver } from '@/queue/index.js';
@@ -6,12 +7,11 @@ import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderVote from '@/remote/activitypub/renderer/vote.js';
 import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
 import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index.js';
-import { IRemoteUser } from '@/models/entities/user.js';
+import type { IRemoteUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
-import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -72,105 +72,110 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const createdAt = new Date();
+			const createdAt = new Date();
 
-	// Get votee
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+			// Get votee
+			const note = await getNote(ps.noteId).catch(e => {
+				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
 
-	if (!note.hasPoll) {
-		throw new ApiError(meta.errors.noPoll);
-	}
-
-	// Check blocking
-	if (note.userId !== user.id) {
-		const block = await Blockings.findOneBy({
-			blockerId: note.userId,
-			blockeeId: user.id,
-		});
-		if (block) {
-			throw new ApiError(meta.errors.youHaveBeenBlocked);
-		}
-	}
-
-	const poll = await Polls.findOneByOrFail({ noteId: note.id });
-
-	if (poll.expiresAt && poll.expiresAt < createdAt) {
-		throw new ApiError(meta.errors.alreadyExpired);
-	}
-
-	if (poll.choices[ps.choice] == null) {
-		throw new ApiError(meta.errors.invalidChoice);
-	}
-
-	// if already voted
-	const exist = await PollVotes.findBy({
-		noteId: note.id,
-		userId: user.id,
-	});
-
-	if (exist.length) {
-		if (poll.multiple) {
-			if (exist.some(x => x.choice === ps.choice)) {
-				throw new ApiError(meta.errors.alreadyVoted);
+			if (!note.hasPoll) {
+				throw new ApiError(meta.errors.noPoll);
 			}
-		} else {
-			throw new ApiError(meta.errors.alreadyVoted);
-		}
-	}
 
-	// Create vote
-	const vote = await PollVotes.insert({
-		id: genId(),
-		createdAt,
-		noteId: note.id,
-		userId: user.id,
-		choice: ps.choice,
-	}).then(x => PollVotes.findOneByOrFail(x.identifiers[0]));
+			// Check blocking
+			if (note.userId !== user.id) {
+				const block = await Blockings.findOneBy({
+					blockerId: note.userId,
+					blockeeId: user.id,
+				});
+				if (block) {
+					throw new ApiError(meta.errors.youHaveBeenBlocked);
+				}
+			}
 
-	// Increment votes count
-	const index = ps.choice + 1; // In SQL, array index is 1 based
-	await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
+			const poll = await Polls.findOneByOrFail({ noteId: note.id });
 
-	publishNoteStream(note.id, 'pollVoted', {
-		choice: ps.choice,
-		userId: user.id,
-	});
+			if (poll.expiresAt && poll.expiresAt < createdAt) {
+				throw new ApiError(meta.errors.alreadyExpired);
+			}
 
-	// Notify
-	createNotification(note.userId, 'pollVote', {
-		notifierId: user.id,
-		noteId: note.id,
-		choice: ps.choice,
-	});
+			if (poll.choices[ps.choice] == null) {
+				throw new ApiError(meta.errors.invalidChoice);
+			}
 
-	// Fetch watchers
-	NoteWatchings.findBy({
-		noteId: note.id,
-		userId: Not(user.id),
-	}).then(watchers => {
-		for (const watcher of watchers) {
-			createNotification(watcher.userId, 'pollVote', {
+			// if already voted
+			const exist = await PollVotes.findBy({
+				noteId: note.id,
+				userId: user.id,
+			});
+
+			if (exist.length) {
+				if (poll.multiple) {
+					if (exist.some(x => x.choice === ps.choice)) {
+						throw new ApiError(meta.errors.alreadyVoted);
+					}
+				} else {
+					throw new ApiError(meta.errors.alreadyVoted);
+				}
+			}
+
+			// Create vote
+			const vote = await PollVotes.insert({
+				id: genId(),
+				createdAt,
+				noteId: note.id,
+				userId: user.id,
+				choice: ps.choice,
+			}).then(x => PollVotes.findOneByOrFail(x.identifiers[0]));
+
+			// Increment votes count
+			const index = ps.choice + 1; // In SQL, array index is 1 based
+			await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
+
+			publishNoteStream(note.id, 'pollVoted', {
+				choice: ps.choice,
+				userId: user.id,
+			});
+
+			// Notify
+			createNotification(note.userId, 'pollVote', {
 				notifierId: user.id,
 				noteId: note.id,
 				choice: ps.choice,
 			});
-		}
-	});
 
-	// リモート投票の場合リプライ送信
-	if (note.userHost != null) {
-		const pollOwner = await Users.findOneByOrFail({ id: note.userId }) as IRemoteUser;
+			// Fetch watchers
+			NoteWatchings.findBy({
+				noteId: note.id,
+				userId: Not(user.id),
+			}).then(watchers => {
+				for (const watcher of watchers) {
+					createNotification(watcher.userId, 'pollVote', {
+						notifierId: user.id,
+						noteId: note.id,
+						choice: ps.choice,
+					});
+				}
+			});
 
-		deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
+			// リモート投票の場合リプライ送信
+			if (note.userHost != null) {
+				const pollOwner = await Users.findOneByOrFail({ id: note.userId }) as IRemoteUser;
+
+				deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
+			}
+
+			// リモートフォロワーにUpdate配信
+			deliverQuestionUpdate(note.id);
+		});
 	}
-
-	// リモートフォロワーにUpdate配信
-	deliverQuestionUpdate(note.id);
-});
+}

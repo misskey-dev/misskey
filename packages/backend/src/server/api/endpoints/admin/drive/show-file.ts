@@ -1,5 +1,5 @@
-import { DriveFiles } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { DriveFiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
@@ -173,28 +173,33 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const file = ps.fileId ? await DriveFiles.findOneBy({ id: ps.fileId }) : await DriveFiles.findOne({
-		where: [{
-			url: ps.url,
-		}, {
-			thumbnailUrl: ps.url,
-		}, {
-			webpublicUrl: ps.url,
-		}],
-	});
+			const file = ps.fileId ? await DriveFiles.findOneBy({ id: ps.fileId }) : await DriveFiles.findOne({
+				where: [{
+					url: ps.url,
+				}, {
+					thumbnailUrl: ps.url,
+				}, {
+					webpublicUrl: ps.url,
+				}],
+			});
 
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
+			}
+
+			if (!me.isAdmin) {
+				delete file.requestIp;
+				delete file.requestHeaders;
+			}
+
+			return file;
+		});
 	}
-
-	if (!me.isAdmin) {
-		delete file.requestIp;
-		delete file.requestHeaders;
-	}
-
-	return file;
-});
+}

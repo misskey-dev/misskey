@@ -78,8 +78,8 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		state: { type: 'string', nullable: true, default: null },
-		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
-		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: "combined" },
+		reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
+		targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
 		forwarded: { type: 'boolean', default: false },
 	},
 	required: [],
@@ -89,28 +89,33 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+			const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-	switch (ps.state) {
-		case 'resolved': query.andWhere('report.resolved = TRUE'); break;
-		case 'unresolved': query.andWhere('report.resolved = FALSE'); break;
+			switch (ps.state) {
+				case 'resolved': query.andWhere('report.resolved = TRUE'); break;
+				case 'unresolved': query.andWhere('report.resolved = FALSE'); break;
+			}
+
+			switch (ps.reporterOrigin) {
+				case 'local': query.andWhere('report.reporterHost IS NULL'); break;
+				case 'remote': query.andWhere('report.reporterHost IS NOT NULL'); break;
+			}
+
+			switch (ps.targetUserOrigin) {
+				case 'local': query.andWhere('report.targetUserHost IS NULL'); break;
+				case 'remote': query.andWhere('report.targetUserHost IS NOT NULL'); break;
+			}
+
+			const reports = await query.take(ps.limit).getMany();
+
+			return await AbuseUserReports.packMany(reports);
+		});
 	}
-
-	switch (ps.reporterOrigin) {
-		case 'local': query.andWhere('report.reporterHost IS NULL'); break;
-		case 'remote': query.andWhere('report.reporterHost IS NOT NULL'); break;
-	}
-
-	switch (ps.targetUserOrigin) {
-		case 'local': query.andWhere('report.targetUserHost IS NULL'); break;
-		case 'remote': query.andWhere('report.targetUserHost IS NOT NULL'); break;
-	}
-
-	const reports = await query.take(ps.limit).getMany();
-
-	return await AbuseUserReports.packMany(reports);
-});
+}

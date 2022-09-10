@@ -23,30 +23,35 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
+			// Compare password
+			const same = await bcrypt.compare(ps.password, profile.password!);
 
-	if (!same) {
-		throw new Error('incorrect password');
+			if (!same) {
+				throw new Error('incorrect password');
+			}
+
+			// Make sure we only delete the user's own creds
+			await UserSecurityKeys.delete({
+				userId: user.id,
+				id: ps.credentialId,
+			});
+
+			// Publish meUpdated event
+			publishMainStream(user.id, 'meUpdated', await Users.pack(user.id, user, {
+				detail: true,
+				includeSecrets: true,
+			}));
+
+			return {};
+		});
 	}
-
-	// Make sure we only delete the user's own creds
-	await UserSecurityKeys.delete({
-		userId: user.id,
-		id: ps.credentialId,
-	});
-
-	// Publish meUpdated event
-	publishMainStream(user.id, 'meUpdated', await Users.pack(user.id, user, {
-		detail: true,
-		includeSecrets: true,
-	}));
-
-	return {};
-});
+}

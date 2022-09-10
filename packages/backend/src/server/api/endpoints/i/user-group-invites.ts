@@ -46,17 +46,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(UserGroupInvitations.createQueryBuilder('invitation'), ps.sinceId, ps.untilId)
-		.andWhere(`invitation.userId = :meId`, { meId: user.id })
-		.leftJoinAndSelect('invitation.userGroup', 'user_group');
+			const query = makePaginationQuery(UserGroupInvitations.createQueryBuilder('invitation'), ps.sinceId, ps.untilId)
+				.andWhere('invitation.userId = :meId', { meId: user.id })
+				.leftJoinAndSelect('invitation.userGroup', 'user_group');
 
-	const invitations = await query
-		.take(ps.limit)
-		.getMany();
+			const invitations = await query
+				.take(ps.limit)
+				.getMany();
 
-	return await UserGroupInvitations.packMany(invitations);
-});
+			return await UserGroupInvitations.packMany(invitations);
+		});
+	}
+}

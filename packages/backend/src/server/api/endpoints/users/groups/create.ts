@@ -1,8 +1,8 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { UserGroup } from '@/models/entities/user-group.js';
-import { UserGroupJoining } from '@/models/entities/user-group-joining.js';
-import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroup } from '@/models/entities/user-group.js';
+import type { UserGroupJoining } from '@/models/entities/user-group-joining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -33,24 +33,29 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const userGroup = await UserGroups.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-	} as UserGroup).then(x => UserGroups.findOneByOrFail(x.identifiers[0]));
+			const userGroup = await UserGroups.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: user.id,
+				name: ps.name,
+			} as UserGroup).then(x => UserGroups.findOneByOrFail(x.identifiers[0]));
 
-	// Push the owner
-	await UserGroupJoinings.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		userGroupId: userGroup.id,
-	} as UserGroupJoining);
+			// Push the owner
+			await UserGroupJoinings.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: user.id,
+				userGroupId: userGroup.id,
+			} as UserGroupJoining);
 
-	return await UserGroups.pack(userGroup);
-});
+			return await UserGroups.pack(userGroup);
+		});
+	}
+}

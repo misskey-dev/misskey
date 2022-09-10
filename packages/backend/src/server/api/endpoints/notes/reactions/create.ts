@@ -1,5 +1,5 @@
-import createReaction from '@/services/note/reaction/create.js';
 import { Inject, Injectable } from '@nestjs/common';
+import createReaction from '@/services/note/reaction/create.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
@@ -45,18 +45,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
-	await createReaction(user, note, ps.reaction).catch(e => {
-		if (e.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') throw new ApiError(meta.errors.alreadyReacted);
-		if (e.id === 'e70412a4-7197-4726-8e74-f3e0deb92aa7') throw new ApiError(meta.errors.youHaveBeenBlocked);
-		throw e;
-	});
-	return;
-});
+			const note = await getNote(ps.noteId).catch(e => {
+				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
+			await createReaction(user, note, ps.reaction).catch(e => {
+				if (e.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') throw new ApiError(meta.errors.alreadyReacted);
+				if (e.id === 'e70412a4-7197-4726-8e74-f3e0deb92aa7') throw new ApiError(meta.errors.youHaveBeenBlocked);
+				throw e;
+			});
+			return;
+		});
+	}
+}

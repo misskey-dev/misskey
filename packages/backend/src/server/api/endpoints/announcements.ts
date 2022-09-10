@@ -1,5 +1,5 @@
-import { Announcements, AnnouncementReads } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Announcements, AnnouncementReads } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../common/make-pagination-query.js';
 
@@ -67,27 +67,32 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
-	const announcements = await query.take(ps.limit).getMany();
+			const announcements = await query.take(ps.limit).getMany();
 
-	if (user) {
-		const reads = (await AnnouncementReads.findBy({
-			userId: user.id,
-		})).map(x => x.announcementId);
+			if (user) {
+				const reads = (await AnnouncementReads.findBy({
+					userId: user.id,
+				})).map(x => x.announcementId);
 
-		for (const announcement of announcements) {
-			(announcement as any).isRead = reads.includes(announcement.id);
-		}
+				for (const announcement of announcements) {
+					(announcement as any).isRead = reads.includes(announcement.id);
+				}
+			}
+
+			return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
+				...a,
+				createdAt: a.createdAt.toISOString(),
+				updatedAt: a.updatedAt?.toISOString() ?? null,
+			}));
+		});
 	}
-
-	return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
-		...a,
-		createdAt: a.createdAt.toISOString(),
-		updatedAt: a.updatedAt?.toISOString() ?? null,
-	}));
-});
+}

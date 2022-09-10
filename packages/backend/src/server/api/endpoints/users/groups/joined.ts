@@ -1,6 +1,6 @@
 import { Not, In } from 'typeorm';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -33,20 +33,25 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const ownedGroups = await UserGroups.findBy({
-		userId: me.id,
-	});
+			const ownedGroups = await UserGroups.findBy({
+				userId: me.id,
+			});
 
-	const joinings = await UserGroupJoinings.findBy({
-		userId: me.id,
-		...(ownedGroups.length > 0 ? {
-			userGroupId: Not(In(ownedGroups.map(x => x.id))),
-		} : {}),
-	});
+			const joinings = await UserGroupJoinings.findBy({
+				userId: me.id,
+				...(ownedGroups.length > 0 ? {
+					userGroupId: Not(In(ownedGroups.map(x => x.id))),
+				} : {}),
+			});
 
-	return await Promise.all(joinings.map(x => UserGroups.pack(x.userGroupId)));
-});
+			return await Promise.all(joinings.map(x => UserGroups.pack(x.userGroupId)));
+		});
+	}
+}

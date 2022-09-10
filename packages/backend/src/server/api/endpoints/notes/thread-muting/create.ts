@@ -1,7 +1,7 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { Notes, NoteThreadMutings } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import readNote from '@/services/note/read.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
@@ -34,29 +34,34 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+			const note = await getNote(ps.noteId).catch(e => {
+				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
 
-	const mutedNotes = await Notes.find({
-		where: [{
-			id: note.threadId || note.id,
-		}, {
-			threadId: note.threadId || note.id,
-		}],
-	});
+			const mutedNotes = await Notes.find({
+				where: [{
+					id: note.threadId || note.id,
+				}, {
+					threadId: note.threadId || note.id,
+				}],
+			});
 
-	await readNote(user.id, mutedNotes);
+			await readNote(user.id, mutedNotes);
 
-	await NoteThreadMutings.insert({
-		id: genId(),
-		createdAt: new Date(),
-		threadId: note.threadId || note.id,
-		userId: user.id,
-	});
-});
+			await NoteThreadMutings.insert({
+				id: genId(),
+				createdAt: new Date(),
+				threadId: note.threadId || note.id,
+				userId: user.id,
+			});
+		});
+	}
+}

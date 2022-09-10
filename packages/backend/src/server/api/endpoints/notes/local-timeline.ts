@@ -1,8 +1,9 @@
 import { Brackets } from 'typeorm';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Notes, Users } from '@/models/index.js';
-import { activeUsersChart } from '@/services/chart/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { fetchMeta } from '@/misc/fetch-meta.js';
+import type { Users } from '@/models/index.js';
+import { Notes } from '@/models/index.js';
+import { activeUsersChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
@@ -60,67 +61,72 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const m = await fetchMeta();
-	if (m.disableLocalTimeline) {
-		if (user == null || (!user.isAdmin && !user.isModerator)) {
-			throw new ApiError(meta.errors.ltlDisabled);
-		}
-	}
-
-	//#region Construct query
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
-		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
-
-	generateChannelQuery(query, user);
-	generateRepliesQuery(query, user);
-	generateVisibilityQuery(query, user);
-	if (user) generateMutedUserQuery(query, user);
-	if (user) generateMutedNoteQuery(query, user);
-	if (user) generateBlockedUserQuery(query, user);
-
-	if (ps.withFiles) {
-		query.andWhere('note.fileIds != \'{}\'');
-	}
-
-	if (ps.fileType != null) {
-		query.andWhere('note.fileIds != \'{}\'');
-		query.andWhere(new Brackets(qb => {
-			for (const type of ps.fileType!) {
-				const i = ps.fileType!.indexOf(type);
-				qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+			const m = await fetchMeta();
+			if (m.disableLocalTimeline) {
+				if (user == null || (!user.isAdmin && !user.isModerator)) {
+					throw new ApiError(meta.errors.ltlDisabled);
+				}
 			}
-		}));
 
-		if (ps.excludeNsfw) {
-			query.andWhere('note.cw IS NULL');
-			query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
-		}
+			//#region Construct query
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+
+			generateChannelQuery(query, user);
+			generateRepliesQuery(query, user);
+			generateVisibilityQuery(query, user);
+			if (user) generateMutedUserQuery(query, user);
+			if (user) generateMutedNoteQuery(query, user);
+			if (user) generateBlockedUserQuery(query, user);
+
+			if (ps.withFiles) {
+				query.andWhere('note.fileIds != \'{}\'');
+			}
+
+			if (ps.fileType != null) {
+				query.andWhere('note.fileIds != \'{}\'');
+				query.andWhere(new Brackets(qb => {
+					for (const type of ps.fileType!) {
+						const i = ps.fileType!.indexOf(type);
+						qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+					}
+				}));
+
+				if (ps.excludeNsfw) {
+					query.andWhere('note.cw IS NULL');
+					query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
+				}
+			}
+			//#endregion
+
+			const timeline = await query.take(ps.limit).getMany();
+
+			process.nextTick(() => {
+				if (user) {
+					activeUsersChart.read(user);
+				}
+			});
+
+			return await Notes.packMany(timeline, user);
+		});
 	}
-	//#endregion
-
-	const timeline = await query.take(ps.limit).getMany();
-
-	process.nextTick(() => {
-		if (user) {
-			activeUsersChart.read(user);
-		}
-	});
-
-	return await Notes.packMany(timeline, user);
-});
+}

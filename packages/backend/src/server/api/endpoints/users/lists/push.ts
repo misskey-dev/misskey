@@ -1,6 +1,6 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { pushUserToUserList } from '@/services/user-list/push.js';
 import { UserLists, UserListJoinings, Blockings } from '@/models/index.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 import { getUser } from '../../../common/getters.js';
@@ -54,46 +54,51 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	// Fetch the list
-	const userList = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: me.id,
-	});
+			// Fetch the list
+			const userList = await UserLists.findOneBy({
+				id: ps.listId,
+				userId: me.id,
+			});
 
-	if (userList == null) {
-		throw new ApiError(meta.errors.noSuchList);
-	}
+			if (userList == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
 
-	// Fetch the user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
+			// Fetch the user
+			const user = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
 
-	// Check blocking
-	if (user.id !== me.id) {
-		const block = await Blockings.findOneBy({
-			blockerId: user.id,
-			blockeeId: me.id,
+			// Check blocking
+			if (user.id !== me.id) {
+				const block = await Blockings.findOneBy({
+					blockerId: user.id,
+					blockeeId: me.id,
+				});
+				if (block) {
+					throw new ApiError(meta.errors.youHaveBeenBlocked);
+				}
+			}
+
+			const exist = await UserListJoinings.findOneBy({
+				userListId: userList.id,
+				userId: user.id,
+			});
+
+			if (exist) {
+				throw new ApiError(meta.errors.alreadyAdded);
+			}
+
+			// Push the user
+			await pushUserToUserList(user, userList);
 		});
-		if (block) {
-			throw new ApiError(meta.errors.youHaveBeenBlocked);
-		}
 	}
-
-	const exist = await UserListJoinings.findOneBy({
-		userListId: userList.id,
-		userId: user.id,
-	});
-
-	if (exist) {
-		throw new ApiError(meta.errors.alreadyAdded);
-	}
-
-	// Push the user
-	await pushUserToUserList(user, userList);
-});
+}

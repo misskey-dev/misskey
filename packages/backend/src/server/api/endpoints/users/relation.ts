@@ -1,5 +1,5 @@
-import { Users } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -116,13 +116,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
+			const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
-	const relations = await Promise.all(ids.map(id => Users.getRelation(me.id, id)));
+			const relations = await Promise.all(ids.map(id => Users.getRelation(me.id, id)));
 
-	return Array.isArray(ps.userId) ? relations : relations[0];
-});
+			return Array.isArray(ps.userId) ? relations : relations[0];
+		});
+	}
+}

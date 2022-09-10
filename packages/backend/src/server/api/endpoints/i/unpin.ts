@@ -1,8 +1,8 @@
-import { removePinned } from '@/services/i/pin.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { removePinned } from '@/services/i/pin.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../error.js';
 import { Users } from '@/models/index.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account', 'notes'],
@@ -38,16 +38,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	await removePinned(user, ps.noteId).catch(e => {
-		if (e.id === 'b302d4cf-c050-400a-bbb3-be208681f40c') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+			await removePinned(user, ps.noteId).catch(e => {
+				if (e.id === 'b302d4cf-c050-400a-bbb3-be208681f40c') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
 
-	return await Users.pack<true, true>(user.id, user, {
-		detail: true,
-	});
-});
+			return await Users.pack<true, true>(user.id, user, {
+				detail: true,
+			});
+		});
+	}
+}

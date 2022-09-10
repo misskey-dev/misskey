@@ -1,6 +1,6 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { Pages, PageLikes } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -44,36 +44,41 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const page = await Pages.findOneBy({ id: ps.pageId });
-	if (page == null) {
-		throw new ApiError(meta.errors.noSuchPage);
+			const page = await Pages.findOneBy({ id: ps.pageId });
+			if (page == null) {
+				throw new ApiError(meta.errors.noSuchPage);
+			}
+
+			if (page.userId === user.id) {
+				throw new ApiError(meta.errors.yourPage);
+			}
+
+			// if already liked
+			const exist = await PageLikes.findOneBy({
+				pageId: page.id,
+				userId: user.id,
+			});
+
+			if (exist != null) {
+				throw new ApiError(meta.errors.alreadyLiked);
+			}
+
+			// Create like
+			await PageLikes.insert({
+				id: genId(),
+				createdAt: new Date(),
+				pageId: page.id,
+				userId: user.id,
+			});
+
+			Pages.increment({ id: page.id }, 'likedCount', 1);
+		});
 	}
-
-	if (page.userId === user.id) {
-		throw new ApiError(meta.errors.yourPage);
-	}
-
-	// if already liked
-	const exist = await PageLikes.findOneBy({
-		pageId: page.id,
-		userId: user.id,
-	});
-
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyLiked);
-	}
-
-	// Create like
-	await PageLikes.insert({
-		id: genId(),
-		createdAt: new Date(),
-		pageId: page.id,
-		userId: user.id,
-	});
-
-	Pages.increment({ id: page.id }, 'likedCount', 1);
-});
+}

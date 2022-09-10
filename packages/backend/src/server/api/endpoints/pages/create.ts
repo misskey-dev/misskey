@@ -1,8 +1,8 @@
 import ms from 'ms';
+import { Inject, Injectable } from '@nestjs/common';
 import { Pages, DriveFiles } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { Page } from '@/models/entities/page.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -63,48 +63,53 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	let eyeCatchingImage = null;
-	if (ps.eyeCatchingImageId != null) {
-		eyeCatchingImage = await DriveFiles.findOneBy({
-			id: ps.eyeCatchingImageId,
-			userId: user.id,
+			let eyeCatchingImage = null;
+			if (ps.eyeCatchingImageId != null) {
+				eyeCatchingImage = await DriveFiles.findOneBy({
+					id: ps.eyeCatchingImageId,
+					userId: user.id,
+				});
+
+				if (eyeCatchingImage == null) {
+					throw new ApiError(meta.errors.noSuchFile);
+				}
+			}
+
+			await Pages.findBy({
+				userId: user.id,
+				name: ps.name,
+			}).then(result => {
+				if (result.length > 0) {
+					throw new ApiError(meta.errors.nameAlreadyExists);
+				}
+			});
+
+			const page = await Pages.insert(new Page({
+				id: genId(),
+				createdAt: new Date(),
+				updatedAt: new Date(),
+				title: ps.title,
+				name: ps.name,
+				summary: ps.summary,
+				content: ps.content,
+				variables: ps.variables,
+				script: ps.script,
+				eyeCatchingImageId: eyeCatchingImage ? eyeCatchingImage.id : null,
+				userId: user.id,
+				visibility: 'public',
+				alignCenter: ps.alignCenter,
+				hideTitleWhenPinned: ps.hideTitleWhenPinned,
+				font: ps.font,
+			})).then(x => Pages.findOneByOrFail(x.identifiers[0]));
+
+			return await Pages.pack(page);
 		});
-
-		if (eyeCatchingImage == null) {
-			throw new ApiError(meta.errors.noSuchFile);
-		}
 	}
-
-	await Pages.findBy({
-		userId: user.id,
-		name: ps.name,
-	}).then(result => {
-		if (result.length > 0) {
-			throw new ApiError(meta.errors.nameAlreadyExists);
-		}
-	});
-
-	const page = await Pages.insert(new Page({
-		id: genId(),
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		title: ps.title,
-		name: ps.name,
-		summary: ps.summary,
-		content: ps.content,
-		variables: ps.variables,
-		script: ps.script,
-		eyeCatchingImageId: eyeCatchingImage ? eyeCatchingImage.id : null,
-		userId: user.id,
-		visibility: 'public',
-		alignCenter: ps.alignCenter,
-		hideTitleWhenPinned: ps.hideTitleWhenPinned,
-		font: ps.font,
-	})).then(x => Pages.findOneByOrFail(x.identifiers[0]));
-
-	return await Pages.pack(page);
-});
+}

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { createExportFollowingJob } from '@/queue/index.js';
-import ms from 'ms';
 
 export const meta = {
 	secure: true,
@@ -25,9 +25,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	createExportFollowingJob(user, ps.excludeMuting, ps.excludeInactive);
-});
+			createExportFollowingJob(user, ps.excludeMuting, ps.excludeInactive);
+		});
+	}
+}

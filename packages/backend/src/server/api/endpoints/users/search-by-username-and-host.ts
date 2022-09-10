@@ -1,8 +1,8 @@
 import { Brackets } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { Followings, Users } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
-import { User } from '@/models/entities/user.js';
-import { Inject, Injectable } from '@nestjs/common';
+import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -43,81 +43,86 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
+			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
-	if (ps.host) {
-		const q = Users.createQueryBuilder('user')
-			.where('user.isSuspended = FALSE')
-			.andWhere('user.host LIKE :host', { host: ps.host.toLowerCase() + '%' });
+			if (ps.host) {
+				const q = Users.createQueryBuilder('user')
+					.where('user.isSuspended = FALSE')
+					.andWhere('user.host LIKE :host', { host: ps.host.toLowerCase() + '%' });
 
-		if (ps.username) {
-			q.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' });
-		}
+				if (ps.username) {
+					q.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' });
+				}
 
-		q.andWhere('user.updatedAt IS NOT NULL');
-		q.orderBy('user.updatedAt', 'DESC');
+				q.andWhere('user.updatedAt IS NOT NULL');
+				q.orderBy('user.updatedAt', 'DESC');
 
-		const users = await q.take(ps.limit).getMany();
+				const users = await q.take(ps.limit).getMany();
 
-		return await Users.packMany(users, me, { detail: ps.detail });
-	} else if (ps.username) {
-		let users: User[] = [];
+				return await Users.packMany(users, me, { detail: ps.detail });
+			} else if (ps.username) {
+				let users: User[] = [];
 
-		if (me) {
-			const followingQuery = Followings.createQueryBuilder('following')
-				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: me.id });
+				if (me) {
+					const followingQuery = Followings.createQueryBuilder('following')
+						.select('following.followeeId')
+						.where('following.followerId = :followerId', { followerId: me.id });
 
-			const query = Users.createQueryBuilder('user')
-				.where(`user.id IN (${ followingQuery.getQuery() })`)
-				.andWhere('user.id != :meId', { meId: me.id })
-				.andWhere('user.isSuspended = FALSE')
-				.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
-				.andWhere(new Brackets(qb => { qb
-					.where('user.updatedAt IS NULL')
-					.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
-				}));
+					const query = Users.createQueryBuilder('user')
+						.where(`user.id IN (${ followingQuery.getQuery() })`)
+						.andWhere('user.id != :meId', { meId: me.id })
+						.andWhere('user.isSuspended = FALSE')
+						.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
+						.andWhere(new Brackets(qb => { qb
+							.where('user.updatedAt IS NULL')
+							.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+						}));
 
-			query.setParameters(followingQuery.getParameters());
+					query.setParameters(followingQuery.getParameters());
 
-			users = await query
-				.orderBy('user.usernameLower', 'ASC')
-				.take(ps.limit)
-				.getMany();
+					users = await query
+						.orderBy('user.usernameLower', 'ASC')
+						.take(ps.limit)
+						.getMany();
 
-			if (users.length < ps.limit) {
-				const otherQuery = await Users.createQueryBuilder('user')
-					.where(`user.id NOT IN (${ followingQuery.getQuery() })`)
-					.andWhere('user.id != :meId', { meId: me.id })
-					.andWhere('user.isSuspended = FALSE')
-					.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
-					.andWhere('user.updatedAt IS NOT NULL');
+					if (users.length < ps.limit) {
+						const otherQuery = await Users.createQueryBuilder('user')
+							.where(`user.id NOT IN (${ followingQuery.getQuery() })`)
+							.andWhere('user.id != :meId', { meId: me.id })
+							.andWhere('user.isSuspended = FALSE')
+							.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
+							.andWhere('user.updatedAt IS NOT NULL');
 
-				otherQuery.setParameters(followingQuery.getParameters());
+						otherQuery.setParameters(followingQuery.getParameters());
 
-				const otherUsers = await otherQuery
-					.orderBy('user.updatedAt', 'DESC')
-					.take(ps.limit - users.length)
-					.getMany();
+						const otherUsers = await otherQuery
+							.orderBy('user.updatedAt', 'DESC')
+							.take(ps.limit - users.length)
+							.getMany();
 
-				users = users.concat(otherUsers);
+						users = users.concat(otherUsers);
+					}
+				} else {
+					users = await Users.createQueryBuilder('user')
+						.where('user.isSuspended = FALSE')
+						.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
+						.andWhere('user.updatedAt IS NOT NULL')
+						.orderBy('user.updatedAt', 'DESC')
+						.take(ps.limit - users.length)
+						.getMany();
+				}
+
+				return await Users.packMany(users, me, { detail: !!ps.detail });
 			}
-		} else {
-			users = await Users.createQueryBuilder('user')
-				.where('user.isSuspended = FALSE')
-				.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
-				.andWhere('user.updatedAt IS NOT NULL')
-				.orderBy('user.updatedAt', 'DESC')
-				.take(ps.limit - users.length)
-				.getMany();
-		}
 
-		return await Users.packMany(users, me, { detail: !!ps.detail });
+			return [];
+		});
 	}
-
-	return [];
-});
+}

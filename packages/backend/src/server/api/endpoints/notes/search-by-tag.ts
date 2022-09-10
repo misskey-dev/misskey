@@ -1,8 +1,8 @@
 import { Brackets } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { Notes } from '@/models/index.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
@@ -70,78 +70,83 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	generateVisibilityQuery(query, me);
-	if (me) generateMutedUserQuery(query, me);
-	if (me) generateBlockedUserQuery(query, me);
+			generateVisibilityQuery(query, me);
+			if (me) generateMutedUserQuery(query, me);
+			if (me) generateBlockedUserQuery(query, me);
 
-	try {
-		if (ps.tag) {
-			if (!safeForSql(ps.tag)) throw 'Injection';
-			query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
-		} else {
-			query.andWhere(new Brackets(qb => {
-				for (const tags of ps.query!) {
-					qb.orWhere(new Brackets(qb => {
-						for (const tag of tags) {
-							if (!safeForSql(tag)) throw 'Injection';
-							qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
+			try {
+				if (ps.tag) {
+					if (!safeForSql(ps.tag)) throw 'Injection';
+					query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
+				} else {
+					query.andWhere(new Brackets(qb => {
+						for (const tags of ps.query!) {
+							qb.orWhere(new Brackets(qb => {
+								for (const tag of tags) {
+									if (!safeForSql(tag)) throw 'Injection';
+									qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
+								}
+							}));
 						}
 					}));
 				}
-			}));
-		}
-	} catch (e) {
-		if (e === 'Injection') return [];
-		throw e;
+			} catch (e) {
+				if (e === 'Injection') return [];
+				throw e;
+			}
+
+			if (ps.reply != null) {
+				if (ps.reply) {
+					query.andWhere('note.replyId IS NOT NULL');
+				} else {
+					query.andWhere('note.replyId IS NULL');
+				}
+			}
+
+			if (ps.renote != null) {
+				if (ps.renote) {
+					query.andWhere('note.renoteId IS NOT NULL');
+				} else {
+					query.andWhere('note.renoteId IS NULL');
+				}
+			}
+
+			if (ps.withFiles) {
+				query.andWhere('note.fileIds != \'{}\'');
+			}
+
+			if (ps.poll != null) {
+				if (ps.poll) {
+					query.andWhere('note.hasPoll = TRUE');
+				} else {
+					query.andWhere('note.hasPoll = FALSE');
+				}
+			}
+
+			// Search notes
+			const notes = await query.take(ps.limit).getMany();
+
+			return await Notes.packMany(notes, me);
+		});
 	}
-
-	if (ps.reply != null) {
-		if (ps.reply) {
-			query.andWhere('note.replyId IS NOT NULL');
-		} else {
-			query.andWhere('note.replyId IS NULL');
-		}
-	}
-
-	if (ps.renote != null) {
-		if (ps.renote) {
-			query.andWhere('note.renoteId IS NOT NULL');
-		} else {
-			query.andWhere('note.renoteId IS NULL');
-		}
-	}
-
-	if (ps.withFiles) {
-		query.andWhere('note.fileIds != \'{}\'');
-	}
-
-	if (ps.poll != null) {
-		if (ps.poll) {
-			query.andWhere('note.hasPoll = TRUE');
-		} else {
-			query.andWhere('note.hasPoll = FALSE');
-		}
-	}
-
-	// Search notes
-	const notes = await query.take(ps.limit).getMany();
-
-	return await Notes.packMany(notes, me);
-});
+}

@@ -2,8 +2,8 @@ import * as os from 'node:os';
 import si from 'systeminformation';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { redisClient } from '../../../../db/redis.js';
 import { db } from '@/db/postgre.js';
+import { redisClient } from '../../../../db/redis.js';
 
 export const meta = {
 	requireCredential: true,
@@ -95,34 +95,45 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async () => {
-	const memStats = await si.mem();
-	const fsStats = await si.fsSize();
-	const netInterface = await si.networkInterfaceDefault();
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
 
-	const redisServerInfo = await redisClient.info('Server');
-	const m = redisServerInfo.match(new RegExp('^redis_version:(.*)', 'm'));
-	const redis_version = m?.[1];
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async () => {
+			const memStats = await si.mem();
+			const fsStats = await si.fsSize();
+			const netInterface = await si.networkInterfaceDefault();
 
-	return {
-		machine: os.hostname(),
-		os: os.platform(),
-		node: process.version,
-		psql: await db.query('SHOW server_version').then(x => x[0].server_version),
-		redis: redis_version,
-		cpu: {
-			model: os.cpus()[0].model,
-			cores: os.cpus().length,
-		},
-		mem: {
-			total: memStats.total,
-		},
-		fs: {
-			total: fsStats[0].size,
-			used: fsStats[0].used,
-		},
-		net: {
-			interface: netInterface,
-		},
-	};
-});
+			const redisServerInfo = await redisClient.info('Server');
+			const m = redisServerInfo.match(new RegExp('^redis_version:(.*)', 'm'));
+			const redis_version = m?.[1];
+
+			return {
+				machine: os.hostname(),
+				os: os.platform(),
+				node: process.version,
+				psql: await db.query('SHOW server_version').then(x => x[0].server_version),
+				redis: redis_version,
+				cpu: {
+					model: os.cpus()[0].model,
+					cores: os.cpus().length,
+				},
+				mem: {
+					total: memStats.total,
+				},
+				fs: {
+					total: fsStats[0].size,
+					used: fsStats[0].used,
+				},
+				net: {
+					interface: netInterface,
+				},
+			};
+		});
+	}
+}

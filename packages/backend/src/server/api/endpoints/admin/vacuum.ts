@@ -23,21 +23,26 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const params: string[] = [];
+			const params: string[] = [];
 
-	if (ps.full) {
-		params.push('FULL');
+			if (ps.full) {
+				params.push('FULL');
+			}
+
+			if (ps.analyze) {
+				params.push('ANALYZE');
+			}
+
+			db.query('VACUUM ' + params.join(' '));
+
+			insertModerationLog(me, 'vacuum', ps);
+		});
 	}
-
-	if (ps.analyze) {
-		params.push('ANALYZE');
-	}
-
-	db.query('VACUUM ' + params.join(' '));
-
-	insertModerationLog(me, 'vacuum', ps);
-});
+}

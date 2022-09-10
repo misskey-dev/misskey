@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MessagingMessages, UserGroups, UserGroupJoinings, Users } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
-import { MessagingMessages, UserGroups, UserGroupJoinings, Users } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Brackets } from 'typeorm';
 import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
 
 export const meta = {
@@ -73,76 +73,81 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	if (ps.userId != null) {
-		// Fetch recipient (user)
-		const recipient = await getUser(ps.userId).catch(e => {
-			if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-			throw e;
-		});
+			if (ps.userId != null) {
+				// Fetch recipient (user)
+				const recipient = await getUser(ps.userId).catch(e => {
+					if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+					throw e;
+				});
 
-		const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
-			.andWhere(new Brackets(qb => { qb
-				.where(new Brackets(qb => { qb
-					.where('message.userId = :meId')
-					.andWhere('message.recipientId = :recipientId');
-				}))
-				.orWhere(new Brackets(qb => { qb
-					.where('message.userId = :recipientId')
-					.andWhere('message.recipientId = :meId');
-				}));
-			}))
-			.setParameter('meId', user.id)
-			.setParameter('recipientId', recipient.id);
+				const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+					.andWhere(new Brackets(qb => { qb
+						.where(new Brackets(qb => { qb
+							.where('message.userId = :meId')
+							.andWhere('message.recipientId = :recipientId');
+						}))
+						.orWhere(new Brackets(qb => { qb
+							.where('message.userId = :recipientId')
+							.andWhere('message.recipientId = :meId');
+						}));
+					}))
+					.setParameter('meId', user.id)
+					.setParameter('recipientId', recipient.id);
 
-		const messages = await query.take(ps.limit).getMany();
+				const messages = await query.take(ps.limit).getMany();
 
-		// Mark all as read
-		if (ps.markAsRead) {
-			readUserMessagingMessage(user.id, recipient.id, messages.filter(m => m.recipientId === user.id).map(x => x.id));
+				// Mark all as read
+				if (ps.markAsRead) {
+					readUserMessagingMessage(user.id, recipient.id, messages.filter(m => m.recipientId === user.id).map(x => x.id));
 
-			// リモートユーザーとのメッセージだったら既読配信
-			if (Users.isLocalUser(user) && Users.isRemoteUser(recipient)) {
-				deliverReadActivity(user, recipient, messages);
+					// リモートユーザーとのメッセージだったら既読配信
+					if (Users.isLocalUser(user) && Users.isRemoteUser(recipient)) {
+						deliverReadActivity(user, recipient, messages);
+					}
+				}
+
+				return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
+					populateRecipient: false,
+				})));
+			} else if (ps.groupId != null) {
+				// Fetch recipient (group)
+				const recipientGroup = await UserGroups.findOneBy({ id: ps.groupId });
+
+				if (recipientGroup == null) {
+					throw new ApiError(meta.errors.noSuchGroup);
+				}
+
+				// check joined
+				const joining = await UserGroupJoinings.findOneBy({
+					userId: user.id,
+					userGroupId: recipientGroup.id,
+				});
+
+				if (joining == null) {
+					throw new ApiError(meta.errors.groupAccessDenied);
+				}
+
+				const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+					.andWhere('message.groupId = :groupId', { groupId: recipientGroup.id });
+
+				const messages = await query.take(ps.limit).getMany();
+
+				// Mark all as read
+				if (ps.markAsRead) {
+					readGroupMessagingMessage(user.id, recipientGroup.id, messages.map(x => x.id));
+				}
+
+				return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
+					populateGroup: false,
+				})));
 			}
-		}
-
-		return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
-			populateRecipient: false,
-		})));
-	} else if (ps.groupId != null) {
-		// Fetch recipient (group)
-		const recipientGroup = await UserGroups.findOneBy({ id: ps.groupId });
-
-		if (recipientGroup == null) {
-			throw new ApiError(meta.errors.noSuchGroup);
-		}
-
-		// check joined
-		const joining = await UserGroupJoinings.findOneBy({
-			userId: user.id,
-			userGroupId: recipientGroup.id,
 		});
-
-		if (joining == null) {
-			throw new ApiError(meta.errors.groupAccessDenied);
-		}
-
-		const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
-			.andWhere(`message.groupId = :groupId`, { groupId: recipientGroup.id });
-
-		const messages = await query.take(ps.limit).getMany();
-
-		// Mark all as read
-		if (ps.markAsRead) {
-			readGroupMessagingMessage(user.id, recipientGroup.id, messages.map(x => x.id));
-		}
-
-		return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
-			populateGroup: false,
-		})));
 	}
-});
+}

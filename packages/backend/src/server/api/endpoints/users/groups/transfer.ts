@@ -1,5 +1,5 @@
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 import { getUser } from '../../../common/getters.js';
@@ -53,38 +53,43 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	// Fetch the group
-	const userGroup = await UserGroups.findOneBy({
-		id: ps.groupId,
-		userId: me.id,
-	});
+			// Fetch the group
+			const userGroup = await UserGroups.findOneBy({
+				id: ps.groupId,
+				userId: me.id,
+			});
 
-	if (userGroup == null) {
-		throw new ApiError(meta.errors.noSuchGroup);
+			if (userGroup == null) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			// Fetch the user
+			const user = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
+
+			const joining = await UserGroupJoinings.findOneBy({
+				userGroupId: userGroup.id,
+				userId: user.id,
+			});
+
+			if (joining == null) {
+				throw new ApiError(meta.errors.noSuchGroupMember);
+			}
+
+			await UserGroups.update(userGroup.id, {
+				userId: ps.userId,
+			});
+
+			return await UserGroups.pack(userGroup.id);
+		});
 	}
-
-	// Fetch the user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	const joining = await UserGroupJoinings.findOneBy({
-		userGroupId: userGroup.id,
-		userId: user.id,
-	});
-
-	if (joining == null) {
-		throw new ApiError(meta.errors.noSuchGroupMember);
-	}
-
-	await UserGroups.update(userGroup.id, {
-		userId: ps.userId,
-	});
-
-	return await UserGroups.pack(userGroup.id);
-});
+}

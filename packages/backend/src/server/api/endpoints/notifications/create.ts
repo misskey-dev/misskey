@@ -1,5 +1,5 @@
-import { createNotification } from '@/services/create-notification.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { createNotification } from '@/services/create-notification.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -24,11 +24,22 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user, token) => {
-	createNotification(user.id, 'app', {
-		appAccessTokenId: token ? token.id : null,
-		customBody: ps.body,
-		customHeader: ps.header,
-		customIcon: ps.icon,
-	});
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user, token) => {
+			createNotification(user.id, 'app', {
+				appAccessTokenId: token ? token.id : null,
+				customBody: ps.body,
+				customHeader: ps.header,
+				customIcon: ps.icon,
+			});
+		});
+	}
+}

@@ -43,24 +43,29 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const jobs = await inboxQueue.getJobs(['delayed']);
+			const jobs = await inboxQueue.getJobs(['delayed']);
 
-	const res = [] as [string, number][];
+			const res = [] as [string, number][];
 
-	for (const job of jobs) {
-		const host = new URL(job.data.signature.keyId).host;
-		if (res.find(x => x[0] === host)) {
+			for (const job of jobs) {
+				const host = new URL(job.data.signature.keyId).host;
+				if (res.find(x => x[0] === host)) {
 			res.find(x => x[0] === host)![1]++;
-		} else {
-			res.push([host, 1]);
-		}
+				} else {
+					res.push([host, 1]);
+				}
+			}
+
+			res.sort((a, b) => b[1] - a[1]);
+
+			return res;
+		});
 	}
-
-	res.sort((a, b) => b[1] - a[1]);
-
-	return res;
-});
+}

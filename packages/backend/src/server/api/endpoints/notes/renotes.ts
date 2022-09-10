@@ -1,5 +1,5 @@
-import { Notes } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../common/getters.js';
 import { ApiError } from '../../error.js';
@@ -47,34 +47,39 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+			const note = await getNote(ps.noteId).catch(e => {
+				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
 
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere('note.renoteId = :renoteId', { renoteId: note.id })
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+				.andWhere('note.renoteId = :renoteId', { renoteId: note.id })
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	generateVisibilityQuery(query, user);
-	if (user) generateMutedUserQuery(query, user);
-	if (user) generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, user);
+			if (user) generateMutedUserQuery(query, user);
+			if (user) generateBlockedUserQuery(query, user);
 
-	const renotes = await query.take(ps.limit).getMany();
+			const renotes = await query.take(ps.limit).getMany();
 
-	return await Notes.packMany(renotes, user);
-});
+			return await Notes.packMany(renotes, user);
+		});
+	}
+}

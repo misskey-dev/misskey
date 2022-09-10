@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Emojis } from '@/models/index.js';
-import { In } from 'typeorm';
-import { ApiError } from '../../../error.js';
 import { db } from '@/db/postgre.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -29,16 +29,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	await Emojis.update({
-		id: In(ps.ids),
-	}, {
-		updatedAt: new Date(),
-		aliases: ps.aliases,
-	});
+			await Emojis.update({
+				id: In(ps.ids),
+			}, {
+				updatedAt: new Date(),
+				aliases: ps.aliases,
+			});
 
-	await db.queryResultCache!.remove(['meta_emojis']);
-});
+			await db.queryResultCache!.remove(['meta_emojis']);
+		});
+	}
+}

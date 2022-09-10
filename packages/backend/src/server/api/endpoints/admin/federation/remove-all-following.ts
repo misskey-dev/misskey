@@ -22,20 +22,25 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const followings = await Followings.findBy({
-		followerHost: ps.host,
-	});
+			const followings = await Followings.findBy({
+				followerHost: ps.host,
+			});
 
-	const pairs = await Promise.all(followings.map(f => Promise.all([
-		Users.findOneByOrFail({ id: f.followerId }),
-		Users.findOneByOrFail({ id: f.followeeId }),
-	])));
+			const pairs = await Promise.all(followings.map(f => Promise.all([
+				Users.findOneByOrFail({ id: f.followerId }),
+				Users.findOneByOrFail({ id: f.followeeId }),
+			])));
 
-	for (const pair of pairs) {
-		deleteFollowing(pair[0], pair[1]);
+			for (const pair of pairs) {
+				deleteFollowing(pair[0], pair[1]);
+			}
+		});
 	}
-});
+}

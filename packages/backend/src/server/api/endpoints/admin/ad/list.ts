@@ -24,14 +24,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Ads.createQueryBuilder('ad'), ps.sinceId, ps.untilId)
-		.andWhere('ad.expiresAt > :now', { now: new Date() });
+			const query = makePaginationQuery(Ads.createQueryBuilder('ad'), ps.sinceId, ps.untilId)
+				.andWhere('ad.expiresAt > :now', { now: new Date() });
 
-	const ads = await query.take(ps.limit).getMany();
+			const ads = await query.take(ps.limit).getMany();
 
-	return ads;
-});
+			return ads;
+		});
+	}
+}

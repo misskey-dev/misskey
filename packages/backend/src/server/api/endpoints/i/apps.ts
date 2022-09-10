@@ -20,28 +20,33 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = AccessTokens.createQueryBuilder('token')
-		.where('token.userId = :userId', { userId: user.id });
+			const query = AccessTokens.createQueryBuilder('token')
+				.where('token.userId = :userId', { userId: user.id });
 
-	switch (ps.sort) {
-		case '+createdAt': query.orderBy('token.createdAt', 'DESC'); break;
-		case '-createdAt': query.orderBy('token.createdAt', 'ASC'); break;
-		case '+lastUsedAt': query.orderBy('token.lastUsedAt', 'DESC'); break;
-		case '-lastUsedAt': query.orderBy('token.lastUsedAt', 'ASC'); break;
-		default: query.orderBy('token.id', 'ASC'); break;
+			switch (ps.sort) {
+				case '+createdAt': query.orderBy('token.createdAt', 'DESC'); break;
+				case '-createdAt': query.orderBy('token.createdAt', 'ASC'); break;
+				case '+lastUsedAt': query.orderBy('token.lastUsedAt', 'DESC'); break;
+				case '-lastUsedAt': query.orderBy('token.lastUsedAt', 'ASC'); break;
+				default: query.orderBy('token.id', 'ASC'); break;
+			}
+
+			const tokens = await query.getMany();
+
+			return await Promise.all(tokens.map(token => ({
+				id: token.id,
+				name: token.name,
+				createdAt: token.createdAt,
+				lastUsedAt: token.lastUsedAt,
+				permission: token.permission,
+			})));
+		});
 	}
-
-	const tokens = await query.getMany();
-
-	return await Promise.all(tokens.map(token => ({
-		id: token.id,
-		name: token.name,
-		createdAt: token.createdAt,
-		lastUsedAt: token.lastUsedAt,
-		permission: token.permission,
-	})));
-});
+}

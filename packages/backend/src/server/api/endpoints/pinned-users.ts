@@ -1,9 +1,9 @@
 import { IsNull } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { Users } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import * as Acct from '@/misc/acct.js';
-import { User } from '@/models/entities/user.js';
-import { Inject, Injectable } from '@nestjs/common';
+import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -32,16 +32,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const meta = await fetchMeta();
+			const meta = await fetchMeta();
 
-	const users = await Promise.all(meta.pinnedUsers.map(acct => Acct.parse(acct)).map(acct => Users.findOneBy({
-		usernameLower: acct.username.toLowerCase(),
-		host: acct.host ?? IsNull(),
-	})));
+			const users = await Promise.all(meta.pinnedUsers.map(acct => Acct.parse(acct)).map(acct => Users.findOneBy({
+				usernameLower: acct.username.toLowerCase(),
+				host: acct.host ?? IsNull(),
+			})));
 
-	return await Users.packMany(users.filter(x => x !== undefined) as User[], me, { detail: true });
-});
+			return await Users.packMany(users.filter(x => x !== undefined) as User[], me, { detail: true });
+		});
+	}
+}

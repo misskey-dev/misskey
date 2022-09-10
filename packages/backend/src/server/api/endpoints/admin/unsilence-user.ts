@@ -23,23 +23,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+			const user = await Users.findOneBy({ id: ps.userId });
 
-	if (user == null) {
-		throw new Error('user not found');
+			if (user == null) {
+				throw new Error('user not found');
+			}
+
+			await Users.update(user.id, {
+				isSilenced: false,
+			});
+
+			publishInternalEvent('userChangeSilencedState', { id: user.id, isSilenced: false });
+
+			insertModerationLog(me, 'unsilence', {
+				targetId: user.id,
+			});
+		});
 	}
-
-	await Users.update(user.id, {
-		isSilenced: false,
-	});
-
-	publishInternalEvent('userChangeSilencedState', { id: user.id, isSilenced: false });
-
-	insertModerationLog(me, 'unsilence', {
-		targetId: user.id,
-	});
-});
+}

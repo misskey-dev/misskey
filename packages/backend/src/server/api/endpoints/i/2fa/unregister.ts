@@ -21,21 +21,26 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
 
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
+			// Compare password
+			const same = await bcrypt.compare(ps.password, profile.password!);
 
-	if (!same) {
-		throw new Error('incorrect password');
+			if (!same) {
+				throw new Error('incorrect password');
+			}
+
+			await UserProfiles.update(user.id, {
+				twoFactorSecret: null,
+				twoFactorEnabled: false,
+			});
+		});
 	}
-
-	await UserProfiles.update(user.id, {
-		twoFactorSecret: null,
-		twoFactorEnabled: false,
-	});
-});
+}

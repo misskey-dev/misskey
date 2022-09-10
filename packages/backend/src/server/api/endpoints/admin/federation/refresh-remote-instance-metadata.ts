@@ -23,15 +23,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const instance = await Instances.findOneBy({ host: toPuny(ps.host) });
+			const instance = await Instances.findOneBy({ host: toPuny(ps.host) });
 
-	if (instance == null) {
-		throw new Error('instance not found');
+			if (instance == null) {
+				throw new Error('instance not found');
+			}
+
+			fetchInstanceMetadata(instance, true);
+		});
 	}
-
-	fetchInstanceMetadata(instance, true);
-});
+}

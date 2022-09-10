@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import Resolver from '@/remote/activitypub/resolver.js';
 import { ApiError } from '../../error.js';
-import ms from 'ms';
 
 export const meta = {
 	tags: ['federation'],
@@ -35,11 +35,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const resolver = new Resolver();
-	const object = await resolver.resolve(ps.uri);
-	return object;
-});
+			const resolver = new Resolver();
+			const object = await resolver.resolve(ps.uri);
+			return object;
+		});
+	}
+}

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
 import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Users, UserProfiles } from '@/models/index.js';
 
 export const meta = {
@@ -36,32 +36,37 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+			const user = await Users.findOneBy({ id: ps.userId });
 
-	if (user == null) {
-		throw new Error('user not found');
+			if (user == null) {
+				throw new Error('user not found');
+			}
+
+			if (user.isAdmin) {
+				throw new Error('cannot reset password of admin');
+			}
+
+			const passwd = rndstr('a-zA-Z0-9', 8);
+
+			// Generate hash of password
+			const hash = bcrypt.hashSync(passwd);
+
+			await UserProfiles.update({
+				userId: user.id,
+			}, {
+				password: hash,
+			});
+
+			return {
+				password: passwd,
+			};
+		});
 	}
-
-	if (user.isAdmin) {
-		throw new Error('cannot reset password of admin');
-	}
-
-	const passwd = rndstr('a-zA-Z0-9', 8);
-
-	// Generate hash of password
-	const hash = bcrypt.hashSync(passwd);
-
-	await UserProfiles.update({
-		userId: user.id,
-	}, {
-		password: hash,
-	});
-
-	return {
-		password: passwd,
-	};
-});
+}

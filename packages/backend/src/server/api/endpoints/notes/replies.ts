@@ -1,5 +1,5 @@
-import { Notes } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -37,29 +37,34 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere('note.replyId = :replyId', { replyId: ps.noteId })
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+				.andWhere('note.replyId = :replyId', { replyId: ps.noteId })
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	generateVisibilityQuery(query, user);
-	if (user) generateMutedUserQuery(query, user);
-	if (user) generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, user);
+			if (user) generateMutedUserQuery(query, user);
+			if (user) generateBlockedUserQuery(query, user);
 
-	const timeline = await query.take(ps.limit).getMany();
+			const timeline = await query.take(ps.limit).getMany();
 
-	return await Notes.packMany(timeline, user);
-});
+			return await Notes.packMany(timeline, user);
+		});
+	}
+}

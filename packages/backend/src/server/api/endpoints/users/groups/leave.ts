@@ -1,5 +1,5 @@
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Inject, Injectable } from '@nestjs/common';
+import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
@@ -39,22 +39,27 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('usersRepository')
+    private usersRepository: typeof Users,
+
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	// Fetch the group
-	const userGroup = await UserGroups.findOneBy({
-		id: ps.groupId,
-	});
+			// Fetch the group
+			const userGroup = await UserGroups.findOneBy({
+				id: ps.groupId,
+			});
 
-	if (userGroup == null) {
-		throw new ApiError(meta.errors.noSuchGroup);
+			if (userGroup == null) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			if (me.id === userGroup.userId) {
+				throw new ApiError(meta.errors.youAreOwner);
+			}
+
+			await UserGroupJoinings.delete({ userGroupId: userGroup.id, userId: me.id });
+		});
 	}
-
-	if (me.id === userGroup.userId) {
-		throw new ApiError(meta.errors.youAreOwner);
-	}
-
-	await UserGroupJoinings.delete({ userGroupId: userGroup.id, userId: me.id });
-});
+}
