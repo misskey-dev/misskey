@@ -1,5 +1,6 @@
 import { Brackets } from 'typeorm';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Notes } from '@/models/index.js';
 import { Note } from '@/models/entities/note.js';
@@ -151,3 +152,5 @@ export default define(meta, paramDef, async () => {
 
 	return stats;
 });
+}
+}

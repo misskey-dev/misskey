@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Hashtags } from '@/models/index.js';
 
 export const meta = {
@@ -27,8 +28,14 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const hashtags = await Hashtags.createQueryBuilder('tag')
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const hashtags = await Hashtags.createQueryBuilder('tag')
 		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
 		.orderBy('tag.count', 'DESC')
 		.groupBy('tag.id')
@@ -36,5 +43,7 @@ export default define(meta, paramDef, async (ps) => {
 		.skip(ps.offset)
 		.getMany();
 
-	return hashtags.map(tag => tag.name);
-});
+			return hashtags.map(tag => tag.name);
+		});
+	}
+}

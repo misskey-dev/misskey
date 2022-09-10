@@ -1,6 +1,7 @@
 import { Brackets } from 'typeorm';
 import { Notes } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
@@ -34,7 +35,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(new Brackets(qb => { qb
 			.where('note.replyId = :noteId', { noteId: ps.noteId })

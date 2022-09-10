@@ -1,6 +1,7 @@
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFolders } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -33,18 +34,26 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Get folder
-	const folder = await DriveFolders.findOneBy({
-		id: ps.folderId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			// Get folder
+			const folder = await DriveFolders.findOneBy({
+				id: ps.folderId,
+				userId: user.id,
+			});
 
-	if (folder == null) {
-		throw new ApiError(meta.errors.noSuchFolder);
+			if (folder == null) {
+				throw new ApiError(meta.errors.noSuchFolder);
+			}
+
+			return await DriveFolders.pack(folder, {
+				detail: true,
+			});
+		});
 	}
-
-	return await DriveFolders.pack(folder, {
-		detail: true,
-	});
-});
+}

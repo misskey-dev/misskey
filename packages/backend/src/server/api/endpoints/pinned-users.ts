@@ -3,7 +3,8 @@ import { Users } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import * as Acct from '@/misc/acct.js';
 import { User } from '@/models/entities/user.js';
-import define from '../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['users'],
@@ -28,7 +29,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
 	const meta = await fetchMeta();
 
 	const users = await Promise.all(meta.pinnedUsers.map(acct => Acct.parse(acct)).map(acct => Users.findOneBy({

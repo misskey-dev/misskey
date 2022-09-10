@@ -1,4 +1,5 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Users } from '@/models/index.js';
 import { signup } from '../../../common/signup.js';
 import { IsNull } from 'typeorm';
@@ -29,7 +30,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, _me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, _me) => {
 	const me = _me ? await Users.findOneByOrFail({ id: _me.id }) : null;
 	const noUsers = (await Users.countBy({
 		host: IsNull(),

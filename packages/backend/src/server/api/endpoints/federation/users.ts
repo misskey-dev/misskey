@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Users } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
@@ -30,13 +31,21 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const query = makePaginationQuery(Users.createQueryBuilder('user'), ps.sinceId, ps.untilId)
-		.andWhere(`user.host = :host`, { host: ps.host });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = makePaginationQuery(Users.createQueryBuilder('user'), ps.sinceId, ps.untilId)
+		.andWhere('user.host = :host', { host: ps.host });
 
-	const users = await query
+			const users = await query
 		.take(ps.limit)
 		.getMany();
 
-	return await Users.packMany(users, me, { detail: true });
-});
+			return await Users.packMany(users, me, { detail: true });
+		});
+	}
+}

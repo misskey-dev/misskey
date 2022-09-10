@@ -1,7 +1,8 @@
 import { Not, In, IsNull } from 'typeorm';
 import { maximum } from '@/prelude/array.js';
 import { Notes, Users } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
 
@@ -51,7 +52,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
 	// Lookup user
 	const user = await getUser(ps.userId).catch(e => {
 		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);

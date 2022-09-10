@@ -1,6 +1,7 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Channels, DriveFiles } from '@/models/index.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['channels'],
@@ -48,39 +49,47 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const channel = await Channels.findOneBy({
-		id: ps.channelId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const channel = await Channels.findOneBy({
+				id: ps.channelId,
+			});
 
-	if (channel == null) {
-		throw new ApiError(meta.errors.noSuchChannel);
-	}
+			if (channel == null) {
+				throw new ApiError(meta.errors.noSuchChannel);
+			}
 
-	if (channel.userId !== me.id) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
+			if (channel.userId !== me.id) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
 
-	// eslint:disable-next-line:no-unnecessary-initializer
-	let banner = undefined;
-	if (ps.bannerId != null) {
-		banner = await DriveFiles.findOneBy({
-			id: ps.bannerId,
-			userId: me.id,
+			// eslint:disable-next-line:no-unnecessary-initializer
+			let banner = undefined;
+			if (ps.bannerId != null) {
+				banner = await DriveFiles.findOneBy({
+					id: ps.bannerId,
+					userId: me.id,
+				});
+
+				if (banner == null) {
+					throw new ApiError(meta.errors.noSuchFile);
+				}
+			} else if (ps.bannerId === null) {
+				banner = null;
+			}
+
+			await Channels.update(channel.id, {
+				...(ps.name !== undefined ? { name: ps.name } : {}),
+				...(ps.description !== undefined ? { description: ps.description } : {}),
+				...(banner ? { bannerId: banner.id } : {}),
+			});
+
+			return await Channels.pack(channel.id, me);
 		});
-
-		if (banner == null) {
-			throw new ApiError(meta.errors.noSuchFile);
-		}
-	} else if (ps.bannerId === null) {
-		banner = null;
 	}
-
-	await Channels.update(channel.id, {
-		...(ps.name !== undefined ? { name: ps.name } : {}),
-		...(ps.description !== undefined ? { description: ps.description } : {}),
-		...(banner ? { bannerId: banner.id } : {}),
-	});
-
-	return await Channels.pack(channel.id, me);
-});
+}

@@ -39,7 +39,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, user) => {
 			const query = makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere('note.visibility = \'public\'')
 				.andWhere('note.localOnly = FALSE')

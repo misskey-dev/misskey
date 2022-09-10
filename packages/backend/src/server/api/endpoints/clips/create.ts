@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { genId } from '@/misc/gen-id.js';
 import { Clips } from '@/models/index.js';
 
@@ -27,15 +28,23 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const clip = await Clips.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-		isPublic: ps.isPublic,
-		description: ps.description,
-	}).then(x => Clips.findOneByOrFail(x.identifiers[0]));
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const clip = await Clips.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: user.id,
+				name: ps.name,
+				isPublic: ps.isPublic,
+				description: ps.description,
+			}).then(x => Clips.findOneByOrFail(x.identifiers[0]));
 
-	return await Clips.pack(clip);
-});
+			return await Clips.pack(clip);
+		});
+	}
+}

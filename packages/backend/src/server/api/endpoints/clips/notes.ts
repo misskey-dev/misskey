@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipNotes, Clips, Notes } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -44,20 +45,26 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const clip = await Clips.findOneBy({
-		id: ps.clipId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const clip = await Clips.findOneBy({
+				id: ps.clipId,
+			});
 
-	if (clip == null) {
-		throw new ApiError(meta.errors.noSuchClip);
-	}
+			if (clip == null) {
+				throw new ApiError(meta.errors.noSuchClip);
+			}
 
-	if (!clip.isPublic && (user == null || (clip.userId !== user.id))) {
-		throw new ApiError(meta.errors.noSuchClip);
-	}
+			if (!clip.isPublic && (user == null || (clip.userId !== user.id))) {
+				throw new ApiError(meta.errors.noSuchClip);
+			}
 
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.innerJoin(ClipNotes.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
@@ -72,15 +79,17 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 		.andWhere('clipNote.clipId = :clipId', { clipId: clip.id });
 
-	if (user) {
-		generateVisibilityQuery(query, user);
-		generateMutedUserQuery(query, user);
-		generateBlockedUserQuery(query, user);
-	}
+			if (user) {
+				generateVisibilityQuery(query, user);
+				generateMutedUserQuery(query, user);
+				generateBlockedUserQuery(query, user);
+			}
 
-	const notes = await query
+			const notes = await query
 		.take(ps.limit)
 		.getMany();
 
-	return await Notes.packMany(notes, user);
-});
+			return await Notes.packMany(notes, user);
+		});
+	}
+}

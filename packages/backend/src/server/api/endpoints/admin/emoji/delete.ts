@@ -1,4 +1,5 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Emojis } from '@/models/index.js';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { ApiError } from '../../../error.js';
@@ -28,7 +29,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
 	const emoji = await Emojis.findOneBy({ id: ps.id });
 
 	if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);

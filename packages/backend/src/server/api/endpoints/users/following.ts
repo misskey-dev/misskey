@@ -1,7 +1,8 @@
 import { IsNull } from 'typeorm';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
 import { toPunyNullable } from '@/misc/convert-host.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
@@ -66,7 +67,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
 	const user = await Users.findOneBy(ps.userId != null
 		? { id: ps.userId }
 		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });

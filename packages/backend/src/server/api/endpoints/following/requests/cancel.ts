@@ -1,9 +1,10 @@
+import { Inject, Injectable } from '@nestjs/common';
 import cancelFollowRequest from '@/services/following/requests/cancel.js';
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Users } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { ApiError } from '../../../error.js';
+import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['following', 'account'],
@@ -42,21 +43,29 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch followee
-	const followee = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			// Fetch followee
+			const followee = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
 
-	try {
-		await cancelFollowRequest(followee, user);
-	} catch (e) {
-		if (e instanceof IdentifiableError) {
-			if (e.id === '17447091-ce07-46dd-b331-c1fd4f15b1e7') throw new ApiError(meta.errors.followRequestNotFound);
-		}
-		throw e;
+			try {
+				await cancelFollowRequest(followee, user);
+			} catch (e) {
+				if (e instanceof IdentifiableError) {
+					if (e.id === '17447091-ce07-46dd-b331-c1fd4f15b1e7') throw new ApiError(meta.errors.followRequestNotFound);
+				}
+				throw e;
+			}
+
+			return await Users.pack(followee.id, user);
+		});
 	}
-
-	return await Users.pack(followee.id, user);
-});
+}

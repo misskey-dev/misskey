@@ -2,7 +2,8 @@ import { FindOptionsWhere, In, IsNull } from 'typeorm';
 import { resolveUser } from '@/remote/resolve-user.js';
 import { Users } from '@/models/index.js';
 import { User } from '@/models/entities/user.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { apiLogger } from '../../logger.js';
 import { ApiError } from '../../error.js';
 
@@ -78,7 +79,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
 	let user;
 
 	const isAdminOrModerator = me && (me.isAdmin || me.isModerator);

@@ -1,7 +1,8 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { publishDriveStream } from '@/services/stream.js';
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFolders } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -48,71 +49,79 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch folder
-	const folder = await DriveFolders.findOneBy({
-		id: ps.folderId,
-		userId: user.id,
-	});
-
-	if (folder == null) {
-		throw new ApiError(meta.errors.noSuchFolder);
-	}
-
-	if (ps.name) folder.name = ps.name;
-
-	if (ps.parentId !== undefined) {
-		if (ps.parentId === folder.id) {
-			throw new ApiError(meta.errors.recursiveNesting);
-		} else if (ps.parentId === null) {
-			folder.parentId = null;
-		} else {
-			// Get parent folder
-			const parent = await DriveFolders.findOneBy({
-				id: ps.parentId,
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			// Fetch folder
+			const folder = await DriveFolders.findOneBy({
+				id: ps.folderId,
 				userId: user.id,
 			});
 
-			if (parent == null) {
-				throw new ApiError(meta.errors.noSuchParentFolder);
+			if (folder == null) {
+				throw new ApiError(meta.errors.noSuchFolder);
 			}
 
-			// Check if the circular reference will occur
-			async function checkCircle(folderId: string): Promise<boolean> {
-				// Fetch folder
-				const folder2 = await DriveFolders.findOneBy({
-					id: folderId,
-				});
+			if (ps.name) folder.name = ps.name;
 
-				if (folder2!.id === folder!.id) {
-					return true;
-				} else if (folder2!.parentId) {
-					return await checkCircle(folder2!.parentId);
-				} else {
-					return false;
-				}
-			}
-
-			if (parent.parentId !== null) {
-				if (await checkCircle(parent.parentId)) {
+			if (ps.parentId !== undefined) {
+				if (ps.parentId === folder.id) {
 					throw new ApiError(meta.errors.recursiveNesting);
+				} else if (ps.parentId === null) {
+					folder.parentId = null;
+				} else {
+					// Get parent folder
+					const parent = await DriveFolders.findOneBy({
+						id: ps.parentId,
+						userId: user.id,
+					});
+
+					if (parent == null) {
+						throw new ApiError(meta.errors.noSuchParentFolder);
+					}
+
+					// Check if the circular reference will occur
+					async function checkCircle(folderId: string): Promise<boolean> {
+						// Fetch folder
+						const folder2 = await DriveFolders.findOneBy({
+							id: folderId,
+						});
+
+						if (folder2!.id === folder!.id) {
+							return true;
+						} else if (folder2!.parentId) {
+							return await checkCircle(folder2!.parentId);
+						} else {
+							return false;
+						}
+					}
+
+					if (parent.parentId !== null) {
+						if (await checkCircle(parent.parentId)) {
+							throw new ApiError(meta.errors.recursiveNesting);
+						}
+					}
+
+					folder.parentId = parent.id;
 				}
 			}
 
-			folder.parentId = parent.id;
-		}
+			// Update
+			DriveFolders.update(folder.id, {
+				name: folder.name,
+				parentId: folder.parentId,
+			});
+
+			const folderObj = await DriveFolders.pack(folder);
+
+			// Publish folderUpdated event
+			publishDriveStream(user.id, 'folderUpdated', folderObj);
+
+			return folderObj;
+		});
 	}
-
-	// Update
-	DriveFolders.update(folder.id, {
-		name: folder.name,
-		parentId: folder.parentId,
-	});
-
-	const folderObj = await DriveFolders.pack(folder);
-
-	// Publish folderUpdated event
-	publishDriveStream(user.id, 'folderUpdated', folderObj);
-
-	return folderObj;
-});
+}

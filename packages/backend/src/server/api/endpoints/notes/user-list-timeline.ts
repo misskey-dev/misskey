@@ -1,7 +1,8 @@
 import { Brackets } from 'typeorm';
 import { UserLists, UserListJoinings, Notes } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -52,7 +53,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	const list = await UserLists.findOneBy({
 		id: ps.listId,
 		userId: user.id,

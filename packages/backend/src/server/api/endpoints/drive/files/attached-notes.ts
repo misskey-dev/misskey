@@ -1,6 +1,7 @@
-import define from '../../../define.js';
-import { ApiError } from '../../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFiles, Notes } from '@/models/index.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['drive', 'notes'],
@@ -39,22 +40,30 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch file
-	const file = await DriveFiles.findOneBy({
-		id: ps.fileId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			// Fetch file
+			const file = await DriveFiles.findOneBy({
+				id: ps.fileId,
+				userId: user.id,
+			});
 
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
-	}
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
+			}
 
-	const notes = await Notes.createQueryBuilder('note')
+			const notes = await Notes.createQueryBuilder('note')
 		.where(':file = ANY(note.fileIds)', { file: file.id })
 		.getMany();
 
-	return await Notes.packMany(notes, user, {
-		detail: true,
-	});
-});
+			return await Notes.packMany(notes, user, {
+				detail: true,
+			});
+		});
+	}
+}

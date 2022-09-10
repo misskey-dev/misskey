@@ -7,7 +7,8 @@ import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { sendEmail } from '@/services/send-email.js';
 import { genId } from '@/misc/gen-id.js';
 import { ApiError } from '../error.js';
-import define from '../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['reset password'],
@@ -36,7 +37,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	const user = await Users.findOneBy({
 		usernameLower: ps.username.toLowerCase(),
 		host: IsNull(),

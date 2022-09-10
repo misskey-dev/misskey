@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GalleryPosts } from '@/models/index.js';
 
 export const meta = {
@@ -24,13 +25,21 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const query = GalleryPosts.createQueryBuilder('post')
-		.andWhere('post.createdAt > :date', { date: new Date(Date.now() - (1000 * 60 * 60 * 24 * 3)) })
-		.andWhere('post.likedCount > 0')
-		.orderBy('post.likedCount', 'DESC');
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = GalleryPosts.createQueryBuilder('post')
+				.andWhere('post.createdAt > :date', { date: new Date(Date.now() - (1000 * 60 * 60 * 24 * 3)) })
+				.andWhere('post.likedCount > 0')
+				.orderBy('post.likedCount', 'DESC');
 
-	const posts = await query.take(10).getMany();
+			const posts = await query.take(10).getMany();
 
-	return await GalleryPosts.packMany(posts, me);
-});
+			return await GalleryPosts.packMany(posts, me);
+		});
+	}
+}

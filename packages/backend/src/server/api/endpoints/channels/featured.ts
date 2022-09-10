@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Channels } from '@/models/index.js';
 
 export const meta = {
@@ -24,12 +25,20 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const query = Channels.createQueryBuilder('channel')
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = Channels.createQueryBuilder('channel')
 		.where('channel.lastNotedAt IS NOT NULL')
 		.orderBy('channel.lastNotedAt', 'DESC');
 
-	const channels = await query.take(10).getMany();
+			const channels = await query.take(10).getMany();
 
-	return await Promise.all(channels.map(x => Channels.pack(x, me)));
-});
+			return await Promise.all(channels.map(x => Channels.pack(x, me)));
+		});
+	}
+}

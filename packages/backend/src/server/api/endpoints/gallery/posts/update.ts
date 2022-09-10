@@ -1,9 +1,10 @@
 import ms from 'ms';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFiles, GalleryPosts } from '@/models/index.js';
 import { GalleryPost } from '@/models/entities/gallery-post.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
 import { ApiError } from '../../../error.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -43,30 +44,38 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const files = (await Promise.all(ps.fileIds.map(fileId =>
-		DriveFiles.findOneBy({
-			id: fileId,
-			userId: user.id,
-		})
-	))).filter((file): file is DriveFile => file != null);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const files = (await Promise.all(ps.fileIds.map(fileId =>
+				DriveFiles.findOneBy({
+					id: fileId,
+					userId: user.id,
+				}),
+			))).filter((file): file is DriveFile => file != null);
 
-	if (files.length === 0) {
-		throw new Error();
+			if (files.length === 0) {
+				throw new Error();
+			}
+
+			await GalleryPosts.update({
+				id: ps.postId,
+				userId: user.id,
+			}, {
+				updatedAt: new Date(),
+				title: ps.title,
+				description: ps.description,
+				isSensitive: ps.isSensitive,
+				fileIds: files.map(file => file.id),
+			});
+
+			const post = await GalleryPosts.findOneByOrFail({ id: ps.postId });
+
+			return await GalleryPosts.pack(post, user);
+		});
 	}
-
-	await GalleryPosts.update({
-		id: ps.postId,
-		userId: user.id,
-	}, {
-		updatedAt: new Date(),
-		title: ps.title,
-		description: ps.description,
-		isSensitive: ps.isSensitive,
-		fileIds: files.map(file => file.id),
-	});
-
-	const post = await GalleryPosts.findOneByOrFail({ id: ps.postId });
-
-	return await GalleryPosts.pack(post, user);
-});
+}

@@ -1,8 +1,9 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Channels, ChannelFollowings } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { publishUserEvent } from '@/services/stream.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['channels'],
@@ -29,21 +30,29 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const channel = await Channels.findOneBy({
-		id: ps.channelId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const channel = await Channels.findOneBy({
+				id: ps.channelId,
+			});
 
-	if (channel == null) {
-		throw new ApiError(meta.errors.noSuchChannel);
+			if (channel == null) {
+				throw new ApiError(meta.errors.noSuchChannel);
+			}
+
+			await ChannelFollowings.insert({
+				id: genId(),
+				createdAt: new Date(),
+				followerId: user.id,
+				followeeId: channel.id,
+			});
+
+			publishUserEvent(user.id, 'followChannel', channel);
+		});
 	}
-
-	await ChannelFollowings.insert({
-		id: genId(),
-		createdAt: new Date(),
-		followerId: user.id,
-		followeeId: channel.id,
-	});
-
-	publishUserEvent(user.id, 'followChannel', channel);
-});
+}

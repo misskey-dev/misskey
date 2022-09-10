@@ -13,7 +13,8 @@ import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
 import { ApiError } from '../../error.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['account'],

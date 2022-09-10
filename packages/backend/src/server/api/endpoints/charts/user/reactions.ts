@@ -1,6 +1,7 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
 import { perUserReactionsChart } from '@/services/chart/index.js';
-import define from '../../../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'reactions'],
@@ -23,6 +24,14 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await perUserReactionsChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			return await perUserReactionsChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
+		});
+	}
+}

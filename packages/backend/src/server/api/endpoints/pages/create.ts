@@ -2,7 +2,8 @@ import ms from 'ms';
 import { Pages, DriveFiles } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { Page } from '@/models/entities/page.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -59,7 +60,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	let eyeCatchingImage = null;
 	if (ps.eyeCatchingImageId != null) {
 		eyeCatchingImage = await DriveFiles.findOneBy({

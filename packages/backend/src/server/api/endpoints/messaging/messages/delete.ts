@@ -1,4 +1,5 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import ms from 'ms';
 import { ApiError } from '../../../error.js';
 import { MessagingMessages } from '@/models/index.js';
@@ -35,7 +36,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	const message = await MessagingMessages.findOneBy({
 		id: ps.messageId,
 		userId: user.id,

@@ -1,8 +1,9 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Notes, Channels } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { activeUsersChart } from '@/services/chart/index.js';
+import { ApiError } from '../../error.js';
+import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['notes', 'channels'],
@@ -42,17 +43,23 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const channel = await Channels.findOneBy({
-		id: ps.channelId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const channel = await Channels.findOneBy({
+				id: ps.channelId,
+			});
 
-	if (channel == null) {
-		throw new ApiError(meta.errors.noSuchChannel);
-	}
+			if (channel == null) {
+				throw new ApiError(meta.errors.noSuchChannel);
+			}
 
-	//#region Construct query
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+			//#region Construct query
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.channelId = :channelId', { channelId: channel.id })
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
@@ -66,11 +73,13 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 		.leftJoinAndSelect('note.channel', 'channel');
-	//#endregion
+			//#endregion
 
-	const timeline = await query.take(ps.limit).getMany();
+			const timeline = await query.take(ps.limit).getMany();
 
-	if (user) activeUsersChart.read(user);
+			if (user) activeUsersChart.read(user);
 
-	return await Notes.packMany(timeline, user);
-});
+			return await Notes.packMany(timeline, user);
+		});
+	}
+}

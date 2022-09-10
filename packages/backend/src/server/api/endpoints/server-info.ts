@@ -1,6 +1,7 @@
 import * as os from 'node:os';
 import si from 'systeminformation';
-import define from '../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	requireCredential: false,

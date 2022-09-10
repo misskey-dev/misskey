@@ -3,7 +3,8 @@ import { Notifications, Followings, Mutings, Users, UserProfiles } from '@/model
 import { notificationTypes } from '@/types.js';
 import read from '@/services/note/read.js';
 import { readNotification } from '../../common/read-notification.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
@@ -49,7 +50,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	// includeTypes が空の場合はクエリしない
 	if (ps.includeTypes && ps.includeTypes.length === 0) {
 		return [];

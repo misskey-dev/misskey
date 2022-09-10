@@ -1,5 +1,6 @@
 import { Notes } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
@@ -29,7 +30,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	const max = 30;
 	const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 

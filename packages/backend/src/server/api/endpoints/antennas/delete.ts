@@ -1,7 +1,8 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Antennas } from '@/models/index.js';
 import { publishInternalEvent } from '@/services/stream.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['antennas'],
@@ -28,17 +29,25 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const antenna = await Antennas.findOneBy({
-		id: ps.antennaId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const antenna = await Antennas.findOneBy({
+				id: ps.antennaId,
+				userId: user.id,
+			});
 
-	if (antenna == null) {
-		throw new ApiError(meta.errors.noSuchAntenna);
+			if (antenna == null) {
+				throw new ApiError(meta.errors.noSuchAntenna);
+			}
+
+			await Antennas.delete(antenna.id);
+
+			publishInternalEvent('antennaDeleted', antenna);
+		});
 	}
-
-	await Antennas.delete(antenna.id);
-
-	publishInternalEvent('antennaDeleted', antenna);
-});
+}

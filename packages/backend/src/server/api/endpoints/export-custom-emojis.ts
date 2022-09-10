@@ -1,6 +1,7 @@
 import ms from 'ms';
 import { createExportCustomEmojisJob } from '@/queue/index.js';
-import define from '../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	secure: true,
@@ -18,6 +19,12 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	createExportCustomEmojisJob(user);
 });

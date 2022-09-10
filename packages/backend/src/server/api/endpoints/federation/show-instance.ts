@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Instances } from '@/models/index.js';
 import { toPuny } from '@/misc/convert-host.js';
 
@@ -26,9 +27,17 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const instance = await Instances
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const instance = await Instances
 		.findOneBy({ host: toPuny(ps.host) });
 
-	return instance ? await Instances.pack(instance) : null;
-});
+			return instance ? await Instances.pack(instance) : null;
+		});
+	}
+}

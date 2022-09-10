@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Channels } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
@@ -31,13 +32,21 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const query = makePaginationQuery(Channels.createQueryBuilder(), ps.sinceId, ps.untilId)
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = makePaginationQuery(Channels.createQueryBuilder(), ps.sinceId, ps.untilId)
 		.andWhere({ userId: me.id });
 
-	const channels = await query
+			const channels = await query
 		.take(ps.limit)
 		.getMany();
 
-	return await Promise.all(channels.map(x => Channels.pack(x, me)));
-});
+			return await Promise.all(channels.map(x => Channels.pack(x, me)));
+		});
+	}
+}

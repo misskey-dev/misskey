@@ -1,6 +1,7 @@
 import { IsNull } from 'typeorm';
 import { Users, UsedUsernames } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['users'],
@@ -28,7 +29,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	// Get exist
 	const exist = await Users.countBy({
 		host: IsNull(),

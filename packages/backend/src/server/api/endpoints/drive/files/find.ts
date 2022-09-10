@@ -1,6 +1,7 @@
-import define from '../../../define.js';
-import { DriveFiles } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,
@@ -32,12 +33,20 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const files = await DriveFiles.findBy({
-		name: ps.name,
-		userId: user.id,
-		folderId: ps.folderId ?? IsNull(),
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const files = await DriveFiles.findBy({
+				name: ps.name,
+				userId: user.id,
+				folderId: ps.folderId ?? IsNull(),
+			});
 
-	return await Promise.all(files.map(file => DriveFiles.pack(file, { self: true })));
-});
+			return await Promise.all(files.map(file => DriveFiles.pack(file, { self: true })));
+		});
+	}
+}

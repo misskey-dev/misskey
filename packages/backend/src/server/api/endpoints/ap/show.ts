@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import config from '@/config/index.js';
 import { createPerson } from '@/remote/activitypub/models/person.js';
 import { createNote } from '@/remote/activitypub/models/note.js';
@@ -78,7 +79,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
 	const object = await fetchAny(ps.uri, me);
 	if (object) {
 		return object;

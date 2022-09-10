@@ -4,7 +4,8 @@ import { DriveFiles } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { apiLogger } from '../../../logger.js';
 import { ApiError } from '../../../error.js';
 

@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import readNote from '@/services/note/read.js';
 import { Antennas, Notes, AntennaNotes } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
@@ -47,18 +48,24 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const antenna = await Antennas.findOneBy({
-		id: ps.antennaId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const antenna = await Antennas.findOneBy({
+				id: ps.antennaId,
+				userId: user.id,
+			});
 
-	if (antenna == null) {
-		throw new ApiError(meta.errors.noSuchAntenna);
-	}
+			if (antenna == null) {
+				throw new ApiError(meta.errors.noSuchAntenna);
+			}
 
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
-			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+			const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.innerJoin(AntennaNotes.metadata.targetName, 'antennaNote', 'antennaNote.noteId = note.id')
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
@@ -73,17 +80,19 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 		.andWhere('antennaNote.antennaId = :antennaId', { antennaId: antenna.id });
 
-	generateVisibilityQuery(query, user);
-	generateMutedUserQuery(query, user);
-	generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, user);
+			generateMutedUserQuery(query, user);
+			generateBlockedUserQuery(query, user);
 
-	const notes = await query
+			const notes = await query
 		.take(ps.limit)
 		.getMany();
 
-	if (notes.length > 0) {
-		readNote(user.id, notes);
-	}
+			if (notes.length > 0) {
+				readNote(user.id, notes);
+			}
 
-	return await Notes.packMany(notes, user);
-});
+			return await Notes.packMany(notes, user);
+		});
+	}
+}

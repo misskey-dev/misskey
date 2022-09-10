@@ -1,6 +1,7 @@
-import { DriveFile } from '@/models/entities/drive-file.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFile } from '@/models/entities/drive-file.js';
 import { DriveFiles, Users } from '@/models/index.js';
-import define from '../../../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -52,34 +53,42 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	let file: DriveFile | null = null;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			let file: DriveFile | null = null;
 
-	if (ps.fileId) {
-		file = await DriveFiles.findOneBy({ id: ps.fileId });
-	} else if (ps.url) {
-		file = await DriveFiles.findOne({
-			where: [{
-				url: ps.url,
-			}, {
-				webpublicUrl: ps.url,
-			}, {
-				thumbnailUrl: ps.url,
-			}],
+			if (ps.fileId) {
+				file = await DriveFiles.findOneBy({ id: ps.fileId });
+			} else if (ps.url) {
+				file = await DriveFiles.findOne({
+					where: [{
+						url: ps.url,
+					}, {
+						webpublicUrl: ps.url,
+					}, {
+						thumbnailUrl: ps.url,
+					}],
+				});
+			}
+
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
+			}
+
+			if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			return await DriveFiles.pack(file, {
+				detail: true,
+				withUser: true,
+				self: true,
+			});
 		});
 	}
-
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
-	}
-
-	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
-
-	return await DriveFiles.pack(file, {
-		detail: true,
-		withUser: true,
-		self: true,
-	});
-});
+}

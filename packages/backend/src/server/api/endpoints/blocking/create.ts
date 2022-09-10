@@ -1,9 +1,10 @@
 import ms from 'ms';
+import { Inject, Injectable } from '@nestjs/common';
 import create from '@/services/blocking/create.js';
-import define from '../../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { Blockings, NoteWatchings, Users } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
-import { Blockings, NoteWatchings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account'],
@@ -53,38 +54,46 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const blocker = await Users.findOneByOrFail({ id: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const blocker = await Users.findOneByOrFail({ id: user.id });
 
-	// 自分自身
-	if (user.id === ps.userId) {
-		throw new ApiError(meta.errors.blockeeIsYourself);
+			// 自分自身
+			if (user.id === ps.userId) {
+				throw new ApiError(meta.errors.blockeeIsYourself);
+			}
+
+			// Get blockee
+			const blockee = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
+
+			// Check if already blocking
+			const exist = await Blockings.findOneBy({
+				blockerId: blocker.id,
+				blockeeId: blockee.id,
+			});
+
+			if (exist != null) {
+				throw new ApiError(meta.errors.alreadyBlocking);
+			}
+
+			await create(blocker, blockee);
+
+			NoteWatchings.delete({
+				userId: blocker.id,
+				noteUserId: blockee.id,
+			});
+
+			return await Users.pack(blockee.id, blocker, {
+				detail: true,
+			});
+		});
 	}
-
-	// Get blockee
-	const blockee = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Check if already blocking
-	const exist = await Blockings.findOneBy({
-		blockerId: blocker.id,
-		blockeeId: blockee.id,
-	});
-
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyBlocking);
-	}
-
-	await create(blocker, blockee);
-
-	NoteWatchings.delete({
-		userId: blocker.id,
-		noteUserId: blockee.id,
-	});
-
-	return await Users.pack(blockee.id, blocker, {
-		detail: true,
-	});
-});
+}

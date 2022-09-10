@@ -1,5 +1,6 @@
 import rndstr from 'rndstr';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { RegistrationTickets } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 

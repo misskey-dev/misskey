@@ -1,6 +1,7 @@
 import ms from 'ms';
 import { Users, Followings } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query.js';
 import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query.js';
 
@@ -34,7 +35,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where('user.isLocked = FALSE')
 		.andWhere('user.isExplorable = TRUE')

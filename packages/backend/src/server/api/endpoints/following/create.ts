@@ -1,10 +1,11 @@
 import ms from 'ms';
+import { Inject, Injectable } from '@nestjs/common';
 import create from '@/services/following/create.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Followings, Users } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { ApiError } from '../../error.js';
+import { getUser } from '../../common/getters.js';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -66,39 +67,47 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const follower = user;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const follower = user;
 
-	// 自分自身
-	if (user.id === ps.userId) {
-		throw new ApiError(meta.errors.followeeIsYourself);
+			// 自分自身
+			if (user.id === ps.userId) {
+				throw new ApiError(meta.errors.followeeIsYourself);
+			}
+
+			// Get followee
+			const followee = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
+
+			// Check if already following
+			const exist = await Followings.findOneBy({
+				followerId: follower.id,
+				followeeId: followee.id,
+			});
+
+			if (exist != null) {
+				throw new ApiError(meta.errors.alreadyFollowing);
+			}
+
+			try {
+				await create(follower, followee);
+			} catch (e) {
+				if (e instanceof IdentifiableError) {
+					if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
+					if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
+				}
+				throw e;
+			}
+
+			return await Users.pack(followee.id, user);
+		});
 	}
-
-	// Get followee
-	const followee = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Check if already following
-	const exist = await Followings.findOneBy({
-		followerId: follower.id,
-		followeeId: followee.id,
-	});
-
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyFollowing);
-	}
-
-	try {
-		await create(follower, followee);
-	} catch (e) {
-		if (e instanceof IdentifiableError) {
-			if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
-			if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
-		}
-		throw e;
-	}
-
-	return await Users.pack(followee.id, user);
-});
+}

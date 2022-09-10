@@ -1,4 +1,5 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Clips } from '@/models/index.js';
 
 export const meta = {
@@ -26,10 +27,18 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const clips = await Clips.findBy({
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const clips = await Clips.findBy({
+				userId: me.id,
+			});
 
-	return await Promise.all(clips.map(x => Clips.pack(x)));
-});
+			return await Promise.all(clips.map(x => Clips.pack(x)));
+		});
+	}
+}

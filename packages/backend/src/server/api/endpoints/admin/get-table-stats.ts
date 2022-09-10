@@ -1,5 +1,6 @@
 import { db } from '@/db/postgre.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	requireCredential: true,

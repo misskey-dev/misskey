@@ -1,6 +1,7 @@
 import { Announcements, AnnouncementReads } from '@/models/index.js';
 import { Announcement } from '@/models/entities/announcement.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { makePaginationQuery } from '../../../common/make-pagination-query.js';
 
 export const meta = {
@@ -64,7 +65,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
 	const announcements = await query.take(ps.limit).getMany();

@@ -2,7 +2,8 @@ import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { UserGroup } from '@/models/entities/user-group.js';
 import { UserGroupJoining } from '@/models/entities/user-group-joining.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['groups'],
@@ -29,7 +30,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
 	const userGroup = await UserGroups.insert({
 		id: genId(),
 		createdAt: new Date(),

@@ -1,8 +1,9 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { genId } from '@/misc/gen-id.js';
 import { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
-import { ApiError } from '../../error.js';
 import { publishInternalEvent } from '@/services/stream.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['antennas'],
@@ -61,48 +62,56 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	let userList;
-	let userGroupJoining;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			let userList;
+			let userGroupJoining;
 
-	if (ps.src === 'list' && ps.userListId) {
-		userList = await UserLists.findOneBy({
-			id: ps.userListId,
-			userId: user.id,
+			if (ps.src === 'list' && ps.userListId) {
+				userList = await UserLists.findOneBy({
+					id: ps.userListId,
+					userId: user.id,
+				});
+
+				if (userList == null) {
+					throw new ApiError(meta.errors.noSuchUserList);
+				}
+			} else if (ps.src === 'group' && ps.userGroupId) {
+				userGroupJoining = await UserGroupJoinings.findOneBy({
+					userGroupId: ps.userGroupId,
+					userId: user.id,
+				});
+
+				if (userGroupJoining == null) {
+					throw new ApiError(meta.errors.noSuchUserGroup);
+				}
+			}
+
+			const antenna = await Antennas.insert({
+				id: genId(),
+				createdAt: new Date(),
+				userId: user.id,
+				name: ps.name,
+				src: ps.src,
+				userListId: userList ? userList.id : null,
+				userGroupJoiningId: userGroupJoining ? userGroupJoining.id : null,
+				keywords: ps.keywords,
+				excludeKeywords: ps.excludeKeywords,
+				users: ps.users,
+				caseSensitive: ps.caseSensitive,
+				withReplies: ps.withReplies,
+				withFile: ps.withFile,
+				notify: ps.notify,
+			}).then(x => Antennas.findOneByOrFail(x.identifiers[0]));
+
+			publishInternalEvent('antennaCreated', antenna);
+
+			return await Antennas.pack(antenna);
 		});
-
-		if (userList == null) {
-			throw new ApiError(meta.errors.noSuchUserList);
-		}
-	} else if (ps.src === 'group' && ps.userGroupId) {
-		userGroupJoining = await UserGroupJoinings.findOneBy({
-			userGroupId: ps.userGroupId,
-			userId: user.id,
-		});
-
-		if (userGroupJoining == null) {
-			throw new ApiError(meta.errors.noSuchUserGroup);
-		}
 	}
-
-	const antenna = await Antennas.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-		src: ps.src,
-		userListId: userList ? userList.id : null,
-		userGroupJoiningId: userGroupJoining ? userGroupJoining.id : null,
-		keywords: ps.keywords,
-		excludeKeywords: ps.excludeKeywords,
-		users: ps.users,
-		caseSensitive: ps.caseSensitive,
-		withReplies: ps.withReplies,
-		withFile: ps.withFile,
-		notify: ps.notify,
-	}).then(x => Antennas.findOneByOrFail(x.identifiers[0]));
-
-	publishInternalEvent('antennaCreated', antenna);
-
-	return await Antennas.pack(antenna);
-});
+}

@@ -1,9 +1,10 @@
 import ms from 'ms';
+import { Inject, Injectable } from '@nestjs/common';
 import deleteFollowing from '@/services/following/delete.js';
-import define from '../../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { Followings, Users } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
-import { Followings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -53,31 +54,39 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const follower = user;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject('notesRepository')
+    private notesRepository: typeof Notes,
+	) {
+		super(meta, paramDef, async (ps, user) => {
+			const follower = user;
 
-	// Check if the followee is yourself
-	if (user.id === ps.userId) {
-		throw new ApiError(meta.errors.followeeIsYourself);
+			// Check if the followee is yourself
+			if (user.id === ps.userId) {
+				throw new ApiError(meta.errors.followeeIsYourself);
+			}
+
+			// Get followee
+			const followee = await getUser(ps.userId).catch(e => {
+				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw e;
+			});
+
+			// Check not following
+			const exist = await Followings.findOneBy({
+				followerId: follower.id,
+				followeeId: followee.id,
+			});
+
+			if (exist == null) {
+				throw new ApiError(meta.errors.notFollowing);
+			}
+
+			await deleteFollowing(follower, followee);
+
+			return await Users.pack(followee.id, user);
+		});
 	}
-
-	// Get followee
-	const followee = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Check not following
-	const exist = await Followings.findOneBy({
-		followerId: follower.id,
-		followeeId: followee.id,
-	});
-
-	if (exist == null) {
-		throw new ApiError(meta.errors.notFollowing);
-	}
-
-	await deleteFollowing(follower, followee);
-
-	return await Users.pack(followee.id, user);
-});
+}
