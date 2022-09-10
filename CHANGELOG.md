@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.119.0 (2022/09/10)
 
 ### Improvements
 - Client: Add following badge to user preview popup @nvisser
