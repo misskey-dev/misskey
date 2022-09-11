@@ -30,7 +30,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, user) => {
 			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
-			const userDetailed = await Users.findOneByOrFail({ id: user.id });
+			const userDetailed = await this.usersRepository.findOneByOrFail({ id: user.id });
 			if (userDetailed.isDeleted) {
 				return;
 			}

@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				event: ps.event,
 				var: ps.var,
 				userId: user.id,
-				user: await Users.pack(user.id, { id: page.userId }, {
+				user: await this.usersRepository.pack(user.id, { id: page.userId }, {
 					detail: true,
 				}),
 			});

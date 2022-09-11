@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const user = await Users.findOneBy(ps.userId != null
+			const user = await this.usersRepository.findOneBy(ps.userId != null
 				? { id: ps.userId }
 				: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
 

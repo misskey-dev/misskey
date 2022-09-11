@@ -1,7 +1,8 @@
 import * as sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
 import { publishAdminStream } from '@/services/stream.js';
-import { AbuseUserReports, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { AbuseUserReports } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { sendEmail } from '@/services/send-email.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
@@ -83,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Publish event to moderators
 			setImmediate(async () => {
-				const moderators = await Users.find({
+				const moderators = await this.usersRepository.find({
 					where: [{
 						isAdmin: true,
 					}, {

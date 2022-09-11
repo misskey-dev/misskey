@@ -34,8 +34,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			const pairs = await Promise.all(followings.map(f => Promise.all([
-				Users.findOneByOrFail({ id: f.followerId }),
-				Users.findOneByOrFail({ id: f.followeeId }),
+				this.usersRepository.findOneByOrFail({ id: f.followerId }),
+				this.usersRepository.findOneByOrFail({ id: f.followeeId }),
 			])));
 
 			for (const pair of pairs) {

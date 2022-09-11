@@ -33,7 +33,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const user = await Users.findOneBy({ id: ps.userId });
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
 				throw new Error('user not found');
@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot suspend moderator');
 			}
 
-			await Users.update(user.id, {
+			await this.usersRepository.update(user.id, {
 				isSuspended: true,
 			});
 
@@ -56,7 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Terminate streaming
-			if (Users.isLocalUser(user)) {
+			if (this.usersRepository.isLocalUser(user)) {
 				publishUserEvent(user.id, 'terminate', {});
 			}
 
@@ -75,7 +75,7 @@ async function unFollowAll(follower: User) {
 	});
 
 	for (const following of followings) {
-		const followee = await Users.findOneBy({
+		const followee = await this.usersRepository.findOneBy({
 			id: following.followeeId,
 		});
 

@@ -1,6 +1,7 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Followings, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Followings } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -53,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
 			if (ps.host) {
-				const q = Users.createQueryBuilder('user')
+				const q = this.usersRepository.createQueryBuilder('user')
 					.where('user.isSuspended = FALSE')
 					.andWhere('user.host LIKE :host', { host: ps.host.toLowerCase() + '%' });
 
@@ -66,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				const users = await q.take(ps.limit).getMany();
 
-				return await Users.packMany(users, me, { detail: ps.detail });
+				return await this.usersRepository.packMany(users, me, { detail: ps.detail });
 			} else if (ps.username) {
 				let users: User[] = [];
 
@@ -75,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						.select('following.followeeId')
 						.where('following.followerId = :followerId', { followerId: me.id });
 
-					const query = Users.createQueryBuilder('user')
+					const query = this.usersRepository.createQueryBuilder('user')
 						.where(`user.id IN (${ followingQuery.getQuery() })`)
 						.andWhere('user.id != :meId', { meId: me.id })
 						.andWhere('user.isSuspended = FALSE')
@@ -93,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						.getMany();
 
 					if (users.length < ps.limit) {
-						const otherQuery = await Users.createQueryBuilder('user')
+						const otherQuery = await this.usersRepository.createQueryBuilder('user')
 							.where(`user.id NOT IN (${ followingQuery.getQuery() })`)
 							.andWhere('user.id != :meId', { meId: me.id })
 							.andWhere('user.isSuspended = FALSE')
@@ -110,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						users = users.concat(otherUsers);
 					}
 				} else {
-					users = await Users.createQueryBuilder('user')
+					users = await this.usersRepository.createQueryBuilder('user')
 						.where('user.isSuspended = FALSE')
 						.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
 						.andWhere('user.updatedAt IS NOT NULL')
@@ -119,7 +120,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						.getMany();
 				}
 
-				return await Users.packMany(users, me, { detail: !!ps.detail });
+				return await this.usersRepository.packMany(users, me, { detail: !!ps.detail });
 			}
 
 			return [];

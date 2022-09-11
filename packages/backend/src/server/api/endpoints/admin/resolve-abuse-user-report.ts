@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.forward && report.targetUserHost != null) {
 				const actor = await getInstanceActor();
-				const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
+				const targetUser = await this.usersRepository.findOneByOrFail({ id: report.targetUserId });
 
 				deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
 			}

@@ -169,7 +169,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// リモート投票の場合リプライ送信
 			if (note.userHost != null) {
-				const pollOwner = await Users.findOneByOrFail({ id: note.userId }) as IRemoteUser;
+				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as IRemoteUser;
 
 				deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
 			}

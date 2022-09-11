@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = Users.createQueryBuilder('user')
+			const query = this.usersRepository.createQueryBuilder('user')
 		.where(':tag = ANY(user.tags)', { tag: normalizeForSearch(ps.tag) });
 
 			const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const users = await query.take(ps.limit).getMany();
 
-			return await Users.packMany(users, me, { detail: true });
+			return await this.usersRepository.packMany(users, me, { detail: true });
 		});
 	}
 }

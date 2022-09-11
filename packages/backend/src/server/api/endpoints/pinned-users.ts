@@ -41,12 +41,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const meta = await fetchMeta();
 
-			const users = await Promise.all(meta.pinnedUsers.map(acct => Acct.parse(acct)).map(acct => Users.findOneBy({
+			const users = await Promise.all(meta.pinnedthis.usersRepository.map(acct => Acct.parse(acct)).map(acct => this.usersRepository.findOneBy({
 				usernameLower: acct.username.toLowerCase(),
 				host: acct.host ?? IsNull(),
 			})));
 
-			return await Users.packMany(users.filter(x => x !== undefined) as User[], me, { detail: true });
+			return await this.usersRepository.packMany(users.filter(x => x !== undefined) as User[], me, { detail: true });
 		});
 	}
 }

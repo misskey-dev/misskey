@@ -32,7 +32,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-			const user = await Users.findOneByOrFail({ id: ps.userId });
+			const user = await this.usersRepository.findOneByOrFail({ id: ps.userId });
 			if (user.isDeleted) {
 				return;
 			}

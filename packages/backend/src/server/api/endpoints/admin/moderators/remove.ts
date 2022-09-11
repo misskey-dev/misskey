@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { publishInternalEvent } from '@/services/stream.js';
 
 export const meta = {
@@ -24,18 +24,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const user = await Users.findOneBy({ id: ps.userId });
+		super(meta, paramDef, async (ps) => {
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
 				throw new Error('user not found');
 			}
 
-			await Users.update(user.id, {
+			await this.usersRepository.update(user.id, {
 				isModerator: false,
 			});
 

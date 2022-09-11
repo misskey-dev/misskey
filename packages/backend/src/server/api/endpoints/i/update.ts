@@ -71,10 +71,10 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		name: { ...Users.nameSchema, nullable: true },
-		description: { ...Users.descriptionSchema, nullable: true },
-		location: { ...Users.locationSchema, nullable: true },
-		birthday: { ...Users.birthdaySchema, nullable: true },
+		name: { ...this.usersRepository.nameSchema, nullable: true },
+		description: { ...this.usersRepository.descriptionSchema, nullable: true },
+		location: { ...this.usersRepository.locationSchema, nullable: true },
+		birthday: { ...this.usersRepository.birthdaySchema, nullable: true },
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
@@ -133,7 +133,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
-			const user = await Users.findOneByOrFail({ id: _user.id });
+			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
 			const isSecure = token == null;
 
 			const updates = {} as Partial<User>;
@@ -241,10 +241,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			updateUsertags(user, tags);
 			//#endregion
 
-			if (Object.keys(updates).length > 0) await Users.update(user.id, updates);
+			if (Object.keys(updates).length > 0) await this.usersRepository.update(user.id, updates);
 			if (Object.keys(profileUpdates).length > 0) await UserProfiles.update(user.id, profileUpdates);
 
-			const iObj = await Users.pack<true, true>(user.id, user, {
+			const iObj = await this.usersRepository.pack<true, true>(user.id, user, {
 				detail: true,
 				includeSecrets: isSecure,
 			});

@@ -45,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = Users.createQueryBuilder('user')
+			const query = this.usersRepository.createQueryBuilder('user')
 				.where('user.isLocked = FALSE')
 				.andWhere('user.isExplorable = TRUE')
 				.andWhere('user.host IS NULL')
@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const users = await query.take(ps.limit).skip(ps.offset).getMany();
 
-			return await Users.packMany(users, me, { detail: true });
+			return await this.usersRepository.packMany(users, me, { detail: true });
 		});
 	}
 }

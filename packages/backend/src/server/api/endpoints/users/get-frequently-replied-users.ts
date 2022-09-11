@@ -115,8 +115,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
 
 			// Make replies object (includes weights)
-			const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
-				user: await Users.pack(user, me, { detail: true }),
+			const repliesObj = await Promise.all(topRepliedthis.usersRepository.map(async (user) => ({
+				user: await this.usersRepository.pack(user, me, { detail: true }),
 				weight: repliedUsers[user] / peak,
 			})));
 

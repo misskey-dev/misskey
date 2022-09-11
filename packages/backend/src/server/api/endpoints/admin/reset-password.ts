@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users, UserProfiles } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -38,12 +39,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const user = await Users.findOneBy({ id: ps.userId });
+		super(meta, paramDef, async (ps) => {
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
 				throw new Error('user not found');

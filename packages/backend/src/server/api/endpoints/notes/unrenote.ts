@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			for (const note of renotes) {
-				deleteNote(await Users.findOneByOrFail({ id: user.id }), note);
+				deleteNote(await this.usersRepository.findOneByOrFail({ id: user.id }), note);
 			}
 		});
 	}

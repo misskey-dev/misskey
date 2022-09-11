@@ -64,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-			const blocker = await Users.findOneByOrFail({ id: user.id });
+			const blocker = await this.usersRepository.findOneByOrFail({ id: user.id });
 
 			// 自分自身
 			if (user.id === ps.userId) {
@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				noteUserId: blockee.id,
 			});
 
-			return await Users.pack(blockee.id, blocker, {
+			return await this.usersRepository.pack(blockee.id, blocker, {
 				detail: true,
 			});
 		});

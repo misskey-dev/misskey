@@ -63,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
-			await deleteNote(await Users.findOneByOrFail({ id: note.userId }), note);
+			await deleteNote(await this.usersRepository.findOneByOrFail({ id: note.userId }), note);
 		});
 	}
 }

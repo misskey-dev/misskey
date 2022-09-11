@@ -35,13 +35,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, _me) => {
-			const me = _me ? await Users.findOneByOrFail({ id: _me.id }) : null;
-			const noUsers = (await Users.countBy({
+			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
+			const noUsers = (await this.usersRepository.countBy({
 				host: IsNull(),
 			})) === 0;
 			if (!noUsers && !me?.isAdmin) throw new Error('access denied');
@@ -51,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				password: ps.password,
 			});
 
-			const res = await Users.pack(account, account, {
+			const res = await this.usersRepository.pack(account, account, {
 				detail: true,
 				includeSecrets: true,
 			});

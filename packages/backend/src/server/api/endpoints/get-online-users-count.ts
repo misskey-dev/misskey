@@ -27,7 +27,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async () => {
-			const count = await Users.countBy({
+			const count = await this.usersRepository.countBy({
 				lastActiveDate: MoreThan(new Date(Date.now() - USER_ONLINE_THRESHOLD)),
 			});
 

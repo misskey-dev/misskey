@@ -108,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					readUserMessagingMessage(user.id, recipient.id, messages.filter(m => m.recipientId === user.id).map(x => x.id));
 
 					// リモートユーザーとのメッセージだったら既読配信
-					if (Users.isLocalUser(user) && Users.isRemoteUser(recipient)) {
+					if (this.usersRepository.isLocalUser(user) && this.usersRepository.isRemoteUser(recipient)) {
 						deliverReadActivity(user, recipient, messages);
 					}
 				}

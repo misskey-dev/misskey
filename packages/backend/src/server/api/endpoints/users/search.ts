@@ -1,6 +1,7 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserProfiles, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { UserProfiles } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
@@ -52,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			let users: User[] = [];
 
 			if (isUsername) {
-				const usernameQuery = Users.createQueryBuilder('user')
+				const usernameQuery = this.usersRepository.createQueryBuilder('user')
 					.where('user.usernameLower LIKE :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
 					.andWhere(new Brackets(qb => { qb
 						.where('user.updatedAt IS NULL')
@@ -72,12 +73,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.skip(ps.offset)
 					.getMany();
 			} else {
-				const nameQuery = Users.createQueryBuilder('user')
+				const nameQuery = this.usersRepository.createQueryBuilder('user')
 					.where(new Brackets(qb => { 
 						qb.where('user.name ILIKE :query', { query: '%' + ps.query + '%' });
 
 						// Also search username if it qualifies as username
-						if (Users.validateLocalUsername(ps.query)) {
+						if (this.usersRepository.validateLocalUsername(ps.query)) {
 							qb.orWhere('user.usernameLower LIKE :username', { username: '%' + ps.query.toLowerCase() + '%' });
 						}
 					}))
@@ -110,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						profQuery.andWhere('prof.userHost IS NOT NULL');
 					}
 
-					const query = Users.createQueryBuilder('user')
+					const query = this.usersRepository.createQueryBuilder('user')
 						.where(`user.id IN (${ profQuery.getQuery() })`)
 						.andWhere(new Brackets(qb => { qb
 							.where('user.updatedAt IS NULL')
@@ -128,7 +129,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			return await Users.packMany(users, me, { detail: ps.detail });
+			return await this.usersRepository.packMany(users, me, { detail: ps.detail });
 		});
 	}
 }

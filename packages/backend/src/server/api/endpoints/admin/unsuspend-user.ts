@@ -30,13 +30,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const user = await Users.findOneBy({ id: ps.userId });
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
 				throw new Error('user not found');
 			}
 
-			await Users.update(user.id, {
+			await this.usersRepository.update(user.id, {
 				isSuspended: false,
 			});
 

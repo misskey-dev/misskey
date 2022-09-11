@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.select('user_profile.mutedInstances')
 				.where('user_profile.userId = :muterId', { muterId: user.id });
 
-			const suspendedQuery = Users.createQueryBuilder('users')
+			const suspendedQuery = this.usersRepository.createQueryBuilder('users')
 				.select('users.id')
 				.where('users.isSuspended = TRUE');
 

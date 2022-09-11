@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			}
 
-			return await Users.pack(followee.id, user);
+			return await this.usersRepository.pack(followee.id, user);
 		});
 	}
 }

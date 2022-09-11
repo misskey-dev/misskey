@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				emailVerifyCode: null,
 			});
 
-			const iObj = await Users.pack(user.id, user, {
+			const iObj = await this.usersRepository.pack(user.id, user, {
 				detail: true,
 				includeSecrets: true,
 			});

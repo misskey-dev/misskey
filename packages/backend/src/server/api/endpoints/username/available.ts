@@ -23,7 +23,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		username: Users.localUsernameSchema,
+		username: this.usersRepository.localUsernameSchema,
 	},
 	required: ['username'],
 } as const;
@@ -40,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, user) => {
 			// Get exist
-			const exist = await Users.countBy({
+			const exist = await this.usersRepository.countBy({
 				host: IsNull(),
 				usernameLower: ps.username.toLowerCase(),
 			});

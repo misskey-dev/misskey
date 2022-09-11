@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.pageId) {
 				page = await Pages.findOneBy({ id: ps.pageId });
 			} else if (ps.name && ps.username) {
-				const author = await Users.findOneBy({
+				const author = await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: ps.username.toLowerCase(),
 				});

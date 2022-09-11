@@ -140,7 +140,7 @@ async function mergePack(me: CacheableLocalUser | null | undefined, user: User |
 	if (user != null) {
 		return {
 			type: 'User',
-			object: await Users.pack(user, me, { detail: true }),
+			object: await this.usersRepository.pack(user, me, { detail: true }),
 		};
 	} else if (note != null) {
 		try {

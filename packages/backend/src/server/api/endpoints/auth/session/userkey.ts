@@ -100,7 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			return {
 				accessToken: accessToken.token,
-				user: await Users.pack(session.userId, null, {
+				user: await this.usersRepository.pack(session.userId, null, {
 					detail: true,
 				}),
 			};

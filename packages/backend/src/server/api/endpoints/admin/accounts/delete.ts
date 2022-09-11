@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { doPostSuspend } from '@/services/suspend-user.js';
 import { publishUserEvent } from '@/services/stream.js';
 import { createDeleteAccountJob } from '@/queue/index.js';
@@ -26,12 +26,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const user = await Users.findOneBy({ id: ps.userId });
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
 				throw new Error('user not found');
@@ -45,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot suspend moderator');
 			}
 
-			if (Users.isLocalUser(user)) {
+			if (this.usersRepository.isLocalUser(user)) {
 				// 物理削除する前にDelete activityを送信する
 				await doPostSuspend(user).catch(e => {});
 
@@ -58,11 +55,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 			}
 
-			await Users.update(user.id, {
+			await this.usersRepository.update(user.id, {
 				isDeleted: true,
 			});
 
-			if (Users.isLocalUser(user)) {
+			if (this.usersRepository.isLocalUser(user)) {
 				// Terminate streaming
 				publishUserEvent(user.id, 'terminate', {});
 			}

@@ -174,7 +174,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, user) => {
 			let visibleUsers: User[] = [];
 			if (ps.visibleUserIds) {
-				visibleUsers = await Users.findBy({
+				visibleUsers = await this.usersRepository.findBy({
 					id: In(ps.visibleUserIds),
 				});
 			}

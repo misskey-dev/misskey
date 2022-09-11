@@ -34,7 +34,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [user, profile] = await Promise.all([
-				Users.findOneBy({ id: ps.userId }),
+				this.usersRepository.findOneBy({ id: ps.userId }),
 				UserProfiles.findOneBy({ userId: ps.userId }),
 			]);
 
@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			const _me = await Users.findOneByOrFail({ id: me.id });
+			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
 			if ((_me.isModerator && !_me.isAdmin) && user.isAdmin) {
 				throw new Error('cannot show info of admin');
 			}

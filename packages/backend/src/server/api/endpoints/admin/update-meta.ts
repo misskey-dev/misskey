@@ -137,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (Array.isArray(ps.pinnedUsers)) {
-				set.pinnedUsers = ps.pinnedUsers.filter(Boolean);
+				set.pinnedUsers = ps.pinnedthis.usersRepository.filter(Boolean);
 			}
 
 			if (Array.isArray(ps.hiddenTags)) {

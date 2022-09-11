@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query.js';
 import { generateBlockQueryForUsers } from '../common/generate-block-query.js';
@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = Users.createQueryBuilder('user');
+			const query = this.usersRepository.createQueryBuilder('user');
 			query.where('user.isExplorable = TRUE');
 
 			switch (ps.state) {
@@ -86,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const users = await query.getMany();
 
-			return await Users.packMany(users, me, { detail: true });
+			return await this.usersRepository.packMany(users, me, { detail: true });
 		});
 	}
 }

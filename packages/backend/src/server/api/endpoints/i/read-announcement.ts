@@ -65,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: user.id,
 			});
 
-			if (!await Users.getHasUnreadAnnouncement(user.id)) {
+			if (!await this.usersRepository.getHasUnreadAnnouncement(user.id)) {
 				publishMainStream(user.id, 'readAllAnnouncements');
 			}
 		});

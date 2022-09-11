@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
@@ -127,7 +128,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const user = await Users.findOneBy({ id: ps.userId });
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 			if (user == null) {
 				throw new ApiError(meta.errors.noSuchUser);
 			}

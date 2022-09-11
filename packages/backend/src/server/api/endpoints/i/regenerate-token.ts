@@ -30,7 +30,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, user) => {
-			const freshUser = await Users.findOneByOrFail({ id: user.id });
+			const freshUser = await this.usersRepository.findOneByOrFail({ id: user.id });
 			const oldToken = freshUser.token;
 
 			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const newToken = generateUserToken();
 
-			await Users.update(user.id, {
+			await this.usersRepository.update(user.id, {
 				token: newToken,
 			});
 
