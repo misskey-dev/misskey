@@ -1,12 +1,12 @@
 import { performance } from 'perf_hooks';
-import Koa from 'koa';
-import { CacheableLocalUser, User } from '@/models/entities/user.js';
-import { AccessToken } from '@/models/entities/access-token.js';
+import type { CacheableLocalUser } from '@/models/entities/user.js';
+import type { AccessToken } from '@/models/entities/access-token.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import { limiter } from './limiter.js';
-import endpoints, { IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
 import { apiLogger } from './logger.js';
+import type { IEndpointMeta, IEndpoint } from './endpoints.js';
+import type Koa from 'koa';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -14,20 +14,9 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
 };
 
-export default async (endpoint: string, user: CacheableLocalUser | null | undefined, token: AccessToken | null | undefined, data: any, ctx?: Koa.Context) => {
+export default async (ep: IEndpoint, exec: any, user: CacheableLocalUser | null | undefined, token: AccessToken | null | undefined, data: any, ctx?: Koa.Context) => {
 	const isSecure = user != null && token == null;
 	const isModerator = user != null && (user.isModerator || user.isAdmin);
-
-	const ep = endpoints.find(e => e.name === endpoint);
-
-	if (ep == null) {
-		throw new ApiError({
-			message: 'No such endpoint.',
-			code: 'NO_SUCH_ENDPOINT',
-			id: 'f8080b67-5f9c-4eb7-8c18-7f1eeae8f709',
-			httpStatusCode: 404,
-		});
-	}
 
 	if (ep.meta.secure && !isSecure) {
 		throw new ApiError(accessDenied);
@@ -116,7 +105,7 @@ export default async (endpoint: string, user: CacheableLocalUser | null | undefi
 
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((e: Error) => {
+	return await exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {

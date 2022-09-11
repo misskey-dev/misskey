@@ -18,109 +18,118 @@ import signupPending from './private/signup-pending.js';
 import discord from './service/discord.js';
 import github from './service/github.js';
 import twitter from './service/twitter.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
-// Init app
-const app = new Koa();
+export function createApiServer(app: INestApplicationContext) {
+	const handlers: Record<string, any> = {};
 
-app.use(cors({
-	origin: '*',
-}));
+	for (const endpoint of endpoints) {
+		handlers[endpoint.name] = app.get('ep:' + endpoint.name).exec;
+	}
 
-// No caching
-app.use(async (ctx, next) => {
-	ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-	await next();
-});
+	// Init app
+	const apiServer = new Koa();
 
-app.use(bodyParser({
+	apiServer.use(cors({
+		origin: '*',
+	}));
+
+	// No caching
+	apiServer.use(async (ctx, next) => {
+		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+		await next();
+	});
+
+	apiServer.use(bodyParser({
 	// リクエストが multipart/form-data でない限りはJSONだと見なす
-	detectJSON: ctx => !ctx.is('multipart/form-data'),
-}));
+		detectJSON: ctx => !ctx.is('multipart/form-data'),
+	}));
 
-// Init multer instance
-const upload = multer({
-	storage: multer.diskStorage({}),
-	limits: {
-		fileSize: config.maxFileSize || 262144000,
-		files: 1,
-	},
-});
+	// Init multer instance
+	const upload = multer({
+		storage: multer.diskStorage({}),
+		limits: {
+			fileSize: config.maxFileSize || 262144000,
+			files: 1,
+		},
+	});
 
-// Init router
-const router = new Router();
+	// Init router
+	const router = new Router();
 
-/**
+	/**
  * Register endpoint handlers
  */
-for (const endpoint of endpoints) {
-	if (endpoint.meta.requireFile) {
-		router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint));
-	} else {
+	for (const endpoint of endpoints) {
+		if (endpoint.meta.requireFile) {
+			router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint, handlers[endpoint.name]));
+		} else {
 		// 後方互換性のため
-		if (endpoint.name.includes('-')) {
-			router.post(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint));
+			if (endpoint.name.includes('-')) {
+				router.post(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint, handlers[endpoint.name]));
+
+				if (endpoint.meta.allowGet) {
+					router.get(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint, handlers[endpoint.name]));
+				} else {
+					router.get(`/${endpoint.name.replace(/-/g, '_')}`, async ctx => { ctx.status = 405; });
+				}
+			}
+
+			router.post(`/${endpoint.name}`, handler.bind(null, endpoint, handlers[endpoint.name]));
 
 			if (endpoint.meta.allowGet) {
-				router.get(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint));
+				router.get(`/${endpoint.name}`, handler.bind(null, endpoint, handlers[endpoint.name]));
 			} else {
-				router.get(`/${endpoint.name.replace(/-/g, '_')}`, async ctx => { ctx.status = 405; });
+				router.get(`/${endpoint.name}`, async ctx => { ctx.status = 405; });
 			}
 		}
-
-		router.post(`/${endpoint.name}`, handler.bind(null, endpoint));
-
-		if (endpoint.meta.allowGet) {
-			router.get(`/${endpoint.name}`, handler.bind(null, endpoint));
-		} else {
-			router.get(`/${endpoint.name}`, async ctx => { ctx.status = 405; });
-		}
 	}
-}
 
-router.post('/signup', signup);
-router.post('/signin', signin);
-router.post('/signup-pending', signupPending);
+	router.post('/signup', signup);
+	router.post('/signin', signin);
+	router.post('/signup-pending', signupPending);
 
-router.use(discord.routes());
-router.use(github.routes());
-router.use(twitter.routes());
+	router.use(discord.routes());
+	router.use(github.routes());
+	router.use(twitter.routes());
 
-router.get('/v1/instance/peers', async ctx => {
-	const instances = await Instances.find({
-		select: ['host'],
-	});
-
-	ctx.body = instances.map(instance => instance.host);
-});
-
-router.post('/miauth/:session/check', async ctx => {
-	const token = await AccessTokens.findOneBy({
-		session: ctx.params.session,
-	});
-
-	if (token && token.session != null && !token.fetched) {
-		AccessTokens.update(token.id, {
-			fetched: true,
+	router.get('/v1/instance/peers', async ctx => {
+		const instances = await Instances.find({
+			select: ['host'],
 		});
 
-		ctx.body = {
-			ok: true,
-			token: token.token,
-			user: await Users.pack(token.userId, null, { detail: true }),
-		};
-	} else {
-		ctx.body = {
-			ok: false,
-		};
-	}
-});
+		ctx.body = instances.map(instance => instance.host);
+	});
 
-// Return 404 for unknown API
-router.all('(.*)', async ctx => {
-	ctx.status = 404;
-});
+	router.post('/miauth/:session/check', async ctx => {
+		const token = await AccessTokens.findOneBy({
+			session: ctx.params.session,
+		});
 
-// Register router
-app.use(router.routes());
+		if (token && token.session != null && !token.fetched) {
+			AccessTokens.update(token.id, {
+				fetched: true,
+			});
 
-export default app;
+			ctx.body = {
+				ok: true,
+				token: token.token,
+				user: await Users.pack(token.userId, null, { detail: true }),
+			};
+		} else {
+			ctx.body = {
+				ok: false,
+			};
+		}
+	});
+
+	// Return 404 for unknown API
+	router.all('(.*)', async ctx => {
+		ctx.status = 404;
+	});
+
+	// Register router
+	apiServer.use(router.routes());
+
+	return apiServer;
+}

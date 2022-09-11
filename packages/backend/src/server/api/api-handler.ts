@@ -1,12 +1,12 @@
-import Koa from 'koa';
 
-import { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/user.js';
 import { UserIps } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { IEndpoint } from './endpoints.js';
 import authenticate, { AuthenticationError } from './authenticate.js';
 import call from './call.js';
 import { ApiError } from './error.js';
+import type { IEndpoint } from './endpoints.js';
+import type Koa from 'koa';
 
 const userIpHistories = new Map<User['id'], Set<string>>();
 
@@ -14,7 +14,7 @@ setInterval(() => {
 	userIpHistories.clear();
 }, 1000 * 60 * 60);
 
-export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res) => {
+export default (endpoint: IEndpoint, exec: any, ctx: Koa.Context) => new Promise<void>((res) => {
 	const body = ctx.is('multipart/form-data')
 		? (ctx.request as any).body
 		: ctx.method === 'GET'
@@ -45,7 +45,7 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise<void>((res
 	// Authentication
 	authenticate(body['i']).then(([user, app]) => {
 		// API invoking
-		call(endpoint.name, user, app, body, ctx).then((res: any) => {
+		call(endpoint, exec, user, app, body, ctx).then((res: any) => {
 			if (ctx.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
 				ctx.set('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 			}

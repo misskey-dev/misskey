@@ -23,15 +23,16 @@ import { envOption } from '../env.js';
 import activityPub from './activitypub.js';
 import nodeinfo from './nodeinfo.js';
 import wellKnown from './well-known.js';
-import apiServer from './api/index.js';
+import { createApiServer } from './api/index.js';
 import fileServer from './file/index.js';
 import proxyServer from './proxy/index.js';
 import webServer from './web/index.js';
 import { initializeStreamingServer } from './api/streaming.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
-export default () => new Promise(resolve => {
+export default (app: INestApplicationContext) => new Promise(resolve => {
 	// Init app
 	const app = new Koa();
 	app.proxy = true;
@@ -59,7 +60,7 @@ export default () => new Promise(resolve => {
 		});
 	}
 
-	app.use(mount('/api', apiServer));
+	app.use(mount('/api', createApiServer(app)));
 	app.use(mount('/files', fileServer));
 	app.use(mount('/proxy', proxyServer));
 

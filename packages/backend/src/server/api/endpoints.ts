@@ -1,4 +1,4 @@
-import { Schema } from '@/misc/schema.js';
+import type { Schema } from '@/misc/schema.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -727,7 +727,6 @@ export interface IEndpointMeta {
 
 export interface IEndpoint {
 	name: string;
-	exec: any;
 	meta: IEndpointMeta;
 	params: Schema;
 }
@@ -735,7 +734,6 @@ export interface IEndpoint {
 const endpoints: IEndpoint[] = eps.map(([name, ep]) => {
 	return {
 		name: name,
-		exec: ep.default,
 		meta: ep.meta || {},
 		params: ep.paramDef,
 	};
