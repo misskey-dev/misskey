@@ -1,18 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
 import type { Followings , Users } from '@/models/index.js';
-
-import type { User } from '@/models/entities/user';
-import type { QueueService } from '@/queue/queue.service';
+import type { User } from '@/models/entities/user.js';
+import type { QueueService } from '@/queue/queue.service.js';
 import renderDelete from '@/remote/activitypub/renderer/delete.js';
 import renderUndo from '@/remote/activitypub/renderer/undo.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import config from '@/config/index.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Config } from '@/config/types.js';
 
 @Injectable()
 export class UserSuspendService {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
@@ -29,7 +32,7 @@ export class UserSuspendService {
 	
 		if (this.usersRepository.isLocalUser(user)) {
 			// 知り得る全SharedInboxにDelete配信
-			const content = renderActivity(renderDelete(`${config.url}/users/${user.id}`, user));
+			const content = renderActivity(renderDelete(`${this.config.url}/users/${user.id}`, user));
 	
 			const queue: string[] = [];
 	
@@ -58,7 +61,7 @@ export class UserSuspendService {
 	
 		if (this.usersRepository.isLocalUser(user)) {
 			// 知り得る全SharedInboxにUndo Delete配信
-			const content = renderActivity(renderUndo(renderDelete(`${config.url}/users/${user.id}`, user), user));
+			const content = renderActivity(renderUndo(renderDelete(`${this.config.url}/users/${user.id}`, user), user));
 	
 			const queue: string[] = [];
 	

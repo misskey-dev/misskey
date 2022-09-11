@@ -3,7 +3,6 @@ import type { User } from '@/models/entities/user.js';
 import type { Note } from '@/models/entities/note.js';
 import type { UserList } from '@/models/entities/user-list.js';
 import type { UserGroup } from '@/models/entities/user-group.js';
-import config from '@/config/index.js';
 import type { Antenna } from '@/models/entities/antenna.js';
 import type { Channel } from '@/models/entities/channel.js';
 import type {
@@ -23,11 +22,16 @@ import type {
 	UserStreamTypes,
 } from '@/server/api/stream/types.js';
 import type { Packed } from '@/misc/schema.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Config } from '@/config/types.js';
 import type Redis from 'ioredis';
 
 @Injectable()
 export class GlobalEventService {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
 		@Inject('redis')
 		private redisClient: Redis.Redis,
 	) {
@@ -38,7 +42,7 @@ export class GlobalEventService {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		this.redisClient.publish(config.host, JSON.stringify({
+		this.redisClient.publish(this.config.host, JSON.stringify({
 			channel: channel,
 			message: message,
 		}));

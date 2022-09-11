@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users , Followings, FollowRequests , UserProfiles , Instances , Blockings } from '@/models/index.js';
-import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/user';
+import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderFollow from '@/remote/activitypub/renderer/follow.js';
 import renderAccept from '@/remote/activitypub/renderer/accept.js';
