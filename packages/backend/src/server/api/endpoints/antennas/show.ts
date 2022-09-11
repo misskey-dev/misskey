@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '../../error.js';
 import { Antennas } from '@/models/index.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['antennas', 'account'],
@@ -44,15 +44,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	// Fetch the antenna
-	const antenna = await Antennas.findOneBy({
-		id: ps.antennaId,
-		userId: me.id,
-	});
+			// Fetch the antenna
+			const antenna = await Antennas.findOneBy({
+				id: ps.antennaId,
+				userId: me.id,
+			});
 
-	if (antenna == null) {
-		throw new ApiError(meta.errors.noSuchAntenna);
+			if (antenna == null) {
+				throw new ApiError(meta.errors.noSuchAntenna);
+			}
+
+			return await Antennas.pack(antenna);
+		});
 	}
-
-	return await Antennas.pack(antenna);
-});
+}

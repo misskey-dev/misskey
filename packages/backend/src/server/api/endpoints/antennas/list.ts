@@ -37,9 +37,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
     private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-	const antennas = await Antennas.findBy({
-		userId: me.id,
-	});
+			const antennas = await Antennas.findBy({
+				userId: me.id,
+			});
 
-	return await Promise.all(antennas.map(x => Antennas.pack(x)));
-});
+			return await Promise.all(antennas.map(x => Antennas.pack(x)));
+		});
+	}
+}
