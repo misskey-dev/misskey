@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Mutings, Notifications, UserProfiles } from '@/models/index.js';
-import { Users } from '@/models/index.js';
+import type { Mutings, Notifications, UserProfiles , Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user';
 import type { Notification } from '@/models/entities/notification.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
@@ -73,8 +72,8 @@ export class CreateNotificationService {
 			this.globalEventServie.publishMainStream(notifieeId, 'unreadNotification', packed);
 			pushNotification(notifieeId, 'notification', packed);
 	
-			if (type === 'follow') sendEmailNotification.follow(notifieeId, await Users.findOneByOrFail({ id: data.notifierId! }));
-			if (type === 'receiveFollowRequest') sendEmailNotification.receiveFollowRequest(notifieeId, await Users.findOneByOrFail({ id: data.notifierId! }));
+			if (type === 'follow') sendEmailNotification.follow(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
+			if (type === 'receiveFollowRequest') sendEmailNotification.receiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
 		}, 2000);
 	
 		return notification;
