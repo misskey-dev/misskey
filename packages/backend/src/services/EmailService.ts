@@ -1,38 +1,50 @@
 import * as nodemailer from 'nodemailer';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { MetaService } from '@/services/MetaService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Config } from '@/config/types.js';
 import Logger from './logger.js';
-import config from '@/config/index.js';
 
 export const logger = new Logger('email');
 
-export async function sendEmail(to: string, subject: string, html: string, text: string) {
-	const meta = await fetchMeta(true);
+@Injectable()
+export class EmailService {
+	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
 
-	const iconUrl = `${config.url}/static-assets/mi-white.png`;
-	const emailSettingUrl = `${config.url}/settings/email`;
+		private metaService: MetaService,
+	) {
+	}
 
-	const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
-
-	const transporter = nodemailer.createTransport({
-		host: meta.smtpHost,
-		port: meta.smtpPort,
-		secure: meta.smtpSecure,
-		ignoreTLS: !enableAuth,
-		proxy: config.proxySmtp,
-		auth: enableAuth ? {
-			user: meta.smtpUser,
-			pass: meta.smtpPass,
-		} : undefined,
-	} as any);
-
-	try {
-		// TODO: htmlサニタイズ
-		const info = await transporter.sendMail({
-			from: meta.email!,
-			to: to,
-			subject: subject,
-			text: text,
-			html: `<!doctype html>
+	public async sendEmail(to: string, subject: string, html: string, text: string) {
+		const meta = await this.metaService.fetch(true);
+	
+		const iconUrl = `${this.config.url}/static-assets/mi-white.png`;
+		const emailSettingUrl = `${this.config.url}/settings/email`;
+	
+		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
+	
+		const transporter = nodemailer.createTransport({
+			host: meta.smtpHost,
+			port: meta.smtpPort,
+			secure: meta.smtpSecure,
+			ignoreTLS: !enableAuth,
+			proxy: this.config.proxySmtp,
+			auth: enableAuth ? {
+				user: meta.smtpUser,
+				pass: meta.smtpPass,
+			} : undefined,
+		} as any);
+	
+		try {
+			// TODO: htmlサニタイズ
+			const info = await transporter.sendMail({
+				from: meta.email!,
+				to: to,
+				subject: subject,
+				text: text,
+				html: `<!doctype html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -108,15 +120,16 @@ export async function sendEmail(to: string, subject: string, html: string, text:
 			</footer>
 		</main>
 		<nav>
-			<a href="${ config.url }">${ config.host }</a>
+			<a href="${ this.config.url }">${ this.config.host }</a>
 		</nav>
 	</body>
 </html>`,
-		});
-
-		logger.info(`Message sent: ${info.messageId}`);
-	} catch (err) {
-		logger.error(err as Error);
-		throw err;
+			});
+	
+			logger.info(`Message sent: ${info.messageId}`);
+		} catch (err) {
+			logger.error(err as Error);
+			throw err;
+		}
 	}
 }
