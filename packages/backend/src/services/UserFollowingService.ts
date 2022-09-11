@@ -17,6 +17,7 @@ import type InstanceChart from '@/services/chart/charts/instance.js';
 import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import type { WebhookService } from '@/services/webhookService.js';
 import Logger from './logger.js';
+import type { CreateNotificationService } from './CreateNotificationService.js';
 
 const logger = new Logger('following/create');
 
@@ -56,6 +57,7 @@ export class UserFollowingService {
 
 		private queueService: QueueService,
 		private globalEventServie: GlobalEventService,
+		private createNotificationService: CreateNotificationService,
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private perUserFollowingChart: PerUserFollowingChart,
@@ -124,7 +126,7 @@ export class UserFollowingService {
 			}
 
 			if (!autoAccept) {
-				await createFollowRequest(follower, followee, requestId);
+				await this.createFollowRequest(follower, followee, requestId);
 				return;
 			}
 		}
@@ -183,7 +185,7 @@ export class UserFollowingService {
 			});
 	
 			// 通知を作成
-			createNotification(follower.id, 'followRequestAccepted', {
+			this.createNotificationService.createNotification(follower.id, 'followRequestAccepted', {
 				notifierId: followee.id,
 			});
 		}
@@ -244,7 +246,7 @@ export class UserFollowingService {
 			});
 	
 			// 通知を作成
-			createNotification(followee.id, 'follow', {
+			this.createNotificationService.createNotification(followee.id, 'follow', {
 				notifierId: follower.id,
 			});
 		}
@@ -381,7 +383,7 @@ export class UserFollowingService {
 			}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
 	
 			// 通知を作成
-			createNotification(followee.id, 'receiveFollowRequest', {
+			this.createNotificationService.createNotification(followee.id, 'receiveFollowRequest', {
 				notifierId: follower.id,
 				followRequestId: followRequest.id,
 			});
