@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { AppLockService } from '@/services/AppLockService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/test-grouped.js';
 import type { DataSource , DataSource } from 'typeorm';
@@ -14,7 +15,7 @@ export default class TestGroupedChart extends Chart<typeof schema> {
 	private total = {} as Record<string, number>;
 
 	constructor(
-		@Inject('db')
+		@Inject(DI_SYMBOLS.db)
 		private db: DataSource,
 
 		private appLockService: AppLockService,

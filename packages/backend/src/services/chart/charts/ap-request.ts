@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { AppLockService } from '@/services/AppLockService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/ap-request.js';
 import type { KVs } from '../core.js';
@@ -12,7 +13,7 @@ import type { DataSource } from 'typeorm';
 @Injectable()
 export default class ApRequestChart extends Chart<typeof schema> {
 	constructor(
-		@Inject('db')
+		@Inject(DI_SYMBOLS.db)
 		private db: DataSource,
 
 		private appLockService: AppLockService,

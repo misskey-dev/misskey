@@ -4,6 +4,7 @@ import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Note } from '@/models/entities/note.js';
 import { toPuny } from '@/misc/convert-host.js';
 import type { AppLockService } from '@/services/AppLockService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/instance.js';
 import type { KVs } from '../core.js';
@@ -16,7 +17,7 @@ import type { DataSource } from 'typeorm';
 @Injectable()
 export default class InstanceChart extends Chart<typeof schema> {
 	constructor(
-		@Inject('db')
+		@Inject(DI_SYMBOLS.db)
 		private db: DataSource,
 
 		private appLockService: AppLockService,

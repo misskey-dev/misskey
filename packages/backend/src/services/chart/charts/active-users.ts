@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { AppLockService } from '@/services/AppLockService.js';
 import type { User } from '@/models/entities/user.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/active-users.js';
 import type { DataSource } from 'typeorm';
@@ -17,7 +18,7 @@ const year = 1000 * 60 * 60 * 24 * 365;
 @Injectable()
 export default class ActiveUsersChart extends Chart<typeof schema> {
 	constructor(
-		@Inject('db')
+		@Inject(DI_SYMBOLS.db)
 		private db: DataSource,
 
 		private appLockService: AppLockService,
