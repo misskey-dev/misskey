@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AbuseUserReports, Users } from '@/models/index.js';
-import { getInstanceActor } from '@/services/instance-actor.js';
-import { deliver } from '@/queue/index.js';
+import type { Users } from '@/models/index.js';
+import { AbuseUserReports } from '@/models/index.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import { renderFlag } from '@/remote/activitypub/renderer/flag.js';
+import type { InstanceActorService } from '@/services/InstanceActorService';
+import type { QueueService } from '@/queue/queue.service';
 
 export const meta = {
 	tags: ['admin'],
@@ -29,21 +30,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		private queueService: QueueService,
+
+		private instanceActorService: InstanceActorService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const report = await AbuseUserReports.findOneByOrFail({ id: ps.reportId });
+			const report = await AbuseUserReports.findOneBy({ id: ps.reportId });
 
 			if (report == null) {
 				throw new Error('report not found');
 			}
 
 			if (ps.forward && report.targetUserHost != null) {
-				const actor = await getInstanceActor();
+				const actor = await this.instanceActorService.getInstanceActor();
 				const targetUser = await this.usersRepository.findOneByOrFail({ id: report.targetUserId });
 
-				deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
+				this.queueService.deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
 			}
 
 			await AbuseUserReports.update(report.id, {
