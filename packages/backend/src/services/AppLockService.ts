@@ -16,7 +16,6 @@ export class AppLockService {
 		@Inject('redis')
 		private redisClient: Redis.Redis,
 	) {
-		console.warn();
 		this.#lock = promisify(redisLock(this.redisClient, retryDelay));
 	}
 
