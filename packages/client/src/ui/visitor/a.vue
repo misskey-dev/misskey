@@ -42,8 +42,8 @@ import XHeader from './header.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
 import { ColdDeviceStorage } from '@/store';
 import { mainRouter } from '@/router';
 

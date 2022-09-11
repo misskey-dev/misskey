@@ -65,13 +65,13 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import XPage from '@/components/page/page.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { url } from '@/config';
-import MkFollowButton from '@/components/follow-button.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkPagePreview from '@/components/page-preview.vue';
+import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

@@ -45,7 +45,7 @@ import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { openAccountMenu } from '@/account';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 
 export default defineComponent({
 	components: {
@@ -101,7 +101,7 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			os.popup(defineAsyncComponent(() => import('@/components/launch-pad.vue')), {
+			os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
 				src: ev.currentTarget ?? ev.target,
 				anchor: { x: 'center', y: 'bottom' },
 			}, {

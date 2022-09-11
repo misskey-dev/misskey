@@ -4,12 +4,13 @@
 	<div class="ujigsodd">
 		<MkLoading v-if="fetching"/>
 		<div v-if="!fetching && images.length > 0" class="stream">
-			<MkA v-for="image in images"
-				:key="image.id"
+			<MkA
+				v-for="image in images"
+				:key="image.note.id + image.file.id"
 				class="img"
 				:to="notePage(image.note)"
 			>
-				<ImgWithBlurhash :hash="image.blurhash" :src="thumbnail(image.file)" :alt="image.name" :title="image.name"/>
+				<ImgWithBlurhash :hash="image.file.blurhash" :src="thumbnail(image.file)" :title="image.file.name"/>
 			</MkA>
 		</div>
 		<p v-if="!fetching && images.length == 0" class="empty">{{ $ts.nothing }}</p>
@@ -17,64 +18,56 @@
 </MkContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
+import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { notePage } from '@/filters/note';
 import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
-import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import { defaultStore } from '@/store';
 
-export default defineComponent({
-	components: {
-		MkContainer,
-		ImgWithBlurhash,
-	},
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-	},
-	data() {
-		return {
-			fetching: true,
-			images: [],
-		};
-	},
-	mounted() {
-		const image = [
-			'image/jpeg',
-			'image/png',
-			'image/gif',
-			'image/apng',
-			'image/vnd.mozilla.apng',
-		];
-		os.api('users/notes', {
-			userId: this.user.id,
-			fileType: image,
-			excludeNsfw: this.$store.state.nsfw !== 'ignore',
-			limit: 10,
-		}).then(notes => {
-			for (const note of notes) {
-				for (const file of note.files) {
-					this.images.push({
-						note,
-						file
-					});
-				}
+const props = defineProps<{
+	user: misskey.entities.UserDetailed;
+}>();
+
+let fetching = $ref(true);
+let images = $ref<{
+	note: misskey.entities.Note;
+	file: misskey.entities.DriveFile;
+}[]>([]);
+
+function thumbnail(image: misskey.entities.DriveFile): string {
+	return defaultStore.state.disableShowingAnimatedImages
+		? getStaticImageUrl(image.thumbnailUrl)
+		: image.thumbnailUrl;
+}
+
+onMounted(() => {
+	const image = [
+		'image/jpeg',
+		'image/png',
+		'image/gif',
+		'image/apng',
+		'image/vnd.mozilla.apng',
+	];
+	os.api('users/notes', {
+		userId: props.user.id,
+		fileType: image,
+		excludeNsfw: defaultStore.state.nsfw !== 'ignore',
+		limit: 10,
+	}).then(notes => {
+		for (const note of notes) {
+			for (const file of note.files) {
+				images.push({
+					note,
+					file,
+				});
 			}
-			this.fetching = false;
-		});
-	},
-	methods: {
-		thumbnail(image: any): string {
-			return this.$store.state.disableShowingAnimatedImages
-				? getStaticImageUrl(image.thumbnailUrl)
-				: image.thumbnailUrl;
-		},
-		notePage
-	},
+		}
+		fetching = false;
+	});
 });
 </script>
 

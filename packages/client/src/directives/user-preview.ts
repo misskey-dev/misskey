@@ -24,7 +24,7 @@ export class UserPreview {
 
 		const showing = ref(true);
 
-		popup(defineAsyncComponent(() => import('@/components/user-preview.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/MkUserPreview.vue')), {
 			showing,
 			q: this.user,
 			source: this.el

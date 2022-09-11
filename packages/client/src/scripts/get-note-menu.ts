@@ -289,7 +289,7 @@ export function getNoteMenu(props: {
 					text: i18n.ts.reportAbuse,
 					action: () => {
 						const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
-						os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
+						os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 							user: appearNote.user,
 							initialComment: `Note: ${u}\n-----\n`,
 						}, {}, 'closed');

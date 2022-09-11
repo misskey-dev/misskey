@@ -92,6 +92,10 @@
 			}
 		}
 	}
+	const colorSchema = localStorage.getItem('colorSchema');
+	if (colorSchema) {
+		document.documentElement.style.setProperty('color-schema', colorSchema);
+	}
 	//#endregion
 
 	const fontSize = localStorage.getItem('fontSize');

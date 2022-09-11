@@ -23,9 +23,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XReactionsViewer from '@/components/reactions-viewer.vue';
-import XMediaList from '@/components/media-list.vue';
-import XPoll from '@/components/poll.vue';
+import XReactionsViewer from '@/components/MkReactionsViewer.vue';
+import XMediaList from '@/components/MkMediaList.vue';
+import XPoll from '@/components/MkPoll.vue';
 import * as os from '@/os';
 
 export default defineComponent({

@@ -13,7 +13,7 @@ import { onUnmounted, ref, watch } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import { timezones } from '@/scripts/timezones';
-import MkDigitalClock from '@/components/digital-clock.vue';
+import MkDigitalClock from '@/components/MkDigitalClock.vue';
 
 const name = 'digitalClock';
 

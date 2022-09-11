@@ -23,7 +23,7 @@
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store';
-import XTimeline from '@/components/timeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { instance } from '@/instance';
@@ -102,22 +102,6 @@ const menu = [{
 	text: i18n.ts.timeline,
 	action: setType,
 }];
-
-/*
-export default defineComponent({
-	watch: {
-		mediaOnly() {
-			(this.$refs.timeline as any).reload();
-		}
-	},
-
-	methods: {
-		focus() {
-			(this.$refs.timeline as any).focus();
-		}
-	}
-});
-*/
 </script>
 
 <style lang="scss" scoped>

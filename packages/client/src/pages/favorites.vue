@@ -22,9 +22,9 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import XNote from '@/components/note.vue';
-import XList from '@/components/date-separated-list.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import XNote from '@/components/MkNote.vue';
+import XList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

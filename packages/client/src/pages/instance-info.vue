@@ -117,13 +117,13 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
-import MkChart from '@/components/chart.vue';
-import MkObjectView from '@/components/object-view.vue';
+import MkChart from '@/components/MkChart.vue';
+import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
-import MkLink from '@/components/link.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/form/select.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
@@ -132,8 +132,8 @@ import bytes from '@/filters/bytes';
 import { iAmModerator } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import MkUserCardMini from '@/components/user-card-mini.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
 	host: string;

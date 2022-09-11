@@ -13,8 +13,8 @@
 import { defineAsyncComponent } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import MkContainer from '@/components/ui/container.vue';
-import XNotifications from '@/components/notifications.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import XNotifications from '@/components/MkNotifications.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -51,7 +51,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 );
 
 const configureNotification = () => {
-	os.popup(defineAsyncComponent(() => import('@/components/notification-setting-window.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSettingWindow.vue')), {
 		includingTypes: widgetProps.includingTypes,
 	}, {
 		done: async (res) => {

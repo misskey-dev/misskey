@@ -15,9 +15,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkKeyValue from '@/components/key-value.vue';
-import FormButton from '@/components/ui/button.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import FormButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';

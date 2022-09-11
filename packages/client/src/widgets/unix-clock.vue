@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-unixClock _monospace" :class="{ _panel: !widgetProps.transparent }" :style="{ fontSize: `${widgetProps.fontSize}em` }">
-	<div v-if="widgetProps.showLabel" class="label">UNIX time</div>
+	<div v-if="widgetProps.showLabel" class="label">UNIX Epoch</div>
 	<div class="time">
 		<span v-text="ss"></span>
 		<span v-if="widgetProps.showMs" class="colon" :class="{ showColon }">:</span>

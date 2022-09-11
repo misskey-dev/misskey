@@ -59,7 +59,7 @@ import XDraggable from 'vuedraggable';
 import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
@@ -88,7 +88,7 @@ function remove(reaction, ev: MouseEvent) {
 }
 
 function preview(ev: MouseEvent) {
-	os.popup(defineAsyncComponent(() => import('@/components/emoji-picker-dialog.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 		asReactionPicker: true,
 		src: ev.currentTarget ?? ev.target,
 	}, {}, 'closed');
