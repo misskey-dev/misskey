@@ -30,7 +30,7 @@ export class RelayService {
 		this.#relaysCache = new Cache<Relay[]>(1000 * 60 * 10);
 	}
 
-	async getRelayActor(): Promise<ILocalUser> {
+	async #getRelayActor(): Promise<ILocalUser> {
 		const user = await this.usersRepository.findOneBy({
 			host: IsNull(),
 			username: ACTOR_USERNAME,
@@ -49,7 +49,7 @@ export class RelayService {
 			status: 'requesting',
 		}).then(x => this.relaysRepository.findOneByOrFail(x.identifiers[0]));
 	
-		const relayActor = await this.getRelayActor();
+		const relayActor = await this.#getRelayActor();
 		const follow = await renderFollowRelay(relay, relayActor);
 		const activity = renderActivity(follow);
 		this.queueService.deliver(relayActor, activity, relay.inbox);
@@ -66,7 +66,7 @@ export class RelayService {
 			throw 'relay not found';
 		}
 	
-		const relayActor = await this.getRelayActor();
+		const relayActor = await this.#getRelayActor();
 		const follow = renderFollowRelay(relay, relayActor);
 		const undo = renderUndo(follow, relayActor);
 		const activity = renderActivity(undo);
