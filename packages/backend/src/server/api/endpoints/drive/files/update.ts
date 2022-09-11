@@ -63,20 +63,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
+			if ((!me.isAdmin && !me.isModerator) && (file.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
@@ -95,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				} else {
 					const folder = await DriveFolders.findOneBy({
 						id: ps.folderId,
-						userId: user.id,
+						userId: me.id,
 					});
 
 					if (folder == null) {
@@ -116,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const fileObj = await DriveFiles.pack(file, { self: true });
 
 			// Publish fileUpdated event
-			publishDriveStream(user.id, 'fileUpdated', fileObj);
+			publishDriveStream(me.id, 'fileUpdated', fileObj);
 
 			return fileObj;
 		});

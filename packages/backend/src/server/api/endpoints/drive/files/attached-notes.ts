@@ -43,17 +43,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Fetch file
 			const file = await DriveFiles.findOneBy({
 				id: ps.fileId,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (file == null) {
@@ -61,10 +56,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const notes = await Notes.createQueryBuilder('note')
-		.where(':file = ANY(note.fileIds)', { file: file.id })
-		.getMany();
+				.where(':file = ANY(note.fileIds)', { file: file.id })
+				.getMany();
 
-			return await Notes.packMany(notes, user, {
+			return await Notes.packMany(notes, me, {
 				detail: true,
 			});
 		});

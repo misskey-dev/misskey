@@ -91,19 +91,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			let recipientUser: User | null;
 			let recipientGroup: UserGroup | null;
 
 			if (ps.userId != null) {
 				// Myself
-				if (ps.userId === user.id) {
+				if (ps.userId === me.id) {
 					throw new ApiError(meta.errors.recipientIsYourself);
 				}
 
@@ -116,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				// Check blocking
 				const block = await Blockings.findOneBy({
 					blockerId: recipientUser.id,
-					blockeeId: user.id,
+					blockeeId: me.id,
 				});
 				if (block) {
 					throw new ApiError(meta.errors.youHaveBeenBlocked);
@@ -131,7 +126,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// check joined
 				const joining = await UserGroupJoinings.findOneBy({
-					userId: user.id,
+					userId: me.id,
 					userGroupId: recipientGroup.id,
 				});
 
@@ -144,7 +139,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.fileId != null) {
 				file = await DriveFiles.findOneBy({
 					id: ps.fileId,
-					userId: user.id,
+					userId: me.id,
 				});
 
 				if (file == null) {
@@ -157,7 +152,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.contentRequired);
 			}
 
-			return await createMessage(user, recipientUser, recipientGroup, ps.text, file);
+			return await createMessage(me, recipientUser, recipientGroup, ps.text, file);
 		});
 	}
 }

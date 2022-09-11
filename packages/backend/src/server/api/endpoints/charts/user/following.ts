@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getJsonSchema } from '@/services/chart/core.js';
-import { perUserFollowingChart } from '@/services/chart/index.js';
+import type PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
+import { schema } from '@/services/chart/charts/entities/per-user-following.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'following'],
 
-	res: getJsonSchema(perUserFollowingChart.schema),
+	res: getJsonSchema(schema),
 
 	allowGet: true,
 	cacheSec: 60 * 60,
@@ -27,14 +28,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		private perUserFollowingChart: PerUserFollowingChart,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			return await perUserFollowingChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
+		super(meta, paramDef, async (ps, me) => {
+			return await this.perUserFollowingChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
 		});
 	}
 }

@@ -48,13 +48,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const clip = await Clips.findOneBy({
 				id: ps.clipId,
 			});
@@ -63,36 +58,36 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			if (!clip.isPublic && (user == null || (clip.userId !== user.id))) {
+			if (!clip.isPublic && (me == null || (clip.userId !== me.id))) {
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
 			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.innerJoin(ClipNotes.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.andWhere('clipNote.clipId = :clipId', { clipId: clip.id });
+				.innerJoin(ClipNotes.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
+				.andWhere('clipNote.clipId = :clipId', { clipId: clip.id });
 
-			if (user) {
-				generateVisibilityQuery(query, user);
-				generateMutedUserQuery(query, user);
-				generateBlockedUserQuery(query, user);
+			if (me) {
+				generateVisibilityQuery(query, me);
+				generateMutedUserQuery(query, me);
+				generateBlockedUserQuery(query, me);
 			}
 
 			const notes = await query
-		.take(ps.limit)
-		.getMany();
+				.take(ps.limit)
+				.getMany();
 
-			return await Notes.packMany(notes, user);
+			return await Notes.packMany(notes, me);
 		});
 	}
 }

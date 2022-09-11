@@ -39,33 +39,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const note = await Notes.findOneByOrFail({ id: ps.noteId });
 
 			const [favorite, watching, threadMuting] = await Promise.all([
 				NoteFavorites.count({
 					where: {
-						userId: user.id,
+						userId: me.id,
 						noteId: note.id,
 					},
 					take: 1,
 				}),
 				NoteWatchings.count({
 					where: {
-						userId: user.id,
+						userId: me.id,
 						noteId: note.id,
 					},
 					take: 1,
 				}),
 				NoteThreadMutings.count({
 					where: {
-						userId: user.id,
+						userId: me.id,
 						threadId: note.threadId || note.id,
 					},
 					take: 1,

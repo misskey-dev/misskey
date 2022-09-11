@@ -50,13 +50,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const query = {
 				noteId: ps.noteId,
 			} as FindOptionsWhere<NoteReaction>;
@@ -79,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				relations: ['user', 'user.avatar', 'user.banner', 'note'],
 			});
 
-			return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
+			return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me)));
 		});
 	}
 }

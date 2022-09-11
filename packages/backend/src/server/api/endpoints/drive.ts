@@ -36,20 +36,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const instance = await fetchMeta(true);
 
 			// Calculate drive usage
-			const usage = await DriveFiles.calcDriveUsageOf(user.id);
+			const usage = await DriveFiles.calcDriveUsageOf(me.id);
 
 			return {
-				capacity: 1024 * 1024 * (user.driveCapacityOverrideMb || instance.localDriveCapacityMb),
+				capacity: 1024 * 1024 * (me.driveCapacityOverrideMb || instance.localDriveCapacityMb),
 				usage: usage,
 			};
 		});

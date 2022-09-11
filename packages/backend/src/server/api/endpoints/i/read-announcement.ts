@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { genId } from '@/misc/gen-id.js';
-import { AnnouncementReads, Announcements, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { AnnouncementReads, Announcements } from '@/models/index.js';
 import { publishMainStream } from '@/services/stream.js';
 import { ApiError } from '../../error.js';
 
@@ -35,11 +36,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Check if announcement exists
 			const announcement = await Announcements.findOneBy({ id: ps.announcementId });
 
@@ -50,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Check if already read
 			const read = await AnnouncementReads.findOneBy({
 				announcementId: ps.announcementId,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (read != null) {
@@ -62,11 +60,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: genId(),
 				createdAt: new Date(),
 				announcementId: ps.announcementId,
-				userId: user.id,
+				userId: me.id,
 			});
 
-			if (!await this.usersRepository.getHasUnreadAnnouncement(user.id)) {
-				publishMainStream(user.id, 'readAllAnnouncements');
+			if (!await this.usersRepository.getHasUnreadAnnouncement(me.id)) {
+				publishMainStream(me.id, 'readAllAnnouncements');
 			}
 		});
 	}

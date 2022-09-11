@@ -18,17 +18,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const query = RegistryItems.createQueryBuilder('item')
 				.select('item.scope')
 				.where('item.domain IS NULL')
-				.andWhere('item.userId = :userId', { userId: user.id });
+				.andWhere('item.userId = :userId', { userId: me.id });
 
 			const items = await query.getMany();
 

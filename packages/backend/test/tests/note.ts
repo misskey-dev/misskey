@@ -2,12 +2,12 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { jest } from '@jest/globals';
-import { Container, Service } from 'typedi';
+
 import { initDb } from '@/db/postgre.js';
 import { Notes } from '@/models/index.js';
 import { FooService } from '@/services/fooService.js';
-import { WebhookService } from '../../src/services/webhookService.js';
 import { NoteCreateService } from '../../src/services/note/NoteCreateService.js';
+import type { WebhookService } from '../../src/services/webhookService.js';
 
 describe('NoteCreateService', () => {
 	beforeAll(async () => {

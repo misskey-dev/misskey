@@ -38,13 +38,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => { qb
 					.where('note.replyId = :noteId', { noteId: ps.noteId })
@@ -69,15 +64,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			generateVisibilityQuery(query, user);
-			if (user) {
-				generateMutedUserQuery(query, user);
-				generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, me);
+			if (me) {
+				generateMutedUserQuery(query, me);
+				generateBlockedUserQuery(query, me);
 			}
 
 			const notes = await query.take(ps.limit).getMany();
 
-			return await Notes.packMany(notes, user);
+			return await Notes.packMany(notes, me);
 		});
 	}
 }

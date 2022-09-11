@@ -22,24 +22,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Update documents
 			await Notifications.update({
-				notifieeId: user.id,
+				notifieeId: me.id,
 				isRead: false,
 			}, {
 				isRead: true,
 			});
 
 			// 全ての通知を読みましたよというイベントを発行
-			publishMainStream(user.id, 'readAllNotifications');
-			pushNotification(user.id, 'readAllNotifications', undefined);
+			publishMainStream(me.id, 'readAllNotifications');
+			pushNotification(me.id, 'readAllNotifications', undefined);
 		});
 	}
 }

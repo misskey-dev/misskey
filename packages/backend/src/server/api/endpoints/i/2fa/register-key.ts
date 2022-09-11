@@ -27,14 +27,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -57,7 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const challengeId = genId();
 
 			await AttestationChallenges.insert({
-				userId: user.id,
+				userId: me.id,
 				id: challengeId,
 				challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
 				createdAt: new Date(),

@@ -34,13 +34,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Fetch token
 			const session = await AuthSessions
 				.findOneBy({ token: ps.token });
@@ -55,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Fetch exist access token
 			const exist = await AccessTokens.findOneBy({
 				appId: session.appId,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (exist == null) {
@@ -75,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					createdAt: now,
 					lastUsedAt: now,
 					appId: session.appId,
-					userId: user.id,
+					userId: me.id,
 					token: accessToken,
 					hash: hash,
 				});
@@ -83,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Update session
 			await AuthSessions.update(session.id, {
-				userId: user.id,
+				userId: me.id,
 			});
 		});
 	}

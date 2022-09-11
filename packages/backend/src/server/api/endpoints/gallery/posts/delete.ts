@@ -31,16 +31,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const post = await GalleryPosts.findOneBy({
 				id: ps.postId,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (post == null) {

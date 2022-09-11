@@ -21,16 +21,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const token = ps.token.replace(/\s/g, '');
 
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
 
 			if (profile.twoFactorTempSecret == null) {
 				throw new Error('二段階認証の設定が開始されていません');
@@ -46,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('not verified');
 			}
 
-			await UserProfiles.update(user.id, {
+			await UserProfiles.update(me.id, {
 				twoFactorSecret: profile.twoFactorTempSecret,
 				twoFactorEnabled: true,
 			});

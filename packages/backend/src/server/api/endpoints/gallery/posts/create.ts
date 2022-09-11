@@ -47,17 +47,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const files = (await Promise.all(ps.fileIds.map(fileId =>
 				DriveFiles.findOneBy({
 					id: fileId,
-					userId: user.id,
+					userId: me.id,
 				}),
 			))).filter((file): file is DriveFile => file != null);
 
@@ -71,12 +66,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				updatedAt: new Date(),
 				title: ps.title,
 				description: ps.description,
-				userId: user.id,
+				userId: me.id,
 				isSensitive: ps.isSensitive,
 				fileIds: files.map(file => file.id),
 			})).then(x => GalleryPosts.findOneByOrFail(x.identifiers[0]));
 
-			return await GalleryPosts.pack(post, user);
+			return await GalleryPosts.pack(post, me);
 		});
 	}
 }

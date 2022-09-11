@@ -6,7 +6,8 @@ import { deliver } from '@/queue/index.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderVote from '@/remote/activitypub/renderer/vote.js';
 import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
-import { PollVotes, NoteWatchings, Users, Polls, Blockings } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -74,11 +75,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const createdAt = new Date();
 
 			// Get votee
@@ -92,10 +90,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Check blocking
-			if (note.userId !== user.id) {
+			if (note.userId !== me.id) {
 				const block = await Blockings.findOneBy({
 					blockerId: note.userId,
-					blockeeId: user.id,
+					blockeeId: me.id,
 				});
 				if (block) {
 					throw new ApiError(meta.errors.youHaveBeenBlocked);
@@ -115,7 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// if already voted
 			const exist = await PollVotes.findBy({
 				noteId: note.id,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (exist.length) {
@@ -133,7 +131,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: genId(),
 				createdAt,
 				noteId: note.id,
-				userId: user.id,
+				userId: me.id,
 				choice: ps.choice,
 			}).then(x => PollVotes.findOneByOrFail(x.identifiers[0]));
 
@@ -143,12 +141,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			publishNoteStream(note.id, 'pollVoted', {
 				choice: ps.choice,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			// Notify
 			createNotification(note.userId, 'pollVote', {
-				notifierId: user.id,
+				notifierId: me.id,
 				noteId: note.id,
 				choice: ps.choice,
 			});
@@ -156,11 +154,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Fetch watchers
 			NoteWatchings.findBy({
 				noteId: note.id,
-				userId: Not(user.id),
+				userId: Not(me.id),
 			}).then(watchers => {
 				for (const watcher of watchers) {
 					createNotification(watcher.userId, 'pollVote', {
-						notifierId: user.id,
+						notifierId: me.id,
 						noteId: note.id,
 						choice: ps.choice,
 					});
@@ -171,7 +169,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (note.userHost != null) {
 				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as IRemoteUser;
 
-				deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
+				deliver(me, renderActivity(await renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
 			}
 
 			// リモートフォロワーにUpdate配信

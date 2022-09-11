@@ -2,7 +2,8 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import create from '@/services/blocking/create.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Blockings, NoteWatchings, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Blockings, NoteWatchings } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
 
@@ -59,15 +60,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const blocker = await this.usersRepository.findOneByOrFail({ id: user.id });
+		super(meta, paramDef, async (ps, me) => {
+			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });
 
 			// 自分自身
-			if (user.id === ps.userId) {
+			if (me.id === ps.userId) {
 				throw new ApiError(meta.errors.blockeeIsYourself);
 			}
 

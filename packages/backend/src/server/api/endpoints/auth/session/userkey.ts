@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Apps, AuthSessions, AccessTokens, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Apps, AuthSessions, AccessTokens } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -61,11 +62,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Lookup app
 			const app = await Apps.findOneBy({
 				secret: ps.appSecret,

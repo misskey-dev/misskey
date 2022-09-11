@@ -41,18 +41,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			let banner = null;
 			if (ps.bannerId != null) {
 				banner = await DriveFiles.findOneBy({
 					id: ps.bannerId,
-					userId: user.id,
+					userId: me.id,
 				});
 
 				if (banner == null) {
@@ -63,13 +58,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const channel = await Channels.insert({
 				id: genId(),
 				createdAt: new Date(),
-				userId: user.id,
+				userId: me.id,
 				name: ps.name,
 				description: ps.description || null,
 				bannerId: banner ? banner.id : null,
 			} as Channel).then(x => Channels.findOneByOrFail(x.identifiers[0]));
 
-			return await Channels.pack(channel, user);
+			return await Channels.pack(channel, me);
 		});
 	}
 }

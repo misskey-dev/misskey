@@ -61,16 +61,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const m = await fetchMeta();
 			if (m.disableLocalTimeline) {
-				if (user == null || (!user.isAdmin && !user.isModerator)) {
+				if (me == null || (!me.isAdmin && !me.isModerator)) {
 					throw new ApiError(meta.errors.ltlDisabled);
 				}
 			}
@@ -91,12 +86,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			generateChannelQuery(query, user);
-			generateRepliesQuery(query, user);
-			generateVisibilityQuery(query, user);
-			if (user) generateMutedUserQuery(query, user);
-			if (user) generateMutedNoteQuery(query, user);
-			if (user) generateBlockedUserQuery(query, user);
+			generateChannelQuery(query, me);
+			generateRepliesQuery(query, me);
+			generateVisibilityQuery(query, me);
+			if (me) generateMutedUserQuery(query, me);
+			if (me) generateMutedNoteQuery(query, me);
+			if (me) generateBlockedUserQuery(query, me);
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');
@@ -121,12 +116,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const timeline = await query.take(ps.limit).getMany();
 
 			process.nextTick(() => {
-				if (user) {
-					activeUsersChart.read(user);
+				if (me) {
+					activeUsersChart.read(me);
 				}
 			});
 
-			return await Notes.packMany(timeline, user);
+			return await Notes.packMany(timeline, me);
 		});
 	}
 }

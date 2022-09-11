@@ -31,7 +31,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('adsRepository')
     private adsRepository: typeof Ads,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			await this.adsRepository.insert({
 				id: genId(),
 				createdAt: new Date(),

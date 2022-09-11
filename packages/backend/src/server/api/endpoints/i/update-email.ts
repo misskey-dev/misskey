@@ -5,7 +5,8 @@ import bcrypt from 'bcryptjs';
 import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { publishMainStream } from '@/services/stream.js';
-import { Users, UserProfiles } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { UserProfiles } from '@/models/index.js';
 import { sendEmail } from '@/services/send-email.js';
 import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
 import { ApiError } from '../../error.js';
@@ -50,12 +51,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -71,24 +69,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			await UserProfiles.update(user.id, {
+			await UserProfiles.update(me.id, {
 				email: ps.email,
 				emailVerified: false,
 				emailVerifyCode: null,
 			});
 
-			const iObj = await this.usersRepository.pack(user.id, user, {
+			const iObj = await this.usersRepository.pack(me.id, me, {
 				detail: true,
 				includeSecrets: true,
 			});
 
 			// Publish meUpdated event
-			publishMainStream(user.id, 'meUpdated', iObj);
+			publishMainStream(me.id, 'meUpdated', iObj);
 
 			if (ps.email != null) {
 				const code = rndstr('a-z0-9', 16);
 
-				await UserProfiles.update(user.id, {
+				await UserProfiles.update(me.id, {
 					emailVerifyCode: code,
 				});
 

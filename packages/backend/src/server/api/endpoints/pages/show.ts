@@ -1,6 +1,7 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Pages, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Pages } from '@/models/index.js';
 import type { Page } from '@/models/entities/page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
@@ -50,11 +51,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			let page: Page | null = null;
 
 			if (ps.pageId) {
@@ -76,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
 
-			return await Pages.pack(page, user);
+			return await Pages.pack(page, me);
 		});
 	}
 }

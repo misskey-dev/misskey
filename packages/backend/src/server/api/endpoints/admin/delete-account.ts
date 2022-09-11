@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { deleteAccount } from '@/services/delete-account.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
@@ -27,11 +27,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: ps.userId });
 			if (user.isDeleted) {
 				return;

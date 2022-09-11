@@ -34,13 +34,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Generate secret
 			const secret = secureRndstr(32, true);
 
@@ -51,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const app = await Apps.insert({
 				id: genId(),
 				createdAt: new Date(),
-				userId: user ? user.id : null,
+				userId: me ? me.id : null,
 				name: ps.name,
 				description: ps.description,
 				permission,

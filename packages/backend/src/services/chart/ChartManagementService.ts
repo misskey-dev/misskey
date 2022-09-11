@@ -1,18 +1,18 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { beforeShutdown } from '@/misc/before-shutdown.js';
 
-import FederationChart from './charts/federation.js';
-import NotesChart from './charts/notes.js';
-import UsersChart from './charts/users.js';
-import ActiveUsersChart from './charts/active-users.js';
-import InstanceChart from './charts/instance.js';
-import PerUserNotesChart from './charts/per-user-notes.js';
-import DriveChart from './charts/drive.js';
-import PerUserReactionsChart from './charts/per-user-reactions.js';
-import HashtagChart from './charts/hashtag.js';
-import PerUserFollowingChart from './charts/per-user-following.js';
-import PerUserDriveChart from './charts/per-user-drive.js';
-import ApRequestChart from './charts/ap-request.js';
+import type FederationChart from './charts/federation.js';
+import type NotesChart from './charts/notes.js';
+import type UsersChart from './charts/users.js';
+import type ActiveUsersChart from './charts/active-users.js';
+import type InstanceChart from './charts/instance.js';
+import type PerUserNotesChart from './charts/per-user-notes.js';
+import type DriveChart from './charts/drive.js';
+import type PerUserReactionsChart from './charts/per-user-reactions.js';
+import type HashtagChart from './charts/hashtag.js';
+import type PerUserFollowingChart from './charts/per-user-following.js';
+import type PerUserDriveChart from './charts/per-user-drive.js';
+import type ApRequestChart from './charts/ap-request.js';
 
 @Injectable()
 export class ChartManagementService {

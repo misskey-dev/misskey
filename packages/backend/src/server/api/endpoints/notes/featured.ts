@@ -33,13 +33,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const max = 30;
 			const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
@@ -61,8 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			if (user) generateMutedUserQuery(query, user);
-			if (user) generateBlockedUserQuery(query, user);
+			if (me) generateMutedUserQuery(query, me);
+			if (me) generateBlockedUserQuery(query, me);
 
 			let notes = await query
 				.orderBy('note.score', 'DESC')
@@ -73,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			notes = notes.slice(ps.offset, ps.offset + ps.limit);
 
-			return await Notes.packMany(notes, user);
+			return await Notes.packMany(notes, me);
 		});
 	}
 }

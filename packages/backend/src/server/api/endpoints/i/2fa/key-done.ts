@@ -3,11 +3,12 @@ import bcrypt from 'bcryptjs';
 import * as cbor from 'cbor';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type {
+	Users } from '@/models/index.js';
 import {
 	UserProfiles,
 	UserSecurityKeys,
 	AttestationChallenges,
-	Users,
 } from '@/models/index.js';
 import config from '@/config/index.js';
 import { publishMainStream } from '@/services/stream.js';
@@ -41,11 +42,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -107,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (!verificationData.valid) throw new Error('signature invalid');
 
 			const attestationChallenge = await AttestationChallenges.findOneBy({
-				userId: user.id,
+				userId: me.id,
 				id: ps.challengeId,
 				registrationChallenge: true,
 				challenge: hash(clientData.challenge).toString('hex'),
@@ -118,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			await AttestationChallenges.delete({
-				userId: user.id,
+				userId: me.id,
 				id: ps.challengeId,
 			});
 
@@ -133,7 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const credentialIdString = credentialId.toString('hex');
 
 			await UserSecurityKeys.insert({
-				userId: user.id,
+				userId: me.id,
 				id: credentialIdString,
 				lastUsed: new Date(),
 				name: ps.name,
@@ -141,7 +140,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish meUpdated event
-			publishMainStream(user.id, 'meUpdated', await this.usersRepository.pack(user.id, user, {
+			publishMainStream(me.id, 'meUpdated', await this.usersRepository.pack(me.id, me, {
 				detail: true,
 				includeSecrets: true,
 			}));

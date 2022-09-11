@@ -35,19 +35,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const mute = await Mutings.findBy({
-				muterId: user.id,
+				muterId: me.id,
 			});
 
 			const groups = ps.group ? await UserGroupJoinings.findBy({
-				userId: user.id,
+				userId: me.id,
 			}).then(xs => xs.map(x => x.userGroupId)) : [];
 
 			if (ps.group && groups.length === 0) {
@@ -59,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			for (let i = 0; i < ps.limit; i++) {
 				const found = ps.group
 					? history.map(m => m.groupId!)
-					: history.map(m => (m.userId === user.id) ? m.recipientId! : m.userId!);
+					: history.map(m => (m.userId === me.id) ? m.recipientId! : m.userId!);
 
 				const query = MessagingMessages.createQueryBuilder('message')
 					.orderBy('message.createdAt', 'DESC');
@@ -72,8 +67,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					}
 				} else {
 					query.where(new Brackets(qb => { qb
-						.where('message.userId = :userId', { userId: user.id })
-						.orWhere('message.recipientId = :userId', { userId: user.id });
+						.where('message.userId = :userId', { userId: me.id })
+						.orWhere('message.recipientId = :userId', { userId: me.id });
 					}));
 					query.andWhere('message.groupId IS NULL');
 
@@ -97,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			return await Promise.all(history.map(h => MessagingMessages.pack(h.id, user)));
+			return await Promise.all(history.map(h => MessagingMessages.pack(h.id, me)));
 		});
 	}
 }

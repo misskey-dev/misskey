@@ -41,21 +41,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const followingQuery = Followings.createQueryBuilder('following')
 				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: user.id });
+				.where('following.followerId = :followerId', { followerId: me.id });
 
 			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => { qb
-					.where(`'{"${user.id}"}' <@ note.mentions`)
-					.orWhere(`'{"${user.id}"}' <@ note.visibleUserIds`);
+					.where(`'{"${me.id}"}' <@ note.mentions`)
+					.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
 				}))
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
@@ -69,25 +64,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			generateVisibilityQuery(query, user);
-			generateMutedUserQuery(query, user);
-			generateMutedNoteThreadQuery(query, user);
-			generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, me);
+			generateMutedUserQuery(query, me);
+			generateMutedNoteThreadQuery(query, me);
+			generateBlockedUserQuery(query, me);
 
 			if (ps.visibility) {
 				query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
 			}
 
 			if (ps.following) {
-				query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id });
+				query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id });
 				query.setParameters(followingQuery.getParameters());
 			}
 
 			const mentions = await query.take(ps.limit).getMany();
 
-			read(user.id, mentions);
+			read(me.id, mentions);
 
-			return await Notes.packMany(mentions, user);
+			return await Notes.packMany(mentions, me);
 		});
 	}
 }

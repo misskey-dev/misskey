@@ -40,20 +40,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// If the parent folder is specified
 			let parent = null;
 			if (ps.parentId) {
 				// Fetch parent folder
 				parent = await DriveFolders.findOneBy({
 					id: ps.parentId,
-					userId: user.id,
+					userId: me.id,
 				});
 
 				if (parent == null) {
@@ -67,13 +62,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				createdAt: new Date(),
 				name: ps.name,
 				parentId: parent !== null ? parent.id : null,
-				userId: user.id,
+				userId: me.id,
 			}).then(x => DriveFolders.findOneByOrFail(x.identifiers[0]));
 
 			const folderObj = await DriveFolders.pack(folder);
 
 			// Publish folderCreated event
-			publishDriveStream(user.id, 'folderCreated', folderObj);
+			publishDriveStream(me.id, 'folderCreated', folderObj);
 
 			return folderObj;
 		});

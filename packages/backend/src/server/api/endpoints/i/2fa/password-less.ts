@@ -20,14 +20,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			await UserProfiles.update(user.id, {
+		super(meta, paramDef, async (ps, me) => {
+			await UserProfiles.update(me.id, {
 				usePasswordLessLogin: ps.value,
 			});
 		});

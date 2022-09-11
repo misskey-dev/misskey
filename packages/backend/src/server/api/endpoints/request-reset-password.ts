@@ -4,7 +4,8 @@ import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { publishMainStream } from '@/services/stream.js';
 import config from '@/config/index.js';
-import { Users, UserProfiles, PasswordResetRequests } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { sendEmail } from '@/services/send-email.js';
 import { genId } from '@/misc/gen-id.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -42,11 +43,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: ps.username.toLowerCase(),
 				host: IsNull(),

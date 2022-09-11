@@ -52,17 +52,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const muter = user;
+		super(meta, paramDef, async (ps, me) => {
+			const muter = me;
 
 			// 自分自身
-			if (user.id === ps.userId) {
+			if (me.id === ps.userId) {
 				throw new ApiError(meta.errors.muteeIsYourself);
 			}
 
@@ -95,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				muteeId: mutee.id,
 			} as Muting);
 
-			publishUserEvent(user.id, 'mute', mutee);
+			publishUserEvent(me.id, 'mute', mutee);
 
 			NoteWatchings.delete({
 				userId: muter.id,

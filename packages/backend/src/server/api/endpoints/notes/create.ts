@@ -2,7 +2,8 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/user.js';
-import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Note } from '@/models/entities/note.js';
 import type { Channel } from '@/models/entities/channel.js';
@@ -167,11 +168,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: User[] = [];
 			if (ps.visibleUserIds) {
 				visibleUsers = await this.usersRepository.findBy({
@@ -184,7 +182,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (fileIds != null) {
 				files = await DriveFiles.createQueryBuilder('file')
 					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
-						userId: user.id,
+						userId: me.id,
 						fileIds,
 					})
 					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
@@ -204,10 +202,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				// Check blocking
-				if (renote.userId !== user.id) {
+				if (renote.userId !== me.id) {
 					const block = await Blockings.findOneBy({
 						blockerId: renote.userId,
-						blockeeId: user.id,
+						blockeeId: me.id,
 					});
 					if (block) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
@@ -227,10 +225,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				// Check blocking
-				if (reply.userId !== user.id) {
+				if (reply.userId !== me.id) {
 					const block = await Blockings.findOneBy({
 						blockerId: reply.userId,
-						blockeeId: user.id,
+						blockeeId: me.id,
 					});
 					if (block) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
@@ -258,7 +256,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// 投稿を作成
-			const note = await noteService.create(user, {
+			const note = await noteService.create(me, {
 				createdAt: new Date(),
 				files: files,
 				poll: ps.poll ? {
@@ -280,7 +278,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			return {
-				createdNote: await Notes.pack(note, user),
+				createdNote: await Notes.pack(note, me),
 			};
 		});
 	}

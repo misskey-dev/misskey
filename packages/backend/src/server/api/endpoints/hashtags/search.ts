@@ -31,20 +31,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const hashtags = await Hashtags.createQueryBuilder('tag')
-		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
-		.orderBy('tag.count', 'DESC')
-		.groupBy('tag.id')
-		.take(ps.limit)
-		.skip(ps.offset)
-		.getMany();
+				.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
+				.orderBy('tag.count', 'DESC')
+				.groupBy('tag.id')
+				.take(ps.limit)
+				.skip(ps.offset)
+				.getMany();
 
 			return hashtags.map(tag => tag.name);
 		});

@@ -71,17 +71,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Fetch the antenna
 			const antenna = await Antennas.findOneBy({
 				id: ps.antennaId,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (antenna == null) {
@@ -94,7 +89,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.src === 'list' && ps.userListId) {
 				userList = await UserLists.findOneBy({
 					id: ps.userListId,
-					userId: user.id,
+					userId: me.id,
 				});
 
 				if (userList == null) {
@@ -103,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			} else if (ps.src === 'group' && ps.userGroupId) {
 				userGroupJoining = await UserGroupJoinings.findOneBy({
 					userGroupId: ps.userGroupId,
-					userId: user.id,
+					userId: me.id,
 				});
 
 				if (userGroupJoining == null) {

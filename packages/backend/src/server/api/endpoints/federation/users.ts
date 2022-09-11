@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
@@ -36,17 +36,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = makePaginationQuery(this.usersRepository.createQueryBuilder('user'), ps.sinceId, ps.untilId)
-		.andWhere('user.host = :host', { host: ps.host });
+				.andWhere('user.host = :host', { host: ps.host });
 
 			const users = await query
-		.take(ps.limit)
-		.getMany();
+				.take(ps.limit)
+				.getMany();
 
 			return await this.usersRepository.packMany(users, me, { detail: true });
 		});

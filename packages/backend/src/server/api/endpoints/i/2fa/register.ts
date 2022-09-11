@@ -24,14 +24,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -45,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				length: 32,
 			});
 
-			await UserProfiles.update(user.id, {
+			await UserProfiles.update(me.id, {
 				twoFactorTempSecret: secret.base32,
 			});
 
@@ -53,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const url = speakeasy.otpauthURL({
 				secret: secret.base32,
 				encoding: 'base32',
-				label: user.username,
+				label: me.username,
 				issuer: config.host,
 			});
 			const dataUrl = await QRCode.toDataURL(url);
@@ -62,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				qr: dataUrl,
 				url,
 				secret: secret.base32,
-				label: user.username,
+				label: me.username,
 				issuer: config.host,
 			};
 		});

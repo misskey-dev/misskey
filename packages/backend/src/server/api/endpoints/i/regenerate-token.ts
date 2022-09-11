@@ -2,7 +2,8 @@ import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { publishInternalEvent, publishMainStream, publishUserEvent } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users, UserProfiles } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { UserProfiles } from '@/models/index.js';
 import generateUserToken from '../../common/generate-native-user-token.js';
 
 export const meta = {
@@ -25,15 +26,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const freshUser = await this.usersRepository.findOneByOrFail({ id: user.id });
+		super(meta, paramDef, async (ps, me) => {
+			const freshUser = await this.usersRepository.findOneByOrFail({ id: me.id });
 			const oldToken = freshUser.token;
 
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -44,17 +42,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const newToken = generateUserToken();
 
-			await this.usersRepository.update(user.id, {
+			await this.usersRepository.update(me.id, {
 				token: newToken,
 			});
 
 			// Publish event
-			publishInternalEvent('userTokenRegenerated', { id: user.id, oldToken, newToken });
-			publishMainStream(user.id, 'myTokenRegenerated');
+			publishInternalEvent('userTokenRegenerated', { id: me.id, oldToken, newToken });
+			publishMainStream(me.id, 'myTokenRegenerated');
 
 			// Terminate streaming
 			setTimeout(() => {
-				publishUserEvent(user.id, 'terminate', {});
+				publishUserEvent(me.id, 'terminate', {});
 			}, 5000);
 		});
 	}

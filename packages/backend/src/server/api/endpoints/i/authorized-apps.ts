@@ -22,17 +22,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Get tokens
 			const tokens = await AccessTokens.find({
 				where: {
-					userId: user.id,
+					userId: me.id,
 				},
 				take: ps.limit,
 				skip: ps.offset,
@@ -41,7 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			return await Promise.all(tokens.map(token => Apps.pack(token.appId, user, {
+			return await Promise.all(tokens.map(token => Apps.pack(token.appId, me, {
 				detail: true,
 			})));
 		});

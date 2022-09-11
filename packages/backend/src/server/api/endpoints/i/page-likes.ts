@@ -45,22 +45,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const query = makePaginationQuery(PageLikes.createQueryBuilder('like'), ps.sinceId, ps.untilId)
-				.andWhere('like.userId = :meId', { meId: user.id })
+				.andWhere('like.userId = :meId', { meId: me.id })
 				.leftJoinAndSelect('like.page', 'page');
 
 			const likes = await query
 				.take(ps.limit)
 				.getMany();
 
-			return PageLikes.packMany(likes, user);
+			return PageLikes.packMany(likes, me);
 		});
 	}
 }

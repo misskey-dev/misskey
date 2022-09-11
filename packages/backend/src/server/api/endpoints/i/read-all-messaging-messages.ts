@@ -21,33 +21,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Update documents
 			await MessagingMessages.update({
-				recipientId: user.id,
+				recipientId: me.id,
 				isRead: false,
 			}, {
 				isRead: true,
 			});
 
-			const joinings = await UserGroupJoinings.findBy({ userId: user.id });
+			const joinings = await UserGroupJoinings.findBy({ userId: me.id });
 
 			await Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder().update()
 				.set({
-					reads: (() => `array_append("reads", '${user.id}')`) as any,
+					reads: (() => `array_append("reads", '${me.id}')`) as any,
 				})
 				.where('groupId = :groupId', { groupId: j.userGroupId })
-				.andWhere('userId != :userId', { userId: user.id })
-				.andWhere('NOT (:userId = ANY(reads))', { userId: user.id })
+				.andWhere('userId != :userId', { userId: me.id })
+				.andWhere('NOT (:userId = ANY(reads))', { userId: me.id })
 				.execute()));
 
-			publishMainStream(user.id, 'readAllMessagingMessages');
+			publishMainStream(me.id, 'readAllMessagingMessages');
 		});
 	}
 }

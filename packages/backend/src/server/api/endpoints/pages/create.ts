@@ -63,18 +63,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			let eyeCatchingImage = null;
 			if (ps.eyeCatchingImageId != null) {
 				eyeCatchingImage = await DriveFiles.findOneBy({
 					id: ps.eyeCatchingImageId,
-					userId: user.id,
+					userId: me.id,
 				});
 
 				if (eyeCatchingImage == null) {
@@ -83,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			await Pages.findBy({
-				userId: user.id,
+				userId: me.id,
 				name: ps.name,
 			}).then(result => {
 				if (result.length > 0) {
@@ -102,7 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				variables: ps.variables,
 				script: ps.script,
 				eyeCatchingImageId: eyeCatchingImage ? eyeCatchingImage.id : null,
-				userId: user.id,
+				userId: me.id,
 				visibility: 'public',
 				alignCenter: ps.alignCenter,
 				hideTitleWhenPinned: ps.hideTitleWhenPinned,

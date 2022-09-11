@@ -2,7 +2,8 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import deleteFollowing from '@/services/following/delete.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Followings, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Followings } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
 
@@ -59,15 +60,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const followee = user;
+		super(meta, paramDef, async (ps, me) => {
+			const followee = me;
 
 			// Check if the follower is yourself
-			if (user.id === ps.userId) {
+			if (me.id === ps.userId) {
 				throw new ApiError(meta.errors.followerIsYourself);
 			}
 
@@ -89,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await deleteFollowing(follower, followee);
 
-			return await this.usersRepository.pack(followee.id, user);
+			return await this.usersRepository.pack(followee.id, me);
 		});
 	}
 }

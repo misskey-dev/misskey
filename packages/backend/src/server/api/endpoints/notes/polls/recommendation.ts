@@ -32,16 +32,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const query = Polls.createQueryBuilder('poll')
 				.where('poll.userHost IS NULL')
-				.andWhere('poll.userId != :meId', { meId: user.id })
+				.andWhere('poll.userId != :meId', { meId: me.id })
 				.andWhere('poll.noteVisibility = \'public\'')
 				.andWhere(new Brackets(qb => { qb
 					.where('poll.expiresAt IS NULL')
@@ -51,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#region exclude arleady voted polls
 			const votedQuery = PollVotes.createQueryBuilder('vote')
 				.select('vote.noteId')
-				.where('vote.userId = :meId', { meId: user.id });
+				.where('vote.userId = :meId', { meId: me.id });
 
 			query
 				.andWhere(`poll.noteId NOT IN (${ votedQuery.getQuery() })`);
@@ -62,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#region mute
 			const mutingQuery = Mutings.createQueryBuilder('muting')
 				.select('muting.muteeId')
-				.where('muting.muterId = :muterId', { muterId: user.id });
+				.where('muting.muterId = :muterId', { muterId: me.id });
 
 			query
 				.andWhere(`poll.userId NOT IN (${ mutingQuery.getQuery() })`);
@@ -87,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			return await Notes.packMany(notes, user, {
+			return await Notes.packMany(notes, me, {
 				detail: true,
 			});
 		});

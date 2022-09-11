@@ -1,6 +1,7 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Notifications, Followings, Mutings, Users, UserProfiles } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Notifications, Followings, Mutings, UserProfiles } from '@/models/index.js';
 import { notificationTypes } from '@/types.js';
 import read from '@/services/note/read.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -55,11 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// includeTypes が空の場合はクエリしない
 			if (ps.includeTypes && ps.includeTypes.length === 0) {
 				return [];
@@ -70,22 +68,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 			const followingQuery = Followings.createQueryBuilder('following')
 				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: user.id });
+				.where('following.followerId = :followerId', { followerId: me.id });
 
 			const mutingQuery = Mutings.createQueryBuilder('muting')
 				.select('muting.muteeId')
-				.where('muting.muterId = :muterId', { muterId: user.id });
+				.where('muting.muterId = :muterId', { muterId: me.id });
 
 			const mutingInstanceQuery = UserProfiles.createQueryBuilder('user_profile')
 				.select('user_profile.mutedInstances')
-				.where('user_profile.userId = :muterId', { muterId: user.id });
+				.where('user_profile.userId = :muterId', { muterId: me.id });
 
 			const suspendedQuery = this.usersRepository.createQueryBuilder('users')
 				.select('users.id')
 				.where('users.isSuspended = TRUE');
 
 			const query = makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
-				.andWhere('notification.notifieeId = :meId', { meId: user.id })
+				.andWhere('notification.notifieeId = :meId', { meId: me.id })
 				.leftJoinAndSelect('notification.notifier', 'notifier')
 				.leftJoinAndSelect('notification.note', 'note')
 				.leftJoinAndSelect('notifier.avatar', 'notifierAvatar')
@@ -123,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}));
 
 			if (ps.following) {
-				query.andWhere(`((notification.notifierId IN (${ followingQuery.getQuery() })) OR (notification.notifierId = :meId))`, { meId: user.id });
+				query.andWhere(`((notification.notifierId IN (${ followingQuery.getQuery() })) OR (notification.notifierId = :meId))`, { meId: me.id });
 				query.setParameters(followingQuery.getParameters());
 			}
 
@@ -141,16 +139,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Mark all as read
 			if (notifications.length > 0 && ps.markAsRead) {
-				readNotification(user.id, notifications.map(x => x.id));
+				readNotification(me.id, notifications.map(x => x.id));
 			}
 
 			const notes = notifications.filter(notification => ['mention', 'reply', 'quote'].includes(notification.type)).map(notification => notification.note!);
 
 			if (notes.length > 0) {
-				read(user.id, notes);
+				read(me.id, notes);
 			}
 
-			return await Notifications.packMany(notifications, user.id);
+			return await Notifications.packMany(notifications, me.id);
 		});
 	}
 }

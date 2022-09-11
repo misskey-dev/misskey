@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import cancelFollowRequest from '@/services/following/requests/cancel.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../../error.js';
 import { getUser } from '../../../common/getters.js';
@@ -48,11 +48,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Fetch followee
 			const followee = await getUser(ps.userId).catch(e => {
 				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
@@ -60,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			try {
-				await cancelFollowRequest(followee, user);
+				await cancelFollowRequest(followee, me);
 			} catch (e) {
 				if (e instanceof IdentifiableError) {
 					if (e.id === '17447091-ce07-46dd-b331-c1fd4f15b1e7') throw new ApiError(meta.errors.followRequestNotFound);
@@ -68,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			}
 
-			return await this.usersRepository.pack(followee.id, user);
+			return await this.usersRepository.pack(followee.id, me);
 		});
 	}
 }

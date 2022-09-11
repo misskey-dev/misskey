@@ -51,16 +51,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const hasFollowing = (await Followings.count({
 				where: {
-					followerId: user.id,
+					followerId: me.id,
 				},
 				take: 1,
 			})) !== 0;
@@ -68,12 +63,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#region Construct query
 			const followingQuery = Followings.createQueryBuilder('following')
 				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: user.id });
+				.where('following.followerId = :followerId', { followerId: me.id });
 
 			const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere(new Brackets(qb => { qb
-					.where('note.userId = :meId', { meId: user.id });
+					.where('note.userId = :meId', { meId: me.id });
 				if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
 				}))
 				.innerJoinAndSelect('note.user', 'user')
@@ -89,16 +84,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 				.setParameters(followingQuery.getParameters());
 
-			generateChannelQuery(query, user);
-			generateRepliesQuery(query, user);
-			generateVisibilityQuery(query, user);
-			generateMutedUserQuery(query, user);
-			generateMutedNoteQuery(query, user);
-			generateBlockedUserQuery(query, user);
+			generateChannelQuery(query, me);
+			generateRepliesQuery(query, me);
+			generateVisibilityQuery(query, me);
+			generateMutedUserQuery(query, me);
+			generateMutedNoteQuery(query, me);
+			generateBlockedUserQuery(query, me);
 
 			if (ps.includeMyRenotes === false) {
 				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.userId != :meId', { meId: user.id });
+					qb.orWhere('note.userId != :meId', { meId: me.id });
 					qb.orWhere('note.renoteId IS NULL');
 					qb.orWhere('note.text IS NOT NULL');
 					qb.orWhere('note.fileIds != \'{}\'');
@@ -108,7 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.includeRenotedMyNotes === false) {
 				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
+					qb.orWhere('note.renoteUserId != :meId', { meId: me.id });
 					qb.orWhere('note.renoteId IS NULL');
 					qb.orWhere('note.text IS NOT NULL');
 					qb.orWhere('note.fileIds != \'{}\'');
@@ -134,10 +129,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const timeline = await query.take(ps.limit).getMany();
 
 			process.nextTick(() => {
-				activeUsersChart.read(user);
+				activeUsersChart.read(me);
 			});
 
-			return await Notes.packMany(timeline, user);
+			return await Notes.packMany(timeline, me);
 		});
 	}
 }

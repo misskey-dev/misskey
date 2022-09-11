@@ -44,26 +44,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const post = await GalleryPosts.findOneBy({ id: ps.postId });
 			if (post == null) {
 				throw new ApiError(meta.errors.noSuchPost);
 			}
 
-			if (post.userId === user.id) {
+			if (post.userId === me.id) {
 				throw new ApiError(meta.errors.yourPost);
 			}
 
 			// if already liked
 			const exist = await GalleryLikes.findOneBy({
 				postId: post.id,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (exist != null) {
@@ -75,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: genId(),
 				createdAt: new Date(),
 				postId: post.id,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			GalleryPosts.increment({ id: post.id }, 'likedCount', 1);

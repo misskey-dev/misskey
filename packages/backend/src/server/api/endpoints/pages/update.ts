@@ -69,18 +69,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const page = await Pages.findOneBy({ id: ps.pageId });
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
-			if (page.userId !== user.id) {
+			if (page.userId !== me.id) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
@@ -88,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.eyeCatchingImageId != null) {
 				eyeCatchingImage = await DriveFiles.findOneBy({
 					id: ps.eyeCatchingImageId,
-					userId: user.id,
+					userId: me.id,
 				});
 
 				if (eyeCatchingImage == null) {
@@ -98,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await Pages.findBy({
 				id: Not(ps.pageId),
-				userId: user.id,
+				userId: me.id,
 				name: ps.name,
 			}).then(result => {
 				if (result.length > 0) {

@@ -37,13 +37,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const page = await Pages.findOneBy({ id: ps.pageId });
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
@@ -51,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const exist = await PageLikes.findOneBy({
 				pageId: page.id,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (exist == null) {

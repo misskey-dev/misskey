@@ -2,7 +2,8 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import create from '@/services/following/create.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Followings, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Followings } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
@@ -72,15 +73,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			const follower = user;
+		super(meta, paramDef, async (ps, me) => {
+			const follower = me;
 
 			// 自分自身
-			if (user.id === ps.userId) {
+			if (me.id === ps.userId) {
 				throw new ApiError(meta.errors.followeeIsYourself);
 			}
 
@@ -110,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			}
 
-			return await this.usersRepository.pack(followee.id, user);
+			return await this.usersRepository.pack(followee.id, me);
 		});
 	}
 }

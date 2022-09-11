@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
-import { instanceChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type InstanceChart from '@/services/chart/charts/instance.js';
+import { schema } from '@/services/chart/charts/entities/instance.js';
 
 export const meta = {
 	tags: ['charts'],
 
-	res: getJsonSchema(instanceChart.schema),
+	res: getJsonSchema(schema),
 
 	allowGet: true,
 	cacheSec: 60 * 60,
@@ -27,14 +28,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		private instanceChart: InstanceChart,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			return await instanceChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.host);
+		super(meta, paramDef, async (ps, me) => {
+			return await this.instanceChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.host);
 		});
 	}
 }

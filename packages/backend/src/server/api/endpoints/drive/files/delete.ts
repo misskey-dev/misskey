@@ -41,20 +41,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
+			if ((!me.isAdmin && !me.isModerator) && (file.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
@@ -62,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await deleteFile(file);
 
 			// Publish fileDeleted event
-			publishDriveStream(user.id, 'fileDeleted', file.id);
+			publishDriveStream(me.id, 'fileDeleted', file.id);
 		});
 	}
 }

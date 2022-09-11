@@ -56,13 +56,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			let file: DriveFile | null = null;
 
 			if (ps.fileId) {
@@ -83,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
+			if ((!me.isAdmin && !me.isModerator) && (file.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

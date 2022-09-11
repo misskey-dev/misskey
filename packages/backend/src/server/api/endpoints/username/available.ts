@@ -1,6 +1,6 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Users, UsedUsernames } from '@/models/index.js';
+import { Users , UsedUsernames } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -23,7 +23,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		username: this.usersRepository.localUsernameSchema,
+		username: Users.localUsernameSchema,
 	},
 	required: ['username'],
 } as const;
@@ -34,11 +34,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			// Get exist
 			const exist = await this.usersRepository.countBy({
 				host: IsNull(),

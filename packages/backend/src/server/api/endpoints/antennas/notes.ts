@@ -51,16 +51,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const antenna = await Antennas.findOneBy({
 				id: ps.antennaId,
-				userId: user.id,
+				userId: me.id,
 			});
 
 			if (antenna == null) {
@@ -83,19 +78,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 				.andWhere('antennaNote.antennaId = :antennaId', { antennaId: antenna.id });
 
-			generateVisibilityQuery(query, user);
-			generateMutedUserQuery(query, user);
-			generateBlockedUserQuery(query, user);
+			generateVisibilityQuery(query, me);
+			generateMutedUserQuery(query, me);
+			generateBlockedUserQuery(query, me);
 
 			const notes = await query
 				.take(ps.limit)
 				.getMany();
 
 			if (notes.length > 0) {
-				readNote(user.id, notes);
+				readNote(me.id, notes);
 			}
 
-			return await Notes.packMany(notes, user);
+			return await Notes.packMany(notes, me);
 		});
 	}
 }

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MessagingMessages, UserGroups, UserGroupJoinings, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { MessagingMessages, UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
@@ -75,11 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			if (ps.userId != null) {
 				// Fetch recipient (user)
 				const recipient = await getUser(ps.userId).catch(e => {
@@ -98,22 +96,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 							.andWhere('message.recipientId = :meId');
 						}));
 					}))
-					.setParameter('meId', user.id)
+					.setParameter('meId', me.id)
 					.setParameter('recipientId', recipient.id);
 
 				const messages = await query.take(ps.limit).getMany();
 
 				// Mark all as read
 				if (ps.markAsRead) {
-					readUserMessagingMessage(user.id, recipient.id, messages.filter(m => m.recipientId === user.id).map(x => x.id));
+					readUserMessagingMessage(me.id, recipient.id, messages.filter(m => m.recipientId === me.id).map(x => x.id));
 
 					// リモートユーザーとのメッセージだったら既読配信
-					if (this.usersRepository.isLocalUser(user) && this.usersRepository.isRemoteUser(recipient)) {
-						deliverReadActivity(user, recipient, messages);
+					if (this.usersRepository.isLocalUser(me) && this.usersRepository.isRemoteUser(recipient)) {
+						deliverReadActivity(me, recipient, messages);
 					}
 				}
 
-				return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
+				return await Promise.all(messages.map(message => MessagingMessages.pack(message, me, {
 					populateRecipient: false,
 				})));
 			} else if (ps.groupId != null) {
@@ -126,7 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// check joined
 				const joining = await UserGroupJoinings.findOneBy({
-					userId: user.id,
+					userId: me.id,
 					userGroupId: recipientGroup.id,
 				});
 
@@ -141,10 +139,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Mark all as read
 				if (ps.markAsRead) {
-					readGroupMessagingMessage(user.id, recipientGroup.id, messages.map(x => x.id));
+					readGroupMessagingMessage(me.id, recipientGroup.id, messages.map(x => x.id));
 				}
 
-				return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
+				return await Promise.all(messages.map(message => MessagingMessages.pack(message, me, {
 					populateGroup: false,
 				})));
 			}

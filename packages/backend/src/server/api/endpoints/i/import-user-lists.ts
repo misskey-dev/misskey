@@ -52,13 +52,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
 			if (file == null) throw new ApiError(meta.errors.noSuchFile);
@@ -66,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (file.size > 30000) throw new ApiError(meta.errors.tooBigFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
 
-			createImportUserListsJob(user, file.id);
+			createImportUserListsJob(me, file.id);
 		});
 	}
 }

@@ -25,14 +25,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
-			createExportFollowingJob(user, ps.excludeMuting, ps.excludeInactive);
+		super(meta, paramDef, async (ps, me) => {
+			createExportFollowingJob(me, ps.excludeMuting, ps.excludeInactive);
 		});
 	}
 }

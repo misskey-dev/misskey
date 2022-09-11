@@ -41,19 +41,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
 	) {
-		super(meta, paramDef, async (ps, user) => {
+		super(meta, paramDef, async (ps, me) => {
 			const note = await getNote(ps.noteId).catch(e => {
 				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw e;
 			});
 
-			if (!(await Notes.isVisibleForMe(note, user ? user.id : null))) {
+			if (!(await Notes.isVisibleForMe(note, me ? me.id : null))) {
 				return 204; // TODO: 良い感じのエラー返す
 			}
 
