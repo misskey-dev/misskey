@@ -1,13 +1,10 @@
 import config from '@/config/index.js';
 import { getJson } from '@/misc/fetch.js';
-import { ILocalUser } from '@/models/entities/user.js';
-import { getInstanceActor } from '@/services/instance-actor.js';
+import type { ILocalUser } from '@/models/entities/user.js';
+import type { InstanceActorService } from '@/services/InstanceActorService.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
-import { signedGet } from './request.js';
-import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
 import { FollowRequests, Notes, NoteReactions, Polls, Users } from '@/models/index.js';
-import { parseUri } from './db-resolver.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';
 import { renderLike } from '@/remote/activitypub/renderer/like.js';
 import { renderPerson } from '@/remote/activitypub/renderer/person.js';
@@ -15,12 +12,18 @@ import renderQuestion from '@/remote/activitypub/renderer/question.js';
 import renderCreate from '@/remote/activitypub/renderer/create.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderFollow from '@/remote/activitypub/renderer/follow.js';
+import { isCollectionOrOrderedCollection } from './type.js';
+import { parseUri } from './db-resolver.js';
+import { signedGet } from './request.js';
+import type { IObject, ICollection, IOrderedCollection } from './type.js';
 
 export default class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
 
-	constructor() {
+	constructor(
+		private instanceActorService: InstanceActorService,
+	) {
 		this.history = new Set();
 	}
 
@@ -73,7 +76,7 @@ export default class Resolver {
 		}
 
 		if (config.signToActivityPubGet && !this.user) {
-			this.user = await getInstanceActor();
+			this.user = await this.instanceActorService.getInstanceActor();
 		}
 
 		const object = (this.user
@@ -98,24 +101,24 @@ export default class Resolver {
 		switch (parsed.type) {
 			case 'notes':
 				return Notes.findOneByOrFail({ id: parsed.id })
-				.then(note => {
-					if (parsed.rest === 'activity') {
+					.then(note => {
+						if (parsed.rest === 'activity') {
 						// this refers to the create activity and not the note itself
-						return renderActivity(renderCreate(renderNote(note)));
-					} else {
-						return renderNote(note);
-					}
-				});
+							return renderActivity(renderCreate(renderNote(note)));
+						} else {
+							return renderNote(note);
+						}
+					});
 			case 'users':
 				return Users.findOneByOrFail({ id: parsed.id })
-				.then(user => renderPerson(user as ILocalUser));
+					.then(user => renderPerson(user as ILocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
 				return Promise.all([
 					Notes.findOneByOrFail({ id: parsed.id }),
 					Polls.findOneByOrFail({ noteId: parsed.id }),
 				])
-				.then(([note, poll]) => renderQuestion({ id: note.userId }, note, poll));
+					.then(([note, poll]) => renderQuestion({ id: note.userId }, note, poll));
 			case 'likes':
 				return NoteReactions.findOneByOrFail({ id: parsed.id }).then(reaction => renderActivity(renderLike(reaction, { uri: null })));
 			case 'follows':
@@ -123,9 +126,9 @@ export default class Resolver {
 				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw new Error('resolveLocal: invalid follow URI');
 
 				return Promise.all(
-					[parsed.id, parsed.rest].map(id => Users.findOneByOrFail({ id }))
+					[parsed.id, parsed.rest].map(id => Users.findOneByOrFail({ id })),
 				)
-				.then(([follower, followee]) => renderActivity(renderFollow(follower, followee, url)));
+					.then(([follower, followee]) => renderActivity(renderFollow(follower, followee, url)));
 			default:
 				throw new Error(`resolveLocal: type ${type} unhandled`);
 		}
