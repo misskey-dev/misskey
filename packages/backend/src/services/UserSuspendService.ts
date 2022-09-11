@@ -7,8 +7,8 @@ import type { QueueService } from '@/queue/queue.service';
 import renderDelete from '@/remote/activitypub/renderer/delete.js';
 import renderUndo from '@/remote/activitypub/renderer/undo.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
 import config from '@/config/index.js';
+import type { GlobalEventService } from '@/services/GlobalEventService.js';
 
 @Injectable()
 export class UserSuspendService {
@@ -20,11 +20,12 @@ export class UserSuspendService {
 		private followingsRepository: typeof Followings,
 
 		private queueService: QueueService,
+		private globalEventService: GlobalEventService,
 	) {
 	}
 
 	public async doPostSuspend(user: { id: User['id']; host: User['host'] }): Promise<void> {
-		publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
+		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
 	
 		if (this.usersRepository.isLocalUser(user)) {
 			// 知り得る全SharedInboxにDelete配信
@@ -53,7 +54,7 @@ export class UserSuspendService {
 	}
 
 	public async doPostUnsuspend(user: User): Promise<void> {
-		publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
+		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
 	
 		if (this.usersRepository.isLocalUser(user)) {
 			// 知り得る全SharedInboxにUndo Delete配信
