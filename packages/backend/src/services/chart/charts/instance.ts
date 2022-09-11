@@ -1,10 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { Note } from '@/models/entities/note.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
+import type { Note } from '@/models/entities/note.js';
 import { toPuny } from '@/misc/convert-host.js';
-import Chart, { KVs } from '../core.js';
+import type { AppLockService } from '@/services/AppLockService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/instance.js';
+import type { KVs } from '../core.js';
+import type { DataSource } from 'typeorm';
 
 /**
  * インスタンスごとのチャート
@@ -12,8 +15,13 @@ import { name, schema } from './entities/instance.js';
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class InstanceChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema, true);
+	constructor(
+		@Inject('db')
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, appLockService.getChartInsertLock, name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

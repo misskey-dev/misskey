@@ -1,9 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
 import { Users } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import Chart, { KVs } from '../core.js';
+import type { User } from '@/models/entities/user.js';
+import type { AppLockService } from '@/services/AppLockService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/users.js';
+import type { KVs } from '../core.js';
+import type { DataSource } from 'typeorm';
 
 /**
  * ユーザー数に関するチャート
@@ -11,8 +14,13 @@ import { name, schema } from './entities/users.js';
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class UsersChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema);
+	constructor(
+		@Inject('db')
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, appLockService.getChartInsertLock, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

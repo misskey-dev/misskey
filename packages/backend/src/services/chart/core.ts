@@ -5,10 +5,10 @@
  */
 
 import * as nestedProperty from 'nested-property';
-import { EntitySchema, Repository, LessThan, Between, DataSource } from 'typeorm';
+import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time.js';
-import { getChartInsertLock } from '@/misc/app-lock.js';
 import Logger from '../logger.js';
+import type { Repository, DataSource } from 'typeorm';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
@@ -229,9 +229,12 @@ export default abstract class Chart<T extends Schema> {
 		};
 	}
 
-	constructor(db: DataSource, name: string, schema: T, grouped = false) {
+	private lock: (key: string) => Promise<() => void>;
+
+	constructor(db: DataSource, lock: (key: string) => Promise<() => void>, name: string, schema: T, grouped = false) {
 		this.name = name;
 		this.schema = schema;
+		this.lock = lock;
 
 		const { hour, day } = Chart.schemaToEntity(name, schema, grouped);
 		this.repositoryForHour = db.getRepository<{ id: number; group?: string | null; date: number; }>(hour);
@@ -328,7 +331,7 @@ export default abstract class Chart<T extends Schema> {
 		const date = Chart.dateToTimestamp(current);
 		const lockKey = group ? `${this.name}:${date}:${span}:${group}` : `${this.name}:${date}:${span}`;
 
-		const unlock = await getChartInsertLock(lockKey);
+		const unlock = await this.lock(lockKey);
 		try {
 			// ロック内でもう1回チェックする
 			const currentLog = await repository.findOneBy({

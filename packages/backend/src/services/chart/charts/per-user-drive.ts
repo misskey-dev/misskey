@@ -1,8 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DriveFiles } from '@/models/index.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import Chart, { KVs } from '../core.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
+import type { AppLockService } from '@/services/AppLockService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/per-user-drive.js';
+import type { KVs } from '../core.js';
+import type { DataSource } from 'typeorm';
 
 /**
  * ユーザーごとのドライブに関するチャート
@@ -10,8 +13,13 @@ import { name, schema } from './entities/per-user-drive.js';
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class PerUserDriveChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema, true);
+	constructor(
+		@Inject('db')
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, appLockService.getChartInsertLock, name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

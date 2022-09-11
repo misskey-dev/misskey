@@ -1,6 +1,7 @@
 import cluster from 'node:cluster';
 import { NestFactory } from '@nestjs/core';
 import { envOption } from '@/env.js';
+import { ChartManagementService } from '@/services/chart/ChartManagementService.js';
 import { initDb } from '../db/postgre.js';
 import createServer from '../server/index.js';
 import initializeQueue from '../queue/index.js';
@@ -21,6 +22,8 @@ export async function workerMain() {
 	if (!envOption.onlyServer) {
 		await initializeQueue(app);
 	}
+
+	app.get(ChartManagementService).run();
 
 	if (cluster.isWorker) {
 		// Send a 'ready' message to parent process

@@ -1,7 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import Chart, { KVs } from '../core.js';
+import type { AppLockService } from '@/services/AppLockService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/test.js';
+import type { DataSource , DataSource } from 'typeorm';
+import type { KVs } from '../core.js';
 
 /**
  * For testing
@@ -11,8 +13,13 @@ import { name, schema } from './entities/test.js';
 export default class TestChart extends Chart<typeof schema> {
 	public total = 0; // publicにするのはテストのため
 
-	constructor(db: DataSource) {
-		super(db, name, schema);
+	constructor(
+		@Inject('db')
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, appLockService.getChartInsertLock, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

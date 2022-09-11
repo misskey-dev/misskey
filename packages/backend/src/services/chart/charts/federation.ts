@@ -1,8 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Followings, Instances } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import Chart, { KVs } from '../core.js';
+import type { AppLockService } from '@/services/AppLockService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/federation.js';
+import type { KVs } from '../core.js';
+import type { DataSource } from 'typeorm';
 
 /**
  * フェデレーションに関するチャート
@@ -10,8 +13,13 @@ import { name, schema } from './entities/federation.js';
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class FederationChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema);
+	constructor(
+		@Inject('db')
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, appLockService.getChartInsertLock, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
