@@ -4,10 +4,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
-import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { App } from '@/models/entities/app.js';
+import type { IMentionedRemoteUsers } from '@/models/entities/note.js';
+import { Note } from '@/models/entities/note.js';
+import type { Notes } from '@/models/index.js';
+import { Mutings, Users, NoteWatchings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
+import type { App } from '@/models/entities/app.js';
 import { insertNoteUnread } from '@/services/note/unread.js';
 import { concat } from '@/prelude/array.js';
 import config from '@/config/index.js';
@@ -19,28 +21,29 @@ import renderNote from '@/remote/activitypub/renderer/note.js';
 import DeliverManager from '@/remote/activitypub/deliver-manager.js';
 import { publishMainStream, publishNotesStream } from '@/services/stream.js';
 import { genId } from '@/misc/gen-id.js';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
-import { Poll, IPoll } from '@/models/entities/poll.js';
+import type { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import type { IPoll } from '@/models/entities/poll.js';
+import { Poll } from '@/models/entities/poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { checkHitAntenna } from '@/misc/check-hit-antenna.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
-import { Channel } from '@/models/entities/channel.js';
+import type { Channel } from '@/models/entities/channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { endedPollNotificationQueue } from '@/queue/queues.js';
 import { webhookDeliver } from '@/queue/index.js';
 import { Cache } from '@/misc/cache.js';
-import { UserProfile } from '@/models/entities/user-profile.js';
+import type { UserProfile } from '@/models/entities/user-profile.js';
 import { db } from '@/db/postgre.js';
-import { getActiveWebhooks } from '@/misc/webhook-cache.js';
+import { getActiveWebhooks } from '@/services/webhook-cache.js';
 import es from '../../db/elasticsearch.js';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
 import { updateHashtags } from '../update-hashtag.js';
 import { deliverToRelays } from '../relay.js';
 import { addNoteToAntenna } from '../add-note-to-antenna.js';
 import { createNotification } from '../create-notification.js';
-import { WebhookService } from '../webhookService.js';
+import type { WebhookService } from '../webhookService.js';
 import type NotesChart from '../chart/charts/notes.js';
 import type PerUserNotesChart from '../chart/charts/per-user-notes.js';
 import type ActiveUsersChart from '../chart/charts/active-users.js';
@@ -612,12 +615,12 @@ export class NoteCreateService {
 
 	#incRenoteCount(renote: Note) {
 		this.notesRepository.createQueryBuilder().update()
-		.set({
-			renoteCount: () => '"renoteCount" + 1',
-			score: () => '"score" + 1',
-		})
-		.where('id = :id', { id: renote.id })
-		.execute();
+			.set({
+				renoteCount: () => '"renoteCount" + 1',
+				score: () => '"score" + 1',
+			})
+			.where('id = :id', { id: renote.id })
+			.execute();
 	}
 
 	async #createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
@@ -701,12 +704,12 @@ export class NoteCreateService {
 
 	#incNotesCountOfUser(user: { id: User['id']; }) {
 		Users.createQueryBuilder().update()
-		.set({
-			updatedAt: new Date(),
-			notesCount: () => '"notesCount" + 1',
-		})
-		.where('id = :id', { id: user.id })
-		.execute();
+			.set({
+				updatedAt: new Date(),
+				notesCount: () => '"notesCount" + 1',
+			})
+			.where('id = :id', { id: user.id })
+			.execute();
 	}
 
 	async #extractMentionedUsers(user: { host: User['host']; }, tokens: mfm.MfmNode[]): Promise<User[]> {

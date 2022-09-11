@@ -6,7 +6,7 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import * as yaml from 'js-yaml';
-import { Source, Mixin } from './types.js';
+import type { Source, Mixin } from './types.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -23,7 +23,7 @@ const path = process.env.NODE_ENV === 'test'
 	? `${dir}/test.yml`
 	: `${dir}/default.yml`;
 
-export default function load() {
+export function loadConfig() {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
 	const clientManifest = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/_client_dist_/manifest.json`, 'utf-8'));
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;

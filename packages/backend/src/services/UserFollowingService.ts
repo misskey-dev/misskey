@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users , Blockings, Followings, UserProfiles , FollowRequests, Instances } from '@/models/index.js';
-
-import type { User } from '@/models/entities/user';
+import type { Users , Followings, FollowRequests , UserProfiles , Instances , Blockings } from '@/models/index.js';
+import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/user';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderFollow from '@/remote/activitypub/renderer/follow.js';
 import renderAccept from '@/remote/activitypub/renderer/accept.js';
@@ -20,6 +19,19 @@ import type { WebhookService } from '@/services/webhookService.js';
 import Logger from './logger.js';
 
 const logger = new Logger('following/create');
+
+type Local = ILocalUser | {
+	id: ILocalUser['id'];
+	host: ILocalUser['host'];
+	uri: ILocalUser['uri']
+};
+type Remote = IRemoteUser | {
+	id: IRemoteUser['id'];
+	host: IRemoteUser['host'];
+	uri: IRemoteUser['uri'];
+	inbox: IRemoteUser['inbox'];
+};
+type Both = Local | Remote;
 
 @Injectable()
 export class UserFollowingService {
@@ -51,7 +63,7 @@ export class UserFollowingService {
 	) {
 	}
 
-	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string) {
+	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string): Promise<void> {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
@@ -125,10 +137,17 @@ export class UserFollowingService {
 		}
 	}
 
-	public async insertFollowingDoc(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'] }, follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'] }) {
+	public async insertFollowingDoc(
+		followee: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
+		},
+		follower: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
+		},
+	): Promise<void> {
 		if (follower.id === followee.id) return;
 	
-		let alreadyFollowed = false;
+		let alreadyFollowed = false as boolean;
 	
 		await this.followingsRepository.insert({
 			id: genId(),
@@ -231,7 +250,15 @@ export class UserFollowingService {
 		}
 	}
 
-	public async unfollow(follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, silent = false) {
+	public async unfollow(
+		follower: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+		},
+		followee: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+		},
+		silent = false,
+	): Promise<void> {
 		const following = await this.followingsRepository.findOneBy({
 			followerId: follower.id,
 			followeeId: followee.id,
@@ -275,7 +302,10 @@ export class UserFollowingService {
 		}
 	}
 	
-	public async decrementFollowing(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }) {
+	public async decrementFollowing(
+		follower: {id: User['id']; host: User['host']; },
+		followee: { id: User['id']; host: User['host']; },
+	): Promise<void> {
 		//#region Decrement following / followers counts
 		await Promise.all([
 			this.usersRepository.decrement({ id: follower.id }, 'followingCount', 1),
@@ -298,5 +328,245 @@ export class UserFollowingService {
 		//#endregion
 	
 		this.perUserFollowingChart.update(follower, followee, false);
+	}
+
+	public async createFollowRequest(
+		follower: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+		},
+		followee: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+		},
+		requestId?: string,
+	): Promise<void> {
+		if (follower.id === followee.id) return;
+	
+		// check blocking
+		const [blocking, blocked] = await Promise.all([
+			this.blockingRepository.findOneBy({
+				blockerId: follower.id,
+				blockeeId: followee.id,
+			}),
+			this.blockingRepository.findOneBy({
+				blockerId: followee.id,
+				blockeeId: follower.id,
+			}),
+		]);
+	
+		if (blocking != null) throw new Error('blocking');
+		if (blocked != null) throw new Error('blocked');
+	
+		const followRequest = await this.followRequestsRepository.insert({
+			id: genId(),
+			createdAt: new Date(),
+			followerId: follower.id,
+			followeeId: followee.id,
+			requestId,
+	
+			// 非正規化
+			followerHost: follower.host,
+			followerInbox: this.usersRepository.isRemoteUser(follower) ? follower.inbox : undefined,
+			followerSharedInbox: this.usersRepository.isRemoteUser(follower) ? follower.sharedInbox : undefined,
+			followeeHost: followee.host,
+			followeeInbox: this.usersRepository.isRemoteUser(followee) ? followee.inbox : undefined,
+			followeeSharedInbox: this.usersRepository.isRemoteUser(followee) ? followee.sharedInbox : undefined,
+		}).then(x => this.followRequestsRepository.findOneByOrFail(x.identifiers[0]));
+	
+		// Publish receiveRequest event
+		if (this.usersRepository.isLocalUser(followee)) {
+			this.usersRepository.pack(follower.id, followee).then(packed => this.globalEventServie.publishMainStream(followee.id, 'receiveFollowRequest', packed));
+	
+			this.usersRepository.pack(followee.id, followee, {
+				detail: true,
+			}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
+	
+			// 通知を作成
+			createNotification(followee.id, 'receiveFollowRequest', {
+				notifierId: follower.id,
+				followRequestId: followRequest.id,
+			});
+		}
+	
+		if (this.usersRepository.isLocalUser(follower) && this.usersRepository.isRemoteUser(followee)) {
+			const content = renderActivity(renderFollow(follower, followee));
+			this.queueService.deliver(follower, content, followee.inbox);
+		}
+	}
+
+	public async cancelFollowRequest(
+		followee: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']
+		},
+		follower: {
+			id: User['id']; host: User['host']; uri: User['host']
+		},
+	): Promise<void> {
+		if (this.usersRepository.isRemoteUser(followee)) {
+			const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
+	
+			if (this.usersRepository.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
+				this.queueService.deliver(follower, content, followee.inbox);
+			}
+		}
+	
+		const request = await this.followRequestsRepository.findOneBy({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+	
+		if (request == null) {
+			throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'request not found');
+		}
+	
+		await this.followRequestsRepository.delete({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+	
+		this.usersRepository.pack(followee.id, followee, {
+			detail: true,
+		}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
+	}
+
+	public async acceptFollowRequest(
+		followee: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+		},
+		follower: CacheableUser,
+	): Promise<void> {
+		const request = await this.followRequestsRepository.findOneBy({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+	
+		if (request == null) {
+			throw new IdentifiableError('8884c2dd-5795-4ac9-b27e-6a01d38190f9', 'No follow request.');
+		}
+	
+		await this.insertFollowingDoc(followee, follower);
+	
+		if (this.usersRepository.isRemoteUser(follower) && this.usersRepository.isLocalUser(followee)) {
+			const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId!), followee));
+			this.queueService.deliver(followee, content, follower.inbox);
+		}
+	
+		this.usersRepository.pack(followee.id, followee, {
+			detail: true,
+		}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
+	}
+
+	public async acceptAllFollowRequest(
+		user: {
+			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+		},
+	): Promise<void> {
+		const requests = await this.followRequestsRepository.findBy({
+			followeeId: user.id,
+		});
+	
+		for (const request of requests) {
+			const follower = await this.usersRepository.findOneByOrFail({ id: request.followerId });
+			this.acceptFollowRequest(user, follower);
+		}
+	}
+	
+	/**
+	 * API following/request/reject
+	 */
+	public async rejectFollowRequest(user: Local, follower: Both): Promise<void> {
+		if (this.usersRepository.isRemoteUser(follower)) {
+			this.#deliverReject(user, follower);
+		}
+
+		await this.#removeFollowRequest(user, follower);
+
+		if (this.usersRepository.isLocalUser(follower)) {
+			this.#publishUnfollow(user, follower);
+		}
+	}
+
+	/**
+	 * API following/reject
+	 */
+	public async rejectFollow(user: Local, follower: Both): Promise<void> {
+		if (this.usersRepository.isRemoteUser(follower)) {
+			this.#deliverReject(user, follower);
+		}
+
+		await this.#removeFollow(user, follower);
+
+		if (this.usersRepository.isLocalUser(follower)) {
+			this.#publishUnfollow(user, follower);
+		}
+	}
+
+	/**
+	 * AP Reject/Follow
+	 */
+	public async remoteReject(actor: Remote, follower: Local): Promise<void> {
+		await this.#removeFollowRequest(actor, follower);
+		await this.#removeFollow(actor, follower);
+		this.#publishUnfollow(actor, follower);
+	}
+
+	/**
+	 * Remove follow request record
+	 */
+	async #removeFollowRequest(followee: Both, follower: Both): Promise<void> {
+		const request = await this.followRequestsRepository.findOneBy({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+
+		if (!request) return;
+
+		await this.followRequestsRepository.delete(request.id);
+	}
+
+	/**
+	 * Remove follow record
+	 */
+	async #removeFollow(followee: Both, follower: Both): Promise<void> {
+		const following = await this.followingsRepository.findOneBy({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+
+		if (!following) return;
+
+		await this.followingsRepository.delete(following.id);
+		this.decrementFollowing(follower, followee);
+	}
+
+	/**
+	 * Deliver Reject to remote
+	 */
+	async #deliverReject(followee: Local, follower: Remote): Promise<void> {
+		const request = await this.followRequestsRepository.findOneBy({
+			followeeId: followee.id,
+			followerId: follower.id,
+		});
+
+		const content = renderActivity(renderReject(renderFollow(follower, followee, request?.requestId || undefined), followee));
+		this.queueService.deliver(followee, content, follower.inbox);
+	}
+
+	/**
+	 * Publish unfollow to local
+	 */
+	async #publishUnfollow(followee: Both, follower: Local): Promise<void> {
+		const packedFollowee = await this.usersRepository.pack(followee.id, follower, {
+			detail: true,
+		});
+
+		this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packedFollowee);
+		this.globalEventServie.publishMainStream(follower.id, 'unfollow', packedFollowee);
+
+		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
+		for (const webhook of webhooks) {
+			this.queueService.webhookDeliver(webhook, 'unfollow', {
+				user: packedFollowee,
+			});
+		}
 	}
 }
