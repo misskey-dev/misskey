@@ -7,6 +7,13 @@ import type { CacheableUser, User } from '@/models/entities/user.js';
 import type { Blocking } from '@/models/entities/blocking.js';
 import type { QueueService } from '@/queue/queue.service.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { renderActivity } from '@/remote/activitypub/renderer';
+import { renderBlock } from '@/remote/activitypub/renderer/block';
+import renderFollow from '@/remote/activitypub/renderer/follow.js';
+import renderUndo from '@/remote/activitypub/renderer/undo.js';
+import renderReject from '@/remote/activitypub/renderer/reject.js';
+import type PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
+import type { WebhookService } from '@/services/webhookService.js';
 
 @Injectable()
 export class UserBlockingService {
@@ -31,10 +38,12 @@ export class UserBlockingService {
 
 		private queueService: QueueService,
 		private globalEventServie: GlobalEventService,
+		private webhookService: WebhookService,
+		private perUserFollowingChart: PerUserFollowingChart,
 	) {
 	}
 
-	async block(blocker: User, blockee: User) {
+	public async block(blocker: User, blockee: User) {
 		await Promise.all([
 			this.#cancelRequest(blocker, blockee),
 			this.#cancelRequest(blockee, blocker),
@@ -88,7 +97,7 @@ export class UserBlockingService {
 				this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packed);
 				this.globalEventServie.publishMainStream(follower.id, 'unfollow', packed);
 
-				const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
+				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
 					this.queueService.webhookDeliver(webhook, 'unfollow', {
 						user: packed,
@@ -124,7 +133,7 @@ export class UserBlockingService {
 			this.followingsRepository.delete(following.id),
 			this.usersRepository.decrement({ id: follower.id }, 'followingCount', 1),
 			this.usersRepository.decrement({ id: followee.id }, 'followersCount', 1),
-			perUserFollowingChart.update(follower, followee, false),
+			this.perUserFollowingChart.update(follower, followee, false),
 		]);
 
 		// Publish unfollow event
@@ -135,7 +144,7 @@ export class UserBlockingService {
 				this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packed);
 				this.globalEventServie.publishMainStream(follower.id, 'unfollow', packed);
 
-				const webhooks = (await getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
+				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
 					this.queueService.webhookDeliver(webhook, 'unfollow', {
 						user: packed,
@@ -164,7 +173,7 @@ export class UserBlockingService {
 		}
 	}
 
-	async unblock(blocker: CacheableUser, blockee: CacheableUser) {
+	public async unblock(blocker: CacheableUser, blockee: CacheableUser) {
 		const blocking = await this.blockingRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,

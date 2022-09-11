@@ -6,7 +6,7 @@ import type Redis from 'ioredis';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class UserSuspendService implements OnApplicationShutdown {
+export class UserCacheService implements OnApplicationShutdown {
 	public userByIdCache: Cache<CacheableUser>;
 	public localUserByNativeTokenCache: Cache<CacheableLocalUser | null>;
 	public localUserByIdCache: Cache<CacheableLocalUser>;
