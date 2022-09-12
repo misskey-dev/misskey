@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import * as mfm from 'mfm-js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Polls , DriveFiles, Emojis, Notes, Users } from '@/models/index.js';
-
 import type { Config } from '@/config/types.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
 import type { IMentionedRemoteUsers, Note } from '@/models/entities/note.js';
@@ -16,6 +16,7 @@ import type { Poll } from '@/models/entities/poll.js';
 import type { MessagingMessage } from '@/models/entities/messaging-message.js';
 import type { PollVote } from '@/models/entities/poll-vote.js';
 import type { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
+import type { MfmService } from '@/services/MfmService.js';
 import { LdSignature } from './misc/ld-signature.js';
 import type { IActivity } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
@@ -42,6 +43,7 @@ export class ApRendererService {
 		private pollsRepository: typeof Polls,
 
 		private userKeypairStoreService: UserKeypairStoreService,
+		private mfmService: MfmService,
 	) {
 	}
 
@@ -348,7 +350,7 @@ export class ApRendererService {
 	
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
 	
-		const content = toHtml(Object.assign({}, note, {
+		const content = this.mfmService.toHtml(Object.assign({}, note, {
 			text: apText,
 		}));
 	
@@ -363,7 +365,7 @@ export class ApRendererService {
 	
 		const asPoll = poll ? {
 			type: 'Question',
-			content: toHtml(Object.assign({}, note, {
+			content: this.mfmService.toHtml(Object.assign({}, note, {
 				text: text,
 			})),
 			[poll.expiresAt && poll.expiresAt < new Date() ? 'closed' : 'endTime']: poll.expiresAt,
@@ -460,7 +462,7 @@ export class ApRendererService {
 			url: `${this.config.url}/@${user.username}`,
 			preferredUsername: user.username,
 			name: user.name,
-			summary: profile.description ? toHtml(mfm.parse(profile.description)) : null,
+			summary: profile.description ? this.mfmService.toHtml(mfm.parse(profile.description)) : null,
 			icon: avatar ? this.renderImage(avatar) : null,
 			image: banner ? this.renderImage(banner) : null,
 			tag,
