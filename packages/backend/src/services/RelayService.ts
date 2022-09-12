@@ -9,7 +9,7 @@ import { genId } from '@/misc/gen-id.js';
 import { Cache } from '@/misc/cache.js';
 import type { Relay } from '@/models/entities/relay.js';
 import type { QueueService } from '@/queue/queue.service.js';
-import type { CreateSystemUserService } from './CreateSystemUserService.js';
+import type { CreateSystemUserService } from '@/services/CreateSystemUserService.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 

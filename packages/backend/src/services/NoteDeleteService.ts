@@ -1,26 +1,40 @@
 import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
-import { publishNoteStream } from '@/services/stream.js';
 import renderDelete from '@/remote/activitypub/renderer/delete.js';
 import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
 import renderUndo from '@/remote/activitypub/renderer/undo.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderTombstone from '@/remote/activitypub/renderer/tombstone.js';
-import config from '@/config/index.js';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
-import { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
-import { Notes, Users, Instances } from '@/models/index.js';
-import { notesChart, perUserNotesChart, instanceChart } from '@/services/chart/index.js';
+import type { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import type { Note, IMentionedRemoteUsers } from '@/models/entities/note.js';
+import type { Notes } from '@/models/index.js';
+import { Users, Instances } from '@/models/index.js';
 import { deliverToFollowers, deliverToUser } from '@/remote/activitypub/deliver-manager.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
-import { deliverToRelays } from '../relay.js';
+import type { RelayService } from '@/services/RelayService.js';
+import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Config } from '@/config/types.js';
+import type NotesChart from '@/services/chart/charts/notes.js';
+import type PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
+import type InstanceChart from '@/services/chart/charts/instance.js';
+import type { GlobalEventService } from '@/services/GlobalEventService.js';
 
 @Injectable()
 export class NoteCreateService {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
 		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		private notesRepository: typeof Notes,
+
+		private globalEventServie: GlobalEventService,
+		private relayService: RelayService,
+		private federatedInstanceService: FederatedInstanceService,
+		private notesChart: NotesChart,
+		private perUserNotesChart: PerUserNotesChart,
+		private instanceChart: InstanceChart,
 	) {}
 	
 	/**
@@ -42,7 +56,7 @@ export class NoteCreateService {
 		}
 
 		if (!quiet) {
-			publishNoteStream(note.id, 'deleted', {
+			this.globalEventServie.publishNoteStream(note.id, 'deleted', {
 				deletedAt: deletedAt,
 			});
 
@@ -58,8 +72,8 @@ export class NoteCreateService {
 				}
 
 				const content = renderActivity(renote
-					? renderUndo(renderAnnounce(renote.uri || `${config.url}/notes/${renote.id}`, note), user)
-					: renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
+					? renderUndo(renderAnnounce(renote.uri || `${this.config.url}/notes/${renote.id}`, note), user)
+					: renderDelete(renderTombstone(`${this.config.url}/notes/${note.id}`), user));
 
 				this.#deliverToConcerned(user, note, content);
 			}
@@ -69,19 +83,19 @@ export class NoteCreateService {
 			for (const cascadingNote of cascadingNotes) {
 				if (!cascadingNote.user) continue;
 				if (!Users.isLocalUser(cascadingNote.user)) continue;
-				const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
+				const content = renderActivity(renderDelete(renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
 				this.#deliverToConcerned(cascadingNote.user, cascadingNote, content);
 			}
 			//#endregion
 
 			// 統計を更新
-			notesChart.update(note, false);
-			perUserNotesChart.update(user, note, false);
+			this.notesChart.update(note, false);
+			this.perUserNotesChart.update(user, note, false);
 
 			if (Users.isRemoteUser(user)) {
-				registerOrFetchInstanceDoc(user.host).then(i => {
+				this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
 					Instances.decrement({ id: i.id }, 'notesCount', 1);
-					instanceChart.updateNote(i.host, note, false);
+					this.instanceChart.updateNote(i.host, note, false);
 				});
 			}
 		}
@@ -97,12 +111,12 @@ export class NoteCreateService {
 
 		const recursive = async (noteId: string) => {
 			const query = this.notesRepository.createQueryBuilder('note')
-			.where('note.replyId = :noteId', { noteId })
-			.orWhere(new Brackets(q => {
-				q.where('note.renoteId = :noteId', { noteId })
-				.andWhere('note.text IS NOT NULL');
-			}))
-			.leftJoinAndSelect('note.user', 'user');
+				.where('note.replyId = :noteId', { noteId })
+				.orWhere(new Brackets(q => {
+					q.where('note.renoteId = :noteId', { noteId })
+						.andWhere('note.text IS NOT NULL');
+				}))
+				.leftJoinAndSelect('note.user', 'user');
 			const replies = await query.getMany();
 			for (const reply of replies) {
 				cascadingNotes.push(reply);
@@ -141,7 +155,7 @@ export class NoteCreateService {
 
 	async #deliverToConcerned(user: { id: ILocalUser['id']; host: null; }, note: Note, content: any) {
 		deliverToFollowers(user, content);
-		deliverToRelays(user, content);
+		this.relayService.deliverToRelays(user, content);
 		const remoteUsers = await this.#getMentionedRemoteUsers(note);
 		for (const remoteUser of remoteUsers) {
 			deliverToUser(user, content, remoteUser);

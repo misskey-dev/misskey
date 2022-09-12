@@ -12,14 +12,12 @@ import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { App } from '@/models/entities/app.js';
 import { insertNoteUnread } from '@/services/note/unread.js';
 import { concat } from '@/prelude/array.js';
-import config from '@/config/index.js';
 import { resolveUser } from '@/remote/resolve-user.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderAnnounce from '@/remote/activitypub/renderer/announce.js';
 import renderCreate from '@/remote/activitypub/renderer/create.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';
 import DeliverManager from '@/remote/activitypub/deliver-manager.js';
-import { publishMainStream, publishNotesStream } from '@/services/stream.js';
 import { genId } from '@/misc/gen-id.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import type { IPoll } from '@/models/entities/poll.js';
@@ -31,23 +29,24 @@ import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import type { Channel } from '@/models/entities/channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
-import { endedPollNotificationQueue } from '@/queue/queues.js';
-import { webhookDeliver } from '@/queue/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserProfile } from '@/models/entities/user-profile.js';
 import { db } from '@/db/postgre.js';
-import { getActiveWebhooks } from '@/services/webhook-cache.js';
-import es from '../../db/elasticsearch.js';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc.js';
-import { updateHashtags } from '../update-hashtag.js';
-import { deliverToRelays } from '../relay.js';
-import { addNoteToAntenna } from '../add-note-to-antenna.js';
-import { createNotification } from '../create-notification.js';
-import type { WebhookService } from '../webhookService.js';
-import type NotesChart from '../chart/charts/notes.js';
-import type PerUserNotesChart from '../chart/charts/per-user-notes.js';
-import type ActiveUsersChart from '../chart/charts/active-users.js';
-import type InstanceChart from '../chart/charts/instance.js';
+import type { RelayService } from '@/services/RelayService.js';
+import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Config } from '@/config/types.js';
+import type NotesChart from '@/services/chart/charts/notes.js';
+import type PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
+import type InstanceChart from '@/services/chart/charts/instance.js';
+import type ActiveUsersChart from '@/services/chart/charts/active-users.js';
+import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import type { WebhookService } from '@/services/WebhookService.js';
+import type { HashtagService } from '@/services/HashtagService.js';
+import type { AntennaService } from '@/services/AntennaService.js';
+import type { QueueService } from '@/queue/queue.service.js';
+import es from '../db/elasticsearch.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -61,7 +60,7 @@ class NotificationManager {
 		reason: NotificationType;
 	}[];
 
-	constructor(notifier: { id: User['id']; }, note: Note) {
+	constructor(private createNotificationService: CreateNotificationService, notifier: { id: User['id']; }, note: Note) {
 		this.notifier = notifier;
 		this.note = note;
 		this.queue = [];
@@ -97,7 +96,7 @@ class NotificationManager {
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
 			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
-				createNotification(x.target, x.reason, {
+				this.createNotificationService.createNotification(x.target, x.reason, {
 					notifierId: this.notifier.id,
 					noteId: this.note.id,
 				});
@@ -137,15 +136,27 @@ type Option = {
 @Injectable()
 export class NoteCreateService {
 	constructor(
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
 
+		@Inject('usersRepository')
+		private usersRepository: typeof Users,
+
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
+		private globalEventServie: GlobalEventService,
+		private queueService: QueueService,
+		private createNotificationService: CreateNotificationService,
+		private relayService: RelayService,
+		private federatedInstanceService: FederatedInstanceService,
+		private hashtagService: HashtagService,
+		private antennaService: AntennaService,
+		private webhookService: WebhookService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private activeUsersChart: ActiveUsersChart,
 		private instanceChart: InstanceChart,
-
-		private webhookService: WebhookService,
 	) {}
 
 	public async create(user: {
@@ -243,7 +254,7 @@ export class NoteCreateService {
 		tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
 
 		if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
-			mentionedUsers.push(await Users.findOneByOrFail({ id: data.reply!.userId }));
+			mentionedUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 		}
 
 		if (data.visibility === 'specified') {
@@ -256,7 +267,7 @@ export class NoteCreateService {
 			}
 
 			if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-				data.visibleUsers.push(await Users.findOneByOrFail({ id: data.reply!.userId }));
+				data.visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
 			}
 		}
 
@@ -375,8 +386,8 @@ export class NoteCreateService {
 		this.perUserNotesChart.update(user, note, true);
 
 		// Register host
-		if (Users.isRemoteUser(user)) {
-			registerOrFetchInstanceDoc(user.host).then(i => {
+		if (this.usersRepository.isRemoteUser(user)) {
+			this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
 				Instances.increment({ id: i.id }, 'notesCount', 1);
 				this.instanceChart.updateNote(i.host, note, true);
 			});
@@ -384,7 +395,7 @@ export class NoteCreateService {
 
 		// ハッシュタグ更新
 		if (data.visibility === 'public' || data.visibility === 'home') {
-			updateHashtags(user, tags);
+			this.hashtagService.updateHashtags(user, tags);
 		}
 
 		// Increment notes count (user)
@@ -415,7 +426,7 @@ export class NoteCreateService {
 		for (const antenna of (await getAntennas())) {
 			checkHitAntenna(antenna, note, user).then(hit => {
 				if (hit) {
-					addNoteToAntenna(antenna, note, user);
+					this.antennaService.addNoteToAntenna(antenna, note, user);
 				}
 			});
 		}
@@ -452,7 +463,7 @@ export class NoteCreateService {
 		}
 
 		if (!silent) {
-			if (Users.isLocalUser(user)) this.activeUsersChart.write(user);
+			if (this.usersRepository.isLocalUser(user)) this.activeUsersChart.write(user);
 
 			// 未読通知を作成
 			if (data.visibility === 'specified') {
@@ -460,7 +471,7 @@ export class NoteCreateService {
 
 				for (const u of data.visibleUsers) {
 					// ローカルユーザーのみ
-					if (!Users.isLocalUser(u)) continue;
+					if (!this.usersRepository.isLocalUser(u)) continue;
 
 					insertNoteUnread(u.id, note, {
 						isSpecified: true,
@@ -470,7 +481,7 @@ export class NoteCreateService {
 			} else {
 				for (const u of mentionedUsers) {
 					// ローカルユーザーのみ
-					if (!Users.isLocalUser(u)) continue;
+					if (!this.usersRepository.isLocalUser(u)) continue;
 
 					insertNoteUnread(u.id, note, {
 						isSpecified: false,
@@ -482,18 +493,18 @@ export class NoteCreateService {
 			// Pack the note
 			const noteObj = await this.notesRepository.pack(note);
 
-			publishNotesStream(noteObj);
+			this.globalEventServie.publishNotesStream(noteObj);
 
-			getActiveWebhooks().then(webhooks => {
+			this.webhookService.getActiveWebhooks().then(webhooks => {
 				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
 				for (const webhook of webhooks) {
-					webhookDeliver(webhook, 'note', {
+					this.queueService.webhookDeliver(webhook, 'note', {
 						note: noteObj,
 					});
 				}
 			});
 
-			const nm = new NotificationManager(user, note);
+			const nm = new NotificationManager(this.createNotificationService, user, note);
 			const nmRelatedPromises = [];
 
 			await this.#createMentionedEvents(mentionedUsers, note, nm);
@@ -512,11 +523,11 @@ export class NoteCreateService {
 
 					if (!threadMuted) {
 						nm.push(data.reply.userId, 'reply');
-						publishMainStream(data.reply.userId, 'reply', noteObj);
+						this.globalEventServie.publishMainStream(data.reply.userId, 'reply', noteObj);
 
-						const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
+						const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
 						for (const webhook of webhooks) {
-							webhookDeliver(webhook, 'reply', {
+							this.queueService.webhookDeliver(webhook, 'reply', {
 								note: noteObj,
 							});
 						}
@@ -538,11 +549,11 @@ export class NoteCreateService {
 
 				// Publish event
 				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-					publishMainStream(data.renote.userId, 'renote', noteObj);
+					this.globalEventServie.publishMainStream(data.renote.userId, 'renote', noteObj);
 
-					const webhooks = (await getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
+					const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
 					for (const webhook of webhooks) {
-						webhookDeliver(webhook, 'renote', {
+						this.queueService.webhookDeliver(webhook, 'renote', {
 							note: noteObj,
 						});
 					}
@@ -554,26 +565,26 @@ export class NoteCreateService {
 			});
 
 			//#region AP deliver
-			if (Users.isLocalUser(user)) {
+			if (this.usersRepository.isLocalUser(user)) {
 				(async () => {
 					const noteActivity = await this.#renderNoteOrRenoteActivity(data, note);
 					const dm = new DeliverManager(user, noteActivity);
 
 					// メンションされたリモートユーザーに配送
-					for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
+					for (const u of mentionedUsers.filter(u => this.usersRepository.isRemoteUser(u))) {
 						dm.addDirectRecipe(u as IRemoteUser);
 					}
 
 					// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 					if (data.reply && data.reply.userHost !== null) {
-						const u = await Users.findOneBy({ id: data.reply.userId });
-						if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
+						const u = await this.usersRepository.findOneBy({ id: data.reply.userId });
+						if (u && this.usersRepository.isRemoteUser(u)) dm.addDirectRecipe(u);
 					}
 
 					// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 					if (data.renote && data.renote.userHost !== null) {
-						const u = await Users.findOneBy({ id: data.renote.userId });
-						if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
+						const u = await this.usersRepository.findOneBy({ id: data.renote.userId });
+						if (u && this.usersRepository.isRemoteUser(u)) dm.addDirectRecipe(u);
 					}
 
 					// フォロワーに配送
@@ -582,7 +593,7 @@ export class NoteCreateService {
 					}
 
 					if (['public'].includes(note.visibility)) {
-						deliverToRelays(user, noteActivity);
+						this.relayService.deliverToRelays(user, noteActivity);
 					}
 
 					dm.execute();
@@ -624,7 +635,7 @@ export class NoteCreateService {
 	}
 
 	async #createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
-		for (const u of mentionedUsers.filter(u => Users.isLocalUser(u))) {
+		for (const u of mentionedUsers.filter(u => this.usersRepository.isLocalUser(u))) {
 			const threadMuted = await NoteThreadMutings.findOneBy({
 				userId: u.id,
 				threadId: note.threadId || note.id,
@@ -638,11 +649,11 @@ export class NoteCreateService {
 				detail: true,
 			});
 
-			publishMainStream(u.id, 'mention', detailPackedNote);
+			this.globalEventServie.publishMainStream(u.id, 'mention', detailPackedNote);
 
-			const webhooks = (await getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
+			const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
 			for (const webhook of webhooks) {
-				webhookDeliver(webhook, 'mention', {
+				this.queueService.webhookDeliver(webhook, 'mention', {
 					note: detailPackedNote,
 				});
 			}
@@ -660,17 +671,17 @@ export class NoteCreateService {
 		if (data.localOnly) return null;
 
 		const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)
-			? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote.id}`, note)
+			? renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
 			: renderCreate(await renderNote(note, false), note);
 
 		return renderActivity(content);
 	}
 
 	#index(note: Note) {
-		if (note.text == null || config.elasticsearch == null) return;
+		if (note.text == null || this.config.elasticsearch == null) return;
 
 	es!.index({
-		index: config.elasticsearch.index || 'misskey_note',
+		index: this.config.elasticsearch.index || 'misskey_note',
 		id: note.id.toString(),
 		body: {
 			text: normalizeForSearch(note.text),
@@ -703,7 +714,7 @@ export class NoteCreateService {
 	}
 
 	#incNotesCountOfUser(user: { id: User['id']; }) {
-		Users.createQueryBuilder().update()
+		this.usersRepository.createQueryBuilder().update()
 			.set({
 				updatedAt: new Date(),
 				notesCount: () => '"notesCount" + 1',
