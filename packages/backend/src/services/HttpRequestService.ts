@@ -6,6 +6,7 @@ import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Config } from '@/config/types';
+import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';
 
 @Injectable()
@@ -13,12 +14,12 @@ export class HttpRequestService {
 	/**
 	 * Get http non-proxy agent
 	 */
-	#_http: http.Agent;
+	#http: http.Agent;
 
 	/**
 	 * Get https non-proxy agent
 	 */
-	#_https: https.Agent;
+	#https: https.Agent;
 
 	/**
 	 * Get http proxy or non-proxy agent
@@ -40,13 +41,13 @@ export class HttpRequestService {
 			lookup: false,	// nativeのdns.lookupにfallbackしない
 		});
 		
-		this.#_http = new http.Agent({
+		this.#http = new http.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup,
 		} as http.AgentOptions);
 		
-		this.#_https = new https.Agent({
+		this.#https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup,
@@ -63,7 +64,7 @@ export class HttpRequestService {
 				scheduling: 'lifo',
 				proxy: config.proxy,
 			})
-			: this.#_http;
+			: this.#http;
 
 		this.httpsAgent = config.proxy
 			? new HttpsProxyAgent({
@@ -74,7 +75,7 @@ export class HttpRequestService {
 				scheduling: 'lifo',
 				proxy: config.proxy,
 			})
-			: this.#_https;
+			: this.#https;
 	}
 
 	/**
@@ -84,13 +85,13 @@ export class HttpRequestService {
 	 */
 	public getAgentByUrl(url: URL, bypassProxy = false): http.Agent | https.Agent {
 		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
-			return url.protocol === 'http:' ? this.#_http : this.#_https;
+			return url.protocol === 'http:' ? this.#http : this.#https;
 		} else {
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;
 		}
 	}
 
-	public async getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>) {
+	public async getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>): Promise<unknown> {
 		const res = await this.getResponse({
 			url,
 			method: 'GET',
@@ -104,7 +105,7 @@ export class HttpRequestService {
 		return await res.json();
 	}
 
-	public async getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: Record<string, string>) {
+	public async getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: Record<string, string>): Promise<string> {
 		const res = await this.getResponse({
 			url,
 			method: 'GET',
@@ -118,7 +119,14 @@ export class HttpRequestService {
 		return await res.text();
 	}
 
-	public async getResponse(args: { url: string, method: string, body?: string, headers: Record<string, string>, timeout?: number, size?: number }) {
+	public async getResponse(args: {
+		url: string,
+		method: string,
+		body?: string,
+		headers: Record<string, string>,
+		timeout?: number,
+		size?: number,
+	}): Promise<Response> {
 		const timeout = args.timeout || 10 * 1000;
 
 		const controller = new AbortController();
