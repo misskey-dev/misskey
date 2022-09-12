@@ -27,8 +27,8 @@ export class UserBlockingService {
 		@Inject('followRequestsRepository')
 		private followRequestsRepository: typeof FollowRequests,
 
-		@Inject('blockingRepository')
-		private blockingRepository: typeof Blockings,
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
 
 		@Inject('userListsRepository')
 		private userListsRepository: typeof UserLists,
@@ -61,7 +61,7 @@ export class UserBlockingService {
 			blockeeId: blockee.id,
 		} as Blocking;
 
-		await this.blockingRepository.insert(blocking);
+		await this.blockingsRepository.insert(blocking);
 
 		if (this.usersRepository.isLocalUser(blocker) && this.usersRepository.isRemoteUser(blockee)) {
 			const content = renderActivity(renderBlock(blocking));
@@ -174,7 +174,7 @@ export class UserBlockingService {
 	}
 
 	public async unblock(blocker: CacheableUser, blockee: CacheableUser) {
-		const blocking = await this.blockingRepository.findOneBy({
+		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
 		});
@@ -189,7 +189,7 @@ export class UserBlockingService {
 		blocking.blocker = blocker;
 		blocking.blockee = blockee;
 	
-		await this.blockingRepository.delete(blocking.id);
+		await this.blockingsRepository.delete(blocking.id);
 	
 		// deliver if remote bloking
 		if (this.usersRepository.isLocalUser(blocker) && this.usersRepository.isRemoteUser(blockee)) {

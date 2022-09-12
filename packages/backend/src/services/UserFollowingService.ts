@@ -16,8 +16,8 @@ import type { Packed } from '@/misc/schema.js';
 import type InstanceChart from '@/services/chart/charts/instance.js';
 import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import type { WebhookService } from '@/services/webhookService.js';
+import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import Logger from './logger.js';
-import type { CreateNotificationService } from './CreateNotificationService.js';
 
 const logger = new Logger('following/create');
 
@@ -49,8 +49,8 @@ export class UserFollowingService {
 		@Inject('followRequestsRepository')
 		private followRequestsRepository: typeof FollowRequests,
 
-		@Inject('blockingRepository')
-		private blockingRepository: typeof Blockings,
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
 
 		@Inject('instancesRepository')
 		private instancesRepository: typeof Instances,
@@ -73,11 +73,11 @@ export class UserFollowingService {
 
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
-			this.blockingRepository.findOneBy({
+			this.blockingsRepository.findOneBy({
 				blockerId: follower.id,
 				blockeeId: followee.id,
 			}),
-			this.blockingRepository.findOneBy({
+			this.blockingsRepository.findOneBy({
 				blockerId: followee.id,
 				blockeeId: follower.id,
 			}),
@@ -90,7 +90,7 @@ export class UserFollowingService {
 			return;
 		} else if (this.usersRepository.isRemoteUser(follower) && this.usersRepository.isLocalUser(followee) && blocking) {
 		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
-			await this.blockingRepository.delete(blocking.id);
+			await this.blockingsRepository.delete(blocking.id);
 		} else {
 		// それ以外は単純に例外
 			if (blocking != null) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
@@ -345,11 +345,11 @@ export class UserFollowingService {
 	
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
-			this.blockingRepository.findOneBy({
+			this.blockingsRepository.findOneBy({
 				blockerId: follower.id,
 				blockeeId: followee.id,
 			}),
-			this.blockingRepository.findOneBy({
+			this.blockingsRepository.findOneBy({
 				blockerId: followee.id,
 				blockeeId: follower.id,
 			}),
