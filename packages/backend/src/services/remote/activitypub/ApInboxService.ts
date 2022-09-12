@@ -19,6 +19,7 @@ import { createNote, fetchNote } from './models/note.js';
 import { updatePerson } from './models/person.js';
 import { updateQuestion } from './models/question.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import type { ApDbResolverService } from './ApDbResolverService.js';
 import type { ApResolverService, Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IRead, IReject, IRemove, IUndo, IUpdate } from './type.js';
 
@@ -40,6 +41,7 @@ export class ApInboxService {
 		private noteDeleteService: NoteDeleteService,
 		private appLockService: AppLockService,
 		private apResolverService: ApResolverService,
+		private apDbResolverService: ApDbResolverService,
 	) {
 	}
 	
@@ -98,8 +100,7 @@ export class ApInboxService {
 	}
 
 	async #follow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
-		const dbResolver = new DbResolver();
-		const followee = await dbResolver.getUserFromApId(activity.object);
+		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 	
 		if (followee == null) {
 			return 'skip: followee not found';
@@ -172,8 +173,7 @@ export class ApInboxService {
 	async #acceptFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 
-		const dbResolver = new DbResolver();
-		const follower = await dbResolver.getUserFromApId(activity.actor);
+		const follower = await this.apDbResolverService.getUserFromApId(activity.actor);
 
 		if (follower == null) {
 			return 'skip: follower not found';
@@ -280,8 +280,7 @@ export class ApInboxService {
 	async #block(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
 		// ※ activity.objectにブロック対象があり、それは存在するローカルユーザーのはず
 
-		const dbResolver = new DbResolver();
-		const blockee = await dbResolver.getUserFromApId(activity.object);
+		const blockee = await this.apDbResolverService.getUserFromApId(activity.object);
 
 		if (blockee == null) {
 			return 'skip: blockee not found';
@@ -432,11 +431,10 @@ export class ApInboxService {
 		const unlock = await this.appLockService.getApLock(uri);
 	
 		try {
-			const dbResolver = new DbResolver();
-			const note = await dbResolver.getNoteFromApId(uri);
+			const note = await this.apDbResolverService.getNoteFromApId(uri);
 	
 			if (note == null) {
-				const message = await dbResolver.getMessageFromApId(uri);
+				const message = await this.apDbResolverService.getMessageFromApId(uri);
 				if (message == null) return 'message not found';
 	
 				if (message.userId !== actor.id) {
@@ -503,8 +501,7 @@ export class ApInboxService {
 	async #rejectFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 	
-		const dbResolver = new DbResolver();
-		const follower = await dbResolver.getUserFromApId(activity.actor);
+		const follower = await this.apDbResolverService.getUserFromApId(activity.actor);
 	
 		if (follower == null) {
 			return 'skip: follower not found';
@@ -569,9 +566,7 @@ export class ApInboxService {
 	}
 
 	async #undoAccept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
-		const dbResolver = new DbResolver();
-	
-		const follower = await dbResolver.getUserFromApId(activity.object);
+		const follower = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (follower == null) {
 			return 'skip: follower not found';
 		}
@@ -604,8 +599,7 @@ export class ApInboxService {
 	}
 
 	async #undoBlock(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
-		const dbResolver = new DbResolver();
-		const blockee = await dbResolver.getUserFromApId(activity.object);
+		const blockee = await this.apDbResolverService.getUserFromApId(activity.object);
 
 		if (blockee == null) {
 			return 'skip: blockee not found';
@@ -620,9 +614,7 @@ export class ApInboxService {
 	}
 
 	async #undoFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
-		const dbResolver = new DbResolver();
-
-		const followee = await dbResolver.getUserFromApId(activity.object);
+		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (followee == null) {
 			return 'skip: followee not found';
 		}
