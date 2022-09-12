@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
@@ -11,9 +12,12 @@ import type { UserBlockingService } from '@/services/UserBlockingService.js';
 import { StatusError } from '@/services/HttpRequestService.js';
 import type { NoteDeleteService } from '@/services/NoteDeleteService.js';
 import type { NoteCreateService } from '@/services/NoteCreateService.js';
+import { concat, toArray, toSingle, unique } from '@/prelude/array.js';
+import type { AppLockService } from '@/services/AppLockService.js';
 import { createNote, fetchNote } from './models/note.js';
 import { updatePerson } from './models/person.js';
 import { updateQuestion } from './models/question.js';
+import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IRead, IReject, IRemove, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -32,6 +36,7 @@ export class ApInboxService {
 		private userBlockingService: UserBlockingService,
 		private noteCreateService: NoteCreateService,
 		private noteDeleteService: NoteDeleteService,
+		private appLockService: AppLockService,
 	) {
 	}
 	
@@ -41,7 +46,7 @@ export class ApInboxService {
 			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
 				const act = await resolver.resolve(item);
 				try {
-					await performOneActivity(actor, act);
+					await this.performOneActivity(actor, act);
 				} catch (err) {
 					if (err instanceof Error || typeof err === 'string') {
 						apLogger.error(err);
@@ -49,7 +54,7 @@ export class ApInboxService {
 				}
 			}
 		} else {
-			await performOneActivity(actor, activity);
+			await this.performOneActivity(actor, activity);
 		}
 	}
 
@@ -57,33 +62,33 @@ export class ApInboxService {
 		if (actor.isSuspended) return;
 
 		if (isCreate(activity)) {
-			await create(actor, activity);
+			await this.#create(actor, activity);
 		} else if (isDelete(activity)) {
-			await performDeleteActivity(actor, activity);
+			await this.#delete(actor, activity);
 		} else if (isUpdate(activity)) {
-			await performUpdateActivity(actor, activity);
+			await this.#update(actor, activity);
 		} else if (isRead(activity)) {
-			await performReadActivity(actor, activity);
+			await this.#read(actor, activity);
 		} else if (isFollow(activity)) {
-			await follow(actor, activity);
+			await this.#follow(actor, activity);
 		} else if (isAccept(activity)) {
-			await accept(actor, activity);
+			await this.#accept(actor, activity);
 		} else if (isReject(activity)) {
-			await reject(actor, activity);
+			await this.#reject(actor, activity);
 		} else if (isAdd(activity)) {
-			await add(actor, activity).catch(err => apLogger.error(err));
+			await this.#add(actor, activity).catch(err => apLogger.error(err));
 		} else if (isRemove(activity)) {
-			await remove(actor, activity).catch(err => apLogger.error(err));
+			await this.#remove(actor, activity).catch(err => apLogger.error(err));
 		} else if (isAnnounce(activity)) {
-			await announce(actor, activity);
+			await this.#announce(actor, activity);
 		} else if (isLike(activity)) {
-			await like(actor, activity);
+			await this.#like(actor, activity);
 		} else if (isUndo(activity)) {
-			await undo(actor, activity);
+			await this.#undo(actor, activity);
 		} else if (isBlock(activity)) {
-			await block(actor, activity);
+			await this.#block(actor, activity);
 		} else if (isFlag(activity)) {
-			await flag(actor, activity);
+			await this.#flag(actor, activity);
 		} else {
 			apLogger.warn(`unrecognized activity type: ${(activity as any).type}`);
 		}
@@ -225,7 +230,7 @@ export class ApInboxService {
 		const meta = await fetchMeta();
 		if (meta.blockedHosts.includes(extractDbHost(uri))) return;
 
-		const unlock = await getApLock(uri);
+		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 		// 既に同じURIを持つものが登録されていないかチェック
@@ -337,7 +342,7 @@ export class ApInboxService {
 			}
 		}
 
-		const unlock = await getApLock(uri);
+		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 			const exist = await fetchNote(note);
@@ -421,7 +426,7 @@ export class ApInboxService {
 	async #deleteNote(actor: CacheableRemoteUser, uri: string): Promise<string> {
 		logger.info(`Deleting the Note: ${uri}`);
 	
-		const unlock = await getApLock(uri);
+		const unlock = await this.appLockService.getApLock(uri);
 	
 		try {
 			const dbResolver = new DbResolver();
@@ -456,7 +461,7 @@ export class ApInboxService {
 		// 対象ユーザーは一番最初のユーザー として あとはコメントとして格納する
 		const uris = getApIds(activity.object);
 
-		const userIds = uris.filter(uri => uri.startsWith(config.url + '/users/')).map(uri => uri.split('/').pop()!);
+		const userIds = uris.filter(uri => uri.startsWith(this.config.url + '/users/')).map(uri => uri.split('/').pop()!);
 		const users = await Users.findBy({
 			id: In(userIds),
 		});
