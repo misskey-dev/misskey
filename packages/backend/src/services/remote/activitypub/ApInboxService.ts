@@ -14,10 +14,12 @@ import type { NoteDeleteService } from '@/services/NoteDeleteService.js';
 import type { NoteCreateService } from '@/services/NoteCreateService.js';
 import { concat, toArray, toSingle, unique } from '@/prelude/array.js';
 import type { AppLockService } from '@/services/AppLockService.js';
+import { extractDbHost } from '@/misc/convert-host.js';
 import { createNote, fetchNote } from './models/note.js';
 import { updatePerson } from './models/person.js';
 import { updateQuestion } from './models/question.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import type { ApResolverService, Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IRead, IReject, IRemove, IUndo, IUpdate } from './type.js';
 
 @Injectable()
@@ -37,12 +39,13 @@ export class ApInboxService {
 		private noteCreateService: NoteCreateService,
 		private noteDeleteService: NoteDeleteService,
 		private appLockService: AppLockService,
+		private apResolverService: ApResolverService,
 	) {
 	}
 	
 	public async performActivity(actor: CacheableRemoteUser, activity: IObject) {
 		if (isCollectionOrOrderedCollection(activity)) {
-			const resolver = new Resolver();
+			const resolver = this.apResolverService.createResolver();
 			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
 				const act = await resolver.resolve(item);
 				try {
@@ -154,7 +157,7 @@ export class ApInboxService {
 
 		apLogger.info(`Accept: ${uri}`);
 	
-		const resolver = new Resolver();
+		const resolver = this.apResolverService.createResolver();
 	
 		const object = await resolver.resolve(activity.object).catch(e => {
 			apLogger.error(`Resolution failed: ${e}`);
@@ -313,7 +316,7 @@ export class ApInboxService {
 			activity.object.attributedTo = activity.actor;
 		}
 
-		const resolver = new Resolver();
+		const resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			logger.error(`Resolution failed: ${e}`);
@@ -485,7 +488,7 @@ export class ApInboxService {
 
 		logger.info(`Reject: ${uri}`);
 
-		const resolver = new Resolver();
+		const resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			logger.error(`Resolution failed: ${e}`);
@@ -549,7 +552,7 @@ export class ApInboxService {
 	
 		logger.info(`Undo: ${uri}`);
 	
-		const resolver = new Resolver();
+		const resolver = this.apResolverService.createResolver();
 	
 		const object = await resolver.resolve(activity.object).catch(e => {
 			logger.error(`Resolution failed: ${e}`);
@@ -672,7 +675,7 @@ export class ApInboxService {
 	
 		apLogger.debug('Update');
 	
-		const resolver = new Resolver();
+		const resolver = this.apResolverService.createResolver();
 	
 		const object = await resolver.resolve(activity.object).catch(e => {
 			apLogger.error(`Resolution failed: ${e}`);

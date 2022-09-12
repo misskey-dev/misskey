@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type { ILocalUser } from '@/models/entities/user.js';
 import type { InstanceActorService } from '@/services/InstanceActorService.js';
 import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
@@ -5,24 +6,65 @@ import type { Notes , Polls , NoteReactions , Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type { MetaService } from '@/services/MetaService.js';
 import type { HttpRequestService } from '@/services/HttpRequestService.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import { parseUri } from './db-resolver.js';
 import type { ApRendererService } from './ApRendererService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
 import type { ApRequestService } from './ApRequestService.js';
 
-export class ApResolver {
+@Injectable()
+export class ApResolverService {
+	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
+		@Inject('usersRepository')
+		private usersRepository: typeof Users,
+
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
+		@Inject('pollsRepository')
+		private pollsRepository: typeof Polls,
+
+		@Inject('noteReactionsRepository')
+		private noteReactionsRepository: typeof NoteReactions,
+
+		private instanceActorService: InstanceActorService,
+		private metaService: MetaService,
+		private apRequestService: ApRequestService,
+		private httpRequestService: HttpRequestService,
+		private apRendererService: ApRendererService,
+	) {
+	}
+
+	public createResolver(): Resolver {
+		return new Resolver(
+			this.config,
+			this.usersRepository,
+			this.notesRepository,
+			this.pollsRepository,
+			this.noteReactionsRepository,
+			this.instanceActorService,
+			this.metaService,
+			this.apRequestService,
+			this.httpRequestService,
+			this.apRendererService,
+		);
+	}
+}
+
+export class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
 
 	constructor(
 		private config: Config,
-
 		private usersRepository: typeof Users,
 		private notesRepository: typeof Notes,
 		private pollsRepository: typeof Polls,
 		private noteReactionsRepository: typeof NoteReactions,
-
 		private instanceActorService: InstanceActorService,
 		private metaService: MetaService,
 		private apRequestService: ApRequestService,
