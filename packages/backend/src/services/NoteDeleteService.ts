@@ -21,7 +21,7 @@ import type InstanceChart from '@/services/chart/charts/instance.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 
 @Injectable()
-export class NoteCreateService {
+export class NoteDeleteService {
 	constructor(
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
