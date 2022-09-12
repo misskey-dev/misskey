@@ -5,7 +5,7 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Config } from '@/config/types.js';
 import type { User } from '@/models/entities/user.js';
 import type { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
-import { getResponse } from '@/misc/fetch.js';
+import type { HttpRequestService } from '@/services/HttpRequestService.js';
 
 type Request = {
 	url: string;
@@ -32,6 +32,7 @@ export class ApRequestService {
 		private config: Config,
 
 		private userKeypairStoreService: UserKeypairStoreService,
+		private httpRequestService: HttpRequestService,
 	) {
 	}
 
@@ -143,7 +144,7 @@ export class ApRequestService {
 			},
 		});
 
-		await getResponse({
+		await this.httpRequestService.getResponse({
 			url,
 			method: req.request.method,
 			headers: req.request.headers,
@@ -170,7 +171,7 @@ export class ApRequestService {
 			},
 		});
 
-		const res = await getResponse({
+		const res = await this.httpRequestService.getResponse({
 			url,
 			method: req.request.method,
 			headers: req.request.headers,
