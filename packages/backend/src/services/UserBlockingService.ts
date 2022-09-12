@@ -7,11 +7,11 @@ import type { CacheableUser, User } from '@/models/entities/user.js';
 import type { Blocking } from '@/models/entities/blocking.js';
 import type { QueueService } from '@/queue/queue.service.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import { renderActivity } from '@/remote/activitypub/renderer';
-import { renderBlock } from '@/remote/activitypub/renderer/block';
-import renderFollow from '@/remote/activitypub/renderer/follow.js';
-import renderUndo from '@/remote/activitypub/renderer/undo.js';
-import renderReject from '@/remote/activitypub/renderer/reject.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer';
+import { renderBlock } from '@/services/remote/activitypub/renderer/block';
+import renderFollow from '@/services/remote/activitypub/renderer/follow.js';
+import renderUndo from '@/services/remote/activitypub/renderer/undo.js';
+import renderReject from '@/services/remote/activitypub/renderer/reject.js';
 import type PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
 import type { WebhookService } from '@/services/webhookService.js';
 

@@ -1,18 +1,16 @@
-import { publishMainStream, publishGroupMessagingStream } from '@/services/stream.js';
-import { publishMessagingStream } from '@/services/stream.js';
-import { publishMessagingIndexStream } from '@/services/stream.js';
-import { pushNotification } from '@/services/push-notification.js';
-import { User, IRemoteUser } from '@/models/entities/user.js';
-import { MessagingMessage } from '@/models/entities/messaging-message.js';
-import { MessagingMessages, UserGroupJoinings, Users } from '@/models/index.js';
 import { In } from 'typeorm';
+import { publishMainStream, publishGroupMessagingStream , publishMessagingStream , publishMessagingIndexStream } from '@/services/stream.js';
+import { pushNotification } from '@/services/push-notification.js';
+import type { User, IRemoteUser } from '@/models/entities/user.js';
+import type { MessagingMessage } from '@/models/entities/messaging-message.js';
+import { MessagingMessages, UserGroupJoinings, Users } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { UserGroup } from '@/models/entities/user-group.js';
+import type { UserGroup } from '@/models/entities/user-group.js';
 import { toArray } from '@/prelude/array.js';
-import { renderReadActivity } from '@/remote/activitypub/renderer/read.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import { renderReadActivity } from '@/services/remote/activitypub/renderer/read.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
 import { deliver } from '@/queue/index.js';
-import orderedCollection from '@/remote/activitypub/renderer/ordered-collection.js';
+import orderedCollection from '@/services/remote/activitypub/renderer/ordered-collection.js';
 
 /**
  * Mark messages as read
@@ -20,7 +18,7 @@ import orderedCollection from '@/remote/activitypub/renderer/ordered-collection.
 export async function readUserMessagingMessage(
 	userId: User['id'],
 	otherpartyId: User['id'],
-	messageIds: MessagingMessage['id'][]
+	messageIds: MessagingMessage['id'][],
 ) {
 	if (messageIds.length === 0) return;
 
@@ -60,7 +58,7 @@ export async function readUserMessagingMessage(
 				recipientId: userId,
 				isRead: false,
 			},
-			take: 1
+			take: 1,
 		});
 
 		if (!count) {
@@ -75,7 +73,7 @@ export async function readUserMessagingMessage(
 export async function readGroupMessagingMessage(
 	userId: User['id'],
 	groupId: UserGroup['id'],
-	messageIds: MessagingMessage['id'][]
+	messageIds: MessagingMessage['id'][],
 ) {
 	if (messageIds.length === 0) return;
 
@@ -124,7 +122,7 @@ export async function readGroupMessagingMessage(
 	} else {
 		// そのグループにおいて未読がなければイベント発行
 		const unreadExist = await MessagingMessages.createQueryBuilder('message')
-			.where(`message.groupId = :groupId`, { groupId: groupId })
+			.where('message.groupId = :groupId', { groupId: groupId })
 			.andWhere('message.userId != :userId', { userId: userId })
 			.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
 			.andWhere('message.createdAt > :joinedAt', { joinedAt: joining.createdAt }) // 自分が加入する前の会話については、未読扱いしない

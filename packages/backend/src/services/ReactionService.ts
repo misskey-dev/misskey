@@ -11,7 +11,7 @@ import type { NoteReaction } from '@/models/entities/note-reaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
-import DeliverManager from '@/remote/activitypub/deliver-manager.js';
+import DeliverManager from '@/services/remote/activitypub/deliver-manager.js';
 import type PerUserReactionsChart from '@/services/chart/charts/per-user-reactions.js';
 import { toDbReaction } from '@/misc/reaction-lib.js';
 

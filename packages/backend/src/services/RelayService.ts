@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import { renderFollowRelay } from '@/remote/activitypub/renderer/follow-relay.js';
-import { renderActivity, attachLdSignature } from '@/remote/activitypub/renderer/index.js';
-import renderUndo from '@/remote/activitypub/renderer/undo.js';
+import { renderFollowRelay } from '@/services/remote/activitypub/renderer/follow-relay.js';
+import { renderActivity, attachLdSignature } from '@/services/remote/activitypub/renderer/index.js';
+import renderUndo from '@/services/remote/activitypub/renderer/undo.js';
 import type { ILocalUser, User } from '@/models/entities/user.js';
 import type { Relays, Users } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';

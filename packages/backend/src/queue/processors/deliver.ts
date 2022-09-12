@@ -1,6 +1,5 @@
 import { URL } from 'node:url';
-import Bull from 'bull';
-import request from '@/remote/activitypub/request.js';
+import request from '@/services/remote/activitypub/request.js';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
 import Logger from '@/services/logger.js';
 import { Instances } from '@/models/index.js';
@@ -9,9 +8,10 @@ import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { Cache } from '@/misc/cache.js';
-import { Instance } from '@/models/entities/instance.js';
-import { DeliverJobData } from '../types.js';
+import type { Instance } from '@/models/entities/instance.js';
 import { StatusError } from '@/misc/fetch.js';
+import type { DeliverJobData } from '../types.js';
+import type Bull from 'bull';
 
 const logger = new Logger('deliver');
 

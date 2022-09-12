@@ -1,5 +1,5 @@
 import config from '@/config/index.js';
-import { IObject, IActivity } from '@/remote/activitypub/type.js';
+import { IObject, IActivity } from '@/services/remote/activitypub/type.js';
 import type { ILocalUser } from '@/models/entities/user.js';
 import { IRemoteUser } from '@/models/entities/user.js';
 

@@ -3,11 +3,12 @@ import promiseLimit from 'promise-limit';
 
 import config from '@/config/index.js';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
-import { Note } from '@/models/entities/note.js';
+import type { Note } from '@/models/entities/note.js';
 import { updateUsertags } from '@/services/update-hashtag.js';
 import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '@/models/index.js';
-import { User, IRemoteUser, CacheableUser } from '@/models/entities/user.js';
-import { Emoji } from '@/models/entities/emoji.js';
+import type { IRemoteUser, CacheableUser } from '@/models/entities/user.js';
+import { User } from '@/models/entities/user.js';
+import type { Emoji } from '@/models/entities/emoji.js';
 import { UserNotePining } from '@/models/entities/user-note-pining.js';
 import { genId } from '@/misc/gen-id.js';
 import { instanceChart, usersChart } from '@/services/chart/index.js';
@@ -25,12 +26,13 @@ import { publishInternalEvent } from '@/services/stream.js';
 import { db } from '@/db/postgre.js';
 import { apLogger } from '../logger.js';
 import { htmlToMfm } from '../misc/html-to-mfm.js';
-import { fromHtml } from '../../../mfm/from-html.js';
-import { isCollectionOrOrderedCollection, isCollection, IActor, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType, isActor } from '../type.js';
+import { fromHtml } from '../../../../mfm/from-html.js';
+import { isCollectionOrOrderedCollection, isCollection, getApId, getOneApHrefNullable, isPropertyValue, getApType, isActor } from '../type.js';
 import Resolver from '../resolver.js';
 import { extractApHashtags } from './tag.js';
 import { resolveNote, extractEmojis } from './note.js';
 import { resolveImage } from './image.js';
+import type { IActor, IObject, IApPropertyValue } from '../type.js';
 
 const logger = apLogger;
 

@@ -1,14 +1,15 @@
-import Router from '@koa/router';
-import { LessThan, IsNull, FindOptionsWhere } from 'typeorm';
+import { LessThan, IsNull } from 'typeorm';
 import config from '@/config/index.js';
 import * as url from '@/prelude/url.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderOrderedCollection from '@/remote/activitypub/renderer/ordered-collection.js';
-import renderOrderedCollectionPage from '@/remote/activitypub/renderer/ordered-collection-page.js';
-import renderFollowUser from '@/remote/activitypub/renderer/follow-user.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
+import renderOrderedCollection from '@/services/remote/activitypub/renderer/ordered-collection.js';
+import renderOrderedCollectionPage from '@/services/remote/activitypub/renderer/ordered-collection-page.js';
+import renderFollowUser from '@/services/remote/activitypub/renderer/follow-user.js';
 import { Users, Followings, UserProfiles } from '@/models/index.js';
-import { Following } from '@/models/entities/following.js';
+import type { Following } from '@/models/entities/following.js';
 import { setResponseType } from '../activitypub.js';
+import type { FindOptionsWhere } from 'typeorm';
+import type Router from '@koa/router';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;

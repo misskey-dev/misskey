@@ -1,16 +1,16 @@
-import { CacheableUser, User } from '@/models/entities/user.js';
-import { UserGroup } from '@/models/entities/user-group.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
+import { Not } from 'typeorm';
+import type { CacheableUser, User } from '@/models/entities/user.js';
+import type { UserGroup } from '@/models/entities/user-group.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
 import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
-import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import type { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '@/services/stream.js';
 import { pushNotification } from '@/services/push-notification.js';
-import { Not } from 'typeorm';
-import { Note } from '@/models/entities/note.js';
-import renderNote from '@/remote/activitypub/renderer/note.js';
-import renderCreate from '@/remote/activitypub/renderer/create.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
+import type { Note } from '@/models/entities/note.js';
+import renderNote from '@/services/remote/activitypub/renderer/note.js';
+import renderCreate from '@/services/remote/activitypub/renderer/create.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
 import { deliver } from '@/queue/index.js';
 
 export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: CacheableUser | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {

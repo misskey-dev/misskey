@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { AbuseUserReports } from '@/models/index.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import { renderFlag } from '@/remote/activitypub/renderer/flag.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
+import { renderFlag } from '@/services/remote/activitypub/renderer/flag.js';
 import type { InstanceActorService } from '@/services/InstanceActorService';
 import type { QueueService } from '@/queue/queue.service';
 

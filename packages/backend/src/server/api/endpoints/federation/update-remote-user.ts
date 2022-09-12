@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { updatePerson } from '@/remote/activitypub/models/person.js';
+import { updatePerson } from '@/services/remote/activitypub/models/person.js';
 import { getRemoteUser } from '../../common/getters.js';
 
 export const meta = {

@@ -1,22 +1,22 @@
 import { URL } from 'node:url';
-import Bull from 'bull';
 import httpSignature from '@peertube/http-signature';
-import perform from '@/remote/activitypub/perform.js';
+import perform from '@/services/remote/activitypub/perform.js';
 import Logger from '@/services/logger.js';
 import { registerOrFetchInstanceDoc } from '@/services/register-or-fetch-instance-doc.js';
 import { Instances } from '@/models/index.js';
 import { apRequestChart, federationChart, instanceChart } from '@/services/chart/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { toPuny, extractDbHost } from '@/misc/convert-host.js';
-import { getApId } from '@/remote/activitypub/type.js';
+import { getApId } from '@/services/remote/activitypub/type.js';
 import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
-import { InboxJobData } from '../types.js';
-import DbResolver from '@/remote/activitypub/db-resolver.js';
-import { resolvePerson } from '@/remote/activitypub/models/person.js';
-import { LdSignature } from '@/remote/activitypub/misc/ld-signature.js';
+import DbResolver from '@/services/remote/activitypub/db-resolver.js';
+import { resolvePerson } from '@/services/remote/activitypub/models/person.js';
+import { LdSignature } from '@/services/remote/activitypub/misc/ld-signature.js';
 import { StatusError } from '@/misc/fetch.js';
-import { CacheableRemoteUser } from '@/models/entities/user.js';
-import { UserPublickey } from '@/models/entities/user-publickey.js';
+import type { CacheableRemoteUser } from '@/models/entities/user.js';
+import type { UserPublickey } from '@/models/entities/user-publickey.js';
+import type { InboxJobData } from '../types.js';
+import type Bull from 'bull';
 
 const logger = new Logger('inbox');
 
@@ -69,12 +69,12 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 
 	// それでもわからなければ終了
 	if (authUser == null) {
-		return `skip: failed to resolve user`;
+		return 'skip: failed to resolve user';
 	}
 
 	// publicKey がなくても終了
 	if (authUser.key == null) {
-		return `skip: failed to resolve user publicKey`;
+		return 'skip: failed to resolve user publicKey';
 	}
 
 	// HTTP-Signatureの検証
@@ -98,18 +98,18 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			// keyIdからLD-Signatureのユーザーを取得
 			authUser = await dbResolver.getAuthUserFromKeyId(activity.signature.creator);
 			if (authUser == null) {
-				return `skip: LD-Signatureのユーザーが取得できませんでした`;
+				return 'skip: LD-Signatureのユーザーが取得できませんでした';
 			}
 
 			if (authUser.key == null) {
-				return `skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした`;
+				return 'skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした';
 			}
 
 			// LD-Signature検証
 			const ldSignature = new LdSignature();
 			const verified = await ldSignature.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
 			if (!verified) {
-				return `skip: LD-Signatureの検証に失敗しました`;
+				return 'skip: LD-Signatureの検証に失敗しました';
 			}
 
 			// もう一度actorチェック
@@ -153,5 +153,5 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 
 	// アクティビティを処理
 	await perform(authUser.user, activity);
-	return `ok`;
+	return 'ok';
 };

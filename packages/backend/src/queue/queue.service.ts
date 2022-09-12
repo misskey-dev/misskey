@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import config from '@/config/index.js';
-import type { IActivity } from '@/remote/activitypub/type.js';
+import type { IActivity } from '@/services/remote/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 
 import type { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';

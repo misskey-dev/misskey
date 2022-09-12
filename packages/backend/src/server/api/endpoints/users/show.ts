@@ -1,6 +1,6 @@
 import { In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { resolveUser } from '@/remote/resolve-user.js';
+import { resolveUser } from '@/services/remote/resolve-user.js';
 import type { Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

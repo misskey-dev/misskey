@@ -9,9 +9,9 @@ import type { CacheableUser } from '@/models/entities/user.js';
 import { genId } from '@/misc/gen-id.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
-import renderUpdate from '@/remote/activitypub/renderer/update.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderNote from '@/remote/activitypub/renderer/note.js';
+import renderUpdate from '@/services/remote/activitypub/renderer/update.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
+import renderNote from '@/services/remote/activitypub/renderer/note.js';
 
 @Injectable()
 export class PollService {

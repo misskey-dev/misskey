@@ -2,23 +2,23 @@ import Router from '@koa/router';
 import json from 'koa-json-body';
 import httpSignature from '@peertube/http-signature';
 
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderNote from '@/remote/activitypub/renderer/note.js';
-import renderKey from '@/remote/activitypub/renderer/key.js';
-import { renderPerson } from '@/remote/activitypub/renderer/person.js';
-import renderEmoji from '@/remote/activitypub/renderer/emoji.js';
-import Outbox, { packActivity } from './activitypub/outbox.js';
-import Followers from './activitypub/followers.js';
-import Following from './activitypub/following.js';
-import Featured from './activitypub/featured.js';
+import { In, IsNull, Not } from 'typeorm';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
+import renderNote from '@/services/remote/activitypub/renderer/note.js';
+import renderKey from '@/services/remote/activitypub/renderer/key.js';
+import { renderPerson } from '@/services/remote/activitypub/renderer/person.js';
+import renderEmoji from '@/services/remote/activitypub/renderer/emoji.js';
 import { inbox as processInbox } from '@/queue/index.js';
 import { isSelfHost } from '@/misc/convert-host.js';
 import { Notes, Users, Emojis, NoteReactions } from '@/models/index.js';
-import { ILocalUser, User } from '@/models/entities/user.js';
-import { In, IsNull, Not } from 'typeorm';
-import { renderLike } from '@/remote/activitypub/renderer/like.js';
+import type { ILocalUser, User } from '@/models/entities/user.js';
+import { renderLike } from '@/services/remote/activitypub/renderer/like.js';
 import { getUserKeypair } from '@/misc/keypair-store.js';
-import renderFollow from '@/remote/activitypub/renderer/follow.js';
+import renderFollow from '@/services/remote/activitypub/renderer/follow.js';
+import Featured from './activitypub/featured.js';
+import Following from './activitypub/following.js';
+import Followers from './activitypub/followers.js';
+import Outbox, { packActivity } from './activitypub/outbox.js';
 
 // Init router
 const router = new Router();

@@ -1,8 +1,9 @@
-import { CacheableRemoteUser } from '@/models/entities/user.js';
-import { IRead, getApId } from '../type.js';
+import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import { isSelfHost, extractDbHost } from '@/misc/convert-host.js';
 import { MessagingMessages } from '@/models/index.js';
-import { readUserMessagingMessage } from '../../../server/api/common/read-messaging-message.js';
+import { getApId } from '../type.js';
+import { readUserMessagingMessage } from '../../../../server/api/common/read-messaging-message.js';
+import type { IRead } from '../type.js';
 
 export const performReadActivity = async (actor: CacheableRemoteUser, activity: IRead): Promise<string> => {
 	const id = await getApId(activity.object);
@@ -15,11 +16,11 @@ export const performReadActivity = async (actor: CacheableRemoteUser, activity: 
 
 	const message = await MessagingMessages.findOneBy({ id: messageId });
 	if (message == null) {
-		return `skip: message not found`;
+		return 'skip: message not found';
 	}
 
 	if (actor.id !== message.recipientId) {
-		return `skip: actor is not a message recipient`;
+		return 'skip: actor is not a message recipient';
 	}
 
 	await readUserMessagingMessage(message.recipientId!, message.userId, [message.id]);

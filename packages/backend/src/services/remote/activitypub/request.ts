@@ -1,7 +1,7 @@
 import config from '@/config/index.js';
 import { getUserKeypair } from '@/misc/keypair-store.js';
-import { User } from '@/models/entities/user.js';
-import { getResponse } from '../../misc/fetch.js';
+import type { User } from '@/models/entities/user.js';
+import { getResponse } from '../../../misc/fetch.js';
 import { createSignedPost, createSignedGet } from './ap-request.js';
 
 export default async (user: { id: User['id'] }, url: string, object: any) => {

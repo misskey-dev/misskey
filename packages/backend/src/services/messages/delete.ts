@@ -1,10 +1,10 @@
 import config from '@/config/index.js';
 import { MessagingMessages, Users } from '@/models/index.js';
-import { MessagingMessage } from '@/models/entities/messaging-message.js';
+import type { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { publishGroupMessagingStream, publishMessagingStream } from '@/services/stream.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderDelete from '@/remote/activitypub/renderer/delete.js';
-import renderTombstone from '@/remote/activitypub/renderer/tombstone.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
+import renderDelete from '@/services/remote/activitypub/renderer/delete.js';
+import renderTombstone from '@/services/remote/activitypub/renderer/tombstone.js';
 import { deliver } from '@/queue/index.js';
 
 export async function deleteMessage(message: MessagingMessage) {

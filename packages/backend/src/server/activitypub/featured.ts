@@ -1,11 +1,11 @@
-import Router from '@koa/router';
-import config from '@/config/index.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import renderOrderedCollection from '@/remote/activitypub/renderer/ordered-collection.js';
-import { setResponseType } from '../activitypub.js';
-import renderNote from '@/remote/activitypub/renderer/note.js';
-import { Users, Notes, UserNotePinings } from '@/models/index.js';
 import { IsNull } from 'typeorm';
+import config from '@/config/index.js';
+import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
+import renderOrderedCollection from '@/services/remote/activitypub/renderer/ordered-collection.js';
+import renderNote from '@/services/remote/activitypub/renderer/note.js';
+import { Users, Notes, UserNotePinings } from '@/models/index.js';
+import { setResponseType } from '../activitypub.js';
+import type Router from '@koa/router';
 
 export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
