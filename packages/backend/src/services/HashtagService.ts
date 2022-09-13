@@ -3,7 +3,7 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Hashtags, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { Hashtag } from '@/models/entities/hashtag.js';
 import type HashtagChart from '@/services/chart/charts/hashtag.js';
 
@@ -16,6 +16,7 @@ export class HashtagService {
 		@Inject('hashtagsRepository')
 		private hashtagsRepository: typeof Hashtags,
 
+		private idService: IdService,
 		private hashtagChart: HashtagChart,
 	) {
 	}
@@ -102,7 +103,7 @@ export class HashtagService {
 		} else {
 			if (isUserAttached) {
 				Hashtags.insert({
-					id: genId(),
+					id: this.idService.genId(),
 					name: tag,
 					mentionedUserIds: [],
 					mentionedUsersCount: 0,
@@ -119,7 +120,7 @@ export class HashtagService {
 				} as Hashtag);
 			} else {
 				Hashtags.insert({
-					id: genId(),
+					id: this.idService.genId(),
 					name: tag,
 					mentionedUserIds: [user.id],
 					mentionedUsersCount: 1,

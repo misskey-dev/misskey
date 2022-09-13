@@ -5,7 +5,7 @@ import { Notes, UserNotePinings } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { User } from '@/models/entities/user.js';
 import type { Note } from '@/models/entities/note.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { UserNotePining } from '@/models/entities/user-note-pining.js';
 import type { RelayService } from '@/services/RelayService.js';
 import type { Config } from '@/config/types.js';
@@ -25,6 +25,7 @@ export class NotePiningService {
 		@Inject('userNotePiningsRepository')
 		private userNotePiningsRepository: typeof UserNotePinings,
 
+		private idService: IdService,
 		private relayService: RelayService,
 	) {
 	}
@@ -56,7 +57,7 @@ export class NotePiningService {
 		}
 
 		await this.userNotePiningsRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			userId: user.id,
 			noteId: note.id,

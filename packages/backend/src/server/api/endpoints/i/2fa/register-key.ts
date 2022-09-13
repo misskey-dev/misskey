@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserProfiles, AttestationChallenges } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { hash } from '../../../2fa.js';
 
 const randomBytes = promisify(crypto.randomBytes);
@@ -27,6 +27,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
@@ -49,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.replace(/\+/g, '-')
 				.replace(/\//g, '_');
 
-			const challengeId = genId();
+			const challengeId = this.idService.genId();
 
 			await AttestationChallenges.insert({
 				userId: me.id,

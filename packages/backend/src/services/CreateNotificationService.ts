@@ -3,7 +3,7 @@ import type { Mutings, Notifications, UserProfiles , Users } from '@/models/inde
 import type { User } from '@/models/entities/user.js';
 import type { Notification } from '@/models/entities/notification.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 
 @Injectable()
 export class CreateNotificationService {
@@ -20,6 +20,7 @@ export class CreateNotificationService {
 		@Inject('mutingsRepository')
 		private mutingsRepository: typeof Mutings,
 
+		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {
 	}
@@ -39,7 +40,7 @@ export class CreateNotificationService {
 	
 		// Create notification
 		const notification = await this.notificationsRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			notifieeId: notifieeId,
 			type: type,

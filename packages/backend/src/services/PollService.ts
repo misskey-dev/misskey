@@ -6,7 +6,7 @@ import { Polls , PollVotes } from '@/models/index.js';
 import type { Note } from '@/models/entities/note.js';
 import type { RelayService } from '@/services/RelayService.js';
 import type { CacheableUser } from '@/models/entities/user.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import renderUpdate from '@/services/remote/activitypub/renderer/update.js';
@@ -31,6 +31,7 @@ export class PollService {
 		@Inject('blockingsRepository')
 		private blockingsRepository: typeof Blockings,
 
+		private idService: IdService,
 		private relayService: RelayService,
 		private globalEventServie: GlobalEventService,
 		private createNotificationService: CreateNotificationService,
@@ -72,7 +73,7 @@ export class PollService {
 	
 		// Create vote
 		await PollVotes.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			noteId: note.id,
 			userId: user.id,

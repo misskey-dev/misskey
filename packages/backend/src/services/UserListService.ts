@@ -4,7 +4,7 @@ import { Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import type { UserList } from '@/models/entities/user-list.js';
 import type { UserListJoining } from '@/models/entities/user-list-joining.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { UserFollowingService } from '@/services/UserFollowingService.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 
@@ -17,6 +17,7 @@ export class UserListService {
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
 
+		private idService: IdService,
 		private userFollowingService: UserFollowingService,
 		private globalEventServie: GlobalEventService,
 	) {
@@ -24,7 +25,7 @@ export class UserListService {
 
 	public async push(target: User, list: UserList) {
 		await this.userListJoiningsRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			userId: target.id,
 			userListId: list.id,

@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const post = await GalleryPosts.insert(new GalleryPost({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				title: ps.title,

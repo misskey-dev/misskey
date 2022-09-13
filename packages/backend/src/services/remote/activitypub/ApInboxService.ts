@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import type { UserFollowingService } from '@/services/UserFollowingService.js';
@@ -17,6 +17,7 @@ import type { AppLockService } from '@/services/AppLockService.js';
 import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
 import type Logger from '@/this.#logger.js';
 import type { MetaService } from '@/services/MetaService.js';
+import type { IdService } from '@/services/IdService.js';
 import { createNote, fetchNote } from './models/note.js';
 import { updatePerson } from './models/person.js';
 import { updateQuestion } from './models/question.js';
@@ -37,6 +38,7 @@ export class ApInboxService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		private idService: IdService,
 		private metaService: MetaService,
 		private userFollowingService: UserFollowingService,
 		private reactionService: ReactionService,
@@ -298,7 +300,7 @@ export class ApInboxService {
 			return 'skip: ブロックしようとしているユーザーはローカルユーザーではありません';
 		}
 
-		await this.userBlockingService.block(await Users.findOneByOrFail({ id: actor.id }), await Users.findOneByOrFail({ id: blockee.id }));
+		await this.userBlockingService.block(await this.usersRepository.findOneByOrFail({ id: actor.id }), await this.usersRepository.findOneByOrFail({ id: blockee.id }));
 		return 'ok';
 	}
 
@@ -419,14 +421,14 @@ export class ApInboxService {
 			return `skip: delete actor ${actor.uri} !== ${uri}`;
 		}
 	
-		const user = await Users.findOneByOrFail({ id: actor.id });
+		const user = await this.usersRepository.findOneByOrFail({ id: actor.id });
 		if (user.isDeleted) {
 			this.#logger.info('skip: already deleted');
 		}
 	
 		const job = await createDeleteAccountJob(actor);
 	
-		await Users.update(actor.id, {
+		await this.usersRepository.update(actor.id, {
 			isDeleted: true,
 		});
 	
@@ -471,13 +473,13 @@ export class ApInboxService {
 		const uris = getApIds(activity.object);
 
 		const userIds = uris.filter(uri => uri.startsWith(this.config.url + '/users/')).map(uri => uri.split('/').pop()!);
-		const users = await Users.findBy({
+		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});
 		if (users.length < 1) return 'skip';
 
 		await AbuseUserReports.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			targetUserId: users[0].id,
 			targetUserHost: users[0].host,
@@ -515,7 +517,7 @@ export class ApInboxService {
 			return 'skip: follower not found';
 		}
 	
-		if (!Users.isLocalUser(follower)) {
+		if (!this.usersRepository.isLocalUser(follower)) {
 			return 'skip: follower is not a local user';
 		}
 	
@@ -617,7 +619,7 @@ export class ApInboxService {
 			return 'skip: ブロック解除しようとしているユーザーはローカルユーザーではありません';
 		}
 
-		await this.userBlockingService.unblock(await Users.findOneByOrFail({ id: actor.id }), blockee);
+		await this.userBlockingService.unblock(await this.usersRepository.findOneByOrFail({ id: actor.id }), blockee);
 		return 'ok';
 	}
 

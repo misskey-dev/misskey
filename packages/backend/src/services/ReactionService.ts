@@ -6,7 +6,7 @@ import type { Blockings, Emojis, NoteReactions , Users , Notes } from '@/models/
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
 import type { Note } from '@/models/entities/note.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { NoteReaction } from '@/models/entities/note-reaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
@@ -33,6 +33,7 @@ export class ReactionService {
 		@Inject('emojisRepository')
 		private emojisRepository: typeof Emojis,
 
+		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 		private createNotificationService: CreateNotificationService,
 		private perUserReactionsChart: PerUserReactionsChart,
@@ -60,7 +61,7 @@ export class ReactionService {
 		reaction = await toDbReaction(reaction, user.host);
 	
 		const record: NoteReaction = {
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			noteId: note.id,
 			userId: user.id,

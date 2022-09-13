@@ -3,18 +3,19 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { MetaService } from '@/services/MetaService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Config } from '@/config/types.js';
-import Logger from './logger.js';
-
-export const logger = new Logger('email');
+import Logger from '@/logger.js';
 
 @Injectable()
 export class EmailService {
+	#logger: Logger;
+
 	constructor(
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
 
 		private metaService: MetaService,
 	) {
+		this.#logger = new Logger('email');
 	}
 
 	public async sendEmail(to: string, subject: string, html: string, text: string) {
@@ -126,9 +127,9 @@ export class EmailService {
 </html>`,
 			});
 	
-			logger.info(`Message sent: ${info.messageId}`);
+			this.#logger.info(`Message sent: ${info.messageId}`);
 		} catch (err) {
-			logger.error(err as Error);
+			this.#logger.error(err as Error);
 			throw err;
 		}
 	}

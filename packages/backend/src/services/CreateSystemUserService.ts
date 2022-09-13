@@ -6,7 +6,7 @@ import { IsNull } from 'typeorm';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { User } from '@/models/entities/user.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { UsedUsername } from '@/models/entities/used-username.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
@@ -18,6 +18,8 @@ export class CreateSystemUserService {
 	constructor(
 		@Inject(DI_SYMBOLS.db)
 		private db: DataSource,
+
+		private idService: IdService,
 	) {
 	}
 
@@ -45,7 +47,7 @@ export class CreateSystemUserService {
 			if (exist) throw new Error('the user is already exists');
 	
 			account = await transactionalEntityManager.insert(User, {
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				username: username,
 				usernameLower: username.toLowerCase(),

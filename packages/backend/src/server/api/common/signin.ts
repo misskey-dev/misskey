@@ -3,7 +3,7 @@ import Koa from 'koa';
 import config from '@/config/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
 import { Signins } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { publishMainStream } from '@/services/stream.js';
 
 export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
@@ -30,7 +30,7 @@ export default function(ctx: Koa.Context, user: ILocalUser, redirect = false) {
 	(async () => {
 		// Append signin history
 		const record = await Signins.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			userId: user.id,
 			ip: ctx.ip,

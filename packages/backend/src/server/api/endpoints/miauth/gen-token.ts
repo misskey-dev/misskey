@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AccessTokens } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
@@ -41,6 +41,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Generate access token
@@ -50,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Insert access token doc
 			await AccessTokens.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: now,
 				lastUsedAt: now,
 				session: ps.session,

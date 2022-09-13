@@ -2,20 +2,20 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
-import type { Blockings , DriveFiles } from '@/models/index.js';
+import type { DriveFiles } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type Logger from '@/logger.js';
 import { isSelfHost, toPuny } from '@/misc/convert-host.js';
 import * as Acct from '@/misc/acct.js';
 import type { ResolveUserService } from '@/services/remote/ResolveUserService.js';
-import type { UserBlockingService } from '@/services/UserBlockingService.js';
 import type { DownloadService } from '@/services/DownloadService.js';
+import type { UserFollowingService } from '@/services/UserFollowingService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
 import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
-export class ImportBlockingProcessorService {
+export class ImportFollowingProcessorService {
 	#logger: Logger;
 
 	constructor(
@@ -25,22 +25,19 @@ export class ImportBlockingProcessorService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('blockingsRepository')
-		private blockingsRepository: typeof Blockings,
-
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
-		private userBlockingService: UserBlockingService,
+		private userFollowingService: UserFollowingService,
 		private resolveUserService: ResolveUserService,
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('import-blocking');
+		this.queueLoggerService.logger.createSubLogger('import-following');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
-		this.#logger.info(`Importing blocking of ${job.data.user.id} ...`);
+		this.#logger.info(`Importing following of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
@@ -67,7 +64,7 @@ export class ImportBlockingProcessorService {
 				const acct = line.split(',')[0].trim();
 				const { username, host } = Acct.parse(acct);
 
-				let target = isSelfHost(host!) ? await this.usersRepository.findOneBy({
+				let target = isSelfHost(host!) ? await Users.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
 				}) : await Users.findOneBy({
@@ -88,9 +85,9 @@ export class ImportBlockingProcessorService {
 				// skip myself
 				if (target.id === job.data.user.id) continue;
 
-				this.#logger.info(`Block[${linenum}] ${target.id} ...`);
+				this.#logger.info(`Follow[${linenum}] ${target.id} ...`);
 
-				await this.userBlockingService.block(user, target);
+				this.userFollowingService.follow(user, target);
 			} catch (e) {
 				this.#logger.warn(`Error in line:${linenum} ${e}`);
 			}

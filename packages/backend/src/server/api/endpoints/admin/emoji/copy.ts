@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Emojis } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
 import { publishBroadcastStream } from '@/services/stream.js';
@@ -52,6 +52,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const emoji = await Emojis.findOneBy({ id: ps.emojiId });
@@ -70,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const copied = await Emojis.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				updatedAt: new Date(),
 				name: emoji.name,
 				host: null,

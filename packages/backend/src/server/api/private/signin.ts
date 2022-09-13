@@ -5,7 +5,7 @@ import signin from '../common/signin.js';
 import config from '@/config/index.js';
 import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '@/models/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { verifyLogin, hash } from '../2fa.js';
 import { randomBytes } from 'node:crypto';
 import { IsNull } from 'typeorm';
@@ -84,7 +84,7 @@ export default async (ctx: Koa.Context) => {
 	async function fail(status?: number, failure?: { id: string }) {
 		// Append signin history
 		await Signins.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			userId: user.id,
 			ip: ctx.ip,
@@ -226,7 +226,7 @@ export default async (ctx: Koa.Context) => {
 			.replace(/\+/g, '-')
 			.replace(/\//g, '_');
 
-		const challengeId = genId();
+		const challengeId = this.idService.genId();
 
 		await AttestationChallenges.insert({
 			userId: user.id,

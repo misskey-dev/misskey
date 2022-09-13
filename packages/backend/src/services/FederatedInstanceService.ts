@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Instances } from '@/models/index.js';
 import type { Instance } from '@/models/entities/instance';
 import { Cache } from '@/misc/cache.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { toPuny } from '@/misc/convert-host.js';
 
 @Injectable()
@@ -12,6 +12,8 @@ export class FederatedInstanceService {
 	constructor(
 		@Inject('instancesRepository')
 		private instancesRepository: typeof Instances,
+
+		private idService: IdService,
 	) {
 		this.#cache = new Cache<Instance>(1000 * 60 * 60);
 	}
@@ -26,7 +28,7 @@ export class FederatedInstanceService {
 	
 		if (index == null) {
 			const i = await this.instancesRepository.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				host,
 				caughtAt: new Date(),
 				lastCommunicatedAt: new Date(),

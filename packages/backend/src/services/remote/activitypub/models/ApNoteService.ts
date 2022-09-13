@@ -352,7 +352,7 @@ export class ApNoteService {
 			logger.info(`register emoji host=${host}, name=${name}`);
 	
 			return await Emojis.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				host,
 				name,
 				uri: tag.id,

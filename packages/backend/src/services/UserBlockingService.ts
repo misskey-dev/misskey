@@ -2,7 +2,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FollowRequests , Followings , UserLists , UserListJoinings , Users , Blockings } from '@/models/index.js';
 
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { CacheableUser, User } from '@/models/entities/user.js';
 import type { Blocking } from '@/models/entities/blocking.js';
 import type { QueueService } from '@/queue/queue.service.js';
@@ -36,6 +36,7 @@ export class UserBlockingService {
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
 
+		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventServie: GlobalEventService,
 		private webhookService: WebhookService,
@@ -53,7 +54,7 @@ export class UserBlockingService {
 		]);
 
 		const blocking = {
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			blocker,
 			blockerId: blocker.id,

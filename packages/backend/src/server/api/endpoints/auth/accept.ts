@@ -2,7 +2,7 @@ import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AuthSessions, AccessTokens, Apps } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { ApiError } from '../../error.js';
 
@@ -34,6 +34,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch token
@@ -66,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Insert access token doc
 				await AccessTokens.insert({
-					id: genId(),
+					id: this.idService.genId(),
 					createdAt: now,
 					lastUsedAt: now,
 					appId: session.appId,

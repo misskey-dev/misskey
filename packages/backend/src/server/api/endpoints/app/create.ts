@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Apps } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { unique } from '@/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 
@@ -34,6 +34,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Generate secret
@@ -44,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Create account
 			const app = await Apps.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me ? me.id : null,
 				name: ps.name,

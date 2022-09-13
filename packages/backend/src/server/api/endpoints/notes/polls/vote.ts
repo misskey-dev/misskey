@@ -9,7 +9,7 @@ import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
 import type { Users } from '@/models/index.js';
 import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/user.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
@@ -75,6 +75,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const createdAt = new Date();
@@ -128,7 +130,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Create vote
 			const vote = await PollVotes.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt,
 				noteId: note.id,
 				userId: me.id,

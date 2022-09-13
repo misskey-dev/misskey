@@ -10,7 +10,7 @@ import type { IRemoteUser, CacheableUser } from '@/models/entities/user.js';
 import { User } from '@/models/entities/user.js';
 import type { Emoji } from '@/models/entities/emoji.js';
 import { UserNotePining } from '@/models/entities/user-note-pining.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { instanceChart, usersChart } from '@/services/chart/index.js';
 import { UserPublickey } from '@/models/entities/user-publickey.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
@@ -167,7 +167,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		// Start transaction
 		await db.transaction(async transactionalEntityManager => {
 			user = await transactionalEntityManager.save(new User({
-				id: genId(),
+				id: this.idService.genId(),
 				avatarId: null,
 				bannerId: null,
 				createdAt: new Date(),

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Notes, NoteThreadMutings } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import readNote from '@/services/note/read.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../../common/getters.js';
@@ -34,6 +34,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await getNote(ps.noteId).catch(e => {
@@ -52,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await readNote(me.id, mutedNotes);
 
 			await NoteThreadMutings.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				threadId: note.threadId || note.id,
 				userId: me.id,

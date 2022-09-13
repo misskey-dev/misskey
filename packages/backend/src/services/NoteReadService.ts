@@ -6,7 +6,7 @@ import type { User } from '@/models/entities/user.js';
 import type { Channel } from '@/models/entities/channel.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Note } from '@/models/entities/note.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 
 @Injectable()
@@ -18,6 +18,7 @@ export class NoteReadService {
 		@Inject('noteUnreadsRepository')
 		private noteUnreadsRepository: typeof NoteUnreads,
 
+		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {
 	}
@@ -43,7 +44,7 @@ export class NoteReadService {
 		if (threadMute) return;
 	
 		const unread = {
-			id: genId(),
+			id: this.idService.genId(),
 			noteId: note.id,
 			userId: userId,
 			isSpecified: params.isSpecified,

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { UserGroupJoining } from '@/models/entities/user-group-joining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../../error.js';
@@ -35,6 +35,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the invitation
@@ -52,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Push the user
 			await UserGroupJoinings.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
 				userGroupId: invitation.userGroupId,

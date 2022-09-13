@@ -3,7 +3,7 @@ import type { CacheableUser, User } from '@/models/entities/user.js';
 import type { UserGroup } from '@/models/entities/user-group.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { MessagingMessage } from '@/models/entities/messaging-message.js';
 import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '@/services/stream.js';
 import { pushNotification } from '@/services/push-notification.js';
@@ -15,7 +15,7 @@ import { deliver } from '@/queue/index.js';
 
 export async function createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: CacheableUser | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
 	const message = {
-		id: genId(),
+		id: this.idService.genId(),
 		createdAt: new Date(),
 		fileId: file ? file.id : null,
 		recipientId: recipientUser ? recipientUser.id : null,

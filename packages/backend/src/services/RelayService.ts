@@ -5,7 +5,7 @@ import { renderActivity, attachLdSignature } from '@/services/remote/activitypub
 import renderUndo from '@/services/remote/activitypub/renderer/undo.js';
 import type { ILocalUser, User } from '@/models/entities/user.js';
 import type { Relays, Users } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { Cache } from '@/misc/cache.js';
 import type { Relay } from '@/models/entities/relay.js';
 import type { QueueService } from '@/queue/queue.service.js';
@@ -24,6 +24,7 @@ export class RelayService {
 		@Inject('relaysRepository')
 		private relaysRepository: typeof Relays,
 
+		private idService: IdService,
 		private queueService: QueueService,
 		private createSystemUserService: CreateSystemUserService,
 	) {
@@ -44,7 +45,7 @@ export class RelayService {
 
 	async addRelay(inbox: string): Promise<Relay> {
 		const relay = await this.relaysRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			inbox,
 			status: 'requesting',
 		}).then(x => this.relaysRepository.findOneByOrFail(x.identifiers[0]));

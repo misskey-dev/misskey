@@ -7,8 +7,8 @@ import config from '@/config/index.js';
 import type { Users } from '@/models/index.js';
 import { UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { sendEmail } from '@/services/send-email.js';
-import { genId } from '@/misc/gen-id.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { IdService } from '@/services/IdService.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
@@ -43,6 +43,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({
@@ -70,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const token = rndstr('a-z0-9', 64);
 
 			await PasswordResetRequests.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: profile.userId,
 				token,

@@ -11,7 +11,7 @@ import Logger from '@/Logger.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
 import type { MetaService } from '@/services/MetaService.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -85,6 +85,7 @@ export class DriveService {
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
+		private idService: IdService,
 		private metaService: MetaService,
 		private downloadService: DownloadService,
 		private internalStorageService: InternalStorageService,
@@ -503,7 +504,7 @@ export class DriveService {
 		const folder = await fetchFolder();
 
 		let file = new DriveFile();
-		file.id = genId();
+		file.id = this.idService.genId();
 		file.createdAt = new Date();
 		file.userId = user ? user.id : null;
 		file.userHost = user ? user.host : null;

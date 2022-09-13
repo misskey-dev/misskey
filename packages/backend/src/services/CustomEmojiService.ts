@@ -3,7 +3,7 @@ import { Emojis } from '@/models/index.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Config } from '@/config/types.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Emoji } from '@/models/entities/emoji.js';
 import type { DataSource } from 'typeorm';
@@ -20,6 +20,7 @@ export class CustomEmojiService {
 		@Inject('emojisRepository')
 		private emojisRepository: typeof Emojis,
 
+		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {
 	}
@@ -32,7 +33,7 @@ export class CustomEmojiService {
 		host: string | null;
 	}): Promise<Emoji> {
 		const emoji = await this.emojisRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			updatedAt: new Date(),
 			name: data.name,
 			category: data.category,

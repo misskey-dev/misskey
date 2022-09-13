@@ -1,5 +1,4 @@
-import Bull from 'bull';
-import { DbJobData } from '@/queue/types.js';
+import type { DbJobData } from '@/queue/types.js';
 import { deleteDriveFiles } from './delete-drive-files.js';
 import { exportCustomEmojis } from './export-custom-emojis.js';
 import { exportNotes } from './export-notes.js';
@@ -13,6 +12,7 @@ import { deleteAccount } from './delete-account.js';
 import { importMuting } from './import-muting.js';
 import { importBlocking } from './import-blocking.js';
 import { importCustomEmojis } from './import-custom-emojis.js';
+import type Bull from 'bull';
 
 const jobs = {
 	deleteDriveFiles,

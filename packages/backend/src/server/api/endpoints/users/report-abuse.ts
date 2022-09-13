@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { publishAdminStream } from '@/services/stream.js';
 import type { Users } from '@/models/index.js';
 import { AbuseUserReports } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { sendEmail } from '@/services/send-email.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -56,6 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
@@ -73,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const report = await AbuseUserReports.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				targetUserId: user.id,
 				targetUserHost: user.host,

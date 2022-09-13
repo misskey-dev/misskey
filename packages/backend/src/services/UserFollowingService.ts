@@ -9,7 +9,7 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { QueueService } from '@/queue/queue.service.js';
 import type PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import renderUndo from '@/services/remote/activitypub/renderer/undo.js';
 import type { Packed } from '@/misc/schema.js';
@@ -55,6 +55,7 @@ export class UserFollowingService {
 		@Inject('instancesRepository')
 		private instancesRepository: typeof Instances,
 
+		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventServie: GlobalEventService,
 		private createNotificationService: CreateNotificationService,
@@ -152,7 +153,7 @@ export class UserFollowingService {
 		let alreadyFollowed = false as boolean;
 	
 		await this.followingsRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			followerId: follower.id,
 			followeeId: followee.id,
@@ -359,7 +360,7 @@ export class UserFollowingService {
 		if (blocked != null) throw new Error('blocked');
 	
 		const followRequest = await this.followRequestsRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			followerId: follower.id,
 			followeeId: followee.id,

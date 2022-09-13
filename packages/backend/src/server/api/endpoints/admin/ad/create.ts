@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Ads } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -30,10 +30,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('adsRepository')
     private adsRepository: typeof Ads,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			await this.adsRepository.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				expiresAt: new Date(ps.expiresAt),
 				url: ps.url,

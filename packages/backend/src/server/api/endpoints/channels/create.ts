@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Channels, DriveFiles } from '@/models/index.js';
 import type { Channel } from '@/models/entities/channel.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -41,6 +41,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let banner = null;
@@ -56,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const channel = await Channels.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
 				name: ps.name,

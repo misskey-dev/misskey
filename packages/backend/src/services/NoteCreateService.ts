@@ -18,7 +18,7 @@ import renderAnnounce from '@/services/remote/activitypub/renderer/announce.js';
 import renderCreate from '@/services/remote/activitypub/renderer/create.js';
 import renderNote from '@/services/remote/activitypub/renderer/note.js';
 import DeliverManager from '@/services/remote/activitypub/deliver-manager.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import type { IPoll } from '@/models/entities/poll.js';
 import { Poll } from '@/models/entities/poll.js';
@@ -145,6 +145,7 @@ export class NoteCreateService {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 		private queueService: QueueService,
 		private createNotificationService: CreateNotificationService,
@@ -412,7 +413,7 @@ export class NoteCreateService {
 				checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 					if (shouldMute) {
 						MutedNotes.insert({
-							id: genId(),
+							id: this.idService.genId(),
 							userId: u.userId,
 							noteId: note.id,
 							reason: 'word',

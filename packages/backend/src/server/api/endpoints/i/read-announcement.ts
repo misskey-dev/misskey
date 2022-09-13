@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import type { Users } from '@/models/index.js';
 import { AnnouncementReads, Announcements } from '@/models/index.js';
 import { publishMainStream } from '@/services/stream.js';
@@ -36,6 +36,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Check if announcement exists
@@ -57,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Create read
 			await AnnouncementReads.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				announcementId: ps.announcementId,
 				userId: me.id,

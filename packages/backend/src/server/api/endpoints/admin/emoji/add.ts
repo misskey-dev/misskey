@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Emojis, DriveFiles } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { insertModerationLog } from '@/services/insert-moderation-log.js';
 import { publishBroadcastStream } from '@/services/stream.js';
 import { db } from '@/db/postgre.js';
@@ -40,6 +40,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const file = await DriveFiles.findOneBy({ id: ps.fileId });
@@ -49,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const name = file.name.split('.')[0].match(/^[a-z0-9_]+$/) ? file.name.split('.')[0] : `_${rndstr('a-z0-9', 8)}_`;
 
 			const emoji = await Emojis.insert({
-				id: genId(),
+				id: this.idService.genId(),
 				updatedAt: new Date(),
 				name: name,
 				category: null,

@@ -5,7 +5,7 @@ import { User } from '@/models/entities/user.js';
 import { Users, UsedUsernames } from '@/models/index.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
 import { IsNull } from 'typeorm';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { toPunyNullable } from '@/misc/convert-host.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { usersChart } from '@/services/chart/index.js';
@@ -79,7 +79,7 @@ export async function signup(opts: {
 		if (exist) throw new Error(' the username is already used');
 
 		account = await transactionalEntityManager.save(new User({
-			id: genId(),
+			id: this.idService.genId(),
 			createdAt: new Date(),
 			username: username,
 			usernameLower: username.toLowerCase(),

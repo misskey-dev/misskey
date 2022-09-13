@@ -3,7 +3,7 @@ import type { AntennaNotes, Mutings, Notes, Users } from '@/models/index.js';
 import type { Antenna } from '@/models/entities/antenna.js';
 import type { Note } from '@/models/entities/note.js';
 import type { User } from '@/models/entities/user.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 
@@ -19,6 +19,7 @@ export class AntennaService {
 		@Inject('antennaNotesRepository')
 		private antennaNotesRepository: typeof AntennaNotes,
 
+		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {
 	}
@@ -28,7 +29,7 @@ export class AntennaService {
 		const read = !antenna.notify || (antenna.userId === noteUser.id);
 	
 		this.antennaNotesRepository.insert({
-			id: genId(),
+			id: this.idService.genId(),
 			antennaId: antenna.id,
 			noteId: note.id,
 			read: read,

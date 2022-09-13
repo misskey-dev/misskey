@@ -1,7 +1,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Pages, DriveFiles } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import type { IdService } from '@/services/IdService.js';
 import { Page } from '@/models/entities/page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
@@ -63,6 +63,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let eyeCatchingImage = null;
@@ -87,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			const page = await Pages.insert(new Page({
-				id: genId(),
+				id: this.idService.genId(),
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				title: ps.title,
