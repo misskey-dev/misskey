@@ -10,7 +10,7 @@
 	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button v-if="!playerEnabled && player.url" class="_button" :title="i18n.ts.enablePlayer" @click.prevent="playerEnabled = true"><i class="fas fa-play-circle"></i></button>
+				<button v-if="!playerEnabled && player.url" class="_button" :title="i18n.ts.enablePlayer" @click.prevent="playerEnabled = false" @click="openPlayer()"><i class="fas fa-play-circle"></i></button>
 			</div>
 			<article>
 				<header>
@@ -36,6 +36,7 @@
 import { onMounted, onUnmounted } from 'vue';
 import { url as local, lang } from '@/config';
 import { i18n } from '@/i18n';
+import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -102,6 +103,10 @@ function adjustTweetHeight(message: any) {
 	const height = embed?.params[0]?.height;
 	if (height) tweetHeight = height;
 }
+
+const openPlayer = () => {
+	os.pageWindow(`/ytplayer/${encodeURIComponent(requestUrl.href)}`);
+};
 
 (window as any).addEventListener('message', adjustTweetHeight);
 

@@ -446,6 +446,9 @@ export const routes = [{
 	component: page(() => import('./pages/antenna-timeline.vue')),
 	loginRequired: true,
 }, {
+	path: '/ytplayer/:url',
+	component: page(() => import('./pages/ytplayer.vue')),
+}, {
 	name: 'index',
 	path: '/',
 	component: $i ? page(() => import('./pages/timeline.vue')) : page(() => import('./pages/welcome.vue')),
