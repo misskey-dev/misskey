@@ -7,20 +7,20 @@ import Router from '@koa/router';
 import multer from '@koa/multer';
 import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
-
 import { Instances, AccessTokens, Users } from '@/models/index.js';
-import config from '@/config/index.js';
 import endpoints from './endpoints.js';
-import handler from './api-handler.js';
 import signup from './private/signup.js';
 import signin from './private/signin.js';
 import signupPending from './private/signup-pending.js';
 import discord from './service/discord.js';
 import github from './service/github.js';
 import twitter from './service/twitter.js';
+import { ApiCallService } from './ApiCallService.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 export function createApiServer(app: INestApplicationContext) {
+	const apiCallService = app.get(ApiCallService);
+
 	const handlers: Record<string, any> = {};
 
 	for (const endpoint of endpoints) {
@@ -62,23 +62,23 @@ export function createApiServer(app: INestApplicationContext) {
  */
 	for (const endpoint of endpoints) {
 		if (endpoint.meta.requireFile) {
-			router.post(`/${endpoint.name}`, upload.single('file'), handler.bind(null, endpoint, handlers[endpoint.name]));
+			router.post(`/${endpoint.name}`, upload.single('file'), apiCallService.handleRequest.bind(apiCallService, endpoint, handlers[endpoint.name]));
 		} else {
 		// 後方互換性のため
 			if (endpoint.name.includes('-')) {
-				router.post(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint, handlers[endpoint.name]));
+				router.post(`/${endpoint.name.replace(/-/g, '_')}`, apiCallService.handleRequest.bind(apiCallService, endpoint, handlers[endpoint.name]));
 
 				if (endpoint.meta.allowGet) {
-					router.get(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint, handlers[endpoint.name]));
+					router.get(`/${endpoint.name.replace(/-/g, '_')}`, apiCallService.handleRequest.bind(apiCallService, endpoint, handlers[endpoint.name]));
 				} else {
 					router.get(`/${endpoint.name.replace(/-/g, '_')}`, async ctx => { ctx.status = 405; });
 				}
 			}
 
-			router.post(`/${endpoint.name}`, handler.bind(null, endpoint, handlers[endpoint.name]));
+			router.post(`/${endpoint.name}`, apiCallService.handleRequest.bind(apiCallService, endpoint, handlers[endpoint.name]));
 
 			if (endpoint.meta.allowGet) {
-				router.get(`/${endpoint.name}`, handler.bind(null, endpoint, handlers[endpoint.name]));
+				router.get(`/${endpoint.name}`, apiCallService.handleRequest.bind(apiCallService, endpoint, handlers[endpoint.name]));
 			} else {
 				router.get(`/${endpoint.name}`, async ctx => { ctx.status = 405; });
 			}

@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import Redis from 'ioredis';
 import type { User } from '@/models/entities/user.js';
 import type { Note } from '@/models/entities/note.js';
 import type { UserList } from '@/models/entities/user-list.js';
@@ -23,8 +24,7 @@ import type {
 } from '@/server/api/stream/types.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
-import type Redis from 'ioredis';
+import { Config } from '@/config/types.js';
 
 @Injectable()
 export class GlobalEventService {
@@ -32,7 +32,7 @@ export class GlobalEventService {
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
 
-		@Inject('redis')
+		@Inject(DI_SYMBOLS.redis)
 		private redisClient: Redis.Redis,
 	) {
 	}
