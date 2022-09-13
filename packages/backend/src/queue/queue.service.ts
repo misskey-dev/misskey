@@ -3,9 +3,9 @@ import { v4 as uuid } from 'uuid';
 import type { IActivity } from '@/services/remote/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';
-import type { Config } from '@/config/types.js';
+import { Config } from '@/config/types.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './queue.module.js';
+import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './queue.module.js';
 import type { ThinUser } from './types.js';
 import type httpSignature from '@peertube/http-signature';
 
