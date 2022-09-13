@@ -21,6 +21,8 @@ import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/services/MetaService.js';
 import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/queue/queue.module.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
+import { FeedService } from './FeedService.js';
+import manifest from './manifest.json' assert { type: 'json' };
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -59,6 +61,7 @@ export class ClientServerService {
 
 		private metaService: MetaService,
 		private urlPreviewService: UrlPreviewService,
+		private feedService: FeedService,
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
@@ -68,6 +71,21 @@ export class ClientServerService {
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {
+	}
+
+	async #manifestHandler(ctx: Koa.Context) {
+		// TODO
+		//const res = structuredClone(manifest);
+		const res = JSON.parse(JSON.stringify(manifest));
+
+		const instance = await this.metaService.fetch(true);
+
+		res.short_name = instance.name || 'Misskey';
+		res.name = instance.name || 'Misskey';
+		if (instance.themeColor) res.theme_color = instance.themeColor;
+
+		ctx.set('Cache-Control', 'max-age=300');
+		ctx.body = res;
 	}
 
 	public createApp() {
@@ -235,7 +253,7 @@ export class ClientServerService {
 		});
 
 		// Manifest
-		router.get('/manifest.json', manifestHandler);
+		router.get('/manifest.json', ctx => this.#manifestHandler(ctx));
 
 		router.get('/robots.txt', async ctx => {
 			await send(ctx as any, '/robots.txt', {
@@ -267,7 +285,7 @@ export class ClientServerService {
 				isSuspended: false,
 			});
 
-			return user && await packFeed(user);
+			return user && await this.feedService.packFeed(user);
 		};
 
 		// Atom
