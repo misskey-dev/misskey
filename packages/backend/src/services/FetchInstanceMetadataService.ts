@@ -3,11 +3,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 import tinycolor from 'tinycolor2';
-import { getJson, getHtml, getAgentByUrl } from '@/misc/fetch.js';
 import type { Instance } from '@/models/entities/instance.js';
 import type { Instances } from '@/models/index.js';
 import type { AppLockService } from '@/services/AppLockService.js';
-import Logger from './logger.js';
+import Logger from '@/logger.js';
+import type { HttpRequestService } from './HttpRequestService';
 import type { DOMWindow } from 'jsdom';
 
 const logger = new Logger('metadata', 'cyan');
@@ -37,6 +37,7 @@ export class FetchInstanceMetadataService {
 		private instancesRepository: typeof Instances,
 
 		private appLockService: AppLockService,
+		private httpRequestService: HttpRequestService,
 	) {
 	}
 
@@ -103,12 +104,12 @@ export class FetchInstanceMetadataService {
 		logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 	
 		try {
-			const wellknown = await getJson('https://' + instance.host + '/.well-known/nodeinfo')
-				.catch(e => {
-					if (e.statusCode === 404) {
+			const wellknown = await this.httpRequestService.getJson('https://' + instance.host + '/.well-known/nodeinfo')
+				.catch(err => {
+					if (err.statusCode === 404) {
 						throw 'No nodeinfo provided';
 					} else {
-						throw e.statusCode || e.message;
+						throw err.statusCode ?? err.message;
 					}
 				}) as Record<string, unknown>;
 	
@@ -127,18 +128,18 @@ export class FetchInstanceMetadataService {
 				throw 'No nodeinfo link provided';
 			}
 	
-			const info = await getJson(link.href)
-				.catch(e => {
-					throw e.statusCode || e.message;
+			const info = await this.httpRequestService.getJson(link.href)
+				.catch(err => {
+					throw err.statusCode ?? err.message;
 				});
 	
 			logger.succ(`Successfuly fetched nodeinfo of ${instance.host}`);
 	
 			return info as NodeInfo;
-		} catch (e) {
-			logger.error(`Failed to fetch nodeinfo of ${instance.host}: ${e}`);
+		} catch (err) {
+			logger.error(`Failed to fetch nodeinfo of ${instance.host}: ${err}`);
 	
-			throw e;
+			throw err;
 		}
 	}
 
@@ -147,7 +148,7 @@ export class FetchInstanceMetadataService {
 	
 		const url = 'https://' + instance.host;
 	
-		const html = await getHtml(url);
+		const html = await this.httpRequestService.getHtml(url);
 	
 		const { window } = new JSDOM(html);
 		const doc = window.document;
@@ -160,7 +161,7 @@ export class FetchInstanceMetadataService {
 	
 		const manifestUrl = url + '/manifest.json';
 	
-		const manifest = await getJson(manifestUrl) as Record<string, unknown>;
+		const manifest = await this.httpRequestService.getJson(manifestUrl) as Record<string, unknown>;
 	
 		return manifest;
 	}
@@ -182,7 +183,7 @@ export class FetchInstanceMetadataService {
 		const favicon = await fetch(faviconUrl, {
 			// TODO
 			//timeout: 10000,
-			agent: getAgentByUrl,
+			agent: url => this.httpRequestService.getAgentByUrl(url),
 		});
 	
 		if (favicon.ok) {
