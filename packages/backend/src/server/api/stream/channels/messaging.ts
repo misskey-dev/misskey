@@ -1,11 +1,12 @@
-import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupJoinings , Users , MessagingMessages } from '@/models/index.js';
+import type { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
+import type { UserGroup } from '@/models/entities/user-group.js';
 import Channel from '../channel.js';
-import { UserGroupJoinings, Users, MessagingMessages } from '@/models/index.js';
-import { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
-import { UserGroup } from '@/models/entities/user-group.js';
-import { StreamMessages } from '../types.js';
+import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
+import type { StreamMessages } from '../types.js';
 
-export default class extends Channel {
+class MessagingChannel extends Channel {
 	public readonly chName = 'messaging';
 	public static shouldShare = false;
 	public static requireCredential = true;
@@ -17,7 +18,14 @@ export default class extends Channel {
 	private typers: Record<User['id'], Date> = {};
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private usersRepository: typeof Users,
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private messagingMessagesRepository: typeof MessagingMessages,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.onEvent = this.onEvent.bind(this);
 		this.onMessage = this.onMessage.bind(this);
@@ -26,12 +34,12 @@ export default class extends Channel {
 
 	public async init(params: any) {
 		this.otherpartyId = params.otherparty;
-		this.otherparty = this.otherpartyId ? await Users.findOneByOrFail({ id: this.otherpartyId }) : null;
+		this.otherparty = this.otherpartyId ? await this.usersRepository.findOneByOrFail({ id: this.otherpartyId }) : null;
 		this.groupId = params.group;
 
 		// Check joining
 		if (this.groupId) {
-			const joining = await UserGroupJoinings.findOneBy({
+			const joining = await this.userGroupJoiningsRepository.findOneBy({
 				userId: this.user!.id,
 				userGroupId: this.groupId,
 			});
@@ -71,8 +79,8 @@ export default class extends Channel {
 					readUserMessagingMessage(this.user!.id, this.otherpartyId, [body.id]);
 
 					// リモートユーザーからのメッセージだったら既読配信
-					if (Users.isLocalUser(this.user!) && Users.isRemoteUser(this.otherparty!)) {
-						MessagingMessages.findOneBy({ id: body.id }).then(message => {
+					if (this.usersRepository.isLocalUser(this.user!) && this.usersRepository.isRemoteUser(this.otherparty!)) {
+						this.messagingMessagesRepository.findOneBy({ id: body.id }).then(message => {
 							if (message) deliverReadActivity(this.user as ILocalUser, this.otherparty as IRemoteUser, message);
 						});
 					}
@@ -91,7 +99,7 @@ export default class extends Channel {
 			if (now.getTime() - date.getTime() > 5000) delete this.typers[userId];
 		}
 
-		const users = await Users.packMany(Object.keys(this.typers), null, { detail: false });
+		const users = await this.usersRepository.packMany(Object.keys(this.typers), null, { detail: false });
 
 		this.send({
 			type: 'typers',
@@ -103,5 +111,33 @@ export default class extends Channel {
 		this.subscriber.off(this.subCh, this.onEvent);
 
 		clearInterval(this.emitTypersIntervalId);
+	}
+}
+
+@Injectable()
+export class MessagingChannelService {
+	public readonly shouldShare = MessagingChannel.shouldShare;
+	public readonly requireCredential = MessagingChannel.requireCredential;
+
+	constructor(
+		@Inject('usersRepository')
+		private usersRepository: typeof Users,
+
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
+		@Inject('messagingMessagesRepository')
+		private messagingMessagesRepository: typeof MessagingMessages,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): MessagingChannel {
+		return new MessagingChannel(
+			this.usersRepository,
+			this.userGroupJoiningsRepository,
+			this.messagingMessagesRepository,
+			id,
+			connection,
+		);
 	}
 }
