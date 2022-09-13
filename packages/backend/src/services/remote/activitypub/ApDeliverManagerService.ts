@@ -1,9 +1,11 @@
-import { Users, Followings } from '@/models/index.js';
-import { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
-import { deliver } from '@/queue/index.js';
+import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Followings , Users } from '@/models/index.js';
+import type { Config } from '@/config/types.js';
+import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
+import type { QueueService } from '@/queue/queue.service';
 
-//#region types
 interface IRecipe {
 	type: string;
 }
@@ -22,9 +24,59 @@ const isFollowers = (recipe: any): recipe is IFollowersRecipe =>
 
 const isDirect = (recipe: any): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
-//#endregion
 
-export default class DeliverManager {
+@Injectable()
+export class ApDeliverManagerService {
+	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
+		@Inject('usersRepository')
+		private usersRepository: typeof Users,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		private queueService: QueueService,
+	) {
+	}
+
+	/**
+	 * Deliver activity to followers
+	 * @param activity Activity
+	 * @param from Followee
+	 */
+	public async deliverToFollowers(actor: { id: ILocalUser['id']; host: null; }, activity: any) {
+		const manager = new DeliverManager(
+			this.usersRepository,
+			this.followingsRepository,
+			this.queueService,
+			actor,
+			activity,
+		);
+		manager.addFollowersRecipe();
+		await manager.execute();
+	}
+
+	/**
+	 * Deliver activity to user
+	 * @param activity Activity
+	 * @param to Target user
+	 */
+	public async deliverToUser(actor: { id: ILocalUser['id']; host: null; }, activity: any, to: IRemoteUser) {
+		const manager = new DeliverManager(
+			this.usersRepository,
+			this.followingsRepository,
+			this.queueService,
+			actor,
+			activity,
+		);
+		manager.addDirectRecipe(to);
+		await manager.execute();
+	}
+}
+
+class DeliverManager {
 	private actor: { id: User['id']; host: null; };
 	private activity: any;
 	private recipes: IRecipe[] = [];
@@ -34,7 +86,14 @@ export default class DeliverManager {
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
-	constructor(actor: { id: User['id']; host: null; }, activity: any) {
+	constructor(
+		private usersRepository: typeof Users,
+		private followingsRepository: typeof Followings,
+		private queueService: QueueService,
+
+		actor: { id: User['id']; host: null; },
+		activity: any,
+	) {
 		this.actor = actor;
 		this.activity = activity;
 	}
@@ -75,7 +134,7 @@ export default class DeliverManager {
 	 * Execute delivers
 	 */
 	public async execute() {
-		if (!Users.isLocalUser(this.actor)) return;
+		if (!this.usersRepository.isLocalUser(this.actor)) return;
 
 		const inboxes = new Set<string>();
 
@@ -89,7 +148,7 @@ export default class DeliverManager {
 			// followers deliver
 			// TODO: SELECT DISTINCT ON ("followerSharedInbox") "followerSharedInbox" みたいな問い合わせにすればよりパフォーマンス向上できそう
 			// ただ、sharedInboxがnullなリモートユーザーも稀におり、その対応ができなさそう？
-			const followers = await Followings.find({
+			const followers = await this.followingsRepository.find({
 				where: {
 					followeeId: this.actor.id,
 					followerHost: Not(IsNull()),
@@ -117,35 +176,11 @@ export default class DeliverManager {
 			// check that they actually have an inbox
 			&& recipe.to.inbox != null,
 		)
-		.forEach(recipe => inboxes.add(recipe.to.inbox!));
+			.forEach(recipe => inboxes.add(recipe.to.inbox!));
 
 		// deliver
 		for (const inbox of inboxes) {
-			deliver(this.actor, this.activity, inbox);
+			this.queueService.deliver(this.actor, this.activity, inbox);
 		}
 	}
 }
-
-//#region Utilities
-/**
- * Deliver activity to followers
- * @param activity Activity
- * @param from Followee
- */
-export async function deliverToFollowers(actor: { id: ILocalUser['id']; host: null; }, activity: any) {
-	const manager = new DeliverManager(actor, activity);
-	manager.addFollowersRecipe();
-	await manager.execute();
-}
-
-/**
- * Deliver activity to user
- * @param activity Activity
- * @param to Target user
- */
-export async function deliverToUser(actor: { id: ILocalUser['id']; host: null; }, activity: any, to: IRemoteUser) {
-	const manager = new DeliverManager(actor, activity);
-	manager.addDirectRecipe(to);
-	await manager.execute();
-}
-//#endregion
