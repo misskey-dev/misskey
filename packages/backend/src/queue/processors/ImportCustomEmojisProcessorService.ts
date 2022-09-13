@@ -9,6 +9,7 @@ import type Logger from '@/logger.js';
 import type { CustomEmojiService } from '@/services/CustomEmojiService.js';
 import { createTempDir } from '@/misc/create-temp.js';
 import type { DriveService } from '@/services/drive/DriveService.js';
+import type { DownloadService } from '@/services/DownloadService.js';
 import type { DataSource } from 'typeorm';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
@@ -37,6 +38,7 @@ export class ImportCustomEmojisProcessorService {
 
 		private customEmojiService: CustomEmojiService,
 		private driveService: DriveService,
+		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.queueLoggerService.logger.createSubLogger('import-custom-emojis');
@@ -61,7 +63,7 @@ export class ImportCustomEmojisProcessorService {
 
 		try {
 			fs.writeFileSync(destPath, '', 'binary');
-			await downloadUrl(file.url, destPath);
+			await this.downloadService.downloadUrl(file.url, destPath);
 		} catch (e) { // TODO: 何度か再試行
 			if (e instanceof Error || typeof e === 'string') {
 				this.#logger.error(e);

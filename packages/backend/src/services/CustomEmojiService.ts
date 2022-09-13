@@ -29,13 +29,14 @@ export class CustomEmojiService {
 		name: string;
 		category: string | null;
 		aliases: string[];
+		host: string | null;
 	}): Promise<Emoji> {
 		const emoji = await this.emojisRepository.insert({
 			id: genId(),
 			updatedAt: new Date(),
 			name: data.name,
 			category: data.category,
-			host: null,
+			host: data.host,
 			aliases: data.aliases,
 			originalUrl: data.driveFile.url,
 			publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
@@ -45,34 +46,5 @@ export class CustomEmojiService {
 		await this.db.queryResultCache!.remove(['meta_emojis']);
 
 		return emoji;
-	}
-
-	public async addBulk(datas: {
-		driveFile: DriveFile;
-		name: string;
-		category: string | null;
-		aliases: string[];
-	}[]): Promise<Emoji[]> {
-		const result: Emoji[] = [];
-
-		for (const data of datas) {
-			const emoji = await this.emojisRepository.insert({
-				id: genId(),
-				updatedAt: new Date(),
-				name: data.name,
-				category: data.category,
-				host: null,
-				aliases: data.aliases,
-				originalUrl: data.driveFile.url,
-				publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
-				type: data.driveFile.webpublicType ?? data.driveFile.type,
-			}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
-
-			result.push(emoji);
-		}
-
-		await this.db.queryResultCache!.remove(['meta_emojis']);
-
-		return result;
 	}
 }
