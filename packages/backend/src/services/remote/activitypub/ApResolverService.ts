@@ -8,7 +8,7 @@ import type { MetaService } from '@/services/MetaService.js';
 import type { HttpRequestService } from '@/services/HttpRequestService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { isCollectionOrOrderedCollection } from './type.js';
-import { parseUri } from './db-resolver.js';
+import type { ApDbResolverService } from './ApDbResolverService.js';
 import type { ApRendererService } from './ApRendererService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
 import type { ApRequestService } from './ApRequestService.js';
@@ -36,6 +36,7 @@ export class ApResolverService {
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
+		private apDbResolverService: ApDbResolverService,
 	) {
 	}
 
@@ -51,6 +52,7 @@ export class ApResolverService {
 			this.apRequestService,
 			this.httpRequestService,
 			this.apRendererService,
+			this.apDbResolverService,
 		);
 	}
 }
@@ -70,6 +72,7 @@ export class Resolver {
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
+		private apDbResolverService: ApDbResolverService,
 	) {
 		this.history = new Set();
 	}
@@ -142,7 +145,7 @@ export class Resolver {
 	}
 
 	private resolveLocal(url: string): Promise<IObject> {
-		const parsed = parseUri(url);
+		const parsed = this.apDbResolverService.parseUri(url);
 		if (!parsed.local) throw new Error('resolveLocal: not local');
 
 		switch (parsed.type) {

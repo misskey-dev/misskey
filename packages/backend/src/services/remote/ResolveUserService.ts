@@ -7,28 +7,32 @@ import type { Users } from '@/models/index.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
 import type { Config } from '@/config/types.js';
 import { toPuny } from '@/misc/convert-host.js';
-import { remoteLogger } from './logger.js';
+import type Logger from '@/logger.js';
 import { createPerson, updatePerson } from './activitypub/models/person.js';
 import webFinger from './webfinger.js';
-
-const logger = remoteLogger.createSubLogger('resolve-user');
+import type { RemoteLoggerService } from './RemoteLoggerService.js';
 
 @Injectable()
 export class ResolveUserService {
+	#logger: Logger;
+
 	constructor(
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
 
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		private remoteLoggerService: RemoteLoggerService,
 	) {
+		this.#logger = this.remoteLoggerService.logger.createSubLogger('resolve-user');
 	}
 
 	public async resolveUser(username: string, host: string | null): Promise<User> {
 		const usernameLower = username.toLowerCase();
 	
 		if (host == null) {
-			logger.info(`return local user: ${usernameLower}`);
+			this.#logger.info(`return local user: ${usernameLower}`);
 			return await this.usersRepository.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 				if (u == null) {
 					throw new Error('user not found');
@@ -41,7 +45,7 @@ export class ResolveUserService {
 		host = toPuny(host);
 	
 		if (this.config.host === host) {
-			logger.info(`return local user: ${usernameLower}`);
+			this.#logger.info(`return local user: ${usernameLower}`);
 			return await this.usersRepository.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 				if (u == null) {
 					throw new Error('user not found');
@@ -58,7 +62,7 @@ export class ResolveUserService {
 		if (user == null) {
 			const self = await this.#resolveSelf(acctLower);
 	
-			logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
+			this.#logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
 			return await createPerson(self.href);
 		}
 	
@@ -69,13 +73,13 @@ export class ResolveUserService {
 				lastFetchedAt: new Date(),
 			});
 	
-			logger.info(`try resync: ${acctLower}`);
+			this.#logger.info(`try resync: ${acctLower}`);
 			const self = await this.#resolveSelf(acctLower);
 	
 			if (user.uri !== self.href) {
 				// if uri mismatch, Fix (user@host <=> AP's Person id(IRemoteUser.uri)) mapping.
-				logger.info(`uri missmatch: ${acctLower}`);
-				logger.info(`recovery missmatch uri for (username=${username}, host=${host}) from ${user.uri} to ${self.href}`);
+				this.#logger.info(`uri missmatch: ${acctLower}`);
+				this.#logger.info(`recovery missmatch uri for (username=${username}, host=${host}) from ${user.uri} to ${self.href}`);
 	
 				// validate uri
 				const uri = new URL(self.href);
@@ -90,12 +94,12 @@ export class ResolveUserService {
 					uri: self.href,
 				});
 			} else {
-				logger.info(`uri is fine: ${acctLower}`);
+				this.#logger.info(`uri is fine: ${acctLower}`);
 			}
 	
 			await updatePerson(self.href);
 	
-			logger.info(`return resynced remote user: ${acctLower}`);
+			this.#logger.info(`return resynced remote user: ${acctLower}`);
 			return await this.usersRepository.findOneBy({ uri: self.href }).then(u => {
 				if (u == null) {
 					throw new Error('user not found');
@@ -105,19 +109,19 @@ export class ResolveUserService {
 			});
 		}
 	
-		logger.info(`return existing remote user: ${acctLower}`);
+		this.#logger.info(`return existing remote user: ${acctLower}`);
 		return user;
 	}
 
 	async #resolveSelf(acctLower: string) {
-		logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
+		this.#logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 		const finger = await webFinger(acctLower).catch(e => {
-			logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ e.statusCode || e.message }`);
+			this.#logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ e.statusCode || e.message }`);
 			throw new Error(`Failed to WebFinger for ${acctLower}: ${ e.statusCode || e.message }`);
 		});
 		const self = finger.links.find(link => link.rel != null && link.rel.toLowerCase() === 'self');
 		if (!self) {
-			logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
+			this.#logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
 			throw new Error('self link not found');
 		}
 		return self;

@@ -15,6 +15,7 @@ import type { AppLockService } from '@/services/AppLockService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { NoteCreateService } from '@/services/NoteCreateService.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
+import type { ApDbResolverService } from '../ApDbResolverService.js';
 import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
 
@@ -32,6 +33,7 @@ export class ApNoteService {
 		private metaService: MetaService,
 		private appLockService: AppLockService,
 		private noteCreateService: NoteCreateService,
+		private apDbResolverService: ApDbResolverService,
 	) {
 	}
 
@@ -63,8 +65,7 @@ export class ApNoteService {
 	 * Misskeyに対象のNoteが登録されていればそれを返します。
 	 */
 	public async fetchNote(object: string | IObject): Promise<Note | null> {
-		const dbResolver = new DbResolver();
-		return await dbResolver.getNoteFromApId(object);
+		return await this.apDbResolverService.getNoteFromApId(object);
 	}
 	
 	/**
