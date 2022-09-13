@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Followings , Instances, UserProfiles, UserPublickeys, Users } from '@/models/index.js';
@@ -28,7 +28,8 @@ import type { HashtagService } from '@/services/HashtagService.js';
 import { UserNotePining } from '@/models/entities/user-note-pining.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
-import type { ApNoteService } from './ApNoteService.js';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { Resolver , ApResolverService } from '../ApResolverService.js';
 import type { ApImageService } from './ApImageService.js';
@@ -164,7 +165,11 @@ export class ApPersonService {
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		private userCacheService: UserCacheService,
 		private apResolverService: ApResolverService,
+
+		// 循環参照のため / for circular dependency
+		@Inject(forwardRef(() => ApNoteService))
 		private apNoteService: ApNoteService,
+
 		private apImageService: ApImageService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,

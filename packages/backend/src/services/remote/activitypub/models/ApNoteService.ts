@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Emojis, Users } from '@/models/index.js';
@@ -17,7 +17,8 @@ import type { NoteCreateService } from '@/services/NoteCreateService.js';
 import type Logger from '@/logger.js';
 import type { IdService } from '@/services/IdService.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
-import type { ApPersonService } from './ApPersonService.js';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { ApPersonService } from './ApPersonService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { ApDbResolverService } from '../ApDbResolverService.js';
@@ -41,7 +42,11 @@ export class ApNoteService {
 		private idService: IdService,
 		private apMfmService: ApMfmService,
 		private apResolverService: ApResolverService,
+
+		// 循環参照のため / for circular dependency
+		@Inject(forwardRef(() => ApPersonService))
 		private apPersonService: ApPersonService,
+	
 		private metaService: MetaService,
 		private appLockService: AppLockService,
 		private noteCreateService: NoteCreateService,
