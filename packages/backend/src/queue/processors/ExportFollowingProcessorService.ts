@@ -7,7 +7,7 @@ import { Users } from '@/models/index.js';
 import type { Followings, Mutings } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/drive/DriveService.js';
+import type { DriveService } from '@/services/DriveService.js';
 import { getFullApAccount } from '@/misc/convert-host.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { Following } from '@/models/entities/following.js';

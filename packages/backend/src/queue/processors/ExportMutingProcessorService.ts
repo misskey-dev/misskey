@@ -6,7 +6,7 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Mutings, Users , Blockings } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/drive/DriveService.js';
+import type { DriveService } from '@/services/DriveService.js';
 import { getFullApAccount } from '@/misc/convert-host.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type Bull from 'bull';

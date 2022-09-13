@@ -4,7 +4,7 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users, DriveFiles } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/drive/DriveService.js';
+import type { DriveService } from '@/services/DriveService.js';
 import type Bull from 'bull';
 import type { DbUserJobData } from '../types.js';
 import type { QueueLoggerService } from '../QueueLoggerService.js';

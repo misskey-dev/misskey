@@ -8,7 +8,7 @@ import type { Config } from '@/config/types.js';
 import type Logger from '@/logger.js';
 import type { CustomEmojiService } from '@/services/CustomEmojiService.js';
 import { createTempDir } from '@/misc/create-temp.js';
-import type { DriveService } from '@/services/drive/DriveService.js';
+import type { DriveService } from '@/services/DriveService.js';
 import type { DownloadService } from '@/services/DownloadService.js';
 import type { DataSource } from 'typeorm';
 import type Bull from 'bull';

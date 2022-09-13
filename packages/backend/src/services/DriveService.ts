@@ -4,9 +4,10 @@ import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { IsNull } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import { DriveFiles , DriveFolders, Users } from '@/models/index.js';
+import type { DriveFiles } from '@/models/index.js';
+import { DriveFolders, Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
-import type Logger from '@/Logger.js';
+import Logger from '@/Logger.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
 import type { MetaService } from '@/services/MetaService.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
@@ -21,15 +22,14 @@ import type { VideoProcessingService } from '@/services/VideoProcessingService.j
 import type { IImage, ImageProcessingService } from '@/services/ImageProcessingService.js';
 import type { QueueService } from '@/queue/queue.service.js';
 import type { DriveFolder } from '@/models/entities/drive-folder.js';
-import { downloadUrl } from '@/misc/download-url.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type DriveChart from '@/services/chart/charts/drive.js';
 import type PerUserDriveChart from '@/services/chart/charts/per-user-drive.js';
 import type InstanceChart from '@/services/chart/charts/instance.js';
-import type { S3Service } from './S3Service.js';
-import type { InternalStorageService } from './InternalStorageService.js';
+import type { DownloadService } from '@/services/DownloadService.js';
+import type { S3Service } from '@/services/drive/S3Service.js';
+import type { InternalStorageService } from '@/services/drive/InternalStorageService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
-import type { DriveLoggerService } from './DriveLoggerService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -86,6 +86,7 @@ export class DriveService {
 		private driveFilesRepository: typeof DriveFiles,
 
 		private metaService: MetaService,
+		private downloadService: DownloadService,
 		private internalStorageService: InternalStorageService,
 		private s3Service: S3Service,
 		private imageProcessingService: ImageProcessingService,
@@ -95,10 +96,10 @@ export class DriveService {
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
-		private driveLoggerService: DriveLoggerService,
 	) {
-		this.#registerLogger = this.driveLoggerService.logger.createSubLogger('register', 'yellow');
-		this.#downloaderLogger = this.driveLoggerService.logger.createSubLogger('downloader');
+		const logger = new Logger('drive', 'blue');
+		this.#registerLogger = logger.createSubLogger('register', 'yellow');
+		this.#downloaderLogger = logger.createSubLogger('downloader');
 	}
 
 	/***
@@ -694,7 +695,7 @@ export class DriveService {
 		requestHeaders = null,
 	}: UploadFromUrlArgs): Promise<DriveFile> {
 		let name = new URL(url).pathname.split('/').pop() || null;
-		if (name == null || !DriveFiles.validateFileName(name)) {
+		if (name == null || !this.driveFilesRepository.validateFileName(name)) {
 			name = null;
 		}
 	
@@ -709,7 +710,7 @@ export class DriveService {
 	
 		try {
 			// write content at URL to temp file
-			await downloadUrl(url, path);
+			await this.downloadService.downloadUrl(url, path);
 	
 			const driveFile = await this.addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
 			this.#downloaderLogger.succ(`Got: ${driveFile.id}`);

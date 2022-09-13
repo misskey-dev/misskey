@@ -9,7 +9,7 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Emojis, Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/drive/DriveService.js';
+import type { DriveService } from '@/services/DriveService.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import { downloadUrl } from '@/misc/download-url.js';
 import type Bull from 'bull';
