@@ -1,0 +1,95 @@
+import * as fs from 'node:fs';
+import { Inject, Injectable } from '@nestjs/common';
+import { In, IsNull, MoreThan } from 'typeorm';
+import { format as dateFormat } from 'date-fns';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { UserListJoinings, UserLists, Users } from '@/models/index.js';
+import type { Config } from '@/config/types.js';
+import type Logger from '@/logger.js';
+import type { DriveService } from '@/services/drive/DriveService.js';
+import { createTemp } from '@/misc/create-temp.js';
+import { getFullApAccount } from '@/misc/convert-host.js';
+import type Bull from 'bull';
+import type { DbUserJobData } from '../types.js';
+import type { QueueLoggerService } from '../QueueLoggerService.js';
+
+@Injectable()
+export class ExportUserListsProcessorService {
+	#logger: Logger;
+
+	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
+		@Inject('usersRepository')
+		private usersRepository: typeof Users,
+
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
+
+		@Inject('userListJoiningsRepository')
+		private userListJoiningsRepository: typeof UserListJoinings,
+
+		private driveService: DriveService,
+		private queueLoggerService: QueueLoggerService,
+	) {
+		this.queueLoggerService.logger.createSubLogger('export-user-lists');
+	}
+
+	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
+		this.#logger.info(`Exporting user lists of ${job.data.user.id} ...`);
+
+		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
+		if (user == null) {
+			done();
+			return;
+		}
+
+		const lists = await this.userListsRepository.findBy({
+			userId: user.id,
+		});
+
+		// Create temp file
+		const [path, cleanup] = await createTemp();
+
+		this.#logger.info(`Temp file is ${path}`);
+
+		try {
+			const stream = fs.createWriteStream(path, { flags: 'a' });
+
+			for (const list of lists) {
+				const joinings = await this.userListJoiningsRepository.findBy({ userListId: list.id });
+				const users = await this.usersRepository.findBy({
+					id: In(joinings.map(j => j.userId)),
+				});
+
+				for (const u of users) {
+					const acct = getFullApAccount(u.username, u.host);
+					const content = `${list.name},${acct}`;
+					await new Promise<void>((res, rej) => {
+						stream.write(content + '\n', err => {
+							if (err) {
+								this.#logger.error(err);
+								rej(err);
+							} else {
+								res();
+							}
+						});
+					});
+				}
+			}
+
+			stream.end();
+			this.#logger.succ(`Exported to: ${path}`);
+
+			const fileName = 'user-lists-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
+			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true });
+
+			this.#logger.succ(`Exported to: ${driveFile.id}`);
+		} finally {
+			cleanup();
+		}
+
+		done();
+	}
+}
