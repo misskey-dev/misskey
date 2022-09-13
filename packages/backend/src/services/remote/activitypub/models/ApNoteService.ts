@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Users } from '@/models/index.js';
+import type { Emojis, Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import type { MfmService } from '@/services/MfmService.js';
@@ -14,13 +14,20 @@ import type { MetaService } from '@/services/MetaService.js';
 import type { AppLockService } from '@/services/AppLockService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { NoteCreateService } from '@/services/NoteCreateService.js';
+import type Logger from '@/logger.js';
+import type { IdService } from '@/services/IdService.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
+import type { ApPersonService } from './ApPersonService.js';
+import type { ApLoggerService } from '../ApLoggerService.js';
+import type { ApMfmService } from '../ApMfmService.js';
 import type { ApDbResolverService } from '../ApDbResolverService.js';
 import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
 
 @Injectable()
 export class ApNoteService {
+	#logger: Logger;
+
 	constructor(
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
@@ -28,13 +35,20 @@ export class ApNoteService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		private mfmService: MfmService,
+		@Inject('emojisRepository')
+		private emojisRepository: typeof Emojis,
+
+		private idService: IdService,
+		private apMfmService: ApMfmService,
 		private apResolverService: ApResolverService,
+		private apPersonService: ApPersonService,
 		private metaService: MetaService,
 		private appLockService: AppLockService,
 		private noteCreateService: NoteCreateService,
 		private apDbResolverService: ApDbResolverService,
+		private apLoggerService: ApLoggerService,
 	) {
+		this.#logger = this.apLoggerService.logger;
 	}
 
 	public validateNote(object: any, uri: string) {
@@ -79,7 +93,7 @@ export class ApNoteService {
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);
 		if (err) {
-			logger.error(`${err.message}`, {
+			this.#logger.error(`${err.message}`, {
 				resolver: {
 					history: resolver.getHistory(),
 				},
@@ -91,12 +105,12 @@ export class ApNoteService {
 	
 		const note: IPost = object;
 	
-		logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
+		this.#logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 	
-		logger.info(`Creating the Note: ${note.id}`);
+		this.#logger.info(`Creating the Note: ${note.id}`);
 	
 		// 投稿者をフェッチ
-		const actor = await resolvePerson(getOneApId(note.attributedTo), resolver) as CacheableRemoteUser;
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as CacheableRemoteUser;
 	
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
@@ -137,7 +151,7 @@ export class ApNoteService {
 		const reply: Note | null = note.inReplyTo
 			? await this.resolveNote(note.inReplyTo, resolver).then(x => {
 				if (x == null) {
-					logger.warn('Specified inReplyTo, but nout found');
+					this.#logger.warn('Specified inReplyTo, but nout found');
 					throw new Error('inReplyTo not found');
 				} else {
 					return x;
@@ -154,7 +168,7 @@ export class ApNoteService {
 					}
 				}
 	
-				logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
+				this.#logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
 				throw err;
 			})
 			: null;
@@ -171,7 +185,7 @@ export class ApNoteService {
 			}> => {
 				if (typeof uri !== 'string' || !uri.match(/^https?:/)) return { status: 'permerror' };
 				try {
-					const res = await resolveNote(uri);
+					const res = await this.resolveNote(uri);
 					if (res) {
 						return {
 							status: 'ok',
@@ -209,7 +223,7 @@ export class ApNoteService {
 		} else if (typeof note._misskey_content !== 'undefined') {
 			text = note._misskey_content;
 		} else if (typeof note.content === 'string') {
-			text = this.mfmService.fromHtml(note.content, note.tag);
+			text = this.apMfmService.htmlToMfm(note.content, note.tag);
 		}
 	
 		// vote
@@ -218,9 +232,9 @@ export class ApNoteService {
 	
 			const tryCreateVote = async (name: string, index: number): Promise<null> => {
 				if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
-					logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+					this.#logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				} else if (index >= 0) {
-					logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+					this.#logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 					await vote(actor, reply, index);
 	
 					// リモートフォロワーにUpdate配信
@@ -235,7 +249,7 @@ export class ApNoteService {
 		}
 	
 		const emojis = await this.extractEmojis(note.tag || [], actor.host).catch(e => {
-			logger.info(`extractEmojis: ${e}`);
+			this.#logger.info(`extractEmojis: ${e}`);
 			return [] as Emoji[];
 		});
 	
@@ -319,7 +333,7 @@ export class ApNoteService {
 			const name = tag.name!.replace(/^:/, '').replace(/:$/, '');
 			tag.icon = toSingle(tag.icon);
 	
-			const exists = await Emojis.findOneBy({
+			const exists = await this.emojisRepository.findOneBy({
 				host,
 				name,
 			});
@@ -330,7 +344,7 @@ export class ApNoteService {
 					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
 					|| (tag.icon!.url !== exists.originalUrl)
 				) {
-					await Emojis.update({
+					await this.emojisRepository.update({
 						host,
 						name,
 					}, {
@@ -340,7 +354,7 @@ export class ApNoteService {
 						updatedAt: new Date(),
 					});
 	
-					return await Emojis.findOneBy({
+					return await this.emojisRepository.findOneBy({
 						host,
 						name,
 					}) as Emoji;
@@ -349,9 +363,9 @@ export class ApNoteService {
 				return exists;
 			}
 	
-			logger.info(`register emoji host=${host}, name=${name}`);
+			this.#logger.info(`register emoji host=${host}, name=${name}`);
 	
-			return await Emojis.insert({
+			return await this.emojisRepository.insert({
 				id: this.idService.genId(),
 				host,
 				name,
@@ -360,7 +374,7 @@ export class ApNoteService {
 				publicUrl: tag.icon!.url,
 				updatedAt: new Date(),
 				aliases: [],
-			} as Partial<Emoji>).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+			} as Partial<Emoji>).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 		}));
 	}
 }

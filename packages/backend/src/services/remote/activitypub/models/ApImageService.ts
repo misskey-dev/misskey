@@ -13,7 +13,7 @@ import type { ApResolverService } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 
 @Injectable()
-export class UserSuspendService {
+export class ApImageService {
 	#logger: Logger;
 
 	constructor(
