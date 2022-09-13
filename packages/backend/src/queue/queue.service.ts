@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import config from '@/config/index.js';
 import type { IActivity } from '@/services/remote/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
-
 import type { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';
-import { envOption } from '../env.js';
+import type { Config } from '@/config/types.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './queue.module.js';
 import type { ThinUser } from './types.js';
 import type httpSignature from '@peertube/http-signature';
@@ -13,6 +12,9 @@ import type httpSignature from '@peertube/http-signature';
 @Injectable()
 export class QueueService {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
@@ -35,7 +37,7 @@ export class QueueService {
 		};
 
 		return this.deliverQueue.add(data, {
-			attempts: config.deliverJobMaxAttempts || 12,
+			attempts: this.config.deliverJobMaxAttempts || 12,
 			timeout: 1 * 60 * 1000,	// 1min
 			backoff: {
 				type: 'apBackoff',
@@ -52,7 +54,7 @@ export class QueueService {
 		};
 	
 		return this.inboxQueue.add(data, {
-			attempts: config.inboxJobMaxAttempts || 8,
+			attempts: this.config.inboxJobMaxAttempts || 8,
 			timeout: 5 * 60 * 1000,	// 5min
 			backoff: {
 				type: 'apBackoff',

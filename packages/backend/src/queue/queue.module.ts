@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import config from '@/config/index.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { Config } from '@/config/types.js';
 import { initialize as initializeQueue } from './initialize.js';
 import type Bull from 'bull';
 import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData } from './types.js';
@@ -18,8 +19,8 @@ export type WebhookDeliverQueue = Bull.Queue<WebhookDeliverJobData>;
 	providers: [
 	{ provide: 'queue:system', useValue: initializeQueue('system') },
 	{ provide: 'queue:endedPollNotification', useValue: initializeQueue('endedPollNotification') },
-	{ provide: 'queue:deliver', useValue: initializeQueue('deliver', config.deliverJobPerSec || 128) },
-	{ provide: 'queue:inbox', useValue: initializeQueue('inbox', config.inboxJobPerSec || 16) },
+	{ provide: 'queue:deliver', useFactory: (config: Config) => initializeQueue('deliver', config.deliverJobPerSec || 128), inject: [DI_SYMBOLS.config] },
+	{ provide: 'queue:inbox', useFactory: (config: Config) => initializeQueue('inbox', config.inboxJobPerSec || 16), inject: [DI_SYMBOLS.config] },
 	{ provide: 'queue:db', useValue: initializeQueue('db') },
 	{ provide: 'queue:objectStorage', useValue: initializeQueue('objectStorage') },
 	{ provide: 'queue:webhookDeliver', useValue: initializeQueue('webhookDeliver', 64) },

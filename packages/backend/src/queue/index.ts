@@ -11,6 +11,7 @@ import { endedPollNotification } from './processors/ended-poll-notification.js';
 import { queueLogger } from './logger.js';
 import { getJobInfo } from './get-job-info.js';
 import { QueueService } from './queue.service.js';
+import { SystemQueueProcessorsService } from './SystemQueueProcessorsService.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 export default function(app: INestApplicationContext) {
@@ -22,6 +23,7 @@ export default function(app: INestApplicationContext) {
 	const objectStorageQueue = queueService.objectStorageQueue;
 	const webhookDeliverQueue = queueService.webhookDeliverQueue;
 	const endedPollNotificationQueue = queueService.endedPollNotificationQueue;
+	const systemQueueProcessorsService = app.get(SystemQueueProcessorsService);
 
 	function renderError(e: Error): any {
 		return {
@@ -123,5 +125,5 @@ export default function(app: INestApplicationContext) {
 		removeOnComplete: true,
 	});
 
-	processSystemQueue(systemQueue);
+	systemQueueProcessorsService.start(systemQueue);
 }
