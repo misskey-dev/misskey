@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import { Users } from '@/models/index.js';
+import type { Followings , Instances, UserProfiles, UserPublickeys, Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type { CacheableUser, IRemoteUser } from '@/models/entities/user.js';
 import { User } from '@/models/entities/user.js';
@@ -20,7 +20,14 @@ import { toArray } from '@/prelude/array.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import type { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
+import { UserProfile } from '@/models/entities/user-profile.js';
+import { UserPublickey } from '@/models/entities/user-publickey.js';
+import type UsersChart from '@/services/chart/charts/users.js';
+import type InstanceChart from '@/services/chart/charts/instance.js';
+import type { HashtagService } from '@/services/HashtagService.js';
+import { UserNotePining } from '@/models/entities/user-note-pining.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
+import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { Resolver , ApResolverService } from '../ApResolverService.js';
 import type { ApImageService } from './ApImageService.js';
@@ -138,15 +145,31 @@ export class ApPersonService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		@Inject('userPublickeysRepository')
+		private userPublickeysRepository: typeof UserPublickeys,
+
+		@Inject('instancesRepository')
+		private instancesRepository: typeof Instances,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		private userCacheService: UserCacheService,
 		private apResolverService: ApResolverService,
+		private apNoteService: ApNoteService,
 		private apImageService: ApImageService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
+		private hashtagService: HashtagService,
+		private usersChart: UsersChart,
+		private instanceChart: InstanceChart,
 		private apLoggerService: ApLoggerService,
 	) {
 		this.#logger = this.apLoggerService.logger;
@@ -166,13 +189,13 @@ export class ApPersonService {
 		// URIがこのサーバーを指しているならデータベースからフェッチ
 		if (uri.startsWith(this.config.url + '/')) {
 			const id = uri.split('/').pop();
-			const u = await Users.findOneBy({ id });
+			const u = await this.usersRepository.findOneBy({ id });
 			if (u) this.userCacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await Users.findOneBy({ uri });
+		const exist = await this.usersRepository.findOneBy({ uri });
 
 		if (exist) {
 			this.userCacheService.uriPersonCache.set(uri, exist);
@@ -261,7 +284,7 @@ export class ApPersonService {
 		// duplicate key error
 			if (isDuplicateKeyValueError(e)) {
 			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
-				const u = await Users.findOneBy({
+				const u = await this.usersRepository.findOneBy({
 					uri: person.id,
 				});
 
@@ -278,15 +301,15 @@ export class ApPersonService {
 
 		// Register host
 		this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
-			Instances.increment({ id: i.id }, 'usersCount', 1);
-			instanceChart.newUser(i.host);
+			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
+			this.instanceChart.newUser(i.host);
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 		});
 
-		usersChart.update(user!, true);
+		this.usersChart.update(user!, true);
 
 		// ハッシュタグ更新
-		updateUsertags(user!, tags);
+		this.hashtagService.updateUsertags(user!, tags);
 
 		//#region アバターとヘッダー画像をフェッチ
 		const [avatar, banner] = await Promise.all([
@@ -301,7 +324,7 @@ export class ApPersonService {
 		const avatarId = avatar ? avatar.id : null;
 		const bannerId = banner ? banner.id : null;
 
-		await Users.update(user!.id, {
+		await this.usersRepository.update(user!.id, {
 			avatarId,
 			bannerId,
 		});
@@ -311,19 +334,19 @@ export class ApPersonService {
 	//#endregion
 
 	//#region カスタム絵文字取得
-	const emojis = await extractEmojis(person.tag || [], host).catch(e => {
+	const emojis = await this.apNoteService.extractEmojis(person.tag || [], host).catch(e => {
 		this.#logger.info(`extractEmojis: ${e}`);
 		return [] as Emoji[];
 	});
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	await Users.update(user!.id, {
+	await this.usersRepository.update(user!.id, {
 		emojis: emojiNames,
 	});
 	//#endregion
 
-	await this.updateFeatured(user!.id).catch(err => logger.error(err));
+	await this.updateFeatured(user!.id).catch(err => this.#logger.error(err));
 
 	return user!;
 	}
@@ -344,7 +367,7 @@ export class ApPersonService {
 		}
 
 		//#region このサーバーに既に登録されているか
-		const exist = await Users.findOneBy({ uri }) as IRemoteUser;
+		const exist = await this.usersRepository.findOneBy({ uri }) as IRemoteUser;
 
 		if (exist == null) {
 			return;
@@ -370,14 +393,14 @@ export class ApPersonService {
 		));
 
 		// カスタム絵文字取得
-		const emojis = await extractEmojis(person.tag || [], exist.host).catch(e => {
+		const emojis = await this.apNoteService.extractEmojis(person.tag || [], exist.host).catch(e => {
 			this.#logger.info(`extractEmojis: ${e}`);
 			return [] as Emoji[];
 		});
 
 		const emojiNames = emojis.map(emoji => emoji.name);
 
-		const { fields } = analyzeAttachments(person.attachment || []);
+		const { fields } = this.analyzeAttachments(person.attachment || []);
 
 		const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
 
@@ -407,16 +430,16 @@ export class ApPersonService {
 		}
 
 		// Update user
-		await Users.update(exist.id, updates);
+		await this.usersRepository.update(exist.id, updates);
 
 		if (person.publicKey) {
-			await UserPublickeys.update({ userId: exist.id }, {
+			await this.userPublickeysRepository.update({ userId: exist.id }, {
 				keyId: person.publicKey.id,
 				keyPem: person.publicKey.publicKeyPem,
 			});
 		}
 
-		await UserProfiles.update({ userId: exist.id }, {
+		await this.userProfilesRepository.update({ userId: exist.id }, {
 			url: getOneApHrefNullable(person.url),
 			fields,
 			description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
@@ -427,16 +450,16 @@ export class ApPersonService {
 		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: exist.id });
 
 		// ハッシュタグ更新
-		updateUsertags(exist, tags);
+		this.hashtagService.updateUsertags(exist, tags);
 
 		// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
-		await Followings.update({
+		await this.followingsRepository.update({
 			followerId: exist.id,
 		}, {
 			followerSharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		});
 
-		await this.updateFeatured(exist.id).catch(err => logger.error(err));
+		await this.updateFeatured(exist.id).catch(err => this.#logger.error(err));
 	}
 
 	/**
@@ -485,8 +508,8 @@ export class ApPersonService {
 	}
 
 	public async updateFeatured(userId: User['id']) {
-		const user = await Users.findOneByOrFail({ id: userId });
-		if (!Users.isRemoteUser(user)) return;
+		const user = await this.usersRepository.findOneByOrFail({ id: userId });
+		if (!this.usersRepository.isRemoteUser(user)) return;
 		if (!user.featured) return;
 
 		this.#logger.info(`Updating the featured: ${user.uri}`);
@@ -506,7 +529,7 @@ export class ApPersonService {
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 			.slice(0, 5)
-			.map(item => limit(() => resolveNote(item, resolver))));
+			.map(item => limit(() => this.apNoteService.resolveNote(item, resolver))));
 
 		await this.db.transaction(async transactionalEntityManager => {
 			await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
