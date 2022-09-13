@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Users } from '@/models/index.js';
+import type { Followings, Notes , Users } from '@/models/index.js';
+
 import type { Config } from '@/config/types.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import type { UserFollowingService } from '@/services/UserFollowingService.js';
@@ -15,13 +16,13 @@ import type { NoteCreateService } from '@/services/NoteCreateService.js';
 import { concat, toArray, toSingle, unique } from '@/prelude/array.js';
 import type { AppLockService } from '@/services/AppLockService.js';
 import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
-import type Logger from '@/this.#logger.js';
+import type Logger from '@/logger.js';
 import type { MetaService } from '@/services/MetaService.js';
 import type { IdService } from '@/services/IdService.js';
-import { createNote, fetchNote } from './models/note.js';
 import { updatePerson } from './models/person.js';
 import { updateQuestion } from './models/question.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import type { ApNoteService } from './models/ApNoteService.js';
 import type { ApLoggerService } from './ApLoggerService.js';
 import type { ApDbResolverService } from './ApDbResolverService.js';
 import type { ApResolverService, Resolver } from './ApResolverService.js';
@@ -38,6 +39,12 @@ export class ApInboxService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
 		private idService: IdService,
 		private metaService: MetaService,
 		private userFollowingService: UserFollowingService,
@@ -51,6 +58,7 @@ export class ApInboxService {
 		private apResolverService: ApResolverService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
+		private apNoteService: ApNoteService,
 	) {
 		this.#logger = this.apLoggerService.logger;
 	}
@@ -127,10 +135,10 @@ export class ApInboxService {
 	async #like(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
-		const note = await fetchNote(targetUri);
+		const note = await this.apNoteService.fetchNote(targetUri);
 		if (!note) return `skip: target note not found ${targetUri}`;
 
-		await extractEmojis(activity.tag || [], actor.host).catch(() => null);
+		await this.apNoteService.extractEmojis(activity.tag || [], actor.host).catch(() => null);
 
 		return await this.reactionService.create(actor, note, activity._misskey_reaction || activity.content || activity.name).catch(e => {
 			if (e.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
@@ -213,7 +221,7 @@ export class ApInboxService {
 		}
 	
 		if (activity.target === actor.featured) {
-			const note = await resolveNote(activity.object);
+			const note = await this.apNoteService.resolveNote(activity.object);
 			if (note == null) throw new Error('note not found');
 			await this.notePiningService.addPinned(actor, note.id);
 			return;
@@ -247,7 +255,7 @@ export class ApInboxService {
 
 		try {
 		// 既に同じURIを持つものが登録されていないかチェック
-			const exist = await fetchNote(uri);
+			const exist = await this.apNoteService.fetchNote(uri);
 			if (exist) {
 				return;
 			}
@@ -255,7 +263,7 @@ export class ApInboxService {
 			// Announce対象をresolve
 			let renote;
 			try {
-				renote = await resolveNote(targetUri);
+				renote = await this.apNoteService.resolveNote(targetUri);
 			} catch (e) {
 			// 対象が4xxならスキップ
 				if (e instanceof StatusError) {
@@ -269,7 +277,7 @@ export class ApInboxService {
 				throw e;
 			}
 
-			if (!await Notes.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
+			if (!await this.notesRepository.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
 
 			this.#logger.info(`Creating the (Re)Note: ${uri}`);
 
@@ -357,10 +365,10 @@ export class ApInboxService {
 		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
-			const exist = await fetchNote(note);
+			const exist = await this.apNoteService.fetchNote(note);
 			if (exist) return 'skip: note exists';
 
-			await createNote(note, resolver, silent);
+			await this.apNoteService.createNote(note, resolver, silent);
 			return 'ok';
 		} catch (e) {
 			if (e instanceof StatusError && e.isClientError) {
@@ -541,7 +549,7 @@ export class ApInboxService {
 		}
 	
 		if (activity.target === actor.featured) {
-			const note = await resolveNote(activity.object);
+			const note = await this.apNoteService.resolveNote(activity.object);
 			if (note == null) throw new Error('note not found');
 			await this.notePiningService.removePinned(actor, note.id);
 			return;
@@ -581,7 +589,7 @@ export class ApInboxService {
 			return 'skip: follower not found';
 		}
 	
-		const following = await Followings.findOneBy({
+		const following = await this.followingsRepository.findOneBy({
 			followerId: follower.id,
 			followeeId: actor.id,
 		});
@@ -597,7 +605,7 @@ export class ApInboxService {
 	async #undoAnnounce(actor: CacheableRemoteUser, activity: IAnnounce): Promise<string> {
 		const uri = getApId(activity);
 
-		const note = await Notes.findOneBy({
+		const note = await this.notesRepository.findOneBy({
 			uri,
 			userId: actor.id,
 		});
@@ -638,7 +646,7 @@ export class ApInboxService {
 			followeeId: followee.id,
 		});
 
-		const following = await Followings.findOneBy({
+		const following = await this.followingsRepository.findOneBy({
 			followerId: actor.id,
 			followeeId: followee.id,
 		});
@@ -659,7 +667,7 @@ export class ApInboxService {
 	async #undoLike(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
-		const note = await fetchNote(targetUri);
+		const note = await this.apNoteService.fetchNote(targetUri);
 		if (!note) return `skip: target note not found ${targetUri}`;
 
 		await this.reactionService.delete(actor, note).catch(e => {
