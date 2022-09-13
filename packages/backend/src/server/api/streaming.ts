@@ -1,14 +1,25 @@
-import * as http from 'node:http';
-import * as websocket from 'websocket';
-
-import MainStreamConnection from './stream/index.js';
-import { ParsedUrlQuery } from 'querystring';
-import authenticate from './authenticate.js';
 import { EventEmitter } from 'events';
-import { subsdcriber as redisClient } from '../../db/redis.js';
+import * as websocket from 'websocket';
+import type { Blockings, ChannelFollowings, Followings, Mutings, UserProfiles } from '@/models/index.js';
 import { Users } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { NoteReadService } from '@/services/NoteReadService.js';
+import { subsdcriber as redisClient } from '../../db/redis.js';
+import MainStreamConnection from './stream/index.js';
+import authenticate from './authenticate.js';
+import type { INestApplicationContext } from '@nestjs/common';
+import type { ParsedUrlQuery } from 'querystring';
+import type * as http from 'node:http';
 
-export const initializeStreamingServer = (server: http.Server) => {
+export function initializeStreamingServer(app: INestApplicationContext, server: http.Server) {
+	const followingsRepository = app.get<typeof Followings>('followingsRepository');
+	const mutingsRepository = app.get<typeof Mutings>('mutingsRepository');
+	const blockingsRepository = app.get<typeof Blockings>('blockingsRepository');
+	const channelFollowingsRepository = app.get<typeof ChannelFollowings>('channelFollowingsRepository');
+	const userProfilesRepository = app.get<typeof UserProfiles>('userProfilesRepository');
+	const globalEventService = app.get(GlobalEventService);
+	const noteReadService = app.get(NoteReadService);
+
 	// Init websocket server
 	const ws = new websocket.server({
 		httpServer: server,
@@ -20,7 +31,7 @@ export const initializeStreamingServer = (server: http.Server) => {
 		// TODO: トークンが間違ってるなどしてauthenticateに失敗したら
 		// コネクション切断するなりエラーメッセージ返すなりする
 		// (現状はエラーがキャッチされておらずサーバーのログに流れて邪魔なので)
-		const [user, app] = await authenticate(q.i as string);
+		const [user, miapp] = await authenticate(q.i as string);
 
 		if (user?.isSuspended) {
 			request.reject(400);
@@ -38,7 +49,16 @@ export const initializeStreamingServer = (server: http.Server) => {
 
 		redisClient.on('message', onRedisMessage);
 
-		const main = new MainStreamConnection(connection, ev, user, app);
+		const main = new MainStreamConnection(
+			followingsRepository,
+			mutingsRepository,
+			blockingsRepository,
+			channelFollowingsRepository,
+			userProfilesRepository,
+			globalEventService,
+			noteReadService,
+			connection, ev, user, miapp,
+		);
 
 		const intervalId = user ? setInterval(() => {
 			Users.update(user.id, {
@@ -64,4 +84,4 @@ export const initializeStreamingServer = (server: http.Server) => {
 			}
 		});
 	});
-};
+}

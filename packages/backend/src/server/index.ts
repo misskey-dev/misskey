@@ -10,15 +10,15 @@ import Router from '@koa/router';
 import mount from 'koa-mount';
 import koaLogger from 'koa-logger';
 import * as slow from 'koa-slow';
-
 import { IsNull } from 'typeorm';
-import config from '@/config/index.js';
-import Logger from '@/services/logger.js';
+import Logger from '@/logger.js';
 import { UserProfiles, Users } from '@/models/index.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
-import { publishMainStream } from '@/services/stream.js';
 import * as Acct from '@/misc/acct.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Config } from '@/config/types.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { envOption } from '../env.js';
 import activityPub from './activitypub.js';
 import nodeinfo from './nodeinfo.js';
@@ -33,19 +33,22 @@ import type { INestApplicationContext } from '@nestjs/common';
 export const serverLogger = new Logger('server', 'gray', false);
 
 export default (app: INestApplicationContext) => new Promise(resolve => {
+	const config = app.get<Config>(DI_SYMBOLS.config);
+	const globalEventService = app.get(GlobalEventService);
+
 	// Init app
-	const app = new Koa();
-	app.proxy = true;
+	const koa = new Koa();
+	koa.proxy = true;
 
 	if (!['production', 'test'].includes(process.env.NODE_ENV || '')) {
 		// Logger
-		app.use(koaLogger(str => {
+		koa.use(koaLogger(str => {
 			serverLogger.info(str);
 		}));
 
 		// Delay
 		if (envOption.slow) {
-			app.use(slow({
+			koa.use(slow({
 				delay: 3000,
 			}));
 		}
@@ -54,15 +57,15 @@ export default (app: INestApplicationContext) => new Promise(resolve => {
 	// HSTS
 	// 6months (15552000sec)
 	if (config.url.startsWith('https') && !config.disableHsts) {
-		app.use(async (ctx, next) => {
+		koa.use(async (ctx, next) => {
 			ctx.set('strict-transport-security', 'max-age=15552000; preload');
 			await next();
 		});
 	}
 
-	app.use(mount('/api', createApiServer(app)));
-	app.use(mount('/files', fileServer));
-	app.use(mount('/proxy', proxyServer));
+	koa.use(mount('/api', createApiServer(app)));
+	koa.use(mount('/files', fileServer));
+	koa.use(mount('/proxy', proxyServer));
 
 	// Init router
 	const router = new Router();
@@ -111,7 +114,7 @@ export default (app: INestApplicationContext) => new Promise(resolve => {
 				emailVerifyCode: null,
 			});
 
-			publishMainStream(profile.userId, 'meUpdated', await Users.pack(profile.userId, { id: profile.userId }, {
+			globalEventService.publishMainStream(profile.userId, 'meUpdated', await Users.pack(profile.userId, { id: profile.userId }, {
 				detail: true,
 				includeSecrets: true,
 			}));
@@ -121,13 +124,13 @@ export default (app: INestApplicationContext) => new Promise(resolve => {
 	});
 
 	// Register router
-	app.use(router.routes());
+	koa.use(router.routes());
 
-	app.use(mount(webServer));
+	koa.use(mount(webServer));
 
-	const server = http.createServer(app.callback());
+	const server = http.createServer(koa.callback());
 
-	initializeStreamingServer(server);
+	initializeStreamingServer(app, server);
 
 	server.on('error', e => {
 		switch ((e as any).code) {

@@ -1,18 +1,18 @@
-import { EventEmitter } from 'events';
-import * as websocket from 'websocket';
-import readNote from '@/services/note/read.js';
-import { User } from '@/models/entities/user.js';
-import { Channel as ChannelModel } from '@/models/entities/channel.js';
-import { Users, Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index.js';
-import { AccessToken } from '@/models/entities/access-token.js';
-import { UserProfile } from '@/models/entities/user-profile.js';
-import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '@/services/stream.js';
-import { UserGroup } from '@/models/entities/user-group.js';
-import { Packed } from '@/misc/schema.js';
+import type { User } from '@/models/entities/user.js';
+import type { Channel as ChannelModel } from '@/models/entities/channel.js';
+import type { Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index.js';
+import type { AccessToken } from '@/models/entities/access-token.js';
+import type { UserProfile } from '@/models/entities/user-profile.js';
+import type { UserGroup } from '@/models/entities/user-group.js';
+import type { Packed } from '@/misc/schema.js';
+import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import type { NoteReadService } from '@/services/NoteReadService.js';
 import { readNotification } from '../common/read-notification.js';
 import channels from './channels/index.js';
-import Channel from './channel.js';
-import { StreamEventEmitter, StreamMessages } from './types.js';
+import type * as websocket from 'websocket';
+import type { EventEmitter } from 'events';
+import type Channel from './channel.js';
+import type { StreamEventEmitter, StreamMessages } from './types.js';
 
 /**
  * Main stream connection
@@ -32,6 +32,14 @@ export default class Connection {
 	private cachedNotes: Packed<'Note'>[] = [];
 
 	constructor(
+		private followingsRepository: typeof Followings,
+		private mutingsRepository: typeof Mutings,
+		private blockingsRepository: typeof Blockings,
+		private channelFollowingsRepository: typeof ChannelFollowings,
+		private userProfilesRepository: typeof UserProfiles,
+		private globalEventService: GlobalEventService,
+		private noteReadService: NoteReadService,
+
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
 		user: User | null | undefined,
@@ -173,7 +181,7 @@ export default class Connection {
 		if (note == null) return;
 
 		if (this.user && (note.userId !== this.user.id)) {
-			readNote(this.user.id, [note], {
+			this.noteReadService.read(this.user.id, [note], {
 				following: this.following,
 				followingChannels: this.followingChannels,
 			});
@@ -299,22 +307,22 @@ export default class Connection {
 
 	private typingOnChannel(channel: ChannelModel['id']) {
 		if (this.user) {
-			publishChannelStream(channel, 'typing', this.user.id);
+			this.globalEventService.publishChannelStream(channel, 'typing', this.user.id);
 		}
 	}
 
 	private typingOnMessaging(param: { partner?: User['id']; group?: UserGroup['id']; }) {
 		if (this.user) {
 			if (param.partner) {
-				publishMessagingStream(param.partner, this.user.id, 'typing', this.user.id);
+				this.globalEventService.publishMessagingStream(param.partner, this.user.id, 'typing', this.user.id);
 			} else if (param.group) {
-				publishGroupMessagingStream(param.group, 'typing', this.user.id);
+				this.globalEventService.publishGroupMessagingStream(param.group, 'typing', this.user.id);
 			}
 		}
 	}
 
 	private async updateFollowing() {
-		const followings = await Followings.find({
+		const followings = await this.followingsRepository.find({
 			where: {
 				followerId: this.user!.id,
 			},
@@ -325,7 +333,7 @@ export default class Connection {
 	}
 
 	private async updateMuting() {
-		const mutings = await Mutings.find({
+		const mutings = await this.mutingsRepository.find({
 			where: {
 				muterId: this.user!.id,
 			},
@@ -336,7 +344,7 @@ export default class Connection {
 	}
 
 	private async updateBlocking() { // ここでいうBlockingは被Blockingの意
-		const blockings = await Blockings.find({
+		const blockings = await this.blockingsRepository.find({
 			where: {
 				blockeeId: this.user!.id,
 			},
@@ -347,7 +355,7 @@ export default class Connection {
 	}
 
 	private async updateFollowingChannels() {
-		const followings = await ChannelFollowings.find({
+		const followings = await this.channelFollowingsRepository.find({
 			where: {
 				followerId: this.user!.id,
 			},
@@ -358,7 +366,7 @@ export default class Connection {
 	}
 
 	private async updateUserProfile() {
-		this.userProfile = await UserProfiles.findOneBy({
+		this.userProfile = await this.userProfilesRepository.findOneBy({
 			userId: this.user!.id,
 		});
 	}
