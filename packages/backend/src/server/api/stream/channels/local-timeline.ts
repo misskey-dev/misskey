@@ -1,22 +1,29 @@
-import Channel from '../channel.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Notes } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Notes } from '@/models/index.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/schema.js';
+import { MetaService } from '@/services/MetaService.js';
+import Channel from '../channel.js';
 
-export default class extends Channel {
+class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = true;
 	public static requireCredential = false;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private metaService: MetaService,
+		private notesRepository: typeof Notes,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.onNote = this.onNote.bind(this);
 	}
 
 	public async init(params: any) {
-		const meta = await fetchMeta();
+		const meta = await this.metaService.fetch();
 		if (meta.disableLocalTimeline) {
 			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;
 		}
@@ -32,13 +39,13 @@ export default class extends Channel {
 
 		// リプライなら再pack
 		if (note.replyId != null) {
-			note.reply = await Notes.pack(note.replyId, this.user, {
+			note.reply = await this.notesRepository.pack(note.replyId, this.user, {
 				detail: true,
 			});
 		}
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await Notes.pack(note.renoteId, this.user, {
+			note.renote = await this.notesRepository.pack(note.renoteId, this.user, {
 				detail: true,
 			});
 		}
@@ -70,5 +77,28 @@ export default class extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
+	}
+}
+
+@Injectable()
+export class LocalTimelineChannelService {
+	public readonly shouldShare = LocalTimelineChannel.shouldShare;
+	public readonly requireCredential = LocalTimelineChannel.requireCredential;
+
+	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
+		private metaService: MetaService,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): LocalTimelineChannel {
+		return new LocalTimelineChannel(
+			this.metaService,
+			this.notesRepository,
+			id,
+			connection,
+		);
 	}
 }

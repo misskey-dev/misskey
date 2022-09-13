@@ -1,23 +1,30 @@
-import Channel from '../channel.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Notes } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Notes } from '@/models/index.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/schema.js';
+import { MetaService } from '@/services/MetaService.js';
+import Channel from '../channel.js';
 
-export default class extends Channel {
+class GlobalTimelineChannel extends Channel {
 	public readonly chName = 'globalTimeline';
 	public static shouldShare = true;
 	public static requireCredential = false;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private metaService: MetaService,
+		private notesRepository: typeof Notes,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.onNote = this.onNote.bind(this);
 	}
 
 	public async init(params: any) {
-		const meta = await fetchMeta();
+		const meta = await this.metaService.fetch();
 		if (meta.disableGlobalTimeline) {
 			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;
 		}
@@ -32,13 +39,13 @@ export default class extends Channel {
 
 		// リプライなら再pack
 		if (note.replyId != null) {
-			note.reply = await Notes.pack(note.replyId, this.user, {
+			note.reply = await this.notesRepository.pack(note.replyId, this.user, {
 				detail: true,
 			});
 		}
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await Notes.pack(note.renoteId, this.user, {
+			note.renote = await this.notesRepository.pack(note.renoteId, this.user, {
 				detail: true,
 			});
 		}
@@ -73,5 +80,28 @@ export default class extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
+	}
+}
+
+@Injectable()
+export class GlobalTimelineChannelService {
+	public readonly shouldShare = GlobalTimelineChannel.shouldShare;
+	public readonly requireCredential = GlobalTimelineChannel.requireCredential;
+
+	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
+		private metaService: MetaService,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): GlobalTimelineChannel {
+		return new GlobalTimelineChannel(
+			this.metaService,
+			this.notesRepository,
+			id,
+			connection,
+		);
 	}
 }

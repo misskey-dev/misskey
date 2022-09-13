@@ -1,23 +1,31 @@
-import Channel from '../channel.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Notes } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Notes } from '@/models/index.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
-import { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/schema.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { MetaService } from '@/services/MetaService.js';
+import Channel from '../channel.js';
 
-export default class extends Channel {
+class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private metaService: MetaService,
+		private notesRepository: typeof Notes,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.onNote = this.onNote.bind(this);
 	}
 
-	public async init(params: any) {
-		const meta = await fetchMeta();
+	public async init(params: any): Promise<void> {
+		const meta = await this.metaService.fetch();
 		if (meta.disableLocalTimeline && !this.user!.isAdmin && !this.user!.isModerator) return;
 
 		// Subscribe events
@@ -37,7 +45,7 @@ export default class extends Channel {
 		)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await Notes.pack(note.id, this.user!, {
+			note = await this.notesRepository.pack(note.id, this.user!, {
 				detail: true,
 			});
 
@@ -47,13 +55,13 @@ export default class extends Channel {
 		} else {
 			// リプライなら再pack
 			if (note.replyId != null) {
-				note.reply = await Notes.pack(note.replyId, this.user!, {
+				note.reply = await this.notesRepository.pack(note.replyId, this.user!, {
 					detail: true,
 				});
 			}
 			// Renoteなら再pack
 			if (note.renoteId != null) {
-				note.renote = await Notes.pack(note.renoteId, this.user!, {
+				note.renote = await this.notesRepository.pack(note.renoteId, this.user!, {
 					detail: true,
 				});
 			}
@@ -86,8 +94,31 @@ export default class extends Channel {
 		this.send('note', note);
 	}
 
-	public dispose() {
+	public dispose(): void {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
+	}
+}
+
+@Injectable()
+export class HybridTimelineChannelService {
+	public readonly shouldShare = HybridTimelineChannel.shouldShare;
+	public readonly requireCredential = HybridTimelineChannel.requireCredential;
+
+	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
+		private metaService: MetaService,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): HybridTimelineChannel {
+		return new HybridTimelineChannel(
+			this.metaService,
+			this.notesRepository,
+			id,
+			connection,
+		);
 	}
 }

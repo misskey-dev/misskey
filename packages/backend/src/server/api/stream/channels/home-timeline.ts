@@ -1,16 +1,22 @@
-import Channel from '../channel.js';
-import { Notes } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Notes } from '@/models/index.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
-import { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/schema.js';
+import Channel from '../channel.js';
 
-export default class extends Channel {
+class HomeTimelineChannel extends Channel {
 	public readonly chName = 'homeTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private notesRepository: typeof Notes,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.onNote = this.onNote.bind(this);
 	}
@@ -32,7 +38,7 @@ export default class extends Channel {
 		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await Notes.pack(note.id, this.user!, {
+			note = await this.notesRepository.pack(note.id, this.user!, {
 				detail: true,
 			});
 
@@ -42,13 +48,13 @@ export default class extends Channel {
 		} else {
 			// リプライなら再pack
 			if (note.replyId != null) {
-				note.reply = await Notes.pack(note.replyId, this.user!, {
+				note.reply = await this.notesRepository.pack(note.replyId, this.user!, {
 					detail: true,
 				});
 			}
 			// Renoteなら再pack
 			if (note.renoteId != null) {
-				note.renote = await Notes.pack(note.renoteId, this.user!, {
+				note.renote = await this.notesRepository.pack(note.renoteId, this.user!, {
 					detail: true,
 				});
 			}
@@ -81,5 +87,25 @@ export default class extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
+	}
+}
+
+@Injectable()
+export class HomeTimelineChannelService {
+	public readonly shouldShare = HomeTimelineChannel.shouldShare;
+	public readonly requireCredential = HomeTimelineChannel.requireCredential;
+
+	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): HomeTimelineChannel {
+		return new HomeTimelineChannel(
+			this.notesRepository,
+			id,
+			connection,
+		);
 	}
 }

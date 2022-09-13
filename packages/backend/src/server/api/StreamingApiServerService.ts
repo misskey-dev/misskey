@@ -10,6 +10,7 @@ import { NoteReadService } from '@/services/NoteReadService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { AuthenticateService } from './AuthenticateService';
 import MainStreamConnection from './stream/index.js';
+import { ChannelsService } from './stream/ChannelsService.js';
 import type { ParsedUrlQuery } from 'querystring';
 import type * as http from 'node:http';
 
@@ -40,6 +41,7 @@ export class StreamingApiServerService {
 		private globalEventService: GlobalEventService,
 		private noteReadService: NoteReadService,
 		private authenticateService: AuthenticateService,
+		private channelsService: ChannelsService,
 	) {
 	}
 
@@ -79,6 +81,7 @@ export class StreamingApiServerService {
 				this.blockingsRepository,
 				this.channelFollowingsRepository,
 				this.userProfilesRepository,
+				this.channelsService,
 				this.globalEventService,
 				this.noteReadService,
 				connection, ev, user, miapp,

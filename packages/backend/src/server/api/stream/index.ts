@@ -8,7 +8,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { NoteReadService } from '@/services/NoteReadService.js';
 import { readNotification } from '../common/read-notification.js';
-import channels from './channels/index.js';
+import type { ChannelsService } from './ChannelsService.js';
 import type * as websocket from 'websocket';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
@@ -37,6 +37,7 @@ export default class Connection {
 		private blockingsRepository: typeof Blockings,
 		private channelFollowingsRepository: typeof ChannelFollowings,
 		private userProfilesRepository: typeof UserProfiles,
+		private channelsService: ChannelsService,
 		private globalEventService: GlobalEventService,
 		private noteReadService: NoteReadService,
 
@@ -261,16 +262,18 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	public connectChannel(id: string, params: any, channel: string, pong = false) {
-		if ((channels as any)[channel].requireCredential && this.user == null) {
+		const channelService = this.channelsService.getChannelService(channel);
+
+		if (channelService.requireCredential && this.user == null) {
 			return;
 		}
 
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
-		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
+		if (channelService.shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
 		}
 
-		const ch: Channel = new (channels as any)[channel](id, this);
+		const ch: Channel = channelService.create(id, this);
 		this.channels.push(ch);
 		ch.init(params);
 
