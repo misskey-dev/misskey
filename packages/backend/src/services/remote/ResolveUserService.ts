@@ -9,7 +9,7 @@ import type { Config } from '@/config/types.js';
 import { toPuny } from '@/misc/convert-host.js';
 import type Logger from '@/logger.js';
 import { createPerson, updatePerson } from './activitypub/models/person.js';
-import webFinger from './webfinger.js';
+import type { WebfingerService } from './WebfingerService.js';
 import type { RemoteLoggerService } from './RemoteLoggerService.js';
 
 @Injectable()
@@ -23,6 +23,7 @@ export class ResolveUserService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		private webfingerService: WebfingerService,
 		private remoteLoggerService: RemoteLoggerService,
 	) {
 		this.#logger = this.remoteLoggerService.logger.createSubLogger('resolve-user');
@@ -115,7 +116,7 @@ export class ResolveUserService {
 
 	async #resolveSelf(acctLower: string) {
 		this.#logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
-		const finger = await webFinger(acctLower).catch(e => {
+		const finger = await this.webfingerService.webfinger(acctLower).catch(e => {
 			this.#logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ e.statusCode || e.message }`);
 			throw new Error(`Failed to WebFinger for ${acctLower}: ${ e.statusCode || e.message }`);
 		});
