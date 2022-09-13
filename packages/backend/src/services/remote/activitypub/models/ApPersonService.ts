@@ -27,12 +27,13 @@ import type InstanceChart from '@/services/chart/charts/instance.js';
 import type { HashtagService } from '@/services/HashtagService.js';
 import { UserNotePining } from '@/models/entities/user-note-pining.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
+import { extractApHashtags } from './tag.js';
 import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { Resolver , ApResolverService } from '../ApResolverService.js';
 import type { ApImageService } from './ApImageService.js';
 import type { DataSource } from 'typeorm';
-import type { IActor, IObject } from '../type.js';
+import type { IActor, IObject , IApPropertyValue } from '../type.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 
 const nameLength = 128;
