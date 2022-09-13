@@ -12,11 +12,11 @@ import { isSelfHost } from '@/misc/convert-host.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 import { QueueService } from '@/queue/queue.service.js';
 import type { ILocalUser, User } from '@/models/entities/user.js';
-import { UserKeypairStoreService } from '@/services/UserKeypairStoreService';
-import type { Following } from '@/models/entities/following';
-import { countIf } from '@/prelude/array';
-import type { Note } from '@/models/entities/note';
-import { makePaginationQuery } from './api/common/make-pagination-query';
+import { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
+import type { Following } from '@/models/entities/following.js';
+import { countIf } from '@/prelude/array.js';
+import type { Note } from '@/models/entities/note.js';
+import { makePaginationQuery } from './api/common/make-pagination-query.js';
 import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
