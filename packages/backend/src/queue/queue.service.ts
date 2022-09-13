@@ -103,7 +103,7 @@ export class QueueService {
 	}
 
 	public createExportMuteJob(user: ThinUser) {
-		return this.dbQueue.add('exportMute', {
+		return this.dbQueue.add('exportMuting', {
 			user: user,
 		}, {
 			removeOnComplete: true,

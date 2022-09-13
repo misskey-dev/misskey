@@ -1,20 +1,21 @@
 
-import config from '@/config/index.js';
-
-import processDeliver from './processors/deliver.js';
-import processInbox from './processors/inbox.js';
-import processDb from './processors/db/index.js';
-import processObjectStorage from './processors/object-storage/index.js';
-import processSystemQueue from './processors/system/index.js';
-import processWebhookDeliver from './processors/webhook-deliver.js';
-import { endedPollNotification } from './processors/ended-poll-notification.js';
-import { queueLogger } from './logger.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import { getJobInfo } from './get-job-info.js';
 import { QueueService } from './queue.service.js';
 import { SystemQueueProcessorsService } from './SystemQueueProcessorsService.js';
+import { ObjectStorageQueueProcessorsService } from './ObjectStorageQueueProcessorsService.js';
+import { DbQueueProcessorsService } from './DbQueueProcessorsService.js';
+import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
+import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
+import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
+import { InboxProcessorService } from './processors/InboxProcessorService.js';
+import { QueueLoggerService } from './QueueLoggerService.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 export default function(app: INestApplicationContext) {
+	const config = app.get(DI_SYMBOLS.config);
+	const queueLoggerService = app.get(QueueLoggerService);
+	const queueLogger = queueLoggerService.logger;
 	const queueService = app.get(QueueService);
 	const systemQueue = queueService.systemQueue;
 	const deliverQueue = queueService.deliverQueue;
@@ -24,6 +25,12 @@ export default function(app: INestApplicationContext) {
 	const webhookDeliverQueue = queueService.webhookDeliverQueue;
 	const endedPollNotificationQueue = queueService.endedPollNotificationQueue;
 	const systemQueueProcessorsService = app.get(SystemQueueProcessorsService);
+	const objectStorageQueueProcessorsService = app.get(ObjectStorageQueueProcessorsService);
+	const dbQueueProcessorsService = app.get(DbQueueProcessorsService);
+	const webhookDeliverProcessorService = app.get(WebhookDeliverProcessorService);
+	const endedPollNotificationProcessorService = app.get(EndedPollNotificationProcessorService);
+	const deliverProcessorService = app.get(DeliverProcessorService);
+	const inboxProcessorService = app.get(InboxProcessorService);
 
 	function renderError(e: Error): any {
 		return {
@@ -88,12 +95,12 @@ export default function(app: INestApplicationContext) {
 		.on('error', (job: any, err: Error) => webhookLogger.error(`error ${err}`, { job, e: renderError(err) }))
 		.on('stalled', (job) => webhookLogger.warn(`stalled ${getJobInfo(job)} to=${job.data.to}`));
 
-	deliverQueue.process(config.deliverJobConcurrency || 128, processDeliver);
-	inboxQueue.process(config.inboxJobConcurrency || 16, processInbox);
-	endedPollNotificationQueue.process(endedPollNotification);
-	webhookDeliverQueue.process(64, processWebhookDeliver);
-	processDb(dbQueue);
-	processObjectStorage(objectStorageQueue);
+	deliverQueue.process(config.deliverJobConcurrency || 128, deliverProcessorService.process);
+	inboxQueue.process(config.inboxJobConcurrency || 16, inboxProcessorService.process);
+	endedPollNotificationQueue.process(endedPollNotificationProcessorService.process);
+	webhookDeliverQueue.process(64, webhookDeliverProcessorService.process);
+	dbQueueProcessorsService.start(dbQueue);
+	objectStorageQueueProcessorsService.start(objectStorageQueue);
 
 	systemQueue.add('tickCharts', {
 	}, {
