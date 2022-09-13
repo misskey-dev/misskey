@@ -1,10 +1,9 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Emojis, Users } from '@/models/index.js';
+import type { Polls , Emojis, Users } from '@/models/index.js';
 import type { Config } from '@/config/types.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
-import type { MfmService } from '@/services/MfmService.js';
 import { extractDbHost, toPuny } from '@/misc/convert-host';
 import type { Note } from '@/models/entities/note.js';
 import { StatusError } from '@/services/HttpRequestService.js';
@@ -16,14 +15,19 @@ import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { NoteCreateService } from '@/services/NoteCreateService.js';
 import type Logger from '@/logger.js';
 import type { IdService } from '@/services/IdService.js';
+import type { PollService } from '@/services/PollService.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ApPersonService } from './ApPersonService.js';
+import { extractApHashtags } from './tag.js';
+import type { ApMentionService } from './ApMentionService.js';
+import type { ApQuestionService } from './ApQuestionService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { ApDbResolverService } from '../ApDbResolverService.js';
 import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
+import type { ApImageService } from './ApImageService.js';
 
 @Injectable()
 export class ApNoteService {
@@ -33,8 +37,8 @@ export class ApNoteService {
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
 
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('pollsRepository')
+		private pollsRepository: typeof Polls,
 
 		@Inject('emojisRepository')
 		private emojisRepository: typeof Emojis,
@@ -47,8 +51,12 @@ export class ApNoteService {
 		@Inject(forwardRef(() => ApPersonService))
 		private apPersonService: ApPersonService,
 	
+		private apMentionService: ApMentionService,
+		private apImageService: ApImageService,
+		private apQuestionService: ApQuestionService,
 		private metaService: MetaService,
 		private appLockService: AppLockService,
+		private pollService: PollService,
 		private noteCreateService: NoteCreateService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
@@ -136,7 +144,7 @@ export class ApNoteService {
 	
 		let isTalk = note._misskey_talk && visibility === 'specified';
 	
-		const apMentions = await extractApMentions(note.tag);
+		const apMentions = await this.apMentionService.extractApMentions(note.tag);
 		const apHashtags = await extractApHashtags(note.tag);
 	
 		// 添付ファイル
@@ -148,7 +156,7 @@ export class ApNoteService {
 		note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
 		const files = note.attachment
 			.map(attach => attach.sensitive = note.sensitive)
-			? (await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<DriveFile>)))
+			? (await Promise.all(note.attachment.map(x => limit(() => this.apImageService.resolveImage(actor, x)) as Promise<DriveFile>)))
 				.filter(image => image != null)
 			: [];
 	
@@ -233,7 +241,7 @@ export class ApNoteService {
 	
 		// vote
 		if (reply && reply.hasPoll) {
-			const poll = await Polls.findOneByOrFail({ noteId: reply.id });
+			const poll = await this.pollsRepository.findOneByOrFail({ noteId: reply.id });
 	
 			const tryCreateVote = async (name: string, index: number): Promise<null> => {
 				if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
@@ -243,7 +251,7 @@ export class ApNoteService {
 					await vote(actor, reply, index);
 	
 					// リモートフォロワーにUpdate配信
-					deliverQuestionUpdate(reply.id);
+					this.pollService.deliverQuestionUpdate(reply.id);
 				}
 				return null;
 			};
@@ -260,7 +268,7 @@ export class ApNoteService {
 	
 		const apEmojis = emojis.map(emoji => emoji.name);
 	
-		const poll = await extractPollFromQuestion(note, resolver).catch(() => undefined);
+		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
 	
 		if (isTalk) {
 			for (const recipient of visibleUsers) {
