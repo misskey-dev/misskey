@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -24,6 +24,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -40,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isModerator: true,
 			});
 
-			publishInternalEvent('userChangeModeratorState', { id: user.id, isModerator: true });
+			this.globalEventService.publishInternalEvent('userChangeModeratorState', { id: user.id, isModerator: true });
 		});
 	}
 }

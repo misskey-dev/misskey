@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import deleteFollowing from '@/services/following/delete.js';
-import { Followings, Users } from '@/models/index.js';
+import type { Followings, Users } from '@/models/index.js';
+import { UserFollowingService } from '@/services/UserFollowingService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -26,10 +26,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private usersRepository: typeof Users,
 
 		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private followingsRepository: typeof Followings,
+
+		private userFollowingService: UserFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const followings = await Followings.findBy({
+			const followings = await this.followingsRepository.findBy({
 				followerHost: ps.host,
 			});
 
@@ -39,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			])));
 
 			for (const pair of pairs) {
-				deleteFollowing(pair[0], pair[1]);
+				this.userFollowingService.unfollow(pair[0], pair[1]);
 			}
 		});
 	}

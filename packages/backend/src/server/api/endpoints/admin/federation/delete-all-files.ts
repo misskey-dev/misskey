@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { deleteFile } from '@/services/drive/delete-file.js';
-import { DriveFiles } from '@/models/index.js';
+import type { DriveFiles } from '@/models/index.js';
+import { DriveService } from '@/services/DriveService';
 
 export const meta = {
 	tags: ['admin'],
@@ -22,19 +22,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const files = await DriveFiles.findBy({
+			const files = await this.driveFilesRepository.findBy({
 				userHost: ps.host,
 			});
 
 			for (const file of files) {
-				deleteFile(file);
+				this.driveService.deleteFile(file);
 			}
 		});
 	}
