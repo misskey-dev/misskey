@@ -4,6 +4,7 @@ import type { Apps } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { unique } from '@/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { AppEntityService } from '@/services/entities/AppEntityService.js';
 
 export const meta = {
 	tags: ['app'],
@@ -37,6 +38,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('appsRepository')
 		private appsRepository: typeof Apps,
 
+		private appEntityService: AppEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

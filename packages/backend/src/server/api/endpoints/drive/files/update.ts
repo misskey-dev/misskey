@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { publishDriveStream } from '@/services/stream.js';
-import { DriveFiles, DriveFolders, Users } from '@/models/index.js';
+import type { DriveFiles , DriveFolders } from '@/models/index.js';
+import { Users } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -63,9 +65,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		@Inject('driveFoldersRepository')
+		private driveFoldersRepository: typeof DriveFolders,
+
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const file = await DriveFiles.findOneBy({ id: ps.fileId });
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
@@ -76,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.name) file.name = ps.name;
-			if (!DriveFiles.validateFileName(file.name)) {
+			if (!this.driveFileEntityService.validateFileName(file.name)) {
 				throw new ApiError(meta.errors.invalidFileName);
 			}
 
@@ -88,7 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (ps.folderId === null) {
 					file.folderId = null;
 				} else {
-					const folder = await DriveFolders.findOneBy({
+					const folder = await this.driveFoldersRepository.findOneBy({
 						id: ps.folderId,
 						userId: me.id,
 					});
@@ -101,14 +110,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			await DriveFiles.update(file.id, {
+			await this.driveFilesRepository.update(file.id, {
 				name: file.name,
 				comment: file.comment,
 				folderId: file.folderId,
 				isSensitive: file.isSensitive,
 			});
 
-			const fileObj = await DriveFiles.pack(file, { self: true });
+			const fileObj = await this.driveFileEntityService.pack(file, { self: true });
 
 			// Publish fileUpdated event
 			publishDriveStream(me.id, 'fileUpdated', fileObj);

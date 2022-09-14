@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Apps } from '@/models/index.js';
+import { AppEntityService } from '@/services/entities/AppEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -35,6 +36,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('appsRepository')
 		private appsRepository: typeof Apps,
+
+		private appEntityService: AppEntityService,
 	) {
 		super(meta, paramDef, async (ps, user, token) => {
 			const isSecure = user != null && token == null;

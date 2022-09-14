@@ -2,8 +2,9 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import create from '@/services/blocking/create.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { Blockings, NoteWatchings } from '@/models/index.js';
+import type { Users , Blockings } from '@/models/index.js';
+import { NoteWatchings } from '@/models/index.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
 
@@ -60,6 +61,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
+
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });

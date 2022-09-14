@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users , Apps, AccessTokens , AuthSessions } from '@/models/index.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -70,6 +71,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('accessTokensRepository')
 		private accessTokensRepository: typeof AccessTokens,
+
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup app

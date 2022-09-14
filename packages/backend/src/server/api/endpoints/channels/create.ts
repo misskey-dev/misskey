@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Channels, DriveFiles } from '@/models/index.js';
+import type { Channels, DriveFiles } from '@/models/index.js';
 import type { Channel } from '@/models/entities/channel.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
+import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -41,12 +42,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		@Inject('channelsRepository')
+		private channelsRepository: typeof Channels,
+
 		private idService: IdService,
+		private channelEntityService: ChannelEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let banner = null;
 			if (ps.bannerId != null) {
-				banner = await DriveFiles.findOneBy({
+				banner = await this.driveFilesRepository.findOneBy({
 					id: ps.bannerId,
 					userId: me.id,
 				});
@@ -56,16 +64,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			const channel = await Channels.insert({
+			const channel = await this.channelsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
 				name: ps.name,
 				description: ps.description || null,
 				bannerId: banner ? banner.id : null,
-			} as Channel).then(x => Channels.findOneByOrFail(x.identifiers[0]));
+			} as Channel).then(x => this.channelsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await Channels.pack(channel, me);
+			return await this.channelEntityService.pack(channel, me);
 		});
 	}
 }

@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { publishDriveStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFolders } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { DriveFolders } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -40,6 +41,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFoldersRepository')
+		private driveFoldersRepository: typeof DriveFolders,
+
+		private driveFolderEntityService: DriveFolderEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -47,7 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			let parent = null;
 			if (ps.parentId) {
 				// Fetch parent folder
-				parent = await DriveFolders.findOneBy({
+				parent = await this.driveFoldersRepository.findOneBy({
 					id: ps.parentId,
 					userId: me.id,
 				});
@@ -58,15 +63,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Create folder
-			const folder = await DriveFolders.insert({
+			const folder = await this.driveFoldersRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				name: ps.name,
 				parentId: parent !== null ? parent.id : null,
 				userId: me.id,
-			}).then(x => DriveFolders.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.driveFoldersRepository.findOneByOrFail(x.identifiers[0]));
 
-			const folderObj = await DriveFolders.pack(folder);
+			const folderObj = await this.driveFolderEntityService.pack(folder);
 
 			// Publish folderCreated event
 			publishDriveStream(me.id, 'folderCreated', folderObj);

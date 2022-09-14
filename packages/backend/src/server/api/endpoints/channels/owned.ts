@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Channels } from '@/models/index.js';
+import type { Channels } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
 
 export const meta = {
 	tags: ['channels', 'account'],
@@ -35,23 +36,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('channelsRepository')
+		private channelsRepository: typeof Channels,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
+		private channelEntityService: ChannelEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Channels.createQueryBuilder(), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder(), ps.sinceId, ps.untilId)
 				.andWhere({ userId: me.id });
 
 			const channels = await query
 				.take(ps.limit)
 				.getMany();
 
-			return await Promise.all(channels.map(x => Channels.pack(x, me)));
+			return await Promise.all(channels.map(x => this.channelEntityService.pack(x, me)));
 		});
 	}
 }

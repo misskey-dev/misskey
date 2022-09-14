@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFile } from '@/models/entities/drive-file.js';
-import { DriveFiles, Users } from '@/models/index.js';
+import type { DriveFiles } from '@/models/index.js';
+import { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -56,14 +58,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let file: DriveFile | null = null;
 
 			if (ps.fileId) {
-				file = await DriveFiles.findOneBy({ id: ps.fileId });
+				file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 			} else if (ps.url) {
-				file = await DriveFiles.findOne({
+				file = await this.driveFilesRepository.findOne({
 					where: [{
 						url: ps.url,
 					}, {
@@ -82,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			return await DriveFiles.pack(file, {
+			return await this.driveFileEntityService.pack(file, {
 				detail: true,
 				withUser: true,
 				self: true,

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { IdService } from '@/services/IdService.js';
-import { Clips } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import type { Clips } from '@/models/index.js';
+import { ClipEntityService } from '@/services/entities/ClipEntityService.js';
 
 export const meta = {
 	tags: ['clips'],
@@ -31,19 +32,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('clipsRepository')
+		private clipsRepository: typeof Clips,
+
+		private clipEntityService: ClipEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clip = await Clips.insert({
+			const clip = await this.clipsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
 				name: ps.name,
 				isPublic: ps.isPublic,
 				description: ps.description,
-			}).then(x => Clips.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.clipsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await Clips.pack(clip);
+			return await this.clipEntityService.pack(clip);
 		});
 	}
 }

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Channels, DriveFiles } from '@/models/index.js';
+import type { DriveFiles , Channels } from '@/models/index.js';
+import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -52,14 +53,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('channelsRepository')
+		private channelsRepository: typeof Channels,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		private channelEntityService: ChannelEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const channel = await Channels.findOneBy({
+			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
 			});
 
@@ -74,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// eslint:disable-next-line:no-unnecessary-initializer
 			let banner = undefined;
 			if (ps.bannerId != null) {
-				banner = await DriveFiles.findOneBy({
+				banner = await this.driveFilesRepository.findOneBy({
 					id: ps.bannerId,
 					userId: me.id,
 				});
@@ -86,13 +89,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				banner = null;
 			}
 
-			await Channels.update(channel.id, {
+			await this.channelsRepository.update(channel.id, {
 				...(ps.name !== undefined ? { name: ps.name } : {}),
 				...(ps.description !== undefined ? { description: ps.description } : {}),
 				...(banner ? { bannerId: banner.id } : {}),
 			});
 
-			return await Channels.pack(channel.id, me);
+			return await this.channelEntityService.pack(channel.id, me);
 		});
 	}
 }

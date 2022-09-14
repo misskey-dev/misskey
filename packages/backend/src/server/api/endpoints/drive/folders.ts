@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFolders } from '@/models/index.js';
+import type { DriveFolders } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -36,10 +37,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFoldersRepository')
+		private driveFoldersRepository: typeof DriveFolders,
+
+		private driveFolderEntityService: DriveFolderEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(DriveFolders.createQueryBuilder('folder'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.driveFoldersRepository.createQueryBuilder('folder'), ps.sinceId, ps.untilId)
 				.andWhere('folder.userId = :userId', { userId: me.id });
 
 			if (ps.folderId) {
@@ -50,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const folders = await query.take(ps.limit).getMany();
 
-			return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
+			return await Promise.all(folders.map(folder => this.driveFolderEntityService.pack(folder)));
 		});
 	}
 }

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFiles } from '@/models/index.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 
 export const meta = {
 	requireCredential: true,
@@ -36,6 +37,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const files = await DriveFiles.findBy({
@@ -44,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				folderId: ps.folderId ?? IsNull(),
 			});
 
-			return await Promise.all(files.map(file => DriveFiles.pack(file, { self: true })));
+			return await Promise.all(files.map(file => this.driveFileEntityService.pack(file, { self: true })));
 		});
 	}
 }

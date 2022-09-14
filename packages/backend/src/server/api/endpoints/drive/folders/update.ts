@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { publishDriveStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFolders } from '@/models/index.js';
+import type { DriveFolders } from '@/models/index.js';
+import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -52,10 +53,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFoldersRepository')
+		private driveFoldersRepository: typeof DriveFolders,
+
+		private driveFolderEntityService: DriveFolderEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch folder
-			const folder = await DriveFolders.findOneBy({
+			const folder = await this.driveFoldersRepository.findOneBy({
 				id: ps.folderId,
 				userId: me.id,
 			});
@@ -73,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					folder.parentId = null;
 				} else {
 					// Get parent folder
-					const parent = await DriveFolders.findOneBy({
+					const parent = await this.driveFoldersRepository.findOneBy({
 						id: ps.parentId,
 						userId: me.id,
 					});
@@ -83,9 +88,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					}
 
 					// Check if the circular reference will occur
-					async function checkCircle(folderId: string): Promise<boolean> {
+					const checkCircle = async (folderId: string): Promise<boolean> => {
 						// Fetch folder
-						const folder2 = await DriveFolders.findOneBy({
+						const folder2 = await this.driveFoldersRepository.findOneBy({
 							id: folderId,
 						});
 
@@ -96,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						} else {
 							return false;
 						}
-					}
+					};
 
 					if (parent.parentId !== null) {
 						if (await checkCircle(parent.parentId)) {
@@ -109,12 +114,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Update
-			DriveFolders.update(folder.id, {
+			this.driveFoldersRepository.update(folder.id, {
 				name: folder.name,
 				parentId: folder.parentId,
 			});
 
-			const folderObj = await DriveFolders.pack(folder);
+			const folderObj = await this.driveFolderEntityService.pack(folder);
 
 			// Publish folderUpdated event
 			publishDriveStream(me.id, 'folderUpdated', folderObj);

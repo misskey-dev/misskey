@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFolders } from '@/models/index.js';
+import type { DriveFolders } from '@/models/index.js';
+import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -37,10 +38,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFoldersRepository')
+		private driveFoldersRepository: typeof DriveFolders,
+
+		private driveFolderEntityService: DriveFolderEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get folder
-			const folder = await DriveFolders.findOneBy({
+			const folder = await this.driveFoldersRepository.findOneBy({
 				id: ps.folderId,
 				userId: me.id,
 			});
@@ -49,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFolder);
 			}
 
-			return await DriveFolders.pack(folder, {
+			return await this.driveFolderEntityService.pack(folder, {
 				detail: true,
 			});
 		});

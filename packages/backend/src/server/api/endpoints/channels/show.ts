@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Channels } from '@/models/index.js';
+import type { Channels } from '@/models/index.js';
+import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -35,14 +36,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('channelsRepository')
+		private channelsRepository: typeof Channels,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private channelEntityService: ChannelEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const channel = await Channels.findOneBy({
+			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
 			});
 
@@ -50,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			return await Channels.pack(channel, me);
+			return await this.channelEntityService.pack(channel, me);
 		});
 	}
 }
