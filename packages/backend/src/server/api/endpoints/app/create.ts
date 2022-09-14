@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Apps } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { Apps } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import { unique } from '@/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 
@@ -34,6 +34,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('appsRepository')
+		private appsRepository: typeof Apps,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -44,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));
 
 			// Create account
-			const app = await Apps.insert({
+			const app = await this.appsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me ? me.id : null,
@@ -53,9 +56,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				permission,
 				callbackUrl: ps.callbackUrl,
 				secret: secret,
-			}).then(x => Apps.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.appsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await Apps.pack(app, null, {
+			return await this.appsRepository.pack(app, null, {
 				detail: true,
 				includeSecret: true,
 			});

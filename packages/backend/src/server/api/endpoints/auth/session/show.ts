@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AuthSessions } from '@/models/index.js';
+import type { AuthSessions } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -50,10 +50,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('authSessionsRepository')
+		private authSessionsRepository: typeof AuthSessions,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup session
-			const session = await AuthSessions.findOneBy({
+			const session = await this.authSessionsRepository.findOneBy({
 				token: ps.token,
 			});
 
@@ -61,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchSession);
 			}
 
-			return await AuthSessions.pack(session, me);
+			return await this.authSessionsRepository.pack(session, me);
 		});
 	}
 }

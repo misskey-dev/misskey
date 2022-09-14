@@ -1,8 +1,8 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AuthSessions, AccessTokens, Apps } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { AuthSessions, Apps , AccessTokens } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { ApiError } from '../../error.js';
 
@@ -34,11 +34,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('appsRepository')
+		private appsRepository: typeof Apps,
+
+		@Inject('authSessionsRepository')
+		private authSessionsRepository: typeof AuthSessions,
+
+		@Inject('accessTokensRepository')
+		private accessTokensRepository: typeof AccessTokens,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch token
-			const session = await AuthSessions
+			const session = await this.authSessionsRepository
 				.findOneBy({ token: ps.token });
 
 			if (session == null) {
@@ -49,14 +58,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const accessToken = secureRndstr(32, true);
 
 			// Fetch exist access token
-			const exist = await AccessTokens.findOneBy({
+			const exist = await this.accessTokensRepository.findOneBy({
 				appId: session.appId,
 				userId: me.id,
 			});
 
 			if (exist == null) {
 				// Lookup app
-				const app = await Apps.findOneByOrFail({ id: session.appId });
+				const app = await this.appsRepository.findOneByOrFail({ id: session.appId });
 
 				// Generate Hash
 				const sha256 = crypto.createHash('sha256');
@@ -66,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const now = new Date();
 
 				// Insert access token doc
-				await AccessTokens.insert({
+				await this.accessTokensRepository.insert({
 					id: this.idService.genId(),
 					createdAt: now,
 					lastUsedAt: now,
@@ -78,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Update session
-			await AuthSessions.update(session.id, {
+			await this.authSessionsRepository.update(session.id, {
 				userId: me.id,
 			});
 		});

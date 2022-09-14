@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type FederationChart from '@/services/chart/charts/federation.js';
+import FederationChart from '@/services/chart/charts/federation.js';
 import { schema } from '@/services/chart/charts/entities/federation.js';
 
 export const meta = {

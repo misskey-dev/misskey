@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getJsonSchema } from '@/services/chart/core.js';
-import type PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
+import PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
 import { schema } from '@/services/chart/charts/entities/per-user-following.js';
 
 export const meta = {

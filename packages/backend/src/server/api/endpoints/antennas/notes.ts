@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import readNote from '@/services/note/read.js';
-import { Antennas, Notes, AntennaNotes } from '@/models/index.js';
+import type { Notes , AntennaNotes } from '@/models/index.js';
+import { Antennas } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteReadService } from '@/services/NoteReadService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -48,7 +49,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
+		@Inject('antennaNotesRepository')
+		private antennaNotesRepository: typeof AntennaNotes,
+
 		private queryService: QueryService,
+		private noteReadService: NoteReadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const antenna = await Antennas.findOneBy({
@@ -60,9 +68,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'),
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.innerJoin(AntennaNotes.metadata.targetName, 'antennaNote', 'antennaNote.noteId = note.id')
+				.innerJoin(this.antennaNotesRepository.metadata.targetName, 'antennaNote', 'antennaNote.noteId = note.id')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')
@@ -85,10 +93,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.getMany();
 
 			if (notes.length > 0) {
-				readNote(me.id, notes);
+				this.noteReadService.read(me.id, notes);
 			}
 
-			return await Notes.packMany(notes, me);
+			return await this.notesRepository.packMany(notes, me);
 		});
 	}
 }

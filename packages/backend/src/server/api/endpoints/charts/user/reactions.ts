@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type PerUserReactionsChart from '@/services/chart/charts/per-user-reactions.js';
+import PerUserReactionsChart from '@/services/chart/charts/per-user-reactions.js';
 import { schema } from '@/services/chart/charts/entities/per-user-reactions.js';
 
 export const meta = {

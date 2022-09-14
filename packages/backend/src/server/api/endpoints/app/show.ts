@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Apps } from '@/models/index.js';
+import type { Apps } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -33,23 +33,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('appsRepository')
+		private appsRepository: typeof Apps,
 	) {
 		super(meta, paramDef, async (ps, user, token) => {
 			const isSecure = user != null && token == null;
 
 			// Lookup app
-			const ap = await Apps.findOneBy({ id: ps.appId });
+			const ap = await this.appsRepository.findOneBy({ id: ps.appId });
 
 			if (ap == null) {
 				throw new ApiError(meta.errors.noSuchApp);
 			}
 
-			return await Apps.pack(ap, user, {
+			return await this.appsRepository.pack(ap, user, {
 				detail: true,
 				includeSecret: isSecure && (ap.userId === user!.id),
 			});

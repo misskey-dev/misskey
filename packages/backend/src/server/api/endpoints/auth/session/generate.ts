@@ -1,9 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
-import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Apps, AuthSessions } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { Apps, AuthSessions } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import { Config } from '@/config/types.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -48,11 +49,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
+		@Inject('appsRepository')
+		private appsRepository: typeof Apps,
+
+		@Inject('authSessionsRepository')
+		private authSessionsRepository: typeof AuthSessions,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup app
-			const app = await Apps.findOneBy({
+			const app = await this.appsRepository.findOneBy({
 				secret: ps.appSecret,
 			});
 
@@ -64,16 +74,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const token = uuid();
 
 			// Create session token document
-			const doc = await AuthSessions.insert({
+			const doc = await this.authSessionsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				appId: app.id,
 				token: token,
-			}).then(x => AuthSessions.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.authSessionsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return {
 				token: doc.token,
-				url: `${config.authUrl}/${doc.token}`,
+				url: `${this.config.authUrl}/${doc.token}`,
 			};
 		});
 	}

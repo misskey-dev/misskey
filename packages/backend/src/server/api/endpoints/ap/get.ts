@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import Resolver from '@/services/remote/activitypub/resolver.js';
+import { ApResolverService } from '@/services/remote/activitypub/ApResolverService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -35,9 +35,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private apResolverService: ApResolverService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const resolver = new Resolver();
+			const resolver = this.apResolverService.createResolver();
 			const object = await resolver.resolve(ps.uri);
 			return object;
 		});

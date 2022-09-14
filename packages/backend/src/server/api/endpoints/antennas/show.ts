@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Antennas } from '@/models/index.js';
+import type { Antennas } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -37,15 +37,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('antennasRepository')
+		private antennasRepository: typeof Antennas,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the antenna
-			const antenna = await Antennas.findOneBy({
+			const antenna = await this.antennasRepository.findOneBy({
 				id: ps.antennaId,
 				userId: me.id,
 			});
@@ -54,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			return await Antennas.pack(antenna);
+			return await this.antennasRepository.pack(antenna);
 		});
 	}
 }

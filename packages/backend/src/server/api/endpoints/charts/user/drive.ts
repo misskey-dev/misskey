@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type PerUserDriveChart from '@/services/chart/charts/per-user-drive.js';
+import PerUserDriveChart from '@/services/chart/charts/per-user-drive.js';
 import { schema } from '@/services/chart/charts/entities/per-user-drive.js';
 
 export const meta = {

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Antennas } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import type { Antennas } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -32,9 +32,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('antennasRepository')
+		private antennasRepository: typeof Antennas,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const antenna = await Antennas.findOneBy({
+			const antenna = await this.antennasRepository.findOneBy({
 				id: ps.antennaId,
 				userId: me.id,
 			});
@@ -43,9 +47,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			await Antennas.delete(antenna.id);
+			await this.antennasRepository.delete(antenna.id);
 
-			publishInternalEvent('antennaDeleted', antenna);
+			this.globalEventService.publishInternalEvent('antennaDeleted', antenna);
 		});
 	}
 }

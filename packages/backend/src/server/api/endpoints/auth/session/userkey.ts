@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { Apps, AuthSessions, AccessTokens } from '@/models/index.js';
+import type { Users , Apps, AccessTokens , AuthSessions } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -62,10 +61,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('appsRepository')
+		private appsRepository: typeof Apps,
+
+		@Inject('authSessionsRepository')
+		private authSessionsRepository: typeof AuthSessions,
+
+		@Inject('accessTokensRepository')
+		private accessTokensRepository: typeof AccessTokens,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup app
-			const app = await Apps.findOneBy({
+			const app = await this.appsRepository.findOneBy({
 				secret: ps.appSecret,
 			});
 
@@ -74,7 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Fetch token
-			const session = await AuthSessions.findOneBy({
+			const session = await this.authSessionsRepository.findOneBy({
 				token: ps.token,
 				appId: app.id,
 			});
@@ -88,13 +96,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Lookup access token
-			const accessToken = await AccessTokens.findOneByOrFail({
+			const accessToken = await this.accessTokensRepository.findOneByOrFail({
 				appId: app.id,
 				userId: session.userId,
 			});
 
 			// Delete session
-			AuthSessions.delete(session.id);
+			this.authSessionsRepository.delete(session.id);
 
 			return {
 				accessToken: accessToken.token,

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import type { Antennas , UserLists, UserGroupJoinings } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -71,10 +71,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('antennasRepository')
+		private antennasRepository: typeof Antennas,
+
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
+
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the antenna
-			const antenna = await Antennas.findOneBy({
+			const antenna = await this.antennasRepository.findOneBy({
 				id: ps.antennaId,
 				userId: me.id,
 			});
@@ -87,7 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			let userGroupJoining;
 
 			if (ps.src === 'list' && ps.userListId) {
-				userList = await UserLists.findOneBy({
+				userList = await this.userListsRepository.findOneBy({
 					id: ps.userListId,
 					userId: me.id,
 				});
@@ -96,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.noSuchUserList);
 				}
 			} else if (ps.src === 'group' && ps.userGroupId) {
-				userGroupJoining = await UserGroupJoinings.findOneBy({
+				userGroupJoining = await this.userGroupJoiningsRepository.findOneBy({
 					userGroupId: ps.userGroupId,
 					userId: me.id,
 				});
@@ -106,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			await Antennas.update(antenna.id, {
+			await this.antennasRepository.update(antenna.id, {
 				name: ps.name,
 				src: ps.src,
 				userListId: userList ? userList.id : null,
@@ -120,9 +130,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				notify: ps.notify,
 			});
 
-			publishInternalEvent('antennaUpdated', await Antennas.findOneByOrFail({ id: antenna.id }));
+			this.globalEventService.publishInternalEvent('antennaUpdated', await this.antennasRepository.findOneByOrFail({ id: antenna.id }));
 
-			return await Antennas.pack(antenna.id);
+			return await this.antennasRepository.pack(antenna.id);
 		});
 	}
 }

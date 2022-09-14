@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { IdService } from '@/services/IdService.js';
-import { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import { IdService } from '@/services/IdService.js';
+import type { UserLists, UserGroupJoinings , Antennas } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -65,14 +65,24 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('antennasRepository')
+		private antennasRepository: typeof Antennas,
+
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
+
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
 		private idService: IdService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let userList;
 			let userGroupJoining;
 
 			if (ps.src === 'list' && ps.userListId) {
-				userList = await UserLists.findOneBy({
+				userList = await this.userListsRepository.findOneBy({
 					id: ps.userListId,
 					userId: me.id,
 				});
@@ -81,7 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.noSuchUserList);
 				}
 			} else if (ps.src === 'group' && ps.userGroupId) {
-				userGroupJoining = await UserGroupJoinings.findOneBy({
+				userGroupJoining = await this.userGroupJoiningsRepository.findOneBy({
 					userGroupId: ps.userGroupId,
 					userId: me.id,
 				});
@@ -91,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			const antenna = await Antennas.insert({
+			const antenna = await this.antennasRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
@@ -106,11 +116,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
 				notify: ps.notify,
-			}).then(x => Antennas.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.antennasRepository.findOneByOrFail(x.identifiers[0]));
 
-			publishInternalEvent('antennaCreated', antenna);
+			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
 
-			return await Antennas.pack(antenna);
+			return await this.antennasRepository.pack(antenna);
 		});
 	}
 }

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type HashtagChart from '@/services/chart/charts/hashtag.js';
+import HashtagChart from '@/services/chart/charts/hashtag.js';
 import { schema } from '@/services/chart/charts/entities/hashtag.js';
 
 export const meta = {
