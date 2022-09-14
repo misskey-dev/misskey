@@ -1,10 +1,11 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Users, Followings, UserProfiles } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Followings, UserProfiles } from '@/models/index.js';
 import { toPunyNullable } from '@/misc/convert-host.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users'],
@@ -75,6 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy(ps.userId != null
@@ -105,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
 				.andWhere('following.followeeId = :userId', { userId: user.id })
 				.innerJoinAndSelect('following.follower', 'follower');
 

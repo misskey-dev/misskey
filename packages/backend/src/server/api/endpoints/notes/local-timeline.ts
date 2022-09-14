@@ -5,14 +5,8 @@ import type { Users } from '@/models/index.js';
 import { Notes } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateRepliesQuery } from '../../common/generate-replies-query.js';
-import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
-import { generateChannelQuery } from '../../common/generate-channel-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -61,6 +55,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const m = await fetchMeta();
@@ -71,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			//#region Construct query
-			const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
 				.innerJoinAndSelect('note.user', 'user')
@@ -86,12 +81,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			generateChannelQuery(query, me);
-			generateRepliesQuery(query, me);
-			generateVisibilityQuery(query, me);
-			if (me) generateMutedUserQuery(query, me);
-			if (me) generateMutedNoteQuery(query, me);
-			if (me) generateBlockedUserQuery(query, me);
+			this.queryService.generateChannelQuery(query, me);
+			this.queryService.generateRepliesQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
+			if (me) this.queryService.generateMutedUserQuery(query, me);
+			if (me) this.queryService.generateMutedNoteQuery(query, me);
+			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');

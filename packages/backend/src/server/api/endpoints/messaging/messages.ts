@@ -3,9 +3,9 @@ import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { MessagingMessages, UserGroups, UserGroupJoinings } from '@/models/index.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
 
 export const meta = {
@@ -76,6 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.userId != null) {
@@ -85,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw e;
 				});
 
-				const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+				const query = this.queryService.makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
 					.andWhere(new Brackets(qb => { qb
 						.where(new Brackets(qb => { qb
 							.where('message.userId = :meId')
@@ -132,7 +134,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.groupAccessDenied);
 				}
 
-				const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+				const query = this.queryService.makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
 					.andWhere('message.groupId = :groupId', { groupId: recipientGroup.id });
 
 				const messages = await query.take(ps.limit).getMany();

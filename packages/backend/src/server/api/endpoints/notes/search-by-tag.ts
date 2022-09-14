@@ -4,10 +4,7 @@ import { Notes } from '@/models/index.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],
@@ -75,9 +72,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')
@@ -90,9 +89,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			generateVisibilityQuery(query, me);
-			if (me) generateMutedUserQuery(query, me);
-			if (me) generateBlockedUserQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
+			if (me) this.queryService.generateMutedUserQuery(query, me);
+			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 			try {
 				if (ps.tag) {

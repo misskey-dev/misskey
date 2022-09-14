@@ -3,11 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Notes } from '@/models/index.js';
 import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 import es from '../../../../db/elasticsearch.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -56,10 +53,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (es == null) {
-				const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
+				const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
 				if (ps.userId) {
 					query.andWhere('note.userId = :userId', { userId: ps.userId });
@@ -81,9 +80,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 					.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-				generateVisibilityQuery(query, me);
-				if (me) generateMutedUserQuery(query, me);
-				if (me) generateBlockedUserQuery(query, me);
+				this.queryService.generateVisibilityQuery(query, me);
+				if (me) this.queryService.generateMutedUserQuery(query, me);
+				if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 				const notes = await query.take(ps.limit).getMany();
 

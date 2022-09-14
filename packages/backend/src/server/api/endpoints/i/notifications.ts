@@ -5,8 +5,8 @@ import { Notifications, Followings, Mutings, UserProfiles } from '@/models/index
 import { notificationTypes } from '@/types.js';
 import read from '@/services/note/read.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 import { readNotification } from '../../common/read-notification.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['account', 'notifications'],
@@ -56,6 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
     private usersRepository: typeof Users,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// includeTypes が空の場合はクエリしない
@@ -82,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.select('users.id')
 				.where('users.isSuspended = TRUE');
 
-			const query = makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
 				.andWhere('notification.notifieeId = :meId', { meId: me.id })
 				.leftJoinAndSelect('notification.notifier', 'notifier')
 				.leftJoinAndSelect('notification.note', 'note')

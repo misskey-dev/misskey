@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -33,6 +32,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const max = 30;
@@ -56,8 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			if (me) generateMutedUserQuery(query, me);
-			if (me) generateBlockedUserQuery(query, me);
+			if (me) this.queryService.generateMutedUserQuery(query, me);
+			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 			let notes = await query
 				.orderBy('note.score', 'DESC')

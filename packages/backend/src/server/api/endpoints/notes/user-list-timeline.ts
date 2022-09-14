@@ -3,9 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UserLists, UserListJoinings, Notes } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 
 export const meta = {
 	tags: ['notes', 'lists'],
@@ -56,6 +55,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const list = await UserLists.findOneBy({
@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			//#region Construct query
-			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.innerJoin(UserListJoinings.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 				.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
 
-			generateVisibilityQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
 
 			if (ps.includeMyRenotes === false) {
 				query.andWhere(new Brackets(qb => {

@@ -3,11 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import read from '@/services/note/read.js';
 import { Notes, Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
-import { generateMutedNoteThreadQuery } from '../../common/generate-muted-note-thread-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -41,13 +37,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const followingQuery = Followings.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
 
-			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => { qb
 					.where(`'{"${me.id}"}' <@ note.mentions`)
 					.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
@@ -64,10 +61,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			generateVisibilityQuery(query, me);
-			generateMutedUserQuery(query, me);
-			generateMutedNoteThreadQuery(query, me);
-			generateBlockedUserQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateMutedNoteThreadQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
 
 			if (ps.visibility) {
 				query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });

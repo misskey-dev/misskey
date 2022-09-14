@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Announcements, AnnouncementReads } from '@/models/index.js';
 import type { Announcement } from '@/models/entities/announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -68,9 +68,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
 			const announcements = await query.take(ps.limit).getMany();
 

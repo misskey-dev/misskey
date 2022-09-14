@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AbuseUserReports } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -89,9 +89,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
 			switch (ps.state) {
 				case 'resolved': query.andWhere('report.resolved = TRUE'); break;

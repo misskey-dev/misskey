@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NoteReactions, UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -53,6 +52,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const profile = await UserProfiles.findOneByOrFail({ userId: ps.userId });
@@ -61,12 +62,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.reactionsNotPublic);
 			}
 
-			const query = makePaginationQuery(NoteReactions.createQueryBuilder('reaction'),
+			const query = this.queryService.makePaginationQuery(NoteReactions.createQueryBuilder('reaction'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('reaction.userId = :userId', { userId: ps.userId })
 				.leftJoinAndSelect('reaction.note', 'note');
 
-			generateVisibilityQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
 
 			const reactions = await query
 				.take(ps.limit)

@@ -2,11 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import readNote from '@/services/note/read.js';
 import { Antennas, Notes, AntennaNotes } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['antennas', 'account', 'notes'],
@@ -51,6 +48,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const antenna = await Antennas.findOneBy({
@@ -62,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.innerJoin(AntennaNotes.metadata.targetName, 'antennaNote', 'antennaNote.noteId = note.id')
 				.innerJoinAndSelect('note.user', 'user')
@@ -78,9 +76,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 				.andWhere('antennaNote.antennaId = :antennaId', { antennaId: antenna.id });
 
-			generateVisibilityQuery(query, me);
-			generateMutedUserQuery(query, me);
-			generateBlockedUserQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
 
 			const notes = await query
 				.take(ps.limit)

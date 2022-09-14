@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DriveFiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -48,9 +48,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = makePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId);
 
 			if (ps.userId) {
 				query.andWhere('file.userId = :userId', { userId: ps.userId });

@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query.js';
-import { generateBlockQueryForUsers } from '../common/generate-block-query.js';
+import { QueryService } from '@/services/QueryService';
 
 export const meta = {
 	tags: ['users'],
@@ -47,6 +46,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.usersRepository.createQueryBuilder('user');
@@ -78,8 +79,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				default: query.orderBy('user.id', 'ASC'); break;
 			}
 
-			if (me) generateMutedUserQueryForUsers(query, me);
-			if (me) generateBlockQueryForUsers(query, me);
+			if (me) this.queryService.generateMutedUserQueryForUsers(query, me);
+			if (me) this.queryService.generateBlockQueryForUsers(query, me);
 
 			query.take(ps.limit);
 			query.skip(ps.offset);

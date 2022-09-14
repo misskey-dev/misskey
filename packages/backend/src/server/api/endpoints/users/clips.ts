@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Clips } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['users', 'clips'],
@@ -34,9 +34,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = makePaginationQuery(Clips.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(Clips.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
 				.andWhere('clip.userId = :userId', { userId: ps.userId })
 				.andWhere('clip.isPublic = true');
 

@@ -2,12 +2,9 @@ import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -62,6 +59,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
@@ -71,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			//#region Construct query
-			const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('note.userId = :userId', { userId: user.id })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
@@ -85,10 +84,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			generateVisibilityQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
 			if (me) {
-				generateMutedUserQuery(query, me, user);
-				generateBlockedUserQuery(query, me);
+				this.queryService.generateMutedUserQuery(query, me, user);
+				this.queryService.generateBlockedUserQuery(query, me);
 			}
 
 			if (ps.withFiles) {

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Followings } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -39,14 +39,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
-		.andWhere('following.followerHost = :host', { host: ps.host });
+			const query = this.queryService.makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+				.andWhere('following.followerHost = :host', { host: ps.host });
 
 			const followings = await query
-		.take(ps.limit)
-		.getMany();
+				.take(ps.limit)
+				.getMany();
 
 			return await Followings.packMany(followings, me, { populateFollowee: true });
 		});

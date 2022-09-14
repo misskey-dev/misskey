@@ -16,7 +16,7 @@ import { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
 import type { Following } from '@/models/entities/following.js';
 import { countIf } from '@/prelude/array.js';
 import type { Note } from '@/models/entities/note.js';
-import { makePaginationQuery } from './api/common/make-pagination-query.js';
+import { QueryService } from '@/services/QueryService';
 import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
@@ -52,6 +52,7 @@ export class ActivityPubServerService {
 		private apRendererService: ApRendererService,
 		private queueService: QueueService,
 		private userKeypairStoreService: UserKeypairStoreService,
+		private queryService: QueryService,
 	) {
 	}
 
@@ -329,7 +330,7 @@ export class ActivityPubServerService {
 		const partOf = `${this.config.url}/users/${userId}/outbox`;
 	
 		if (page) {
-			const query = makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
 				.andWhere('note.userId = :userId', { userId: user.id })
 				.andWhere(new Brackets(qb => { qb
 					.where('note.visibility = \'public\'')

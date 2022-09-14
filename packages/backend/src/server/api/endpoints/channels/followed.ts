@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Channels, ChannelFollowings } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['channels', 'account'],
@@ -40,14 +40,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = makePaginationQuery(ChannelFollowings.createQueryBuilder(), ps.sinceId, ps.untilId)
-		.andWhere({ followerId: me.id });
+			const query = this.queryService.makePaginationQuery(ChannelFollowings.createQueryBuilder(), ps.sinceId, ps.untilId)
+				.andWhere({ followerId: me.id });
 
 			const followings = await query
-		.take(ps.limit)
-		.getMany();
+				.take(ps.limit)
+				.getMany();
 
 			return await Promise.all(followings.map(x => Channels.pack(x.followeeId, me)));
 		});

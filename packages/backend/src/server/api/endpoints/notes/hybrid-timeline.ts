@@ -4,14 +4,8 @@ import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Followings, Notes } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateRepliesQuery } from '../../common/generate-replies-query.js';
-import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
-import { generateChannelQuery } from '../../common/generate-channel-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -61,6 +55,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const m = await fetchMeta();
@@ -73,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
 
-			const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere(new Brackets(qb => {
 					qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id })
@@ -92,12 +87,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 				.setParameters(followingQuery.getParameters());
 
-			generateChannelQuery(query, me);
-			generateRepliesQuery(query, me);
-			generateVisibilityQuery(query, me);
-			generateMutedUserQuery(query, me);
-			generateMutedNoteQuery(query, me);
-			generateBlockedUserQuery(query, me);
+			this.queryService.generateChannelQuery(query, me);
+			this.queryService.generateRepliesQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateMutedNoteQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
 
 			if (ps.includeMyRenotes === false) {
 				query.andWhere(new Brackets(qb => {

@@ -1,9 +1,9 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import { Users, Followings } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery, generateBlockQueryForUsers } from '../../common/generate-block-query.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -43,6 +43,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
     private notesRepository: typeof Notes,
+		
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.usersRepository.createQueryBuilder('user')
@@ -53,9 +55,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('user.id != :meId', { meId: me.id })
 				.orderBy('user.followersCount', 'DESC');
 
-			generateMutedUserQueryForUsers(query, me);
-			generateBlockQueryForUsers(query, me);
-			generateBlockedUserQuery(query, me);
+			this.queryService.generateMutedUserQueryForUsers(query, me);
+			this.queryService.generateBlockQueryForUsers(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
 
 			const followingQuery = Followings.createQueryBuilder('following')
 				.select('following.followeeId')
