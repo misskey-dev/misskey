@@ -1,6 +1,6 @@
-import { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/user.js';
 import { MutedNotes } from '@/models/index.js';
-import { SelectQueryBuilder } from 'typeorm';
+import type { SelectQueryBuilder } from 'typeorm';
 
 export function generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {
 	const mutedQuery = MutedNotes.createQueryBuilder('muted')

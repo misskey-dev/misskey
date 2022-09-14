@@ -2,16 +2,15 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
-import { IsNull } from 'typeorm';
+import { IsNull , DataSource } from 'typeorm';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { User } from '@/models/entities/user.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { UsedUsername } from '@/models/entities/used-username.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import generateNativeUserToken from '../server/api/common/generate-native-user-token.js';
-import type { DataSource } from 'typeorm';
+import generateNativeUserToken from '@/misc/generate-native-user-token.js';
 
 @Injectable()
 export class CreateSystemUserService {

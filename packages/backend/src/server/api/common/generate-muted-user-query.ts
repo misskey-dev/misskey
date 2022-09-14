@@ -1,6 +1,7 @@
-import { SelectQueryBuilder, Brackets } from 'typeorm';
-import { User } from '@/models/entities/user.js';
+import { Brackets } from 'typeorm';
+import type { User } from '@/models/entities/user.js';
 import { Mutings, UserProfiles } from '@/models/index.js';
+import type { SelectQueryBuilder } from 'typeorm';
 
 export function generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }, exclude?: User) {
 	const mutingQuery = Mutings.createQueryBuilder('muting')

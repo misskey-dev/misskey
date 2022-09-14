@@ -1,6 +1,7 @@
-import { User } from '@/models/entities/user.js';
+import { Brackets } from 'typeorm';
+import type { User } from '@/models/entities/user.js';
 import { Blockings } from '@/models/index.js';
-import { Brackets, SelectQueryBuilder } from 'typeorm';
+import type { SelectQueryBuilder } from 'typeorm';
 
 // ここでいうBlockedは被Blockedの意
 export function generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }) {
@@ -14,11 +15,11 @@ export function generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: U
 	q
 		.andWhere(`note.userId NOT IN (${ blockingQuery.getQuery() })`)
 		.andWhere(new Brackets(qb => { qb
-			.where(`note.replyUserId IS NULL`)
+			.where('note.replyUserId IS NULL')
 			.orWhere(`note.replyUserId NOT IN (${ blockingQuery.getQuery() })`);
 		}))
 		.andWhere(new Brackets(qb => { qb
-			.where(`note.renoteUserId IS NULL`)
+			.where('note.renoteUserId IS NULL')
 			.orWhere(`note.renoteUserId NOT IN (${ blockingQuery.getQuery() })`);
 		}));
 

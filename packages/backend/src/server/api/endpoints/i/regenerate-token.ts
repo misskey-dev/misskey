@@ -4,7 +4,7 @@ import { publishInternalEvent, publishMainStream, publishUserEvent } from '@/ser
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { UserProfiles } from '@/models/index.js';
-import generateUserToken from '../../common/generate-native-user-token.js';
+import generateUserToken from '@/misc/generate-native-user-token.js';
 
 export const meta = {
 	requireCredential: true,

@@ -1,6 +1,7 @@
-import { User } from '@/models/entities/user.js';
+import { Brackets } from 'typeorm';
+import type { User } from '@/models/entities/user.js';
 import { ChannelFollowings } from '@/models/index.js';
-import { Brackets, SelectQueryBuilder } from 'typeorm';
+import type { SelectQueryBuilder } from 'typeorm';
 
 export function generateChannelQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null) {
 	if (me == null) {
