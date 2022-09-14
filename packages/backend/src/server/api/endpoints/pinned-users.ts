@@ -46,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				host: acct.host ?? IsNull(),
 			})));
 
-			return await this.usersRepository.packMany(users.filter(x => x !== undefined) as User[], me, { detail: true });
+			return await this.userEntityService.packMany(users.filter(x => x !== undefined) as User[], me, { detail: true });
 		});
 	}
 }

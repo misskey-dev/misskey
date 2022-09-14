@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			return await this.antennasRepository.pack(antenna);
+			return await this.antennaEntityService.pack(antenna);
 		});
 	}
 }

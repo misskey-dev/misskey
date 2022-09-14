@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				await get(note.replyId);
 			}
 
-			return await this.notesRepository.packMany(conversation, me);
+			return await this.noteEntityService.packMany(conversation, me);
 		});
 	}
 }

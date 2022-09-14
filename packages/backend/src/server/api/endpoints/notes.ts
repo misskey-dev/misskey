@@ -84,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		
 			const notes = await query.take(ps.limit).getMany();
 		
-			return await this.notesRepository.packMany(notes);
+			return await this.noteEntityService.packMany(notes);
 		});
 	}
 }

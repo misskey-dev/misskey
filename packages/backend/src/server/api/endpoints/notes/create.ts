@@ -281,7 +281,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			return {
-				createdNote: await this.notesRepository.pack(note, me),
+				createdNote: await this.noteEntityService.pack(note, me),
 			};
 		});
 	}

@@ -67,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				const users = await q.take(ps.limit).getMany();
 
-				return await this.usersRepository.packMany(users, me, { detail: ps.detail });
+				return await this.userEntityService.packMany(users, me, { detail: ps.detail });
 			} else if (ps.username) {
 				let users: User[] = [];
 
@@ -120,7 +120,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						.getMany();
 				}
 
-				return await this.usersRepository.packMany(users, me, { detail: !!ps.detail });
+				return await this.userEntityService.packMany(users, me, { detail: !!ps.detail });
 			}
 
 			return [];

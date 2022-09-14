@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			read(me.id, mentions);
 
-			return await this.notesRepository.packMany(mentions, me);
+			return await this.noteEntityService.packMany(mentions, me);
 		});
 	}
 }

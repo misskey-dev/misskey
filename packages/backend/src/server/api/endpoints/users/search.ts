@@ -129,7 +129,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			return await this.usersRepository.packMany(users, me, { detail: ps.detail });
+			return await this.userEntityService.packMany(users, me, { detail: ps.detail });
 		});
 	}
 }

@@ -112,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					_users.push(users.find(x => x.id === id)!);
 				}
 
-				return await Promise.all(_users.map(u => this.usersRepository.pack(u, me, {
+				return await Promise.all(_users.map(u => this.userEntityService.pack(u, me, {
 					detail: true,
 				})));
 			} else {
@@ -134,7 +134,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.noSuchUser);
 				}
 
-				return await this.usersRepository.pack(user, me, {
+				return await this.userEntityService.pack(user, me, {
 					detail: true,
 				});
 			}

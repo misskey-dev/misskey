@@ -120,7 +120,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
 
-			return await this.antennasRepository.pack(antenna);
+			return await this.antennaEntityService.pack(antenna);
 		});
 	}
 }

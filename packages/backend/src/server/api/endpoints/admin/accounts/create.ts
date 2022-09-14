@@ -50,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				password: ps.password,
 			});
 
-			const res = await this.usersRepository.pack(account, account, {
+			const res = await this.userEntityService.pack(account, account, {
 				detail: true,
 				includeSecrets: true,
 			});

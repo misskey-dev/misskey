@@ -29,7 +29,7 @@ class AntennaChannel extends Channel {
 
 	private async onEvent(data: StreamMessages['antenna']['payload']) {
 		if (data.type === 'note') {
-			const note = await this.notesRepository.pack(data.body.id, this.user, { detail: true });
+			const note = await this.noteEntityService.pack(data.body.id, this.user, { detail: true });
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (isUserRelated(note, this.muting)) return;

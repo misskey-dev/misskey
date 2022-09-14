@@ -88,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Delete blocking
 			await deleteBlocking(blocker, blockee);
 
-			return await this.usersRepository.pack(blockee.id, blocker, {
+			return await this.userEntityService.pack(blockee.id, blocker, {
 				detail: true,
 			});
 		});

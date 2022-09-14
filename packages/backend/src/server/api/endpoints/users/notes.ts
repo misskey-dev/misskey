@@ -127,7 +127,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const timeline = await query.take(ps.limit).getMany();
 
-			return await this.notesRepository.packMany(timeline, me);
+			return await this.noteEntityService.packMany(timeline, me);
 		});
 	}
 }

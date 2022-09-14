@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				secret: secret,
 			}).then(x => this.appsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await this.appsRepository.pack(app, null, {
+			return await this.appEntityService.pack(app, null, {
 				detail: true,
 				includeSecret: true,
 			});

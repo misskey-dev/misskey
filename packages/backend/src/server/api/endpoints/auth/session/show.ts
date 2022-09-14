@@ -63,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchSession);
 			}
 
-			return await this.authSessionsRepository.pack(session, me);
+			return await this.authSessionEntityService.pack(session, me);
 		});
 	}
 }

@@ -85,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			return await this.notesRepository.packMany(notes, me, {
+			return await this.noteEntityService.packMany(notes, me, {
 				detail: true,
 			});
 		});

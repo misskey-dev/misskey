@@ -133,7 +133,7 @@ export class ReactionService {
 		}
 	
 		//#region 配信
-		if (this.usersRepository.isLocalUser(user) && !note.localOnly) {
+		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
 			const content = renderActivity(await renderLike(record, note));
 			const dm = new DeliverManager(user, content);
 			if (note.userHost !== null) {
@@ -145,7 +145,7 @@ export class ReactionService {
 				dm.addFollowersRecipe();
 			} else if (note.visibility === 'specified') {
 				const visibleUsers = await Promise.all(note.visibleUserIds.map(id => this.usersRepository.findOneBy({ id })));
-				for (const u of visibleUsers.filter(u => u && this.usersRepository.isRemoteUser(u))) {
+				for (const u of visibleUsers.filter(u => u && this.userEntityService.isRemoteUser(u))) {
 					dm.addDirectRecipe(u as IRemoteUser);
 				}
 			}
@@ -190,7 +190,7 @@ export class ReactionService {
 		});
 	
 		//#region 配信
-		if (this.usersRepository.isLocalUser(user) && !note.localOnly) {
+		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
 			const content = renderActivity(renderUndo(await renderLike(exist, note), user));
 			const dm = new DeliverManager(user, content);
 			if (note.userHost !== null) {

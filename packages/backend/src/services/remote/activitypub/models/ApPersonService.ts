@@ -516,7 +516,7 @@ export class ApPersonService {
 
 	public async updateFeatured(userId: User['id']) {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
-		if (!this.usersRepository.isRemoteUser(user)) return;
+		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
 
 		this.#logger.info(`Updating the featured: ${user.uri}`);

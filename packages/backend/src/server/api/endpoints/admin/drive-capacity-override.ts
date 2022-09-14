@@ -35,7 +35,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (!this.usersRepository.isLocalUser(user)) {
+			if (!this.userEntityService.isLocalUser(user)) {
 				throw new Error('user is not local user');
 			} 
 

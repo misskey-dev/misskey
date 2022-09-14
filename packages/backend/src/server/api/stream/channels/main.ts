@@ -27,7 +27,7 @@ class MainChannel extends Channel {
 					if (data.body.userId && this.muting.has(data.body.userId)) return;
 
 					if (data.body.note && data.body.note.isHidden) {
-						const note = await this.notesRepository.pack(data.body.note.id, this.user, {
+						const note = await this.noteEntityService.pack(data.body.note.id, this.user, {
 							detail: true,
 						});
 						this.connection.cacheNote(note);
@@ -40,7 +40,7 @@ class MainChannel extends Channel {
 
 					if (this.muting.has(data.body.userId)) return;
 					if (data.body.isHidden) {
-						const note = await this.notesRepository.pack(data.body.id, this.user, {
+						const note = await this.noteEntityService.pack(data.body.id, this.user, {
 							detail: true,
 						});
 						this.connection.cacheNote(note);

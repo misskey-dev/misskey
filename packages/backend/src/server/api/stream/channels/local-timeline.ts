@@ -39,13 +39,13 @@ class LocalTimelineChannel extends Channel {
 
 		// リプライなら再pack
 		if (note.replyId != null) {
-			note.reply = await this.notesRepository.pack(note.replyId, this.user, {
+			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
 				detail: true,
 			});
 		}
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await this.notesRepository.pack(note.renoteId, this.user, {
+			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
 				detail: true,
 			});
 		}

@@ -96,7 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.noteReadService.read(me.id, notes);
 			}
 
-			return await this.notesRepository.packMany(notes, me);
+			return await this.noteEntityService.packMany(notes, me);
 		});
 	}
 }

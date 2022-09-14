@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.where(':file = ANY(note.fileIds)', { file: file.id })
 				.getMany();
 
-			return await this.notesRepository.packMany(notes, me, {
+			return await this.noteEntityService.packMany(notes, me, {
 				detail: true,
 			});
 		});

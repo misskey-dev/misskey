@@ -387,7 +387,7 @@ export class NoteCreateService {
 		this.perUserNotesChart.update(user, note, true);
 
 		// Register host
-		if (this.usersRepository.isRemoteUser(user)) {
+		if (this.userEntityService.isRemoteUser(user)) {
 			this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
 				Instances.increment({ id: i.id }, 'notesCount', 1);
 				this.instanceChart.updateNote(i.host, note, true);
@@ -464,7 +464,7 @@ export class NoteCreateService {
 		}
 
 		if (!silent) {
-			if (this.usersRepository.isLocalUser(user)) this.activeUsersChart.write(user);
+			if (this.userEntityService.isLocalUser(user)) this.activeUsersChart.write(user);
 
 			// 未読通知を作成
 			if (data.visibility === 'specified') {
@@ -472,7 +472,7 @@ export class NoteCreateService {
 
 				for (const u of data.visibleUsers) {
 					// ローカルユーザーのみ
-					if (!this.usersRepository.isLocalUser(u)) continue;
+					if (!this.userEntityService.isLocalUser(u)) continue;
 
 					insertNoteUnread(u.id, note, {
 						isSpecified: true,
@@ -482,7 +482,7 @@ export class NoteCreateService {
 			} else {
 				for (const u of mentionedUsers) {
 					// ローカルユーザーのみ
-					if (!this.usersRepository.isLocalUser(u)) continue;
+					if (!this.userEntityService.isLocalUser(u)) continue;
 
 					insertNoteUnread(u.id, note, {
 						isSpecified: false,
@@ -492,7 +492,7 @@ export class NoteCreateService {
 			}
 
 			// Pack the note
-			const noteObj = await this.notesRepository.pack(note);
+			const noteObj = await this.noteEntityService.pack(note);
 
 			this.globalEventServie.publishNotesStream(noteObj);
 
@@ -566,26 +566,26 @@ export class NoteCreateService {
 			});
 
 			//#region AP deliver
-			if (this.usersRepository.isLocalUser(user)) {
+			if (this.userEntityService.isLocalUser(user)) {
 				(async () => {
 					const noteActivity = await this.#renderNoteOrRenoteActivity(data, note);
 					const dm = new DeliverManager(user, noteActivity);
 
 					// メンションされたリモートユーザーに配送
-					for (const u of mentionedUsers.filter(u => this.usersRepository.isRemoteUser(u))) {
+					for (const u of mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u))) {
 						dm.addDirectRecipe(u as IRemoteUser);
 					}
 
 					// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 					if (data.reply && data.reply.userHost !== null) {
 						const u = await this.usersRepository.findOneBy({ id: data.reply.userId });
-						if (u && this.usersRepository.isRemoteUser(u)) dm.addDirectRecipe(u);
+						if (u && this.userEntityService.isRemoteUser(u)) dm.addDirectRecipe(u);
 					}
 
 					// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 					if (data.renote && data.renote.userHost !== null) {
 						const u = await this.usersRepository.findOneBy({ id: data.renote.userId });
-						if (u && this.usersRepository.isRemoteUser(u)) dm.addDirectRecipe(u);
+						if (u && this.userEntityService.isRemoteUser(u)) dm.addDirectRecipe(u);
 					}
 
 					// フォロワーに配送
@@ -636,7 +636,7 @@ export class NoteCreateService {
 	}
 
 	async #createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
-		for (const u of mentionedUsers.filter(u => this.usersRepository.isLocalUser(u))) {
+		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
 			const threadMuted = await NoteThreadMutings.findOneBy({
 				userId: u.id,
 				threadId: note.threadId || note.id,
@@ -646,7 +646,7 @@ export class NoteCreateService {
 				continue;
 			}
 
-			const detailPackedNote = await this.notesRepository.pack(note, u, {
+			const detailPackedNote = await this.noteEntityService.pack(note, u, {
 				detail: true,
 			});
 

@@ -50,7 +50,7 @@ export class CreateNotificationService {
 		} as Partial<Notification>)
 			.then(x => this.notificationsRepository.findOneByOrFail(x.identifiers[0]));
 	
-		const packed = await this.notificationsRepository.pack(notification, {});
+		const packed = await this.notificationEntityService.pack(notification, {});
 	
 		// Publish notification event
 		this.globalEventServie.publishMainStream(notifieeId, 'notification', packed);

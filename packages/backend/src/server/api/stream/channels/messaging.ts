@@ -79,7 +79,7 @@ class MessagingChannel extends Channel {
 					readUserMessagingMessage(this.user!.id, this.otherpartyId, [body.id]);
 
 					// リモートユーザーからのメッセージだったら既読配信
-					if (this.usersRepository.isLocalUser(this.user!) && this.usersRepository.isRemoteUser(this.otherparty!)) {
+					if (this.userEntityService.isLocalUser(this.user!) && this.userEntityService.isRemoteUser(this.otherparty!)) {
 						this.messagingMessagesRepository.findOneBy({ id: body.id }).then(message => {
 							if (message) deliverReadActivity(this.user as ILocalUser, this.otherparty as IRemoteUser, message);
 						});
@@ -99,7 +99,7 @@ class MessagingChannel extends Channel {
 			if (now.getTime() - date.getTime() > 5000) delete this.typers[userId];
 		}
 
-		const users = await this.usersRepository.packMany(Object.keys(this.typers), null, { detail: false });
+		const users = await this.userEntityService.packMany(Object.keys(this.typers), null, { detail: false });
 
 		this.send({
 			type: 'typers',

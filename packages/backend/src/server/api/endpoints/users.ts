@@ -87,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const users = await query.getMany();
 
-			return await this.usersRepository.packMany(users, me, { detail: true });
+			return await this.userEntityService.packMany(users, me, { detail: true });
 		});
 	}
 }

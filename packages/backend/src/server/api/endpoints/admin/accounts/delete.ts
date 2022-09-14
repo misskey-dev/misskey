@@ -46,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot suspend moderator');
 			}
 
-			if (this.usersRepository.isLocalUser(user)) {
+			if (this.userEntityService.isLocalUser(user)) {
 				// 物理削除する前にDelete activityを送信する
 				await this.userSuspendService.doPostSuspend(user).catch(err => {});
 
@@ -63,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isDeleted: true,
 			});
 
-			if (this.usersRepository.isLocalUser(user)) {
+			if (this.userEntityService.isLocalUser(user)) {
 				// Terminate streaming
 				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
 			}

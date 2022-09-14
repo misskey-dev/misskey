@@ -37,7 +37,7 @@ class HashtagChannel extends Channel {
 
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await this.notesRepository.pack(note.renoteId, this.user, {
+			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
 				detail: true,
 			});
 		}

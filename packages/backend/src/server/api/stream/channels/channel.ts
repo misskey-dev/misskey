@@ -40,13 +40,13 @@ class ChannelChannel extends Channel {
 
 		// リプライなら再pack
 		if (note.replyId != null) {
-			note.reply = await this.notesRepository.pack(note.replyId, this.user, {
+			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
 				detail: true,
 			});
 		}
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await this.notesRepository.pack(note.renoteId, this.user, {
+			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
 				detail: true,
 			});
 		}
@@ -80,7 +80,7 @@ class ChannelChannel extends Channel {
 			if (now.getTime() - date.getTime() > 5000) delete this.typers[userId];
 		}
 
-		const users = await this.usersRepository.packMany(Object.keys(this.typers), null, { detail: false });
+		const users = await this.userEntityService.packMany(Object.keys(this.typers), null, { detail: false });
 
 		this.send({
 			type: 'typers',

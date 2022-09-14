@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			});
 
-			return await this.usersRepository.pack<true, true>(me.id, me, {
+			return await this.userEntityService.pack<true, true>(me.id, me, {
 				detail: true,
 			});
 		});

@@ -400,7 +400,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			};
 
 			if (ps.detail) {
-				const proxyAccount = instance.proxyAccountId ? await this.usersRepository.pack(instance.proxyAccountId).catch(() => null) : null;
+				const proxyAccount = instance.proxyAccountId ? await this.userEntityService.pack(instance.proxyAccountId).catch(() => null) : null;
 
 				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
 				response.features = {

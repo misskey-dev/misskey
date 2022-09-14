@@ -184,7 +184,7 @@ export class ApRendererService {
 	 */
 	public async renderFollowUser(id: User['id']) {
 		const user = await this.usersRepository.findOneByOrFail({ id: id });
-		return this.usersRepository.isLocalUser(user) ? `${this.config.url}/users/${user.id}` : user.uri;
+		return this.userEntityService.isLocalUser(user) ? `${this.config.url}/users/${user.id}` : user.uri;
 	}
 
 	public renderFollow(
@@ -195,8 +195,8 @@ export class ApRendererService {
 		const follow = {
 			id: requestId ?? `${this.config.url}/follows/${follower.id}/${followee.id}`,
 			type: 'Follow',
-			actor: this.usersRepository.isLocalUser(follower) ? `${this.config.url}/users/${follower.id}` : follower.uri,
-			object: this.usersRepository.isLocalUser(followee) ? `${this.config.url}/users/${followee.id}` : followee.uri,
+			actor: this.userEntityService.isLocalUser(follower) ? `${this.config.url}/users/${follower.id}` : follower.uri,
+			object: this.userEntityService.isLocalUser(followee) ? `${this.config.url}/users/${followee.id}` : followee.uri,
 		} as any;
 	
 		return follow;
@@ -259,8 +259,8 @@ export class ApRendererService {
 	public renderMention(mention: User) {
 		return {
 			type: 'Mention',
-			href: this.usersRepository.isRemoteUser(mention) ? mention.uri : `${this.config.url}/users/${(mention as ILocalUser).id}`,
-			name: this.usersRepository.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as ILocalUser).username}`,
+			href: this.userEntityService.isRemoteUser(mention) ? mention.uri : `${this.config.url}/users/${(mention as ILocalUser).id}`,
+			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as ILocalUser).username}`,
 		};
 	}
 

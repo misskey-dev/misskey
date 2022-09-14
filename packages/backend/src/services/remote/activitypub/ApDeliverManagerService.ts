@@ -134,7 +134,7 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	public async execute() {
-		if (!this.usersRepository.isLocalUser(this.actor)) return;
+		if (!this.userEntityService.isLocalUser(this.actor)) return;
 
 		const inboxes = new Set<string>();
 

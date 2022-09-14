@@ -142,11 +142,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		if (user != null) {
 			return {
 				type: 'User',
-				object: await this.usersRepository.pack(user, me, { detail: true }),
+				object: await this.userEntityService.pack(user, me, { detail: true }),
 			};
 		} else if (note != null) {
 			try {
-				const object = await this.notesRepository.pack(note, me, { detail: true });
+				const object = await this.noteEntityService.pack(note, me, { detail: true });
 
 				return {
 					type: 'Note',

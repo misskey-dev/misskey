@@ -92,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				noteUserId: blockee.id,
 			});
 
-			return await this.usersRepository.pack(blockee.id, blocker, {
+			return await this.userEntityService.pack(blockee.id, blocker, {
 				detail: true,
 			});
 		});

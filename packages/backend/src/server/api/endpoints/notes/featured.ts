@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			notes = notes.slice(ps.offset, ps.offset + ps.limit);
 
-			return await this.notesRepository.packMany(notes, me);
+			return await this.noteEntityService.packMany(notes, me);
 		});
 	}
 }

@@ -48,7 +48,7 @@ export class GetterService {
 	public async getRemoteUser(userId: User['id']) {
 		const user = await this.getUser(userId);
 
-		if (!this.usersRepository.isRemoteUser(user)) {
+		if (!this.userEntityService.isRemoteUser(user)) {
 			throw new Error('user is not a remote user');
 		}
 
@@ -61,7 +61,7 @@ export class GetterService {
 	public async getLocalUser(userId: User['id']) {
 		const user = await this.getUser(userId);
 
-		if (!this.usersRepository.isLocalUser(user)) {
+		if (!this.userEntityService.isLocalUser(user)) {
 			throw new Error('user is not a local user');
 		}
 

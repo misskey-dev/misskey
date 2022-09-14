@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish meUpdated event
-			publishMainStream(me.id, 'meUpdated', await this.usersRepository.pack(me.id, me, {
+			publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
 				detail: true,
 				includeSecrets: true,
 			}));

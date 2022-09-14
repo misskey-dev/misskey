@@ -64,7 +64,7 @@ export class UserBlockingService {
 
 		await this.blockingsRepository.insert(blocking);
 
-		if (this.usersRepository.isLocalUser(blocker) && this.usersRepository.isRemoteUser(blockee)) {
+		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
 			const content = renderActivity(renderBlock(blocking));
 			this.queueService.deliver(blocker, content, blockee.inbox);
 		}
@@ -85,14 +85,14 @@ export class UserBlockingService {
 			followerId: follower.id,
 		});
 
-		if (this.usersRepository.isLocalUser(followee)) {
-			this.usersRepository.pack(followee, followee, {
+		if (this.userEntityService.isLocalUser(followee)) {
+			this.userEntityService.pack(followee, followee, {
 				detail: true,
 			}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
 		}
 
-		if (this.usersRepository.isLocalUser(follower)) {
-			this.usersRepository.pack(followee, follower, {
+		if (this.userEntityService.isLocalUser(follower)) {
+			this.userEntityService.pack(followee, follower, {
 				detail: true,
 			}).then(async packed => {
 				this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packed);
@@ -108,13 +108,13 @@ export class UserBlockingService {
 		}
 
 		// リモートにフォローリクエストをしていたらUndoFollow送信
-		if (this.usersRepository.isLocalUser(follower) && this.usersRepository.isRemoteUser(followee)) {
+		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
 
 		// リモートからフォローリクエストを受けていたらReject送信
-		if (this.usersRepository.isRemoteUser(follower) && this.usersRepository.isLocalUser(followee)) {
+		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId!), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 		}
@@ -138,8 +138,8 @@ export class UserBlockingService {
 		]);
 
 		// Publish unfollow event
-		if (this.usersRepository.isLocalUser(follower)) {
-			this.usersRepository.pack(followee, follower, {
+		if (this.userEntityService.isLocalUser(follower)) {
+			this.userEntityService.pack(followee, follower, {
 				detail: true,
 			}).then(async packed => {
 				this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packed);
@@ -155,7 +155,7 @@ export class UserBlockingService {
 		}
 
 		// リモートにフォローをしていたらUndoFollow送信
-		if (this.usersRepository.isLocalUser(follower) && this.usersRepository.isRemoteUser(followee)) {
+		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
@@ -193,7 +193,7 @@ export class UserBlockingService {
 		await this.blockingsRepository.delete(blocking.id);
 	
 		// deliver if remote bloking
-		if (this.usersRepository.isLocalUser(blocker) && this.usersRepository.isRemoteUser(blockee)) {
+		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
 			const content = renderActivity(renderUndo(renderBlock(blocking), blocker));
 			this.queueService.deliver(blocker, content, blockee.inbox);
 		}

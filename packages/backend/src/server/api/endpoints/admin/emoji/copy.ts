@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.db.queryResultCache!.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
-				emoji: await this.emojisRepository.pack(copied.id),
+				emoji: await this.emojiEntityService.pack(copied.id),
 			});
 
 			return {

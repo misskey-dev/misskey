@@ -64,7 +64,7 @@ export class NotePiningService {
 		} as UserNotePining);
 
 		// Deliver to remote followers
-		if (this.usersRepository.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user)) {
 			deliverPinnedChange(user.id, note.id, true);
 		}
 	}
@@ -91,7 +91,7 @@ export class NotePiningService {
 		});
 
 		// Deliver to remote followers
-		if (this.usersRepository.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user)) {
 			deliverPinnedChange(user.id, noteId, false);
 		}
 	}
@@ -100,7 +100,7 @@ export class NotePiningService {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
 
-		if (!this.usersRepository.isLocalUser(user)) return;
+		if (!this.userEntityService.isLocalUser(user)) return;
 
 		const target = `${this.config.url}/users/${user.id}/collections/featured`;
 		const item = `${this.config.url}/notes/${noteId}`;

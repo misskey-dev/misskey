@@ -244,7 +244,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (Object.keys(updates).length > 0) await this.usersRepository.update(user.id, updates);
 			if (Object.keys(profileUpdates).length > 0) await UserProfiles.update(user.id, profileUpdates);
 
-			const iObj = await this.usersRepository.pack<true, true>(user.id, user, {
+			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {
 				detail: true,
 				includeSecrets: isSecure,
 			});

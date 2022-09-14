@@ -131,7 +131,7 @@ export class ServerService {
 					emailVerifyCode: null,
 				});
 
-				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.usersRepository.pack(profile.userId, { id: profile.userId }, {
+				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
 					detail: true,
 					includeSecrets: true,
 				}));

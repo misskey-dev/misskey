@@ -477,7 +477,7 @@ export class ActivityPubServerService {
 
 			const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 
-			if (this.usersRepository.isLocalUser(user)) {
+			if (this.userEntityService.isLocalUser(user)) {
 				ctx.body = this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair));
 				ctx.set('Cache-Control', 'public, max-age=180');
 				this.#setResponseType(ctx);

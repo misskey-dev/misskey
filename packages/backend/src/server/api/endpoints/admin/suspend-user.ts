@@ -64,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Terminate streaming
-			if (this.usersRepository.isLocalUser(user)) {
+			if (this.userEntityService.isLocalUser(user)) {
 				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
 			}
 

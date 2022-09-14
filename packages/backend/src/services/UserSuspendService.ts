@@ -30,7 +30,7 @@ export class UserSuspendService {
 	public async doPostSuspend(user: { id: User['id']; host: User['host'] }): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
 	
-		if (this.usersRepository.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user)) {
 			// 知り得る全SharedInboxにDelete配信
 			const content = renderActivity(renderDelete(`${this.config.url}/users/${user.id}`, user));
 	
@@ -59,7 +59,7 @@ export class UserSuspendService {
 	public async doPostUnsuspend(user: User): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
 	
-		if (this.usersRepository.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user)) {
 			// 知り得る全SharedInboxにUndo Delete配信
 			const content = renderActivity(renderUndo(renderDelete(`${this.config.url}/users/${user.id}`, user), user));
 	

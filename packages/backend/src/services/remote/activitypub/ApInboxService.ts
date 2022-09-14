@@ -525,7 +525,7 @@ export class ApInboxService {
 			return 'skip: follower not found';
 		}
 	
-		if (!this.usersRepository.isLocalUser(follower)) {
+		if (!this.userEntityService.isLocalUser(follower)) {
 			return 'skip: follower is not a local user';
 		}
 	

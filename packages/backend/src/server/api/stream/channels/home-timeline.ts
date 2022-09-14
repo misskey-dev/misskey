@@ -38,7 +38,7 @@ class HomeTimelineChannel extends Channel {
 		if (isInstanceMuted(note, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await this.notesRepository.pack(note.id, this.user!, {
+			note = await this.noteEntityService.pack(note.id, this.user!, {
 				detail: true,
 			});
 
@@ -48,13 +48,13 @@ class HomeTimelineChannel extends Channel {
 		} else {
 			// リプライなら再pack
 			if (note.replyId != null) {
-				note.reply = await this.notesRepository.pack(note.replyId, this.user!, {
+				note.reply = await this.noteEntityService.pack(note.replyId, this.user!, {
 					detail: true,
 				});
 			}
 			// Renoteなら再pack
 			if (note.renoteId != null) {
-				note.renote = await this.notesRepository.pack(note.renoteId, this.user!, {
+				note.renote = await this.noteEntityService.pack(note.renoteId, this.user!, {
 					detail: true,
 				});
 			}

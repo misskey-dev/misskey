@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await this.mutingsRepository.packMany(mutings, me);
+			return await this.mutingEntityService.packMany(mutings, me);
 		});
 	}
 }

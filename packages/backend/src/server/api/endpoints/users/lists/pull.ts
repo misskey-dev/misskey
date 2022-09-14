@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Pull the user
 			await UserListJoinings.delete({ userListId: userList.id, userId: user.id });
 
-			publishUserListStream(userList.id, 'userRemoved', await this.usersRepository.pack(user));
+			publishUserListStream(userList.id, 'userRemoved', await this.userEntityService.pack(user));
 		});
 	}
 }

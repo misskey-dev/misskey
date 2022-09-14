@@ -46,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchApp);
 			}
 
-			return await this.appsRepository.pack(ap, user, {
+			return await this.appEntityService.pack(ap, user, {
 				detail: true,
 				includeSecret: isSecure && (ap.userId === user!.id),
 			});

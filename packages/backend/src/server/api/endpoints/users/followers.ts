@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await this.followingsRepository.packMany(followings, me, { populateFollower: true });
+			return await this.followingEntityService.packMany(followings, me, { populateFollower: true });
 		});
 	}
 }

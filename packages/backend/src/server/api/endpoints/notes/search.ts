@@ -86,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				const notes = await query.take(ps.limit).getMany();
 
-				return await this.notesRepository.packMany(notes, me);
+				return await this.noteEntityService.packMany(notes, me);
 			} else {
 				const userQuery = ps.userId != null ? [{
 					term: {
@@ -146,7 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					},
 				});
 
-				return await this.notesRepository.packMany(notes, me);
+				return await this.noteEntityService.packMany(notes, me);
 			}
 		});
 	}

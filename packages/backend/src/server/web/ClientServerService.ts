@@ -382,7 +382,7 @@ export class ClientServerService {
 			});
 
 			if (note) {
-				const _note = await this.notesRepository.pack(note);
+				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				const meta = await this.metaService.fetch();
 				await ctx.render('note', {
@@ -420,7 +420,7 @@ export class ClientServerService {
 			});
 
 			if (page) {
-				const _page = await this.pagesRepository.pack(page);
+				const _page = await this.pageEntityService.pack(page);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: page.userId });
 				const meta = await this.metaService.fetch();
 				await ctx.render('page', {
@@ -452,7 +452,7 @@ export class ClientServerService {
 			});
 
 			if (clip) {
-				const _clip = await this.clipsRepository.pack(clip);
+				const _clip = await this.clipEntityService.pack(clip);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
 				const meta = await this.metaService.fetch();
 				await ctx.render('clip', {
@@ -477,7 +477,7 @@ export class ClientServerService {
 			const post = await this.galleryPostsRepository.findOneBy({ id: ctx.params.post });
 
 			if (post) {
-				const _post = await this.galleryPostsRepository.pack(post);
+				const _post = await this.galleryPostEntityService.pack(post);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: post.userId });
 				const meta = await this.metaService.fetch();
 				await ctx.render('gallery-post', {
@@ -504,7 +504,7 @@ export class ClientServerService {
 			});
 
 			if (channel) {
-				const _channel = await this.channelsRepository.pack(channel);
+				const _channel = await this.channelEntityService.pack(channel);
 				const meta = await this.metaService.fetch();
 				await ctx.render('channel', {
 					channel: _channel,

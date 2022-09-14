@@ -54,7 +54,7 @@ export class SigninService {
 			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
 	
 			// Publish signin event
-			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinsRepository.pack(record));
+			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
 		})();
 	}
 }

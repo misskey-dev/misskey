@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await this.blockingsRepository.packMany(blockings, me);
+			return await this.blockingEntityService.packMany(blockings, me);
 		});
 	}
 }

@@ -104,7 +104,7 @@ export class PollService {
 		const user = await this.usersRepository.findOneBy({ id: note.userId });
 		if (user == null) throw new Error('note not found');
 	
-		if (this.usersRepository.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user)) {
 			const content = renderActivity(renderUpdate(await renderNote(note, false), user));
 			deliverToFollowers(user, content);
 			this.relayService.deliverToRelays(user, content);

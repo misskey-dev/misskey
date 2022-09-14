@@ -132,7 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			this.globalEventService.publishInternalEvent('antennaUpdated', await this.antennasRepository.findOneByOrFail({ id: antenna.id }));
 
-			return await this.antennasRepository.pack(antenna.id);
+			return await this.antennaEntityService.pack(antenna.id);
 		});
 	}
 }
