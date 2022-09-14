@@ -4,15 +4,15 @@ import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { IsNull } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { UserSecurityKeys } from '@/models/index.js';
+import type { UserSecurityKeys , Signins, UserProfiles } from '@/models/index.js';
 import { AttestationChallenges, Users } from '@/models/index.js';
 import { Config } from '@/config/types.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { ILocalUser } from '@/models/entities/user.js';
 import { IdService } from '@/services/IdService.js';
-import { RateLimiterService } from '../RateLimiterService.js';
-import { SigninService } from '../SigninService.js';
-import { verifyLogin, hash } from '../2fa.js';
+import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
+import { RateLimiterService } from './RateLimiterService.js';
+import { SigninService } from './SigninService.js';
 import type Koa from 'koa';
 
 @Injectable()
@@ -27,12 +27,19 @@ export class SigninApiService {
 		@Inject('userSecurityKeysRepository')
 		private userSecurityKeysRepository: typeof UserSecurityKeys,
 
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
 		@Inject('attestationChallengesRepository')
 		private attestationChallengesRepository: typeof AttestationChallenges,
+
+		@Inject('signinsRepository')
+		private signinsRepository: typeof Signins,
 
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
+		private twoFactorAuthenticationService: TwoFactorAuthenticationService,
 	) {
 	}
 
@@ -100,14 +107,14 @@ export class SigninApiService {
 			return;
 		}
 
-		const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 		// Compare password
 		const same = await bcrypt.compare(password, profile.password!);
 
-		async function fail(status?: number, failure?: { id: string }) {
+		const fail = async (status?: number, failure?: { id: string }) => {
 		// Append signin history
-			await Signins.insert({
+			await this.signinsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: user.id,
@@ -117,7 +124,7 @@ export class SigninApiService {
 			});
 
 			error(status || 500, failure || { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
-		}
+		};
 
 		if (!profile.twoFactorEnabled) {
 			if (same) {
@@ -169,7 +176,7 @@ export class SigninApiService {
 				userId: user.id,
 				id: body.challengeId,
 				registrationChallenge: false,
-				challenge: hash(clientData.challenge).toString('hex'),
+				challenge: this.twoFactorAuthenticationService.hash(clientData.challenge).toString('hex'),
 			});
 
 			if (!challenge) {
@@ -207,7 +214,7 @@ export class SigninApiService {
 				return;
 			}
 
-			const isValid = verifyLogin({
+			const isValid = this.twoFactorAuthenticationService.verifySignin({
 				publicKey: Buffer.from(securityKey.publicKey, 'hex'),
 				authenticatorData: Buffer.from(body.authenticatorData, 'hex'),
 				clientDataJSON,
@@ -255,7 +262,7 @@ export class SigninApiService {
 			await this.attestationChallengesRepository.insert({
 				userId: user.id,
 				id: challengeId,
-				challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
+				challenge: this.twoFactorAuthenticationService.hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
 				createdAt: new Date(),
 				registrationChallenge: false,
 			});
