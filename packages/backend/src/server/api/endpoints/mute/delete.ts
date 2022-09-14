@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check not muting
-			const exist = await Mutings.findOneBy({
+			const exist = await this.mutingsRepository.findOneBy({
 				muterId: muter.id,
 				muteeId: mutee.id,
 			});
@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Delete mute
-			await Mutings.delete({
+			await this.mutingsRepository.delete({
 				id: exist.id,
 			});
 

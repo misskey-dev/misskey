@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
@@ -49,6 +49,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -60,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			//#region Construct query
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'),
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('note.visibility = \'public\'')
 				.andWhere('note.channelId IS NULL')
@@ -96,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			});
 
-			return await Notes.packMany(timeline, me);
+			return await this.notesRepository.packMany(timeline, me);
 		});
 	}
 }

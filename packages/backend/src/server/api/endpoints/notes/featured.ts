@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 
@@ -32,13 +32,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const max = 30;
 			const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
-			const query = Notes.createQueryBuilder('note')
+			const query = this.notesRepository.createQueryBuilder('note')
 				.addSelect('note.score')
 				.where('note.userHost IS NULL')
 				.andWhere('note.score > 0')
@@ -68,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			notes = notes.slice(ps.offset, ps.offset + ps.limit);
 
-			return await Notes.packMany(notes, me);
+			return await this.notesRepository.packMany(notes, me);
 		});
 	}
 }

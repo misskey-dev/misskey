@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.queryService.generateBlockQueryForUsers(query, me);
 			this.queryService.generateBlockedUserQuery(query, me);
 
-			const followingQuery = Followings.createQueryBuilder('following')
+			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
 

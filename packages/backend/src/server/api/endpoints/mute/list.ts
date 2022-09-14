@@ -44,14 +44,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Mutings.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.mutingsRepository.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
 				.andWhere('muting.muterId = :meId', { meId: me.id });
 
 			const mutings = await query
 				.take(ps.limit)
 				.getMany();
 
-			return await Mutings.packMany(mutings, me);
+			return await this.mutingsRepository.packMany(mutings, me);
 		});
 	}
 }

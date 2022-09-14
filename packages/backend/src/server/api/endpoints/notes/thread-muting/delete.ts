@@ -39,7 +39,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			});
 
-			await NoteThreadMutings.delete({
+			await this.noteThreadMutingsRepository.delete({
 				threadId: note.threadId || note.id,
 				userId: me.id,
 			});

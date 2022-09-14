@@ -2,8 +2,8 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/user.js';
-import type { Users } from '@/models/index.js';
-import { DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
+import type { Users , Notes } from '@/models/index.js';
+import { DriveFiles, Channels, Blockings } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Note } from '@/models/entities/note.js';
 import type { Channel } from '@/models/entities/channel.js';
@@ -168,6 +168,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: User[] = [];
@@ -193,7 +196,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			let renote: Note | null = null;
 			if (ps.renoteId != null) {
 				// Fetch renote to note
-				renote = await Notes.findOneBy({ id: ps.renoteId });
+				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
 
 				if (renote == null) {
 					throw new ApiError(meta.errors.noSuchRenoteTarget);
@@ -203,7 +206,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Check blocking
 				if (renote.userId !== me.id) {
-					const block = await Blockings.findOneBy({
+					const block = await this.blockingsRepository.findOneBy({
 						blockerId: renote.userId,
 						blockeeId: me.id,
 					});
@@ -216,7 +219,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			let reply: Note | null = null;
 			if (ps.replyId != null) {
 				// Fetch reply
-				reply = await Notes.findOneBy({ id: ps.replyId });
+				reply = await this.notesRepository.findOneBy({ id: ps.replyId });
 
 				if (reply == null) {
 					throw new ApiError(meta.errors.noSuchReplyTarget);
@@ -226,7 +229,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Check blocking
 				if (reply.userId !== me.id) {
-					const block = await Blockings.findOneBy({
+					const block = await this.blockingsRepository.findOneBy({
 						blockerId: reply.userId,
 						blockeeId: me.id,
 					});
@@ -278,7 +281,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			return {
-				createdNote: await Notes.pack(note, me),
+				createdNote: await this.notesRepository.pack(note, me),
 			};
 		});
 	}

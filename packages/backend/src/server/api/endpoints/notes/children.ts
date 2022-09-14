@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 
@@ -35,10 +35,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => { qb
 					.where('note.replyId = :noteId', { noteId: ps.noteId })
 					.orWhere(new Brackets(qb => { qb
@@ -70,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const notes = await query.take(ps.limit).getMany();
 
-			return await Notes.packMany(notes, me);
+			return await this.notesRepository.packMany(notes, me);
 		});
 	}
 }

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 import { getNote } from '../../common/getters.js';
@@ -44,6 +44,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -52,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			});
 
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere('note.renoteId = :renoteId', { renoteId: note.id })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
@@ -72,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const renotes = await query.take(ps.limit).getMany();
 
-			return await Notes.packMany(renotes, me);
+			return await this.notesRepository.packMany(renotes, me);
 		});
 	}
 }

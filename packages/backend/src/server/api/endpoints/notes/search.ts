@@ -1,6 +1,6 @@
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (es == null) {
-				const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
 				if (ps.userId) {
 					query.andWhere('note.userId = :userId', { userId: ps.userId });
@@ -86,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				const notes = await query.take(ps.limit).getMany();
 
-				return await Notes.packMany(notes, me);
+				return await this.notesRepository.packMany(notes, me);
 			} else {
 				const userQuery = ps.userId != null ? [{
 					term: {
@@ -137,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (hits.length === 0) return [];
 
 				// Fetch found notes
-				const notes = await Notes.find({
+				const notes = await this.notesRepository.find({
 					where: {
 						id: In(hits),
 					},
@@ -146,7 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					},
 				});
 
-				return await Notes.packMany(notes, me);
+				return await this.notesRepository.packMany(notes, me);
 			}
 		});
 	}

@@ -89,7 +89,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check if already following
-			const exist = await Followings.findOneBy({
+			const exist = await this.followingsRepository.findOneBy({
 				followerId: follower.id,
 				followeeId: followee.id,
 			});

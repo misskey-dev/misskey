@@ -98,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (me == null) {
 					throw new ApiError(meta.errors.forbidden);
 				} else if (me.id !== user.id) {
-					const following = await Followings.findOneBy({
+					const following = await this.followingsRepository.findOneBy({
 						followeeId: user.id,
 						followerId: me.id,
 					});
@@ -108,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			const query = this.queryService.makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId)
 				.andWhere('following.followeeId = :userId', { userId: user.id })
 				.innerJoinAndSelect('following.follower', 'follower');
 
@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await Followings.packMany(followings, me, { populateFollower: true });
+			return await this.followingsRepository.packMany(followings, me, { populateFollower: true });
 		});
 	}
 }

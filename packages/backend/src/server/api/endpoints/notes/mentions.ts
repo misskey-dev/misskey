@@ -1,7 +1,8 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import read from '@/services/note/read.js';
-import { Notes, Followings } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
+import { Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 
@@ -37,14 +38,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const followingQuery = Followings.createQueryBuilder('following')
+			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
 
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => { qb
 					.where(`'{"${me.id}"}' <@ note.mentions`)
 					.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
@@ -79,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			read(me.id, mentions);
 
-			return await Notes.packMany(mentions, me);
+			return await this.notesRepository.packMany(mentions, me);
 		});
 	}
 }

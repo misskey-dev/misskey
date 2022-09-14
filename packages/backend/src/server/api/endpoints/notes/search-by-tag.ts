@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -76,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')
@@ -145,7 +145,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Search notes
 			const notes = await query.take(ps.limit).getMany();
 
-			return await Notes.packMany(notes, me);
+			return await this.notesRepository.packMany(notes, me);
 		});
 	}
 }

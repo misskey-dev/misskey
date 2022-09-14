@@ -68,11 +68,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (notificationTypes.every(type => ps.excludeTypes?.includes(type))) {
 				return [];
 			}
-			const followingQuery = Followings.createQueryBuilder('following')
+			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
 
-			const mutingQuery = Mutings.createQueryBuilder('muting')
+			const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 				.select('muting.muteeId')
 				.where('muting.muterId = :muterId', { muterId: me.id });
 

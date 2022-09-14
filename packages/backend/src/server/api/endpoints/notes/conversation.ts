@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Note } from '@/models/entities/note.js';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { getNote } from '../../common/getters.js';
@@ -43,11 +43,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
 			const conversation: Note[] = [];
@@ -55,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			async function get(id: any) {
 				i++;
-				const p = await Notes.findOneBy({ id });
+				const p = await this.notesRepository.findOneBy({ id });
 				if (p == null) return;
 
 				if (i > ps.offset!) {
@@ -75,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				await get(note.replyId);
 			}
 
-			return await Notes.packMany(conversation, me);
+			return await this.notesRepository.packMany(conversation, me);
 		});
 	}
 }

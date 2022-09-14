@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Instances, NoteReactions, Notes, Users } from '@/models/index.js';
+import type { Notes, Users } from '@/models/index.js';
+import { Instances, NoteReactions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { } from '@/services/chart/index.js';
 import { IsNull } from 'typeorm';
@@ -71,8 +72,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				//originalReactionsCount,
 				instances,
 			] = await Promise.all([
-				Notes.count({ cache: 3600000 }), // 1 hour
-				Notes.count({ where: { userHost: IsNull() }, cache: 3600000 }),
+				this.notesRepository.count({ cache: 3600000 }), // 1 hour
+				this.notesRepository.count({ where: { userHost: IsNull() }, cache: 3600000 }),
 				this.usersRepository.count({ cache: 3600000 }),
 				this.usersRepository.count({ where: { host: IsNull() }, cache: 3600000 }),
 				NoteReactions.count({ cache: 3600000 }), // 1 hour

@@ -46,12 +46,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					},
 					take: ps.limit,
 				}),
-				Followings.count({
+				this.followingsRepository.count({
 					where: {
 						followeeHost: Not(IsNull()),
 					},
 				}),
-				Followings.count({
+				this.followingsRepository.count({
 					where: {
 						followerHost: Not(IsNull()),
 					},

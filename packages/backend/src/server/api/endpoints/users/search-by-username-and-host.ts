@@ -72,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				let users: User[] = [];
 
 				if (me) {
-					const followingQuery = Followings.createQueryBuilder('following')
+					const followingQuery = this.followingsRepository.createQueryBuilder('following')
 						.select('following.followeeId')
 						.where('following.followerId = :followerId', { followerId: me.id });
 

@@ -70,13 +70,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Get blockee
-			const blockee = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const blockee = await getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			// Check if already blocking
-			const exist = await Blockings.findOneBy({
+			const exist = await this.blockingsRepository.findOneBy({
 				blockerId: blocker.id,
 				blockeeId: blockee.id,
 			});

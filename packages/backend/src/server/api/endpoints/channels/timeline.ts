@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Notes, Channels } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
+import { Channels } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { ApiError } from '../../error.js';
@@ -46,6 +47,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -58,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			//#region Construct query
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('note.channelId = :channelId', { channelId: channel.id })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
@@ -78,7 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (me) activeUsersChart.read(me);
 
-			return await Notes.packMany(timeline, me);
+			return await this.notesRepository.packMany(timeline, me);
 		});
 	}
 }

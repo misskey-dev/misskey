@@ -69,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check if already muting
-			const exist = await Mutings.findOneBy({
+			const exist = await this.mutingsRepository.findOneBy({
 				muterId: muter.id,
 				muteeId: mutee.id,
 			});
@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Create mute
-			await Mutings.insert({
+			await this.mutingsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,

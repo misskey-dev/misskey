@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import config from '@/config/index.js';
 import { getAgentByUrl } from '@/misc/fetch.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { getNote } from '../../common/getters.js';
@@ -41,14 +41,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
-			if (!(await Notes.isVisibleForMe(note, me ? me.id : null))) {
+			if (!(await this.notesRepository.isVisibleForMe(note, me ? me.id : null))) {
 				return 204; // TODO: 良い感じのエラー返す
 			}
 

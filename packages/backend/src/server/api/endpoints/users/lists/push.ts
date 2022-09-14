@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Check blocking
 			if (user.id !== me.id) {
-				const block = await Blockings.findOneBy({
+				const block = await this.blockingsRepository.findOneBy({
 					blockerId: user.id,
 					blockeeId: me.id,
 				});

@@ -1,6 +1,7 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Notes, Followings } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
+import { Followings } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
@@ -45,10 +46,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const hasFollowing = (await Followings.count({
+			const hasFollowing = (await this.followingsRepository.count({
 				where: {
 					followerId: me.id,
 				},
@@ -56,11 +60,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			})) !== 0;
 
 			//#region Construct query
-			const followingQuery = Followings.createQueryBuilder('following')
+			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
 
-			const query = this.queryService.makePaginationQuery(Notes.createQueryBuilder('note'),
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere(new Brackets(qb => { qb
 					.where('note.userId = :meId', { meId: me.id });
@@ -127,7 +131,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				activeUsersChart.read(me);
 			});
 
-			return await Notes.packMany(timeline, me);
+			return await this.notesRepository.packMany(timeline, me);
 		});
 	}
 }

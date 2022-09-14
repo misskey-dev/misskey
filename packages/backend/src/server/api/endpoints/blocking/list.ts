@@ -44,14 +44,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Blockings.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.blockingsRepository.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
 				.andWhere('blocking.blockerId = :meId', { meId: me.id });
 
 			const blockings = await query
 				.take(ps.limit)
 				.getMany();
 
-			return await Blockings.packMany(blockings, me);
+			return await this.blockingsRepository.packMany(blockings, me);
 		});
 	}
 }

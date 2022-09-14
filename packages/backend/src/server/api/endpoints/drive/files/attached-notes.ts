@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFiles, Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
+import { DriveFiles } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -43,6 +44,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch file
@@ -55,11 +58,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			const notes = await Notes.createQueryBuilder('note')
+			const notes = await this.notesRepository.createQueryBuilder('note')
 				.where(':file = ANY(note.fileIds)', { file: file.id })
 				.getMany();
 
-			return await Notes.packMany(notes, me, {
+			return await this.notesRepository.packMany(notes, me, {
 				detail: true,
 			});
 		});

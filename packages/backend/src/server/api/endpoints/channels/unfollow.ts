@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			await ChannelFollowings.delete({
+			await this.channelFollowingsRepository.delete({
 				followerId: me.id,
 				followeeId: channel.id,
 			});

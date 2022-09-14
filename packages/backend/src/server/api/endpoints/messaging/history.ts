@@ -37,7 +37,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const mute = await Mutings.findBy({
+			const mute = await this.mutingsRepository.findBy({
 				muterId: me.id,
 			});
 

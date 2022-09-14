@@ -1,8 +1,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import deleteNote from '@/services/note/delete.js';
-import type { Users } from '@/models/index.js';
-import { Notes } from '@/models/index.js';
+import type { Users , Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getNote } from '../../common/getters.js';
 import { ApiError } from '../../error.js';
@@ -43,14 +42,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
-			const renotes = await Notes.findBy({
+			const renotes = await this.notesRepository.findBy({
 				userId: me.id,
 				renoteId: note.id,
 			});

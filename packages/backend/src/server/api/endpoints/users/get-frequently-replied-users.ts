@@ -1,7 +1,7 @@
 import { Not, In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { maximum } from '@/prelude/array.js';
-import { Notes, Users } from '@/models/index.js';
+import type { Notes, Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 import { getUser } from '../../common/getters.js';
@@ -63,13 +63,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
-			const user = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const user = await getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			// Fetch recent notes
-			const recentNotes = await Notes.find({
+			const recentNotes = await this.notesRepository.find({
 				where: {
 					userId: user.id,
 					replyId: Not(IsNull()),
@@ -87,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// TODO ミュートを考慮
-			const replyTargetNotes = await Notes.find({
+			const replyTargetNotes = await this.notesRepository.find({
 				where: {
 					id: In(recentNotes.map(p => p.replyId)),
 				},

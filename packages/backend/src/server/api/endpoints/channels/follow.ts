@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			await ChannelFollowings.insert({
+			await this.channelFollowingsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				followerId: me.id,

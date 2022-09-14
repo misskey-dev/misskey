@@ -1,6 +1,7 @@
 import { Brackets, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Polls, Mutings, Notes, PollVotes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
+import { Polls, Mutings, PollVotes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -32,7 +33,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-
+		@Inject('notesRepository')
+		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = Polls.createQueryBuilder('poll')
@@ -56,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#endregion
 
 			//#region mute
-			const mutingQuery = Mutings.createQueryBuilder('muting')
+			const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 				.select('muting.muteeId')
 				.where('muting.muterId = :muterId', { muterId: me.id });
 
@@ -74,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (polls.length === 0) return [];
 
-			const notes = await Notes.find({
+			const notes = await this.notesRepository.find({
 				where: {
 					id: In(polls.map(poll => poll.noteId)),
 				},
@@ -83,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			return await Notes.packMany(notes, me, {
+			return await this.notesRepository.packMany(notes, me, {
 				detail: true,
 			});
 		});

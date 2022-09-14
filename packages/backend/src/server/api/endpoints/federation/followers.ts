@@ -43,14 +43,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId)
 				.andWhere('following.followeeHost = :host', { host: ps.host });
 
 			const followings = await query
 				.take(ps.limit)
 				.getMany();
 
-			return await Followings.packMany(followings, me, { populateFollowee: true });
+			return await this.followingsRepository.packMany(followings, me, { populateFollowee: true });
 		});
 	}
 }
