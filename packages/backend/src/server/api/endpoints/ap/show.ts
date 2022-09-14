@@ -2,8 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { extractDbHost } from '@/misc/convert-host.js';
-import type { Users } from '@/models/index.js';
-import { Notes } from '@/models/index.js';
+import type { Users , Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/note.js';
 import type { CacheableLocalUser, User } from '@/models/entities/user.js';
 import { isActor, isPost, getApId } from '@/services/remote/activitypub/type.js';
@@ -147,7 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			};
 		} else if (note != null) {
 			try {
-				const object = await Notes.pack(note, me, { detail: true });
+				const object = await this.notesRepository.pack(note, me, { detail: true });
 
 				return {
 					type: 'Note',
