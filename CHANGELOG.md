@@ -2,6 +2,7 @@
 ## 12.x.x (unreleased)
 
 ### Improvements
+- Add groups UI back @ThatOneCalculator
 
 ### Bugfixes
 - 
