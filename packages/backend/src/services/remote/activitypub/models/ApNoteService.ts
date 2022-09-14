@@ -2,32 +2,33 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Polls , Emojis, Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import { Config } from '@/config/types.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import { extractDbHost, toPuny } from '@/misc/convert-host';
 import type { Note } from '@/models/entities/note.js';
-import { StatusError } from '@/services/HttpRequestService.js';
 import { toArray, toSingle, unique } from '@/prelude/array.js';
 import type { Emoji } from '@/models/entities/emoji.js';
-import type { MetaService } from '@/services/MetaService.js';
-import type { AppLockService } from '@/services/AppLockService.js';
+import { MetaService } from '@/services/MetaService.js';
+import { AppLockService } from '@/services/AppLockService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
-import type { NoteCreateService } from '@/services/NoteCreateService.js';
+import { NoteCreateService } from '@/services/NoteCreateService.js';
 import type Logger from '@/logger.js';
-import type { IdService } from '@/services/IdService.js';
-import type { PollService } from '@/services/PollService.js';
+import { IdService } from '@/services/IdService.js';
+import { PollService } from '@/services/PollService.js';
+import { StatusError } from '@/misc/status-error.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { ApLoggerService } from '../ApLoggerService.js';
+import { ApMfmService } from '../ApMfmService.js';
+import { ApDbResolverService } from '../ApDbResolverService.js';
+import { ApResolverService } from '../ApResolverService.js';
 import { ApPersonService } from './ApPersonService.js';
 import { extractApHashtags } from './tag.js';
-import type { ApMentionService } from './ApMentionService.js';
-import type { ApQuestionService } from './ApQuestionService.js';
-import type { ApLoggerService } from '../ApLoggerService.js';
-import type { ApMfmService } from '../ApMfmService.js';
-import type { ApDbResolverService } from '../ApDbResolverService.js';
-import type { ApResolverService, Resolver } from '../ApResolverService.js';
+import { ApMentionService } from './ApMentionService.js';
+import { ApQuestionService } from './ApQuestionService.js';
+import { ApImageService } from './ApImageService.js';
+import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
-import type { ApImageService } from './ApImageService.js';
 
 @Injectable()
 export class ApNoteService {

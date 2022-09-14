@@ -22,8 +22,11 @@ import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
+import { MediaProxyServerService } from './MediaProxyServerService.js';
+import { FileServerService } from './FileServerService.js';
+import { ClientServerService } from './web/ClientServerService.js';
 
-export const serverLogger = new Logger('server', 'gray', false);
+const serverLogger = new Logger('server', 'gray', false);
 
 @Injectable()
 export class ServerService {
@@ -42,6 +45,9 @@ export class ServerService {
 		private activityPubServerService: ActivityPubServerService,
 		private wellKnownServerService: WellKnownServerService,
 		private nodeinfoServerService: NodeinfoServerService,
+		private fileServerService: FileServerService,
+		private mediaProxyServerService: MediaProxyServerService,
+		private clientServerService: ClientServerService,
 		private globalEventService: GlobalEventService,
 	) {
 	}
@@ -75,8 +81,8 @@ export class ServerService {
 		}
 
 		koa.use(mount('/api', this.apiServerService.createApiServer(app)));
-		koa.use(mount('/files', fileServer));
-		koa.use(mount('/proxy', proxyServer));
+		koa.use(mount('/files', this.fileServerService.createServer()));
+		koa.use(mount('/proxy', this.mediaProxyServerService.createServer()));
 
 		// Init router
 		const router = new Router();
@@ -137,7 +143,7 @@ export class ServerService {
 		// Register router
 		koa.use(router.routes());
 
-		koa.use(mount(webServer));
+		koa.use(mount(this.clientServerService.createApp()));
 
 		const server = http.createServer(koa.callback());
 

@@ -7,11 +7,11 @@ import PrivateIp from 'private-ip';
 import got, * as Got from 'got';
 import chalk from 'chalk';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import { Config } from '@/config/types.js';
 import Logger from '@/logger.js';
-import { StatusError } from '@/services/HttpRequestService.js';
-import type { HttpRequestService } from '@/services/HttpRequestService.js';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
 import { createTemp } from '@/misc/create-temp';
+import { StatusError } from '@/misc/status-error.js';
 
 const pipeline = util.promisify(stream.pipeline);
 

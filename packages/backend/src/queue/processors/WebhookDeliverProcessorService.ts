@@ -2,13 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Webhooks } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import { Config } from '@/config/types.js';
 import type Logger from '@/logger.js';
-import type { HttpRequestService } from '@/services/HttpRequestService.js';
-import { StatusError } from '@/services/HttpRequestService.js';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
+import { StatusError } from '@/misc/status-error.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { WebhookDeliverJobData } from '../types.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class WebhookDeliverProcessorService {

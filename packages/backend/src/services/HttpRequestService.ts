@@ -5,7 +5,8 @@ import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types';
+import { Config } from '@/config/types';
+import { StatusError } from '@/misc/status-error.js';
 import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';
 
@@ -149,19 +150,5 @@ export class HttpRequestService {
 		}
 
 		return res;
-	}
-}
-
-export class StatusError extends Error {
-	public statusCode: number;
-	public statusMessage?: string;
-	public isClientError: boolean;
-
-	constructor(message: string, statusCode: number, statusMessage?: string) {
-		super(message);
-		this.name = 'StatusError';
-		this.statusCode = statusCode;
-		this.statusMessage = statusMessage;
-		this.isClientError = typeof this.statusCode === 'number' && this.statusCode >= 400 && this.statusCode < 500;
 	}
 }
