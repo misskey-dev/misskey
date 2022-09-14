@@ -17,6 +17,7 @@ import { envOption } from '@/env.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -40,6 +41,7 @@ export class ServerService {
 		@Inject('userProfilesRepository')
 		private userProfilesRepository: typeof UserProfiles,
 
+		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
 		private streamingApiServerService: StreamingApiServerService,
 		private activityPubServerService: ActivityPubServerService,
@@ -104,7 +106,7 @@ export class ServerService {
 			});
 
 			if (user) {
-				ctx.redirect(this.usersRepository.getAvatarUrlSync(user));
+				ctx.redirect(this.userEntityService.getAvatarUrlSync(user));
 			} else {
 				ctx.redirect('/static-assets/user-unknown.png');
 			}

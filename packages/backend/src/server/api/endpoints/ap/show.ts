@@ -12,6 +12,8 @@ import { ApDbResolverService } from '@/services/remote/activitypub/ApDbResolverS
 import { MetaService } from '@/services/MetaService.js';
 import { ApPersonService } from '@/services/remote/activitypub/models/ApPersonService.js';
 import { ApNoteService } from '@/services/remote/activitypub/models/ApNoteService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -87,6 +89,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
 		private metaService: MetaService,
 		private apResolverService: ApResolverService,
 		private apDbResolverService: ApDbResolverService,

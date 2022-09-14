@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishMainStream } from '@/services/stream.js';
-import type { Users } from '@/models/index.js';
-import { Pages } from '@/models/index.js';
+import type { Users , Pages } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
@@ -32,16 +32,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
+
+		private userEntityService: UserEntityService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const page = await Pages.findOneBy({ id: ps.pageId });
+			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
 
-			publishMainStream(page.userId, 'pageEvent', {
+			this.globalEventService.publishMainStream(page.userId, 'pageEvent', {
 				pageId: ps.pageId,
 				event: ps.event,
 				var: ps.var,

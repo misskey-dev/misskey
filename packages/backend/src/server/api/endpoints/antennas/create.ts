@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/services/IdService.js';
 import type { UserLists, UserGroupJoinings , Antennas } from '@/models/index.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { AntennaEntityService } from '@/services/entities/AntennaEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -74,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('userGroupJoiningsRepository')
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
+		private antennaEntityService: AntennaEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {

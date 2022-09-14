@@ -2,12 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Notes } from '@/models/index.js';
-import { Users } from '@/models/index.js';
+import type { Notes , Users } from '@/models/index.js';
+
 import { Config } from '@/config/types.js';
 import { MetaService } from '@/services/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const';
 import { Cache } from '@/misc/cache.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';
@@ -24,6 +25,7 @@ export class NodeinfoServerService {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private userEntityService: UserEntityService,
 		private metaService: MetaService,
 	) {
 	}
@@ -57,7 +59,7 @@ export class NodeinfoServerService {
 				this.notesRepository.count({ where: { userHost: IsNull() } }),
 			]);
 
-			const proxyAccount = meta.proxyAccountId ? await Users.pack(meta.proxyAccountId).catch(() => null) : null;
+			const proxyAccount = meta.proxyAccountId ? await this.userEntityService.pack(meta.proxyAccountId).catch(() => null) : null;
 
 			return {
 				software: {

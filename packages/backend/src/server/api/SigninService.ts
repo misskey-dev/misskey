@@ -5,6 +5,7 @@ import { Config } from '@/config/types.js';
 import { IdService } from '@/services/IdService.js';
 import type { ILocalUser } from '@/models/entities/user.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { SigninEntityService } from '@/services/entities/SigninEntityService.js';
 import type Koa from 'koa';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class SigninService {
 		@Inject('signinsRepository')
 		private signinsRepository: typeof Signins,
 
+		private signinEntityService: SigninEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {

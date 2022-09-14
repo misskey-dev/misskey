@@ -3,6 +3,7 @@ import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Users } from '@/models/index.js';
 import { SignupService } from '@/services/SignupService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -36,6 +37,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		private userEntityService: UserEntityService,
 		private signupService: SignupService,
 	) {
 		super(meta, paramDef, async (ps, _me) => {

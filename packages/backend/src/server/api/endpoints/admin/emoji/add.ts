@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFiles } from '@/models/index.js';
-import { Emojis } from '@/models/index.js';
+import type { DriveFiles , Emojis } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -48,6 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('emojisRepository')
 		private emojisRepository: typeof Emojis,
 
+		private emojiEntityService: EmojiEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
@@ -69,12 +70,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				originalUrl: file.url,
 				publicUrl: file.webpublicUrl ?? file.url,
 				type: file.webpublicType ?? file.type,
-			}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 			await this.db.queryResultCache!.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
-				emoji: await Emojis.pack(emoji.id),
+				emoji: await this.emojiEntityService.pack(emoji.id),
 			});
 
 			this.moderationLogService.insertModerationLog(me, 'addEmoji', {

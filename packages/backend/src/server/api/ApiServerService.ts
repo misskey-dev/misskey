@@ -6,8 +6,10 @@ import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
 import { ModuleRef } from '@nestjs/core';
 import { Config } from '@/config/types.js';
-import { Users , Instances, AccessTokens } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Instances, AccessTokens } from '@/models/index.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import endpoints from './endpoints.js';
 import discord from './service/discord.js';
 import github from './service/github.js';
@@ -27,6 +29,7 @@ export class ApiServerService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		private userEntityService: UserEntityService,
 		private apiCallService: ApiCallService,
 		private signupApiServiceService: SignupApiService,
 		private signinApiServiceService: SigninApiService,
@@ -127,7 +130,7 @@ export class ApiServerService {
 				ctx.body = {
 					ok: true,
 					token: token.token,
-					user: await Users.pack(token.userId, null, { detail: true }),
+					user: await this.userEntityService.pack(token.userId, null, { detail: true }),
 				};
 			} else {
 				ctx.body = {

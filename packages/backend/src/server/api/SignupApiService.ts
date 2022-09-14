@@ -2,13 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import bcrypt from 'bcryptjs';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { RegistrationTickets , UserPendings, UserProfiles } from '@/models/index.js';
-import { Users } from '@/models/index.js';
+import type { RegistrationTickets , UserPendings, UserProfiles , Users } from '@/models/index.js';
+
 import { Config } from '@/config/types.js';
 import { MetaService } from '@/services/MetaService.js';
 import { CaptchaService } from '@/services/CaptchaService.js';
 import { IdService } from '@/services/IdService.js';
 import { SignupService } from '@/services/SignupService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { SigninService } from '../SigninService.js';
 import type Koa from 'koa';
 
@@ -30,6 +31,7 @@ export class SignupApiService {
 		@Inject('registrationTicketsRepository')
 		private registrationTicketsRepository: typeof RegistrationTickets,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
 		private captchaService: CaptchaService,
@@ -125,7 +127,7 @@ export class SignupApiService {
 					username, password, host,
 				});
 	
-				const res = await Users.pack(account, account, {
+				const res = await this.userEntityService.pack(account, account, {
 					detail: true,
 					includeSecrets: true,
 				});

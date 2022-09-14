@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Antennas , UserLists, UserGroupJoinings } from '@/models/index.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { AntennaEntityService } from '@/services/entities/AntennaEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -79,7 +80,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('userGroupJoiningsRepository')
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
-
+		
+		private antennaEntityService: AntennaEntityService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

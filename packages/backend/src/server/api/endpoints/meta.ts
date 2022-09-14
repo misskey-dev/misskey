@@ -1,11 +1,15 @@
 import { IsNull, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import config from '@/config/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Ads, Emojis, Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
+import { Ads, Emojis } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
+import { MetaService } from '@/services/MetaService.js';
+import { Config } from '@/config/types.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -27,7 +31,6 @@ export const meta = {
 			version: {
 				type: 'string',
 				optional: false, nullable: false,
-				example: config.version,
 			},
 			name: {
 				type: 'string',
@@ -308,14 +311,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+	
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private userEntityService: UserEntityService,
+		private emojiEntityService: EmojiEntityService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const instance = await fetchMeta(true);
+			const instance = await this.metaService.fetch(true);
 
 			const emojis = await Emojis.find({
 				where: {
@@ -341,10 +348,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				maintainerName: instance.maintainerName,
 				maintainerEmail: instance.maintainerEmail,
 
-				version: config.version,
+				version: this.config.version,
 
 				name: instance.name,
-				uri: config.url,
+				uri: this.config.url,
 				description: instance.description,
 				langs: instance.langs,
 				tosUrl: instance.ToSUrl,
@@ -369,7 +376,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
 				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-				emojis: await Emojis.packMany(emojis),
+				emojis: await this.emojiEntityService.packMany(emojis),
 				defaultLightTheme: instance.defaultLightTheme,
 				defaultDarkTheme: instance.defaultDarkTheme,
 				ads: ads.map(ad => ({
@@ -408,7 +415,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					localTimeLine: !instance.disableLocalTimeline,
 					globalTimeLine: !instance.disableGlobalTimeline,
 					emailRequiredForSignup: instance.emailRequiredForSignup,
-					elasticsearch: config.elasticsearch ? true : false,
+					elasticsearch: this.config.elasticsearch ? true : false,
 					hcaptcha: instance.enableHcaptcha,
 					recaptcha: instance.enableRecaptcha,
 					objectStorage: instance.useObjectStorage,
