@@ -16,7 +16,7 @@ import { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
 import type { Following } from '@/models/entities/following.js';
 import { countIf } from '@/prelude/array.js';
 import type { Note } from '@/models/entities/note.js';
-import { QueryService } from '@/services/QueryService';
+import { QueryService } from '@/services/QueryService.js';
 import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Announcements } from '@/models/index.js';
+import type { Announcements } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -30,18 +30,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		@Inject('announcementsRepository')
+		private announcementsRepository: typeof Announcements,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const announcement = await Announcements.findOneBy({ id: ps.id });
+			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });
 
 			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
 
-			await Announcements.delete(announcement.id);
+			await this.announcementsRepository.delete(announcement.id);
 		});
 	}
 }

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Users } from '@/models/index.js';
-import { signup } from '../../../common/signup.js';
+import { SignupService } from '@/services/SignupService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -34,7 +34,9 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
-    private usersRepository: typeof Users,
+		private usersRepository: typeof Users,
+
+		private signupService: SignupService,
 	) {
 		super(meta, paramDef, async (ps, _me) => {
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
@@ -43,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			})) === 0;
 			if (!noUsers && !me?.isAdmin) throw new Error('access denied');
 
-			const { account, secret } = await signup({
+			const { account, secret } = await this.signupService.signup({
 				username: ps.username,
 				password: ps.password,
 			});

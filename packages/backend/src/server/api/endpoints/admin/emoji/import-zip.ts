@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { createImportCustomEmojisJob } from '@/queue/index.js';
+import { QueueService } from '@/queue/queue.service.js';
 
 export const meta = {
 	secure: true,
@@ -21,9 +20,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			createImportCustomEmojisJob(me, ps.fileId);
+			this.queueService.createImportCustomEmojisJob(me, ps.fileId);
 		});
 	}
 }

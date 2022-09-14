@@ -4,7 +4,7 @@ import S3 from 'aws-sdk/clients/s3.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Config } from '@/config/types.js';
 import type { Meta } from '@/models/entities/meta';
-import type { HttpRequestService } from '../HttpRequestService';
+import type { HttpRequestService } from '../HttpRequestService.js';
 
 @Injectable()
 export class S3Service {

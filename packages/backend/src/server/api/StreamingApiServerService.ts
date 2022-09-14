@@ -8,7 +8,7 @@ import type { Blockings, ChannelFollowings, Followings, Mutings, UserProfiles } 
 import { Config } from '@/config/types.js';
 import { NoteReadService } from '@/services/NoteReadService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { AuthenticateService } from './AuthenticateService';
+import { AuthenticateService } from './AuthenticateService.js';
 import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
 import type { ParsedUrlQuery } from 'querystring';

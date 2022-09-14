@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { DriveFiles } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
-import type { AppLockService } from '@/services/AppLockService.js';
+import { AppLockService } from '@/services/AppLockService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-drive.js';
 import type { KVs } from '../core.js';
-import type { DataSource } from 'typeorm';
 
 /**
  * ユーザーごとのドライブに関するチャート

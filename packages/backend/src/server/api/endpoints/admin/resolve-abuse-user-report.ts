@@ -4,7 +4,7 @@ import type { Users } from '@/models/index.js';
 import { AbuseUserReports } from '@/models/index.js';
 import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
 import { renderFlag } from '@/services/remote/activitypub/renderer/flag.js';
-import type { InstanceActorService } from '@/services/InstanceActorService';
+import type { InstanceActorService } from '@/services/InstanceActorService.js';
 import type { QueueService } from '@/queue/queue.service';
 
 export const meta = {
@@ -28,7 +28,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
-    private usersRepository: typeof Users,
+		private usersRepository: typeof Users,
 
 		private queueService: QueueService,
 

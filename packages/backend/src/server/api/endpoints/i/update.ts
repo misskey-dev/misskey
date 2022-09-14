@@ -127,10 +127,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
-    private usersRepository: typeof Users,
+		private usersRepository: typeof Users,
 
 		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });

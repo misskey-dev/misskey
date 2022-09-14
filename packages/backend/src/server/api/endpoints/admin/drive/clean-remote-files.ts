@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { createCleanRemoteFilesJob } from '@/queue/index.js';
+import { QueueService } from '@/queue/queue.service.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -19,14 +19,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			createCleanRemoteFilesJob();
+			this.queueService.createCleanRemoteFilesJob();
 		});
 	}
 }

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Emojis } from '@/models/index.js';
+import type { Emojis } from '@/models/index.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { QueryService } from '@/services/QueryService.js';
 
@@ -73,10 +73,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('emojisRepository')
+		private emojisRepository: typeof Emojis,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const q = this.queryService.makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
+			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
 
 			if (ps.host == null) {
 				q.andWhere('emoji.host IS NOT NULL');
@@ -93,7 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return Emojis.packMany(emojis);
+			return this.emojisRepository.packMany(emojis);
 		});
 	}
 }

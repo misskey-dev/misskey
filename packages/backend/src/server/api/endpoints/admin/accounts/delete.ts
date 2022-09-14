@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
-import { doPostSuspend } from '@/services/suspend-user.js';
-import { publishUserEvent } from '@/services/stream.js';
-import { createDeleteAccountJob } from '@/queue/index.js';
+import { QueueService } from '@/queue/queue.service.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { UserSuspendService } from '@/services/UserSuspendService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -25,7 +25,11 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
-    private usersRepository: typeof Users,
+		private usersRepository: typeof Users,
+
+		private queueService: QueueService,
+		private globalEventService: GlobalEventService,
+		private userSuspendService: UserSuspendService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -44,13 +48,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (this.usersRepository.isLocalUser(user)) {
 				// 物理削除する前にDelete activityを送信する
-				await doPostSuspend(user).catch(e => {});
+				await this.userSuspendService.doPostSuspend(user).catch(err => {});
 
-				createDeleteAccountJob(user, {
+				this.queueService.createDeleteAccountJob(user, {
 					soft: false,
 				});
 			} else {
-				createDeleteAccountJob(user, {
+				this.queueService.createDeleteAccountJob(user, {
 					soft: true, // リモートユーザーの削除は、完全にDBから物理削除してしまうと再度連合してきてアカウントが復活する可能性があるため、soft指定する
 				});
 			}
@@ -61,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (this.usersRepository.isLocalUser(user)) {
 				// Terminate streaming
-				publishUserEvent(user.id, 'terminate', {});
+				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
 			}
 		});
 	}

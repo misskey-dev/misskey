@@ -31,7 +31,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('adsRepository')
-    private adsRepository: typeof Ads,
+		private adsRepository: typeof Ads,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const ad = await this.adsRepository.findOneBy({ id: ps.id });

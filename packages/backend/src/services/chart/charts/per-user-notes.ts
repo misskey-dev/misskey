@@ -1,13 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import type { User } from '@/models/entities/user.js';
 import { Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/note.js';
-import type { AppLockService } from '@/services/AppLockService.js';
+import { AppLockService } from '@/services/AppLockService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-notes.js';
 import type { KVs } from '../core.js';
-import type { DataSource } from 'typeorm';
 
 /**
  * ユーザーごとのノートに関するチャート

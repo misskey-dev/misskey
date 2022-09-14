@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Emojis } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { Emojis } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
-import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
-import { publishBroadcastStream } from '@/services/stream.js';
-import { db } from '@/db/postgre.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DriveService } from '@/services/DriveService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -43,20 +44,24 @@ export const paramDef = {
 	required: ['emojiId'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
+		@Inject(DI_SYMBOLS.db)
+		private db: DataSource,
 
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		@Inject('emojisRepository')
+		private emojisRepository: typeof Emojis,
 
 		private idService: IdService,
+		private globalEventService: GlobalEventService,
+		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const emoji = await Emojis.findOneBy({ id: ps.emojiId });
+			const emoji = await this.emojisRepository.findOneBy({ id: ps.emojiId });
 
 			if (emoji == null) {
 				throw new ApiError(meta.errors.noSuchEmoji);
@@ -66,12 +71,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			try {
 				// Create file
-				driveFile = await uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
+				driveFile = await this.driveService.uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
 			} catch (e) {
 				throw new ApiError();
 			}
 
-			const copied = await Emojis.insert({
+			const copied = await this.emojisRepository.insert({
 				id: this.idService.genId(),
 				updatedAt: new Date(),
 				name: emoji.name,
@@ -80,12 +85,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				originalUrl: driveFile.url,
 				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
 				type: driveFile.webpublicType ?? driveFile.type,
-			}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
-			await db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache!.remove(['meta_emojis']);
 
-			publishBroadcastStream('emojiAdded', {
-				emoji: await Emojis.pack(copied.id),
+			this.globalEventService.publishBroadcastStream('emojiAdded', {
+				emoji: await this.emojisRepository.pack(copied.id),
 			});
 
 			return {

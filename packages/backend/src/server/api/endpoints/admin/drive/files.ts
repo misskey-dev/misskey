@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DriveFiles } from '@/models/index.js';
+import type { DriveFiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 
@@ -43,16 +43,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-    private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
 
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(this.driveFilesRepository.createQueryBuilder('file'), ps.sinceId, ps.untilId);
 
 			if (ps.userId) {
 				query.andWhere('file.userId = :userId', { userId: ps.userId });
@@ -78,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const files = await query.take(ps.limit).getMany();
 
-			return await DriveFiles.packMany(files, { detail: true, withUser: true, self: true });
+			return await this.driveFilesRepository.packMany(files, { detail: true, withUser: true, self: true });
 		});
 	}
 }

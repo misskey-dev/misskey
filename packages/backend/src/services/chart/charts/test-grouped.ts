@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { AppLockService } from '@/services/AppLockService.js';
+import { DataSource , DataSource } from 'typeorm';
+import { AppLockService } from '@/services/AppLockService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/test-grouped.js';
-import type { DataSource , DataSource } from 'typeorm';
 import type { KVs } from '../core.js';
 
 /**

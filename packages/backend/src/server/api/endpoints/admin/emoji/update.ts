@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Emojis } from '@/models/index.js';
-import { db } from '@/db/postgre.js';
+import type { Emojis } from '@/models/index.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -36,24 +37,31 @@ export const paramDef = {
 	required: ['id', 'name', 'aliases'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.db)
+		private db: DataSource,
+
+		@Inject('emojisRepository')
+		private emojisRepository: typeof Emojis,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const emoji = await Emojis.findOneBy({ id: ps.id });
+			const emoji = await this.emojisRepository.findOneBy({ id: ps.id });
 
 			if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
-			await Emojis.update(emoji.id, {
+			await this.emojisRepository.update(emoji.id, {
 				updatedAt: new Date(),
 				name: ps.name,
 				category: ps.category,
 				aliases: ps.aliases,
 			});
 
-			await db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache!.remove(['meta_emojis']);
 		});
 	}
 }

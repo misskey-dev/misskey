@@ -1,13 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Not, IsNull } from 'typeorm';
+import { Not, IsNull , DataSource } from 'typeorm';
 import { Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
-import type { AppLockService } from '@/services/AppLockService.js';
+import { AppLockService } from '@/services/AppLockService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/users.js';
 import type { KVs } from '../core.js';
-import type { DataSource } from 'typeorm';
 
 /**
  * ユーザー数に関するチャート

@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { AppLockService } from '@/services/AppLockService.js';
+import { DataSource } from 'typeorm';
+import { AppLockService } from '@/services/AppLockService.js';
 import type { User } from '@/models/entities/user.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/active-users.js';
-import type { DataSource } from 'typeorm';
 import type { KVs } from '../core.js';
 
 const week = 1000 * 60 * 60 * 24 * 7;

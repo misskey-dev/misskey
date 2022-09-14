@@ -7,7 +7,7 @@ import { Config } from '@/config/types.js';
 import { escapeAttribute, escapeValue } from '@/prelude/xml';
 import type { User } from '@/models/entities/user';
 import * as Acct from '@/misc/acct.js';
-import { NodeinfoServerService } from './NodeinfoServerService';
+import { NodeinfoServerService } from './NodeinfoServerService.js';
 import type { FindOptionsWhere } from 'typeorm';
 
 @Injectable()

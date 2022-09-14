@@ -7,7 +7,7 @@ import type { Instance } from '@/models/entities/instance.js';
 import type { Instances } from '@/models/index.js';
 import type { AppLockService } from '@/services/AppLockService.js';
 import Logger from '@/logger.js';
-import type { HttpRequestService } from './HttpRequestService';
+import type { HttpRequestService } from './HttpRequestService.js';
 import type { DOMWindow } from 'jsdom';
 
 const logger = new Logger('metadata', 'cyan');

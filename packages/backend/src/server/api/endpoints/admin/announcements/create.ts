@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Announcements } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { Announcements } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -59,17 +59,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('announcementsRepository')
+		private announcementsRepository: typeof Announcements,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const announcement = await Announcements.insert({
+			const announcement = await this.announcementsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				updatedAt: null,
 				title: ps.title,
 				text: ps.text,
 				imageUrl: ps.imageUrl,
-			}).then(x => Announcements.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
 		});

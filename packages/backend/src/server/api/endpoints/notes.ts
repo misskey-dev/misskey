@@ -37,7 +37,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('notesRepository')
-    private notesRepository: typeof Notes,
+		private notesRepository: typeof Notes,
 
 		private queryService: QueryService,
 	) {
