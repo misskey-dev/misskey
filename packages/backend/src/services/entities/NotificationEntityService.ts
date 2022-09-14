@@ -1,26 +1,43 @@
-import { In, Repository } from 'typeorm';
-import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '../index.js';
-import { Notification } from '@/models/entities/notification.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { AccessTokens, NoteReactions , Notifications } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
-import { Packed } from '@/misc/schema.js';
-import { Note } from '@/models/entities/note.js';
-import { NoteReaction } from '@/models/entities/note-reaction.js';
-import { User } from '@/models/entities/user.js';
+import type { Notification } from '@/models/entities/notification.js';
 import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
-import { notificationTypes } from '@/types.js';
-import { db } from '@/db/postgre.js';
+import type { NoteReaction } from '@/models/entities/note-reaction.js';
+import type { Note } from '@/models/entities/note.js';
+import type { Packed } from '@/misc/schema.js';
+import { UserEntityService } from './UserEntityService.js';
+import { NoteEntityService } from './NoteEntityService.js';
 
-export const NotificationRepository = db.getRepository(Notification).extend({
-	async pack(
+@Injectable()
+export class NotificationEntityService {
+	constructor(
+		@Inject('notificationsRepository')
+		private notificationsRepository: typeof Notifications,
+
+		@Inject('noteReactionsRepository')
+		private noteReactionsRepository: typeof NoteReactions,
+
+		@Inject('accessTokensRepository')
+		private accessTokensRepository: typeof AccessTokens,
+
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
+	) {
+	}
+
+	public async pack(
 		src: Notification['id'] | Notification,
 		options: {
 			_hintForEachNotes_?: {
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
-		}
+		},
 	): Promise<Packed<'Notification'>> {
-		const notification = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
-		const token = notification.appAccessTokenId ? await AccessTokens.findOneByOrFail({ id: notification.appAccessTokenId }) : null;
+		const notification = typeof src === 'object' ? src : await this.notificationsRepository.findOneByOrFail({ id: src });
+		const token = notification.appAccessTokenId ? await this.accessTokensRepository.findOneByOrFail({ id: notification.appAccessTokenId }) : null;
 
 		return await awaitAll({
 			id: notification.id,
@@ -28,47 +45,47 @@ export const NotificationRepository = db.getRepository(Notification).extend({
 			type: notification.type,
 			isRead: notification.isRead,
 			userId: notification.notifierId,
-			user: notification.notifierId ? Users.pack(notification.notifier || notification.notifierId) : null,
+			user: notification.notifierId ? this.userEntityService.pack(notification.notifier || notification.notifierId) : null,
 			...(notification.type === 'mention' ? {
-				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
 			} : {}),
 			...(notification.type === 'reply' ? {
-				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
 			} : {}),
 			...(notification.type === 'renote' ? {
-				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
 			} : {}),
 			...(notification.type === 'quote' ? {
-				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
 			} : {}),
 			...(notification.type === 'reaction' ? {
-				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
 				reaction: notification.reaction,
 			} : {}),
 			...(notification.type === 'pollVote' ? {
-				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
 				choice: notification.choice,
 			} : {}),
 			...(notification.type === 'pollEnded' ? {
-				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
+				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
@@ -82,11 +99,11 @@ export const NotificationRepository = db.getRepository(Notification).extend({
 				icon: notification.customIcon || token?.iconUrl,
 			} : {}),
 		});
-	},
+	}
 
-	async packMany(
+	public async packMany(
 		notifications: Notification[],
-		meId: User['id']
+		meId: User['id'],
 	) {
 		if (notifications.length === 0) return [];
 
@@ -95,7 +112,7 @@ export const NotificationRepository = db.getRepository(Notification).extend({
 		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
 		const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
 		const targets = [...noteIds, ...renoteIds];
-		const myReactions = await NoteReactions.findBy({
+		const myReactions = await this.noteReactionsRepository.findBy({
 			userId: meId,
 			noteId: In(targets),
 		});
@@ -111,5 +128,5 @@ export const NotificationRepository = db.getRepository(Notification).extend({
 				myReactions: myReactionsMap,
 			},
 		})));
-	},
-});
+	}
+}
