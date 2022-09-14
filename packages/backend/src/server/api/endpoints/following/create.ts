@@ -1,12 +1,12 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import create from '@/services/following/create.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { Followings } from '@/models/index.js';
+import type { Users , Followings } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserFollowingService } from '@/services/UserFollowingService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -73,6 +73,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+		private userFollowingService: UserFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const follower = me;
@@ -83,9 +90,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Get followee
-			const followee = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const followee = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			// Check if already following
@@ -99,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			try {
-				await create(follower, followee);
+				await this.userFollowingService.follow(follower, followee);
 			} catch (e) {
 				if (e instanceof IdentifiableError) {
 					if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);

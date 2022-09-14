@@ -1,11 +1,11 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import deleteFollowing from '@/services/following/delete.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { Followings } from '@/models/index.js';
+import type { Users , Followings } from '@/models/index.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserFollowingService } from '@/services/UserFollowingService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -60,6 +60,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+		private userFollowingService: UserFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const follower = me;
@@ -70,9 +77,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Get followee
-			const followee = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const followee = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			// Check not following
@@ -85,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.notFollowing);
 			}
 
-			await deleteFollowing(follower, followee);
+			await this.userFollowingService.unfollow(follower, followee);
 
 			return await this.userEntityService.pack(followee.id, me);
 		});

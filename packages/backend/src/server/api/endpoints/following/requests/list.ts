@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { FollowRequests } from '@/models/index.js';
+import type { FollowRequests } from '@/models/index.js';
+import { FollowRequestEntityService } from '@/services/entities/FollowRequestEntityService';
 
 export const meta = {
 	tags: ['following', 'account'],
@@ -46,13 +47,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('followRequestsRepository')
+		private followRequestsRepository: typeof FollowRequests,
+
+		private followRequestEntityService: FollowRequestEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const reqs = await FollowRequests.findBy({
+			const reqs = await this.followRequestsRepository.findBy({
 				followeeId: me.id,
 			});
 
-			return await Promise.all(reqs.map(req => FollowRequests.pack(req)));
+			return await Promise.all(reqs.map(req => this.followRequestEntityService.pack(req)));
 		});
 	}
 }

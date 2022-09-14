@@ -18,6 +18,7 @@ import { FederatedInstanceService } from '@/services/FederatedInstanceService.js
 import { WebhookService } from '@/services/webhookService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import Logger from './logger.js';
+import { UserEntityService } from './entities/UserEntityService.js';
 
 const logger = new Logger('following/create');
 
@@ -55,6 +56,7 @@ export class UserFollowingService {
 		@Inject('instancesRepository')
 		private instancesRepository: typeof Instances,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventServie: GlobalEventService,
