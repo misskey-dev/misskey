@@ -6,7 +6,7 @@ import type { AccessToken } from '@/models/entities/access-token.js';
 import { Cache } from '@/misc/cache.js';
 import type { App } from '@/models/entities/app.js';
 import { UserCacheService } from '@/services/UserCacheService.js';
-import isNativeToken from './common/is-native-token.js';
+import isNativeToken from '@/misc/is-native-token.js';
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {
