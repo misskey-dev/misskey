@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { db } from '@/db/postgre.js';
+import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -30,15 +31,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject(DI_SYMBOLS.db)
+		private db: DataSource,
 	) {
 		super(meta, paramDef, async () => {
-			const sizes = await
-			db.query(`
+			const sizes = await this.db.query(`
 			SELECT relname AS "table", reltuples as "count", pg_total_relation_size(C.oid) AS "size"
 			FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
 			WHERE nspname NOT IN ('pg_catalog', 'information_schema')

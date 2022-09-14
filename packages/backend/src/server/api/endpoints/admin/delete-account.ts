@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users } from '@/models/index.js';
-import { deleteAccount } from '@/services/delete-account.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DeleteAccountService } from '@/services/DeleteAccountService';
 
 export const meta = {
 	tags: ['admin'],
@@ -27,6 +27,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		private deleteAccountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: ps.userId });
@@ -34,7 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return;
 			}
 
-			await deleteAccount(user);
+			await this.deleteAccountService.deleteAccount(user);
 		});
 	}
 }

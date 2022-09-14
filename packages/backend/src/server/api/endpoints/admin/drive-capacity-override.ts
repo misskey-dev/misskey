@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import type { Users } from '@/models/index.js';
+import { ModerationLogService } from '@/services/ModerationLogService.js';
+
 export const meta = {
 	tags: ['admin'],
 
@@ -26,8 +26,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -51,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				driveCapacityOverrideMb: ps.overrideMb,
 			});
 
-			insertModerationLog(me, 'change-drive-capacity-override', {
+			this.moderationLogService.insertModerationLog(me, 'change-drive-capacity-override', {
 				targetId: user.id,
 			});
 		});

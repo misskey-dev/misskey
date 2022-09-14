@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserIps } from '@/models/index.js';
+import type { UserIps } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -21,14 +21,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userIpsRepository')
+		private userIpsRepository: typeof UserIps,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const ips = await UserIps.find({
+			const ips = await this.userIpsRepository.find({
 				where: { userId: ps.userId },
 				order: { createdAt: 'DESC' },
 				take: 30,

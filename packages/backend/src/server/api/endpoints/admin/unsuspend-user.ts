@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { doPostUnsuspend } from '@/services/unsuspend-user.js';
+import type { Users } from '@/models/index.js';
+import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { UserSuspendService } from '@/services/UserSuspendService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -26,8 +26,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private userSuspendService: UserSuspendService,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -40,11 +40,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSuspended: false,
 			});
 
-			insertModerationLog(me, 'unsuspend', {
+			this.moderationLogService.insertModerationLog(me, 'unsuspend', {
 				targetId: user.id,
 			});
 
-			doPostUnsuspend(user);
+			this.userSuspendService.doPostUnsuspend(user);
 		});
 	}
 }

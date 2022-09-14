@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import type { Users } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { ModerationLogService } from '@/services/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -26,8 +26,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private moderationLogService: ModerationLogService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -40,9 +40,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSilenced: false,
 			});
 
-			publishInternalEvent('userChangeSilencedState', { id: user.id, isSilenced: false });
+			this.globalEventService.publishInternalEvent('userChangeSilencedState', { id: user.id, isSilenced: false });
 
-			insertModerationLog(me, 'unsilence', {
+			this.moderationLogService.insertModerationLog(me, 'unsilence', {
 				targetId: user.id,
 			});
 		});

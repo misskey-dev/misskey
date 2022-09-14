@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { PromoNotes } from '@/models/index.js';
+import type { PromoNotes } from '@/models/index.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
 import { ApiError } from '../../../error.js';
-import { getNote } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -38,20 +38,24 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('promoNotesRepository')
+		private promoNotesRepository: typeof PromoNotes,
+
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(e => {
+			const note = await this.getterService.getNote(ps.noteId).catch(e => {
 				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw e;
 			});
 
-			const exist = await PromoNotes.findOneBy({ noteId: note.id });
+			const exist = await this.promoNotesRepository.findOneBy({ noteId: note.id });
 
 			if (exist != null) {
 				throw new ApiError(meta.errors.alreadyPromoted);
 			}
 
-			await PromoNotes.insert({
+			await this.promoNotesRepository.insert({
 				noteId: note.id,
 				expiresAt: new Date(ps.expiresAt),
 				userId: note.userId,

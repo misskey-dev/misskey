@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { addRelay } from '@/services/relay.js';
+import { RelayService } from '@/services/RelayService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -58,6 +58,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private relayService: RelayService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			try {
@@ -66,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.invalidUrl);
 			}
 
-			return await addRelay(ps.inbox);
+			return await this.relayService.addRelay(ps.inbox);
 		});
 	}
 }

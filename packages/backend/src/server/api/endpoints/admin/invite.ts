@@ -1,8 +1,8 @@
 import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { RegistrationTickets } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { RegistrationTickets } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -35,6 +35,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('registrationTicketsRepository')
+		private registrationTicketsRepository: typeof RegistrationTickets,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async () => {
@@ -43,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
 			});
 
-			await RegistrationTickets.insert({
+			await this.registrationTicketsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				code,

@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { Meta } from '@/models/entities/meta.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { ModerationLogService } from '@/services/ModerationLogService.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { db } from '@/db/postgre.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -111,11 +112,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject(DI_SYMBOLS.db)
+		private db: DataSource,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const set = {} as Partial<Meta>;
@@ -137,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (Array.isArray(ps.pinnedUsers)) {
-				set.pinnedUsers = ps.pinnedthis.usersRepository.filter(Boolean);
+				set.pinnedUsers = ps.pinnedUsers.filter(Boolean);
 			}
 
 			if (Array.isArray(ps.hiddenTags)) {
@@ -436,7 +436,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
 			}
 
-			await db.transaction(async transactionalEntityManager => {
+			await this.db.transaction(async transactionalEntityManager => {
 				const metas = await transactionalEntityManager.find(Meta, {
 					order: {
 						id: 'DESC',
@@ -452,7 +452,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			});
 
-			insertModerationLog(me, 'updateMeta');
+			this.moderationLogService.insertModerationLog(me, 'updateMeta');
 		});
 	}
 }

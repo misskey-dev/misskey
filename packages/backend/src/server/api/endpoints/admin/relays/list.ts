@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { listRelay } from '@/services/relay.js';
+import { RelayService } from '@/services/RelayService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -50,9 +50,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private relayService: RelayService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			return await listRelay();
+			return await this.relayService.listRelay();
 		});
 	}
 }

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { db } from '@/db/postgre.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -19,14 +20,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject(DI_SYMBOLS.db)
+		private db: DataSource,
 	) {
 		super(meta, paramDef, async () => {
-			const stats = await db.query('SELECT * FROM pg_indexes;').then(recs => {
+			const stats = await this.db.query('SELECT * FROM pg_indexes;').then(recs => {
 				const res = [] as { tablename: string; indexname: string; }[];
 				for (const rec of recs) {
 					res.push(rec);

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Signins, UserProfiles, Users } from '@/models/index.js';
+import type { Users , Signins, UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -29,13 +29,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		@Inject('signinsRepository')
+		private signinsRepository: typeof Signins,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [user, profile] = await Promise.all([
 				this.usersRepository.findOneBy({ id: ps.userId }),
-				UserProfiles.findOneBy({ userId: ps.userId }),
+				this.userProfilesRepository.findOneBy({ userId: ps.userId }),
 			]);
 
 			if (user == null || profile == null) {
@@ -60,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				maskedKeys.forEach(key => profile.integrations[integration][key] = '<MASKED>');
 			});
 
-			const signins = await Signins.findBy({ userId: user.id });
+			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
 			return {
 				email: profile.email,

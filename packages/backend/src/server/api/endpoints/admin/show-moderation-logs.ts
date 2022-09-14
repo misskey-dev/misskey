@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogs } from '@/models/index.js';
+import type { ModerationLogs } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
@@ -63,14 +63,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('moderationLogsRepository')
+		private moderationLogsRepository: typeof ModerationLogs,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(ModerationLogs.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(this.moderationLogsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
 			const reports = await query.take(ps.limit).getMany();
 
-			return await ModerationLogs.packMany(reports);
+			return await this.moderationLogsRepository.packMany(reports);
 		});
 	}
 }

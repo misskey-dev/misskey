@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { inboxQueue } from '@/queue/queues.js';
+import { InboxQueue } from '@/queue/queue.module.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -43,16 +43,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const jobs = await inboxQueue.getJobs(['delayed']);
+			const jobs = await this.inboxQueue.getJobs(['delayed']);
 
 			const res = [] as [string, number][];
 
 			for (const job of jobs) {
 				const host = new URL(job.data.signature.keyId).host;
 				if (res.find(x => x[0] === host)) {
-			res.find(x => x[0] === host)![1]++;
+					res.find(x => x[0] === host)![1]++;
 				} else {
 					res.push([host, 1]);
 				}

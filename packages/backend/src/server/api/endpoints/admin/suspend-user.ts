@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import deleteFollowing from '@/services/following/delete.js';
-import { Users, Followings, Notifications } from '@/models/index.js';
+import type { Users , Followings , Notifications } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { doPostSuspend } from '@/services/suspend-user.js';
-import { publishUserEvent } from '@/services/stream.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { UserSuspendService } from '@/services/UserSuspendService.js';
+import { UserFollowingService } from '@/services/UserFollowingService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -29,8 +29,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		@Inject('notificationsRepository')
+		private notificationsRepository: typeof Notifications,
+
+		private userFollowingService: UserFollowingService,
+		private userSuspendService: UserSuspendService,
+		private moderationLogService: ModerationLogService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -51,47 +59,47 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSuspended: true,
 			});
 
-			insertModerationLog(me, 'suspend', {
+			this.moderationLogService.insertModerationLog(me, 'suspend', {
 				targetId: user.id,
 			});
 
 			// Terminate streaming
 			if (this.usersRepository.isLocalUser(user)) {
-				publishUserEvent(user.id, 'terminate', {});
+				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
 			}
 
 			(async () => {
-				await doPostSuspend(user).catch(e => {});
-				await unFollowAll(user).catch(e => {});
-				await readAllNotify(user).catch(e => {});
+				await this.userSuspendService.doPostSuspend(user).catch(e => {});
+				await this.#unFollowAll(user).catch(e => {});
+				await this.#readAllNotify(user).catch(e => {});
 			})();
 		});
 	}
-}
 
-async function unFollowAll(follower: User) {
-	const followings = await Followings.findBy({
-		followerId: follower.id,
-	});
-
-	for (const following of followings) {
-		const followee = await this.usersRepository.findOneBy({
-			id: following.followeeId,
+	async #unFollowAll(follower: User) {
+		const followings = await this.followingsRepository.findBy({
+			followerId: follower.id,
 		});
-
-		if (followee == null) {
-			throw `Cant find followee ${following.followeeId}`;
+	
+		for (const following of followings) {
+			const followee = await this.usersRepository.findOneBy({
+				id: following.followeeId,
+			});
+	
+			if (followee == null) {
+				throw `Cant find followee ${following.followeeId}`;
+			}
+	
+			await this.userFollowingService.unfollow(follower, followee, true);
 		}
-
-		await deleteFollowing(follower, followee, true);
 	}
-}
-
-async function readAllNotify(notifier: User) {
-	await Notifications.update({
-		notifierId: notifier.id,
-		isRead: false,
-	}, {
-		isRead: true,
-	});
+	
+	async #readAllNotify(notifier: User) {
+		await this.notificationsRepository.update({
+			notifierId: notifier.id,
+			isRead: false,
+		}, {
+			isRead: true,
+		});
+	}
 }

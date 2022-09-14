@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import config from '@/config/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/services/MetaService.js';
+import { Config } from '@/config/types.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -344,21 +345,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const instance = await fetchMeta(true);
+			const instance = await this.metaService.fetch(true);
 
 			return {
 				maintainerName: instance.maintainerName,
 				maintainerEmail: instance.maintainerEmail,
-				version: config.version,
+				version: this.config.version,
 				name: instance.name,
-				uri: config.url,
+				uri: this.config.url,
 				description: instance.description,
 				langs: instance.langs,
 				tosUrl: instance.ToSUrl,

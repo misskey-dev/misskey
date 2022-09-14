@@ -1,9 +1,10 @@
 import * as os from 'node:os';
 import si from 'systeminformation';
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { db } from '@/db/postgre.js';
-import { redisClient } from '../../../../db/redis.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -98,18 +99,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject(DI_SYMBOLS.db)
+		private db: DataSource,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject(DI_SYMBOLS.redis)
+		private redisClient: Redis.Redis,
+
 	) {
 		super(meta, paramDef, async () => {
 			const memStats = await si.mem();
 			const fsStats = await si.fsSize();
 			const netInterface = await si.networkInterfaceDefault();
 
-			const redisServerInfo = await redisClient.info('Server');
+			const redisServerInfo = await this.redisClient.info('Server');
 			const m = redisServerInfo.match(new RegExp('^redis_version:(.*)', 'm'));
 			const redis_version = m?.[1];
 
@@ -117,7 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				machine: os.hostname(),
 				os: os.platform(),
 				node: process.version,
-				psql: await db.query('SHOW server_version').then(x => x[0].server_version),
+				psql: await this.db.query('SHOW server_version').then(x => x[0].server_version),
 				redis: redis_version,
 				cpu: {
 					model: os.cpus()[0].model,

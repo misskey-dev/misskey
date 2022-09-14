@@ -2,8 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { UserProfiles } from '@/models/index.js';
+import type { Users , UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -39,6 +38,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 	) {
 		super(meta, paramDef, async (ps) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -56,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Generate hash of password
 			const hash = bcrypt.hashSync(passwd);
 
-			await UserProfiles.update({
+			await this.userProfilesRepository.update({
 				userId: user.id,
 			}, {
 				password: hash,
