@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { createImportBlockingJob } from '@/queue/index.js';
+import { QueueService } from '@/queue/queue.service.js';
 import { DriveFiles } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 
@@ -53,6 +53,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const file = await DriveFiles.findOneBy({ id: ps.fileId });
@@ -62,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (file.size > 50000) throw new ApiError(meta.errors.tooBigFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
 
-			createImportBlockingJob(me, file.id);
+			this.queueService.createImportBlockingJob(me, file.id);
 		});
 	}
 }
