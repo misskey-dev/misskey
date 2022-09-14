@@ -1,9 +1,10 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFiles, GalleryPosts } from '@/models/index.js';
+import type { DriveFiles, GalleryPosts } from '@/models/index.js';
 import { GalleryPost } from '@/models/entities/gallery-post.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
+import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -47,10 +48,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('galleryPostsRepository')
+		private galleryPostsRepository: typeof GalleryPosts,
+
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		private galleryPostEntityService: GalleryPostEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const files = (await Promise.all(ps.fileIds.map(fileId =>
-				DriveFiles.findOneBy({
+				this.driveFilesRepository.findOneBy({
 					id: fileId,
 					userId: me.id,
 				}),
@@ -60,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error();
 			}
 
-			await GalleryPosts.update({
+			await this.galleryPostsRepository.update({
 				id: ps.postId,
 				userId: me.id,
 			}, {
@@ -71,9 +79,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				fileIds: files.map(file => file.id),
 			});
 
-			const post = await GalleryPosts.findOneByOrFail({ id: ps.postId });
+			const post = await this.galleryPostsRepository.findOneByOrFail({ id: ps.postId });
 
-			return await GalleryPosts.pack(post, me);
+			return await this.galleryPostEntityService.pack(post, me);
 		});
 	}
 }

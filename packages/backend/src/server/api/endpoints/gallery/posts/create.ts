@@ -1,10 +1,12 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFiles, GalleryPosts } from '@/models/index.js';
+import type { GalleryPosts } from '@/models/index.js';
+import { DriveFiles } from '@/models/index.js';
 import { GalleryPost } from '@/models/entities/gallery-post.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
-import { genId } from '../../../../../misc/gen-id.js';
+import { IdService } from '@/services/IdService.js';
+import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -47,6 +49,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('galleryPostsRepository')
+		private galleryPostsRepository: typeof GalleryPosts,
+
+		private galleryPostEntityService: GalleryPostEntityService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const files = (await Promise.all(ps.fileIds.map(fileId =>
@@ -60,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error();
 			}
 
-			const post = await GalleryPosts.insert(new GalleryPost({
+			const post = await this.galleryPostsRepository.insert(new GalleryPost({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				updatedAt: new Date(),
@@ -69,9 +76,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 				isSensitive: ps.isSensitive,
 				fileIds: files.map(file => file.id),
-			})).then(x => GalleryPosts.findOneByOrFail(x.identifiers[0]));
+			})).then(x => this.galleryPostsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await GalleryPosts.pack(post, me);
+			return await this.galleryPostEntityService.pack(post, me);
 		});
 	}
 }

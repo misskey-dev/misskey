@@ -4,18 +4,19 @@ import * as cbor from 'cbor';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type {
-	Users } from '@/models/index.js';
+	Users ,
+	UserProfiles } from '@/models/index.js';
 import {
-	UserProfiles,
 	UserSecurityKeys,
 	AttestationChallenges,
 } from '@/models/index.js';
-import config from '@/config/index.js';
-import { publishMainStream } from '@/services/stream.js';
-import { procedures, hash } from '../../../2fa.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { Config } from '@/config/types.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { GlobalEventService } from '@/services/GlobalEventService';
+import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
-const rpIdHashReal = hash(Buffer.from(config.hostname, 'utf-8'));
 
 export const meta = {
 	requireCredential: true,
@@ -39,12 +40,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		private userEntityService: UserEntityService,
+		private globalEventService: GlobalEventService,
+		private twoFactorAuthenticationService: TwoFactorAuthenticationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const rpIdHashReal = this.twoFactorAuthenticationService.hash(Buffer.from(this.config.hostname, 'utf-8'));
+
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -62,11 +74,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (clientData.type !== 'webauthn.create') {
 				throw new Error('not a creation attestation');
 			}
-			if (clientData.origin !== config.scheme + '://' + config.host) {
+			if (clientData.origin !== this.config.scheme + '://' + this.config.host) {
 				throw new Error('origin mismatch');
 			}
 
-			const clientDataJSONHash = hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
+			const clientDataJSONHash = this.twoFactorAuthenticationService.hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
 
 			const attestation = await cborDecodeFirst(ps.attestationObject);
 
@@ -91,6 +103,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('alg mismatch');
 			}
 
+			const procedures = this.twoFactorAuthenticationService.getProcedures();
+
 			if (!(procedures as any)[attestation.fmt]) {
 				throw new Error('unsupported fmt');
 			}
@@ -109,7 +123,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 				id: ps.challengeId,
 				registrationChallenge: true,
-				challenge: hash(clientData.challenge).toString('hex'),
+				challenge: this.twoFactorAuthenticationService.hash(clientData.challenge).toString('hex'),
 			});
 
 			if (!attestationChallenge) {
@@ -140,7 +154,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish meUpdated event
-			publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
 				detail: true,
 				includeSecrets: true,
 			}));

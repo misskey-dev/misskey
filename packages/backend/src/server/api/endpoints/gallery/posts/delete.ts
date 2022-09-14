@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GalleryPosts } from '@/models/index.js';
+import type { GalleryPosts } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -31,9 +31,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('galleryPostsRepository')
+		private galleryPostsRepository: typeof GalleryPosts,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const post = await GalleryPosts.findOneBy({
+			const post = await this.galleryPostsRepository.findOneBy({
 				id: ps.postId,
 				userId: me.id,
 			});
@@ -42,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchPost);
 			}
 
-			await GalleryPosts.delete(post.id);
+			await this.galleryPostsRepository.delete(post.id);
 		});
 	}
 }

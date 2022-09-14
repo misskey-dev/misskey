@@ -1,9 +1,10 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { UserProfiles, UserSecurityKeys } from '@/models/index.js';
+import type { Users , UserProfiles , UserSecurityKeys } from '@/models/index.js';
 import { publishMainStream } from '@/services/stream.js';
+import { UserEntityService } from '@/services/entities/UserEntityService';
+import { GlobalEventService } from '@/services/GlobalEventService';
 
 export const meta = {
 	requireCredential: true,
@@ -24,11 +25,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userSecurityKeysRepository')
+		private userSecurityKeysRepository: typeof UserSecurityKeys,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		private userEntityService: UserEntityService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -38,13 +45,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Make sure we only delete the user's own creds
-			await UserSecurityKeys.delete({
+			await this.userSecurityKeysRepository.delete({
 				userId: me.id,
 				id: ps.credentialId,
 			});
 
 			// Publish meUpdated event
-			publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
 				detail: true,
 				includeSecrets: true,
 			}));

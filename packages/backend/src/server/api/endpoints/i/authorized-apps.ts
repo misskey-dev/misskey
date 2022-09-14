@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AccessTokens, Apps } from '@/models/index.js';
+import type { AccessTokens } from '@/models/index.js';
+import { Apps } from '@/models/index.js';
+import { AppEntityService } from '@/services/entities/AppEntityService';
 
 export const meta = {
 	requireCredential: true,
@@ -22,10 +24,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('accessTokensRepository')
+		private accessTokensRepository: typeof AccessTokens,
+
+		private appEntityService: AppEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get tokens
-			const tokens = await AccessTokens.find({
+			const tokens = await this.accessTokensRepository.find({
 				where: {
 					userId: me.id,
 				},
@@ -36,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			return await Promise.all(tokens.map(token => Apps.pack(token.appId, me, {
+			return await Promise.all(tokens.map(token => this.appEntityService.pack(token.appId, me, {
 				detail: true,
 			})));
 		});

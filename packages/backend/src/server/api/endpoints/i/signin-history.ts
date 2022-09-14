@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Signins } from '@/models/index.js';
+import type { Signins } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { SigninEntityService } from '@/services/entities/SigninEntityService';
 
 export const meta = {
 	requireCredential: true,
@@ -23,15 +24,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('signinsRepository')
+		private signinsRepository: typeof Signins,
+
+		private signinEntityService: SigninEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Signins.createQueryBuilder('signin'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.signinsRepository.createQueryBuilder('signin'), ps.sinceId, ps.untilId)
 				.andWhere('signin.userId = :meId', { meId: me.id });
 
 			const history = await query.take(ps.limit).getMany();
 
-			return await Promise.all(history.map(record => Signins.pack(record)));
+			return await Promise.all(history.map(record => this.signinEntityService.pack(record)));
 		});
 	}
 }

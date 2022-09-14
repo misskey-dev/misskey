@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Hashtags } from '@/models/index.js';
+import type { Hashtags } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { HashtagEntityService } from '@/services/entities/HashtagEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -36,14 +37,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('hashtagsRepository')
+		private hashtagsRepository: typeof Hashtags,
+
+		private hashtagEntityService: HashtagEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const hashtag = await Hashtags.findOneBy({ name: normalizeForSearch(ps.tag) });
+			const hashtag = await this.hashtagsRepository.findOneBy({ name: normalizeForSearch(ps.tag) });
 			if (hashtag == null) {
 				throw new ApiError(meta.errors.noSuchHashtag);
 			}
 
-			return await Hashtags.pack(hashtag);
+			return await this.hashtagEntityService.pack(hashtag);
 		});
 	}
 }

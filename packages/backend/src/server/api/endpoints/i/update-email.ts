@@ -2,13 +2,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import ms from 'ms';
 import bcrypt from 'bcryptjs';
-import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { publishMainStream } from '@/services/stream.js';
 import type { Users } from '@/models/index.js';
 import { UserProfiles } from '@/models/index.js';
-import { sendEmail } from '@/services/send-email.js';
 import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { EmailService } from '@/services/EmailService.js';
+import { Config } from '@/config/types.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -49,11 +51,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		private userEntityService: UserEntityService,
+		private emailService: EmailService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -69,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			await UserProfiles.update(me.id, {
+			await this.userProfilesRepository.update(me.id, {
 				email: ps.email,
 				emailVerified: false,
 				emailVerifyCode: null,
@@ -81,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish meUpdated event
-			publishMainStream(me.id, 'meUpdated', iObj);
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', iObj);
 
 			if (ps.email != null) {
 				const code = rndstr('a-z0-9', 16);
@@ -90,9 +102,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					emailVerifyCode: code,
 				});
 
-				const link = `${config.url}/verify-email/${code}`;
+				const link = `${this.config.url}/verify-email/${code}`;
 
-				sendEmail(ps.email, 'Email verification',
+				this.emailService.sendEmail(ps.email, 'Email verification',
 					`To verify email, please click this link:<br><a href="${link}">${link}</a>`,
 					`To verify email, please click this link: ${link}`);
 			}
