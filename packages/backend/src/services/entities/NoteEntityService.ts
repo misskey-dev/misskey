@@ -8,11 +8,12 @@ import type { Packed } from '@/misc/schema.js';
 import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib.js';
-import type { User } from '@/models/entities/user';
-import type { Note } from '@/models/entities/note';
-import type { NoteReaction } from '@/models/entities/note-reaction';
-import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
+import type { User } from '@/models/entities/user.js';
+import type { Note } from '@/models/entities/note.js';
+import type { NoteReaction } from '@/models/entities/note-reaction.js';
+import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 import { UserEntityService } from './UserEntityService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
 
 @Injectable()
 export class NoteEntityService {
@@ -47,6 +48,8 @@ export class NoteEntityService {
 		// 循環参照のため / for circular dependency
 		@Inject(forwardRef(() => UserEntityService))
 		private userEntityService: UserEntityService,
+
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 	}
 	

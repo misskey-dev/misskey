@@ -11,6 +11,7 @@ import type { DriveFile } from '@/models/entities/drive-file.js';
 import { appendQuery, query } from '@/prelude/url.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { UserEntityService } from './UserEntityService.js';
+import { DriveFolderEntityService } from './DriveFolderEntityService.js';
 
 type PackOptions = {
 	detail?: boolean,
@@ -36,6 +37,8 @@ export class DriveFileEntityService {
 		// 循環参照のため / for circular dependency
 		@Inject(forwardRef(() => UserEntityService))
 		private userEntityService: UserEntityService,
+
+		private driveFolderEntityService: DriveFolderEntityService,
 	) {
 	}
 	
@@ -158,7 +161,7 @@ export class DriveFileEntityService {
 			thumbnailUrl: this.getPublicUrl(file, true),
 			comment: file.comment,
 			folderId: file.folderId,
-			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
+			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
 			}) : null,
 			userId: opts.withUser ? file.userId : null,
@@ -192,7 +195,7 @@ export class DriveFileEntityService {
 			thumbnailUrl: this.getPublicUrl(file, true),
 			comment: file.comment,
 			folderId: file.folderId,
-			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
+			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
 			}) : null,
 			userId: opts.withUser ? file.userId : null,

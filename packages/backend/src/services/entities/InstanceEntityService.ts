@@ -1,13 +1,28 @@
-import { db } from '@/db/postgre.js';
-import { Instance } from '@/models/entities/instance.js';
-import { Packed } from '@/misc/schema.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import type { Instances } from '@/models/index.js';
+import { awaitAll } from '@/prelude/await-all.js';
+import type { Packed } from '@/misc/schema.js';
+import type { } from '@/models/entities/blocking.js';
+import type { User } from '@/models/entities/user.js';
+import type { Instance } from '@/models/entities/instance.js';
+import { MetaService } from '../MetaService.js';
+import { UserEntityService } from './UserEntityService.js';
 
-export const InstanceRepository = db.getRepository(Instance).extend({
-	async pack(
+@Injectable()
+export class InstanceEntityService {
+	constructor(
+		@Inject('instancesRepository')
+		private instancesRepository: typeof Instances,
+
+		private metaService: MetaService,
+	) {
+	}
+
+	public async pack(
 		instance: Instance,
 	): Promise<Packed<'FederationInstance'>> {
-		const meta = await fetchMeta();
+		const meta = await this.metaService.fetch();
 		return {
 			id: instance.id,
 			caughtAt: instance.caughtAt.toISOString(),
@@ -33,11 +48,12 @@ export const InstanceRepository = db.getRepository(Instance).extend({
 			themeColor: instance.themeColor,
 			infoUpdatedAt: instance.infoUpdatedAt ? instance.infoUpdatedAt.toISOString() : null,
 		};
-	},
+	}
 
-	packMany(
+	public packMany(
 		instances: Instance[],
 	) {
 		return Promise.all(instances.map(x => this.pack(x)));
-	},
-});
+	}
+}
+

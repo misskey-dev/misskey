@@ -1,24 +1,43 @@
-import { db } from '@/db/postgre.js';
-import { Page } from '@/models/entities/page.js';
-import { Packed } from '@/misc/schema.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DriveFiles } from '@/models/index.js';
+import type { Pages , PageLikes } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { User } from '@/models/entities/user.js';
-import { Users, DriveFiles, PageLikes } from '../index.js';
+import type { Packed } from '@/misc/schema.js';
+import type { } from '@/models/entities/blocking.js';
+import type { User } from '@/models/entities/user.js';
+import type { Page } from '@/models/entities/page.js';
+import type { DriveFile } from '@/models/entities/drive-file.js';
+import { UserEntityService } from './UserEntityService.js';
 
-export const PageRepository = db.getRepository(Page).extend({
-	async pack(
+@Injectable()
+export class PageEntityService {
+	constructor(
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
+
+		@Inject('pageLikesRepository')
+		private pageLikesRepository: typeof PageLikes,
+
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		private userEntityService: UserEntityService,
+	) {
+	}
+
+	public async pack(
 		src: Page['id'] | Page,
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Page'>> {
 		const meId = me ? me.id : null;
-		const page = typeof src === 'object' ? src : await this.findOneByOrFail({ id: src });
+		const page = typeof src === 'object' ? src : await this.pagesRepository.findOneByOrFail({ id: src });
 
 		const attachedFiles: Promise<DriveFile | null>[] = [];
 		const collectFile = (xs: any[]) => {
 			for (const x of xs) {
 				if (x.type === 'image') {
-					attachedFiles.push(DriveFiles.findOneBy({
+					attachedFiles.push(this.driveFilesRepository.findOneBy({
 						id: x.fileId,
 						userId: page.userId,
 					}));
@@ -51,7 +70,7 @@ export const PageRepository = db.getRepository(Page).extend({
 		};
 		migrate(page.content);
 		if (migrated) {
-			this.update(page.id, {
+			this.pagesRepository.update(page.id, {
 				content: page.content,
 			});
 		}
@@ -61,7 +80,7 @@ export const PageRepository = db.getRepository(Page).extend({
 			createdAt: page.createdAt.toISOString(),
 			updatedAt: page.updatedAt.toISOString(),
 			userId: page.userId,
-			user: Users.pack(page.user || page.userId, me), // { detail: true } すると無限ループするので注意
+			user: this.userEntityService.pack(page.user || page.userId, me), // { detail: true } すると無限ループするので注意
 			content: page.content,
 			variables: page.variables,
 			title: page.title,
@@ -75,14 +94,15 @@ export const PageRepository = db.getRepository(Page).extend({
 			eyeCatchingImage: page.eyeCatchingImageId ? await DriveFiles.pack(page.eyeCatchingImageId) : null,
 			attachedFiles: DriveFiles.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null)),
 			likedCount: page.likedCount,
-			isLiked: meId ? await PageLikes.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
+			isLiked: meId ? await this.pageLikesRepository.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
 		});
-	},
+	}
 
-	packMany(
+	public packMany(
 		pages: Page[],
 		me?: { id: User['id'] } | null | undefined,
 	) {
 		return Promise.all(pages.map(x => this.pack(x, me)));
-	},
-});
+	}
+}
+
