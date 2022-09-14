@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MessagingMessage } from '@/models/entities/messaging-message.js';
-import { MessagingMessages, Mutings, UserGroupJoinings } from '@/models/index.js';
+import type { Mutings , UserGroupJoinings , MessagingMessages } from '@/models/index.js';
+import { MessagingMessageEntityService } from '@/services/entities/MessagingMessageEntityService';
 
 export const meta = {
 	tags: ['messaging'],
@@ -35,13 +36,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('messagingMessagesRepository')
+		private messagingMessagesRepository: typeof MessagingMessages,
+
+		@Inject('mutingsRepository')
+		private mutingsRepository: typeof Mutings,
+
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
+		private messagingMessageEntityService: MessagingMessageEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const mute = await this.mutingsRepository.findBy({
 				muterId: me.id,
 			});
 
-			const groups = ps.group ? await UserGroupJoinings.findBy({
+			const groups = ps.group ? await this.userGroupJoiningsRepository.findBy({
 				userId: me.id,
 			}).then(xs => xs.map(x => x.userGroupId)) : [];
 
@@ -56,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					? history.map(m => m.groupId!)
 					: history.map(m => (m.userId === me.id) ? m.recipientId! : m.userId!);
 
-				const query = MessagingMessages.createQueryBuilder('message')
+				const query = this.messagingMessagesRepository.createQueryBuilder('message')
 					.orderBy('message.createdAt', 'DESC');
 
 				if (ps.group) {
@@ -92,7 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			return await Promise.all(history.map(h => MessagingMessages.pack(h.id, me)));
+			return await Promise.all(history.map(h => this.messagingMessageEntityService.pack(h.id, me)));
 		});
 	}
 }

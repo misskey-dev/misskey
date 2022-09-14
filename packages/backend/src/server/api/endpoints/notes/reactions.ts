@@ -1,8 +1,9 @@
 import { DeepPartial } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { NoteReactions } from '@/models/index.js';
+import type { NoteReactions } from '@/models/index.js';
 import type { NoteReaction } from '@/models/entities/note-reaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteReactionEntityService } from '@/services/entities/NoteReactionEntityService.js';
 import { ApiError } from '../../error.js';
 import type { FindOptionsWhere } from 'typeorm';
 
@@ -50,6 +51,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('noteReactionsRepository')
+		private noteReactionsRepository: typeof NoteReactions,
+
+		private noteReactionEntityService: NoteReactionEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = {
@@ -64,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				query.reaction = type;
 			}
 
-			const reactions = await NoteReactions.find({
+			const reactions = await this.noteReactionsRepository.find({
 				where: query,
 				take: ps.limit,
 				skip: ps.offset,
@@ -74,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				relations: ['user', 'user.avatar', 'user.banner', 'note'],
 			});
 
-			return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me)));
+			return await Promise.all(reactions.map(reaction => this.noteReactionEntityService.pack(reaction, me)));
 		});
 	}
 }

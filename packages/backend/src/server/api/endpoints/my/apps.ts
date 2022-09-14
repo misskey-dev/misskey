@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Apps } from '@/models/index.js';
+import type { Apps } from '@/models/index.js';
+import { AppEntityService } from '@/services/entities/AppEntityService';
 
 export const meta = {
 	tags: ['account', 'app'],
@@ -31,19 +32,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('appsRepository')
+		private appsRepository: typeof Apps,
+
+		private appEntityService: AppEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = {
 				userId: me.id,
 			};
 
-			const apps = await Apps.find({
+			const apps = await this.appsRepository.find({
 				where: query,
 				take: ps.limit,
 				skip: ps.offset,
 			});
 
-			return await Promise.all(apps.map(app => Apps.pack(app, me, {
+			return await Promise.all(apps.map(app => this.appEntityService.pack(app, me, {
 				detail: true,
 			})));
 		});

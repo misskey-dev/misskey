@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { MessagingMessages, UserGroups, UserGroupJoinings } from '@/models/index.js';
+import type { Users , MessagingMessages, UserGroupJoinings } from '@/models/index.js';
+import { UserGroups } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { MessagingMessageEntityService } from '@/services/entities/MessagingMessageEntityService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
 import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['messaging'],
@@ -74,20 +76,26 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('messagingMessagesRepository')
+		private messagingMessagesRepository: typeof MessagingMessages,
 
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
+		private messagingMessageEntityService: MessagingMessageEntityService,
+		private userEntityService: UserEntityService,
 		private queryService: QueryService,
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.userId != null) {
 				// Fetch recipient (user)
-				const recipient = await getUser(ps.userId).catch(e => {
-					if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-					throw e;
+				const recipient = await this.getterService.getUser(ps.userId).catch(err => {
+					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+					throw err;
 				});
 
-				const query = this.queryService.makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+				const query = this.queryService.makePaginationQuery(this.messagingMessagesRepository.createQueryBuilder('message'), ps.sinceId, ps.untilId)
 					.andWhere(new Brackets(qb => { qb
 						.where(new Brackets(qb => { qb
 							.where('message.userId = :meId')
@@ -113,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					}
 				}
 
-				return await Promise.all(messages.map(message => MessagingMessages.pack(message, me, {
+				return await Promise.all(messages.map(message => this.messagingMessageEntityService.pack(message, me, {
 					populateRecipient: false,
 				})));
 			} else if (ps.groupId != null) {
@@ -125,7 +133,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				// check joined
-				const joining = await UserGroupJoinings.findOneBy({
+				const joining = await this.userGroupJoiningsRepository.findOneBy({
 					userId: me.id,
 					userGroupId: recipientGroup.id,
 				});
@@ -134,7 +142,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.groupAccessDenied);
 				}
 
-				const query = this.queryService.makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+				const query = this.queryService.makePaginationQuery(this.messagingMessagesRepository.createQueryBuilder('message'), ps.sinceId, ps.untilId)
 					.andWhere('message.groupId = :groupId', { groupId: recipientGroup.id });
 
 				const messages = await query.take(ps.limit).getMany();
@@ -144,7 +152,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					readGroupMessagingMessage(me.id, recipientGroup.id, messages.map(x => x.id));
 				}
 
-				return await Promise.all(messages.map(message => MessagingMessages.pack(message, me, {
+				return await Promise.all(messages.map(message => this.messagingMessageEntityService.pack(message, me, {
 					populateGroup: false,
 				})));
 			}

@@ -10,6 +10,7 @@ import type { Channel } from '@/models/entities/channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { noteService } from '@/services/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { noteVisibilities } from '../../../../types.js';
 import { ApiError } from '../../error.js';
 
@@ -171,6 +172,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
+
+		private noteEntityService: NoteEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: User[] = [];
