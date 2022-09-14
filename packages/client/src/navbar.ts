@@ -86,6 +86,11 @@ export const navbarItemDef = reactive({
 		icon: 'fas fa-icons',
 		to: '/gallery',
 	},
+	groups: {
+		title: 'groups',
+		icon: 'fas fa-users',
+		to: '/my/groups',
+	},
 	clips: {
 		title: 'clip',
 		icon: 'fas fa-paperclip',
