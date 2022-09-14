@@ -9,13 +9,12 @@ import { Config } from '@/config/types.js';
 import { Users , Instances, AccessTokens } from '@/models/index.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import endpoints from './endpoints.js';
-import signup from './private/signup.js';
-import signin from './private/signin.js';
-import signupPending from './private/signup-pending.js';
 import discord from './service/discord.js';
 import github from './service/github.js';
 import twitter from './service/twitter.js';
 import { ApiCallService } from './ApiCallService.js';
+import { SignupApiService } from './SignupApiService.js';
+import { SigninApiService } from './SigninApiService.js';
 
 @Injectable()
 export class ApiServerService {
@@ -29,6 +28,8 @@ export class ApiServerService {
 		private usersRepository: typeof Users,
 
 		private apiCallService: ApiCallService,
+		private signupApiServiceService: SignupApiService,
+		private signinApiServiceService: SigninApiService,
 	) {
 	}
 
@@ -97,9 +98,9 @@ export class ApiServerService {
 			}
 		}
 
-		router.post('/signup', signup);
-		router.post('/signin', signin);
-		router.post('/signup-pending', signupPending);
+		router.post('/signup', ctx => this.signupApiServiceService.signup(ctx));
+		router.post('/signin', ctx => this.signinApiServiceService.signin(ctx));
+		router.post('/signup-pending', ctx => this.signupApiServiceService.signupPending(ctx));
 
 		router.use(discord.routes());
 		router.use(github.routes());
