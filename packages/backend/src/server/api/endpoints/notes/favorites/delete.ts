@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NoteFavorites } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
 import { ApiError } from '../../../error.js';
-import { getNote } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['notes', 'favorites'],
@@ -38,17 +38,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('noteFavoritesRepository')
+		private noteFavoritesRepository: typeof NoteFavorites,
 
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get favoritee
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
 			// if already favorited
-			const exist = await NoteFavorites.findOneBy({
+			const exist = await this.noteFavoritesRepository.findOneBy({
 				noteId: note.id,
 				userId: me.id,
 			});

@@ -1,8 +1,8 @@
 import { Brackets, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notes } from '@/models/index.js';
-import { Polls, Mutings, PollVotes } from '@/models/index.js';
+import type { Notes , Mutings , Polls, PollVotes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService';
 
 export const meta = {
 	tags: ['notes'],
@@ -35,9 +35,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
+
+		@Inject('pollsRepository')
+		private pollsRepository: typeof Polls,
+
+		@Inject('pollVotesRepository')
+		private pollVotesRepository: typeof PollVotes,
+
+		@Inject('mutingsRepository')
+		private mutingsRepository: typeof Mutings,
+
+		private noteEntityService: NoteEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = Polls.createQueryBuilder('poll')
+			const query = this.pollsRepository.createQueryBuilder('poll')
 				.where('poll.userHost IS NULL')
 				.andWhere('poll.userId != :meId', { meId: me.id })
 				.andWhere('poll.noteVisibility = \'public\'')
@@ -47,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}));
 
 			//#region exclude arleady voted polls
-			const votedQuery = PollVotes.createQueryBuilder('vote')
+			const votedQuery = this.pollVotesRepository.createQueryBuilder('vote')
 				.select('vote.noteId')
 				.where('vote.userId = :meId', { meId: me.id });
 

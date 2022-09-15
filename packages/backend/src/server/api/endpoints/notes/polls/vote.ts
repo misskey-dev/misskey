@@ -1,17 +1,15 @@
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { publishNoteStream } from '@/services/stream.js';
-import { createNotification } from '@/services/create-notification.js';
-import { deliver } from '@/queue/index.js';
-import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
-import renderVote from '@/services/remote/activitypub/renderer/vote.js';
-import { deliverQuestionUpdate } from '@/services/note/polls/update.js';
-import type { Users } from '@/models/index.js';
-import { PollVotes, NoteWatchings, Polls, Blockings } from '@/models/index.js';
+import type { Users , Blockings , Polls , PollVotes } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/user.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { getNote } from '../../../common/getters.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
+import { QueueService } from '@/queue/queue.service.js';
+import { PollService } from '@/services/PollService.js';
+import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -69,6 +67,8 @@ export const paramDef = {
 	required: ['noteId', 'choice'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
@@ -76,15 +76,30 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
+
+		@Inject('pollsRepository')
+		private pollsRepository: typeof Polls,
+
+		@Inject('pollVotesRepository')
+		private pollVotesRepository: typeof PollVotes,
+
 		private idService: IdService,
+		private getterService: GetterService,
+		private queueService: QueueService,
+		private pollService: PollService,
+		private apRendererService: ApRendererService,
+		private globalEventService: GlobalEventService,
+		private createNotificationService: CreateNotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const createdAt = new Date();
 
 			// Get votee
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
 			if (!note.hasPoll) {
@@ -102,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			const poll = await Polls.findOneByOrFail({ noteId: note.id });
+			const poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 
 			if (poll.expiresAt && poll.expiresAt < createdAt) {
 				throw new ApiError(meta.errors.alreadyExpired);
@@ -113,7 +128,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// if already voted
-			const exist = await PollVotes.findBy({
+			const exist = await this.pollVotesRepository.findBy({
 				noteId: note.id,
 				userId: me.id,
 			});
@@ -129,53 +144,39 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Create vote
-			const vote = await PollVotes.insert({
+			const vote = await this.pollVotesRepository.insert({
 				id: this.idService.genId(),
 				createdAt,
 				noteId: note.id,
 				userId: me.id,
 				choice: ps.choice,
-			}).then(x => PollVotes.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.pollVotesRepository.findOneByOrFail(x.identifiers[0]));
 
 			// Increment votes count
 			const index = ps.choice + 1; // In SQL, array index is 1 based
-			await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
+			await this.pollsRepository.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
 
-			publishNoteStream(note.id, 'pollVoted', {
+			this.globalEventService.publishNoteStream(note.id, 'pollVoted', {
 				choice: ps.choice,
 				userId: me.id,
 			});
 
 			// Notify
-			createNotification(note.userId, 'pollVote', {
+			this.createNotificationService.createNotification(note.userId, 'pollVote', {
 				notifierId: me.id,
 				noteId: note.id,
 				choice: ps.choice,
-			});
-
-			// Fetch watchers
-			NoteWatchings.findBy({
-				noteId: note.id,
-				userId: Not(me.id),
-			}).then(watchers => {
-				for (const watcher of watchers) {
-					createNotification(watcher.userId, 'pollVote', {
-						notifierId: me.id,
-						noteId: note.id,
-						choice: ps.choice,
-					});
-				}
 			});
 
 			// リモート投票の場合リプライ送信
 			if (note.userHost != null) {
 				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as IRemoteUser;
 
-				deliver(me, renderActivity(await renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
+				this.queueService.deliver(me, this.apRendererService.renderActivity(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
 			}
 
 			// リモートフォロワーにUpdate配信
-			deliverQuestionUpdate(note.id);
+			this.pollService.deliverQuestionUpdate(note.id);
 		});
 	}
 }
