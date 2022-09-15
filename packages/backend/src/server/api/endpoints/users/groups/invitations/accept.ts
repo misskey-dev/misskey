@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { UserGroupInvitations , UserGroupJoinings } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import type { UserGroupJoining } from '@/models/entities/user-group-joining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../../error.js';
@@ -35,11 +35,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userGroupInvitationsRepository')
+		private userGroupInvitationsRepository: typeof UserGroupInvitations,
+
+		@Inject('userGroupJoiningRepository')
+		private userGroupJoiningRepository: typeof UserGroupJoinings,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the invitation
-			const invitation = await UserGroupInvitations.findOneBy({
+			const invitation = await this.userGroupInvitationsRepository.findOneBy({
 				id: ps.invitationId,
 			});
 
@@ -52,14 +58,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Push the user
-			await UserGroupJoinings.insert({
+			await this.userGroupJoiningRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
 				userGroupId: invitation.userGroupId,
 			} as UserGroupJoining);
 
-			UserGroupInvitations.delete(invitation.id);
+			this.userGroupInvitationsRepository.delete(invitation.id);
 		});
 	}
 }

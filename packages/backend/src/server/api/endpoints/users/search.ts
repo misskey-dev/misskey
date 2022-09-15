@@ -4,6 +4,7 @@ import type { Users } from '@/models/index.js';
 import { UserProfiles } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService';
 
 export const meta = {
 	tags: ['users'],
@@ -42,8 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
@@ -78,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						qb.where('user.name ILIKE :query', { query: '%' + ps.query + '%' });
 
 						// Also search username if it qualifies as username
-						if (this.usersRepository.validateLocalUsername(ps.query)) {
+						if (this.userEntityService.validateLocalUsername(ps.query)) {
 							qb.orWhere('user.usernameLower LIKE :username', { username: '%' + ps.query.toLowerCase() + '%' });
 						}
 					}))

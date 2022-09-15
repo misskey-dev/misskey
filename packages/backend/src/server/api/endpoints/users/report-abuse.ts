@@ -1,14 +1,13 @@
 import * as sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
-import { publishAdminStream } from '@/services/stream.js';
-import type { Users } from '@/models/index.js';
-import { AbuseUserReports } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
-import { sendEmail } from '@/services/send-email.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import type { Users , AbuseUserReports } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { getUser } from '../../common/getters.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { MetaService } from '@/services/MetaService.js';
+import { EmailService } from '@/services/EmailService.js';
 import { ApiError } from '../../error.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -54,16 +53,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('abuseUserReportsRepository')
+		private abuseUserReportsRepository: typeof AbuseUserReports,
 
 		private idService: IdService,
+		private metaService: MetaService,
+		private emailService: EmailService,
+		private getterService: GetterService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
-			const user = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			if (user.id === me.id) {
@@ -74,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
-			const report = await AbuseUserReports.insert({
+			const report = await this.abuseUserReportsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				targetUserId: user.id,
@@ -82,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
-			}).then(x => AbuseUserReports.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
 
 			// Publish event to moderators
 			setImmediate(async () => {
@@ -95,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 
 				for (const moderator of moderators) {
-					publishAdminStream(moderator.id, 'newAbuseUserReport', {
+					this.globalEventService.publishAdminStream(moderator.id, 'newAbuseUserReport', {
 						id: report.id,
 						targetUserId: report.targetUserId,
 						reporterId: report.reporterId,
@@ -103,9 +106,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					});
 				}
 
-				const meta = await fetchMeta();
+				const meta = await this.metaService.fetch();
 				if (meta.email) {
-					sendEmail(meta.email, 'New abuse report',
+					this.emailService.sendEmail(meta.email, 'New abuse report',
 						sanitizeHtml(ps.comment),
 						sanitizeHtml(ps.comment));
 				}

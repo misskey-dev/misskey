@@ -1,10 +1,10 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
-import { Followings } from '@/models/index.js';
+import type { Users , Followings } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService';
 
 export const meta = {
 	tags: ['users'],
@@ -47,8 +47,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日

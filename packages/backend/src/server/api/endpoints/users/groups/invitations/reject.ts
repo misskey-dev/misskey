@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserGroupInvitations } from '@/models/index.js';
+import type { UserGroupInvitations } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../../error.js';
 
@@ -33,10 +33,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userGroupInvitationsRepository')
+		private userGroupInvitationsRepository: typeof UserGroupInvitations,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the invitation
-			const invitation = await UserGroupInvitations.findOneBy({
+			const invitation = await this.userGroupInvitationsRepository.findOneBy({
 				id: ps.invitationId,
 			});
 
@@ -48,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchInvitation);
 			}
 
-			await UserGroupInvitations.delete(invitation.id);
+			await this.userGroupInvitationsRepository.delete(invitation.id);
 		});
 	}
 }

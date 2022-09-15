@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserGroups } from '@/models/index.js';
+import type { UserGroups } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 
@@ -33,9 +33,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userGroupsRepository')
+		private userGroupsRepository: typeof UserGroups,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userGroup = await UserGroups.findOneBy({
+			const userGroup = await this.userGroupsRepository.findOneBy({
 				id: ps.groupId,
 				userId: me.id,
 			});
@@ -44,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchGroup);
 			}
 
-			await UserGroups.delete(userGroup.id);
+			await this.userGroupsRepository.delete(userGroup.id);
 		});
 	}
 }

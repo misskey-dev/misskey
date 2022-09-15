@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { fetchMeta } from '@/misc/fetch-meta.js';
 import { DriveFiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/services/MetaService';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService';
 
 export const meta = {
 	tags: ['drive', 'account'],
@@ -36,12 +37,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private metaService: MetaService,
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const instance = await fetchMeta(true);
+			const instance = await this.metaService.fetch(true);
 
 			// Calculate drive usage
-			const usage = await DriveFiles.calcDriveUsageOf(me.id);
+			const usage = await this.driveFileEntityService.calcDriveUsageOf(me.id);
 
 			return {
 				capacity: 1024 * 1024 * (me.driveCapacityOverrideMb || instance.localDriveCapacityMb),

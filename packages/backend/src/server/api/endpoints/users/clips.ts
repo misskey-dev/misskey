@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Clips } from '@/models/index.js';
+import type { Clips } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { ClipEntityService } from '@/services/entities/ClipEntityService';
 
 export const meta = {
 	tags: ['users', 'clips'],
@@ -34,10 +35,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('clipsRepository')
+		private clipsRepository: typeof Clips,
+
+		private clipEntityService: ClipEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Clips.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.clipsRepository.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
 				.andWhere('clip.userId = :userId', { userId: ps.userId })
 				.andWhere('clip.isPublic = true');
 
@@ -45,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await Clips.packMany(clips);
+			return await this.clipEntityService.packMany(clips);
 		});
 	}
 }

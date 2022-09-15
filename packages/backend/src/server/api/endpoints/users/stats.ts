@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users , Notes } from '@/models/index.js';
-import { DriveFiles, Followings, NoteFavorites, NoteReactions, PageLikes, PollVotes } from '@/models/index.js';
+import type { Users , Notes , Followings , DriveFiles, NoteFavorites, NoteReactions, PageLikes, PollVotes } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -126,6 +126,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		@Inject('noteReactionsRepository')
+		private noteReactionsRepository: typeof NoteReactions,
+
+		@Inject('pageLikesRepository')
+		private pageLikesRepository: typeof PageLikes,
+
+		@Inject('noteFavoritesRepository')
+		private noteFavoritesRepository: typeof NoteFavorites,
+
+		@Inject('pollVotesRepository')
+		private pollVotesRepository: typeof PollVotes,
+
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -151,10 +171,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				renotedCount: this.notesRepository.createQueryBuilder('note')
 					.where('note.renoteUserId = :userId', { userId: user.id })
 					.getCount(),
-				pollVotesCount: PollVotes.createQueryBuilder('vote')
+				pollVotesCount: this.pollVotesRepository.createQueryBuilder('vote')
 					.where('vote.userId = :userId', { userId: user.id })
 					.getCount(),
-				pollVotedCount: PollVotes.createQueryBuilder('vote')
+				pollVotedCount: this.pollVotesRepository.createQueryBuilder('vote')
 					.innerJoin('vote.note', 'note')
 					.where('note.userId = :userId', { userId: user.id })
 					.getCount(),
@@ -174,27 +194,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.where('following.followeeId = :userId', { userId: user.id })
 					.andWhere('following.followerHost IS NOT NULL')
 					.getCount(),
-				sentReactionsCount: NoteReactions.createQueryBuilder('reaction')
+				sentReactionsCount: this.noteReactionsRepository.createQueryBuilder('reaction')
 					.where('reaction.userId = :userId', { userId: user.id })
 					.getCount(),
-				receivedReactionsCount: NoteReactions.createQueryBuilder('reaction')
+				receivedReactionsCount: this.noteReactionsRepository.createQueryBuilder('reaction')
 					.innerJoin('reaction.note', 'note')
 					.where('note.userId = :userId', { userId: user.id })
 					.getCount(),
-				noteFavoritesCount: NoteFavorites.createQueryBuilder('favorite')
+				noteFavoritesCount: this.noteFavoritesRepository.createQueryBuilder('favorite')
 					.where('favorite.userId = :userId', { userId: user.id })
 					.getCount(),
-				pageLikesCount: PageLikes.createQueryBuilder('like')
+				pageLikesCount: this.pageLikesRepository.createQueryBuilder('like')
 					.where('like.userId = :userId', { userId: user.id })
 					.getCount(),
-				pageLikedCount: PageLikes.createQueryBuilder('like')
+				pageLikedCount: this.pageLikesRepository.createQueryBuilder('like')
 					.innerJoin('like.page', 'page')
 					.where('page.userId = :userId', { userId: user.id })
 					.getCount(),
-				driveFilesCount: DriveFiles.createQueryBuilder('file')
+				driveFilesCount: this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.userId = :userId', { userId: user.id })
 					.getCount(),
-				driveUsage: DriveFiles.calcDriveUsageOf(user),
+				driveUsage: this.driveFileEntityService.calcDriveUsageOf(user),
 			});
 
 			result.followingCount = result.localFollowingCount + result.remoteFollowingCount;

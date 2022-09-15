@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService';
 
 export const meta = {
 	tags: ['users'],
@@ -119,13 +120,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
-			const relations = await Promise.all(ids.map(id => this.usersRepository.getRelation(me.id, id)));
+			const relations = await Promise.all(ids.map(id => this.userEntityService.getRelation(me.id, id)));
 
 			return Array.isArray(ps.userId) ? relations : relations[0];
 		});

@@ -1,10 +1,10 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
-import { Followings, UserProfiles } from '@/models/index.js';
+import type { Users , Followings, UserProfiles } from '@/models/index.js';
 import { toPunyNullable } from '@/misc/convert-host.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { FollowingEntityService } from '@/services/entities/FollowingEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -74,9 +74,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		private followingEntityService: FollowingEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -88,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchUser);
 			}
 
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 			if (profile.ffVisibility === 'private') {
 				if (me == null || (me.id !== user.id)) {

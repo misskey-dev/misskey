@@ -3,8 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -54,17 +55,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
-			const user = await getUser(ps.userId).catch(err => {
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});

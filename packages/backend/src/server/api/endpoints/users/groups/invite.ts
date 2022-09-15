@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { UserGroups, UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import type { UserGroupInvitation } from '@/models/entities/user-group-invitation.js';
-import { createNotification } from '@/services/create-notification.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { getUser } from '../../../common/getters.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
+import { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -56,17 +56,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userGroupsRepository')
+		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userGroupInvitationsRepository')
+		private userGroupInvitationsRepository: typeof UserGroupInvitations,
+
+		@Inject('userGroupJoiningRepository')
+		private userGroupJoiningRepository: typeof UserGroupJoinings,
 
 		private idService: IdService,
+		private getterService: GetterService,
+		private createNotificationService: CreateNotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the group
-			const userGroup = await UserGroups.findOneBy({
+			const userGroup = await this.userGroupsRepository.findOneBy({
 				id: ps.groupId,
 				userId: me.id,
 			});
@@ -76,12 +81,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Fetch the user
-			const user = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
-			const joining = await UserGroupJoinings.findOneBy({
+			const joining = await this.userGroupJoiningRepository.findOneBy({
 				userGroupId: userGroup.id,
 				userId: user.id,
 			});
@@ -90,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.alreadyAdded);
 			}
 
-			const existInvitation = await UserGroupInvitations.findOneBy({
+			const existInvitation = await this.userGroupInvitationsRepository.findOneBy({
 				userGroupId: userGroup.id,
 				userId: user.id,
 			});
@@ -99,15 +104,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.alreadyInvited);
 			}
 
-			const invitation = await UserGroupInvitations.insert({
+			const invitation = await this.userGroupInvitationsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: user.id,
 				userGroupId: userGroup.id,
-			} as UserGroupInvitation).then(x => UserGroupInvitations.findOneByOrFail(x.identifiers[0]));
+			} as UserGroupInvitation).then(x => this.userGroupInvitationsRepository.findOneByOrFail(x.identifiers[0]));
 
 			// 通知を作成
-			createNotification(user.id, 'groupInvited', {
+			this.createNotificationService.createNotification(user.id, 'groupInvited', {
 				notifierId: me.id,
 				userGroupInvitationId: invitation.id,
 			});
