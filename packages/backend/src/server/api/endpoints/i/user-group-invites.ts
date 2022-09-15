@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserGroupInvitations } from '@/models/index.js';
+import type { UserGroupInvitations } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { UserGroupInvitationEntityService } from '@/services/entities/UserGroupInvitationEntityService';
 
 export const meta = {
 	tags: ['account', 'groups'],
@@ -46,10 +47,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userGroupInvitationsRepository')
+		private userGroupInvitationsRepository: typeof UserGroupInvitations,
+
+		private userGroupInvitationEntityService: UserGroupInvitationEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(UserGroupInvitations.createQueryBuilder('invitation'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.userGroupInvitationsRepository.createQueryBuilder('invitation'), ps.sinceId, ps.untilId)
 				.andWhere('invitation.userId = :meId', { meId: me.id })
 				.leftJoinAndSelect('invitation.userGroup', 'user_group');
 
@@ -57,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await UserGroupInvitations.packMany(invitations);
+			return await this.userGroupInvitationEntityService.packMany(invitations);
 		});
 	}
 }

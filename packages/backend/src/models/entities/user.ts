@@ -246,3 +246,10 @@ export type CacheableLocalUser = ILocalUser;
 export type CacheableRemoteUser = IRemoteUser;
 
 export type CacheableUser = CacheableLocalUser | CacheableRemoteUser;
+
+export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
+export const passwordSchema = { type: 'string', minLength: 1 } as const;
+export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+export const descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
+export const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
+export const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;

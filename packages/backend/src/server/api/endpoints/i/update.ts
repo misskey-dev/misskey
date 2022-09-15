@@ -1,19 +1,22 @@
 import RE2 from 're2';
 import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
-import { publishMainStream, publishUserEvent } from '@/services/stream.js';
-import acceptAllFollowRequests from '@/services/following/requests/accept-all.js';
-import { publishToFollowers } from '@/services/i/update.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
-import { updateUsertags } from '@/services/update-hashtag.js';
-import { Users, DriveFiles, UserProfiles, Pages } from '@/models/index.js';
+import type { Users , DriveFiles , UserProfiles } from '@/models/index.js';
+import { Pages } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
+import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/user.js';
 import type { UserProfile } from '@/models/entities/user-profile.js';
 import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { UserFollowingService } from '@/services/UserFollowingService.js';
+import { AccountUpdateService } from '@/services/AccountUpdateService.js';
+import { HashtagService } from '@/services/HashtagService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -71,10 +74,10 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		name: { ...this.usersRepository.nameSchema, nullable: true },
-		description: { ...this.usersRepository.descriptionSchema, nullable: true },
-		location: { ...this.usersRepository.locationSchema, nullable: true },
-		birthday: { ...this.usersRepository.birthdaySchema, nullable: true },
+		name: { ...nameSchema, nullable: true },
+		description: { ...descriptionSchema, nullable: true },
+		location: { ...locationSchema, nullable: true },
+		birthday: { ...birthdaySchema, nullable: true },
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
@@ -129,8 +132,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		private userEntityService: UserEntityService,
+		private globalEventService: GlobalEventService,
+		private userFollowingService: UserFollowingService,
+		private accountUpdateService: AccountUpdateService,
+		private hashtagService: HashtagService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
@@ -139,7 +151,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const updates = {} as Partial<User>;
 			const profileUpdates = {} as Partial<UserProfile>;
 
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 			if (ps.name !== undefined) updates.name = ps.name;
 			if (ps.description !== undefined) profileUpdates.description = ps.description;
@@ -184,14 +196,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 			if (ps.avatarId) {
-				const avatar = await DriveFiles.findOneBy({ id: ps.avatarId });
+				const avatar = await this.driveFilesRepository.findOneBy({ id: ps.avatarId });
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
 			}
 
 			if (ps.bannerId) {
-				const banner = await DriveFiles.findOneBy({ id: ps.bannerId });
+				const banner = await this.driveFilesRepository.findOneBy({ id: ps.bannerId });
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 				if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
@@ -238,11 +250,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			updates.tags = tags;
 
 			// ハッシュタグ更新
-			updateUsertags(user, tags);
+			this.hashtagService.updateUsertags(user, tags);
 			//#endregion
 
 			if (Object.keys(updates).length > 0) await this.usersRepository.update(user.id, updates);
-			if (Object.keys(profileUpdates).length > 0) await UserProfiles.update(user.id, profileUpdates);
+			if (Object.keys(profileUpdates).length > 0) await this.userProfilesRepository.update(user.id, profileUpdates);
 
 			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {
 				detail: true,
@@ -250,16 +262,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish meUpdated event
-			publishMainStream(user.id, 'meUpdated', iObj);
-			publishUserEvent(user.id, 'updateUserProfile', await UserProfiles.findOneBy({ userId: user.id }));
+			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
+			this.globalEventService.publishUserEvent(user.id, 'updateUserProfile', await this.userProfilesRepository.findOneBy({ userId: user.id }));
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {
-				acceptAllFollowRequests(user);
+				this.userFollowingService.acceptAllFollowRequests(user);
 			}
 
 			// フォロワーにUpdateを配信
-			publishToFollowers(user.id);
+			this.accountUpdateService.publishToFollowers(user.id);
 
 			return iObj;
 		});

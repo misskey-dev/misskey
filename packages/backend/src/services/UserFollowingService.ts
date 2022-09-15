@@ -131,7 +131,7 @@ export class UserFollowingService {
 			}
 		}
 
-		await this.insertFollowingDoc(followee, follower);
+		await this.#insertFollowingDoc(followee, follower);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.renderActivity(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
@@ -139,7 +139,7 @@ export class UserFollowingService {
 		}
 	}
 
-	public async insertFollowingDoc(
+	async #insertFollowingDoc(
 		followee: {
 			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
 		},
@@ -273,7 +273,7 @@ export class UserFollowingService {
 	
 		await this.followingsRepository.delete(following.id);
 	
-		this.decrementFollowing(follower, followee);
+		this.#decrementFollowing(follower, followee);
 	
 		// Publish unfollow event
 		if (!silent && this.userEntityService.isLocalUser(follower)) {
@@ -304,7 +304,7 @@ export class UserFollowingService {
 		}
 	}
 	
-	public async decrementFollowing(
+	async #decrementFollowing(
 		follower: {id: User['id']; host: User['host']; },
 		followee: { id: User['id']; host: User['host']; },
 	): Promise<void> {
@@ -445,7 +445,7 @@ export class UserFollowingService {
 			throw new IdentifiableError('8884c2dd-5795-4ac9-b27e-6a01d38190f9', 'No follow request.');
 		}
 	
-		await this.insertFollowingDoc(followee, follower);
+		await this.#insertFollowingDoc(followee, follower);
 	
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.renderActivity(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
@@ -457,7 +457,7 @@ export class UserFollowingService {
 		}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
-	public async acceptAllFollowRequest(
+	public async acceptAllFollowRequests(
 		user: {
 			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
 		},
@@ -537,7 +537,7 @@ export class UserFollowingService {
 		if (!following) return;
 
 		await this.followingsRepository.delete(following.id);
-		this.decrementFollowing(follower, followee);
+		this.#decrementFollowing(follower, followee);
 	}
 
 	/**

@@ -14,6 +14,7 @@ import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
+import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/user.js';
 import { NoteEntityService } from './NoteEntityService.js';
 
 const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
@@ -27,13 +28,6 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 	Packed<'UserLite'>;
 
 const ajv = new Ajv();
-
-const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
-const passwordSchema = { type: 'string', minLength: 1 } as const;
-const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-const descriptionSchema = { type: 'string', minLength: 1, maxLength: 500 } as const;
-const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
 
 function isLocalUser(user: User): user is ILocalUser;
 function isLocalUser<T extends { host: User['host'] }>(user: T): user is T & { host: null; };
