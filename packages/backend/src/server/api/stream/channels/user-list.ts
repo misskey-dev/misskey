@@ -3,6 +3,7 @@ import type { Notes, UserListJoinings, UserLists } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class UserListChannel extends Channel {
@@ -14,10 +15,10 @@ class UserListChannel extends Channel {
 	private listUsersClock: NodeJS.Timer;
 
 	constructor(
-		private notesRepository: typeof Notes,
 		private userListsRepository: typeof UserLists,
 		private userListJoiningsRepository: typeof UserListJoinings,
-
+		private noteEntityService: NoteEntityService,
+		
 		id: string,
 		connection: Channel['connection'],
 	) {
@@ -105,22 +106,21 @@ export class UserListChannelService {
 	public readonly requireCredential = UserListChannel.requireCredential;
 
 	constructor(
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
 		@Inject('userListsRepository')
 		private userListsRepository: typeof UserLists,
 
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
+
+		private noteEntityService: NoteEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): UserListChannel {
 		return new UserListChannel(
-			this.notesRepository,
 			this.userListsRepository,
 			this.userListJoiningsRepository,
+			this.noteEntityService,
 			id,
 			connection,
 		);

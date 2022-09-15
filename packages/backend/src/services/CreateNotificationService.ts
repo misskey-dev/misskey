@@ -2,8 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Mutings, Notifications, UserProfiles , Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import type { Notification } from '@/models/entities/notification.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import type { IdService } from '@/services/IdService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { IdService } from '@/services/IdService.js';
+import { NotificationEntityService } from './entities/NotificationEntityService';
 
 @Injectable()
 export class CreateNotificationService {
@@ -20,6 +21,7 @@ export class CreateNotificationService {
 		@Inject('mutingsRepository')
 		private mutingsRepository: typeof Mutings,
 
+		private notificationEntityService: NotificationEntityService,
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {

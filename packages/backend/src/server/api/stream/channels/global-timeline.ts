@@ -5,6 +5,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
 import { MetaService } from '@/services/MetaService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class GlobalTimelineChannel extends Channel {
@@ -14,7 +15,7 @@ class GlobalTimelineChannel extends Channel {
 
 	constructor(
 		private metaService: MetaService,
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -89,17 +90,15 @@ export class GlobalTimelineChannelService {
 	public readonly requireCredential = GlobalTimelineChannel.requireCredential;
 
 	constructor(
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
 		private metaService: MetaService,
+		private noteEntityService: NoteEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): GlobalTimelineChannel {
 		return new GlobalTimelineChannel(
 			this.metaService,
-			this.notesRepository,
+			this.noteEntityService,
 			id,
 			connection,
 		);

@@ -6,6 +6,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { MetaService } from '@/services/MetaService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
@@ -15,7 +16,7 @@ class HybridTimelineChannel extends Channel {
 
 	constructor(
 		private metaService: MetaService,
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -106,17 +107,15 @@ export class HybridTimelineChannelService {
 	public readonly requireCredential = HybridTimelineChannel.requireCredential;
 
 	constructor(
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
 		private metaService: MetaService,
+		private noteEntityService: NoteEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): HybridTimelineChannel {
 		return new HybridTimelineChannel(
 			this.metaService,
-			this.notesRepository,
+			this.noteEntityService,
 			id,
 			connection,
 		);

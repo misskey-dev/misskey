@@ -3,6 +3,7 @@ import type { Notes } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class HashtagChannel extends Channel {
@@ -12,7 +13,7 @@ class HashtagChannel extends Channel {
 	private q: string[][];
 
 	constructor(
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -64,14 +65,13 @@ export class HashtagChannelService {
 	public readonly requireCredential = HashtagChannel.requireCredential;
 
 	constructor(
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): HashtagChannel {
 		return new HashtagChannel(
-			this.notesRepository,
+			this.noteEntityService,
 			id,
 			connection,
 		);

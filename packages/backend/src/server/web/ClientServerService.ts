@@ -20,9 +20,15 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/services/MetaService.js';
 import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/queue/queue.module.js';
-import { UrlPreviewService } from './UrlPreviewService.js';
-import { FeedService } from './FeedService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { PageEntityService } from '@/services/entities/PageEntityService.js';
+import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService.js';
+import { ClipEntityService } from '@/services/entities/ClipEntityService.js';
+import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
 import manifest from './manifest.json' assert { type: 'json' };
+import { FeedService } from './FeedService.js';
+import { UrlPreviewService } from './UrlPreviewService.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -59,6 +65,12 @@ export class ClientServerService {
 		@Inject('pagesRepository')
 		private pagesRepository: typeof Pages,
 
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
+		private pageEntityService: PageEntityService,
+		private galleryPostEntityService: GalleryPostEntityService,
+		private clipEntityService: ClipEntityService,
+		private channelEntityService: ChannelEntityService,
 		private metaService: MetaService,
 		private urlPreviewService: UrlPreviewService,
 		private feedService: FeedService,
@@ -345,7 +357,7 @@ export class ClientServerService {
 
 				await ctx.render('user', {
 					user, profile, me,
-					avatarUrl: await this.usersRepository.getAvatarUrl(user),
+					avatarUrl: await this.userEntityService.getAvatarUrl(user),
 					sub: ctx.params.sub,
 					instanceName: meta.name || 'Misskey',
 					icon: meta.iconUrl,
@@ -388,7 +400,7 @@ export class ClientServerService {
 				await ctx.render('note', {
 					note: _note,
 					profile,
-					avatarUrl: await this.usersRepository.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: note.userId })),
+					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: note.userId })),
 					// TODO: Let locale changeable by instance setting
 					summary: getNoteSummary(_note),
 					instanceName: meta.name || 'Misskey',
@@ -426,7 +438,7 @@ export class ClientServerService {
 				await ctx.render('page', {
 					page: _page,
 					profile,
-					avatarUrl: await this.usersRepository.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: page.userId })),
+					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: page.userId })),
 					instanceName: meta.name || 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
@@ -458,7 +470,7 @@ export class ClientServerService {
 				await ctx.render('clip', {
 					clip: _clip,
 					profile,
-					avatarUrl: await this.usersRepository.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: clip.userId })),
+					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: clip.userId })),
 					instanceName: meta.name || 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
@@ -483,7 +495,7 @@ export class ClientServerService {
 				await ctx.render('gallery-post', {
 					post: _post,
 					profile,
-					avatarUrl: await this.usersRepository.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: post.userId })),
+					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: post.userId })),
 					instanceName: meta.name || 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,

@@ -4,6 +4,7 @@ import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
 import { MetaService } from '@/services/MetaService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class LocalTimelineChannel extends Channel {
@@ -13,7 +14,7 @@ class LocalTimelineChannel extends Channel {
 
 	constructor(
 		private metaService: MetaService,
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -86,17 +87,15 @@ export class LocalTimelineChannelService {
 	public readonly requireCredential = LocalTimelineChannel.requireCredential;
 
 	constructor(
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
 		private metaService: MetaService,
+		private noteEntityService: NoteEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): LocalTimelineChannel {
 		return new LocalTimelineChannel(
 			this.metaService,
-			this.notesRepository,
+			this.noteEntityService,
 			id,
 			connection,
 		);

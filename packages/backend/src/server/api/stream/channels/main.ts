@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Notes } from '@/models/index.js';
 import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class MainChannel extends Channel {
@@ -9,7 +10,7 @@ class MainChannel extends Channel {
 	public static requireCredential = true;
 
 	constructor(
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -61,14 +62,13 @@ export class MainChannelService {
 	public readonly requireCredential = MainChannel.requireCredential;
 
 	constructor(
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): MainChannel {
 		return new MainChannel(
-			this.notesRepository,
+			this.noteEntityService,
 			id,
 			connection,
 		);

@@ -4,6 +4,7 @@ import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import type { Packed } from '@/misc/schema.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class HomeTimelineChannel extends Channel {
@@ -12,7 +13,7 @@ class HomeTimelineChannel extends Channel {
 	public static requireCredential = true;
 
 	constructor(
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -96,14 +97,13 @@ export class HomeTimelineChannelService {
 	public readonly requireCredential = HomeTimelineChannel.requireCredential;
 
 	constructor(
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): HomeTimelineChannel {
 		return new HomeTimelineChannel(
-			this.notesRepository,
+			this.noteEntityService,
 			id,
 			connection,
 		);

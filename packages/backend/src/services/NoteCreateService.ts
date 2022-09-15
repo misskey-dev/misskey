@@ -6,19 +6,12 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/note.js';
 import { Note } from '@/models/entities/note.js';
-import type { Notes } from '@/models/index.js';
-import { Mutings, Users, NoteWatchings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
+import type { Notes , Users } from '@/models/index.js';
+import { Mutings, NoteWatchings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { App } from '@/models/entities/app.js';
-import { insertNoteUnread } from '@/services/note/unread.js';
 import { concat } from '@/prelude/array.js';
-import { resolveUser } from '@/services/remote/resolve-user.js';
-import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
-import renderAnnounce from '@/services/remote/activitypub/renderer/announce.js';
-import renderCreate from '@/services/remote/activitypub/renderer/create.js';
-import renderNote from '@/services/remote/activitypub/renderer/note.js';
-import DeliverManager from '@/services/remote/activitypub/deliver-manager.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
 import type { IPoll } from '@/models/entities/poll.js';
 import { Poll } from '@/models/entities/poll.js';
@@ -32,21 +25,26 @@ import { getAntennas } from '@/misc/antenna-cache.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserProfile } from '@/models/entities/user-profile.js';
 import { db } from '@/db/postgre.js';
-import type { RelayService } from '@/services/RelayService.js';
-import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
+import { RelayService } from '@/services/RelayService.js';
+import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
-import type NotesChart from '@/services/chart/charts/notes.js';
-import type PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
-import type InstanceChart from '@/services/chart/charts/instance.js';
-import type ActiveUsersChart from '@/services/chart/charts/active-users.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
-import type { WebhookService } from '@/services/WebhookService.js';
-import type { HashtagService } from '@/services/HashtagService.js';
-import type { AntennaService } from '@/services/AntennaService.js';
-import type { QueueService } from '@/queue/queue.service.js';
+import { Config } from '@/config/types.js';
+import NotesChart from '@/services/chart/charts/notes.js';
+import PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
+import InstanceChart from '@/services/chart/charts/instance.js';
+import ActiveUsersChart from '@/services/chart/charts/active-users.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { WebhookService } from '@/services/WebhookService.js';
+import { HashtagService } from '@/services/HashtagService.js';
+import { AntennaService } from '@/services/AntennaService.js';
+import { QueueService } from '@/queue/queue.service.js';
 import es from '../db/elasticsearch.js';
+import { NoteEntityService } from './entities/NoteEntityService.js';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { NoteReadService } from './NoteReadService.js';
+import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { ResolveUserService } from './remote/ResolveUserService.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -145,15 +143,20 @@ export class NoteCreateService {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 		private queueService: QueueService,
+		private noteReadService: NoteReadService,
 		private createNotificationService: CreateNotificationService,
 		private relayService: RelayService,
 		private federatedInstanceService: FederatedInstanceService,
 		private hashtagService: HashtagService,
 		private antennaService: AntennaService,
 		private webhookService: WebhookService,
+		private resolveUserService: ResolveUserService,
+		private apRendererService: ApRendererService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private activeUsersChart: ActiveUsersChart,
@@ -281,7 +284,7 @@ export class NoteCreateService {
 
 	async #insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new Note({
-			id: genId(data.createdAt!),
+			id: this.idService.genId(data.createdAt!),
 			createdAt: data.createdAt!,
 			fileIds: data.files ? data.files.map(file => file.id) : [],
 			replyId: data.reply ? data.reply.id : null,
@@ -324,7 +327,7 @@ export class NoteCreateService {
 		if (mentionedUsers.length > 0) {
 			insert.mentions = mentionedUsers.map(u => u.id);
 			const profiles = await UserProfiles.findBy({ userId: In(insert.mentions) });
-			insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
+			insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u)).map(u => {
 				const profile = profiles.find(p => p.userId === u.id);
 				const url = profile != null ? profile.url : null;
 				return {
@@ -436,7 +439,7 @@ export class NoteCreateService {
 		if (note.channelId) {
 			ChannelFollowings.findBy({ followeeId: note.channelId }).then(followings => {
 				for (const following of followings) {
-					insertNoteUnread(following.followerId, note, {
+					this.noteReadService.insertNoteUnread(following.followerId, note, {
 						isSpecified: false,
 						isMentioned: false,
 					});
@@ -474,7 +477,7 @@ export class NoteCreateService {
 					// ローカルユーザーのみ
 					if (!this.userEntityService.isLocalUser(u)) continue;
 
-					insertNoteUnread(u.id, note, {
+					this.noteReadService.insertNoteUnread(u.id, note, {
 						isSpecified: true,
 						isMentioned: false,
 					});
@@ -484,7 +487,7 @@ export class NoteCreateService {
 					// ローカルユーザーのみ
 					if (!this.userEntityService.isLocalUser(u)) continue;
 
-					insertNoteUnread(u.id, note, {
+					this.noteReadService.insertNoteUnread(u.id, note, {
 						isSpecified: false,
 						isMentioned: true,
 					});
@@ -672,10 +675,10 @@ export class NoteCreateService {
 		if (data.localOnly) return null;
 
 		const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)
-			? renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
-			: renderCreate(await renderNote(note, false), note);
+			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
+			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 
-		return renderActivity(content);
+		return this.apRendererService.renderActivity(content);
 	}
 
 	#index(note: Note) {
@@ -729,7 +732,7 @@ export class NoteCreateService {
 
 		const mentions = extractMentions(tokens);
 		let mentionedUsers = (await Promise.all(mentions.map(m =>
-			resolveUser(m.username, m.host || user.host).catch(() => null),
+			this.resolveUserService.resolveUser(m.username, m.host || user.host).catch(() => null),
 		))).filter(x => x != null) as User[];
 
 		// Drop duplicate users

@@ -3,6 +3,8 @@ import type { Notes, Users } from '@/models/index.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { User } from '@/models/entities/user.js';
 import type { Packed } from '@/misc/schema.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import Channel from '../channel.js';
 import type { StreamMessages } from '../types.js';
 
@@ -15,8 +17,8 @@ class ChannelChannel extends Channel {
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
 	constructor(
-		private usersRepository: typeof Users,
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
+		private userEntityService: UserEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -103,18 +105,15 @@ export class ChannelChannelService {
 	public readonly requireCredential = ChannelChannel.requireCredential;
 
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private noteEntityService: NoteEntityService,
+		private userEntityService: UserEntityService,
 	) {
 	}
 
 	public create(id: string, connection: Channel['connection']): ChannelChannel {
 		return new ChannelChannel(
-			this.usersRepository,
-			this.notesRepository,
+			this.noteEntityService,
+			this.userEntityService,
 			id,
 			connection,
 		);

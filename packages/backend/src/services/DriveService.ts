@@ -4,31 +4,34 @@ import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { IsNull } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { DriveFiles } from '@/models/index.js';
-import { DriveFolders, Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { DriveFiles , Users , DriveFolders , UserProfiles } from '@/models/index.js';
+
+import { Config } from '@/config/types.js';
 import Logger from '@/Logger.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
-import type { MetaService } from '@/services/MetaService.js';
+import { MetaService } from '@/services/MetaService.js';
 import { DriveFile } from '@/models/entities/drive-file.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { getFileInfo } from '@/misc/get-file-info.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import type { VideoProcessingService } from '@/services/VideoProcessingService.js';
-import type { IImage, ImageProcessingService } from '@/services/ImageProcessingService.js';
-import type { QueueService } from '@/queue/queue.service.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { VideoProcessingService } from '@/services/VideoProcessingService.js';
+import { ImageProcessingService } from '@/services/ImageProcessingService.js';
+import type { IImage } from '@/services/ImageProcessingService.js';
+import { QueueService } from '@/queue/queue.service.js';
 import type { DriveFolder } from '@/models/entities/drive-folder.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type DriveChart from '@/services/chart/charts/drive.js';
-import type PerUserDriveChart from '@/services/chart/charts/per-user-drive.js';
-import type InstanceChart from '@/services/chart/charts/instance.js';
-import type { DownloadService } from '@/services/DownloadService.js';
-import type { S3Service } from '@/services/drive/S3Service.js';
-import type { InternalStorageService } from '@/services/drive/InternalStorageService.js';
+import DriveChart from '@/services/chart/charts/drive.js';
+import PerUserDriveChart from '@/services/chart/charts/per-user-drive.js';
+import InstanceChart from '@/services/chart/charts/instance.js';
+import { DownloadService } from '@/services/DownloadService.js';
+import { S3Service } from '@/services/drive/S3Service.js';
+import { InternalStorageService } from '@/services/drive/InternalStorageService.js';
+import { DriveFileEntityService } from './entities/DriveFileEntityService';
+import { UserEntityService } from './entities/UserEntityService';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
@@ -82,9 +85,17 @@ export class DriveService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
+		@Inject('driveFoldersRepository')
+		private driveFoldersRepository: typeof DriveFolders,
+
+		private userEntityService: UserEntityService,
+		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
 		private metaService: MetaService,
 		private downloadService: DownloadService,
@@ -405,8 +416,8 @@ export class DriveService {
 		const instance = await this.metaService.fetch();
 		if (user == null) skipNsfwCheck = true;
 		if (instance.sensitiveMediaDetection === 'none') skipNsfwCheck = true;
-		if (user && instance.sensitiveMediaDetection === 'local' && Users.isRemoteUser(user)) skipNsfwCheck = true;
-		if (user && instance.sensitiveMediaDetection === 'remote' && Users.isLocalUser(user)) skipNsfwCheck = true;
+		if (user && instance.sensitiveMediaDetection === 'local' && this.userEntityService.isRemoteUser(user)) skipNsfwCheck = true;
+		if (user && instance.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user)) skipNsfwCheck = true;
 
 		const info = await getFileInfo(path, {
 			skipSensitiveDetection: skipNsfwCheck,
@@ -444,13 +455,13 @@ export class DriveService {
 
 		//#region Check drive usage
 		if (user && !isLink) {
-			const usage = await this.driveFilesRepository.calcDriveUsageOf(user);
-			const u = await Users.findOneBy({ id: user.id });
+			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
+			const u = await this.usersRepository.findOneBy({ id: user.id });
 
 			const instance = await this.metaService.fetch();
-			let driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+			let driveCapacity = 1024 * 1024 * (this.userEntityService.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
 
-			if (Users.isLocalUser(user) && u?.driveCapacityOverrideMb != null) {
+			if (this.userEntityService.isLocalUser(user) && u?.driveCapacityOverrideMb != null) {
 				driveCapacity = 1024 * 1024 * u.driveCapacityOverrideMb;
 				this.#registerLogger.debug('drive capacity override applied');
 				this.#registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
@@ -460,11 +471,11 @@ export class DriveService {
 
 			// If usage limit exceeded
 			if (usage + info.size > driveCapacity) {
-				if (Users.isLocalUser(user)) {
+				if (this.userEntityService.isLocalUser(user)) {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-					this.#deleteOldFile(await Users.findOneByOrFail({ id: user.id }) as IRemoteUser);
+					this.#deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
 				}
 			}
 		}
@@ -475,7 +486,7 @@ export class DriveService {
 				return null;
 			}
 
-			const driveFolder = await DriveFolders.findOneBy({
+			const driveFolder = await this.driveFoldersRepository.findOneBy({
 				id: folderId,
 				userId: user ? user.id : IsNull(),
 			});
@@ -499,7 +510,7 @@ export class DriveService {
 			properties['orientation'] = info.orientation;
 		}
 
-		const profile = user ? await UserProfiles.findOneBy({ userId: user.id }) : null;
+		const profile = user ? await this.userProfilesRepository.findOneBy({ userId: user.id }) : null;
 
 		const folder = await fetchFolder();
 
@@ -518,7 +529,7 @@ export class DriveService {
 		file.maybeSensitive = info.sensitive;
 		file.maybePorn = info.porn;
 		file.isSensitive = user
-			? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
+			? this.userEntityService.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
 			(sensitive !== null && sensitive !== undefined)
 				? sensitive
 				: false

@@ -2,18 +2,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FollowRequests , Followings , UserLists , UserListJoinings , Users , Blockings } from '@/models/index.js';
 
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import type { CacheableUser, User } from '@/models/entities/user.js';
 import type { Blocking } from '@/models/entities/blocking.js';
-import type { QueueService } from '@/queue/queue.service.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import { renderActivity } from '@/services/remote/activitypub/renderer';
-import { renderBlock } from '@/services/remote/activitypub/renderer/block';
-import renderFollow from '@/services/remote/activitypub/renderer/follow.js';
-import renderUndo from '@/services/remote/activitypub/renderer/undo.js';
-import renderReject from '@/services/remote/activitypub/renderer/reject.js';
-import type PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
-import type { WebhookService } from '@/services/webhookService.js';
+import { QueueService } from '@/queue/queue.service.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
+import { UserEntityService } from './entities/UserEntityService';
+import { WebhookService } from './WebhookService';
+import { ApRendererService } from './remote/activitypub/ApRendererService';
 
 @Injectable()
 export class UserBlockingService {
@@ -36,10 +33,12 @@ export class UserBlockingService {
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventServie: GlobalEventService,
 		private webhookService: WebhookService,
+		private apRendererService: ApRendererService,
 		private perUserFollowingChart: PerUserFollowingChart,
 	) {
 	}
@@ -65,7 +64,7 @@ export class UserBlockingService {
 		await this.blockingsRepository.insert(blocking);
 
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
-			const content = renderActivity(renderBlock(blocking));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderBlock(blocking));
 			this.queueService.deliver(blocker, content, blockee.inbox);
 		}
 	}
@@ -109,13 +108,13 @@ export class UserBlockingService {
 
 		// リモートにフォローリクエストをしていたらUndoFollow送信
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
 
 		// リモートからフォローリクエストを受けていたらReject送信
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId!), followee));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 		}
 	}
@@ -156,7 +155,7 @@ export class UserBlockingService {
 
 		// リモートにフォローをしていたらUndoFollow送信
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
 	}
@@ -194,7 +193,7 @@ export class UserBlockingService {
 	
 		// deliver if remote bloking
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
-			const content = renderActivity(renderUndo(renderBlock(blocking), blocker));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderBlock(blocking), blocker));
 			this.queueService.deliver(blocker, content, blockee.inbox);
 		}
 	}	

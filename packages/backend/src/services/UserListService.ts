@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoinings } from '@/models/index.js';
-import { Users } from '@/models/index.js';
+import type { UserListJoinings , Users } from '@/models/index.js';
+
 import type { User } from '@/models/entities/user.js';
 import type { UserList } from '@/models/entities/user-list.js';
 import type { UserListJoining } from '@/models/entities/user-list-joining.js';
-import type { IdService } from '@/services/IdService.js';
-import type { UserFollowingService } from '@/services/UserFollowingService.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { IdService } from '@/services/IdService.js';
+import { UserFollowingService } from '@/services/UserFollowingService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { UserEntityService } from './entities/UserEntityService';
 
 @Injectable()
 export class UserListService {
@@ -17,6 +18,7 @@ export class UserListService {
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private userFollowingService: UserFollowingService,
 		private globalEventServie: GlobalEventService,
@@ -34,7 +36,7 @@ export class UserListService {
 		this.globalEventServie.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
 	
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
-		if (Users.isRemoteUser(target)) {
+		if (this.userEntityService.isRemoteUser(target)) {
 			const proxy = await fetchProxyAccount();
 			if (proxy) {
 				this.userFollowingService.follow(proxy, target);
