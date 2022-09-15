@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserListJoinings , Users } from '@/models/index.js';
-
 import type { User } from '@/models/entities/User.js';
 import type { UserList } from '@/models/entities/UserList.js';
 import type { UserListJoining } from '@/models/entities/UserListJoining.js';
@@ -8,6 +7,7 @@ import { IdService } from '@/services/IdService.js';
 import { UserFollowingService } from '@/services/UserFollowingService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
+import { ProxyAccountService } from './ProxyAccountService.js';
 
 @Injectable()
 export class UserListService {
@@ -22,6 +22,7 @@ export class UserListService {
 		private idService: IdService,
 		private userFollowingService: UserFollowingService,
 		private globalEventServie: GlobalEventService,
+		private proxyAccountService: ProxyAccountService,
 	) {
 	}
 
@@ -37,7 +38,7 @@ export class UserListService {
 	
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 		if (this.userEntityService.isRemoteUser(target)) {
-			const proxy = await fetchProxyAccount();
+			const proxy = await this.proxyAccountService.fetch();
 			if (proxy) {
 				this.userFollowingService.follow(proxy, target);
 			}

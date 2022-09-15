@@ -2,13 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
 import type { Followings , Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
-import type { QueueService } from '@/queue/queue.service.js';
-import renderDelete from '@/services/remote/activitypub/renderer/delete.js';
-import renderUndo from '@/services/remote/activitypub/renderer/undo.js';
-import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { QueueService } from '@/queue/queue.service.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
+import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { UserEntityService } from './entities/UserEntityService.js';
 
 @Injectable()
 export class UserSuspendService {
@@ -22,8 +21,10 @@ export class UserSuspendService {
 		@Inject('followingsRepository')
 		private followingsRepository: typeof Followings,
 
+		private userEntityService: UserEntityService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
+		private apRendererService: ApRendererService,
 	) {
 	}
 
@@ -32,7 +33,7 @@ export class UserSuspendService {
 	
 		if (this.userEntityService.isLocalUser(user)) {
 			// 知り得る全SharedInboxにDelete配信
-			const content = renderActivity(renderDelete(`${this.config.url}/users/${user.id}`, user));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderDelete(`${this.config.url}/users/${user.id}`, user));
 	
 			const queue: string[] = [];
 	
@@ -61,7 +62,7 @@ export class UserSuspendService {
 	
 		if (this.userEntityService.isLocalUser(user)) {
 			// 知り得る全SharedInboxにUndo Delete配信
-			const content = renderActivity(renderUndo(renderDelete(`${this.config.url}/users/${user.id}`, user), user));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderDelete(`${this.config.url}/users/${user.id}`, user), user));
 	
 			const queue: string[] = [];
 	

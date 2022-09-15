@@ -1,9 +1,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users , Mutings } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
-import type { QueueService } from '@/queue/queue.service.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { IdService } from '@/services/IdService.js';
+import { QueueService } from '@/queue/queue.service.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { User } from '@/models/entities/User.js';
 
 @Injectable()

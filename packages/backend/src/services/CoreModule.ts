@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DI } from '../di-symbols.js';
 import { ChartsModule } from './chart/ChartsModule.js';
+import { EntityModule } from './entities/EntityModule.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AntennaService } from './AntennaService.js';
@@ -48,7 +49,7 @@ import { UserMutingService } from './UserMutingService.js';
 import { UserSuspendService } from './UserSuspendService.js';
 import { VideoProcessingService } from './VideoProcessingService.js';
 import { WebhookService } from './WebhookService.js';
-import { EntityModule } from './entities/EntityModule.js';
+import { ProxyAccountService } from './ProxyAccountService.js';
 
 @Module({
 	imports: [
@@ -87,6 +88,7 @@ import { EntityModule } from './entities/EntityModule.js';
 		NoteReadService,
 		NotificationService,
 		PollService,
+		ProxyAccountService,
 		PushNotificationService,
 		QueryService,
 		ReactionService,
@@ -138,6 +140,7 @@ import { EntityModule } from './entities/EntityModule.js';
 		NoteReadService,
 		NotificationService,
 		PollService,
+		ProxyAccountService,
 		PushNotificationService,
 		QueryService,
 		ReactionService,

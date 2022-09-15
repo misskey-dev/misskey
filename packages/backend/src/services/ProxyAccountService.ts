@@ -1,0 +1,21 @@
+import { Inject, Injectable } from '@nestjs/common';
+import type { Users } from '@/models/index.js';
+import type { ILocalUser, User } from '@/models/entities/User.js';
+import { MetaService } from './MetaService.js';
+
+@Injectable()
+export class ProxyAccountService {
+	constructor(
+		@Inject('usersRepository')
+		private usersRepository: typeof Users,
+
+		private metaService: MetaService,
+	) {
+	}
+
+	public async fetch(): Promise<ILocalUser | null> {
+		const meta = await this.metaService.fetch();
+		if (meta.proxyAccountId == null) return null;
+		return await this.usersRepository.findOneByOrFail({ id: meta.proxyAccountId }) as ILocalUser;
+	}
+}
