@@ -1,17 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ILocalUser } from '@/models/entities/User.js';
-import type { InstanceActorService } from '@/services/InstanceActorService.js';
-import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
+import { InstanceActorService } from '@/services/InstanceActorService.js';
 import type { Notes , Polls , NoteReactions , Users } from '@/models/index.js';
-import type { Config } from '@/config.js';
-import type { MetaService } from '@/services/MetaService.js';
-import type { HttpRequestService } from '@/services/HttpRequestService.js';
+import { Config } from '@/config.js';
+import { MetaService } from '@/services/MetaService.js';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
+import { UtilityService } from '@/services/UtilityService.js';
 import { isCollectionOrOrderedCollection } from './type.js';
-import type { ApDbResolverService } from './ApDbResolverService.js';
-import type { ApRendererService } from './ApRendererService.js';
+import { ApDbResolverService } from './ApDbResolverService.js';
+import { ApRendererService } from './ApRendererService.js';
+import { ApRequestService } from './ApRequestService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
-import type { ApRequestService } from './ApRequestService.js';
 
 @Injectable()
 export class ApResolverService {
@@ -31,6 +31,7 @@ export class ApResolverService {
 		@Inject('noteReactionsRepository')
 		private noteReactionsRepository: typeof NoteReactions,
 
+		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
 		private metaService: MetaService,
 		private apRequestService: ApRequestService,
@@ -47,6 +48,7 @@ export class ApResolverService {
 			this.notesRepository,
 			this.pollsRepository,
 			this.noteReactionsRepository,
+			this.utilityService,
 			this.instanceActorService,
 			this.metaService,
 			this.apRequestService,
@@ -67,6 +69,7 @@ export class Resolver {
 		private notesRepository: typeof Notes,
 		private pollsRepository: typeof Polls,
 		private noteReactionsRepository: typeof NoteReactions,
+		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
 		private metaService: MetaService,
 		private apRequestService: ApRequestService,
@@ -115,8 +118,8 @@ export class Resolver {
 
 		this.history.add(value);
 
-		const host = extractDbHost(value);
-		if (isSelfHost(host)) {
+		const host = this.utilityService.extractDbHost(value);
+		if (this.utilityService.isSelfHost(host)) {
 			return await this.resolveLocal(value);
 		}
 

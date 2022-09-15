@@ -1,10 +1,10 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users , Followings, UserProfiles } from '@/models/index.js';
-import { toPunyNullable } from '@/misc/convert-host.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 import { FollowingEntityService } from '@/services/entities/FollowingEntityService.js';
+import { UtilityService } from '@/services/UtilityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -80,13 +80,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('followingsRepository')
 		private followingsRepository: typeof Followings,
 
+		private utilityService: UtilityService,
 		private followingEntityService: FollowingEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy(ps.userId != null
 				? { id: ps.userId }
-				: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
+				: { usernameLower: ps.username!.toLowerCase(), host: this.utilityService.toPunyNullable(ps.host) ?? IsNull() });
 
 			if (user == null) {
 				throw new ApiError(meta.errors.noSuchUser);

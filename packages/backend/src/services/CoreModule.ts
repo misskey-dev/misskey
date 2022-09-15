@@ -50,6 +50,7 @@ import { UserSuspendService } from './UserSuspendService.js';
 import { VideoProcessingService } from './VideoProcessingService.js';
 import { WebhookService } from './WebhookService.js';
 import { ProxyAccountService } from './ProxyAccountService.js';
+import { UtilityService } from './UtilityService.js';
 
 @Module({
 	imports: [
@@ -105,6 +106,7 @@ import { ProxyAccountService } from './ProxyAccountService.js';
 		UserSuspendService,
 		VideoProcessingService,
 		WebhookService,
+		UtilityService,
 	],
 	exports: [
 		ChartsModule,
@@ -157,6 +159,7 @@ import { ProxyAccountService } from './ProxyAccountService.js';
 		UserSuspendService,
 		VideoProcessingService,
 		WebhookService,
+		UtilityService,
 	],
 })
 export class CoreModule {}

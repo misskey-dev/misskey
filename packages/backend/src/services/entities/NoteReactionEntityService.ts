@@ -6,7 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
-import { convertLegacyReaction } from '@/misc/reaction-lib.js';
+import { ReactionService } from '../ReactionService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
 
@@ -18,6 +18,7 @@ export class NoteReactionEntityService {
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
+		private reactionService: ReactionService,
 	) {
 	}
 
@@ -38,7 +39,7 @@ export class NoteReactionEntityService {
 			id: reaction.id,
 			createdAt: reaction.createdAt.toISOString(),
 			user: await this.userEntityService.pack(reaction.user ?? reaction.userId, me),
-			type: convertLegacyReaction(reaction.reaction),
+			type: this.reactionService.convertLegacyReaction(reaction.reaction),
 			...(opts.withNote ? {
 				note: await this.noteEntityService.pack(reaction.note ?? reaction.noteId, me),
 			} : {}),

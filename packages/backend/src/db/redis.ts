@@ -1,7 +1,9 @@
 import Redis from 'ioredis';
-import config from '@/config/index.js';
+import { loadConfig } from '@/config.js';
 
 export function createConnection() {
+	const config = loadConfig();
+
 	return new Redis({
 		port: config.redis.port,
 		host: config.redis.host,
@@ -13,6 +15,6 @@ export function createConnection() {
 }
 
 export const subsdcriber = createConnection();
-subsdcriber.subscribe(config.host);
+subsdcriber.subscribe(loadConfig().host);
 
 export const redisClient = createConnection();

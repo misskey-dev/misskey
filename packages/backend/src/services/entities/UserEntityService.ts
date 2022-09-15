@@ -2,20 +2,21 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import Ajv from 'ajv';
 import { DI } from '@/di-symbols.js';
-import { Pages } from '@/models/index.js';
-import type { AntennaNotes, Instances, MessagingMessages, UserSecurityKeys , Blockings, Mutings , Followings, FollowRequests, Users, DriveFiles, NoteUnreads, ChannelFollowings, Notifications, UserNotePinings, UserProfiles , AnnouncementReads, Announcements, UserGroupJoinings } from '@/models/index.js';
+import type { Pages , AntennaNotes, Instances, MessagingMessages, UserSecurityKeys , Blockings, Mutings , Followings, FollowRequests, Users, DriveFiles, NoteUnreads, ChannelFollowings, Notifications, UserNotePinings, UserProfiles , AnnouncementReads, Announcements, UserGroupJoinings } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Promiseable } from '@/prelude/await-all.js';
 import { awaitAll } from '@/prelude/await-all.js';
-import { populateEmojis } from '@/misc/populate-emojis.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
+import { CustomEmojiService } from '../CustomEmojiService.js';
 import { NoteEntityService } from './NoteEntityService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { PageEntityService } from './PageEntityService.js';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
@@ -107,6 +108,10 @@ export class UserEntityService {
 		// 循環参照のため / for circular dependency
 		@Inject(forwardRef(() => NoteEntityService))
 		private noteEntityService: NoteEntityService,
+
+		private driveFileEntityService: DriveFileEntityService,
+		private pageEntityService: PageEntityService,
+		private customEmojiService: CustomEmojiService,
 	) {
 		this.#userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 	}
@@ -280,10 +285,10 @@ export class UserEntityService {
 
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
-			return this.driveFilesRepository.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
 		} else if (user.avatarId) {
 			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFilesRepository.getPublicUrl(avatar, true) || this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(avatar, true) || this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -291,7 +296,7 @@ export class UserEntityService {
 
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
-			return this.driveFilesRepository.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -376,7 +381,7 @@ export class UserEntityService {
 				faviconUrl: instance.faviconUrl,
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
-			emojis: populateEmojis(user.emojis, user.host),
+			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 			driveCapacityOverrideMb: user.driveCapacityOverrideMb,
 
@@ -386,7 +391,7 @@ export class UserEntityService {
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.banner ? this.driveFilesRepository.getPublicUrl(user.banner, false) : null,
+				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
 				bannerBlurhash: user.banner?.blurhash || null,
 				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
@@ -405,7 +410,7 @@ export class UserEntityService {
 					detail: true,
 				}),
 				pinnedPageId: profile!.pinnedPageId,
-				pinnedPage: profile!.pinnedPageId ? Pages.pack(profile!.pinnedPageId, me) : null,
+				pinnedPage: profile!.pinnedPageId ? this.pageEntityService.pack(profile!.pinnedPageId, me) : null,
 				publicReactions: profile!.publicReactions,
 				ffVisibility: profile!.ffVisibility,
 				twoFactorEnabled: profile!.twoFactorEnabled,

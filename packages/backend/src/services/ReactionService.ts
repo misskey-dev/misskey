@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Blockings, Emojis, NoteReactions , Users , Notes } from '@/models/index.js';
+import { Emojis } from '@/models/index.js';
+import type { Blockings, NoteReactions , Users , Notes } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -11,11 +12,44 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import PerUserReactionsChart from '@/services/chart/charts/per-user-reactions.js';
-import { decodeReaction, toDbReaction } from '@/misc/reaction-lib.js';
+import { emojiRegex } from '@/misc/emoji-regex.js';
 import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
 import { NoteEntityService } from './entities/NoteEntityService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { MetaService } from './MetaService.js';
+import { UtilityService } from './UtilityService.js';
+
+const legacies: Record<string, string> = {
+	'like': '👍',
+	'love': '❤', // ここに記述する場合は異体字セレクタを入れない
+	'laugh': '😆',
+	'hmm': '🤔',
+	'surprise': '😮',
+	'congrats': '🎉',
+	'angry': '💢',
+	'confused': '😥',
+	'rip': '😇',
+	'pudding': '🍮',
+	'star': '⭐',
+};
+
+type DecodedReaction = {
+	/**
+	 * リアクション名 (Unicode Emoji or ':name@hostname' or ':name@.')
+	 */
+	reaction: string;
+
+	/**
+	 * name (カスタム絵文字の場合name, Emojiクエリに使う)
+	 */
+	name?: string;
+
+	/**
+	 * host (カスタム絵文字の場合host, Emojiクエリに使う)
+	 */
+	host?: string | null;
+};
 
 @Injectable()
 export class ReactionService {
@@ -35,6 +69,8 @@ export class ReactionService {
 		@Inject('emojisRepository')
 		private emojisRepository: typeof Emojis,
 
+		private utilityService: UtilityService,
+		private metaService: MetaService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
@@ -64,7 +100,7 @@ export class ReactionService {
 		}
 	
 		// TODO: cache
-		reaction = await toDbReaction(reaction, user.host);
+		reaction = await this.toDbReaction(reaction, user.host);
 	
 		const record: NoteReaction = {
 			id: this.idService.genId(),
@@ -110,7 +146,7 @@ export class ReactionService {
 		this.perUserReactionsChart.update(user, note);
 	
 		// カスタム絵文字リアクションだったら絵文字情報も送る
-		const decodedReaction = decodeReaction(reaction);
+		const decodedReaction = this.decodeReaction(reaction);
 	
 		const emoji = await this.emojisRepository.findOne({
 			where: {
@@ -191,7 +227,7 @@ export class ReactionService {
 		this.notesRepository.decrement({ id: note.id }, 'score', 1);
 	
 		this.globalEventServie.publishNoteStream(note.id, 'unreacted', {
-			reaction: decodeReaction(exist.reaction).reaction,
+			reaction: this.decodeReaction(exist.reaction).reaction,
 			userId: user.id,
 		});
 	
@@ -207,5 +243,99 @@ export class ReactionService {
 			dm.execute();
 		}
 		//#endregion
+	}
+	
+	public async getFallbackReaction(): Promise<string> {
+		const meta = await this.metaService.fetch();
+		return meta.useStarForReactionFallback ? '⭐' : '👍';
+	}
+
+	public convertLegacyReactions(reactions: Record<string, number>) {
+		const _reactions = {} as Record<string, number>;
+
+		for (const reaction of Object.keys(reactions)) {
+			if (reactions[reaction] <= 0) continue;
+
+			if (Object.keys(legacies).includes(reaction)) {
+				if (_reactions[legacies[reaction]]) {
+					_reactions[legacies[reaction]] += reactions[reaction];
+				} else {
+					_reactions[legacies[reaction]] = reactions[reaction];
+				}
+			} else {
+				if (_reactions[reaction]) {
+					_reactions[reaction] += reactions[reaction];
+				} else {
+					_reactions[reaction] = reactions[reaction];
+				}
+			}
+		}
+
+		const _reactions2 = {} as Record<string, number>;
+
+		for (const reaction of Object.keys(_reactions)) {
+			_reactions2[this.decodeReaction(reaction).reaction] = _reactions[reaction];
+		}
+
+		return _reactions2;
+	}
+
+	public async toDbReaction(reaction?: string | null, reacterHost?: string | null): Promise<string> {
+		if (reaction == null) return await this.getFallbackReaction();
+
+		reacterHost = this.utilityService.toPunyNullable(reacterHost);
+
+		// 文字列タイプのリアクションを絵文字に変換
+		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
+
+		// Unicode絵文字
+		const match = emojiRegex.exec(reaction);
+		if (match) {
+		// 合字を含む1つの絵文字
+			const unicode = match[0];
+
+			// 異体字セレクタ除去
+			return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
+		}
+
+		const custom = reaction.match(/^:([\w+-]+)(?:@\.)?:$/);
+		if (custom) {
+			const name = custom[1];
+			const emoji = await Emojis.findOneBy({
+				host: reacterHost ?? IsNull(),
+				name,
+			});
+
+			if (emoji) return reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
+		}
+
+		return await this.getFallbackReaction();
+	}
+
+	public decodeReaction(str: string): DecodedReaction {
+		const custom = str.match(/^:([\w+-]+)(?:@([\w.-]+))?:$/);
+
+		if (custom) {
+			const name = custom[1];
+			const host = custom[2] || null;
+
+			return {
+				reaction: `:${name}@${host || '.'}:`,	// ローカル分は@以降を省略するのではなく.にする
+				name,
+				host,
+			};
+		}
+
+		return {
+			reaction: str,
+			name: undefined,
+			host: undefined,
+		};
+	}
+
+	public convertLegacyReaction(reaction: string): string {
+		reaction = this.decodeReaction(reaction).reaction;
+		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
+		return reaction;
 	}
 }

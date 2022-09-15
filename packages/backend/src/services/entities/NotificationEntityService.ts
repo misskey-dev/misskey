@@ -4,12 +4,13 @@ import { DI } from '@/di-symbols.js';
 import type { AccessTokens, NoteReactions , Notifications } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Notification } from '@/models/entities/Notification.js';
-import { aggregateNoteEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Packed } from '@/misc/schema.js';
+import { CustomEmojiService } from '../CustomEmojiService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
+import { UserGroupInvitationEntityService } from './UserGroupInvitationEntityService.js';
 
 @Injectable()
 export class NotificationEntityService {
@@ -25,6 +26,8 @@ export class NotificationEntityService {
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
+		private userGroupInvitationEntityService: UserGroupInvitationEntityService,
+		private customEmojiService: CustomEmojiService,
 	) {
 	}
 
@@ -91,7 +94,7 @@ export class NotificationEntityService {
 				}),
 			} : {}),
 			...(notification.type === 'groupInvited' ? {
-				invitation: UserGroupInvitations.pack(notification.userGroupInvitationId!),
+				invitation: this.userGroupInvitationEntityService.pack(notification.userGroupInvitationId!),
 			} : {}),
 			...(notification.type === 'app' ? {
 				body: notification.customBody,
@@ -121,7 +124,7 @@ export class NotificationEntityService {
 			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) || null);
 		}
 
-		await prefetchEmojis(aggregateNoteEmojis(notes));
+		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
 
 		return await Promise.all(notifications.map(x => this.pack(x, {
 			_hintForEachNotes_: {

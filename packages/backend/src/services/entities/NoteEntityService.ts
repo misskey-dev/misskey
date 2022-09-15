@@ -7,11 +7,11 @@ import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/prelude/await-all.js';
-import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
-import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis.js';
+import { CustomEmojiService } from '../CustomEmojiService.js';
+import { ReactionService } from '../ReactionService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 
@@ -50,6 +50,8 @@ export class NoteEntityService {
 		private userEntityService: UserEntityService,
 
 		private driveFileEntityService: DriveFileEntityService,
+		private customEmojiService: CustomEmojiService,
+		private reactionService: ReactionService,
 	) {
 	}
 	
@@ -157,7 +159,7 @@ export class NoteEntityService {
 		if (_hint_?.myReactions) {
 			const reaction = _hint_.myReactions.get(note.id);
 			if (reaction) {
-				return convertLegacyReaction(reaction.reaction);
+				return this.reactionService.convertLegacyReaction(reaction.reaction);
 			} else if (reaction === null) {
 				return undefined;
 			}
@@ -170,7 +172,7 @@ export class NoteEntityService {
 		});
 
 		if (reaction) {
-			return convertLegacyReaction(reaction.reaction);
+			return this.reactionService.convertLegacyReaction(reaction.reaction);
 		}
 
 		return undefined;
@@ -261,7 +263,7 @@ export class NoteEntityService {
 				: await this.channelsRepository.findOneBy({ id: note.channelId })
 			: null;
 
-		const reactionEmojiNames = Object.keys(note.reactions).filter(x => x.startsWith(':')).map(x => decodeReaction(x).reaction).map(x => x.replace(/:/g, ''));
+		const reactionEmojiNames = Object.keys(note.reactions).filter(x => x.startsWith(':')).map(x => this.reactionService.decodeReaction(x).reaction).map(x => x.replace(/:/g, ''));
 
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
@@ -277,9 +279,9 @@ export class NoteEntityService {
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
-			reactions: convertLegacyReactions(note.reactions),
+			reactions: this.reactionService.convertLegacyReactions(note.reactions),
 			tags: note.tags.length > 0 ? note.tags : undefined,
-			emojis: populateEmojis(note.emojis.concat(reactionEmojiNames), host),
+			emojis: this.customEmojiService.populateEmojis(note.emojis.concat(reactionEmojiNames), host),
 			fileIds: note.fileIds,
 			files: this.driveFileEntityService.packMany(note.fileIds),
 			replyId: note.replyId,
@@ -355,7 +357,7 @@ export class NoteEntityService {
 			}
 		}
 
-		await prefetchEmojis(aggregateNoteEmojis(notes));
+		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,

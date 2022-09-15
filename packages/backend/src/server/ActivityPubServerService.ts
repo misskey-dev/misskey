@@ -8,7 +8,6 @@ import { Followings , Notes } from '@/models/index.js';
 import type { Emojis, NoteReactions , UserProfiles , UserNotePinings , Users } from '@/models/index.js';
 import * as url from '@/prelude/url.js';
 import { Config } from '@/config.js';
-import { isSelfHost } from '@/misc/convert-host.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 import { QueueService } from '@/queue/queue.service.js';
 import type { ILocalUser, User } from '@/models/entities/User.js';
@@ -17,6 +16,8 @@ import type { Following } from '@/models/entities/Following.js';
 import { countIf } from '@/prelude/array.js';
 import type { Note } from '@/models/entities/Note.js';
 import { QueryService } from '@/services/QueryService.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
@@ -49,6 +50,8 @@ export class ActivityPubServerService {
 		@Inject('followingsRepository')
 		private followingsRepository: typeof Followings,
 
+		private utilityService: UtilityService,
+		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
 		private queueService: QueueService,
 		private userKeypairStoreService: UserKeypairStoreService,
@@ -417,7 +420,7 @@ export class ActivityPubServerService {
 
 			// リモートだったらリダイレクト
 			if (note.userHost != null) {
-				if (note.uri == null || isSelfHost(note.userHost)) {
+				if (note.uri == null || this.utilityService.isSelfHost(note.userHost)) {
 					ctx.status = 500;
 					return;
 				}

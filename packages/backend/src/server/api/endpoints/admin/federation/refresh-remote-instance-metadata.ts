@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Instances } from '@/models/index.js';
-import { toPuny } from '@/misc/convert-host.js';
 import { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
+import { UtilityService } from '@/services/UtilityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -26,10 +26,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('instancesRepository')
 		private instancesRepository: typeof Instances,
 
+		private utilityService: UtilityService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const instance = await this.instancesRepository.findOneBy({ host: toPuny(ps.host) });
+			const instance = await this.instancesRepository.findOneBy({ host: this.utilityService.toPuny(ps.host) });
 
 			if (instance == null) {
 				throw new Error('instance not found');

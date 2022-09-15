@@ -2,9 +2,10 @@ import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 import { Inject, Injectable } from '@nestjs/common';
-import config from '@/config/index.js';
 import type { UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
+import { Config } from '@/config.js';
 
 export const meta = {
 	requireCredential: true,
@@ -24,6 +25,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject('userProfilesRepository')
 		private userProfilesRepository: typeof UserProfiles,
 	) {
@@ -51,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				secret: secret.base32,
 				encoding: 'base32',
 				label: me.username,
-				issuer: config.host,
+				issuer: this.config.host,
 			});
 			const dataUrl = await QRCode.toDataURL(url);
 
@@ -60,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				url,
 				secret: secret.base32,
 				label: me.username,
-				issuer: config.host,
+				issuer: this.config.host,
 			};
 		});
 	}

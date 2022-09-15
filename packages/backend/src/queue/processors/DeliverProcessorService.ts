@@ -5,7 +5,6 @@ import type { DriveFiles , Instances } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/services/MetaService.js';
-import { toPuny } from '@/misc/convert-host.js';
 import { ApRequestService } from '@/services/remote/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
@@ -15,6 +14,7 @@ import InstanceChart from '@/services/chart/charts/instance.js';
 import ApRequestChart from '@/services/chart/charts/ap-request.js';
 import FederationChart from '@/services/chart/charts/federation.js';
 import { StatusError } from '@/misc/status-error.js';
+import { UtilityService } from '@/services/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData } from '../types.js';
@@ -36,6 +36,7 @@ export class DeliverProcessorService {
 		private driveFilesRepository: typeof DriveFiles,
 
 		private metaService: MetaService,
+		private utilityService: UtilityService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		private apRequestService: ApRequestService,
@@ -54,7 +55,7 @@ export class DeliverProcessorService {
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(toPuny(host))) {
+		if (meta.blockedHosts.includes(this.utilityService.toPuny(host))) {
 			return 'skip (blocked)';
 		}
 
@@ -68,7 +69,7 @@ export class DeliverProcessorService {
 			});
 			this.#suspendedHostsCache.set(null, suspendedHosts);
 		}
-		if (suspendedHosts.map(x => x.host).includes(toPuny(host))) {
+		if (suspendedHosts.map(x => x.host).includes(this.utilityService.toPuny(host))) {
 			return 'skip (suspended)';
 		}
 

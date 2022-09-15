@@ -5,12 +5,12 @@ import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
-import type { Config } from '@/config.js';
-import { toPuny } from '@/misc/convert-host.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { createPerson, updatePerson } from './activitypub/models/person.js';
-import type { WebfingerService } from './WebfingerService.js';
-import type { RemoteLoggerService } from './RemoteLoggerService.js';
+import { UtilityService } from '../UtilityService.js';
+import { WebfingerService } from './WebfingerService.js';
+import { RemoteLoggerService } from './RemoteLoggerService.js';
+import { ApPersonService } from './activitypub/models/ApPersonService.js';
 
 @Injectable()
 export class ResolveUserService {
@@ -23,8 +23,10 @@ export class ResolveUserService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		private utilityService: UtilityService,
 		private webfingerService: WebfingerService,
 		private remoteLoggerService: RemoteLoggerService,
+		private apPersonService: ApPersonService,
 	) {
 		this.#logger = this.remoteLoggerService.logger.createSubLogger('resolve-user');
 	}
@@ -43,7 +45,7 @@ export class ResolveUserService {
 			});
 		}
 	
-		host = toPuny(host);
+		host = this.utilityService.toPuny(host);
 	
 		if (this.config.host === host) {
 			this.#logger.info(`return local user: ${usernameLower}`);
@@ -64,7 +66,7 @@ export class ResolveUserService {
 			const self = await this.#resolveSelf(acctLower);
 	
 			this.#logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
-			return await createPerson(self.href);
+			return await this.apPersonService.createPerson(self.href);
 		}
 	
 		// ユーザー情報が古い場合は、WebFilgerからやりなおして返す
@@ -98,7 +100,7 @@ export class ResolveUserService {
 				this.#logger.info(`uri is fine: ${acctLower}`);
 			}
 	
-			await updatePerson(self.href);
+			await this.apPersonService.updatePerson(self.href);
 	
 			this.#logger.info(`return resynced remote user: ${acctLower}`);
 			return await this.usersRepository.findOneBy({ uri: self.href }).then(u => {

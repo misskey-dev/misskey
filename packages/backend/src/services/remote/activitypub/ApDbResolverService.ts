@@ -11,6 +11,7 @@ import { UserCacheService } from '@/services/UserCacheService.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { getApId } from './type.js';
+import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
 
 export type UriParseResult = {
@@ -48,6 +49,7 @@ export class ApDbResolverService {
 		private userPublickeysRepository: typeof UserPublickeys,
 
 		private userCacheService: UserCacheService,
+		private apPersonService: ApPersonService,
 	) {
 		this.#publicKeyCache = new Cache<UserPublickey | null>(Infinity);
 		this.#publicKeyByUserIdCache = new Cache<UserPublickey | null>(Infinity);
@@ -161,7 +163,7 @@ export class ApDbResolverService {
 		user: CacheableRemoteUser;
 		key: UserPublickey | null;
 	} | null> {
-		const user = await resolvePerson(uri) as CacheableRemoteUser;
+		const user = await this.apPersonService.resolvePerson(uri) as CacheableRemoteUser;
 
 		if (user == null) return null;
 

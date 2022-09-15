@@ -3,17 +3,17 @@ import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFiles , UserListJoinings , UserLists } from '@/models/index.js';
 import { Users } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { isSelfHost, toPuny } from '@/misc/convert-host.js';
 import * as Acct from '@/misc/acct.js';
-import type { ResolveUserService } from '@/services/remote/ResolveUserService.js';
-import type { DownloadService } from '@/services/DownloadService.js';
-import type { UserListService } from '@/services/UserListService.js';
-import type { IdService } from '@/services/IdService.js';
+import { ResolveUserService } from '@/services/remote/ResolveUserService.js';
+import { DownloadService } from '@/services/DownloadService.js';
+import { UserListService } from '@/services/UserListService.js';
+import { IdService } from '@/services/IdService.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class ImportUserListsProcessorService {
@@ -35,6 +35,7 @@ export class ImportUserListsProcessorService {
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
 
+		private utilityService: UtilityService,
 		private idService: IdService,
 		private userListService: UserListService,
 		private resolveUserService: ResolveUserService,
@@ -86,11 +87,11 @@ export class ImportUserListsProcessorService {
 					}).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
 				}
 
-				let target = isSelfHost(host!) ? await Users.findOneBy({
+				let target = this.utilityService.isSelfHost(host!) ? await Users.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
 				}) : await Users.findOneBy({
-					host: toPuny(host!),
+					host: this.utilityService.toPuny(host!),
 					usernameLower: username.toLowerCase(),
 				});
 

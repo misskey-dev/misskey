@@ -1,10 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { Polls , Emojis, Users } from '@/models/index.js';
+import type { MessagingMessages , Polls , Emojis, Users } from '@/models/index.js';
+
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
-import { extractDbHost, toPuny } from '@/misc/convert-host';
 import type { Note } from '@/models/entities/Note.js';
 import { toArray, toSingle, unique } from '@/prelude/array.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
@@ -16,12 +16,15 @@ import type Logger from '@/logger.js';
 import { IdService } from '@/services/IdService.js';
 import { PollService } from '@/services/PollService.js';
 import { StatusError } from '@/misc/status-error.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { MessagingService } from '@/services/MessagingService.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
 import { ApDbResolverService } from '../ApDbResolverService.js';
 import { ApResolverService } from '../ApResolverService.js';
+import { ApAudienceService } from '../ApAudienceService.js';
 import { ApPersonService } from './ApPersonService.js';
 import { extractApHashtags } from './tag.js';
 import { ApMentionService } from './ApMentionService.js';
@@ -44,6 +47,9 @@ export class ApNoteService {
 		@Inject('emojisRepository')
 		private emojisRepository: typeof Emojis,
 
+		@Inject('messagingMessagesRepository')
+		private messagingMessagesRepository: typeof MessagingMessages,
+
 		private idService: IdService,
 		private apMfmService: ApMfmService,
 		private apResolverService: ApResolverService,
@@ -52,10 +58,13 @@ export class ApNoteService {
 		@Inject(forwardRef(() => ApPersonService))
 		private apPersonService: ApPersonService,
 	
+		private utilityService: UtilityService,
+		private apAudienceService: ApAudienceService,
 		private apMentionService: ApMentionService,
 		private apImageService: ApImageService,
 		private apQuestionService: ApQuestionService,
 		private metaService: MetaService,
+		private messagingService: MessagingService,
 		private appLockService: AppLockService,
 		private pollService: PollService,
 		private noteCreateService: NoteCreateService,
@@ -66,7 +75,7 @@ export class ApNoteService {
 	}
 
 	public validateNote(object: any, uri: string) {
-		const expectHost = extractDbHost(uri);
+		const expectHost = this.utilityService.extractDbHost(uri);
 	
 		if (object == null) {
 			return new Error('invalid Note: object is null');
@@ -76,12 +85,12 @@ export class ApNoteService {
 			return new Error(`invalid Note: invalid object type ${getApType(object)}`);
 		}
 	
-		if (object.id && extractDbHost(object.id) !== expectHost) {
-			return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${extractDbHost(object.id)}`);
+		if (object.id && this.utilityService.extractDbHost(object.id) !== expectHost) {
+			return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
 		}
 	
-		if (object.attributedTo && extractDbHost(getOneApId(object.attributedTo)) !== expectHost) {
-			return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${extractDbHost(object.attributedTo)}`);
+		if (object.attributedTo && this.utilityService.extractDbHost(getOneApId(object.attributedTo)) !== expectHost) {
+			return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.attributedTo)}`);
 		}
 	
 		return null;
@@ -131,7 +140,7 @@ export class ApNoteService {
 			throw new Error('actor has been suspended');
 		}
 	
-		const noteAudience = await parseAudience(actor, note.to, note.cc);
+		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc);
 		let visibility = noteAudience.visibility;
 		const visibleUsers = noteAudience.visibleUsers;
 	
@@ -143,7 +152,7 @@ export class ApNoteService {
 			}
 		}
 	
-		let isTalk = note._misskey_talk && visibility === 'specified';
+		let isMessaging = note._misskey_talk && visibility === 'specified';
 	
 		const apMentions = await this.apMentionService.extractApMentions(note.tag);
 		const apHashtags = await extractApHashtags(note.tag);
@@ -175,9 +184,9 @@ export class ApNoteService {
 				const uri = getApId(note.inReplyTo);
 				if (uri.startsWith(this.config.url + '/')) {
 					const id = uri.split('/').pop();
-					const talk = await MessagingMessages.findOneBy({ id });
+					const talk = await this.messagingMessagesRepository.findOneBy({ id });
 					if (talk) {
-						isTalk = true;
+						isMessaging = true;
 						return null;
 					}
 				}
@@ -249,7 +258,7 @@ export class ApNoteService {
 					this.#logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				} else if (index >= 0) {
 					this.#logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
-					await vote(actor, reply, index);
+					await this.pollService.vote(actor, reply, index);
 	
 					// リモートフォロワーにUpdate配信
 					this.pollService.deliverQuestionUpdate(reply.id);
@@ -271,9 +280,9 @@ export class ApNoteService {
 	
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
 	
-		if (isTalk) {
+		if (isMessaging) {
 			for (const recipient of visibleUsers) {
-				await createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null, object.id);
+				await this.messagingService.createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null, object.id);
 				return null;
 			}
 		}
@@ -310,7 +319,7 @@ export class ApNoteService {
 	
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(extractDbHost(uri))) throw { statusCode: 451 };
+		if (meta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) throw { statusCode: 451 };
 	
 		const unlock = await this.appLockService.getApLock(uri);
 	
@@ -337,7 +346,7 @@ export class ApNoteService {
 	}
 	
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<Emoji[]> {
-		host = toPuny(host);
+		host = this.utilityService.toPuny(host);
 	
 		if (!tags) return [];
 	

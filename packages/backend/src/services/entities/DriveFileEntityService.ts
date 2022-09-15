@@ -9,7 +9,7 @@ import { awaitAll } from '@/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/prelude/url.js';
-import { toPuny } from '@/misc/convert-host.js';
+import { UtilityService } from '../UtilityService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
 
@@ -38,6 +38,7 @@ export class DriveFileEntityService {
 		@Inject(forwardRef(() => UserEntityService))
 		private userEntityService: UserEntityService,
 
+		private utilityService: UtilityService,
 		private driveFolderEntityService: DriveFolderEntityService,
 	) {
 	}
@@ -106,7 +107,7 @@ export class DriveFileEntityService {
 	public async calcDriveUsageOfHost(host: string): Promise<number> {
 		const { sum } = await this.driveFilesRepository
 			.createQueryBuilder('file')
-			.where('file.userHost = :host', { host: toPuny(host) })
+			.where('file.userHost = :host', { host: this.utilityService.toPuny(host) })
 			.andWhere('file.isLink = FALSE')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();

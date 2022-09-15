@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Followings, Notes , Users } from '@/models/index.js';
+import type { AbuseUserReports , Followings, FollowRequests, MessagingMessages, Notes , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import { UserFollowingService } from '@/services/UserFollowingService.js';
@@ -13,18 +13,23 @@ import { NoteDeleteService } from '@/services/NoteDeleteService.js';
 import { NoteCreateService } from '@/services/NoteCreateService.js';
 import { concat, toArray, toSingle, unique } from '@/prelude/array.js';
 import { AppLockService } from '@/services/AppLockService.js';
-import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/services/MetaService.js';
 import { IdService } from '@/services/IdService.js';
 import { StatusError } from '@/misc/status-error.js';
-import { updatePerson } from './models/person.js';
-import { updateQuestion } from './models/question.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { QueueService } from '@/queue/queue.service.js';
+import { MessagingService } from '@/services/MessagingService.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApResolverService } from './ApResolverService.js';
+import { ApAudienceService } from './ApAudienceService.js';
+import { ApPersonService } from './models/ApPersonService.js';
+import { ApQuestionService } from './models/ApQuestionService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IRead, IReject, IRemove, IUndo, IUpdate } from './type.js';
 
@@ -45,9 +50,22 @@ export class ApInboxService {
 		@Inject('followingsRepository')
 		private followingsRepository: typeof Followings,
 
+		@Inject('messagingMessagesRepository')
+		private messagingMessagesRepository: typeof MessagingMessages,
+
+		@Inject('abuseUserReportsRepository')
+		private abuseUserReportsRepository: typeof AbuseUserReports,
+
+		@Inject('followRequestsRepository')
+		private followRequestsRepository: typeof FollowRequests,
+
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
+		private utilityService: UtilityService,
 		private idService: IdService,
 		private metaService: MetaService,
 		private userFollowingService: UserFollowingService,
+		private apAudienceService: ApAudienceService,
 		private reactionService: ReactionService,
 		private relayService: RelayService,
 		private notePiningService: NotePiningService,
@@ -59,6 +77,10 @@ export class ApInboxService {
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
 		private apNoteService: ApNoteService,
+		private apPersonService: ApPersonService,
+		private apQuestionService: ApQuestionService,
+		private queueService: QueueService,
+		private messagingService: MessagingService,
 	) {
 		this.#logger = this.apLoggerService.logger;
 	}
@@ -152,13 +174,13 @@ export class ApInboxService {
 	async #read(actor: CacheableRemoteUser, activity: IRead): Promise<string> {
 		const id = await getApId(activity.object);
 
-		if (!isSelfHost(extractDbHost(id))) {
+		if (!this.utilityService.isSelfHost(this.utilityService.extractDbHost(id))) {
 			return `skip: Read to foreign host (${id})`;
 		}
 
 		const messageId = id.split('/').pop();
 
-		const message = await MessagingMessages.findOneBy({ id: messageId });
+		const message = await this.messagingMessagesRepository.findOneBy({ id: messageId });
 		if (message == null) {
 			return 'skip: message not found';
 		}
@@ -167,7 +189,7 @@ export class ApInboxService {
 			return 'skip: actor is not a message recipient';
 		}
 
-		await readUserMessagingMessage(message.recipientId!, message.userId, [message.id]);
+		await this.messagingService.readUserMessagingMessage(message.recipientId!, message.userId, [message.id]);
 		return `ok: mark as read (${message.userId} => ${message.recipientId} ${message.id})`;
 	}
 
@@ -249,7 +271,7 @@ export class ApInboxService {
 
 		// アナウンス先をブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(extractDbHost(uri))) return;
+		if (meta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) return;
 
 		const unlock = await this.appLockService.getApLock(uri);
 
@@ -277,11 +299,11 @@ export class ApInboxService {
 				throw e;
 			}
 
-			if (!await this.notesRepository.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
+			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
 
 			this.#logger.info(`Creating the (Re)Note: ${uri}`);
 
-			const activityAudience = await parseAudience(actor, activity.to, activity.cc);
+			const activityAudience = await this.apAudienceService.parseAudience(actor, activity.to, activity.cc);
 
 			await this.noteCreateService.create(actor, {
 				createdAt: activity.published ? new Date(activity.published) : null,
@@ -356,7 +378,7 @@ export class ApInboxService {
 			}
 
 			if (typeof note.id === 'string') {
-				if (extractDbHost(actor.uri) !== extractDbHost(note.id)) {
+				if (this.utilityService.extractDbHost(actor.uri) !== this.utilityService.extractDbHost(note.id)) {
 					return 'skip: host in actor.uri !== note.id';
 				}
 			}
@@ -434,7 +456,7 @@ export class ApInboxService {
 			this.#logger.info('skip: already deleted');
 		}
 	
-		const job = await createDeleteAccountJob(actor);
+		const job = await this.queueService.createDeleteAccountJob(actor);
 	
 		await this.usersRepository.update(actor.id, {
 			isDeleted: true,
@@ -459,7 +481,7 @@ export class ApInboxService {
 					return '投稿を削除しようとしているユーザーは投稿の作成者ではありません';
 				}
 	
-				await deleteMessage(message);
+				await this.messagingService.deleteMessage(message);
 	
 				return 'ok: message deleted';
 			}
@@ -486,7 +508,7 @@ export class ApInboxService {
 		});
 		if (users.length < 1) return 'skip';
 
-		await AbuseUserReports.insert({
+		await this.abuseUserReportsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			targetUserId: users[0].id,
@@ -641,7 +663,7 @@ export class ApInboxService {
 			return 'skip: フォロー解除しようとしているユーザーはローカルユーザーではありません';
 		}
 
-		const req = await FollowRequests.findOneBy({
+		const req = await this.followRequestsRepository.findOneBy({
 			followerId: actor.id,
 			followeeId: followee.id,
 		});
@@ -693,10 +715,10 @@ export class ApInboxService {
 		});
 	
 		if (isActor(object)) {
-			await updatePerson(actor.uri!, resolver, object);
+			await this.apPersonService.updatePerson(actor.uri!, resolver, object);
 			return 'ok: Person updated';
 		} else if (getApType(object) === 'Question') {
-			await updateQuestion(object).catch(e => console.log(e));
+			await this.apQuestionService.updateQuestion(object).catch(err => console.error(err));
 			return 'ok: Question updated';
 		} else {
 			return `skip: Unknown type: ${getApType(object)}`;

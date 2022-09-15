@@ -5,15 +5,15 @@ import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Followings, Mutings } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/DriveService.js';
-import { getFullApAccount } from '@/misc/convert-host.js';
+import { DriveService } from '@/services/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { Following } from '@/models/entities/Following.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserJobData } from '../types.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class ExportFollowingProcessorService {
@@ -32,6 +32,7 @@ export class ExportFollowingProcessorService {
 		@Inject('mutingsRepository')
 		private mutingsRepository: typeof Mutings,
 
+		private utilityService: UtilityService,
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
@@ -90,7 +91,7 @@ export class ExportFollowingProcessorService {
 						continue;
 					}
 
-					const content = getFullApAccount(u.username, u.host);
+					const content = this.utilityService.getFullApAccount(u.username, u.host);
 					await new Promise<void>((res, rej) => {
 						stream.write(content + '\n', err => {
 							if (err) {

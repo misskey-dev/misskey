@@ -1,7 +1,9 @@
 import Bull from 'bull';
-import config from '@/config/index.js';
+import { loadConfig } from '@/config.js';
 
 export function initialize<T>(name: string, limitPerSec = -1) {
+	const config = loadConfig();
+
 	return new Bull<T>(name, {
 		redis: {
 			port: config.redis.port,

@@ -9,7 +9,7 @@ import { GlobalEventService } from '@/services/GlobalEventService.js';
 import * as Acct from '@/misc/acct.js';
 import { Cache } from '@/misc/cache.js';
 import type { Packed } from '@/misc/schema.js';
-import { getFullApAccount } from '@/misc/convert-host';
+import { UtilityService } from './UtilityService.js';
 
 @Injectable()
 export class AntennaService {
@@ -34,6 +34,7 @@ export class AntennaService {
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
 
+		private utilityService: UtilityService,
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {
@@ -126,9 +127,9 @@ export class AntennaService {
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
 				const { username, host } = Acct.parse(x);
-				return getFullApAccount(username, host).toLowerCase();
+				return this.utilityService.getFullApAccount(username, host).toLowerCase();
 			});
-			if (!accts.includes(getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
+			if (!accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 		}
 	
 		const keywords = antenna.keywords

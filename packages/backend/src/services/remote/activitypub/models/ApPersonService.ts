@@ -6,7 +6,6 @@ import type { Followings , Instances, UserProfiles, UserPublickeys, Users } from
 import { Config } from '@/config.js';
 import type { CacheableUser, IRemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
-import { toPuny } from '@/misc/convert-host.js';
 import { truncate } from '@/misc/truncate.js';
 import { UserCacheService } from '@/services/UserCacheService.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
@@ -27,6 +26,8 @@ import InstanceChart from '@/services/chart/charts/instance.js';
 import { HashtagService } from '@/services/HashtagService.js';
 import { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { StatusError } from '@/misc/status-error.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { ApMfmService } from '../ApMfmService.js';
 import { ApResolverService } from '../ApResolverService.js';
@@ -71,69 +72,6 @@ function addService(target: { [x: string]: any }, source: IApPropertyValue) {
 	}
 }
 
-/**
- * Validate and convert to actor object
- * @param x Fetched object
- * @param uri Fetch target URI
- */
-function validateActor(x: IObject, uri: string): IActor {
-	const expectHost = toPuny(new URL(uri).hostname);
-
-	if (x == null) {
-		throw new Error('invalid Actor: object is null');
-	}
-
-	if (!isActor(x)) {
-		throw new Error(`invalid Actor type '${x.type}'`);
-	}
-
-	if (!(typeof x.id === 'string' && x.id.length > 0)) {
-		throw new Error('invalid Actor: wrong id');
-	}
-
-	if (!(typeof x.inbox === 'string' && x.inbox.length > 0)) {
-		throw new Error('invalid Actor: wrong inbox');
-	}
-
-	if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
-		throw new Error('invalid Actor: wrong username');
-	}
-
-	// These fields are only informational, and some AP software allows these
-	// fields to be very long. If they are too long, we cut them off. This way
-	// we can at least see these users and their activities.
-	if (x.name) {
-		if (!(typeof x.name === 'string' && x.name.length > 0)) {
-			throw new Error('invalid Actor: wrong name');
-		}
-		x.name = truncate(x.name, nameLength);
-	}
-	if (x.summary) {
-		if (!(typeof x.summary === 'string' && x.summary.length > 0)) {
-			throw new Error('invalid Actor: wrong summary');
-		}
-		x.summary = truncate(x.summary, summaryLength);
-	}
-
-	const idHost = toPuny(new URL(x.id!).hostname);
-	if (idHost !== expectHost) {
-		throw new Error('invalid Actor: id has different host');
-	}
-
-	if (x.publicKey) {
-		if (typeof x.publicKey.id !== 'string') {
-			throw new Error('invalid Actor: publicKey.id is not a string');
-		}
-
-		const publicKeyIdHost = toPuny(new URL(x.publicKey.id).hostname);
-		if (publicKeyIdHost !== expectHost) {
-			throw new Error('invalid Actor: publicKey.id has different host');
-		}
-	}
-
-	return x;
-}
-
 @Injectable()
 export class ApPersonService {
 	#logger: Logger;
@@ -160,6 +98,8 @@ export class ApPersonService {
 		@Inject('followingsRepository')
 		private followingsRepository: typeof Followings,
 
+		private utilityService: UtilityService,
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private federatedInstanceService: FederatedInstanceService,
@@ -180,6 +120,69 @@ export class ApPersonService {
 		private apLoggerService: ApLoggerService,
 	) {
 		this.#logger = this.apLoggerService.logger;
+	}
+
+	/**
+	 * Validate and convert to actor object
+	 * @param x Fetched object
+	 * @param uri Fetch target URI
+	 */
+	#validateActor(x: IObject, uri: string): IActor {
+		const expectHost = this.utilityService.toPuny(new URL(uri).hostname);
+
+		if (x == null) {
+			throw new Error('invalid Actor: object is null');
+		}
+
+		if (!isActor(x)) {
+			throw new Error(`invalid Actor type '${x.type}'`);
+		}
+
+		if (!(typeof x.id === 'string' && x.id.length > 0)) {
+			throw new Error('invalid Actor: wrong id');
+		}
+
+		if (!(typeof x.inbox === 'string' && x.inbox.length > 0)) {
+			throw new Error('invalid Actor: wrong inbox');
+		}
+
+		if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
+			throw new Error('invalid Actor: wrong username');
+		}
+
+		// These fields are only informational, and some AP software allows these
+		// fields to be very long. If they are too long, we cut them off. This way
+		// we can at least see these users and their activities.
+		if (x.name) {
+			if (!(typeof x.name === 'string' && x.name.length > 0)) {
+				throw new Error('invalid Actor: wrong name');
+			}
+			x.name = truncate(x.name, nameLength);
+		}
+		if (x.summary) {
+			if (!(typeof x.summary === 'string' && x.summary.length > 0)) {
+				throw new Error('invalid Actor: wrong summary');
+			}
+			x.summary = truncate(x.summary, summaryLength);
+		}
+
+		const idHost = this.utilityService.toPuny(new URL(x.id!).hostname);
+		if (idHost !== expectHost) {
+			throw new Error('invalid Actor: id has different host');
+		}
+
+		if (x.publicKey) {
+			if (typeof x.publicKey.id !== 'string') {
+				throw new Error('invalid Actor: publicKey.id is not a string');
+			}
+
+			const publicKeyIdHost = this.utilityService.toPuny(new URL(x.publicKey.id).hostname);
+			if (publicKeyIdHost !== expectHost) {
+				throw new Error('invalid Actor: publicKey.id has different host');
+			}
+		}
+
+		return x;
 	}
 
 	/**
@@ -227,11 +230,11 @@ export class ApPersonService {
 
 		const object = await resolver.resolve(uri) as any;
 
-		const person = validateActor(object, uri);
+		const person = this.#validateActor(object, uri);
 
 		this.#logger.info(`Creating the Person: ${person.id}`);
 
-		const host = toPuny(new URL(object.id).hostname);
+		const host = this.utilityService.toPuny(new URL(object.id).hostname);
 
 		const { fields } = this.analyzeAttachments(person.attachment || []);
 
@@ -385,7 +388,7 @@ export class ApPersonService {
 
 		const object = hint || await resolver.resolve(uri);
 
-		const person = validateActor(object, uri);
+		const person = this.#validateActor(object, uri);
 
 		this.#logger.info(`Updating the Person: ${person.id}`);
 

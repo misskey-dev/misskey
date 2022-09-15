@@ -4,14 +4,14 @@ import { In, IsNull, MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
 import type { UserListJoinings, UserLists, Users } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/services/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import { getFullApAccount } from '@/misc/convert-host.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserJobData } from '../types.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class ExportUserListsProcessorService {
@@ -30,6 +30,7 @@ export class ExportUserListsProcessorService {
 		@Inject('userListJoiningsRepository')
 		private userListJoiningsRepository: typeof UserListJoinings,
 
+		private utilityService: UtilityService,
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
@@ -64,7 +65,7 @@ export class ExportUserListsProcessorService {
 				});
 
 				for (const u of users) {
-					const acct = getFullApAccount(u.username, u.host);
+					const acct = this.utilityService.getFullApAccount(u.username, u.host);
 					const content = `${list.name},${acct}`;
 					await new Promise<void>((res, rej) => {
 						stream.write(content + '\n', err => {

@@ -8,7 +8,6 @@ import type { DriveFiles } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/services/MetaService.js';
-import { extractDbHost, toPuny } from '@/misc/convert-host.js';
 import { ApRequestService } from '@/services/remote/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
@@ -23,6 +22,9 @@ import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { ApDbResolverService } from '@/services/remote/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { ApPersonService } from '@/services/remote/activitypub/models/ApPersonService.js';
+import perform from '@/services/remote/activitypub/perform.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData, InboxJobData } from '../types.js';
@@ -42,13 +44,15 @@ export class InboxProcessorService {
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
+		private utilityService: UtilityService,
 		private metaService: MetaService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		private apRequestService: ApRequestService,
+		private apPersonService: ApPersonService,
+		private apDbResolverService: ApDbResolverService,
 		private instanceChart: InstanceChart,
 		private apRequestChart: ApRequestChart,
-		private apDbResolverService: ApDbResolverService,
 		private federationChart: FederationChart,
 		private queueLoggerService: QueueLoggerService,
 	) {
@@ -65,7 +69,7 @@ export class InboxProcessorService {
 		this.#logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
 
-		const host = toPuny(new URL(signature.keyId).hostname);
+		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
@@ -124,11 +128,11 @@ export class InboxProcessorService {
 				// みたいになっててUserを引っ張れば公開キーも入ることを期待する
 				if (activity.signature.creator) {
 					const candicate = activity.signature.creator.replace(/#.*/, '');
-					await resolvePerson(candicate).catch(() => null);
+					await this.apPersonService.resolvePerson(candicate).catch(() => null);
 				}
 
 				// keyIdからLD-Signatureのユーザーを取得
-				authUser = await dbResolver.getAuthUserFromKeyId(activity.signature.creator);
+				authUser = await this.apDbResolverService.getAuthUserFromKeyId(activity.signature.creator);
 				if (authUser == null) {
 					return 'skip: LD-Signatureのユーザーが取得できませんでした';
 				}
@@ -150,7 +154,7 @@ export class InboxProcessorService {
 				}
 
 				// ブロックしてたら中断
-				const ldHost = extractDbHost(authUser.user.uri);
+				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
 				if (meta.blockedHosts.includes(ldHost)) {
 					return `Blocked request: ${ldHost}`;
 				}
@@ -161,8 +165,8 @@ export class InboxProcessorService {
 
 		// activity.idがあればホストが署名者のホストであることを確認する
 		if (typeof activity.id === 'string') {
-			const signerHost = extractDbHost(authUser.user.uri!);
-			const activityIdHost = extractDbHost(activity.id);
+			const signerHost = this.utilityService.extractDbHost(authUser.user.uri!);
+			const activityIdHost = this.utilityService.extractDbHost(activity.id);
 			if (signerHost !== activityIdHost) {
 				return `skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`;
 			}

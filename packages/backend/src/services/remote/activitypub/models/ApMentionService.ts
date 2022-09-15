@@ -2,11 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import { toArray, unique } from '@/prelude/array.js';
 import type { CacheableUser } from '@/models/entities/User.js';
 import { isMention } from '../type.js';
-import type { ApResolverService } from '../ApResolverService.js';
+import { ApResolverService } from '../ApResolverService.js';
+import { ApPersonService } from './ApPersonService.js';
 import type { IObject , IApMention } from '../type.js';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class ApMentionService {
 		private config: Config,
 
 		private apResolverService: ApResolverService,
+		private apPersonService: ApPersonService,
 	) {
 	}
 
@@ -26,7 +28,7 @@ export class ApMentionService {
 	
 		const limit = promiseLimit<CacheableUser | null>(2);
 		const mentionedUsers = (await Promise.all(
-			hrefs.map(x => limit(() => resolvePerson(x, resolver).catch(() => null))),
+			hrefs.map(x => limit(() => this.apPersonService.resolvePerson(x, resolver).catch(() => null))),
 		)).filter((x): x is CacheableUser => x != null);
 	
 		return mentionedUsers;

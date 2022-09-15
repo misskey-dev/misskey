@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { extractDbHost } from '@/misc/convert-host.js';
 import type { Users , Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { CacheableLocalUser, User } from '@/models/entities/User.js';
@@ -14,6 +13,7 @@ import { ApPersonService } from '@/services/remote/activitypub/models/ApPersonSe
 import { ApNoteService } from '@/services/remote/activitypub/models/ApNoteService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { UtilityService } from '@/services/UtilityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -89,6 +89,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private metaService: MetaService,
@@ -113,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	async #fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
-		if (fetchedMeta.blockedHosts.includes(extractDbHost(uri))) return null;
+		if (fetchedMeta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) return null;
 
 		let local = await this.#mergePack(me, ...await Promise.all([
 			this.apDbResolverService.getUserFromApId(uri),

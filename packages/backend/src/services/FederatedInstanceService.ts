@@ -3,7 +3,7 @@ import type { Instances } from '@/models/index.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { Cache } from '@/misc/cache.js';
 import { IdService } from '@/services/IdService.js';
-import { toPuny } from '@/misc/convert-host.js';
+import { UtilityService } from './UtilityService.js';
 
 @Injectable()
 export class FederatedInstanceService {
@@ -13,13 +13,14 @@ export class FederatedInstanceService {
 		@Inject('instancesRepository')
 		private instancesRepository: typeof Instances,
 
+		private utilityService: UtilityService,
 		private idService: IdService,
 	) {
 		this.#cache = new Cache<Instance>(1000 * 60 * 60);
 	}
 
 	public async registerOrFetchInstanceDoc(host: string): Promise<Instance> {
-		host = toPuny(host);
+		host = this.utilityService.toPuny(host);
 	
 		const cached = this.#cache.get(host);
 		if (cached) return cached;

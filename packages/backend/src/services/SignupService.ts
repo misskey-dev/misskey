@@ -9,12 +9,12 @@ import { Config } from '@/config.js';
 import { User } from '@/models/entities/User.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
 import { IdService } from '@/services/IdService.js';
-import { toPunyNullable } from '@/misc/convert-host';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import UsersChart from './chart/charts/users.js';
 import { UserEntityService } from './entities/UserEntityService.js';
+import { UtilityService } from './UtilityService.js';
 
 @Injectable()
 export class SignupService {
@@ -31,6 +31,7 @@ export class SignupService {
 		@Inject('usedUsernamesRepository')
 		private usedUsernamesRepository: typeof UsedUsernames,
 
+		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private usersChart: UsersChart,
@@ -108,7 +109,7 @@ export class SignupService {
 				createdAt: new Date(),
 				username: username,
 				usernameLower: username.toLowerCase(),
-				host: toPunyNullable(host),
+				host: this.utilityService.toPunyNullable(host),
 				token: secret,
 				isAdmin: (await Users.countBy({
 					host: IsNull(),

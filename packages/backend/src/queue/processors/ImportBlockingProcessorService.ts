@@ -3,16 +3,16 @@ import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Blockings , DriveFiles } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { isSelfHost, toPuny } from '@/misc/convert-host.js';
 import * as Acct from '@/misc/acct.js';
-import type { ResolveUserService } from '@/services/remote/ResolveUserService.js';
-import type { UserBlockingService } from '@/services/UserBlockingService.js';
-import type { DownloadService } from '@/services/DownloadService.js';
+import { ResolveUserService } from '@/services/remote/ResolveUserService.js';
+import { UserBlockingService } from '@/services/UserBlockingService.js';
+import { DownloadService } from '@/services/DownloadService.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class ImportBlockingProcessorService {
@@ -31,6 +31,7 @@ export class ImportBlockingProcessorService {
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
+		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
 		private resolveUserService: ResolveUserService,
 		private downloadService: DownloadService,
@@ -67,11 +68,11 @@ export class ImportBlockingProcessorService {
 				const acct = line.split(',')[0].trim();
 				const { username, host } = Acct.parse(acct);
 
-				let target = isSelfHost(host!) ? await this.usersRepository.findOneBy({
+				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
 				}) : await Users.findOneBy({
-					host: toPuny(host!),
+					host: this.utilityService.toPuny(host!),
 					usernameLower: username.toLowerCase(),
 				});
 
