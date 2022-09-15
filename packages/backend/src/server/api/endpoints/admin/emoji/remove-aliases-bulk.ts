@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Emojis } from '@/models/index.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -30,7 +30,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		@Inject('emojisRepository')

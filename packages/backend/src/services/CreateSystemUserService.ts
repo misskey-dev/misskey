@@ -9,13 +9,13 @@ import { UserProfile } from '@/models/entities/user-profile.js';
 import { IdService } from '@/services/IdService.js';
 import { UserKeypair } from '@/models/entities/user-keypair.js';
 import { UsedUsername } from '@/models/entities/used-username.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import generateNativeUserToken from '@/misc/generate-native-user-token.js';
 
 @Injectable()
 export class CreateSystemUserService {
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		private idService: IdService,

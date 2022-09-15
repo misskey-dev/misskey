@@ -23,16 +23,16 @@ import type {
 	UserStreamTypes,
 } from '@/server/api/stream/types.js';
 import type { Packed } from '@/misc/schema.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 
 @Injectable()
 export class GlobalEventService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI_SYMBOLS.redis)
+		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 	) {
 	}

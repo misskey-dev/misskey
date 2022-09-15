@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { In, MoreThan, Not } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Followings, Mutings } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -20,7 +20,7 @@ export class ExportFollowingProcessorService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

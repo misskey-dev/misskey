@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import FFmpeg from 'fluent-ffmpeg';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { IImage, ImageProcessingService } from '@/services/ImageProcessingService.js';
 import { createTempDir } from '@/misc/create-temp';
@@ -8,7 +8,7 @@ import { createTempDir } from '@/misc/create-temp';
 @Injectable()
 export class VideoProcessingService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		private imageProcessingService: ImageProcessingService,

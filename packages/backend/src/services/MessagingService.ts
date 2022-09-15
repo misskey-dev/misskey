@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { MessagingMessages, Mutings, UserGroupJoinings, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { DriveFile } from '@/models/entities/drive-file';
@@ -21,7 +21,7 @@ import { PushNotificationService } from './PushNotificationService.js';
 @Injectable()
 export class MessagingService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

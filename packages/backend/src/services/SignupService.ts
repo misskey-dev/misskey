@@ -2,7 +2,7 @@ import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { UsedUsernames } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
@@ -18,10 +18,10 @@ import generateUserToken from './generate-native-user-token.js';
 @Injectable()
 export class SignupService {
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

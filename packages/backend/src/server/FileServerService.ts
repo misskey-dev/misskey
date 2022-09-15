@@ -9,7 +9,7 @@ import send from 'koa-send';
 import rename from 'rename';
 import { Config } from '@/config.js';
 import type { DriveFiles } from '@/models/index.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -37,7 +37,7 @@ const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void =>
 @Injectable()
 export class FileServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('driveFilesRepository')

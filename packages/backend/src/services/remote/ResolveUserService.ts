@@ -2,7 +2,7 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import chalk from 'chalk';
 import { IsNull } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
 import type { Config } from '@/config.js';
@@ -17,7 +17,7 @@ export class ResolveUserService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

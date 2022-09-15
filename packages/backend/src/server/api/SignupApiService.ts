@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import bcrypt from 'bcryptjs';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { RegistrationTickets , UserPendings, UserProfiles , Users } from '@/models/index.js';
 
 import { Config } from '@/config.js';
@@ -17,7 +17,7 @@ import type Koa from 'koa';
 @Injectable()
 export class SignupApiService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

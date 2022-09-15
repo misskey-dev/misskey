@@ -11,7 +11,7 @@ import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { Config } from '@/config.js';
 import type { UserProfiles , Users } from '@/models/index.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import Logger from '@/logger.js';
 import { envOption } from '@/env.js';
 import * as Acct from '@/misc/acct.js';
@@ -32,7 +32,7 @@ const serverLogger = new Logger('server', 'gray', false);
 @Injectable()
 export class ServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

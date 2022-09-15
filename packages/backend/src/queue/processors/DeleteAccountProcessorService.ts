@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { DriveFiles, UserProfiles } from '@/models/index.js';
 import { Notes, Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -17,7 +17,7 @@ export class DeleteAccountProcessorService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

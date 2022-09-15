@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { DbJobData } from '@/queue/types.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import type { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
@@ -20,7 +20,7 @@ import type Bull from 'bull';
 @Injectable()
 export class DbQueueProcessorsService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,

@@ -6,7 +6,7 @@ import type { Notes , Polls , NoteReactions , Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { MetaService } from '@/services/MetaService.js';
 import type { HttpRequestService } from '@/services/HttpRequestService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import type { ApDbResolverService } from './ApDbResolverService.js';
 import type { ApRendererService } from './ApRendererService.js';
@@ -16,7 +16,7 @@ import type { ApRequestService } from './ApRequestService.js';
 @Injectable()
 export class ApResolverService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

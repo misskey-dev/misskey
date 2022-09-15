@@ -4,7 +4,7 @@ import type { User } from '@/models/entities/user.js';
 import type { Note } from '@/models/entities/note.js';
 import { Users } from '@/models/index.js';
 import { AppLockService } from '@/services/AppLockService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-reactions.js';
 import type { KVs } from '../core.js';
@@ -16,7 +16,7 @@ import type { KVs } from '../core.js';
 @Injectable()
 export default class PerUserReactionsChart extends Chart<typeof schema> {
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		private appLockService: AppLockService,

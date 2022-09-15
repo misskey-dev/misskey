@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import type { Users } from '@/models/index.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Meta } from '@/models/entities/meta';
 import type { OnApplicationShutdown } from '@nestjs/common';
-import type { DataSource } from 'typeorm';
 
 @Injectable()
 export class MetaService implements OnApplicationShutdown {
@@ -11,7 +11,7 @@ export class MetaService implements OnApplicationShutdown {
 	#intervalId: NodeJS.Timer;
 
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		@Inject('usersRepository')

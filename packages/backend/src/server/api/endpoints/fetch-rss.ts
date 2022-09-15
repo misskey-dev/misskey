@@ -2,7 +2,7 @@ import Parser from 'rss-parser';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Config } from '@/config.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/services/HttpRequestService.js';
 
 const rssParser = new Parser();
@@ -27,7 +27,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		private httpRequestService: HttpRequestService,

@@ -1,7 +1,7 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import * as jsrsasign from 'jsrsasign';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 
@@ -105,7 +105,7 @@ function PEMString(pemBuffer: Buffer, type = 'CERTIFICATE') {
 @Injectable()
 export class TwoFactorAuthenticationService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { IsNull } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { DriveFiles , Users , DriveFolders , UserProfiles } from '@/models/index.js';
 
 import { Config } from '@/config.js';
@@ -79,7 +79,7 @@ export class DriveService {
 	#downloaderLogger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

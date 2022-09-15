@@ -1,5 +1,5 @@
 
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { getJobInfo } from './get-job-info.js';
 import { QueueService } from './queue.service.js';
 import { SystemQueueProcessorsService } from './SystemQueueProcessorsService.js';
@@ -13,7 +13,7 @@ import { QueueLoggerService } from './QueueLoggerService.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 export default function(app: INestApplicationContext) {
-	const config = app.get(DI_SYMBOLS.config);
+	const config = app.get(DI.config);
 	const queueLoggerService = app.get(QueueLoggerService);
 	const queueLogger = queueLoggerService.logger;
 	const queueService = app.get(QueueService);

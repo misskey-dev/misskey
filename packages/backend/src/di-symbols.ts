@@ -1,4 +1,4 @@
-export const DI_SYMBOLS = {
+export const DI = {
 	config: Symbol('config'),
 	db: Symbol('db'),
 	redis: Symbol('redis'),

@@ -13,7 +13,7 @@ import { deliverToFollowers, deliverToUser } from '@/services/remote/activitypub
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import type { RelayService } from '@/services/RelayService.js';
 import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type NotesChart from '@/services/chart/charts/notes.js';
 import type PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
@@ -23,7 +23,7 @@ import type { GlobalEventService } from '@/services/GlobalEventService.js';
 @Injectable()
 export class NoteDeleteService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('notesRepository')

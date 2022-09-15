@@ -7,13 +7,13 @@ import renderDelete from '@/services/remote/activitypub/renderer/delete.js';
 import renderUndo from '@/services/remote/activitypub/renderer/undo.js';
 import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 
 @Injectable()
 export class UserSuspendService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import Ajv from 'ajv';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Pages } from '@/models/index.js';
 import type { AntennaNotes, Instances, MessagingMessages, UserSecurityKeys , Blockings, Mutings , Followings, FollowRequests, Users, DriveFiles, NoteUnreads, ChannelFollowings, Notifications, UserNotePinings, UserProfiles , AnnouncementReads, Announcements, UserGroupJoinings } from '@/models/index.js';
 import { Config } from '@/config.js';
@@ -44,7 +44,7 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 @Injectable()
 export class UserEntityService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

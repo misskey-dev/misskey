@@ -4,7 +4,7 @@ import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import type { Packed } from '@/misc/schema.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/services/MetaService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import Channel from '../channel.js';

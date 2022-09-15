@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { Followings, Instances } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { AppLockService } from '@/services/AppLockService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/federation.js';
 import type { KVs } from '../core.js';
@@ -15,7 +15,7 @@ import type { KVs } from '../core.js';
 @Injectable()
 export default class FederationChart extends Chart<typeof schema> {
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		private appLockService: AppLockService,

@@ -1,6 +1,6 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { query as urlQuery } from '@/prelude/url.js';
 import type { HttpRequestService } from '@/services/HttpRequestService.js';
@@ -18,7 +18,7 @@ type IWebFinger = {
 @Injectable()
 export class WebfingerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		private httpRequestService: HttpRequestService,

@@ -4,7 +4,7 @@ import CacheableLookup from 'cacheable-lookup';
 import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Config } from '@/config/types';
 import { StatusError } from '@/misc/status-error.js';
 import type { Response } from 'node-fetch';
@@ -33,7 +33,7 @@ export class HttpRequestService {
 	public httpsAgent: https.Agent;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 	) {
 		const cache = new CacheableLookup({

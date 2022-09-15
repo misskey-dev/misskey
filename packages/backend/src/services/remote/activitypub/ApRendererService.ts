@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Polls , DriveFiles, Emojis, Notes, Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
@@ -24,7 +24,7 @@ import type { IIdentifier } from './models/identifier.js';
 @Injectable()
 export class ApRendererService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

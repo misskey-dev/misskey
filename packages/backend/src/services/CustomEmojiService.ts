@@ -1,20 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { Emojis } from '@/models/index.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import type { IdService } from '@/services/IdService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
+import { Config } from '@/config.js';
+import { IdService } from '@/services/IdService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Emoji } from '@/models/entities/emoji.js';
-import type { DataSource } from 'typeorm';
 
 @Injectable()
 export class CustomEmojiService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		@Inject('emojisRepository')

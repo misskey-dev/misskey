@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Apps } from '@/models/index.js';
 import type { AuthSessions } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';

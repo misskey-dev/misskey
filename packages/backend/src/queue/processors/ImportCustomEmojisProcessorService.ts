@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import unzipper from 'unzipper';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Emojis , DriveFiles , Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
@@ -21,10 +21,10 @@ export class ImportCustomEmojisProcessorService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		@Inject('usersRepository')

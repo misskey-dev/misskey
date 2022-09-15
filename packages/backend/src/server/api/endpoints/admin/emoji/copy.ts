@@ -4,7 +4,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Emojis } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { DriveService } from '@/services/DriveService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
@@ -51,7 +51,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		@Inject('emojisRepository')

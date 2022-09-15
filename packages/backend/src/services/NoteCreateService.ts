@@ -27,7 +27,7 @@ import type { UserProfile } from '@/models/entities/user-profile.js';
 import { db } from '@/db/postgre.js';
 import { RelayService } from '@/services/RelayService.js';
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import NotesChart from '@/services/chart/charts/notes.js';
 import PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
@@ -135,7 +135,7 @@ type Option = {
 @Injectable()
 export class NoteCreateService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

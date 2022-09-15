@@ -3,7 +3,7 @@ import * as Path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -14,7 +14,7 @@ const path = Path.resolve(_dirname, '../../../../../files');
 @Injectable()
 export class InternalStorageService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 	) {
 	}

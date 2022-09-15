@@ -5,7 +5,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { Config } from '@/config.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import es from '../../../../db/elasticsearch.js';
 
 export const meta = {
@@ -52,7 +52,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 	
 		@Inject('notesRepository')

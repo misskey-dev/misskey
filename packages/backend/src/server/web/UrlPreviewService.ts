@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import summaly from 'summaly';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { MetaService } from '@/services/MetaService.js';
@@ -14,7 +14,7 @@ export class UrlPreviewService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

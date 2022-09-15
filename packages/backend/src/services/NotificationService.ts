@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Notifications , Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user';
 import { UserEntityService } from './entities/UserEntityService.js';

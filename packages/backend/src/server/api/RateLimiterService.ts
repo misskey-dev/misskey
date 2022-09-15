@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Limiter from 'ratelimiter';
 import Redis from 'ioredis';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import Logger from '@/logger';
 import type { IEndpointMeta } from './endpoints';
 
@@ -10,7 +10,7 @@ const logger = new Logger('limiter');
 @Injectable()
 export class RateLimiterService {
 	constructor(
-		@Inject(DI_SYMBOLS.redis)
+		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 	) {
 	}

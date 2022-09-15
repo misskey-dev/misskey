@@ -12,7 +12,7 @@ import {
 } from '@/models/index.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { Config } from '@/config.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
 
@@ -40,7 +40,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('userProfilesRepository')

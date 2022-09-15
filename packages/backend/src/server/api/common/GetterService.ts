@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Notes , Users } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { User } from '@/models/entities/user.js';

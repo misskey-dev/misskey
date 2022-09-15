@@ -2,7 +2,7 @@ import * as nodemailer from 'nodemailer';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
 import { MetaService } from '@/services/MetaService.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import type { UserProfiles } from '@/models/index.js';
@@ -12,7 +12,7 @@ export class EmailService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('userProfilesRepository')

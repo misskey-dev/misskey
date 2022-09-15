@@ -2,7 +2,7 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import httpSignature from '@peertube/http-signature';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Instances } from '@/models/index.js';
 import type { DriveFiles } from '@/models/index.js';
 import { Config } from '@/config.js';
@@ -33,7 +33,7 @@ export class InboxProcessorService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('instancesRepository')

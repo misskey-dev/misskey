@@ -4,7 +4,7 @@ import Koa from 'koa';
 import cors from '@koa/cors';
 import Router from '@koa/router';
 import sharp from 'sharp';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { detectType } from '@/misc/get-file-info.js';
@@ -21,7 +21,7 @@ const serverLogger = new Logger('server', 'gray', false);
 @Injectable()
 export class MediaProxyServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		private downloadService: DownloadService,

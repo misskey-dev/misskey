@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Blockings, Emojis, NoteReactions , Users , Notes } from '@/models/index.js';
 
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
 import type { Note } from '@/models/entities/note.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import type { NoteReaction } from '@/models/entities/note-reaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import DeliverManager from '@/services/remote/activitypub/deliver-manager.js';
-import type PerUserReactionsChart from '@/services/chart/charts/per-user-reactions.js';
+import PerUserReactionsChart from '@/services/chart/charts/per-user-reactions.js';
 import { toDbReaction } from '@/misc/reaction-lib.js';
 
 @Injectable()

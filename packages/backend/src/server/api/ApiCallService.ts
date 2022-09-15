@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { CacheableLocalUser, User } from '@/models/entities/user.js';
 import type { AccessToken } from '@/models/entities/access-token.js';

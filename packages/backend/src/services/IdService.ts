@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ulid } from 'ulid';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { genAid } from '@/misc/id/aid.js';
 import { genMeid } from '@/misc/id/meid.js';
@@ -12,7 +12,7 @@ export class IdService {
 	#metohd: string;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 	) {
 		this.#metohd = config.id.toLowerCase();

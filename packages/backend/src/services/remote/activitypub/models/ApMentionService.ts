@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { toArray, unique } from '@/prelude/array.js';
@@ -12,7 +12,7 @@ import type { IObject , IApMention } from '../type.js';
 @Injectable()
 export class ApMentionService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		private apResolverService: ApResolverService,

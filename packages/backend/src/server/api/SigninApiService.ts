@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { IsNull } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { UserSecurityKeys , Signins, UserProfiles } from '@/models/index.js';
 import { AttestationChallenges, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
@@ -18,7 +18,7 @@ import type Koa from 'koa';
 @Injectable()
 export class SigninApiService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

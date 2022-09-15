@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/prelude/xml';
@@ -13,7 +13,7 @@ import type { FindOptionsWhere } from 'typeorm';
 @Injectable()
 export class WellKnownServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

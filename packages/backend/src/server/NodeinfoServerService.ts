@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Notes , Users } from '@/models/index.js';
 
 import { Config } from '@/config.js';
@@ -16,7 +16,7 @@ const nodeinfo2_0path = '/nodeinfo/2.0';
 @Injectable()
 export class NodeinfoServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

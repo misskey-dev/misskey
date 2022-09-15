@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { DriveFiles, Notes, UserProfiles , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { User } from '@/models/entities/user';
@@ -8,7 +8,7 @@ import type { User } from '@/models/entities/user';
 @Injectable()
 export class FeedService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

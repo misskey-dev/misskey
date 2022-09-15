@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { AccessTokens, NoteReactions , Notifications } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Notification } from '@/models/entities/notification.js';

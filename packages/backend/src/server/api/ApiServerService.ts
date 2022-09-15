@@ -8,7 +8,7 @@ import { ModuleRef } from '@nestjs/core';
 import { Config } from '@/config.js';
 import type { Users } from '@/models/index.js';
 import { Instances, AccessTokens } from '@/models/index.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
@@ -23,7 +23,7 @@ export class ApiServerService {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

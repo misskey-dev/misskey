@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/user.js';
@@ -10,7 +10,7 @@ import type { ApDeliverManagerService } from '@/services/remote/activitypub/ApDe
 @Injectable()
 export class AccountUpdateService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

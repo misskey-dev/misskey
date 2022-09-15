@@ -1,19 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Notes, UserNotePinings } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { User } from '@/models/entities/user.js';
 import type { Note } from '@/models/entities/note.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import type { UserNotePining } from '@/models/entities/user-note-pining.js';
-import type { RelayService } from '@/services/RelayService.js';
-import type { Config } from '@/config.js';
+import { RelayService } from '@/services/RelayService.js';
+import { Config } from '@/config.js';
 
 @Injectable()
 export class NotePiningService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

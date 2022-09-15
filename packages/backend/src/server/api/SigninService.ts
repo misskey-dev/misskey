@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Signins , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { IdService } from '@/services/IdService.js';
@@ -11,7 +11,7 @@ import type Koa from 'koa';
 @Injectable()
 export class SigninService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('signinsRepository')

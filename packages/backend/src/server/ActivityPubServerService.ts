@@ -3,7 +3,7 @@ import Router from '@koa/router';
 import json from 'koa-json-body';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Followings , Notes } from '@/models/index.js';
 import type { Emojis, NoteReactions , UserProfiles , UserNotePinings , Users } from '@/models/index.js';
 import * as url from '@/prelude/url.js';
@@ -25,7 +25,7 @@ const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystr
 @Injectable()
 export class ActivityPubServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

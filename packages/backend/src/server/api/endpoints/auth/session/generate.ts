@@ -4,7 +4,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Apps, AuthSessions } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { Config } from '@/config.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -49,7 +49,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('appsRepository')

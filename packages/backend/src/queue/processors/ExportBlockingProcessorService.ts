@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { DriveFiles, UserProfiles , Notes , Users , Blockings } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
@@ -18,7 +18,7 @@ export class ExportBlockingProcessorService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

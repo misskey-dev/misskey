@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import { Config } from '@/config.js';
 import type { UserProfiles, Users } from '@/models/index.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/services/HttpRequestService';
 import type { ILocalUser } from '@/models/entities/user';
 import { GlobalEventService } from '@/services/GlobalEventService';
@@ -18,10 +18,10 @@ import type Koa from 'koa';
 @Injectable()
 export class GithubServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI_SYMBOLS.redis)
+		@Inject(DI.redis)
 		private redisClient: Redis,
 
 		@Inject('usersRepository')

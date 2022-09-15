@@ -2,7 +2,7 @@ import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import redisLock from 'redis-lock';
 import Redis from 'ioredis';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 
 /**
  * Retry delay (ms) for lock acquisition
@@ -14,7 +14,7 @@ export class AppLockService {
 	#lock: (key: string, timeout?: number) => Promise<() => void>;
 
 	constructor(
-		@Inject(DI_SYMBOLS.redis)
+		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 	) {
 		this.#lock = promisify(redisLock(this.redisClient, retryDelay));

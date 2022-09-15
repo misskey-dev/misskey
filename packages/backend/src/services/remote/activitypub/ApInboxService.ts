@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Followings, Notes , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
@@ -33,7 +33,7 @@ export class ApInboxService {
 	#logger: Logger;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

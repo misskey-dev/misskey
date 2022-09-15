@@ -9,7 +9,7 @@ import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
 import { MetaService } from '@/services/MetaService.js';
 import { Config } from '@/config.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -311,7 +311,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 	
 		@Inject('usersRepository')

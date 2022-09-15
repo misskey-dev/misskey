@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Notes , Polls, PollVotes , DriveFiles , Channels , Followings , Users , NoteReactions } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
@@ -18,7 +18,7 @@ import { DriveFileEntityService } from './DriveFileEntityService.js';
 @Injectable()
 export class NoteEntityService {
 	constructor(
-		@Inject(DI_SYMBOLS.db)
+		@Inject(DI.db)
 		private db: DataSource,
 
 		@Inject('usersRepository')

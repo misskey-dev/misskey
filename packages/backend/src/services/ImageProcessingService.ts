@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
-import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
+import { Config } from '@/config.js';
 
 export type IImage = {
 	data: Buffer;
@@ -12,7 +12,7 @@ export type IImage = {
 @Injectable()
 export class ImageProcessingService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 	) {
 	}

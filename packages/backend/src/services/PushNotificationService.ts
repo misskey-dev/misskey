@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import push from 'web-push';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { SwSubscriptions } from '@/models/index.js';
 import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
@@ -42,7 +42,7 @@ function truncateNotification(notification: Packed<'Notification'>): any {
 @Injectable()
 export class PushNotificationService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('swSubscriptionsRepository')

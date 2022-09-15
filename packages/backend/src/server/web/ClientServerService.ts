@@ -16,7 +16,7 @@ import { In, IsNull } from 'typeorm';
 import { Config } from '@/config.js';
 import type { Pages , Channels, Clips, GalleryPosts , Notes, UserProfiles, Users } from '@/models/index.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/services/MetaService.js';
 import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/queue/queue.module.js';
@@ -41,7 +41,7 @@ const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 @Injectable()
 export class ClientServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('usersRepository')

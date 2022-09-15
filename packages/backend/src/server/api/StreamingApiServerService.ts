@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import * as websocket from 'websocket';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Blockings, ChannelFollowings, Followings, Mutings, UserProfiles } from '@/models/index.js';
 import { Config } from '@/config.js';
@@ -17,10 +17,10 @@ import type * as http from 'node:http';
 @Injectable()
 export class StreamingApiServerService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI_SYMBOLS.redis)
+		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
 		@Inject('followingsRepository')

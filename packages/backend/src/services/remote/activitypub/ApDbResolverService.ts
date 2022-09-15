@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import escapeRegexp from 'escape-regexp';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { MessagingMessages, Notes, UserPublickeys } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -35,7 +35,7 @@ export class ApDbResolverService {
 	#publicKeyByUserIdCache: Cache<UserPublickey | null>;
 
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 
 		@Inject('messagingMessagesRepository')

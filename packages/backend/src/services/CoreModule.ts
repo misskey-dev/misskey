@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DI_SYMBOLS } from '../di-symbols.js';
+import { DI } from '../di-symbols.js';
 import { ChartsModule } from './chart/ChartsModule.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';

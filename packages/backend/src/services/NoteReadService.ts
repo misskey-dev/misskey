@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull, Not } from 'typeorm';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { NoteUnreads , Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import type { Channel } from '@/models/entities/channel.js';

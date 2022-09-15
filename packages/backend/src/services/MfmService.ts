@@ -2,7 +2,7 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import * as parse5 from 'parse5';
 import { JSDOM } from 'jsdom';
-import { DI_SYMBOLS } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/prelude/array.js';
@@ -18,7 +18,7 @@ const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
 @Injectable()
 export class MfmService {
 	constructor(
-		@Inject(DI_SYMBOLS.config)
+		@Inject(DI.config)
 		private config: Config,
 	) {
 	}
