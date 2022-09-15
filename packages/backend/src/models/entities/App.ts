@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
-import { User } from './user.js';
 import { id } from '../id.js';
+import { User } from './User.js';
 
 @Entity()
 export class App {

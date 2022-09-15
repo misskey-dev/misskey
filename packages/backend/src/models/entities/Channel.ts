@@ -1,7 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from './user.js';
 import { id } from '../id.js';
-import { DriveFile } from './drive-file.js';
+import { User } from './User.js';
+import { DriveFile } from './DriveFile.js';
 
 @Entity()
 export class Channel {

@@ -1,11 +1,11 @@
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
-import { User } from './user.js';
-import { id } from '../id.js';
-import { Note } from './note.js';
-import { FollowRequest } from './follow-request.js';
-import { UserGroupInvitation } from './user-group-invitation.js';
-import { AccessToken } from './access-token.js';
 import { notificationTypes } from '@/types.js';
+import { id } from '../id.js';
+import { User } from './User.js';
+import { Note } from './note.js';
+import { FollowRequest } from './FollowRequest.js';
+import { UserGroupInvitation } from './UserGroupInvitation.js';
+import { AccessToken } from './AccessToken.js';
 
 @Entity()
 export class Notification {

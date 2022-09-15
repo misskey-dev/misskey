@@ -1,7 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './user.js';
-import { DriveFolder } from './drive-folder.js';
+import { User } from './User.js';
+import { DriveFolder } from './DriveFolder.js';
 
 @Entity()
 @Index(['userId', 'folderId', 'id'])

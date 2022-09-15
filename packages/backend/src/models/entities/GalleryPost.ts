@@ -1,7 +1,7 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { User } from './user.js';
 import { id } from '../id.js';
-import { DriveFile } from './drive-file.js';
+import { User } from './User.js';
+import type { DriveFile } from './DriveFile.js';
 
 @Entity()
 export class GalleryPost {

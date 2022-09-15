@@ -1,8 +1,8 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { ffVisibility, notificationTypes } from '@/types.js';
 import { id } from '../id.js';
-import { User } from './user.js';
-import { Page } from './page.js';
+import { User } from './User.js';
+import { Page } from './Page.js';
 
 // TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
 //       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン

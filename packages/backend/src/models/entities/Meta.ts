@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './user.js';
-import { Clip } from './clip.js';
+import { User } from './User.js';
+import type { Clip } from './Clip.js';
 
 @Entity()
 export class Meta {
