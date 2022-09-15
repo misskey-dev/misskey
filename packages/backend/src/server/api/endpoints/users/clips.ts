@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Clips } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
-import { ClipEntityService } from '@/services/entities/ClipEntityService';
+import { ClipEntityService } from '@/services/entities/ClipEntityService.js';
 
 export const meta = {
 	tags: ['users', 'clips'],

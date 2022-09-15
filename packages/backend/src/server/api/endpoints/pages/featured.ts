@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Pages } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { PageEntityService } from '@/services/entities/PageEntityService';
+import { PageEntityService } from '@/services/entities/PageEntityService.js';
 
 export const meta = {
 	tags: ['pages'],

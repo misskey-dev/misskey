@@ -5,7 +5,7 @@ import type { Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/note.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { MetaService } from '@/services/MetaService';
+import { MetaService } from '@/services/MetaService.js';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要

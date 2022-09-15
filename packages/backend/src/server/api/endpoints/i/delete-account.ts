@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users , UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DeleteAccountService } from '@/services/DeleteAccountService';
+import { DeleteAccountService } from '@/services/DeleteAccountService.js';
 
 export const meta = {
 	requireCredential: true,

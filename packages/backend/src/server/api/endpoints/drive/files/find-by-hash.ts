@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 
 export const meta = {
 	tags: ['drive'],

@@ -30,8 +30,8 @@ import InstanceChart from '@/services/chart/charts/instance.js';
 import { DownloadService } from '@/services/DownloadService.js';
 import { S3Service } from '@/services/drive/S3Service.js';
 import { InternalStorageService } from '@/services/drive/InternalStorageService.js';
-import { DriveFileEntityService } from './entities/DriveFileEntityService';
-import { UserEntityService } from './entities/UserEntityService';
+import { DriveFileEntityService } from './entities/DriveFileEntityService.js';
+import { UserEntityService } from './entities/UserEntityService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {

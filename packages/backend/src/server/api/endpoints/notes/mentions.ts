@@ -3,9 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Notes , Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService';
-import { MetaService } from '@/services/MetaService';
-import { NoteReadService } from '@/services/NoteReadService';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { MetaService } from '@/services/MetaService.js';
+import { NoteReadService } from '@/services/NoteReadService.js';
 
 export const meta = {
 	tags: ['notes'],

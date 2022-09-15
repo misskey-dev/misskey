@@ -1,10 +1,11 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Users } from '@/models/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import type { Users } from '@/models/index.js';
 import * as Acct from '@/misc/acct.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/services/MetaService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -35,11 +36,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private metaService: MetaService,
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const meta = await fetchMeta();
+			const meta = await this.metaService.fetch();
 
 			const users = await Promise.all(meta.pinnedthis.usersRepository.map(acct => Acct.parse(acct)).map(acct => this.usersRepository.findOneBy({
 				usernameLower: acct.username.toLowerCase(),

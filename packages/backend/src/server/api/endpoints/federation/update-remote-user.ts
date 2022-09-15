@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApPersonService } from '@/services/remote/activitypub/models/ApPersonService';
-import { GetterService } from '../../common/GetterService';
+import { ApPersonService } from '@/services/remote/activitypub/models/ApPersonService.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['federation'],

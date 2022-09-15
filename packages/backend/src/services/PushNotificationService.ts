@@ -6,7 +6,7 @@ import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
-import { MetaService } from './MetaService';
+import { MetaService } from './MetaService.js';
 
 // Defined also packages/sw/types.ts#L14-L21
 type pushNotificationsTypes = {

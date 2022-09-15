@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroups } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService';
+import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService.js';
 
 export const meta = {
 	tags: ['groups', 'account'],

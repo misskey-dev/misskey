@@ -8,15 +8,15 @@ import type { MessagingMessage } from '@/models/entities/messaging-message';
 import type { Note } from '@/models/entities/note';
 import type { User, CacheableUser } from '@/models/entities/user';
 import type { UserGroup } from '@/models/entities/user-group';
-import { QueueService } from '@/queue/queue.service';
+import { QueueService } from '@/queue/queue.service.js';
 import { toArray } from '@/prelude/array';
 import { IdentifiableError } from '@/misc/identifiable-error';
-import { IdService } from './IdService';
-import { GlobalEventService } from './GlobalEventService';
-import { UserEntityService } from './entities/UserEntityService';
-import { ApRendererService } from './remote/activitypub/ApRendererService';
-import { MessagingMessageEntityService } from './entities/MessagingMessageEntityService';
-import { PushNotificationService } from './PushNotificationService';
+import { IdService } from './IdService.js';
+import { GlobalEventService } from './GlobalEventService.js';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { MessagingMessageEntityService } from './entities/MessagingMessageEntityService.js';
+import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
 export class MessagingService {

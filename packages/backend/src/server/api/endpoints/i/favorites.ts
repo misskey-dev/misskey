@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NoteFavorites } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
-import { NoteFavoriteEntityService } from '@/services/entities/NoteFavoriteEntityService';
+import { NoteFavoriteEntityService } from '@/services/entities/NoteFavoriteEntityService.js';
 
 export const meta = {
 	tags: ['account', 'notes', 'favorites'],

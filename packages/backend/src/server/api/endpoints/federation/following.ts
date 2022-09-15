@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Followings } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
-import { FollowingEntityService } from '@/services/entities/FollowingEntityService';
+import { FollowingEntityService } from '@/services/entities/FollowingEntityService.js';
 
 export const meta = {
 	tags: ['federation'],

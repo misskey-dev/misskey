@@ -2,13 +2,13 @@ import rndstr from 'rndstr';
 import ms from 'ms';
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { publishMainStream } from '@/services/stream.js';
-import config from '@/config/index.js';
 import type { Users } from '@/models/index.js';
 import { UserProfiles, PasswordResetRequests } from '@/models/index.js';
-import { sendEmail } from '@/services/send-email.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
+import { Config } from '@/config.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { EmailService } from '@/services/EmailService.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
@@ -41,10 +41,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+		
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
 		private idService: IdService,
+		private emailService: EmailService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({
@@ -78,9 +82,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				token,
 			});
 
-			const link = `${config.url}/reset-password/${token}`;
+			const link = `${this.config.url}/reset-password/${token}`;
 
-			sendEmail(ps.email, 'Password reset requested',
+			this.emailService.sendEmail(ps.email, 'Password reset requested',
 				`To reset password, please click this link:<br><a href="${link}">${link}</a>`,
 				`To reset password, please click this link: ${link}`);
 		});

@@ -1,8 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { publishMainStream } from '@/services/stream.js';
-import type { Users } from '@/models/index.js';
-import { UserProfiles, PasswordResetRequests } from '@/models/index.js';
+import type { Users , UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../error.js';
 
@@ -31,9 +30,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('passwordResetRequestsRepository')
+		private passwordResetRequestsRepository: typeof PasswordResetRequests,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const req = await PasswordResetRequests.findOneByOrFail({
+			const req = await this.passwordResetRequestsRepository.findOneByOrFail({
 				token: ps.token,
 			});
 
@@ -46,11 +50,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(ps.password, salt);
 
-			await UserProfiles.update(req.userId, {
+			await this.userProfilesRepository.update(req.userId, {
 				password: hash,
 			});
 
-			PasswordResetRequests.delete(req.id);
+			this.passwordResetRequestsRepository.delete(req.id);
 		});
 	}
 }

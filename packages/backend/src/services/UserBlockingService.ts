@@ -8,9 +8,9 @@ import type { Blocking } from '@/models/entities/blocking.js';
 import { QueueService } from '@/queue/queue.service.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
-import { UserEntityService } from './entities/UserEntityService';
-import { WebhookService } from './WebhookService';
-import { ApRendererService } from './remote/activitypub/ApRendererService';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { WebhookService } from './WebhookService.js';
+import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 
 @Injectable()
 export class UserBlockingService {

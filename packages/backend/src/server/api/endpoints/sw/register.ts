@@ -3,7 +3,7 @@ import { fetchMeta } from '@/misc/fetch-meta.js';
 import { IdService } from '@/services/IdService.js';
 import type { SwSubscriptions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MetaService } from '@/services/MetaService';
+import { MetaService } from '@/services/MetaService.js';
 
 export const meta = {
 	tags: ['account'],

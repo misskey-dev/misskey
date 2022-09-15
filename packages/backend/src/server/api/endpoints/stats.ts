@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { IsNull } from 'typeorm';
 import type { Notes, Users } from '@/models/index.js';
 import { Instances, NoteReactions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { } from '@/services/chart/index.js';
-import { IsNull } from 'typeorm';
 
 export const meta = {
 	requireCredential: false,

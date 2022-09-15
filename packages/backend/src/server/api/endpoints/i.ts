@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['account'],
@@ -27,8 +28,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, user, token) => {
 			const isSecure = token == null;

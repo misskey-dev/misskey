@@ -3,8 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users , UserProfiles , UserSecurityKeys } from '@/models/index.js';
 import { publishMainStream } from '@/services/stream.js';
-import { UserEntityService } from '@/services/entities/UserEntityService';
-import { GlobalEventService } from '@/services/GlobalEventService';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 
 export const meta = {
 	requireCredential: true,

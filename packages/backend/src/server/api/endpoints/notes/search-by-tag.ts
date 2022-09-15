@@ -5,7 +5,7 @@ import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],

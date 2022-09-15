@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Blockings } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
-import { BlockingEntityService } from '@/services/entities/BlockingEntityService';
+import { BlockingEntityService } from '@/services/entities/BlockingEntityService.js';
 
 export const meta = {
 	tags: ['account'],

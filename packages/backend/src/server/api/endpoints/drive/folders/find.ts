@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFolders } from '@/models/index.js';
-import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService';
+import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService.js';
 
 export const meta = {
 	tags: ['drive'],

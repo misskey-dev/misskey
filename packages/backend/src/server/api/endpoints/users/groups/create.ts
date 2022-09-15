@@ -4,7 +4,7 @@ import { IdService } from '@/services/IdService.js';
 import type { UserGroup } from '@/models/entities/user-group.js';
 import type { UserGroupJoining } from '@/models/entities/user-group-joining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService';
+import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService.js';
 
 export const meta = {
 	tags: ['groups'],

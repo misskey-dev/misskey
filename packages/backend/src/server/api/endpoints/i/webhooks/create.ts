@@ -3,7 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/services/IdService.js';
 import type { Webhooks } from '@/models/index.js';
 import { webhookEventTypes } from '@/models/entities/webhook.js';
-import { GlobalEventService } from '@/services/GlobalEventService';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 
 export const meta = {
 	tags: ['webhooks'],

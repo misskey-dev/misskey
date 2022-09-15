@@ -4,7 +4,7 @@ import type { Users } from '@/models/index.js';
 import { UserProfiles } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/services/entities/UserEntityService';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['users'],

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Hashtags } from '@/models/index.js';
-import { HashtagEntityService } from '@/services/entities/HashtagEntityService';
+import { HashtagEntityService } from '@/services/entities/HashtagEntityService.js';
 
 export const meta = {
 	tags: ['hashtags'],

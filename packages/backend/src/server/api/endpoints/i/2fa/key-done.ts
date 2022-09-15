@@ -13,8 +13,8 @@ import {
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { Config } from '@/config.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import { GlobalEventService } from '@/services/GlobalEventService';
-import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 

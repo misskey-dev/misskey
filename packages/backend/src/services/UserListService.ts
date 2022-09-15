@@ -7,7 +7,7 @@ import type { UserListJoining } from '@/models/entities/user-list-joining.js';
 import { IdService } from '@/services/IdService.js';
 import { UserFollowingService } from '@/services/UserFollowingService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { UserEntityService } from './entities/UserEntityService';
+import { UserEntityService } from './entities/UserEntityService.js';
 
 @Injectable()
 export class UserListService {

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Instances } from '@/models/index.js';
-import { InstanceEntityService } from '@/services/entities/InstanceEntityService';
-import { MetaService } from '@/services/MetaService';
+import { InstanceEntityService } from '@/services/entities/InstanceEntityService.js';
+import { MetaService } from '@/services/MetaService.js';
 
 export const meta = {
 	tags: ['federation'],

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AccessTokens } from '@/models/index.js';
 import { Apps } from '@/models/index.js';
-import { AppEntityService } from '@/services/entities/AppEntityService';
+import { AppEntityService } from '@/services/entities/AppEntityService.js';
 
 export const meta = {
 	requireCredential: true,

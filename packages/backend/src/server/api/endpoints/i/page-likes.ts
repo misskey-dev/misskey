@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { PageLikes } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
-import { PageLikeEntityService } from '@/services/entities/PageLikeEntityService';
+import { PageLikeEntityService } from '@/services/entities/PageLikeEntityService.js';
 
 export const meta = {
 	tags: ['account', 'pages'],

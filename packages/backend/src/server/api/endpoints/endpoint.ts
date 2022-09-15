@@ -20,7 +20,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-
 	) {
 		super(meta, paramDef, async (ps) => {
 			const ep = endpoints.find(x => x.name === ps.endpoint);

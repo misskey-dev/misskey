@@ -1,8 +1,9 @@
 import Parser from 'rss-parser';
 import { Inject, Injectable } from '@nestjs/common';
-import { getResponse } from '@/misc/fetch.js';
-import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { Config } from '@/config.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
 
 const rssParser = new Parser();
 
@@ -26,9 +27,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+
+		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const res = await getResponse({
+			const res = await this.httpRequestService.getResponse({
 				url: ps.url,
 				method: 'GET',
 				headers: Object.assign({

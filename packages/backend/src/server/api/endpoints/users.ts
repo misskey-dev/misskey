@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -44,9 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
+		private userEntityService: UserEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

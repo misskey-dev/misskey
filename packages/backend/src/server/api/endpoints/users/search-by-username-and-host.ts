@@ -4,7 +4,7 @@ import type { Users , Followings } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/services/entities/UserEntityService';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['users'],

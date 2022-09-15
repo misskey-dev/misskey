@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Users , Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
-import { UserEntityService } from '@/services/entities/UserEntityService';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['users'],

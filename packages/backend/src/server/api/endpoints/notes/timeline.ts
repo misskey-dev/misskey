@@ -4,8 +4,8 @@ import type { Notes , Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 import ActiveUsersChart from '@/services/chart/charts/active-users';
-import { NoteEntityService } from '@/services/entities/NoteEntityService';
-import { MetaService } from '@/services/MetaService';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { MetaService } from '@/services/MetaService.js';
 
 export const meta = {
 	tags: ['notes'],

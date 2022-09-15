@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Instances } from '@/models/index.js';
 import { toPuny } from '@/misc/convert-host.js';
-import { InstanceEntityService } from '@/services/entities/InstanceEntityService';
+import { InstanceEntityService } from '@/services/entities/InstanceEntityService.js';
 
 export const meta = {
 	tags: ['federation'],

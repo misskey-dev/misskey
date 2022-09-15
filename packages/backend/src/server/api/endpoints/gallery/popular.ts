@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { GalleryPosts } from '@/models/index.js';
-import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService';
+import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService.js';
 
 export const meta = {
 	tags: ['gallery'],

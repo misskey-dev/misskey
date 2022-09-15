@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowRequests } from '@/models/index.js';
-import { FollowRequestEntityService } from '@/services/entities/FollowRequestEntityService';
+import { FollowRequestEntityService } from '@/services/entities/FollowRequestEntityService.js';
 
 export const meta = {
 	tags: ['following', 'account'],

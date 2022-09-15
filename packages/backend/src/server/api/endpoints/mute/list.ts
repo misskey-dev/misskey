@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Mutings } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
-import { MutingEntityService } from '@/services/entities/MutingEntityService';
+import { MutingEntityService } from '@/services/entities/MutingEntityService.js';
 
 export const meta = {
 	tags: ['account'],

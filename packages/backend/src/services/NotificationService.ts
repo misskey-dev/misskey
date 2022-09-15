@@ -3,9 +3,9 @@ import { In } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Notifications , Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user';
-import { UserEntityService } from './entities/UserEntityService';
-import { GlobalEventService } from './GlobalEventService';
-import { PushNotificationService } from './PushNotificationService';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { GlobalEventService } from './GlobalEventService.js';
+import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
 export class NotificationService {

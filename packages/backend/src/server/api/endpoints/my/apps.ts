@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Apps } from '@/models/index.js';
-import { AppEntityService } from '@/services/entities/AppEntityService';
+import { AppEntityService } from '@/services/entities/AppEntityService.js';
 
 export const meta = {
 	tags: ['account', 'app'],

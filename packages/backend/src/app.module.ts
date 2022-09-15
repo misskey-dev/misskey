@@ -3,8 +3,8 @@ import { Notes, Users } from '@/models/index.js';
 import { EndpointsModule } from '@/server/api/endpoints.module.js';
 import { QueueModule } from '@/queue/queue.module.js';
 import { ChartsModule } from './services/chart/charts.module';
-import { DI_SYMBOLS } from './di-symbols';
-import { loadConfig } from './config';
+import { DI_SYMBOLS } from './di-symbols.js';
+import { loadConfig } from './config.js';
 import { db } from './db/postgre';
 
 @Module({

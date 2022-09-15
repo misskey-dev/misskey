@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Signins } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
-import { SigninEntityService } from '@/services/entities/SigninEntityService';
+import { SigninEntityService } from '@/services/entities/SigninEntityService.js';
 
 export const meta = {
 	requireCredential: true,
