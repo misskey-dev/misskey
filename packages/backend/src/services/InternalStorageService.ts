@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

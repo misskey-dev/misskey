@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { Users } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { Users } from '@/models/index.js';
+import { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
-import type { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
-import type { RelayService } from '@/services/RelayService.js';
-import type { ApDeliverManagerService } from '@/services/remote/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
+import { RelayService } from '@/services/RelayService.js';
+import { ApDeliverManagerService } from '@/services/remote/activitypub/ApDeliverManagerService.js';
+import { UserEntityService } from './entities/UserEntityService.js';
 
 @Injectable()
 export class AccountUpdateService {
@@ -16,6 +17,7 @@ export class AccountUpdateService {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private relayService: RelayService,
@@ -27,7 +29,7 @@ export class AccountUpdateService {
 		if (user == null) throw new Error('user not found');
 	
 		// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
-		if (Users.isLocalUser(user)) {
+		if (this.userEntityService.isLocalUser(user)) {
 			const content = this.apRendererService.renderActivity(this.apRendererService.renderUpdate(await this.apRendererService.renderPerson(user), user));
 			this.apDeliverManagerService.deliverToFollowers(user, content);
 			this.relayService.deliverToRelays(user, content);

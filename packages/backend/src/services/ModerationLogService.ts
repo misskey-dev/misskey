@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ModerationLogs } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 
 @Injectable()
 export class ModerationLogService {

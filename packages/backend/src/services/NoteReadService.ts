@@ -1,13 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NoteUnreads , Users } from '@/models/index.js';
+import type { AntennaNotes, ChannelFollowings, Followings, Mutings, NoteThreadMutings , NoteUnreads , Users } from '@/models/index.js';
+
 import type { User } from '@/models/entities/User.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { IdService } from '@/services/IdService.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { IdService } from '@/services/IdService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { getAntennas } from '@/misc/antenna-cache.js';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { NotificationService } from './NotificationService.js';
+import { AntennaService } from './AntennaService.js';
 
 @Injectable()
 export class NoteReadService {
@@ -18,8 +23,26 @@ export class NoteReadService {
 		@Inject('noteUnreadsRepository')
 		private noteUnreadsRepository: typeof NoteUnreads,
 
+		@Inject('mutingsRepository')
+		private mutingsRepository: typeof Mutings,
+
+		@Inject('noteThreadMutingsRepository')
+		private noteThreadMutingsRepository: typeof NoteThreadMutings,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		@Inject('channelFollowingsRepository')
+		private channelFollowingsRepository: typeof ChannelFollowings,
+
+		@Inject('antennaNotesRepository')
+		private antennaNotesRepository: typeof AntennaNotes,
+
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
+		private notificationService: NotificationService,
+		private antennaService: AntennaService,
 	) {
 	}
 
@@ -30,14 +53,14 @@ export class NoteReadService {
 	}): Promise<void> {
 		//#region ミュートしているなら無視
 		// TODO: 現在の仕様ではChannelにミュートは適用されないのでよしなにケアする
-		const mute = await Mutings.findBy({
+		const mute = await this.mutingsRepository.findBy({
 			muterId: userId,
 		});
 		if (mute.map(m => m.muteeId).includes(note.userId)) return;
 		//#endregion
 	
 		// スレッドミュート
-		const threadMute = await NoteThreadMutings.findOneBy({
+		const threadMute = await this.noteThreadMutingsRepository.findOneBy({
 			userId: userId,
 			threadId: note.threadId || note.id,
 		});
@@ -81,13 +104,13 @@ export class NoteReadService {
 			followingChannels: Set<Channel['id']>;
 		},
 	): Promise<void> {
-		const following = info?.following ? info.following : new Set<string>((await Followings.find({
+		const following = info?.following ? info.following : new Set<string>((await this.followingsRepository.find({
 			where: {
 				followerId: userId,
 			},
 			select: ['followeeId'],
 		})).map(x => x.followeeId));
-		const followingChannels = info?.followingChannels ? info.followingChannels : new Set<string>((await ChannelFollowings.find({
+		const followingChannels = info?.followingChannels ? info.followingChannels : new Set<string>((await this.channelFollowingsRepository.find({
 			where: {
 				followerId: userId,
 			},
@@ -113,7 +136,7 @@ export class NoteReadService {
 	
 			if (note.user != null) { // たぶんnullになることは無いはずだけど一応
 				for (const antenna of myAntennas) {
-					if (await checkHitAntenna(antenna, note, note.user, undefined, Array.from(following))) {
+					if (await this.antennaService.checkHitAntenna(antenna, note, note.user, undefined, Array.from(following))) {
 						readAntennaNotes.push(note);
 					}
 				}
@@ -159,13 +182,13 @@ export class NoteReadService {
 				}
 			});
 	
-			readNotificationByQuery(userId, {
+			this.notificationService.readNotificationByQuery(userId, {
 				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id)]),
 			});
 		}
 	
 		if (readAntennaNotes.length > 0) {
-			await AntennaNotes.update({
+			await this.antennaNotesRepository.update({
 				antennaId: In(myAntennas.map(a => a.id)),
 				noteId: In(readAntennaNotes.map(n => n.id)),
 			}, {
@@ -174,7 +197,7 @@ export class NoteReadService {
 	
 			// TODO: まとめてクエリしたい
 			for (const antenna of myAntennas) {
-				const count = await AntennaNotes.countBy({
+				const count = await this.antennaNotesRepository.countBy({
 					antennaId: antenna.id,
 					read: false,
 				});
@@ -184,7 +207,7 @@ export class NoteReadService {
 				}
 			}
 	
-			this.usersRepository.getHasUnreadAntenna(userId).then(unread => {
+			this.userEntityService.getHasUnreadAntenna(userId).then(unread => {
 				if (!unread) {
 					this.globalEventServie.publishMainStream(userId, 'readAllAntennas');
 				}

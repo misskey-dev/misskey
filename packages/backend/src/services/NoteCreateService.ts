@@ -7,7 +7,7 @@ import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import { Note } from '@/models/entities/Note.js';
 import type { Notes , Users } from '@/models/index.js';
-import { Mutings, NoteWatchings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
+import { Mutings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { App } from '@/models/entities/App.js';
 import { concat } from '@/prelude/array.js';
@@ -16,7 +16,6 @@ import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { IPoll } from '@/models/entities/Poll.js';
 import { Poll } from '@/models/entities/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { checkHitAntenna } from '@/misc/check-hit-antenna.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import type { Channel } from '@/models/entities/Channel.js';
@@ -430,7 +429,7 @@ export class NoteCreateService {
 
 		// Antenna
 		for (const antenna of (await getAntennas())) {
-			checkHitAntenna(antenna, note, user).then(hit => {
+			this.antennaService.checkHitAntenna(antenna, note, user).then(hit => {
 				if (hit) {
 					this.antennaService.addNoteToAntenna(antenna, note, user);
 				}

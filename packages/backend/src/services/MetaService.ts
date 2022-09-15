@@ -13,9 +13,6 @@ export class MetaService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
-
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
 	) {
 		if (process.env.NODE_ENV !== 'test') {
 			this.#intervalId = setInterval(() => {

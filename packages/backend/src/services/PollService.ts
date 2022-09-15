@@ -9,9 +9,9 @@ import type { CacheableUser } from '@/models/entities/User.js';
 import { IdService } from '@/services/IdService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
-import renderUpdate from '@/services/remote/activitypub/renderer/update.js';
-import { renderActivity } from '@/services/remote/activitypub/renderer/index.js';
-import renderNote from '@/services/remote/activitypub/renderer/note.js';
+import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
 
 @Injectable()
 export class PollService {
@@ -31,10 +31,13 @@ export class PollService {
 		@Inject('blockingsRepository')
 		private blockingsRepository: typeof Blockings,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private relayService: RelayService,
 		private globalEventServie: GlobalEventService,
 		private createNotificationService: CreateNotificationService,
+		private apRendererService: ApRendererService,
+		private apDeliverManagerService: ApDeliverManagerService,
 	) {
 	}
 
@@ -105,8 +108,8 @@ export class PollService {
 		if (user == null) throw new Error('note not found');
 	
 		if (this.userEntityService.isLocalUser(user)) {
-			const content = renderActivity(renderUpdate(await renderNote(note, false), user));
-			deliverToFollowers(user, content);
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderUpdate(await this.apRendererService.renderNote(note, false), user));
+			this.apDeliverManagerService.deliverToFollowers(user, content);
 			this.relayService.deliverToRelays(user, content);
 		}
 	}

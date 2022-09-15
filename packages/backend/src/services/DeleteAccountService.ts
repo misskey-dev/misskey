@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users } from '@/models/index.js';
-import type { QueueService } from '@/queue/queue.service.js';
-import type { UserSuspendService } from '@/services/UserSuspendService.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { QueueService } from '@/queue/queue.service.js';
+import { UserSuspendService } from '@/services/UserSuspendService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 
 @Injectable()
 export class DeleteAccountService {

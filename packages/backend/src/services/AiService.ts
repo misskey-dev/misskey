@@ -4,7 +4,7 @@ import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 
 const _filename = fileURLToPath(import.meta.url);

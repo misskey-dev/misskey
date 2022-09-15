@@ -4,7 +4,7 @@ import { IsNull } from 'typeorm';
 import type { ILocalUser } from '@/models/entities/User.js';
 import type { Users } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { CreateSystemUserService } from './CreateSystemUserService.js';
+import { CreateSystemUserService } from './CreateSystemUserService.js';
 
 const ACTOR_USERNAME = 'instance.actor' as const;
 

@@ -6,7 +6,7 @@ import { Config } from '@/config.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { User, CacheableUser } from '@/models/entities/User.js';
+import type { User, CacheableUser, IRemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { QueueService } from '@/queue/queue.service.js';
 import { toArray } from '@/prelude/array';

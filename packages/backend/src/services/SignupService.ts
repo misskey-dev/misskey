@@ -12,6 +12,7 @@ import { IdService } from '@/services/IdService.js';
 import { toPunyNullable } from '@/misc/convert-host';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
+import generateUserToken from '@/misc/generate-native-user-token.js';
 import UsersChart from './chart/charts/users.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 

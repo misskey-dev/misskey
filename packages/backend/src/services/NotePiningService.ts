@@ -9,6 +9,9 @@ import { IdService } from '@/services/IdService.js';
 import type { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { RelayService } from '@/services/RelayService.js';
 import { Config } from '@/config.js';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 
 @Injectable()
 export class NotePiningService {
@@ -25,8 +28,11 @@ export class NotePiningService {
 		@Inject('userNotePiningsRepository')
 		private userNotePiningsRepository: typeof UserNotePinings,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private relayService: RelayService,
+		private apDeliverManagerService: ApDeliverManagerService,
+		private apRendererService: ApRendererService,
 	) {
 	}
 
@@ -65,7 +71,7 @@ export class NotePiningService {
 
 		// Deliver to remote followers
 		if (this.userEntityService.isLocalUser(user)) {
-			deliverPinnedChange(user.id, note.id, true);
+			this.deliverPinnedChange(user.id, note.id, true);
 		}
 	}
 
@@ -92,7 +98,7 @@ export class NotePiningService {
 
 		// Deliver to remote followers
 		if (this.userEntityService.isLocalUser(user)) {
-			deliverPinnedChange(user.id, noteId, false);
+			this.deliverPinnedChange(user.id, noteId, false);
 		}
 	}
 
@@ -104,9 +110,9 @@ export class NotePiningService {
 
 		const target = `${this.config.url}/users/${user.id}/collections/featured`;
 		const item = `${this.config.url}/notes/${noteId}`;
-		const content = renderActivity(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
+		const content = this.apRendererService.renderActivity(isAddition ? this.apRendererService.renderAdd(user, target, item) : this.apRendererService.renderRemove(user, target, item));
 
-		deliverToFollowers(user, content);
+		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);
 	}
 }

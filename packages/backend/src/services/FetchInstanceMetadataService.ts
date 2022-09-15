@@ -5,9 +5,9 @@ import fetch from 'node-fetch';
 import tinycolor from 'tinycolor2';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { Instances } from '@/models/index.js';
-import type { AppLockService } from '@/services/AppLockService.js';
+import { AppLockService } from '@/services/AppLockService.js';
 import Logger from '@/logger.js';
-import type { HttpRequestService } from './HttpRequestService.js';
+import { HttpRequestService } from './HttpRequestService.js';
 import type { DOMWindow } from 'jsdom';
 
 const logger = new Logger('metadata', 'cyan');

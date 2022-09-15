@@ -12,7 +12,7 @@ import InstanceChart from '@/services/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { WebhookService } from '@/services/WebhookService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
-import Logger from './logger.js';
+import Logger from '../logger.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 

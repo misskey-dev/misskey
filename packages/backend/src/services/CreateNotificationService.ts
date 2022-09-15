@@ -5,6 +5,7 @@ import type { Notification } from '@/models/entities/Notification.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { IdService } from '@/services/IdService.js';
 import { NotificationEntityService } from './entities/NotificationEntityService.js';
+import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
 export class CreateNotificationService {
@@ -24,6 +25,7 @@ export class CreateNotificationService {
 		private notificationEntityService: NotificationEntityService,
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
+		private pushNotificationService: PushNotificationService,
 	) {
 	}
 
@@ -73,7 +75,7 @@ export class CreateNotificationService {
 			//#endregion
 	
 			this.globalEventServie.publishMainStream(notifieeId, 'unreadNotification', packed);
-			pushNotification(notifieeId, 'notification', packed);
+			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
 	
 			if (type === 'follow') this.#emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
 			if (type === 'receiveFollowRequest') this.#emailNotificationReceiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));

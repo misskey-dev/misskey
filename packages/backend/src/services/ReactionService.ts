@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Blockings, Emojis, NoteReactions , Users , Notes } from '@/models/index.js';
-
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -11,9 +10,12 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
-import DeliverManager from '@/services/remote/activitypub/deliver-manager.js';
 import PerUserReactionsChart from '@/services/chart/charts/per-user-reactions.js';
-import { toDbReaction } from '@/misc/reaction-lib.js';
+import { decodeReaction, toDbReaction } from '@/misc/reaction-lib.js';
+import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
+import { NoteEntityService } from './entities/NoteEntityService.js';
+import { UserEntityService } from './entities/UserEntityService.js';
+import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 
 @Injectable()
 export class ReactionService {
@@ -33,8 +35,12 @@ export class ReactionService {
 		@Inject('emojisRepository')
 		private emojisRepository: typeof Emojis,
 
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
+		private apRendererService: ApRendererService,
+		private apDeliverManagerService: ApDeliverManagerService,
 		private createNotificationService: CreateNotificationService,
 		private perUserReactionsChart: PerUserReactionsChart,
 	) {
@@ -53,7 +59,7 @@ export class ReactionService {
 		}
 	
 		// check visibility
-		if (!await this.notesRepository.isVisibleForMe(note, user.id)) {
+		if (!await this.noteEntityService.isVisibleForMe(note, user.id)) {
 			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
 		}
 	
@@ -80,7 +86,7 @@ export class ReactionService {
 	
 				if (exists.reaction !== reaction) {
 					// 別のリアクションがすでにされていたら置き換える
-					await deleteReaction(user, note);
+					await this.delete(user, note);
 					await this.noteReactionsRepository.insert(record);
 				} else {
 					// 同じリアクションがすでにされていたらエラー
@@ -134,8 +140,8 @@ export class ReactionService {
 	
 		//#region 配信
 		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-			const content = renderActivity(await renderLike(record, note));
-			const dm = new DeliverManager(user, content);
+			const content = this.apRendererService.renderActivity(await this.apRendererService.renderLike(record, note));
+			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
 				dm.addDirectRecipe(reactee as IRemoteUser);
@@ -191,8 +197,8 @@ export class ReactionService {
 	
 		//#region 配信
 		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-			const content = renderActivity(renderUndo(await renderLike(exist, note), user));
-			const dm = new DeliverManager(user, content);
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(await this.apRendererService.renderLike(exist, note), user));
+			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
 				dm.addDirectRecipe(reactee as IRemoteUser);
