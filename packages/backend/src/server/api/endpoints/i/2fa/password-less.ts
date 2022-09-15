@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserProfiles } from '@/models/index.js';
+import type { UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,
@@ -20,9 +20,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await UserProfiles.update(me.id, {
+			await this.userProfilesRepository.update(me.id, {
 				usePasswordLessLogin: ps.value,
 			});
 		});

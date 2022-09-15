@@ -3,7 +3,7 @@ import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 import { Inject, Injectable } from '@nestjs/common';
 import config from '@/config/index.js';
-import { UserProfiles } from '@/models/index.js';
+import type { UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -24,9 +24,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -40,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				length: 32,
 			});
 
-			await UserProfiles.update(me.id, {
+			await this.userProfilesRepository.update(me.id, {
 				twoFactorTempSecret: secret.base32,
 			});
 

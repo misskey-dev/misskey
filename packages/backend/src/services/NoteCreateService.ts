@@ -45,6 +45,7 @@ import { UserEntityService } from './entities/UserEntityService.js';
 import { NoteReadService } from './NoteReadService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 import { ResolveUserService } from './remote/ResolveUserService.js';
+import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -156,6 +157,7 @@ export class NoteCreateService {
 		private antennaService: AntennaService,
 		private webhookService: WebhookService,
 		private resolveUserService: ResolveUserService,
+		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
@@ -458,7 +460,7 @@ export class NoteCreateService {
 
 		if (data.poll && data.poll.expiresAt) {
 			const delay = data.poll.expiresAt.getTime() - Date.now();
-			endedPollNotificationQueue.add({
+			this.queueService.endedPollNotificationQueue.add({
 				noteId: note.id,
 			}, {
 				delay,
@@ -572,7 +574,7 @@ export class NoteCreateService {
 			if (this.userEntityService.isLocalUser(user)) {
 				(async () => {
 					const noteActivity = await this.#renderNoteOrRenoteActivity(data, note);
-					const dm = new DeliverManager(user, noteActivity);
+					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
 
 					// メンションされたリモートユーザーに配送
 					for (const u of mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u))) {

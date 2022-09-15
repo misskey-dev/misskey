@@ -3,9 +3,9 @@ import * as crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserProfiles, AttestationChallenges } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
-import { hash } from '../../../2fa.js';
+import type { UserProfiles , AttestationChallenges } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
 
 const randomBytes = promisify(crypto.randomBytes);
 
@@ -27,10 +27,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		@Inject('attestationChallengesRepository')
+		private attestationChallengesRepository: typeof AttestationChallenges,
+
 		private idService: IdService,
+		private twoFactorAuthenticationService: TwoFactorAuthenticationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -52,10 +59,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const challengeId = this.idService.genId();
 
-			await AttestationChallenges.insert({
+			await this.attestationChallengesRepository.insert({
 				userId: me.id,
 				id: challengeId,
-				challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
+				challenge: this.twoFactorAuthenticationService.hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
 				createdAt: new Date(),
 				registrationChallenge: true,
 			});

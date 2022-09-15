@@ -2,9 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Followings , Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import { Config } from '@/config/types.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
-import type { QueueService } from '@/queue/queue.service';
+import { QueueService } from '@/queue/queue.service';
+import { UserEntityService } from '@/services/entities/UserEntityService';
 
 interface IRecipe {
 	type: string;
@@ -37,6 +38,7 @@ export class ApDeliverManagerService {
 		@Inject('followingsRepository')
 		private followingsRepository: typeof Followings,
 
+		private userEntityService: UserEntityService,
 		private queueService: QueueService,
 	) {
 	}
@@ -74,6 +76,17 @@ export class ApDeliverManagerService {
 		manager.addDirectRecipe(to);
 		await manager.execute();
 	}
+
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: any) {
+		return new DeliverManager(
+			this.userEntityService,
+			this.followingsRepository,
+			this.queueService,
+
+			actor, 
+			activity,
+		);
+	}
 }
 
 class DeliverManager {
@@ -87,7 +100,7 @@ class DeliverManager {
 	 * @param activity Activity to deliver
 	 */
 	constructor(
-		private usersRepository: typeof Users,
+		private userEntityService: UserEntityService,
 		private followingsRepository: typeof Followings,
 		private queueService: QueueService,
 

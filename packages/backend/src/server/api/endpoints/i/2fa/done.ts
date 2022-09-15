@@ -1,7 +1,7 @@
 import * as speakeasy from 'speakeasy';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserProfiles } from '@/models/index.js';
+import type { UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,
@@ -21,11 +21,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const token = ps.token.replace(/\s/g, '');
 
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			if (profile.twoFactorTempSecret == null) {
 				throw new Error('二段階認証の設定が開始されていません');
@@ -41,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('not verified');
 			}
 
-			await UserProfiles.update(me.id, {
+			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: profile.twoFactorTempSecret,
 				twoFactorEnabled: true,
 			});

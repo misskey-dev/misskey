@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserProfiles } from '@/models/index.js';
+import type { UserProfiles } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,
@@ -21,9 +21,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -32,7 +34,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('incorrect password');
 			}
 
-			await UserProfiles.update(me.id, {
+			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: null,
 				twoFactorEnabled: false,
 			});

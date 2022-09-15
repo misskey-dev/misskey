@@ -43,9 +43,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
 
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
 		@Inject('userProfilesRepository')
 		private userProfilesRepository: typeof UserProfiles,
 
