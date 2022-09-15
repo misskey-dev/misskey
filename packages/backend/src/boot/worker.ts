@@ -2,8 +2,8 @@ import cluster from 'node:cluster';
 import { NestFactory } from '@nestjs/core';
 import { envOption } from '@/env.js';
 import { ChartManagementService } from '@/services/chart/ChartManagementService.js';
+import { ServerService } from '@/server/ServerService.js';
 import { initDb } from '../db/postgre.js';
-import createServer from '../server/index.js';
 import initializeQueue from '../queue/index.js';
 import { AppModule } from '../app.module.js';
 
@@ -16,7 +16,8 @@ export async function workerMain() {
 	const app = await NestFactory.createApplicationContext(AppModule);
 
 	// start server
-	await createServer(app);
+	const serverService = app.get(ServerService);
+	serverService.launch();
 
 	// start job queue
 	if (!envOption.onlyServer) {

@@ -6,8 +6,8 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
 import semver from 'semver';
-import Logger from '@/services/logger.js';
-import loadConfig from '@/config.js';
+import Logger from '@/logger.js';
+import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
 import { lessThan } from '@/prelude/array.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
@@ -135,9 +135,9 @@ async function connectDb(): Promise<void> {
 		await initDb();
 		const v = await db.query('SHOW server_version').then(x => x[0].server_version);
 		dbLogger.succ(`Connected: v${v}`);
-	} catch (e) {
+	} catch (err) {
 		dbLogger.error('Cannot connect', null, true);
-		dbLogger.error(e);
+		dbLogger.error(err);
 		process.exit(1);
 	}
 }
