@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserLists } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { UserLists } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import type { UserList } from '@/models/entities/user-list.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserListEntityService } from '@/services/entities/UserListEntityService';
 
 export const meta = {
 	tags: ['lists'],
@@ -32,17 +33,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
+
+		private userListEntityService: UserListEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userList = await UserLists.insert({
+			const userList = await this.userListsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
 				name: ps.name,
-			} as UserList).then(x => UserLists.findOneByOrFail(x.identifiers[0]));
+			} as UserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await UserLists.pack(userList);
+			return await this.userListEntityService.pack(userList);
 		});
 	}
 }

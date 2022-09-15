@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserLists } from '@/models/index.js';
+import type { UserLists } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserListEntityService } from '@/services/entities/UserListEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -40,10 +41,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
+
+		private userListEntityService: UserListEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the list
-			const userList = await UserLists.findOneBy({
+			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				userId: me.id,
 			});
@@ -52,11 +57,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			await UserLists.update(userList.id, {
+			await this.userListsRepository.update(userList.id, {
 				name: ps.name,
 			});
 
-			return await UserLists.pack(userList.id);
+			return await this.userListEntityService.pack(userList.id);
 		});
 	}
 }

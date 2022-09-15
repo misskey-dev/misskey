@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
+import type { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -53,15 +54,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userGroupsRepository')
+		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
+		private userGroupEntityService: UserGroupEntityService,
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the group
-			const userGroup = await UserGroups.findOneBy({
+			const userGroup = await this.userGroupsRepository.findOneBy({
 				id: ps.groupId,
 				userId: me.id,
 			});
@@ -71,12 +75,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Fetch the user
-			const user = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
-			const joining = await UserGroupJoinings.findOneBy({
+			const joining = await this.userGroupJoiningsRepository.findOneBy({
 				userGroupId: userGroup.id,
 				userId: user.id,
 			});
@@ -85,11 +89,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchGroupMember);
 			}
 
-			await UserGroups.update(userGroup.id, {
+			await this.userGroupsRepository.update(userGroup.id, {
 				userId: ps.userId,
 			});
 
-			return await UserGroups.pack(userGroup.id);
+			return await this.userGroupEntityService.pack(userGroup.id);
 		});
 	}
 }

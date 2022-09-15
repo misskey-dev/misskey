@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { pushUserToUserList } from '@/services/user-list/push.js';
-import { UserLists, UserListJoinings, Blockings } from '@/models/index.js';
+import type { UserLists, UserListJoinings , Blockings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
+import { UserListService } from '@/services/UserListService.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['lists', 'users'],
@@ -54,15 +54,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userListJoiningsRepository')
+		private userListJoiningsRepository: typeof UserListJoinings,
+
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
+
+		private getterService: GetterService,
+		private userListService: UserListService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the list
-			const userList = await UserLists.findOneBy({
+			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				userId: me.id,
 			});
@@ -72,9 +78,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Fetch the user
-			const user = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			// Check blocking
@@ -88,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			const exist = await UserListJoinings.findOneBy({
+			const exist = await this.userListJoiningsRepository.findOneBy({
 				userListId: userList.id,
 				userId: user.id,
 			});
@@ -98,7 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Push the user
-			await pushUserToUserList(user, userList);
+			await this.userListService.push(user, userList);
 		});
 	}
 }

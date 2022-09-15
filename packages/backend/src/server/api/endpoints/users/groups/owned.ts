@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserGroups } from '@/models/index.js';
+import type { UserGroups } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService';
 
 export const meta = {
 	tags: ['groups', 'account'],
@@ -32,18 +33,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userGroupsRepository')
+		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private userGroupEntityService: UserGroupEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userGroups = await UserGroups.findBy({
+			const userGroups = await this.userGroupsRepository.findBy({
 				userId: me.id,
 			});
 
-			return await Promise.all(userGroups.map(x => UserGroups.pack(x)));
+			return await Promise.all(userGroups.map(x => this.userGroupEntityService.pack(x)));
 		});
 	}
 }

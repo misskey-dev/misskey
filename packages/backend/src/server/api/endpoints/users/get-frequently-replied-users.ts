@@ -3,8 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { maximum } from '@/prelude/array.js';
 import type { Notes, Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -60,10 +61,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
+
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
-			const user = await getUser(ps.userId).catch(err => {
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});
@@ -115,7 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
 
 			// Make replies object (includes weights)
-			const repliesObj = await Promise.all(topRepliedthis.usersRepository.map(async (user) => ({
+			const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
 				user: await this.userEntityService.pack(user, me, { detail: true }),
 				weight: repliedUsers[user] / peak,
 			})));

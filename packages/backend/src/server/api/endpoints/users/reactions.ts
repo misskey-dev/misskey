@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NoteReactions, UserProfiles } from '@/models/index.js';
+import type { UserProfiles , NoteReactions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteReactionEntityService } from '@/services/entities/NoteReactionEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -47,22 +48,23 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('noteReactionsRepository')
+		private noteReactionsRepository: typeof NoteReactions,
 
+		private noteReactionEntityService: NoteReactionEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: ps.userId });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
 
 			if (me == null || (me.id !== ps.userId && !profile.publicReactions)) {
 				throw new ApiError(meta.errors.reactionsNotPublic);
 			}
 
-			const query = this.queryService.makePaginationQuery(NoteReactions.createQueryBuilder('reaction'),
+			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('reaction.userId = :userId', { userId: ps.userId })
 				.leftJoinAndSelect('reaction.note', 'note');
@@ -73,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, me, { withNote: true })));
+			return await Promise.all(reactions.map(reaction => this.noteReactionEntityService.pack(reaction, me, { withNote: true })));
 		});
 	}
 }

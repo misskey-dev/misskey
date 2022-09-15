@@ -1,9 +1,9 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
-import { Pages } from '@/models/index.js';
+import type { Users , Pages } from '@/models/index.js';
 import type { Page } from '@/models/entities/page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { PageEntityService } from '@/services/entities/PageEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -51,19 +51,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
+
+		private pageEntityService: PageEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let page: Page | null = null;
 
 			if (ps.pageId) {
-				page = await Pages.findOneBy({ id: ps.pageId });
+				page = await this.pagesRepository.findOneBy({ id: ps.pageId });
 			} else if (ps.name && ps.username) {
 				const author = await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: ps.username.toLowerCase(),
 				});
 				if (author) {
-					page = await Pages.findOneBy({
+					page = await this.pagesRepository.findOneBy({
 						name: ps.name,
 						userId: author.id,
 					});
@@ -74,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
 
-			return await Pages.pack(page, me);
+			return await this.pageEntityService.pack(page, me);
 		});
 	}
 }

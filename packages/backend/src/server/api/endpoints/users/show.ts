@@ -1,11 +1,12 @@
 import { In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { resolveUser } from '@/services/remote/resolve-user.js';
 import type { Users } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { apiLogger } from '../../logger.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { ResolveUserService } from '@/services/remote/ResolveUserService.js';
 import { ApiError } from '../../error.js';
+import { ApiLoggerService } from '../../ApiLoggerService.js';
 import type { FindOptionsWhere } from 'typeorm';
 
 export const meta = {
@@ -86,8 +87,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private userEntityService: UserEntityService,
+		private resolveUserService: ResolveUserService,
+		private apiLoggerService: ApiLoggerService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let user;
@@ -118,8 +120,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			} else {
 				// Lookup user
 				if (typeof ps.host === 'string' && typeof ps.username === 'string') {
-					user = await resolveUser(ps.username, ps.host).catch(e => {
-						apiLogger.warn(`failed to resolve remote user: ${e}`);
+					user = await this.resolveUserService.resolveUser(ps.username, ps.host).catch(err => {
+						this.apiLoggerService.logger.warn(`failed to resolve remote user: ${err}`);
 						throw new ApiError(meta.errors.failedToResolveRemoteUser);
 					});
 				} else {

@@ -1,7 +1,8 @@
 import { Not, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
+import type { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService';
 
 export const meta = {
 	tags: ['groups', 'account'],
@@ -33,25 +34,27 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userGroupsRepository')
+		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
+		private userGroupEntityService: UserGroupEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const ownedGroups = await UserGroups.findBy({
+			const ownedGroups = await this.userGroupsRepository.findBy({
 				userId: me.id,
 			});
 
-			const joinings = await UserGroupJoinings.findBy({
+			const joinings = await this.userGroupJoiningsRepository.findBy({
 				userId: me.id,
 				...(ownedGroups.length > 0 ? {
 					userGroupId: Not(In(ownedGroups.map(x => x.id))),
 				} : {}),
 			});
 
-			return await Promise.all(joinings.map(x => UserGroups.pack(x.userGroupId)));
+			return await Promise.all(joinings.map(x => this.userGroupEntityService.pack(x.userGroupId)));
 		});
 	}
 }

@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishUserListStream } from '@/services/stream.js';
-import { UserLists, UserListJoinings, Users } from '@/models/index.js';
+import type { UserLists, UserListJoinings } from '@/models/index.js';
+import { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['lists', 'users'],
@@ -42,15 +44,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		@Inject('userListJoiningsRepository')
+		private userListJoiningsRepository: typeof UserListJoinings,
+
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the list
-			const userList = await UserLists.findOneBy({
+			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				userId: me.id,
 			});
@@ -60,15 +66,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Fetch the user
-			const user = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			// Pull the user
-			await UserListJoinings.delete({ userListId: userList.id, userId: user.id });
+			await this.userListJoiningsRepository.delete({ userListId: userList.id, userId: user.id });
 
-			publishUserListStream(userList.id, 'userRemoved', await this.userEntityService.pack(user));
+			this.globalEventService.publishUserListStream(userList.id, 'userRemoved', await this.userEntityService.pack(user));
 		});
 	}
 }

@@ -1,9 +1,11 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import { Pages, DriveFiles } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { Pages } from '@/models/index.js';
+import { DriveFiles } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import { Page } from '@/models/entities/page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { PageEntityService } from '@/services/entities/PageEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -63,6 +65,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
+
+		private pageEntityService: PageEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -78,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			await Pages.findBy({
+			await this.pagesRepository.findBy({
 				userId: me.id,
 				name: ps.name,
 			}).then(result => {
@@ -87,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			});
 
-			const page = await Pages.insert(new Page({
+			const page = await this.pagesRepository.insert(new Page({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				updatedAt: new Date(),
@@ -103,9 +109,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				alignCenter: ps.alignCenter,
 				hideTitleWhenPinned: ps.hideTitleWhenPinned,
 				font: ps.font,
-			})).then(x => Pages.findOneByOrFail(x.identifiers[0]));
+			})).then(x => this.pagesRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await Pages.pack(page);
+			return await this.pageEntityService.pack(page);
 		});
 	}
 }
