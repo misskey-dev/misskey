@@ -10,7 +10,7 @@ import type Logger from '@/logger.js';
 import type { DriveService } from '@/services/DriveService.js';
 import { getFullApAccount } from '@/misc/convert-host.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { Following } from '@/models/entities/following.js';
+import type { Following } from '@/models/entities/Following.js';
 import type Bull from 'bull';
 import type { DbUserJobData } from '../types.js';
 import type { QueueLoggerService } from '../QueueLoggerService.js';

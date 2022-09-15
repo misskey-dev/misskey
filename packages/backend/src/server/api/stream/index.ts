@@ -1,9 +1,9 @@
-import type { User } from '@/models/entities/user.js';
-import type { Channel as ChannelModel } from '@/models/entities/channel.js';
+import type { User } from '@/models/entities/User.js';
+import type { Channel as ChannelModel } from '@/models/entities/Channel.js';
 import type { Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index.js';
-import type { AccessToken } from '@/models/entities/access-token.js';
-import type { UserProfile } from '@/models/entities/user-profile.js';
-import type { UserGroup } from '@/models/entities/user-group.js';
+import type { AccessToken } from '@/models/entities/AccessToken.js';
+import type { UserProfile } from '@/models/entities/UserProfile.js';
+import type { UserGroup } from '@/models/entities/UserGroup.js';
 import type { Packed } from '@/misc/schema.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { NoteReadService } from '@/services/NoteReadService.js';

@@ -1,7 +1,7 @@
 import { In, IsNull } from 'typeorm';
 import { Emojis } from '@/models/index.js';
-import { Emoji } from '@/models/entities/emoji.js';
-import { Note } from '@/models/entities/note.js';
+import { Emoji } from '@/models/entities/Emoji.js';
+import { Note } from '@/models/entities/Note.js';
 import { Cache } from './cache.js';
 import { isSelfHost, toPunyNullable } from './convert-host.js';
 import { decodeReaction } from './reaction-lib.js';

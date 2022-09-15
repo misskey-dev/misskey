@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Instances } from '@/models/index.js';
-import type { Instance } from '@/models/entities/instance';
+import type { Instance } from '@/models/entities/Instance.js';
 import { Cache } from '@/misc/cache.js';
-import type { IdService } from '@/services/IdService.js';
+import { IdService } from '@/services/IdService.js';
 import { toPuny } from '@/misc/convert-host.js';
 
 @Injectable()

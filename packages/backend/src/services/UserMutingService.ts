@@ -4,7 +4,7 @@ import type { Users , Mutings } from '@/models/index.js';
 import type { IdService } from '@/services/IdService.js';
 import type { QueueService } from '@/queue/queue.service.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 
 @Injectable()
 export class UserMutingService {

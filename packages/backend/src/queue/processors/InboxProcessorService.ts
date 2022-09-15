@@ -13,14 +13,14 @@ import { ApRequestService } from '@/services/remote/activitypub/ApRequestService
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
 import { Cache } from '@/misc/cache.js';
-import type { Instance } from '@/models/entities/instance.js';
+import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/services/chart/charts/instance.js';
 import ApRequestChart from '@/services/chart/charts/ap-request.js';
 import FederationChart from '@/services/chart/charts/federation.js';
 import { LdSignature } from '@/services/remote/activitypub/misc/ld-signature.js';
 import { getApId } from '@/services/remote/activitypub/type.js';
-import type { CacheableRemoteUser } from '@/models/entities/user.js';
-import type { UserPublickey } from '@/models/entities/user-publickey.js';
+import type { CacheableRemoteUser } from '@/models/entities/User.js';
+import type { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { ApDbResolverService } from '@/services/remote/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';

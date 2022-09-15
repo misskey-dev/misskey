@@ -1,6 +1,6 @@
 import rndstr from 'rndstr';
-import { Note } from '@/models/entities/note.js';
-import { User } from '@/models/entities/user.js';
+import { Note } from '@/models/entities/Note.js';
+import { User } from '@/models/entities/User.js';
 import { Notes, UserProfiles, NoteReactions } from '@/models/index.js';
 import { generateMutedUserQuery } from './generate-muted-user-query.js';
 import { generateBlockedUserQuery } from './generate-block-query.js';

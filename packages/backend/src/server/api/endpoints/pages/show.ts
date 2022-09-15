@@ -1,7 +1,7 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users , Pages } from '@/models/index.js';
-import type { Page } from '@/models/entities/page.js';
+import type { Page } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/services/entities/PageEntityService.js';
 import { ApiError } from '../../error.js';

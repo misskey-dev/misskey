@@ -1,8 +1,8 @@
 import * as fs from 'node:fs';
 import Ajv from 'ajv';
 import type { Schema, SchemaType } from '@/misc/schema.js';
-import type { CacheableLocalUser } from '@/models/entities/user.js';
-import type { AccessToken } from '@/models/entities/access-token.js';
+import type { CacheableLocalUser } from '@/models/entities/User.js';
+import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { ApiError } from './error.js';
 import type { IEndpointMeta } from './endpoints.js';
 

@@ -4,8 +4,8 @@ import { Apps } from '@/models/index.js';
 import type { AuthSessions } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { AuthSession } from '@/models/entities/auth-session.js';
-import type { User } from '@/models/entities/user.js';
+import type { AuthSession } from '@/models/entities/AuthSession.js';
+import type { User } from '@/models/entities/User.js';
 import { UserEntityService } from './UserEntityService.js';
 import { AppEntityService } from './AppEntityService.js';
 

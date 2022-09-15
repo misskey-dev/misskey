@@ -3,7 +3,7 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import type { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
 import type { HttpRequestService } from '@/services/HttpRequestService.js';
 

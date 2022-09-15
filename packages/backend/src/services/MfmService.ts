@@ -6,7 +6,7 @@ import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/prelude/array.js';
-import type { IMentionedRemoteUsers } from '@/models/entities/note.js';
+import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import * as TreeAdapter from '../../node_modules/parse5/dist/tree-adapters/default.js';
 import type * as mfm from 'mfm-js';
 

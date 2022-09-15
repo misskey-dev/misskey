@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NoteThreadMutings , Blockings , ChannelFollowings , MutedNotes , Followings , Mutings , UserProfiles } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()

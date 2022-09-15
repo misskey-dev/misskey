@@ -2,7 +2,7 @@ import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users } from '@/models/index.js';
 import { UserProfiles } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 

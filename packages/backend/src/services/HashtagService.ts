@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { Hashtags, Users } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { IdService } from '@/services/IdService.js';
-import type { Hashtag } from '@/models/entities/hashtag.js';
+import type { Hashtag } from '@/models/entities/Hashtag.js';
 import HashtagChart from '@/services/chart/charts/hashtag.js';
 
 @Injectable()

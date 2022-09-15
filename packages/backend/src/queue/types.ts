@@ -1,7 +1,7 @@
-import type { DriveFile } from '@/models/entities/drive-file.js';
-import type { Note } from '@/models/entities/note';
-import type { User } from '@/models/entities/user.js';
-import type { Webhook } from '@/models/entities/webhook';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { User } from '@/models/entities/User.js';
+import type { Webhook } from '@/models/entities/Webhook.js';
 import type { IActivity } from '@/services/remote/activitypub/type.js';
 import type httpSignature from '@peertube/http-signature';
 

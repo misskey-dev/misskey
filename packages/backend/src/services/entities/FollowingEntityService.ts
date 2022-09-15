@@ -3,9 +3,9 @@ import { DI } from '@/di-symbols.js';
 import type { Followings } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { } from '@/models/entities/blocking.js';
-import type { User } from '@/models/entities/user.js';
-import type { Following } from '@/models/entities/following.js';
+import type { } from '@/models/entities/Blocking.js';
+import type { User } from '@/models/entities/User.js';
+import type { Following } from '@/models/entities/Following.js';
 import { UserEntityService } from './UserEntityService.js';
 
 type LocalFollowerFollowing = Following & {

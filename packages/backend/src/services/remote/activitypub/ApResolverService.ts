@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { ILocalUser } from '@/models/entities/user.js';
+import type { ILocalUser } from '@/models/entities/User.js';
 import type { InstanceActorService } from '@/services/InstanceActorService.js';
 import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
 import type { Notes , Polls , NoteReactions , Users } from '@/models/index.js';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Mutings, Notifications, UserProfiles , Users } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
-import type { Notification } from '@/models/entities/notification.js';
+import type { User } from '@/models/entities/User.js';
+import type { Notification } from '@/models/entities/Notification.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { IdService } from '@/services/IdService.js';
 import { NotificationEntityService } from './entities/NotificationEntityService.js';

@@ -2,7 +2,7 @@ import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsedUsernames , Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { localUsernameSchema } from '@/models/entities/user';
+import { localUsernameSchema } from '@/models/entities/User.js';
 
 export const meta = {
 	tags: ['users'],

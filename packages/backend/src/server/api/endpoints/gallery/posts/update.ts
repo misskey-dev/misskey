@@ -2,8 +2,8 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFiles, GalleryPosts } from '@/models/index.js';
-import { GalleryPost } from '@/models/entities/gallery-post.js';
-import type { DriveFile } from '@/models/entities/drive-file.js';
+import { GalleryPost } from '@/models/entities/GalleryPost.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService.js';
 import { ApiError } from '../../../error.js';
 

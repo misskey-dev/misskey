@@ -5,7 +5,7 @@ import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/prelude/xml';
-import type { User } from '@/models/entities/user';
+import type { User } from '@/models/entities/User.js';
 import * as Acct from '@/misc/acct.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import type { FindOptionsWhere } from 'typeorm';

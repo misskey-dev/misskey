@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import Redis from 'ioredis';
 import type { Webhooks } from '@/models/index.js';
-import type { Webhook } from '@/models/entities/webhook';
-import type Redis from 'ioredis';
+import type { Webhook } from '@/models/entities/Webhook.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()

@@ -3,9 +3,9 @@ import { DI } from '@/di-symbols.js';
 import type { UserListJoinings, UserLists } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { } from '@/models/entities/blocking.js';
-import type { User } from '@/models/entities/user.js';
-import type { UserList } from '@/models/entities/user-list.js';
+import type { } from '@/models/entities/Blocking.js';
+import type { User } from '@/models/entities/User.js';
+import type { UserList } from '@/models/entities/UserList.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()

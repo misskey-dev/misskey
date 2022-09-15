@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokens, Apps , Users } from '@/models/index.js';
-import type { CacheableLocalUser, ILocalUser } from '@/models/entities/user.js';
-import type { AccessToken } from '@/models/entities/access-token.js';
+import type { CacheableLocalUser, ILocalUser } from '@/models/entities/User.js';
+import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { Cache } from '@/misc/cache.js';
-import type { App } from '@/models/entities/app.js';
+import type { App } from '@/models/entities/App.js';
 import { UserCacheService } from '@/services/UserCacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 

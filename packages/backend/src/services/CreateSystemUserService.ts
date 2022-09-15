@@ -4,11 +4,11 @@ import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
 import { IsNull , DataSource } from 'typeorm';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
-import { User } from '@/models/entities/user.js';
-import { UserProfile } from '@/models/entities/user-profile.js';
+import { User } from '@/models/entities/User.js';
+import { UserProfile } from '@/models/entities/UserProfile.js';
 import { IdService } from '@/services/IdService.js';
-import { UserKeypair } from '@/models/entities/user-keypair.js';
-import { UsedUsername } from '@/models/entities/used-username.js';
+import { UserKeypair } from '@/models/entities/UserKeypair.js';
+import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { DI } from '@/di-symbols.js';
 import generateNativeUserToken from '@/misc/generate-native-user-token.js';
 

@@ -12,9 +12,9 @@ import { populateEmojis } from '@/misc/populate-emojis.js';
 import { getAntennas } from '@/misc/antenna-cache.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
-import type { Instance } from '@/models/entities/instance.js';
-import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
-import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/user.js';
+import type { Instance } from '@/models/entities/Instance.js';
+import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
+import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
 import { NoteEntityService } from './NoteEntityService.js';
 
 const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);

@@ -10,7 +10,7 @@ import { ApRequestService } from '@/services/remote/activitypub/ApRequestService
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
 import { Cache } from '@/misc/cache.js';
-import type { Instance } from '@/models/entities/instance.js';
+import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/services/chart/charts/instance.js';
 import ApRequestChart from '@/services/chart/charts/ap-request.js';
 import FederationChart from '@/services/chart/charts/federation.js';

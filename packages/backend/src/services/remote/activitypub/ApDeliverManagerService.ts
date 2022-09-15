@@ -3,7 +3,7 @@ import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Followings , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
+import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/queue/queue.service.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 

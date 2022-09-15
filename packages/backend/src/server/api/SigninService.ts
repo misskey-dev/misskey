@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { Signins , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { IdService } from '@/services/IdService.js';
-import type { ILocalUser } from '@/models/entities/user.js';
+import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { SigninEntityService } from '@/services/entities/SigninEntityService.js';
 import type Koa from 'koa';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroupJoinings , Users , MessagingMessages } from '@/models/index.js';
-import type { User, ILocalUser, IRemoteUser } from '@/models/entities/user.js';
-import type { UserGroup } from '@/models/entities/user-group.js';
+import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
+import type { UserGroup } from '@/models/entities/UserGroup.js';
 import Channel from '../channel.js';
 import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
 import type { StreamMessages } from '../types.js';

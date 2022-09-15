@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
 import type { Followings , Users } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import type { QueueService } from '@/queue/queue.service.js';
 import renderDelete from '@/services/remote/activitypub/renderer/delete.js';
 import renderUndo from '@/services/remote/activitypub/renderer/undo.js';

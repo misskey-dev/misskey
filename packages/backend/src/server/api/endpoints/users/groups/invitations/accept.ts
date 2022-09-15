@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroupInvitations , UserGroupJoinings } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
-import type { UserGroupJoining } from '@/models/entities/user-group-joining.js';
+import type { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../../error.js';
 

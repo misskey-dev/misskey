@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 import tinycolor from 'tinycolor2';
-import type { Instance } from '@/models/entities/instance.js';
+import type { Instance } from '@/models/entities/Instance.js';
 import type { Instances } from '@/models/index.js';
 import type { AppLockService } from '@/services/AppLockService.js';
 import Logger from '@/logger.js';

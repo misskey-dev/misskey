@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { AntennaNotes, Mutings, Notes, Users } from '@/models/index.js';
-import type { Antenna } from '@/models/entities/antenna.js';
-import type { Note } from '@/models/entities/note.js';
-import type { User } from '@/models/entities/user.js';
+import type { Antenna } from '@/models/entities/Antenna.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { User } from '@/models/entities/User.js';
 import type { IdService } from '@/services/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';

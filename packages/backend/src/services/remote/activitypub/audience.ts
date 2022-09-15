@@ -3,7 +3,7 @@ import Resolver from './resolver.js';
 import { resolvePerson } from './models/person.js';
 import { unique, concat } from '@/prelude/array.js';
 import promiseLimit from 'promise-limit';
-import { User, CacheableRemoteUser, CacheableUser } from '@/models/entities/user.js';
+import { User, CacheableRemoteUser, CacheableUser } from '@/models/entities/User.js';
 
 type Visibility = 'public' | 'home' | 'followers' | 'specified';
 

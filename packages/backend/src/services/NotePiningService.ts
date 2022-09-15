@@ -3,10 +3,10 @@ import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Notes, UserNotePinings } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { User } from '@/models/entities/user.js';
-import type { Note } from '@/models/entities/note.js';
+import type { User } from '@/models/entities/User.js';
+import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/services/IdService.js';
-import type { UserNotePining } from '@/models/entities/user-note-pining.js';
+import type { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { RelayService } from '@/services/RelayService.js';
 import { Config } from '@/config.js';
 

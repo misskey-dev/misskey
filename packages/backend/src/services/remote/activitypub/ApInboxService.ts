@@ -3,7 +3,7 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Followings, Notes , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import type { CacheableRemoteUser } from '@/models/entities/user.js';
+import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import { UserFollowingService } from '@/services/UserFollowingService.js';
 import { ReactionService } from '@/services/ReactionService.js';
 import { RelayService } from '@/services/RelayService.js';

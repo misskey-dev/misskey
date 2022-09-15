@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users , Followings, FollowRequests , UserProfiles , Instances , Blockings } from '@/models/index.js';
-import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
+import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/queue/queue.service.js';
 import PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';

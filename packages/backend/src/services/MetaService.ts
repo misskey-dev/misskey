@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { Users } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import { Meta } from '@/models/entities/meta';
+import { Meta } from '@/models/entities/Meta.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()

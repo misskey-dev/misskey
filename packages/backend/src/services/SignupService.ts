@@ -6,14 +6,14 @@ import { DI } from '@/di-symbols.js';
 import type { UsedUsernames } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import { User } from '@/models/entities/user.js';
-import { UserProfile } from '@/models/entities/user-profile.js';
+import { User } from '@/models/entities/User.js';
+import { UserProfile } from '@/models/entities/UserProfile.js';
 import { IdService } from '@/services/IdService.js';
 import { toPunyNullable } from '@/misc/convert-host';
-import { UserKeypair } from '@/models/entities/user-keypair';
-import { UsedUsername } from '@/models/entities/used-username';
-import UsersChart from './chart/charts/users';
-import generateUserToken from './generate-native-user-token.js';
+import { UserKeypair } from '@/models/entities/UserKeypair.js';
+import { UsedUsername } from '@/models/entities/UsedUsername.js';
+import UsersChart from './chart/charts/users.js';
+import { UserEntityService } from './entities/UserEntityService.js';
 
 @Injectable()
 export class SignupService {
@@ -30,6 +30,7 @@ export class SignupService {
 		@Inject('usedUsernamesRepository')
 		private usedUsernamesRepository: typeof UsedUsernames,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private usersChart: UsersChart,
 	) {
@@ -45,13 +46,13 @@ export class SignupService {
 		let hash = passwordHash;
 	
 		// Validate username
-		if (!Users.validateLocalUsername(username)) {
+		if (!this.userEntityService.validateLocalUsername(username)) {
 			throw new Error('INVALID_USERNAME');
 		}
 	
 		if (password != null && passwordHash == null) {
 			// Validate password
-			if (!Users.validatePassword(password)) {
+			if (!this.userEntityService.validatePassword(password)) {
 				throw new Error('INVALID_PASSWORD');
 			}
 	
@@ -64,7 +65,7 @@ export class SignupService {
 		const secret = generateUserToken();
 	
 		// Check username duplication
-		if (await Users.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
+		if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
 			throw new Error('DUPLICATED_USERNAME');
 		}
 	

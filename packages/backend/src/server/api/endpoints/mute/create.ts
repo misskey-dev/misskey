@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/services/IdService.js';
 import type { Mutings } from '@/models/index.js';
-import type { Muting } from '@/models/entities/muting.js';
+import type { Muting } from '@/models/entities/Muting.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';

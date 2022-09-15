@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MessagingMessage } from '@/models/entities/messaging-message.js';
+import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { Mutings , UserGroupJoinings , MessagingMessages } from '@/models/index.js';
 import { MessagingMessageEntityService } from '@/services/entities/MessagingMessageEntityService.js';
 

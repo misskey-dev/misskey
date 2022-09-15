@@ -3,9 +3,9 @@ import { DI } from '@/di-symbols.js';
 import type { Mutings } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { } from '@/models/entities/blocking.js';
-import type { User } from '@/models/entities/user.js';
-import type { Muting } from '@/models/entities/muting.js';
+import type { } from '@/models/entities/Blocking.js';
+import type { User } from '@/models/entities/User.js';
+import type { Muting } from '@/models/entities/Muting.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()

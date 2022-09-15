@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull , DataSource } from 'typeorm';
 import { Users } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import Chart from '../core.js';

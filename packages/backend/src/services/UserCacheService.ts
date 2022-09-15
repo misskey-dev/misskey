@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Users } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/user.js';
+import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
 import type Redis from 'ioredis';
 import type { OnApplicationShutdown } from '@nestjs/common';
 

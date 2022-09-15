@@ -1,5 +1,5 @@
 import { IObject } from './type.js';
-import { CacheableRemoteUser } from '@/models/entities/user.js';
+import { CacheableRemoteUser } from '@/models/entities/User.js';
 import { performActivity } from './kernel/index.js';
 import { updatePerson } from './models/person.js';
 

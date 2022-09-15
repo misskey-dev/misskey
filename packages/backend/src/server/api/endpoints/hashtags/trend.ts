@@ -2,7 +2,7 @@ import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Notes } from '@/models/index.js';
-import type { Note } from '@/models/entities/note.js';
+import type { Note } from '@/models/entities/Note.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MetaService } from '@/services/MetaService.js';

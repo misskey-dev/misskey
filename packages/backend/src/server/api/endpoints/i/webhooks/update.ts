@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Webhooks } from '@/models/index.js';
 import { publishInternalEvent } from '@/services/stream.js';
-import { webhookEventTypes } from '@/models/entities/webhook.js';
+import { webhookEventTypes } from '@/models/entities/Webhook.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 

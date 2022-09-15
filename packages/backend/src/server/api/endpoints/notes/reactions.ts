@@ -1,7 +1,7 @@
 import { DeepPartial } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NoteReactions } from '@/models/index.js';
-import type { NoteReaction } from '@/models/entities/note-reaction.js';
+import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReactionEntityService } from '@/services/entities/NoteReactionEntityService.js';
 import { ApiError } from '../../error.js';

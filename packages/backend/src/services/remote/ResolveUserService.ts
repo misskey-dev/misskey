@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
-import type { IRemoteUser, User } from '@/models/entities/user.js';
+import type { IRemoteUser, User } from '@/models/entities/User.js';
 import type { Config } from '@/config.js';
 import { toPuny } from '@/misc/convert-host.js';
 import type Logger from '@/logger.js';

@@ -8,12 +8,12 @@ import { Config } from '@/config.js';
 import type { UserProfiles } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import { HttpRequestService } from '@/services/HttpRequestService';
-import type { ILocalUser } from '@/models/entities/user';
-import { GlobalEventService } from '@/services/GlobalEventService';
-import { MetaService } from '@/services/MetaService';
-import { UserEntityService } from '@/services/entities/UserEntityService';
-import { SigninService } from '../SigninService';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
+import type { ILocalUser } from '@/models/entities/User.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { MetaService } from '@/services/MetaService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { SigninService } from '../SigninService.js';
 import type Koa from 'koa';
 
 @Injectable()

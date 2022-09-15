@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Notifications , Users } from '@/models/index.js';
-import type { User } from '@/models/entities/user';
+import type { User } from '@/models/entities/User.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { GlobalEventService } from './GlobalEventService.js';
 import { PushNotificationService } from './PushNotificationService.js';

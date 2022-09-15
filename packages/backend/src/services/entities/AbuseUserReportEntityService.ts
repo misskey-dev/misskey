@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AbuseUserReports } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
-import type { AbuseUserReport } from '@/models/entities/abuse-user-report.js';
+import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()

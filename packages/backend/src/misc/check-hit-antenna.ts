@@ -1,6 +1,6 @@
-import { Antenna } from '@/models/entities/antenna.js';
-import { Note } from '@/models/entities/note.js';
-import { User } from '@/models/entities/user.js';
+import { Antenna } from '@/models/entities/Antenna.js';
+import { Note } from '@/models/entities/Note.js';
+import { User } from '@/models/entities/User.js';
 import { UserListJoinings, UserGroupJoinings, Blockings } from '@/models/index.js';
 import { getFullApAccount } from './convert-host.js';
 import * as Acct from '@/misc/acct.js';

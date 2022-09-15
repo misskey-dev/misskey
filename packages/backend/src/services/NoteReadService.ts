@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NoteUnreads , Users } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
-import type { Channel } from '@/models/entities/channel.js';
+import type { User } from '@/models/entities/User.js';
+import type { Channel } from '@/models/entities/Channel.js';
 import type { Packed } from '@/misc/schema.js';
-import type { Note } from '@/models/entities/note.js';
+import type { Note } from '@/models/entities/Note.js';
 import type { IdService } from '@/services/IdService.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 

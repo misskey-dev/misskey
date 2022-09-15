@@ -1,5 +1,5 @@
 import { Antennas } from '@/models/index.js';
-import { Antenna } from '@/models/entities/antenna.js';
+import type { Antenna } from '@/models/entities/Antenna.js';
 import { subsdcriber } from '../db/redis.js';
 
 let antennasFetched = false;

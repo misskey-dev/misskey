@@ -3,8 +3,8 @@ import { DI } from '@/di-symbols.js';
 import type { AccessTokens, Apps } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { App } from '@/models/entities/app.js';
-import type { User } from '@/models/entities/user.js';
+import type { App } from '@/models/entities/App.js';
+import type { User } from '@/models/entities/User.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()

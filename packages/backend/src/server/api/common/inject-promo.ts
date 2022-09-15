@@ -1,6 +1,6 @@
 import rndstr from 'rndstr';
-import { Note } from '@/models/entities/note.js';
-import { User } from '@/models/entities/user.js';
+import { Note } from '@/models/entities/Note.js';
+import { User } from '@/models/entities/User.js';
 import { PromoReads, PromoNotes, Notes, Users } from '@/models/index.js';
 
 export async function injectPromo(timeline: Note[], user?: User | null) {

@@ -5,9 +5,9 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { Users , DriveFiles , UserProfiles } from '@/models/index.js';
 import { Pages } from '@/models/index.js';
-import type { User } from '@/models/entities/user.js';
-import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/user.js';
-import type { UserProfile } from '@/models/entities/user-profile.js';
+import type { User } from '@/models/entities/User.js';
+import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
+import type { UserProfile } from '@/models/entities/UserProfile.js';
 import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';

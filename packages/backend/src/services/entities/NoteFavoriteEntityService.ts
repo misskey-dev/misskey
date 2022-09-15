@@ -3,9 +3,9 @@ import { DI } from '@/di-symbols.js';
 import type { NoteFavorites } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { } from '@/models/entities/blocking.js';
-import type { User } from '@/models/entities/user.js';
-import type { NoteFavorite } from '@/models/entities/note-favorite.js';
+import type { } from '@/models/entities/Blocking.js';
+import type { User } from '@/models/entities/User.js';
+import type { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { UserEntityService } from './UserEntityService.js';
 import { NoteEntityService } from './NoteEntityService.js';
 

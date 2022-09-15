@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Notes, Users } from '@/models/index.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import type { Packed } from '@/misc/schema.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';

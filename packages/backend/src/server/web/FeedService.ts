@@ -3,7 +3,7 @@ import { In, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFiles, Notes, UserProfiles , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import type { User } from '@/models/entities/user';
+import type { User } from '@/models/entities/User.js';
 
 @Injectable()
 export class FeedService {

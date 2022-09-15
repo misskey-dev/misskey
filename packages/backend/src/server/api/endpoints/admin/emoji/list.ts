@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Emojis } from '@/models/index.js';
-import type { Emoji } from '@/models/entities/emoji.js';
+import type { Emoji } from '@/models/entities/Emoji.js';
 import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {

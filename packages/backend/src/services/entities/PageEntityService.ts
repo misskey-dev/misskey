@@ -4,10 +4,10 @@ import { DriveFiles } from '@/models/index.js';
 import type { Pages , PageLikes } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { } from '@/models/entities/blocking.js';
-import type { User } from '@/models/entities/user.js';
-import type { Page } from '@/models/entities/page.js';
-import type { DriveFile } from '@/models/entities/drive-file.js';
+import type { } from '@/models/entities/Blocking.js';
+import type { User } from '@/models/entities/User.js';
+import type { Page } from '@/models/entities/Page.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()

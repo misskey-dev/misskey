@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import type { IActivity } from '@/services/remote/activitypub/type.js';
-import type { DriveFile } from '@/models/entities/drive-file.js';
-import type { Webhook, webhookEventTypes } from '@/models/entities/webhook.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './queue.module.js';

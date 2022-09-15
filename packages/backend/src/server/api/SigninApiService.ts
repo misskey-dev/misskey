@@ -8,7 +8,7 @@ import type { UserSecurityKeys , Signins, UserProfiles } from '@/models/index.js
 import { AttestationChallenges, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { ILocalUser } from '@/models/entities/user.js';
+import type { ILocalUser } from '@/models/entities/User.js';
 import { IdService } from '@/services/IdService.js';
 import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
 import { RateLimiterService } from './RateLimiterService.js';

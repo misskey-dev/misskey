@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserLists } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
-import type { UserList } from '@/models/entities/user-list.js';
+import type { UserList } from '@/models/entities/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/services/entities/UserListEntityService.js';
 

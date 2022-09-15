@@ -5,8 +5,8 @@ import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import { IdService } from '@/services/IdService.js';
-import type { DriveFile } from '@/models/entities/drive-file.js';
-import type { Emoji } from '@/models/entities/emoji.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Emoji } from '@/models/entities/Emoji.js';
 
 @Injectable()
 export class CustomEmojiService {

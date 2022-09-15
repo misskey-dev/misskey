@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import type { ILocalUser, User } from '@/models/entities/user.js';
+import type { ILocalUser, User } from '@/models/entities/User.js';
 import type { Relays, Users } from '@/models/index.js';
 import type { IdService } from '@/services/IdService.js';
 import { Cache } from '@/misc/cache.js';
-import type { Relay } from '@/models/entities/relay.js';
+import type { Relay } from '@/models/entities/Relay.js';
 import type { QueueService } from '@/queue/queue.service.js';
 import type { CreateSystemUserService } from '@/services/CreateSystemUserService.js';
 import type { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';

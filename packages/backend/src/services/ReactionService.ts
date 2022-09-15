@@ -4,10 +4,10 @@ import { DI } from '@/di-symbols.js';
 import type { Blockings, Emojis, NoteReactions , Users , Notes } from '@/models/index.js';
 
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { IRemoteUser, User } from '@/models/entities/user.js';
-import type { Note } from '@/models/entities/note.js';
+import type { IRemoteUser, User } from '@/models/entities/User.js';
+import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/services/IdService.js';
-import type { NoteReaction } from '@/models/entities/note-reaction.js';
+import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';

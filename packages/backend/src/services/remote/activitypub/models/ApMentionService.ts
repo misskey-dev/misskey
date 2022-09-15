@@ -4,7 +4,7 @@ import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { toArray, unique } from '@/prelude/array.js';
-import type { CacheableUser } from '@/models/entities/user.js';
+import type { CacheableUser } from '@/models/entities/User.js';
 import { isMention } from '../type.js';
 import type { ApResolverService } from '../ApResolverService.js';
 import type { IObject , IApMention } from '../type.js';

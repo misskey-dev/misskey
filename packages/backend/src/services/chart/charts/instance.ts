@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
-import type { DriveFile } from '@/models/entities/drive-file.js';
-import type { Note } from '@/models/entities/note.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
 import { toPuny } from '@/misc/convert-host.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Note } from '@/models/entities/note.js';
+import type { Note } from '@/models/entities/Note.js';
 import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';

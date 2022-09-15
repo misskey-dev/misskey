@@ -1,12 +1,12 @@
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
 import type { Users , Notes , Blockings } from '@/models/index.js';
 import { DriveFiles, Channels } from '@/models/index.js';
-import type { DriveFile } from '@/models/entities/drive-file.js';
-import type { Note } from '@/models/entities/note.js';
-import type { Channel } from '@/models/entities/channel.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { Channel } from '@/models/entities/Channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';

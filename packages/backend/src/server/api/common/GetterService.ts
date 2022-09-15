@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Notes , Users } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { User } from '@/models/entities/user.js';
-import type { Note } from '@/models/entities/note.js';
+import type { User } from '@/models/entities/User.js';
+import type { Note } from '@/models/entities/Note.js';
 
 @Injectable()
 export class GetterService {
