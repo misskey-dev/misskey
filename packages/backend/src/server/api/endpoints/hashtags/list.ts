@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Hashtags } from '@/models/index.js';
+import type { Hashtags } from '@/models/index.js';
+import { HashtagEntityService } from '@/services/entities/HashtagEntityService';
 
 export const meta = {
 	tags: ['hashtags'],
@@ -34,14 +35,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('hashtagsRepository')
+		private hashtagsRepository: typeof Hashtags,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private hashtagEntityService: HashtagEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = Hashtags.createQueryBuilder('tag');
+			const query = this.hashtagsRepository.createQueryBuilder('tag');
 
 			if (ps.attachedToUserOnly) query.andWhere('tag.attachedUsersCount != 0');
 			if (ps.attachedToLocalUserOnly) query.andWhere('tag.attachedLocalUsersCount != 0');
@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const tags = await query.take(ps.limit).getMany();
 
-			return Hashtags.packMany(tags);
+			return this.hashtagEntityService.packMany(tags);
 		});
 	}
 }

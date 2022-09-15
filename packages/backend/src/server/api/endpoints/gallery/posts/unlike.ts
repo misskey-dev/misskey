@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GalleryPosts, GalleryLikes } from '@/models/index.js';
+import type { GalleryPosts, GalleryLikes } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -37,14 +37,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('galleryPostsRepository')
+		private galleryPostsRepository: typeof GalleryPosts,
+
+		@Inject('galleryLikesRepository')
+		private galleryLikesRepository: typeof GalleryLikes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const post = await GalleryPosts.findOneBy({ id: ps.postId });
+			const post = await this.galleryPostsRepository.findOneBy({ id: ps.postId });
 			if (post == null) {
 				throw new ApiError(meta.errors.noSuchPost);
 			}
 
-			const exist = await GalleryLikes.findOneBy({
+			const exist = await this.galleryLikesRepository.findOneBy({
 				postId: post.id,
 				userId: me.id,
 			});
@@ -54,9 +59,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Delete like
-			await GalleryLikes.delete(exist.id);
+			await this.galleryLikesRepository.delete(exist.id);
 
-			GalleryPosts.decrement({ id: post.id }, 'likedCount', 1);
+			this.galleryPostsRepository.decrement({ id: post.id }, 'likedCount', 1);
 		});
 	}
 }

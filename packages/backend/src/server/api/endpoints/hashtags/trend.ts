@@ -1,11 +1,11 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
 import type { Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/note.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { MetaService } from '@/services/MetaService';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -64,14 +64,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
+
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async () => {
-			const instance = await fetchMeta(true);
+			const instance = await this.metaService.fetch(true);
 			const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
 
 			const now = new Date(); // 5分単位で丸めた現在日時

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GalleryPosts } from '@/models/index.js';
+import type { GalleryPosts } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService';
 
 export const meta = {
 	tags: ['gallery'],
@@ -31,21 +32,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('galleryPostsRepository')
+		private galleryPostsRepository: typeof GalleryPosts,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
+		private galleryPostEntityService: GalleryPostEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(GalleryPosts.createQueryBuilder('post'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.galleryPostsRepository.createQueryBuilder('post'), ps.sinceId, ps.untilId)
 				.innerJoinAndSelect('post.user', 'user');
 
 			const posts = await query.take(ps.limit).getMany();
 
-			return await GalleryPosts.packMany(posts, me);
+			return await this.galleryPostEntityService.packMany(posts, me);
 		});
 	}
 }

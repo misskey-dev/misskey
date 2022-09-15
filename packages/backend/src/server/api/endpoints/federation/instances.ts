@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Instances } from '@/models/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import type { Instances } from '@/models/index.js';
+import { InstanceEntityService } from '@/services/entities/InstanceEntityService';
+import { MetaService } from '@/services/MetaService';
 
 export const meta = {
 	tags: ['federation'],
@@ -41,14 +41,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('instancesRepository')
+		private instancesRepository: typeof Instances,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private instanceEntityService: InstanceEntityService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = Instances.createQueryBuilder('instance');
+			const query = this.instancesRepository.createQueryBuilder('instance');
 
 			switch (ps.sort) {
 				case '+pubSub': query.orderBy('instance.followingCount', 'DESC').orderBy('instance.followersCount', 'DESC'); break;
@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (typeof ps.blocked === 'boolean') {
-				const meta = await fetchMeta(true);
+				const meta = await this.metaService.fetch(true);
 				if (ps.blocked) {
 					query.andWhere('instance.host IN (:...blocks)', { blocks: meta.blockedHosts });
 				} else {
@@ -124,7 +124,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const instances = await query.take(ps.limit).skip(ps.offset).getMany();
 
-			return await Instances.packMany(instances);
+			return await this.instanceEntityService.packMany(instances);
 		});
 	}
 }

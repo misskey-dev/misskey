@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GalleryPosts, GalleryLikes } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { GalleryLikes , GalleryPosts } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -44,10 +44,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('galleryPostsRepository')
+		private galleryPostsRepository: typeof GalleryPosts,
+
+		@Inject('galleryLikesRepository')
+		private galleryLikesRepository: typeof GalleryLikes,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const post = await GalleryPosts.findOneBy({ id: ps.postId });
+			const post = await this.galleryPostsRepository.findOneBy({ id: ps.postId });
 			if (post == null) {
 				throw new ApiError(meta.errors.noSuchPost);
 			}
@@ -57,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// if already liked
-			const exist = await GalleryLikes.findOneBy({
+			const exist = await this.galleryLikesRepository.findOneBy({
 				postId: post.id,
 				userId: me.id,
 			});
@@ -67,14 +73,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Create like
-			await GalleryLikes.insert({
+			await this.galleryLikesRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				postId: post.id,
 				userId: me.id,
 			});
 
-			GalleryPosts.increment({ id: post.id }, 'likedCount', 1);
+			this.galleryPostsRepository.increment({ id: post.id }, 'likedCount', 1);
 		});
 	}
 }

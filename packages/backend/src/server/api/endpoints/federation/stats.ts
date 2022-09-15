@@ -1,8 +1,9 @@
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Followings, Instances } from '@/models/index.js';
+import type { Followings, Instances } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { InstanceEntityService } from '@/services/entities/InstanceEntityService';
 
 export const meta = {
 	tags: ['federation'],
@@ -25,10 +26,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('instancesRepository')
+		private instancesRepository: typeof Instances,
+
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		private instanceEntityService: InstanceEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [topSubInstances, topPubInstances, allSubCount, allPubCount] = await Promise.all([
-				Instances.find({
+				this.instancesRepository.find({
 					where: {
 						followersCount: MoreThan(0),
 					},
@@ -37,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					},
 					take: ps.limit,
 				}),
-				Instances.find({
+				this.instancesRepository.find({
 					where: {
 						followingCount: MoreThan(0),
 					},
@@ -62,9 +70,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const gotPubCount = topPubInstances.map(x => x.followingCount).reduce((a, b) => a + b, 0);
 
 			return await awaitAll({
-				topSubInstances: Instances.packMany(topSubInstances),
+				topSubInstances: this.instanceEntityService.packMany(topSubInstances),
 				otherFollowersCount: Math.max(0, allSubCount - gotSubCount),
-				topPubInstances: Instances.packMany(topPubInstances),
+				topPubInstances: this.instanceEntityService.packMany(topPubInstances),
 				otherFollowingCount: Math.max(0, allPubCount - gotPubCount),
 			});
 		});
