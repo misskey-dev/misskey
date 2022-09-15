@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { deleteFile } from '@/services/drive/delete-file.js';
-import { publishDriveStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFiles, Users } from '@/models/index.js';
+import type { DriveFiles } from '@/models/index.js';
+import { Users } from '@/models/index.js';
+import { DriveService } from '@/services/DriveService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -41,9 +42,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		private driveService: DriveService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const file = await DriveFiles.findOneBy({ id: ps.fileId });
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
@@ -54,10 +60,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Delete
-			await deleteFile(file);
+			await this.driveService.deleteFile(file);
 
 			// Publish fileDeleted event
-			publishDriveStream(me.id, 'fileDeleted', file.id);
+			this.globalEventService.publishDriveStream(me.id, 'fileDeleted', file.id);
 		});
 	}
 }
