@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GalleryLikes } from '@/models/index.js';
+import type { GalleryLikes } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { GalleryLikeEntityService } from '@/services/entities/GalleryLikeEntityService';
 
 export const meta = {
 	tags: ['account', 'gallery'],
@@ -46,10 +47,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('galleryLikesRepository')
+		private galleryLikesRepository: typeof GalleryLikes,
+
+		private galleryLikeEntityService: GalleryLikeEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(GalleryLikes.createQueryBuilder('like'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.galleryLikesRepository.createQueryBuilder('like'), ps.sinceId, ps.untilId)
 				.andWhere('like.userId = :meId', { meId: me.id })
 				.leftJoinAndSelect('like.post', 'post');
 
@@ -57,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await GalleryLikes.packMany(likes, me);
+			return await this.galleryLikeEntityService.packMany(likes, me);
 		});
 	}
 }

@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { publishMainStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { RegistryItems } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { RegistryItems } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import { GlobalEventService } from '@/services/GlobalEventService';
 
 export const meta = {
 	requireCredential: true,
@@ -26,10 +27,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('registryItemsRepository')
+		private registryItemsRepository: typeof RegistryItems,
+
 		private idService: IdService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = RegistryItems.createQueryBuilder('item')
+			const query = this.registryItemsRepository.createQueryBuilder('item')
 				.where('item.domain IS NULL')
 				.andWhere('item.userId = :userId', { userId: me.id })
 				.andWhere('item.key = :key', { key: ps.key })
@@ -38,12 +43,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const existingItem = await query.getOne();
 
 			if (existingItem) {
-				await RegistryItems.update(existingItem.id, {
+				await this.registryItemsRepository.update(existingItem.id, {
 					updatedAt: new Date(),
 					value: ps.value,
 				});
 			} else {
-				await RegistryItems.insert({
+				await this.registryItemsRepository.insert({
 					id: this.idService.genId(),
 					createdAt: new Date(),
 					updatedAt: new Date(),
@@ -56,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
-			publishMainStream(me.id, 'registryUpdated', {
+			this.globalEventService.publishMainStream(me.id, 'registryUpdated', {
 				scope: ps.scope,
 				key: ps.key,
 				value: ps.value,

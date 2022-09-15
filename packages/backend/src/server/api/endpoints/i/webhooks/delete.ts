@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Webhooks } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import type { Webhooks } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -28,13 +28,19 @@ export const paramDef = {
 	required: ['webhookId'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('webhooksRepository')
+		private webhooksRepository: typeof Webhooks,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const webhook = await Webhooks.findOneBy({
+			const webhook = await this.webhooksRepository.findOneBy({
 				id: ps.webhookId,
 				userId: me.id,
 			});
@@ -43,9 +49,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchWebhook);
 			}
 
-			await Webhooks.delete(webhook.id);
+			await this.webhooksRepository.delete(webhook.id);
 
-			publishInternalEvent('webhookDeleted', webhook);
+			this.globalEventService.publishInternalEvent('webhookDeleted', webhook);
 		});
 	}
 }

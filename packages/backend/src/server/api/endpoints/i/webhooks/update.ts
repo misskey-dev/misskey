@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Webhooks } from '@/models/index.js';
+import type { Webhooks } from '@/models/index.js';
 import { publishInternalEvent } from '@/services/stream.js';
 import { webhookEventTypes } from '@/models/entities/webhook.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -37,13 +38,19 @@ export const paramDef = {
 	required: ['webhookId', 'name', 'url', 'secret', 'on', 'active'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('webhooksRepository')
+		private webhooksRepository: typeof Webhooks,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const webhook = await Webhooks.findOneBy({
+			const webhook = await this.webhooksRepository.findOneBy({
 				id: ps.webhookId,
 				userId: me.id,
 			});
@@ -52,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchWebhook);
 			}
 
-			await Webhooks.update(webhook.id, {
+			await this.webhooksRepository.update(webhook.id, {
 				name: ps.name,
 				url: ps.url,
 				secret: ps.secret,
@@ -60,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				active: ps.active,
 			});
 
-			publishInternalEvent('webhookUpdated', webhook);
+			this.globalEventService.publishInternalEvent('webhookUpdated', webhook);
 		});
 	}
 }

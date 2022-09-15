@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { RegistryItems } from '@/models/index.js';
+import type { RegistryItems } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,
@@ -18,9 +18,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('registryItemsRepository')
+		private registryItemsRepository: typeof RegistryItems,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = RegistryItems.createQueryBuilder('item')
+			const query = this.registryItemsRepository.createQueryBuilder('item')
 				.select('item.scope')
 				.where('item.domain IS NULL')
 				.andWhere('item.userId = :userId', { userId: me.id });
