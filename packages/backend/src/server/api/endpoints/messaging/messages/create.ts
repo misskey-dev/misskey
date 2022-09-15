@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MessagingMessages, DriveFiles, UserGroups, UserGroupJoinings, Blockings } from '@/models/index.js';
+import type { Blockings , UserGroupJoinings , DriveFiles , UserGroups } from '@/models/index.js';
+import { MessagingMessages } from '@/models/index.js';
 import type { User } from '@/models/entities/user.js';
 import type { UserGroup } from '@/models/entities/user-group.js';
 import { createMessage } from '@/services/messages/create.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
+import { MessagingService } from '@/services/MessagingService.js';
 import { getUser } from '../../../common/getters.js';
 import { ApiError } from '../../../error.js';
 
@@ -91,6 +94,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('userGroupsRepository')
+		private userGroupsRepository: typeof UserGroups,
+
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
+
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		private getterService: GetterService,
+		private messagingService: MessagingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let recipientUser: User | null;
@@ -103,9 +120,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				// Fetch recipient (user)
-				recipientUser = await getUser(ps.userId).catch(e => {
-					if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-					throw e;
+				recipientUser = await this.getterService.getUser(ps.userId).catch(err => {
+					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+					throw err;
 				});
 
 				// Check blocking
@@ -118,14 +135,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			} else if (ps.groupId != null) {
 				// Fetch recipient (group)
-				recipientGroup = await UserGroups.findOneBy({ id: ps.groupId! });
+				recipientGroup = await this.userGroupsRepository.findOneBy({ id: ps.groupId! });
 
 				if (recipientGroup == null) {
 					throw new ApiError(meta.errors.noSuchGroup);
 				}
 
 				// check joined
-				const joining = await UserGroupJoinings.findOneBy({
+				const joining = await this.userGroupJoiningsRepository.findOneBy({
 					userId: me.id,
 					userGroupId: recipientGroup.id,
 				});
@@ -137,7 +154,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let file = null;
 			if (ps.fileId != null) {
-				file = await DriveFiles.findOneBy({
+				file = await this.driveFilesRepository.findOneBy({
 					id: ps.fileId,
 					userId: me.id,
 				});
@@ -152,7 +169,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.contentRequired);
 			}
 
-			return await createMessage(me, recipientUser, recipientGroup, ps.text, file);
+			return await this.messagingService.createMessage(me, recipientUser, recipientGroup, ps.text, file);
 		});
 	}
 }

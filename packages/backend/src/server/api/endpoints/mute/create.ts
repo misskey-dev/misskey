@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { IdService } from '@/services/IdService.js';
-import { Mutings, NoteWatchings } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import type { Mutings } from '@/models/index.js';
 import type { Muting } from '@/models/entities/muting.js';
-import { publishUserEvent } from '@/services/stream.js';
-import { getUser } from '../../common/getters.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['account'],
@@ -52,6 +52,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('mutingsRepository')
+		private mutingsRepository: typeof Mutings,
+
+		private globalEventService: GlobalEventService,
+		private getterService: GetterService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -63,9 +68,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Get mutee
-			const mutee = await getUser(ps.userId).catch(e => {
-				if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-				throw e;
+			const mutee = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
 
 			// Check if already muting
@@ -91,12 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				muteeId: mutee.id,
 			} as Muting);
 
-			publishUserEvent(me.id, 'mute', mutee);
-
-			NoteWatchings.delete({
-				userId: muter.id,
-				noteUserId: mutee.id,
-			});
+			this.globalEventService.publishUserEvent(me.id, 'mute', mutee);
 		});
 	}
 }

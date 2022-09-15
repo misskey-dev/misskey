@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MessagingMessages } from '@/models/index.js';
+import type { MessagingMessages } from '@/models/index.js';
 import { deleteMessage } from '@/services/messages/delete.js';
+import { MessagingService } from '@/services/MessagingService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -39,9 +40,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('messagingMessagesRepository')
+		private messagingMessagesRepository: typeof MessagingMessages,
+
+		private messagingService: MessagingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const message = await MessagingMessages.findOneBy({
+			const message = await this.messagingMessagesRepository.findOneBy({
 				id: ps.messageId,
 				userId: me.id,
 			});
@@ -50,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchMessage);
 			}
 
-			await deleteMessage(message);
+			await this.messagingService.deleteMessage(message);
 		});
 	}
 }
