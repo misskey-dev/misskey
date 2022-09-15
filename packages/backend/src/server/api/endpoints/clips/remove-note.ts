@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ClipNotes, Clips } from '@/models/index.js';
+import type { ClipNotes, Clips } from '@/models/index.js';
 import { ApiError } from '../../error.js';
-import { getNote } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
@@ -39,9 +39,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('clipsRepository')
+		private clipsRepository: typeof Clips,
+
+		@Inject('clipNotesRepository')
+		private clipNotesRepository: typeof ClipNotes,
+
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clip = await Clips.findOneBy({
+			const clip = await this.clipsRepository.findOneBy({
 				id: ps.clipId,
 				userId: me.id,
 			});
@@ -50,12 +57,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
-			await ClipNotes.delete({
+			await this.clipNotesRepository.delete({
 				noteId: note.id,
 				clipId: clip.id,
 			});

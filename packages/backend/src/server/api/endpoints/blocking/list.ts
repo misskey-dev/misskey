@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Blockings } from '@/models/index.js';
+import type { Blockings } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { BlockingEntityService } from '@/services/entities/BlockingEntityService';
 
 export const meta = {
 	tags: ['account'],
@@ -35,12 +36,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
-
+		private blockingEntityService: BlockingEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

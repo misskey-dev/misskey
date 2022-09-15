@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Clips } from '@/models/index.js';
+import type { Clips } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -31,9 +31,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('clipsRepository')
+		private clipsRepository: typeof Clips,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clip = await Clips.findOneBy({
+			const clip = await this.clipsRepository.findOneBy({
 				id: ps.clipId,
 				userId: me.id,
 			});
@@ -42,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			await Clips.delete(clip.id);
+			await this.clipsRepository.delete(clip.id);
 		});
 	}
 }

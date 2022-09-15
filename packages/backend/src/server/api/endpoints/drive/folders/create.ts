@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishDriveStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFolders } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -46,6 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private driveFolderEntityService: DriveFolderEntityService,
 		private idService: IdService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// If the parent folder is specified
@@ -74,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const folderObj = await this.driveFolderEntityService.pack(folder);
 
 			// Publish folderCreated event
-			publishDriveStream(me.id, 'folderCreated', folderObj);
+			this.globalEventService.publishDriveStream(me.id, 'folderCreated', folderObj);
 
 			return folderObj;
 		});

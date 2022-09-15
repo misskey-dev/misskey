@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Notes } from '@/models/index.js';
-import { ClipNotes, Clips } from '@/models/index.js';
+import type { Notes , Clips } from '@/models/index.js';
+import { ClipNotes } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -46,13 +47,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('clipsRepository')
+		private clipsRepository: typeof Clips,
+
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clip = await Clips.findOneBy({
+			const clip = await this.clipsRepository.findOneBy({
 				id: ps.clipId,
 			});
 

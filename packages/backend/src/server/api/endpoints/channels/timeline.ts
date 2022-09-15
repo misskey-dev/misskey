@@ -4,6 +4,7 @@ import type { Notes } from '@/models/index.js';
 import { Channels } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -50,6 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

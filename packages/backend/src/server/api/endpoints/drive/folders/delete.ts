@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { publishDriveStream } from '@/services/stream.js';
-import { DriveFolders, DriveFiles } from '@/models/index.js';
+import type { DriveFolders, DriveFiles } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -38,10 +39,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
+
+		@Inject('driveFoldersRepository')
+		private driveFoldersRepository: typeof DriveFolders,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get folder
-			const folder = await DriveFolders.findOneBy({
+			const folder = await this.driveFoldersRepository.findOneBy({
 				id: ps.folderId,
 				userId: me.id,
 			});
@@ -51,18 +59,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const [childFoldersCount, childFilesCount] = await Promise.all([
-				DriveFolders.countBy({ parentId: folder.id }),
-				DriveFiles.countBy({ folderId: folder.id }),
+				this.driveFoldersRepository.countBy({ parentId: folder.id }),
+				this.driveFilesRepository.countBy({ folderId: folder.id }),
 			]);
 
 			if (childFoldersCount !== 0 || childFilesCount !== 0) {
 				throw new ApiError(meta.errors.hasChildFilesOrFolders);
 			}
 
-			await DriveFolders.delete(folder.id);
+			await this.driveFoldersRepository.delete(folder.id);
 
 			// Publish folderCreated event
-			publishDriveStream(me.id, 'folderDeleted', folder.id);
+			this.globalEventService.publishDriveStream(me.id, 'folderDeleted', folder.id);
 		});
 	}
 }

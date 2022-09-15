@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Channels, ChannelFollowings } from '@/models/index.js';
-import { publishUserEvent } from '@/services/stream.js';
+import type { ChannelFollowings } from '@/models/index.js';
+import { Channels } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -32,6 +33,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('channelFollowingsRepository')
+		private channelFollowingsRepository: typeof ChannelFollowings,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const channel = await Channels.findOneBy({
@@ -47,7 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				followeeId: channel.id,
 			});
 
-			publishUserEvent(me.id, 'unfollowChannel', channel);
+			this.globalEventService.publishUserEvent(me.id, 'unfollowChannel', channel);
 		});
 	}
 }
