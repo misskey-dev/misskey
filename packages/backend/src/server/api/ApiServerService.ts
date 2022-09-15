@@ -11,12 +11,12 @@ import { Instances, AccessTokens } from '@/models/index.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import endpoints from './endpoints.js';
-import discord from './service/discord.js';
-import github from './service/github.js';
-import twitter from './service/twitter.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
+import { GithubServerService } from './integration/GithubServerService.js';
+import { DiscordServerService } from './integration/DiscordServerService.js';
+import { TwitterServerService } from './integration/TwitterServerService.js';
 
 @Injectable()
 export class ApiServerService {
@@ -33,6 +33,9 @@ export class ApiServerService {
 		private apiCallService: ApiCallService,
 		private signupApiServiceService: SignupApiService,
 		private signinApiServiceService: SigninApiService,
+		private githubServerService: GithubServerService,
+		private discordServerService: DiscordServerService,
+		private twitterServerService: TwitterServerService,
 	) {
 	}
 
@@ -105,9 +108,9 @@ export class ApiServerService {
 		router.post('/signin', ctx => this.signinApiServiceService.signin(ctx));
 		router.post('/signup-pending', ctx => this.signupApiServiceService.signupPending(ctx));
 
-		router.use(discord.routes());
-		router.use(github.routes());
-		router.use(twitter.routes());
+		router.use(this.discordServerService.create().routes());
+		router.use(this.githubServerService.create().routes());
+		router.use(this.twitterServerService.create().routes());
 
 		router.get('/v1/instance/peers', async ctx => {
 			const instances = await Instances.find({
