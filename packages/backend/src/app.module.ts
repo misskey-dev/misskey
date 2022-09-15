@@ -3,7 +3,7 @@ import { QueueModule } from '@/queue/queue.module.js';
 import { CoreModule } from './services/CoreModule.js';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
-import { db } from './db/postgre';
+import { db } from './db/postgre.js';
 import { RepositoryModule } from './RepositoryModule.js';
 import { ServerModule } from './server/ServerModule.js';
 
