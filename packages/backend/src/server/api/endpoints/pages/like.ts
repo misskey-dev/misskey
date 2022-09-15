@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Pages, PageLikes } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { Pages , PageLikes } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -44,10 +44,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
+
+		@Inject('pageLikesRepository')
+		private pageLikesRepository: typeof PageLikes,
+
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const page = await Pages.findOneBy({ id: ps.pageId });
+			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
@@ -57,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// if already liked
-			const exist = await PageLikes.findOneBy({
+			const exist = await this.pageLikesRepository.findOneBy({
 				pageId: page.id,
 				userId: me.id,
 			});
@@ -67,14 +73,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Create like
-			await PageLikes.insert({
+			await this.pageLikesRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				pageId: page.id,
 				userId: me.id,
 			});
 
-			Pages.increment({ id: page.id }, 'likedCount', 1);
+			this.pagesRepository.increment({ id: page.id }, 'likedCount', 1);
 		});
 	}
 }

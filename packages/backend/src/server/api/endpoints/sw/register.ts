@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import type { IdService } from '@/services/IdService.js';
-import { SwSubscriptions } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import type { SwSubscriptions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/services/MetaService';
 
 export const meta = {
 	tags: ['account'],
@@ -42,18 +43,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('swSubscriptionsRepository')
+		private swSubscriptionsRepository: typeof SwSubscriptions,
+
 		private idService: IdService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// if already subscribed
-			const exist = await SwSubscriptions.findOneBy({
+			const exist = await this.swSubscriptionsRepository.findOneBy({
 				userId: me.id,
 				endpoint: ps.endpoint,
 				auth: ps.auth,
 				publickey: ps.publickey,
 			});
 
-			const instance = await fetchMeta(true);
+			const instance = await this.metaService.fetch(true);
 
 			if (exist != null) {
 				return {
@@ -62,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				};
 			}
 
-			await SwSubscriptions.insert({
+			await this.swSubscriptionsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,

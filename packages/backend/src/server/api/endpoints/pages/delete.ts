@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Pages } from '@/models/index.js';
+import type { Pages } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -37,9 +37,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const page = await Pages.findOneBy({ id: ps.pageId });
+			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
@@ -47,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			await Pages.delete(page.id);
+			await this.pagesRepository.delete(page.id);
 		});
 	}
 }

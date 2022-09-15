@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { SwSubscriptions } from '@/models/index.js';
+import type { SwSubscriptions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
@@ -22,9 +22,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('swSubscriptionsRepository')
+		private swSubscriptionsRepository: typeof SwSubscriptions,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await SwSubscriptions.delete({
+			await this.swSubscriptionsRepository.delete({
 				userId: me.id,
 				endpoint: ps.endpoint,
 			});

@@ -1,7 +1,7 @@
 import ms from 'ms';
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Pages, DriveFiles } from '@/models/index.js';
+import type { Pages , DriveFiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
@@ -69,9 +69,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
+
+		@Inject('driveFilesRepository')
+		private driveFilesRepository: typeof DriveFiles,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const page = await Pages.findOneBy({ id: ps.pageId });
+			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
 			}
@@ -81,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let eyeCatchingImage = null;
 			if (ps.eyeCatchingImageId != null) {
-				eyeCatchingImage = await DriveFiles.findOneBy({
+				eyeCatchingImage = await this.driveFilesRepository.findOneBy({
 					id: ps.eyeCatchingImageId,
 					userId: me.id,
 				});
@@ -91,7 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			await Pages.findBy({
+			await this.pagesRepository.findBy({
 				id: Not(ps.pageId),
 				userId: me.id,
 				name: ps.name,
@@ -101,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			});
 
-			await Pages.update(page.id, {
+			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
 				title: ps.title,
 				name: ps.name === undefined ? page.name : ps.name,

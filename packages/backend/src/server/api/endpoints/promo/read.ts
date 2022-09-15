@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PromoReads } from '@/models/index.js';
-import type { IdService } from '@/services/IdService.js';
+import type { PromoReads } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
-import { getNote } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -31,15 +31,19 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('promoReadsRepository')
+		private promoReadsRepository: typeof PromoReads,
+
 		private idService: IdService,
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
-			const exist = await PromoReads.findOneBy({
+			const exist = await this.promoReadsRepository.findOneBy({
 				noteId: note.id,
 				userId: me.id,
 			});
@@ -48,7 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return;
 			}
 
-			await PromoReads.insert({
+			await this.promoReadsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				noteId: note.id,

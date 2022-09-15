@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Pages } from '@/models/index.js';
+import type { Pages } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { PageEntityService } from '@/services/entities/PageEntityService';
 
 export const meta = {
 	tags: ['pages'],
@@ -28,21 +29,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('pagesRepository')
+		private pagesRepository: typeof Pages,
 
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private pageEntityService: PageEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = Pages.createQueryBuilder('page')
+			const query = this.pagesRepository.createQueryBuilder('page')
 				.where('page.visibility = \'public\'')
 				.andWhere('page.likedCount > 0')
 				.orderBy('page.likedCount', 'DESC');
 
 			const pages = await query.take(10).getMany();
 
-			return await Pages.packMany(pages, me);
+			return await this.pageEntityService.packMany(pages, me);
 		});
 	}
 }

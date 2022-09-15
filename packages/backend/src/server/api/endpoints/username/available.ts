@@ -1,7 +1,8 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { Users , UsedUsernames } from '@/models/index.js';
+import type { UsedUsernames , Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { localUsernameSchema } from '@/models/entities/user';
 
 export const meta = {
 	tags: ['users'],
@@ -23,7 +24,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		username: Users.localUsernameSchema,
+		username: localUsernameSchema,
 	},
 	required: ['username'],
 } as const;
@@ -34,6 +35,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('usedUsernamesRepository')
+		private usedUsernamesRepository: typeof UsedUsernames,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get exist
@@ -42,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				usernameLower: ps.username.toLowerCase(),
 			});
 
-			const exist2 = await UsedUsernames.countBy({ username: ps.username.toLowerCase() });
+			const exist2 = await this.usedUsernamesRepository.countBy({ username: ps.username.toLowerCase() });
 
 			return {
 				available: exist === 0 && exist2 === 0,
