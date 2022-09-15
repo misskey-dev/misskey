@@ -1275,10 +1275,13 @@ _widgets:
   trends: "Tendenze"
   clock: "Orologio"
   rss: "Aggregatore rss"
+  rssTicker: "Ticker RSS"
   activity: "Attività"
   photos: "Foto"
   digitalClock: "Orologio digitale"
+  unixClock: "Orologio UNIX"
   federation: "Federazione"
+  instanceCloud: "Istanza Cloud"
   postForm: "Finestra di pubblicazione"
   slideshow: "Diapositive"
   button: "Pulsante"
@@ -1286,6 +1289,7 @@ _widgets:
   jobQueue: "Coda di lavoro"
   serverMetric: "Statistiche server"
   aiscript: "Console AiScript"
+  aichan: "indaco (tintura)"
 _cw:
   hide: "Nascondere"
   show: "Mostra di più"
@@ -1353,6 +1357,8 @@ _exportOrImport:
   muteList: "Account silenziati"
   blockingList: "Account bloccati"
   userLists: "Liste"
+  excludeMutingUsers: "Escludere gli utenti silenziati"
+  excludeInactiveUsers: "Escludere gli account inutilizzati."
 _charts:
   federation: "Federazione"
   apRequest: "Richieste"
@@ -1403,12 +1409,14 @@ _pages:
   my: "Le mie pagine"
   liked: "Pagine che mi piacciono"
   featured: "Popolari"
+  inspector: "Analisi pagina"
   contents: "Contenuto"
   content: "Blocco di pagina"
   variables: "Variabili"
   title: "Titolo"
   url: "URL della pagina"
   summary: "Riassunto di pagina"
+  alignCenter: "centrato"
   hideTitleWhenPinned: "Nascondere il titolo pagina quando è fissata in cima al profilo."
   font: "Tipo di carattere"
   fontSerif: "Serif"
@@ -1434,6 +1442,8 @@ _pages:
     post: "Finestra di pubblicazione"
     _post:
       text: "Contenuto"
+      attachCanvasImage: "Allegare un'immagine della tela."
+      canvasId: "ID tela"
     textInput: "Immissione testo"
     _textInput:
       name: "Nome della variabile"
@@ -1449,7 +1459,9 @@ _pages:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    canvas: "tela"
     _canvas:
+      id: "ID tela"
       width: "Larghezza"
       height: "Altezza"
     note: "Nota integrata"
@@ -1489,43 +1501,69 @@ _pages:
     _radioButton:
       name: "Nome della variabile"
       title: "Titolo"
+      values: "Opzioni separate da una nuova riga"
       default: "Valore predefinito"
   script:
     categories:
+      flow: "controllo"
+      logical: "funzionamento logico"
+      operation: "calcolo"
       comparison: "Metodo comparativo"
       random: "Aleatorietà"
       value: "Valore"
       fn: "Funzione"
+      text: "manipolazione del testo"
+      convert: "trasformazione"
       list: "Liste"
     blocks:
       text: "Testo"
       multiLineText: "Testo (a più righe)"
       textList: "Lista di testo"
+      _textList:
+        info: "Separare ciascuno di essi con una nuova riga"
+      strLen: "Lunghezza del testo"
       _strLen:
         arg1: "Testo"
+      strPick: "estrazione dei caratteri"
       _strPick:
         arg1: "Testo"
+        arg2: "posizione del carattere"
+      strReplace: "sostituzione del testo"
       _strReplace:
         arg1: "Testo"
+        arg2: "Prima della sostituzione"
+        arg3: "dopo la sostituzione"
+      strReverse: "Invertire il testo."
       _strReverse:
         arg1: "Testo"
+      join: "Concatenazione del testo."
       _join:
         arg1: "Liste"
+        arg2: "punteggiatura"
+      add: "aggiungere (qualcosa)"
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "attirare (attenzione, ecc.)"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "impostare (un quadrante, una sveglia, ecc.)"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "smash"
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "i residui di una divisione"
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "arrotondare una frazione"
+      _round:
+        arg1: "valore numerico"
+      eq: "A e B sono uguali"
       _eq:
         arg1: "A"
         arg2: "B"
@@ -1541,24 +1579,41 @@ _pages:
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A è più piccolo di B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A è maggiore di B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "<= A è uguale o inferiore a B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A è uguale o maggiore di B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "divergenza (ad esempio in una strada)"
       _if:
         arg1: "Se"
         arg2: "Se"
+        arg3: "se non così"
+      not: "negazione"
+      _not:
+        arg1: "negazione"
       random: "Aleatorietà"
+      _random:
+        arg1: "probabilità"
+      rannum: "numero casuale"
+      _rannum:
+        arg1: "più piccolo"
+        arg2: "massimo"
+      randomPick: "Selezionato a caso da un elenco."
       _randomPick:
         arg1: "Liste"
+      dailyRandom: "Casuale (cambia ogni giorno per utente)"
       _dailyRandom:
         arg1: "probabilità"
       dailyRannum: "Numeri casuali (ogni giorno per utente)"
@@ -1587,18 +1642,43 @@ _pages:
       pick: "Selezionare dall'elenco"
       _pick:
         arg1: "Liste"
+        arg2: "posizione"
+      listLen: "Ottenere la lunghezza dell'elenco"
       _listLen:
         arg1: "Liste"
+      number: "valore numerico"
+      stringToNumber: "Da testo a numeri."
       _stringToNumber:
         arg1: "Testo"
+      numberToString: "Valori numerici in testo."
+      _numberToString:
+        arg1: "valore numerico"
+      splitStrByLine: "Dividere il testo per riga"
       _splitStrByLine:
         arg1: "Testo"
       ref: "Variabili"
+      aiScriptVar: "Variabili AiScript"
       fn: "Funzione"
+      _fn:
+        slots: "slot"
+        slots-info: "Separare ogni slot con una nuova riga"
+        arg1: "uscita "
+      for: "ripetizione"
+      _for:
+        arg1: "frequenza"
+        arg2: "elaborazione"
+    typeError: "Lo slot {slot} accetta \"{expect}\" ma contiene \"{actual}\"!"
+    thereIsEmptySlot: "Lo slot {slot} è vuoto!"
     types:
       string: "Testo"
+      number: "valore numerico"
+      boolean: "Segnala"
       array: "Liste"
       stringArray: "Lista di testo"
+    emptySlot: "slot vuoto"
+    enviromentVariables: "variabile d'ambiente"
+    pageVariables: "elemento pagina"
+    argVariables: "slot di ingresso"
 _relayStatus:
   requesting: "In attesa di approvazione"
   accepted: "Approvato"
@@ -1616,6 +1696,8 @@ _notification:
   youReceivedFollowRequest: "Hai ricevuto una richiesta di follow"
   yourFollowRequestAccepted: "La tua richiesta di follow è stata accettata"
   youWereInvitedToGroup: "Invitat@ al gruppo"
+  pollEnded: "Risultati del sondaggio."
+  emptyPushNotificationMessage: "Le notifiche push sono state aggiornate."
   _types:
     all: "Tutto"
     follow: "Nuovə follower"
@@ -1625,17 +1707,20 @@ _notification:
     quote: "Cita"
     reaction: "Reazioni"
     pollVote: "Voti ricevuti"
+    pollEnded: "Sondaggio chiuso."
     receiveFollowRequest: "Richiesta di follow ricevuta"
     followRequestAccepted: "Richiesta di follow accettata"
     groupInvited: "Invito a un gruppo"
     app: "Notifiche da applicazioni"
   _actions:
+    followBack: "Segui"
     reply: "Rispondi"
     renote: "Rinota"
 _deck:
   alwaysShowMainColumn: "Mostra sempre la colonna principale"
   columnAlign: "Allineare colonne"
   addColumn: "Aggiungi colonna"
+  configureColumn: "Impostazioni della colonna."
   swapLeft: "Sposta a sinistra"
   swapRight: "Sposta a destra"
   swapUp: "Sposta in alto"
@@ -1643,6 +1728,11 @@ _deck:
   stackLeft: "Impila a sinistra"
   popRight: "Estrai a destra"
   profile: "Profilo"
+  newProfile: "Nuovo profilo"
+  deleteProfile: "Cancellare il profilo."
+  introduction: "Combinate le colonne per creare la vostra interfaccia!"
+  introduction2: "È possibile aggiungere colonne in qualsiasi momento premendo + sulla destra dello schermo."
+  widgetsIntroduction: "Dal menu della colonna, selezionare \"Modifica widget\" per aggiungere un widget."
   _columns:
     main: "Principale"
     widgets: "Widget"
