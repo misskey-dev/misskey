@@ -2,8 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
-import { getNote } from '../../common/getters.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { ApiError } from '../../error.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -47,12 +48,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)

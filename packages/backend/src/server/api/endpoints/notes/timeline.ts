@@ -1,10 +1,11 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notes } from '@/models/index.js';
-import { Followings } from '@/models/index.js';
-import { activeUsersChart } from '@/services/chart/index.js';
+import type { Notes , Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import ActiveUsersChart from '@/services/chart/charts/active-users';
+import { NoteEntityService } from '@/services/entities/NoteEntityService';
+import { MetaService } from '@/services/MetaService';
 
 export const meta = {
 	tags: ['notes'],
@@ -49,7 +50,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const hasFollowing = (await this.followingsRepository.count({
@@ -128,7 +134,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const timeline = await query.take(ps.limit).getMany();
 
 			process.nextTick(() => {
-				activeUsersChart.read(me);
+				this.activeUsersChart.read(me);
 			});
 
 			return await this.noteEntityService.packMany(timeline, me);

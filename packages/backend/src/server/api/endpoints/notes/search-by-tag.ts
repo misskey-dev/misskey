@@ -5,6 +5,7 @@ import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],
@@ -67,12 +68,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

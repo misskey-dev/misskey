@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NoteThreadMutings } from '@/models/index.js';
+import type { NoteThreadMutings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { getNote } from '../../../common/getters.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -32,11 +32,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('noteThreadMutingsRepository')
+		private noteThreadMutingsRepository: typeof NoteThreadMutings,
+
+		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(e => {
-				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw e;
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
 			});
 
 			await this.noteThreadMutingsRepository.delete({

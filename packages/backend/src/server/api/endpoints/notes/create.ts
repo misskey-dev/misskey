@@ -2,15 +2,15 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/user.js';
-import type { Users , Notes } from '@/models/index.js';
-import { DriveFiles, Channels, Blockings } from '@/models/index.js';
+import type { Users , Notes , Blockings } from '@/models/index.js';
+import { DriveFiles, Channels } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Note } from '@/models/entities/note.js';
 import type { Channel } from '@/models/entities/channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { noteService } from '@/services/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { NoteCreateService } from '@/services/NoteCreateService.js';
 import { noteVisibilities } from '../../../../types.js';
 import { ApiError } from '../../error.js';
 
@@ -173,7 +173,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		@Inject('blockingsRepository')
+		private blockingsRepository: typeof Blockings,
+
 		private noteEntityService: NoteEntityService,
+		private noteCreateService: NoteCreateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: User[] = [];
@@ -262,7 +266,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// 投稿を作成
-			const note = await noteService.create(me, {
+			const note = await this.noteCreateService.create(me, {
 				createdAt: new Date(),
 				files: files,
 				poll: ps.poll ? {

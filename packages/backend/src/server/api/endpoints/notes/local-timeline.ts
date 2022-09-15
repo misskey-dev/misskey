@@ -1,10 +1,11 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { fetchMeta } from '@/misc/fetch-meta.js';
 import type { Users , Notes } from '@/models/index.js';
-import { activeUsersChart } from '@/services/chart/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { MetaService } from '@/services/MetaService.js';
+import ActiveUsersChart from '@/services/chart/charts/active-users.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -57,10 +58,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private metaService: MetaService,
+		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const m = await fetchMeta();
+			const m = await this.metaService.fetch();
 			if (m.disableLocalTimeline) {
 				if (me == null || (!me.isAdmin && !me.isModerator)) {
 					throw new ApiError(meta.errors.ltlDisabled);
@@ -114,7 +118,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			process.nextTick(() => {
 				if (me) {
-					activeUsersChart.read(me);
+					this.activeUsersChart.read(me);
 				}
 			});
 

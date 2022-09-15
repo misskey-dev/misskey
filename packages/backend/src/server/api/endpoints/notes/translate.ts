@@ -1,13 +1,15 @@
 import { URLSearchParams } from 'node:url';
 import fetch from 'node-fetch';
 import { Inject, Injectable } from '@nestjs/common';
-import config from '@/config/index.js';
-import { getAgentByUrl } from '@/misc/fetch.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
 import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { Config } from '@/config.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { MetaService } from '@/services/MetaService.js';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
 import { ApiError } from '../../error.js';
-import { getNote } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -41,16 +43,24 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+	
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
+
+		private noteEntityService: NoteEntityService,
+		private getterService: GetterService,
+		private metaService: MetaService,
+		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(err => {
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
 
-			if (!(await this.notesRepository.isVisibleForMe(note, me ? me.id : null))) {
+			if (!(await this.noteEntityService.isVisibleForMe(note, me ? me.id : null))) {
 				return 204; // TODO: 良い感じのエラー返す
 			}
 
@@ -58,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return 204;
 			}
 
-			const instance = await fetchMeta();
+			const instance = await this.metaService.fetch();
 
 			if (instance.deeplAuthKey == null) {
 				return 204; // TODO: 良い感じのエラー返す
@@ -84,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				body: params,
 				// TODO
 				//timeout: 10000,
-				agent: getAgentByUrl,
+				agent: (url) => this.httpRequestService.getAgentByUrl(url),
 			});
 
 			const json = (await res.json()) as {

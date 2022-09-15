@@ -1,9 +1,11 @@
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Notes } from '@/models/index.js';
-import config from '@/config/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { Config } from '@/config.js';
+import { DI_SYMBOLS } from '@/di-symbols.js';
 import es from '../../../../db/elasticsearch.js';
 
 export const meta = {
@@ -44,16 +46,19 @@ export const paramDef = {
 	required: ['query'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
+		@Inject(DI_SYMBOLS.config)
+		private config: Config,
+	
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -111,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					: [];
 
 				const result = await es.search({
-					index: config.elasticsearch.index || 'misskey_note',
+					index: this.config.elasticsearch.index || 'misskey_note',
 					body: {
 						size: ps.limit,
 						from: ps.offset,

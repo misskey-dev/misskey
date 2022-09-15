@@ -1,10 +1,10 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notes } from '@/models/index.js';
-import { UserLists, UserListJoinings } from '@/models/index.js';
-import { activeUsersChart } from '@/services/chart/index.js';
+import type { Notes , UserLists, UserListJoinings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import ActiveUsersChart from '@/services/chart/charts/active-users.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -59,10 +59,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		@Inject('userListsRepository')
+		private userListsRepository: typeof UserLists,
+
+		@Inject('userListJoiningsRepository')
+		private userListJoiningsRepository: typeof UserListJoinings,
+
+		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const list = await UserLists.findOneBy({
+			const list = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				userId: me.id,
 			});
@@ -73,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-				.innerJoin(UserListJoinings.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
+				.innerJoin(this.userListJoiningsRepository.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')
@@ -126,7 +134,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const timeline = await query.take(ps.limit).getMany();
 
-			activeUsersChart.read(me);
+			this.activeUsersChart.read(me);
 
 			return await this.noteEntityService.packMany(timeline, me);
 		});

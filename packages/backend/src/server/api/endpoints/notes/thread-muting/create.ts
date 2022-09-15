@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notes } from '@/models/index.js';
-import { NoteThreadMutings } from '@/models/index.js';
+import type { Notes , NoteThreadMutings } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
-import readNote from '@/services/note/read.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { getNote } from '../../../common/getters.js';
+import { GetterService } from '@/server/api/common/GetterService.js';
+import { NoteReadService } from '@/services/NoteReadService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -38,10 +37,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
 
+		@Inject('noteThreadMutingsRepository')
+		private noteThreadMutingsRepository: typeof NoteThreadMutings,
+
+		private getterService: GetterService,
+		private noteReadService: NoteReadService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await getNote(ps.noteId).catch(err => {
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
 				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 				throw err;
 			});
@@ -54,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}],
 			});
 
-			await readNote(me.id, mutedNotes);
+			await this.noteReadService.read(me.id, mutedNotes);
 
 			await this.noteThreadMutingsRepository.insert({
 				id: this.idService.genId(),
