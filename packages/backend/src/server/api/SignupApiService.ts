@@ -10,6 +10,7 @@ import { CaptchaService } from '@/services/CaptchaService.js';
 import { IdService } from '@/services/IdService.js';
 import { SignupService } from '@/services/SignupService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { EmailService } from '@/services/EmailService.js';
 import { SigninService } from '../SigninService.js';
 import type Koa from 'koa';
 
@@ -37,6 +38,7 @@ export class SignupApiService {
 		private captchaService: CaptchaService,
 		private signupService: SignupService,
 		private signinService: SigninService,
+		private emailService: EmailService,
 	) {
 	}
 
@@ -73,7 +75,7 @@ export class SignupApiService {
 				return;
 			}
 	
-			const available = await validateEmailForAccount(emailAddress);
+			const available = await this.emailService.validateEmailForAccount(emailAddress);
 			if (!available) {
 				ctx.status = 400;
 				return;

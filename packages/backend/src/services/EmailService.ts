@@ -1,9 +1,11 @@
 import * as nodemailer from 'nodemailer';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MetaService } from '@/services/MetaService.js';
+import { validate as validateEmail } from 'deep-email-validator';
+import { MetaService } from '@/services/MetaService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import Logger from '@/logger.js';
+import type { UserProfiles } from '@/models/index.js';
 
 @Injectable()
 export class EmailService {
@@ -12,6 +14,9 @@ export class EmailService {
 	constructor(
 		@Inject(DI_SYMBOLS.config)
 		private config: Config,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 
 		private metaService: MetaService,
 	) {
@@ -132,5 +137,39 @@ export class EmailService {
 			this.#logger.error(err as Error);
 			throw err;
 		}
+	}
+
+	public async validateEmailForAccount(emailAddress: string): Promise<{
+		available: boolean;
+		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp';
+	}> {
+		const meta = await this.metaService.fetch();
+	
+		const exist = await this.userProfilesRepository.countBy({
+			emailVerified: true,
+			email: emailAddress,
+		});
+	
+		const validated = meta.enableActiveEmailValidation ? await validateEmail({
+			email: emailAddress,
+			validateRegex: true,
+			validateMx: true,
+			validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
+			validateDisposable: true, // 捨てアドかどうかチェック
+			validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
+		}) : { valid: true };
+	
+		const available = exist === 0 && validated.valid;
+	
+		return {
+			available,
+			reason: available ? null :
+			exist !== 0 ? 'used' :
+			validated.reason === 'regex' ? 'format' :
+			validated.reason === 'disposable' ? 'disposable' :
+			validated.reason === 'mx' ? 'mx' :
+			validated.reason === 'smtp' ? 'smtp' :
+			null,
+		};
 	}
 }

@@ -17,20 +17,20 @@ import { ChartManagementService } from './ChartManagementService.js';
 	imports: [
 	],
 	providers: [
-	FederationChart,
-	NotesChart,
-	UsersChart,
-	ActiveUsersChart,
-	InstanceChart,
-	PerUserNotesChart,
-	DriveChart,
-	PerUserReactionsChart,
-	HashtagChart,
-	PerUserFollowingChart,
-	PerUserDriveChart,
-	ApRequestChart,
+		FederationChart,
+		NotesChart,
+		UsersChart,
+		ActiveUsersChart,
+		InstanceChart,
+		PerUserNotesChart,
+		DriveChart,
+		PerUserReactionsChart,
+		HashtagChart,
+		PerUserFollowingChart,
+		PerUserDriveChart,
+		ApRequestChart,
 
-	ChartManagementService,
+		ChartManagementService,
 	],
-	})
+})
 export class ChartsModule {}

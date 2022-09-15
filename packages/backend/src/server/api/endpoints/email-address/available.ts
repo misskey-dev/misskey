@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
+import { EmailService } from '@/services/EmailService';
 
 export const meta = {
 	tags: ['users'],
@@ -35,9 +35,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private emailService: EmailService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			return await validateEmailForAccount(ps.emailAddress);
+			return await this.emailService.validateEmailForAccount(ps.emailAddress);
 		});
 	}
 }

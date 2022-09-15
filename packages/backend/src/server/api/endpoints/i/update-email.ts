@@ -5,7 +5,6 @@ import bcrypt from 'bcryptjs';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { UserProfiles } from '@/models/index.js';
-import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { EmailService } from '@/services/EmailService.js';
 import { Config } from '@/config.js';
@@ -75,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.email != null) {
-				const available = await validateEmailForAccount(ps.email);
+				const available = await this.emailService.validateEmailForAccount(ps.email);
 				if (!available) {
 					throw new ApiError(meta.errors.unavailable);
 				}
