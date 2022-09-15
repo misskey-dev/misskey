@@ -4,7 +4,7 @@ import Ajv from 'ajv';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Pages } from '@/models/index.js';
 import type { AntennaNotes, Instances, MessagingMessages, UserSecurityKeys , Blockings, Mutings , Followings, FollowRequests, Users, DriveFiles, NoteUnreads, ChannelFollowings, Notifications, UserNotePinings, UserProfiles , AnnouncementReads, Announcements, UserGroupJoinings } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Promiseable } from '@/prelude/await-all.js';
 import { awaitAll } from '@/prelude/await-all.js';

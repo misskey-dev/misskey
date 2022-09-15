@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Signins , Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { IdService } from '@/services/IdService.js';
 import type { ILocalUser } from '@/models/entities/user.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';

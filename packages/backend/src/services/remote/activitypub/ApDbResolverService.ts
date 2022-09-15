@@ -3,7 +3,7 @@ import escapeRegexp from 'escape-regexp';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { MessagingMessages, Notes, UserPublickeys } from '@/models/index.js';
 import { Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type { CacheableRemoteUser, CacheableUser } from '@/models/entities/user.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserPublickey } from '@/models/entities/user-publickey.js';

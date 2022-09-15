@@ -24,7 +24,7 @@ import type {
 } from '@/server/api/stream/types.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 
 @Injectable()
 export class GlobalEventService {

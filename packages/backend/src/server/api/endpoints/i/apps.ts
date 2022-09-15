@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AccessTokens } from '@/models/index.js';
+import type { AccessTokens } from '@/models/index.js';
 
 export const meta = {
 	requireCredential: true,
@@ -20,9 +20,11 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('accessTokensRepository')
+		private accessTokensRepository: typeof AccessTokens,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = AccessTokens.createQueryBuilder('token')
+			const query = this.accessTokensRepository.createQueryBuilder('token')
 				.where('token.userId = :userId', { userId: me.id });
 
 			switch (ps.sort) {

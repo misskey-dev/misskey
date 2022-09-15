@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { addPinned } from '@/services/i/pin.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { NotePiningService } from '@/services/NotePiningService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -50,15 +51,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		private userEntityService: UserEntityService,
+		private notePiningService: NotePiningService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await addPinned(me, ps.noteId).catch(e => {
-				if (e.id === '70c4e51f-5bea-449c-a030-53bee3cce202') throw new ApiError(meta.errors.noSuchNote);
-				if (e.id === '15a018eb-58e5-4da1-93be-330fcc5e4e1a') throw new ApiError(meta.errors.pinLimitExceeded);
-				if (e.id === '23f0cf4e-59a3-4276-a91d-61a5891c1514') throw new ApiError(meta.errors.alreadyPinned);
-				throw e;
+			await this.notePiningService.addPinned(me, ps.noteId).catch(err => {
+				if (err.id === '70c4e51f-5bea-449c-a030-53bee3cce202') throw new ApiError(meta.errors.noSuchNote);
+				if (err.id === '15a018eb-58e5-4da1-93be-330fcc5e4e1a') throw new ApiError(meta.errors.pinLimitExceeded);
+				if (err.id === '23f0cf4e-59a3-4276-a91d-61a5891c1514') throw new ApiError(meta.errors.alreadyPinned);
+				throw err;
 			});
 
 			return await this.userEntityService.pack<true, true>(me.id, me, {

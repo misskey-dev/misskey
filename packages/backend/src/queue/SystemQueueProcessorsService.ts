@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import type { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import type { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';

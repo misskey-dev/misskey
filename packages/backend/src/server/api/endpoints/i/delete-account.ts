@@ -1,9 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
-import { UserProfiles } from '@/models/index.js';
-import { deleteAccount } from '@/services/delete-account.js';
+import type { Users , UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DeleteAccountService } from '@/services/DeleteAccountService';
 
 export const meta = {
 	requireCredential: true,
@@ -25,9 +24,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		private deleteAccountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 			const userDetailed = await this.usersRepository.findOneByOrFail({ id: me.id });
 			if (userDetailed.isDeleted) {
 				return;
@@ -40,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('incorrect password');
 			}
 
-			await deleteAccount(me);
+			await this.deleteAccountService.deleteAccount(me);
 		});
 	}
 }

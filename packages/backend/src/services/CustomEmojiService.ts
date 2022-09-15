@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Emojis } from '@/models/index.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type { IdService } from '@/services/IdService.js';
 import type { DriveFile } from '@/models/entities/drive-file.js';
 import type { Emoji } from '@/models/entities/emoji.js';

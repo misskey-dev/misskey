@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { DriveFiles, Notes, UserProfiles , Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { User } from '@/models/entities/user';
 
 @Injectable()

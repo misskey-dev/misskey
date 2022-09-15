@@ -9,7 +9,7 @@ import koaLogger from 'koa-logger';
 import * as slow from 'koa-slow';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { UserProfiles , Users } from '@/models/index.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import Logger from '@/logger.js';

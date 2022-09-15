@@ -3,7 +3,7 @@ import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Notes , DriveFiles } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { User } from '@/models/entities/user';

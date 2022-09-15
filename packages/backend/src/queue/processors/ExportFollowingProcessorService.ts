@@ -5,7 +5,7 @@ import { format as dateFormat } from 'date-fns';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Followings, Mutings } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import type { DriveService } from '@/services/DriveService.js';
 import { getFullApAccount } from '@/misc/convert-host.js';

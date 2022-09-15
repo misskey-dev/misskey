@@ -6,7 +6,7 @@ import { IsNull } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { UserSecurityKeys , Signins, UserProfiles } from '@/models/index.js';
 import { AttestationChallenges, Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { ILocalUser } from '@/models/entities/user.js';
 import { IdService } from '@/services/IdService.js';

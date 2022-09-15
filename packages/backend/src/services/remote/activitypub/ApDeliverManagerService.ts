@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Followings , Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/user.js';
 import { QueueService } from '@/queue/queue.service';
 import { UserEntityService } from '@/services/entities/UserEntityService';

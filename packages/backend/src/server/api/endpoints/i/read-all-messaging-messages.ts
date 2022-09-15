@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishMainStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MessagingMessages, UserGroupJoinings } from '@/models/index.js';
+import type { MessagingMessages, UserGroupJoinings } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService';
 
 export const meta = {
 	tags: ['account', 'messaging'],
@@ -21,19 +21,26 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('messagingMessagesRepository')
+		private messagingMessagesRepository: typeof MessagingMessages,
+
+		@Inject('userGroupJoinings')
+		private userGroupJoinings: typeof UserGroupJoinings,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Update documents
-			await MessagingMessages.update({
+			await this.messagingMessagesRepository.update({
 				recipientId: me.id,
 				isRead: false,
 			}, {
 				isRead: true,
 			});
 
-			const joinings = await UserGroupJoinings.findBy({ userId: me.id });
+			const joinings = await this.userGroupJoinings.findBy({ userId: me.id });
 
-			await Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder().update()
+			await Promise.all(joinings.map(j => this.messagingMessagesRepository.createQueryBuilder().update()
 				.set({
 					reads: (() => `array_append("reads", '${me.id}')`) as any,
 				})
@@ -42,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('NOT (:userId = ANY(reads))', { userId: me.id })
 				.execute()));
 
-			publishMainStream(me.id, 'readAllMessagingMessages');
+			this.globalEventService.publishMainStream(me.id, 'readAllMessagingMessages');
 		});
 	}
 }

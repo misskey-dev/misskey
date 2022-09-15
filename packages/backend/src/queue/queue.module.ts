@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import { initialize as initializeQueue } from './initialize.js';
 import type Bull from 'bull';
 import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData } from './types.js';

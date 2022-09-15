@@ -7,7 +7,7 @@ import PrivateIp from 'private-ip';
 import got, * as Got from 'got';
 import chalk from 'chalk';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import { HttpRequestService } from '@/services/HttpRequestService.js';
 import { createTemp } from '@/misc/create-temp';

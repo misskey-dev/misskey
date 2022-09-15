@@ -8,7 +8,7 @@ import { UserProfiles } from '@/models/index.js';
 import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { EmailService } from '@/services/EmailService.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../error.js';

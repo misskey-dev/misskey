@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { IdService } from '@/services/IdService.js';
-import type { Users } from '@/models/index.js';
-import { AnnouncementReads, Announcements } from '@/models/index.js';
-import { publishMainStream } from '@/services/stream.js';
+import { IdService } from '@/services/IdService.js';
+import type { Users , AnnouncementReads, Announcements } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -34,21 +34,26 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
+		@Inject('announcementsRepository')
+		private announcementsRepository: typeof Announcements,
 
+		@Inject('announcementReadsRepository')
+		private announcementReadsRepository: typeof AnnouncementReads,
+
+		private userEntityService: UserEntityService,
 		private idService: IdService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Check if announcement exists
-			const announcement = await Announcements.findOneBy({ id: ps.announcementId });
+			const announcement = await this.announcementsRepository.findOneBy({ id: ps.announcementId });
 
 			if (announcement == null) {
 				throw new ApiError(meta.errors.noSuchAnnouncement);
 			}
 
 			// Check if already read
-			const read = await AnnouncementReads.findOneBy({
+			const read = await this.announcementReadsRepository.findOneBy({
 				announcementId: ps.announcementId,
 				userId: me.id,
 			});
@@ -58,15 +63,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Create read
-			await AnnouncementReads.insert({
+			await this.announcementReadsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				announcementId: ps.announcementId,
 				userId: me.id,
 			});
 
-			if (!await this.usersRepository.getHasUnreadAnnouncement(me.id)) {
-				publishMainStream(me.id, 'readAllAnnouncements');
+			if (!await this.userEntityService.getHasUnreadAnnouncement(me.id)) {
+				this.globalEventService.publishMainStream(me.id, 'readAllAnnouncements');
 			}
 		});
 	}

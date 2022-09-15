@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { DbJobData } from '@/queue/types.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import type { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
 import type { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';

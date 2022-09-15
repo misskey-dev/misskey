@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/services/MetaService.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {

@@ -7,7 +7,7 @@ import cors from '@koa/cors';
 import Router from '@koa/router';
 import send from 'koa-send';
 import rename from 'rename';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { DriveFiles } from '@/models/index.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { createTemp } from '@/misc/create-temp.js';

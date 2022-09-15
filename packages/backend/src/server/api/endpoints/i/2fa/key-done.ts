@@ -11,7 +11,7 @@ import {
 	AttestationChallenges,
 } from '@/models/index.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { GlobalEventService } from '@/services/GlobalEventService';
 import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService';

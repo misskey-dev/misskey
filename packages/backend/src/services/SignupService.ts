@@ -5,7 +5,7 @@ import { DataSource, IsNull } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { UsedUsernames } from '@/models/index.js';
 import { Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { User } from '@/models/entities/user.js';
 import { UserProfile } from '@/models/entities/user-profile.js';
 import { IdService } from '@/services/IdService.js';

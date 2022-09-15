@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MutedNotes } from '@/models/index.js';
+import type { MutedNotes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account'],
@@ -31,10 +31,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('mutedNotesRepository')
+		private mutedNotesRepository: typeof MutedNotes,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			return {
-				count: await MutedNotes.countBy({
+				count: await this.mutedNotesRepository.countBy({
 					userId: me.id,
 					reason: 'word',
 				}),

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteFavorites } from '@/models/index.js';
+import type { NoteFavorites } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteFavoriteEntityService } from '@/services/entities/NoteFavoriteEntityService';
 
 export const meta = {
 	tags: ['account', 'notes', 'favorites'],
@@ -35,10 +36,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('noteFavoritesRepository')
+		private noteFavoritesRepository: typeof NoteFavorites,
+
+		private noteFavoriteEntityService: NoteFavoriteEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(NoteFavorites.createQueryBuilder('favorite'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.noteFavoritesRepository.createQueryBuilder('favorite'), ps.sinceId, ps.untilId)
 				.andWhere('favorite.userId = :meId', { meId: me.id })
 				.leftJoinAndSelect('favorite.note', 'note');
 
@@ -46,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await NoteFavorites.packMany(favorites, me);
+			return await this.noteFavoriteEntityService.packMany(favorites, me);
 		});
 	}
 }

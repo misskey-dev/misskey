@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ulid } from 'ulid';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import { genAid } from '@/misc/id/aid.js';
 import { genMeid } from '@/misc/id/meid.js';
 import { genMeidg } from '@/misc/id/meidg.js';

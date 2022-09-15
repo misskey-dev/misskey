@@ -28,7 +28,7 @@ import { db } from '@/db/postgre.js';
 import { RelayService } from '@/services/RelayService.js';
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import NotesChart from '@/services/chart/charts/notes.js';
 import PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
 import InstanceChart from '@/services/chart/charts/instance.js';

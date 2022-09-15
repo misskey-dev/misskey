@@ -5,7 +5,7 @@ import httpSignature from '@peertube/http-signature';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Instances } from '@/models/index.js';
 import type { DriveFiles } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/services/MetaService.js';
 import { extractDbHost, toPuny } from '@/misc/convert-host.js';

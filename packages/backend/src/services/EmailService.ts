@@ -2,7 +2,7 @@ import * as nodemailer from 'nodemailer';
 import { Inject, Injectable } from '@nestjs/common';
 import type { MetaService } from '@/services/MetaService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 
 @Injectable()

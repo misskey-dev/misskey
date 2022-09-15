@@ -4,7 +4,7 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { DriveFiles } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { isSelfHost, toPuny } from '@/misc/convert-host.js';
 import * as Acct from '@/misc/acct.js';

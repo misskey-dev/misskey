@@ -5,7 +5,7 @@ import multer from '@koa/multer';
 import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
 import { ModuleRef } from '@nestjs/core';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { Users } from '@/models/index.js';
 import { Instances, AccessTokens } from '@/models/index.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';

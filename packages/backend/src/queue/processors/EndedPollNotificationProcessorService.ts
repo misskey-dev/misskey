@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { PollVotes , Notes } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
 import type Bull from 'bull';

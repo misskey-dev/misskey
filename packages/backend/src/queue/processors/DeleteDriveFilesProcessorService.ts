@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users, DriveFiles } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import type { DriveService } from '@/services/DriveService.js';
 import type Bull from 'bull';

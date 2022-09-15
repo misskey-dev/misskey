@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Followings, Notes , Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import { UserFollowingService } from '@/services/UserFollowingService.js';
 import { ReactionService } from '@/services/ReactionService.js';

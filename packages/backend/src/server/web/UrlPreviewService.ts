@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import summaly from 'summaly';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { MetaService } from '@/services/MetaService.js';
 import { HttpRequestService } from '@/services/HttpRequestService.js';
 import Logger from '@/logger.js';

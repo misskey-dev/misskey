@@ -14,7 +14,7 @@ import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import type { RelayService } from '@/services/RelayService.js';
 import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type NotesChart from '@/services/chart/charts/notes.js';
 import type PerUserNotesChart from '@/services/chart/charts/per-user-notes.js';
 import type InstanceChart from '@/services/chart/charts/instance.js';

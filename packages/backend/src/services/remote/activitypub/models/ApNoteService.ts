@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Polls , Emojis, Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/user.js';
 import { extractDbHost, toPuny } from '@/misc/convert-host';
 import type { Note } from '@/models/entities/note.js';

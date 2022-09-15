@@ -8,7 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
 import { MetaService } from '@/services/MetaService.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 
 export const meta = {

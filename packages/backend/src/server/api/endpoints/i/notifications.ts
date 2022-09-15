@@ -1,11 +1,12 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
-import { Notifications, Followings, Mutings, UserProfiles } from '@/models/index.js';
+import type { Users , Followings, Mutings, UserProfiles } from '@/models/index.js';
+import { Notifications } from '@/models/index.js';
 import { notificationTypes } from '@/types.js';
-import read from '@/services/note/read.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { NoteReadService } from '@/services/NoteReadService.js';
+import { NotificationEntityService } from '@/services/entities/NotificationEntityService.js';
 import { readNotification } from '../../common/read-notification.js';
 
 export const meta = {
@@ -57,7 +58,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
 
+		@Inject('followingsRepository')
+		private followingsRepository: typeof Followings,
+
+		@Inject('mutingsRepository')
+		private mutingsRepository: typeof Mutings,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		private notificationEntityService: NotificationEntityService,
 		private queryService: QueryService,
+		private noteReadService: NoteReadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// includeTypes が空の場合はクエリしない
@@ -76,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.select('muting.muteeId')
 				.where('muting.muterId = :muterId', { muterId: me.id });
 
-			const mutingInstanceQuery = UserProfiles.createQueryBuilder('user_profile')
+			const mutingInstanceQuery = this.userProfilesRepository.createQueryBuilder('user_profile')
 				.select('user_profile.mutedInstances')
 				.where('user_profile.userId = :muterId', { muterId: me.id });
 
@@ -147,10 +159,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const notes = notifications.filter(notification => ['mention', 'reply', 'quote'].includes(notification.type)).map(notification => notification.note!);
 
 			if (notes.length > 0) {
-				read(me.id, notes);
+				this.noteReadService.read(me.id, notes);
 			}
 
-			return await Notifications.packMany(notifications, me.id);
+			return await this.notificationEntityService.packMany(notifications, me.id);
 		});
 	}
 }

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishMainStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteUnreads } from '@/models/index.js';
+import type { NoteUnreads } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService';
 
 export const meta = {
 	tags: ['account'],
@@ -21,16 +21,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('noteUnreadsJoinings')
+		private noteUnreadsJoinings: typeof NoteUnreads,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Remove documents
-			await NoteUnreads.delete({
+			await this.noteUnreadsJoinings.delete({
 				userId: me.id,
 			});
 
 			// 全て既読になったイベントを発行
-			publishMainStream(me.id, 'readAllUnreadMentions');
-			publishMainStream(me.id, 'readAllUnreadSpecifiedNotes');
+			this.globalEventService.publishMainStream(me.id, 'readAllUnreadMentions');
+			this.globalEventService.publishMainStream(me.id, 'readAllUnreadSpecifiedNotes');
 		});
 	}
 }

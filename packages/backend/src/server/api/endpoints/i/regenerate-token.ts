@@ -1,10 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
-import { publishInternalEvent, publishMainStream, publishUserEvent } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users } from '@/models/index.js';
-import { UserProfiles } from '@/models/index.js';
+import type { Users , UserProfiles } from '@/models/index.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
+import { GlobalEventService } from '@/services/GlobalEventService';
 
 export const meta = {
 	requireCredential: true,
@@ -26,12 +25,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const freshUser = await this.usersRepository.findOneByOrFail({ id: me.id });
 			const oldToken = freshUser.token;
 
-			const profile = await UserProfiles.findOneByOrFail({ userId: me.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
 			const same = await bcrypt.compare(ps.password, profile.password!);
@@ -47,12 +51,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish event
-			publishInternalEvent('userTokenRegenerated', { id: me.id, oldToken, newToken });
-			publishMainStream(me.id, 'myTokenRegenerated');
+			this.globalEventService.publishInternalEvent('userTokenRegenerated', { id: me.id, oldToken, newToken });
+			this.globalEventService.publishMainStream(me.id, 'myTokenRegenerated');
 
 			// Terminate streaming
 			setTimeout(() => {
-				publishUserEvent(me.id, 'terminate', {});
+				this.globalEventService.publishUserEvent(me.id, 'terminate', {});
 			}, 5000);
 		});
 	}

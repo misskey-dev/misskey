@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AccessTokens } from '@/models/index.js';
-import { publishUserEvent } from '@/services/stream.js';
+import type { AccessTokens } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService';
 
 export const meta = {
 	requireCredential: true,
@@ -21,18 +21,22 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('accessTokensRepository')
+		private accessTokensRepository: typeof AccessTokens,
+
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const token = await AccessTokens.findOneBy({ id: ps.tokenId });
+			const token = await this.accessTokensRepository.findOneBy({ id: ps.tokenId });
 
 			if (token) {
-				await AccessTokens.delete({
+				await this.accessTokensRepository.delete({
 					id: ps.tokenId,
 					userId: me.id,
 				});
 
 				// Terminate streaming
-				publishUserEvent(me.id, 'terminate');
+				this.globalEventService.publishUserEvent(me.id, 'terminate');
 			}
 		});
 	}

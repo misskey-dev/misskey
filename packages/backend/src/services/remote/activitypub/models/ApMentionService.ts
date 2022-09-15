@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import { toArray, unique } from '@/prelude/array.js';
 import type { CacheableUser } from '@/models/entities/user.js';
 import { isMention } from '../type.js';

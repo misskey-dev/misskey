@@ -5,7 +5,7 @@ import * as websocket from 'websocket';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
 import type { Blockings, ChannelFollowings, Followings, Mutings, UserProfiles } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { NoteReadService } from '@/services/NoteReadService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { AuthenticateService } from './AuthenticateService.js';

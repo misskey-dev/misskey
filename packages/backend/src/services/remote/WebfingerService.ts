@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import { query as urlQuery } from '@/prelude/url.js';
 import type { HttpRequestService } from '@/services/HttpRequestService.js';
 

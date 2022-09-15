@@ -5,7 +5,7 @@ import { IsNull } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import type { IRemoteUser, User } from '@/models/entities/user.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import { toPuny } from '@/misc/convert-host.js';
 import type Logger from '@/logger.js';
 import { createPerson, updatePerson } from './activitypub/models/person.js';

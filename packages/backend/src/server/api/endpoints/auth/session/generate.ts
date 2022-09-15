@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Apps, AuthSessions } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

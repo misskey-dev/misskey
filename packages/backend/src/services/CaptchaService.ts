@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { HttpRequestService } from './HttpRequestService.js';
 
 type CaptchaResponse = {

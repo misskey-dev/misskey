@@ -4,7 +4,7 @@ import * as parse5 from 'parse5';
 import { JSDOM } from 'jsdom';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import { intersperse } from '@/prelude/array.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/note.js';
 import * as TreeAdapter from '../../node_modules/parse5/dist/tree-adapters/default.js';

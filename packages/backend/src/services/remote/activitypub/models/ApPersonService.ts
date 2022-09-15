@@ -3,7 +3,7 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Followings , Instances, UserProfiles, UserPublickeys, Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type { CacheableUser, IRemoteUser } from '@/models/entities/user.js';
 import { User } from '@/models/entities/user.js';
 import { toPuny } from '@/misc/convert-host.js';

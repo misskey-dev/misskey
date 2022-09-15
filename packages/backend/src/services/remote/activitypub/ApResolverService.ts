@@ -3,7 +3,7 @@ import type { ILocalUser } from '@/models/entities/user.js';
 import type { InstanceActorService } from '@/services/InstanceActorService.js';
 import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
 import type { Notes , Polls , NoteReactions , Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type { MetaService } from '@/services/MetaService.js';
 import type { HttpRequestService } from '@/services/HttpRequestService.js';
 import { DI_SYMBOLS } from '@/di-symbols.js';

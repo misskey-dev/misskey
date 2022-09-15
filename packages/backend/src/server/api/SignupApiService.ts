@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { RegistrationTickets , UserPendings, UserProfiles , Users } from '@/models/index.js';
 
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { MetaService } from '@/services/MetaService.js';
 import { CaptchaService } from '@/services/CaptchaService.js';
 import { IdService } from '@/services/IdService.js';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Notes , Polls } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type { IPoll } from '@/models/entities/poll.js';
 import type Logger from '@/logger.js';
 import { isQuestion } from '../type.js';

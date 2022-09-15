@@ -4,7 +4,7 @@ import { IsNull, MoreThan } from 'typeorm';
 import unzipper from 'unzipper';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Emojis , DriveFiles , Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import type { CustomEmojiService } from '@/services/CustomEmojiService.js';
 import { createTempDir } from '@/misc/create-temp.js';

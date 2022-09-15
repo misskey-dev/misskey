@@ -7,7 +7,7 @@ import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Followings , Notes } from '@/models/index.js';
 import type { Emojis, NoteReactions , UserProfiles , UserNotePinings , Users } from '@/models/index.js';
 import * as url from '@/prelude/url.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { isSelfHost } from '@/misc/convert-host.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 import { QueueService } from '@/queue/queue.service.js';

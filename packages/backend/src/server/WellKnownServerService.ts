@@ -3,7 +3,7 @@ import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/prelude/xml';
 import type { User } from '@/models/entities/user';
 import * as Acct from '@/misc/acct.js';

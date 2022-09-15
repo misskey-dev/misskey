@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import { Users } from '@/models/index.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/user.js';
 import type { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 import type { RelayService } from '@/services/RelayService.js';

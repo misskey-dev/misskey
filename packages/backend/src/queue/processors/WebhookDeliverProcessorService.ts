@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Webhooks } from '@/models/index.js';
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { HttpRequestService } from '@/services/HttpRequestService.js';
 import { StatusError } from '@/misc/status-error.js';

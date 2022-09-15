@@ -4,7 +4,7 @@ import { IsNull, MoreThan } from 'typeorm';
 import { DI_SYMBOLS } from '@/di-symbols.js';
 import type { Notes , Users } from '@/models/index.js';
 
-import { Config } from '@/config/types.js';
+import { Config } from '@/config.js';
 import { MetaService } from '@/services/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const';
 import { Cache } from '@/misc/cache.js';

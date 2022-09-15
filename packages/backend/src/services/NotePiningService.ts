@@ -8,7 +8,7 @@ import type { Note } from '@/models/entities/note.js';
 import type { IdService } from '@/services/IdService.js';
 import type { UserNotePining } from '@/models/entities/user-note-pining.js';
 import type { RelayService } from '@/services/RelayService.js';
-import type { Config } from '@/config/types.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class NotePiningService {
