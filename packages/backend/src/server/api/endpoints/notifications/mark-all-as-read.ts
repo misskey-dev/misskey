@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishMainStream } from '@/services/stream.js';
-import { pushNotification } from '@/services/push-notification.js';
-import { Notifications } from '@/models/index.js';
+import type { Notifications } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GlobalEventService } from '@/services/GlobalEventService';
+import { PushNotificationService } from '@/services/PushNotificationService';
 
 export const meta = {
 	tags: ['notifications', 'account'],
@@ -22,10 +22,15 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject('notificationsRepository')
+		private notificationsRepository: typeof Notifications,
+
+		private globalEventService: GlobalEventService,
+		private pushNotificationService: PushNotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Update documents
-			await Notifications.update({
+			await this.notificationsRepository.update({
 				notifieeId: me.id,
 				isRead: false,
 			}, {
@@ -33,8 +38,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// 全ての通知を読みましたよというイベントを発行
-			publishMainStream(me.id, 'readAllNotifications');
-			pushNotification(me.id, 'readAllNotifications', undefined);
+			this.globalEventService.publishMainStream(me.id, 'readAllNotifications');
+			this.pushNotificationService.pushNotification(me.id, 'readAllNotifications', undefined);
 		});
 	}
 }

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { createNotification } from '@/services/create-notification.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { CreateNotificationService } from '@/services/CreateNotificationService';
 
 export const meta = {
 	tags: ['notifications'],
@@ -27,14 +27,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
-		private usersRepository: typeof Users,
-
-		@Inject('notesRepository')
-		private notesRepository: typeof Notes,
+		private createNotificationService: CreateNotificationService,
 	) {
 		super(meta, paramDef, async (ps, user, token) => {
-			createNotification(user.id, 'app', {
+			this.createNotificationService.createNotification(user.id, 'app', {
 				appAccessTokenId: token ? token.id : null,
 				customBody: ps.body,
 				customHeader: ps.header,
