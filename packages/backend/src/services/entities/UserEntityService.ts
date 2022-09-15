@@ -17,8 +17,6 @@ import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
 import { NoteEntityService } from './NoteEntityService.js';
 
-const userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
-
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
 	Detailed extends true ? 
@@ -43,6 +41,8 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 
 @Injectable()
 export class UserEntityService {
+	#userInstanceCache: Cache<Instance | null>;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -108,6 +108,7 @@ export class UserEntityService {
 		@Inject(forwardRef(() => NoteEntityService))
 		private noteEntityService: NoteEntityService,
 	) {
+		this.#userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	//#region Validators
@@ -364,7 +365,7 @@ export class UserEntityService {
 			isModerator: user.isModerator || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
-			instance: user.host ? userInstanceCache.fetch(user.host,
+			instance: user.host ? this.#userInstanceCache.fetch(user.host,
 				() => this.instancesRepository.findOneBy({ host: user.host! }),
 				v => v != null,
 			).then(instance => instance ? {

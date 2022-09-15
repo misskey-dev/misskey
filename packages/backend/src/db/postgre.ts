@@ -4,7 +4,6 @@ pg.types.setTypeParser(20, Number);
 
 import { DataSource } from 'typeorm';
 import * as highlight from 'cli-highlight';
-import config from '@/config/index.js';
 import { entities as charts } from '@/services/chart/entities.js';
 
 import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
@@ -71,6 +70,7 @@ import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 
+import { loadConfig } from '@/config.js';
 import { envOption } from '../env.js';
 import { redisClient } from './redis.js';
 import { dbLogger } from './logger.js';
@@ -178,6 +178,8 @@ export const entities = [
 ];
 
 const log = process.env.NODE_ENV !== 'production';
+
+const config = loadConfig();
 
 export const db = new DataSource({
 	type: 'postgres',
