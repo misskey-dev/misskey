@@ -42,7 +42,7 @@ export class ImportUserListsProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('import-user-lists');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('import-user-lists');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {

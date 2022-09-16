@@ -45,7 +45,7 @@ export class DeliverProcessorService {
 		private federationChart: FederationChart,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('deliver');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('deliver');
 		this.#suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
 		this.#latest = null;
 	}

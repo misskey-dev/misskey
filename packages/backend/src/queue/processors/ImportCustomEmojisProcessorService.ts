@@ -40,7 +40,7 @@ export class ImportCustomEmojisProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('import-custom-emojis');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('import-custom-emojis');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {

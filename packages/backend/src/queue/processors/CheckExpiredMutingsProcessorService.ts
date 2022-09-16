@@ -22,7 +22,7 @@ export class CheckExpiredMutingsProcessorService {
 		private globalEventService: GlobalEventService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('check-expired-mutings');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('check-expired-mutings');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {

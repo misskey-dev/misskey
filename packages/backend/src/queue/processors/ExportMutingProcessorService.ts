@@ -34,7 +34,7 @@ export class ExportMutingProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('export-muting');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('export-muting');
 	}
 
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {

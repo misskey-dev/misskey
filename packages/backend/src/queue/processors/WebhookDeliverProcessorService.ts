@@ -24,7 +24,7 @@ export class WebhookDeliverProcessorService {
 		private httpRequestService: HttpRequestService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('webhook');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('webhook');
 	}
 
 	public async process(job: Bull.Job<WebhookDeliverJobData>): Promise<string> {

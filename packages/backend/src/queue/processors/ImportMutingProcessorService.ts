@@ -35,7 +35,7 @@ export class ImportMutingProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('import-muting');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('import-muting');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {

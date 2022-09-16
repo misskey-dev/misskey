@@ -34,7 +34,7 @@ export class ImportFollowingProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('import-following');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('import-following');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {

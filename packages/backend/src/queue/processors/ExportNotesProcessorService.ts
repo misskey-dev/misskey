@@ -34,7 +34,7 @@ export class ExportNotesProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('export-notes');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('export-notes');
 	}
 
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {

@@ -31,7 +31,7 @@ export class ExportBlockingProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('export-blocking');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('export-blocking');
 	}
 
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {

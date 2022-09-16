@@ -26,7 +26,7 @@ export class DeleteDriveFilesProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('delete-drive-files');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('delete-drive-files');
 	}
 
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {

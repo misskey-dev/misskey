@@ -41,7 +41,7 @@ export class TickChartsProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('tick-charts');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('tick-charts');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {

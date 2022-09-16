@@ -41,7 +41,7 @@ export class CleanChartsProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('clean-charts');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('clean-charts');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {

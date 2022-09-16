@@ -41,7 +41,7 @@ export class ResyncChartsProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('resync-charts');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('resync-charts');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {

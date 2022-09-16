@@ -36,7 +36,7 @@ export class ExportFollowingProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('export-following');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('export-following');
 	}
 
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {

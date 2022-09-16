@@ -20,7 +20,7 @@ export class CleanProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('clean');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('clean');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {

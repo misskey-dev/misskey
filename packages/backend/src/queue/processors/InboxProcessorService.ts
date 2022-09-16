@@ -58,7 +58,7 @@ export class InboxProcessorService {
 		private federationChart: FederationChart,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('inbox');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('inbox');
 	}
 
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {

@@ -33,7 +33,7 @@ export class ExportCustomEmojisProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('export-custom-emojis');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('export-custom-emojis');
 	}
 
 	public async process(job: Bull.Job, done: () => void): Promise<void> {

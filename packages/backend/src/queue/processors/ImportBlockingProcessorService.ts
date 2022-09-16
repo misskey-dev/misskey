@@ -37,7 +37,7 @@ export class ImportBlockingProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('import-blocking');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('import-blocking');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {

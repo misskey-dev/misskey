@@ -22,7 +22,7 @@ export class CleanRemoteFilesProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('clean-remote-files');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('clean-remote-files');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {

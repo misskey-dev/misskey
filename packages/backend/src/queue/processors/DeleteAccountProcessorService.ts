@@ -35,7 +35,7 @@ export class DeleteAccountProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.queueLoggerService.logger.createSubLogger('delete-account');
+		this.#logger = this.queueLoggerService.logger.createSubLogger('delete-account');
 	}
 
 	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | void> {
