@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Notes } from '@/models/index.js';
 import { Channels } from '@/models/index.js';
-import { activeUsersChart } from '@/services/chart/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import ActiveUsersChart from '@/services/chart/charts/active-users.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -53,6 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
+		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const channel = await Channels.findOneBy({
@@ -82,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const timeline = await query.take(ps.limit).getMany();
 
-			if (me) activeUsersChart.read(me);
+			if (me) this.activeUsersChart.read(me);
 
 			return await this.noteEntityService.packMany(timeline, me);
 		});
