@@ -7,7 +7,7 @@
 import * as nestedProperty from 'nested-property';
 import { EntitySchema, LessThan, Between } from 'typeorm';
 import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/prelude/time.js';
-import Logger from '../logger.js';
+import Logger from '@/logger.js';
 import type { Repository, DataSource } from 'typeorm';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');

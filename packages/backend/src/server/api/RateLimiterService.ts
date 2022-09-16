@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import Limiter from 'ratelimiter';
 import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
-import Logger from '@/logger';
-import type { IEndpointMeta } from './endpoints';
+import Logger from '@/logger.js';
+import type { IEndpointMeta } from './endpoints.js';
 
 const logger = new Logger('limiter');
 

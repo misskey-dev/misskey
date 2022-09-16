@@ -1,11 +1,11 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import deleteBlocking from '@/services/blocking/delete.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users , Blockings } from '@/models/index.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserBlockingService } from '@/services/UserBlockingService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
+import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
 	tags: ['account'],
@@ -65,6 +65,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private blockingsRepository: typeof Blockings,
 
 		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });
@@ -75,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Get blockee
-			const blockee = await getUser(ps.userId).catch(err => {
+			const blockee = await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});
@@ -91,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Delete blocking
-			await deleteBlocking(blocker, blockee);
+			await this.userBlockingService.unblock(blocker, blockee);
 
 			return await this.userEntityService.pack(blockee.id, blocker, {
 				detail: true,
