@@ -5,7 +5,6 @@ import sharp from 'sharp';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFiles , Users , DriveFolders , UserProfiles } from '@/models/index.js';
-
 import { Config } from '@/config.js';
 import Logger from '@/Logger.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
@@ -16,7 +15,6 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
-import { getFileInfo } from '@/misc/get-file-info.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { VideoProcessingService } from '@/services/VideoProcessingService.js';
 import { ImageProcessingService } from '@/services/ImageProcessingService.js';
@@ -32,6 +30,7 @@ import { S3Service } from '@/services/S3Service.js';
 import { InternalStorageService } from '@/services/InternalStorageService.js';
 import { DriveFileEntityService } from './entities/DriveFileEntityService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
+import { FileInfoService } from './FileInfoService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
@@ -94,6 +93,7 @@ export class DriveService {
 		@Inject('driveFoldersRepository')
 		private driveFoldersRepository: typeof DriveFolders,
 
+		private fileInfoService: FileInfoService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
@@ -419,7 +419,7 @@ export class DriveService {
 		if (user && instance.sensitiveMediaDetection === 'local' && this.userEntityService.isRemoteUser(user)) skipNsfwCheck = true;
 		if (user && instance.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user)) skipNsfwCheck = true;
 
-		const info = await getFileInfo(path, {
+		const info = await this.fileInfoService.getFileInfo(path, {
 			skipSensitiveDetection: skipNsfwCheck,
 			sensitiveThreshold: // 感度が高いほどしきい値は低くすることになる
 			instance.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 0.1 :
@@ -707,7 +707,7 @@ export class DriveService {
 		requestHeaders = null,
 	}: UploadFromUrlArgs): Promise<DriveFile> {
 		let name = new URL(url).pathname.split('/').pop() || null;
-		if (name == null || !this.driveFilesRepository.validateFileName(name)) {
+		if (name == null || !this.driveFileEntityService.validateFileName(name)) {
 			name = null;
 		}
 	

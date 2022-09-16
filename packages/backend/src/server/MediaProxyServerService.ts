@@ -7,7 +7,6 @@ import sharp from 'sharp';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import { detectType } from '@/misc/get-file-info.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { DownloadService } from '@/services/DownloadService.js';
 import { ImageProcessingService } from '@/services/ImageProcessingService.js';
@@ -15,6 +14,7 @@ import type { IImage } from '@/services/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import Logger from '@/logger.js';
+import { FileInfoService } from '@/services/FileInfoService.js';
 
 const serverLogger = new Logger('server', 'gray', false);
 
@@ -24,6 +24,7 @@ export class MediaProxyServerService {
 		@Inject(DI.config)
 		private config: Config,
 
+		private fileInfoService: FileInfoService,
 		private downloadService: DownloadService,
 		private imageProcessingService: ImageProcessingService,
 	) {
@@ -62,7 +63,7 @@ export class MediaProxyServerService {
 		try {
 			await this.downloadService.downloadUrl(url, path);
 	
-			const { mime, ext } = await detectType(path);
+			const { mime, ext } = await this.fileInfoService.detectType(path);
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 	
 			let image: IImage;

@@ -14,12 +14,12 @@ import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import Logger from '@/logger.js';
-import { detectType } from '@/misc/get-file-info.js';
 import { DownloadService } from '@/services/DownloadService.js';
 import { ImageProcessingService } from '@/services/ImageProcessingService.js';
 import { VideoProcessingService } from '@/services/VideoProcessingService.js';
 import { InternalStorageService } from '@/services/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
+import { FileInfoService } from '@/services/FileInfoService.js';
 
 const serverLogger = new Logger('server', 'gray', false);
 
@@ -43,6 +43,7 @@ export class FileServerService {
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
+		private fileInfoService: FileInfoService,
 		private downloadService: DownloadService,
 		private imageProcessingService: ImageProcessingService,
 		private videoProcessingService: VideoProcessingService,
@@ -104,7 +105,7 @@ export class FileServerService {
 				try {
 					await this.downloadService.downloadUrl(file.uri, path);
 
-					const { mime, ext } = await detectType(path);
+					const { mime, ext } = await this.fileInfoService.detectType(path);
 
 					const convertFile = async () => {
 						if (isThumbnail) {
@@ -154,7 +155,7 @@ export class FileServerService {
 		}
 
 		if (isThumbnail || isWebpublic) {
-			const { mime, ext } = await detectType(this.internalStorageService.resolvePath(key));
+			const { mime, ext } = await this.fileInfoService.detectType(this.internalStorageService.resolvePath(key));
 			const filename = rename(file.name, {
 				suffix: isThumbnail ? '-thumb' : '-web',
 				extname: ext ? `.${ext}` : undefined,

@@ -51,6 +51,7 @@ import { VideoProcessingService } from './VideoProcessingService.js';
 import { WebhookService } from './WebhookService.js';
 import { ProxyAccountService } from './ProxyAccountService.js';
 import { UtilityService } from './UtilityService.js';
+import { FileInfoService } from './FileInfoService.js';
 
 @Module({
 	imports: [
@@ -107,6 +108,7 @@ import { UtilityService } from './UtilityService.js';
 		VideoProcessingService,
 		WebhookService,
 		UtilityService,
+		FileInfoService,
 	],
 	exports: [
 		ChartsModule,
@@ -160,6 +162,7 @@ import { UtilityService } from './UtilityService.js';
 		VideoProcessingService,
 		WebhookService,
 		UtilityService,
+		FileInfoService,
 	],
 })
 export class CoreModule {}

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { EmailService } from '@/services/EmailService';
+import { EmailService } from '@/services/EmailService.js';
 
 export const meta = {
 	tags: ['users'],

@@ -7,7 +7,7 @@ import type { UserGroup } from '@/models/entities/UserGroup.js';
 import type { Packed } from '@/misc/schema.js';
 import type { GlobalEventService } from '@/services/GlobalEventService.js';
 import type { NoteReadService } from '@/services/NoteReadService.js';
-import { readNotification } from '../common/read-notification.js';
+import type { NotificationService } from '@/services/NotificationService.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type * as websocket from 'websocket';
 import type { EventEmitter } from 'events';
@@ -40,6 +40,7 @@ export default class Connection {
 		private channelsService: ChannelsService,
 		private globalEventService: GlobalEventService,
 		private noteReadService: NoteReadService,
+		private notificationService: NotificationService,
 
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
@@ -191,7 +192,7 @@ export default class Connection {
 
 	private onReadNotification(payload: any) {
 		if (!payload.id) return;
-		readNotification(this.user!.id, [payload.id]);
+		this.notificationService.readNotification(this.user!.id, [payload.id]);
 	}
 
 	/**

@@ -8,6 +8,7 @@ import type { Blockings, ChannelFollowings, Followings, Mutings, UserProfiles } 
 import { Config } from '@/config.js';
 import { NoteReadService } from '@/services/NoteReadService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { NotificationService } from '@/services/NotificationService.js';
 import { AuthenticateService } from './AuthenticateService.js';
 import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
@@ -42,6 +43,7 @@ export class StreamingApiServerService {
 		private noteReadService: NoteReadService,
 		private authenticateService: AuthenticateService,
 		private channelsService: ChannelsService,
+		private notificationService: NotificationService,
 	) {
 	}
 
@@ -84,6 +86,7 @@ export class StreamingApiServerService {
 				this.channelsService,
 				this.globalEventService,
 				this.noteReadService,
+				this.notificationService,
 				connection, ev, user, miapp,
 			);
 

@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import type { Users } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
-import { UserEntityService } from './entities/UserEntityService';
+import { UserEntityService } from './entities/UserEntityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
