@@ -101,7 +101,7 @@ const _dirname = dirname(_filename);
 /**
  * Path of configuration directory
  */
-const dir = `${_dirname}/../../../../.config`;
+const dir = `${_dirname}/../../../.config`;
 
 /**
  * Path of configuration file
@@ -111,8 +111,8 @@ const path = process.env.NODE_ENV === 'test'
 	: `${dir}/default.yml`;
 
 export function loadConfig() {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
-	const clientManifest = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/_client_dist_/manifest.json`, 'utf-8'));
+	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
+	const clientManifest = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_client_dist_/manifest.json`, 'utf-8'));
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const mixin = {} as Mixin;
