@@ -6,8 +6,8 @@ import { UserGroups } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { MessagingMessageEntityService } from '@/services/entities/MessagingMessageEntityService.js';
+import { MessagingService } from '@/services/MessagingService.js';
 import { ApiError } from '../../error.js';
-import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
 import { GetterService } from '../../common/GetterService.js';
 
 export const meta = {
@@ -83,6 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private messagingMessageEntityService: MessagingMessageEntityService,
+		private messagingService: MessagingService,
 		private userEntityService: UserEntityService,
 		private queryService: QueryService,
 		private getterService: GetterService,
@@ -113,11 +114,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Mark all as read
 				if (ps.markAsRead) {
-					readUserMessagingMessage(me.id, recipient.id, messages.filter(m => m.recipientId === me.id).map(x => x.id));
+					this.messagingService.readUserMessagingMessage(me.id, recipient.id, messages.filter(m => m.recipientId === me.id).map(x => x.id));
 
 					// リモートユーザーとのメッセージだったら既読配信
 					if (this.userEntityService.isLocalUser(me) && this.userEntityService.isRemoteUser(recipient)) {
-						deliverReadActivity(me, recipient, messages);
+						this.messagingService.deliverReadActivity(me, recipient, messages);
 					}
 				}
 
@@ -149,7 +150,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Mark all as read
 				if (ps.markAsRead) {
-					readGroupMessagingMessage(me.id, recipientGroup.id, messages.map(x => x.id));
+					this.messagingService.readGroupMessagingMessage(me.id, recipientGroup.id, messages.map(x => x.id));
 				}
 
 				return await Promise.all(messages.map(message => this.messagingMessageEntityService.pack(message, me, {
