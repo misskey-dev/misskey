@@ -141,7 +141,7 @@ export class HttpRequestService {
 			body: args.body,
 			timeout,
 			size: args.size ?? 10 * 1024 * 1024,
-			agent: this.getAgentByUrl,
+			agent: (url) => this.getAgentByUrl(url),
 			signal: controller.signal,
 		});
 
