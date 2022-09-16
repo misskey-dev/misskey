@@ -82,7 +82,7 @@ export class ServerService {
 			});
 		}
 
-		koa.use(mount('/api', this.apiServerService.createApiServer(app)));
+		koa.use(mount('/api', this.apiServerService.createApiServer(koa)));
 		koa.use(mount('/files', this.fileServerService.createServer()));
 		koa.use(mount('/proxy', this.mediaProxyServerService.createServer()));
 
