@@ -26,6 +26,7 @@
 		"@koa/router": "9.0.1",
 		"@nestjs/common": "9.0.11",
 		"@nestjs/core": "9.0.11",
+		"@nestjs/testing": "9.0.11",
 		"@peertube/http-signature": "1.7.0",
 		"@sinonjs/fake-timers": "9.1.2",
 		"@syuilo/aiscript": "0.11.1",

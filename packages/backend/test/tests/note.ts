@@ -2,19 +2,29 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { jest } from '@jest/globals';
-
+import { Test } from '@nestjs/testing';
 import { initDb } from '@/db/postgre.js';
 import { Notes } from '@/models/index.js';
-import { FooService } from '@/services/fooService.js';
-import { NoteCreateService } from '../../src/services/note/NoteCreateService.js';
-import type { WebhookService } from '../../src/services/webhookService.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { CoreModule } from '@/services/CoreModule.js';
 
 describe('NoteCreateService', () => {
+	let catsService: CatsService;
+
 	beforeAll(async () => {
 		//await initTestDb();
 		await initDb();
+	});
 
-		Container.set('notesRepository', Notes);
+	beforeEach(async () => {
+		const moduleRef = await Test.createTestingModule({
+			imports: [
+				GlobalModule,
+			],
+			providers: [CatsService],
+		}).compile();
+
+		catsService = moduleRef.get<CatsService>(CatsService);
 	});
 
 	it('createしたときwebhookが配信される', async () => {	
