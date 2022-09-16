@@ -20,7 +20,7 @@ export default class DriveChart extends Chart<typeof schema> {
 
 		private appLockService: AppLockService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

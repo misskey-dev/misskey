@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
-import { Notes } from '@/models/index.js';
+import type { Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
@@ -18,15 +18,18 @@ export default class NotesChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: typeof Notes,
+
 		private appLockService: AppLockService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		const [localCount, remoteCount] = await Promise.all([
-			Notes.countBy({ userHost: IsNull() }),
-			Notes.countBy({ userHost: Not(IsNull()) }),
+			this.notesRepository.countBy({ userHost: IsNull() }),
+			this.notesRepository.countBy({ userHost: Not(IsNull()) }),
 		]);
 
 		return {

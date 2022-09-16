@@ -4,6 +4,7 @@ import type { User } from '@/models/entities/User.js';
 import { Users } from '@/models/index.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/hashtag.js';
 import type { KVs } from '../core.js';
@@ -19,8 +20,9 @@ export default class HashtagChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		private appLockService: AppLockService,
+		private userEntityService: UserEntityService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema, true);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
@@ -33,8 +35,8 @@ export default class HashtagChart extends Chart<typeof schema> {
 
 	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }): Promise<void> {
 		await this.commit({
-			'local.users': Users.isLocalUser(user) ? [user.id] : [],
-			'remote.users': Users.isLocalUser(user) ? [] : [user.id],
+			'local.users': this.userEntityService.isLocalUser(user) ? [user.id] : [],
+			'remote.users': this.userEntityService.isLocalUser(user) ? [] : [user.id],
 		}, hashtag);
 	}
 }

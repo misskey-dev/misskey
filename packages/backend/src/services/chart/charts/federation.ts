@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Followings, Instances } from '@/models/index.js';
+import type { Followings, Instances } from '@/models/index.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/services/MetaService.js';
@@ -18,10 +18,16 @@ export default class FederationChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.followingsRepository)
+		private followingsRepository: typeof Followings,
+
+		@Inject(DI.instancesRepository)
+		private instancesRepository: typeof Instances,
+
 		private metaService: MetaService,
 		private appLockService: AppLockService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
@@ -32,38 +38,38 @@ export default class FederationChart extends Chart<typeof schema> {
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
 		const meta = await this.metaService.fetch();
 
-		const suspendedInstancesQuery = Instances.createQueryBuilder('instance')
+		const suspendedInstancesQuery = this.instancesRepository.createQueryBuilder('instance')
 			.select('instance.host')
 			.where('instance.isSuspended = true');
 
-		const pubsubSubQuery = Followings.createQueryBuilder('f')
+		const pubsubSubQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followerHost')
 			.where('f.followerHost IS NOT NULL');
 
-		const subInstancesQuery = Followings.createQueryBuilder('f')
+		const subInstancesQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followeeHost')
 			.where('f.followeeHost IS NOT NULL');
 
-		const pubInstancesQuery = Followings.createQueryBuilder('f')
+		const pubInstancesQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followerHost')
 			.where('f.followerHost IS NOT NULL');
 
 		const [sub, pub, pubsub, subActive, pubActive] = await Promise.all([
-			Followings.createQueryBuilder('following')
+			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT IN (:...blocked)', { blocked: meta.blockedHosts })
 				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Followings.createQueryBuilder('following')
+			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followerHost)')
 				.where('following.followerHost IS NOT NULL')
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'following.followerHost NOT IN (:...blocked)', { blocked: meta.blockedHosts })
 				.andWhere(`following.followerHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Followings.createQueryBuilder('following')
+			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT IN (:...blocked)', { blocked: meta.blockedHosts })
@@ -72,7 +78,7 @@ export default class FederationChart extends Chart<typeof schema> {
 				.setParameters(pubsubSubQuery.getParameters())
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Instances.createQueryBuilder('instance')
+			this.instancesRepository.createQueryBuilder('instance')
 				.select('COUNT(instance.id)')
 				.where(`instance.host IN (${ subInstancesQuery.getQuery() })`)
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT IN (:...blocked)', { blocked: meta.blockedHosts })
@@ -80,7 +86,7 @@ export default class FederationChart extends Chart<typeof schema> {
 				.andWhere('instance.lastCommunicatedAt > :gt', { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Instances.createQueryBuilder('instance')
+			this.instancesRepository.createQueryBuilder('instance')
 				.select('COUNT(instance.id)')
 				.where(`instance.host IN (${ pubInstancesQuery.getQuery() })`)
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT IN (:...blocked)', { blocked: meta.blockedHosts })

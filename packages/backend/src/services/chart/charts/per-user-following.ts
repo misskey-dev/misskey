@@ -4,6 +4,7 @@ import { Followings, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-following.js';
 import type { KVs } from '../core.js';
@@ -19,8 +20,9 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		private appLockService: AppLockService,
+		private userEntityService: UserEntityService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema, true);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
@@ -49,8 +51,8 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 	}
 
 	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean): Promise<void> {
-		const prefixFollower = Users.isLocalUser(follower) ? 'local' : 'remote';
-		const prefixFollowee = Users.isLocalUser(followee) ? 'local' : 'remote';
+		const prefixFollower = this.userEntityService.isLocalUser(follower) ? 'local' : 'remote';
+		const prefixFollowee = this.userEntityService.isLocalUser(followee) ? 'local' : 'remote';
 
 		this.commit({
 			[`${prefixFollower}.followings.total`]: isFollow ? 1 : -1,

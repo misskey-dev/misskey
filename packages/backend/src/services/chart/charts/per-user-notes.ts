@@ -21,7 +21,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 
 		private appLockService: AppLockService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema, true);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
+import type { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import { AppLockService } from '@/services/AppLockService.js';
@@ -20,10 +20,22 @@ export default class InstanceChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: typeof Users,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: typeof Notes,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: typeof DriveFiles,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: typeof Followings,
+
 		private utilityService: UtilityService,
 		private appLockService: AppLockService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema, true);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
@@ -34,11 +46,11 @@ export default class InstanceChart extends Chart<typeof schema> {
 			followersCount,
 			driveFiles,
 		] = await Promise.all([
-			Notes.countBy({ userHost: group }),
-			Users.countBy({ host: group }),
-			Followings.countBy({ followerHost: group }),
-			Followings.countBy({ followeeHost: group }),
-			DriveFiles.countBy({ userHost: group }),
+			this.notesRepository.countBy({ userHost: group }),
+			this.usersRepository.countBy({ host: group }),
+			this.followingsRepository.countBy({ followerHost: group }),
+			this.followingsRepository.countBy({ followeeHost: group }),
+			this.driveFilesRepository.countBy({ userHost: group }),
 		]);
 
 		return {

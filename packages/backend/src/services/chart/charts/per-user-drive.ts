@@ -1,9 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { DriveFiles } from '@/models/index.js';
+import type { DriveFiles } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-drive.js';
 import type { KVs } from '../core.js';
@@ -18,15 +19,19 @@ export default class PerUserDriveChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: typeof DriveFiles,
+
 		private appLockService: AppLockService,
+		private driveFileEntityService: DriveFileEntityService,
 	) {
-		super(db, appLockService.getChartInsertLock, name, schema, true);
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count, size] = await Promise.all([
-			DriveFiles.countBy({ userId: group }),
-			DriveFiles.calcDriveUsageOf(group),
+			this.driveFilesRepository.countBy({ userId: group }),
+			this.driveFileEntityService.calcDriveUsageOf(group),
 		]);
 
 		return {
