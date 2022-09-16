@@ -1,16 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { DriveFiles } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { MetaService } from '@/services/MetaService.js';
+import { MetaService } from '@/services/MetaService.js';
 import { truncate } from '@/misc/truncate.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
-import type { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/services/DriveService.js';
 import type Logger from '@/logger.js';
-import type { ApResolverService } from '../ApResolverService.js';
-import type { ApLoggerService } from '../ApLoggerService.js';
+import { ApResolverService } from '../ApResolverService.js';
+import { ApLoggerService } from '../ApLoggerService.js';
 
 @Injectable()
 export class ApImageService {

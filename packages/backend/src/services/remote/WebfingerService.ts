@@ -1,9 +1,9 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import { query as urlQuery } from '@/prelude/url.js';
-import type { HttpRequestService } from '@/services/HttpRequestService.js';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
 
 type ILink = {
 	href: string;

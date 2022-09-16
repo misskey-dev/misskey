@@ -77,8 +77,8 @@ export class UserEntityService {
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('noteUnreadRepository')
-		private noteUnreadRepository: typeof NoteUnreads,
+		@Inject('noteUnreadsRepository')
+		private noteUnreadsRepository: typeof NoteUnreads,
 
 		@Inject('channelFollowingsRepository')
 		private channelFollowingsRepository: typeof ChannelFollowings,
@@ -249,7 +249,7 @@ export class UserEntityService {
 	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
 		const channels = await this.channelFollowingsRepository.findBy({ followerId: userId });
 
-		const unread = channels.length > 0 ? await this.noteUnreadRepository.findOneBy({
+		const unread = channels.length > 0 ? await this.noteUnreadsRepository.findOneBy({
 			userId: userId,
 			noteChannelId: In(channels.map(x => x.followeeId)),
 		}) : null;
@@ -446,11 +446,11 @@ export class UserEntityService {
 				isExplorable: user.isExplorable,
 				isDeleted: user.isDeleted,
 				hideOnlineStatus: user.hideOnlineStatus,
-				hasUnreadSpecifiedNotes: this.noteUnreadRepository.count({
+				hasUnreadSpecifiedNotes: this.noteUnreadsRepository.count({
 					where: { userId: user.id, isSpecified: true },
 					take: 1,
 				}).then(count => count > 0),
-				hasUnreadMentions: this.noteUnreadRepository.count({
+				hasUnreadMentions: this.noteUnreadsRepository.count({
 					where: { userId: user.id, isMentioned: true },
 					take: 1,
 				}).then(count => count > 0),
