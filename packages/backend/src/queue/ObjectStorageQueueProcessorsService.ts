@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ObjectStorageJobData } from '@/queue/types.js';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import type { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
-import type { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
+import { Config } from '@/config.js';
+import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
+import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
 import type Bull from 'bull';
 
 @Injectable()

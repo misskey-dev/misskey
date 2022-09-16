@@ -3,8 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { envOption } from '@/env.js';
 import { ChartManagementService } from '@/services/chart/ChartManagementService.js';
 import { ServerService } from '@/server/ServerService.js';
+import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
 import { initDb } from '../db/postgre.js';
-import initializeQueue from '../queue/index.js';
 import { AppModule } from '../app.module.js';
 
 /**
@@ -21,7 +21,8 @@ export async function workerMain() {
 
 	// start job queue
 	if (!envOption.onlyServer) {
-		await initializeQueue(app);
+		const queueProcessorService = app.get(QueueProcessorService);
+		queueProcessorService.start();
 	}
 
 	app.get(ChartManagementService).run();

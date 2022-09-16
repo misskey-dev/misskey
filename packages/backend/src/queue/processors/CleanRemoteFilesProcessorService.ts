@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFiles } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/services/DriveService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class CleanRemoteFilesProcessorService {

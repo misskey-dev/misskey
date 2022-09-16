@@ -1,19 +1,18 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan } from 'typeorm';
+import { IsNull, MoreThan , DataSource } from 'typeorm';
 import unzipper from 'unzipper';
 import { DI } from '@/di-symbols.js';
 import type { Emojis , DriveFiles , Users } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { CustomEmojiService } from '@/services/CustomEmojiService.js';
+import { CustomEmojiService } from '@/services/CustomEmojiService.js';
 import { createTempDir } from '@/misc/create-temp.js';
-import type { DriveService } from '@/services/DriveService.js';
-import type { DownloadService } from '@/services/DownloadService.js';
-import type { DataSource } from 'typeorm';
+import { DriveService } from '@/services/DriveService.js';
+import { DownloadService } from '@/services/DownloadService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 // TODO: 名前衝突時の動作を選べるようにする
 @Injectable()

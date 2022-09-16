@@ -7,13 +7,13 @@ import mime from 'mime-types';
 import archiver from 'archiver';
 import { DI } from '@/di-symbols.js';
 import type { Emojis, Users } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/services/DriveService.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
-import { downloadUrl } from '@/misc/download-url.js';
+import { DownloadService } from '@/services/DownloadService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class ExportCustomEmojisProcessorService {
@@ -30,6 +30,7 @@ export class ExportCustomEmojisProcessorService {
 		private emojisRepository: typeof Emojis,
 
 		private driveService: DriveService,
+		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.queueLoggerService.logger.createSubLogger('export-custom-emojis');
@@ -86,7 +87,7 @@ export class ExportCustomEmojisProcessorService {
 			let downloaded = false;
 
 			try {
-				await downloadUrl(emoji.originalUrl, emojiPath);
+				await this.downloadService.downloadUrl(emoji.originalUrl, emojiPath);
 				downloaded = true;
 			} catch (e) { // TODO: 何度か再試行
 				this.#logger.error(e instanceof Error ? e : new Error(e as string));

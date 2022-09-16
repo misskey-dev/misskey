@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { PollVotes , Notes } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { EndedPollNotificationJobData } from '../types.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class EndedPollNotificationProcessorService {

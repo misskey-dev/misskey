@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Mutings } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class CheckExpiredMutingsProcessorService {

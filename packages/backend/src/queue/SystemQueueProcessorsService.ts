@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import type { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
-import type { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
-import type { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
-import type { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
-import type { CleanProcessorService } from './processors/CleanProcessorService.js';
+import { Config } from '@/config.js';
+import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
+import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
+import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
+import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import type Bull from 'bull';
 
 @Injectable()

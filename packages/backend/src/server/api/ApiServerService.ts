@@ -43,7 +43,7 @@ export class ApiServerService {
 		const handlers: Record<string, any> = {};
 
 		for (const endpoint of endpoints) {
-			handlers[endpoint.name] = this.moduleRef.get('ep:' + endpoint.name).exec;
+			handlers[endpoint.name] = this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec;
 		}
 
 		// Init app

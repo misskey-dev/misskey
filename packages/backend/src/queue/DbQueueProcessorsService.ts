@@ -1,20 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { DbJobData } from '@/queue/types.js';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import type { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
-import type { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
-import type { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
-import type { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
-import type { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
-import type { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
-import type { ExportUserListsProcessorService } from './processors/ExportUserListsProcessorService.js';
-import type { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
-import type { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
-import type { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
-import type { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
-import type { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
-import type { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
+import { Config } from '@/config.js';
+import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
+import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
+import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
+import { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
+import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
+import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
+import { ExportUserListsProcessorService } from './processors/ExportUserListsProcessorService.js';
+import { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
+import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
+import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
+import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
+import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
+import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import type Bull from 'bull';
 
 @Injectable()
