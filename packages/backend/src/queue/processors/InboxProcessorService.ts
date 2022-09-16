@@ -23,8 +23,8 @@ import { ApDbResolverService } from '@/services/remote/activitypub/ApDbResolverS
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/services/UtilityService.js';
 import { ApPersonService } from '@/services/remote/activitypub/models/ApPersonService.js';
-import perform from '@/services/remote/activitypub/perform.js';
 import { LdSignatureService } from '@/services/remote/activitypub/LdSignatureService.js';
+import { ApInboxService } from '@/services/remote/activitypub/ApInboxService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData, InboxJobData } from '../types.js';
@@ -46,6 +46,7 @@ export class InboxProcessorService {
 
 		private utilityService: UtilityService,
 		private metaService: MetaService,
+		private apInboxService: ApInboxService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		private ldSignatureService: LdSignatureService,
@@ -189,7 +190,7 @@ export class InboxProcessorService {
 		});
 
 		// アクティビティを処理
-		await perform(authUser.user, activity);
+		await this.apInboxService.performActivity(authUser.user, activity);
 		return 'ok';
 	}
 }

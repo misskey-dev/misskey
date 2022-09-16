@@ -101,6 +101,15 @@ export class ApInboxService {
 		} else {
 			await this.performOneActivity(actor, activity);
 		}
+
+		// ついでにリモートユーザーの情報が古かったら更新しておく
+		if (actor.uri) {
+			if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
+				setImmediate(() => {
+					this.apPersonService.updatePerson(actor.uri!);
+				});
+			}
+		}
 	}
 
 	public async performOneActivity(actor: CacheableRemoteUser, activity: IObject): Promise<void> {
