@@ -6,15 +6,14 @@
           </div>
       </transition>
 			<MkLoading v-if="fetching" />
-      <MkError v-else-if="!player.url" @retry="fetch()" />
+      <MkError v-else-if="!player.url" @retry="ytFetch()" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { computed } from 'vue';
-import { url as local, lang } from '@/config';
+import { lang } from '@/config';
 
 const props = defineProps<{
     url: string;
@@ -26,10 +25,6 @@ const requestUrl = new URL(props.url);
 
 let fetching = $ref(true);
 let title = $ref<string | null>(null);
-let description = $ref<string | null>(null);
-let thumbnail = $ref<string | null>(null);
-let icon = $ref<string | null>(null);
-let sitename = $ref<string | null>(null);
 let player = $ref({
     url: null,
     width: null,
@@ -38,21 +33,22 @@ let player = $ref({
 
 const requestLang = (lang || 'ja-JP').replace('ja-KS', 'ja-JP');
 
-fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
-    res.json().then(info => {
-        if (info.url == null) return;
-        title = info.title;
-        description = info.description;
-        thumbnail = info.thumbnail;
-        icon = info.icon;
-        sitename = info.sitename;
-        fetching = false;
-        player = info.player;
-    });
-});
+const ytFetch = () => {
+	fetching = true;
+	fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
+		res.json().then(info => {
+			if (info.url == null) return;
+			title = info.title;
+			fetching = false;
+			player = info.player;
+		});
+	});
+}
+
+ytFetch();
 
 definePageMetadata(computed(() => props.url ? {
-	title: title?.toString() || 'ytplayer',
+	title: title?.toString() || 'Youtube Player',
 	path: `/notes/${props.url}`,
 	icon: 'fa-brands fa-youtube'
 } : null));
@@ -61,20 +57,30 @@ console.log(await player.url);
 </script>
 
 <style lang="scss">
+.poamfof {
+	position: relative;
+	overflow: hidden;
+	min-height: 64px;
+
+	.player {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: calc(100% - 10px);
+		width: calc(100% - 10px);
+		padding: 5px;
+
+		iframe {
+			width: 100%;
+			height: 100%;
+			border-radius: 0 0 var(--radius) var(--radius);
+		}
+	}
+}
+
 .fill {
 	height: 100%;
-}
-.player {
-	height: calc(100% - 10px);
-	width: calc(100% - 10px);
-	padding: 5px;
-
-	>iframe {
-		height: 100%;
-		width: 100%;
-		border-radius: 0 0 var(--radius) var(--radius);
-		left: 0;
-		top: 0;
-	}
 }
 </style>
