@@ -4,7 +4,7 @@ import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import { ImageProcessingService } from '@/services/ImageProcessingService.js';
 import type { IImage } from '@/services/ImageProcessingService.js';
-import { createTempDir } from '@/misc/create-temp';
+import { createTempDir } from '@/misc/create-temp.js';
 
 @Injectable()
 export class VideoProcessingService {
