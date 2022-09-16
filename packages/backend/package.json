@@ -1,5 +1,4 @@
 {
-	"main": "./index.js",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -25,6 +24,8 @@
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.0.1",
+		"@nestjs/common": "9.0.11",
+		"@nestjs/core": "9.0.11",
 		"@peertube/http-signature": "1.7.0",
 		"@sinonjs/fake-timers": "9.1.2",
 		"@syuilo/aiscript": "0.11.1",
@@ -98,6 +99,7 @@
 		"rename": "1.0.4",
 		"rndstr": "1.0.0",
 		"rss-parser": "3.12.0",
+		"rxjs": "7.5.6",
 		"s-age": "1.1.2",
 		"sanitize-html": "2.7.1",
 		"semver": "7.3.7",

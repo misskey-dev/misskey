@@ -6,13 +6,13 @@ import * as childProcess from 'child_process';
 import * as http from 'node:http';
 import { SIGKILL } from 'constants';
 import WebSocket from 'ws';
-import * as misskey from 'misskey-js';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 import { DataSource } from 'typeorm';
 import got, { RequestError } from 'got';
 import loadConfig from '../src/config/load.js';
 import { entities } from '../src/db/postgre.js';
+import type * as misskey from 'misskey-js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -267,7 +267,7 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		database: config.db.db,
 		synchronize: true && !justBorrow,
 		dropSchema: true && !justBorrow,
-		entities: initEntities || entities,
+		entities: initEntities ?? entities,
 	});
 
 	await db.initialize();

@@ -1,21 +1,37 @@
-import Chart, { KVs } from '../core.js';
-import { DriveFiles } from '@/models/index.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import type { DriveFiles } from '@/models/index.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import { AppLockService } from '@/services/AppLockService.js';
+import { DI } from '@/di-symbols.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/per-user-drive.js';
+import type { KVs } from '../core.js';
 
 /**
  * ユーザーごとのドライブに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class PerUserDriveChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema, true);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: typeof DriveFiles,
+
+		private appLockService: AppLockService,
+		private driveFileEntityService: DriveFileEntityService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count, size] = await Promise.all([
-			DriveFiles.countBy({ userId: group }),
-			DriveFiles.calcDriveUsageOf(group),
+			this.driveFilesRepository.countBy({ userId: group }),
+			this.driveFileEntityService.calcDriveUsageOf(group),
 		]);
 
 		return {

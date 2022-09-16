@@ -1,5 +1,11 @@
 import cluster from 'node:cluster';
+import { NestFactory } from '@nestjs/core';
+import { envOption } from '@/env.js';
+import { ChartManagementService } from '@/services/chart/ChartManagementService.js';
+import { ServerService } from '@/server/ServerService.js';
+import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
 import { initDb } from '../db/postgre.js';
+import { AppModule } from '../AppModule.js';
 
 /**
  * Init worker process
@@ -7,11 +13,19 @@ import { initDb } from '../db/postgre.js';
 export async function workerMain() {
 	await initDb();
 
+	const app = await NestFactory.createApplicationContext(AppModule);
+
 	// start server
-	await import('../server/index.js').then(x => x.default());
+	const serverService = app.get(ServerService);
+	serverService.launch();
 
 	// start job queue
-	import('../queue/index.js').then(x => x.default());
+	if (!envOption.onlyServer) {
+		const queueProcessorService = app.get(QueueProcessorService);
+		queueProcessorService.start();
+	}
+
+	app.get(ChartManagementService).run();
 
 	if (cluster.isWorker) {
 		// Send a 'ready' message to parent process

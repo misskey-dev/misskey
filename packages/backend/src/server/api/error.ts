@@ -8,8 +8,8 @@ export class ApiError extends Error {
 	public httpStatusCode?: number;
 	public info?: any;
 
-	constructor(e?: E | null | undefined, info?: any | null | undefined) {
-		if (e == null) e = {
+	constructor(err?: E | null | undefined, info?: any | null | undefined) {
+		if (err == null) err = {
 			message: 'Internal error occurred. Please contact us if the error persists.',
 			code: 'INTERNAL_ERROR',
 			id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
@@ -17,12 +17,12 @@ export class ApiError extends Error {
 			httpStatusCode: 500,
 		};
 
-		super(e.message);
-		this.message = e.message;
-		this.code = e.code;
-		this.id = e.id;
-		this.kind = e.kind || 'client';
-		this.httpStatusCode = e.httpStatusCode;
+		super(err.message);
+		this.message = err.message;
+		this.code = err.code;
+		this.id = err.id;
+		this.kind = err.kind ?? 'client';
+		this.httpStatusCode = err.httpStatusCode;
 		this.info = info;
 	}
 }

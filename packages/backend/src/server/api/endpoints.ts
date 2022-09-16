@@ -1,4 +1,4 @@
-import { Schema } from '@/misc/schema.js';
+import type { Schema } from '@/misc/schema.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -59,7 +59,6 @@ import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
 import * as ep___admin_unsilenceUser from './endpoints/admin/unsilence-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
-import * as ep___admin_vacuum from './endpoints/admin/vacuum.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
 import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
 import * as ep___announcements from './endpoints/announcements.js';
@@ -253,8 +252,6 @@ import * as ep___notes_timeline from './endpoints/notes/timeline.js';
 import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
-import * as ep___notes_watching_create from './endpoints/notes/watching/create.js';
-import * as ep___notes_watching_delete from './endpoints/notes/watching/delete.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
 import * as ep___notifications_read from './endpoints/notifications/read.js';
@@ -376,7 +373,6 @@ const eps = [
 	['admin/unsilence-user', ep___admin_unsilenceUser],
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
-	['admin/vacuum', ep___admin_vacuum],
 	['admin/delete-account', ep___admin_deleteAccount],
 	['admin/update-user-note', ep___admin_updateUserNote],
 	['announcements', ep___announcements],
@@ -570,8 +566,6 @@ const eps = [
 	['notes/translate', ep___notes_translate],
 	['notes/unrenote', ep___notes_unrenote],
 	['notes/user-list-timeline', ep___notes_userListTimeline],
-	['notes/watching/create', ep___notes_watching_create],
-	['notes/watching/delete', ep___notes_watching_delete],
 	['notifications/create', ep___notifications_create],
 	['notifications/mark-all-as-read', ep___notifications_markAllAsRead],
 	['notifications/read', ep___notifications_read],
@@ -727,7 +721,6 @@ export interface IEndpointMeta {
 
 export interface IEndpoint {
 	name: string;
-	exec: any;
 	meta: IEndpointMeta;
 	params: Schema;
 }
@@ -735,7 +728,6 @@ export interface IEndpoint {
 const endpoints: IEndpoint[] = eps.map(([name, ep]) => {
 	return {
 		name: name,
-		exec: ep.default,
 		meta: ep.meta || {},
 		params: ep.paramDef,
 	};

@@ -1,7 +1,10 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { ChannelFollowings } from '@/models/index.js';
+import { Channels } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { Channels, ChannelFollowings } from '@/models/index.js';
-import { publishUserEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['channels'],
@@ -28,19 +31,29 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const channel = await Channels.findOneBy({
-		id: ps.channelId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingsRepository: typeof ChannelFollowings,
 
-	if (channel == null) {
-		throw new ApiError(meta.errors.noSuchChannel);
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const channel = await Channels.findOneBy({
+				id: ps.channelId,
+			});
+
+			if (channel == null) {
+				throw new ApiError(meta.errors.noSuchChannel);
+			}
+
+			await this.channelFollowingsRepository.delete({
+				followerId: me.id,
+				followeeId: channel.id,
+			});
+
+			this.globalEventService.publishUserEvent(me.id, 'unfollowChannel', channel);
+		});
 	}
-
-	await ChannelFollowings.delete({
-		followerId: user.id,
-		followeeId: channel.id,
-	});
-
-	publishUserEvent(user.id, 'unfollowChannel', channel);
-});
+}

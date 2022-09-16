@@ -1,11 +1,13 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
-import { apRequestChart } from '@/services/chart/index.js';
-import define from '../../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import ApRequestChart from '@/services/chart/charts/ap-request.js';
+import { schema } from '@/services/chart/charts/entities/ap-request.js';
 
 export const meta = {
 	tags: ['charts'],
 
-	res: getJsonSchema(apRequestChart.schema),
+	res: getJsonSchema(schema),
 
 	allowGet: true,
 	cacheSec: 60 * 60,
@@ -22,6 +24,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await apRequestChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private apRequestChart: ApRequestChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.apRequestChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
+		});
+	}
+}

@@ -1,6 +1,7 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { Announcements, AnnouncementReads } from '@/models/index.js';
-import define from '../define.js';
-import { makePaginationQuery } from '../common/make-pagination-query.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/services/QueryService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -63,24 +64,31 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
-	const announcements = await query.take(ps.limit).getMany();
+			const announcements = await query.take(ps.limit).getMany();
 
-	if (user) {
-		const reads = (await AnnouncementReads.findBy({
-			userId: user.id,
-		})).map(x => x.announcementId);
+			if (me) {
+				const reads = (await AnnouncementReads.findBy({
+					userId: me.id,
+				})).map(x => x.announcementId);
 
-		for (const announcement of announcements) {
-			(announcement as any).isRead = reads.includes(announcement.id);
-		}
+				for (const announcement of announcements) {
+					(announcement as any).isRead = reads.includes(announcement.id);
+				}
+			}
+
+			return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
+				...a,
+				createdAt: a.createdAt.toISOString(),
+				updatedAt: a.updatedAt?.toISOString() ?? null,
+			}));
+		});
 	}
-
-	return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
-		...a,
-		createdAt: a.createdAt.toISOString(),
-		updatedAt: a.updatedAt?.toISOString() ?? null,
-	}));
-});
+}

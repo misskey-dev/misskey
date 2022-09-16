@@ -1,15 +1,33 @@
-import Chart, { KVs } from '../core.js';
-import { Followings, Instances } from '@/models/index.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import type { Followings, Instances } from '@/models/index.js';
+import { AppLockService } from '@/services/AppLockService.js';
+import { DI } from '@/di-symbols.js';
+import { MetaService } from '@/services/MetaService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/federation.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import type { KVs } from '../core.js';
 
 /**
  * フェデレーションに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class FederationChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: typeof Followings,
+
+		@Inject(DI.instancesRepository)
+		private instancesRepository: typeof Instances,
+
+		private metaService: MetaService,
+		private appLockService: AppLockService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
@@ -18,62 +36,62 @@ export default class FederationChart extends Chart<typeof schema> {
 	}
 
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
-		const meta = await fetchMeta();
+		const meta = await this.metaService.fetch();
 
-		const suspendedInstancesQuery = Instances.createQueryBuilder('instance')
+		const suspendedInstancesQuery = this.instancesRepository.createQueryBuilder('instance')
 			.select('instance.host')
 			.where('instance.isSuspended = true');
 
-		const pubsubSubQuery = Followings.createQueryBuilder('f')
+		const pubsubSubQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followerHost')
 			.where('f.followerHost IS NOT NULL');
 
-		const subInstancesQuery = Followings.createQueryBuilder('f')
+		const subInstancesQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followeeHost')
 			.where('f.followeeHost IS NOT NULL');
 
-		const pubInstancesQuery = Followings.createQueryBuilder('f')
+		const pubInstancesQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followerHost')
 			.where('f.followerHost IS NOT NULL');
 
 		const [sub, pub, pubsub, subActive, pubActive] = await Promise.all([
-			Followings.createQueryBuilder('following')
+			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
-				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : `following.followeeHost NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT IN (:...blocked)', { blocked: meta.blockedHosts })
 				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Followings.createQueryBuilder('following')
+			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followerHost)')
 				.where('following.followerHost IS NOT NULL')
-				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : `following.followerHost NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'following.followerHost NOT IN (:...blocked)', { blocked: meta.blockedHosts })
 				.andWhere(`following.followerHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Followings.createQueryBuilder('following')
+			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
-				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : `following.followeeHost NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
+				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT IN (:...blocked)', { blocked: meta.blockedHosts })
 				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.andWhere(`following.followeeHost IN (${ pubsubSubQuery.getQuery() })`)
 				.setParameters(pubsubSubQuery.getParameters())
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Instances.createQueryBuilder('instance')
+			this.instancesRepository.createQueryBuilder('instance')
 				.select('COUNT(instance.id)')
 				.where(`instance.host IN (${ subInstancesQuery.getQuery() })`)
-				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : `instance.host NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
-				.andWhere(`instance.isSuspended = false`)
-				.andWhere(`instance.lastCommunicatedAt > :gt`, { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
+				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT IN (:...blocked)', { blocked: meta.blockedHosts })
+				.andWhere('instance.isSuspended = false')
+				.andWhere('instance.lastCommunicatedAt > :gt', { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
-			Instances.createQueryBuilder('instance')
+			this.instancesRepository.createQueryBuilder('instance')
 				.select('COUNT(instance.id)')
 				.where(`instance.host IN (${ pubInstancesQuery.getQuery() })`)
-				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : `instance.host NOT IN (:...blocked)`, { blocked: meta.blockedHosts })
-				.andWhere(`instance.isSuspended = false`)
-				.andWhere(`instance.lastCommunicatedAt > :gt`, { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
+				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT IN (:...blocked)', { blocked: meta.blockedHosts })
+				.andWhere('instance.isSuspended = false')
+				.andWhere('instance.lastCommunicatedAt > :gt', { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 		]);

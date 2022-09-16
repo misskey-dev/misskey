@@ -1,11 +1,14 @@
-import define from '../../../define.js';
-import { Emojis, DriveFiles } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { ApiError } from '../../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
-import { publishBroadcastStream } from '@/services/stream.js';
-import { db } from '@/db/postgre.js';
+import { DataSource } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DriveFiles , Emojis } from '@/models/index.js';
+import { IdService } from '@/services/IdService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -30,37 +33,58 @@ export const paramDef = {
 	required: ['fileId'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const file = await DriveFiles.findOneBy({ id: ps.fileId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
 
-	if (file == null) throw new ApiError(meta.errors.noSuchFile);
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: typeof DriveFiles,
 
-	const name = file.name.split('.')[0].match(/^[a-z0-9_]+$/) ? file.name.split('.')[0] : `_${rndstr('a-z0-9', 8)}_`;
+		@Inject(DI.emojisRepository)
+		private emojisRepository: typeof Emojis,
 
-	const emoji = await Emojis.insert({
-		id: genId(),
-		updatedAt: new Date(),
-		name: name,
-		category: null,
-		host: null,
-		aliases: [],
-		originalUrl: file.url,
-		publicUrl: file.webpublicUrl ?? file.url,
-		type: file.webpublicType ?? file.type,
-	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+		private emojiEntityService: EmojiEntityService,
+		private idService: IdService,
+		private globalEventService: GlobalEventService,
+		private moderationLogService: ModerationLogService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 
-	await db.queryResultCache!.remove(['meta_emojis']);
+			if (file == null) throw new ApiError(meta.errors.noSuchFile);
 
-	publishBroadcastStream('emojiAdded', {
-		emoji: await Emojis.pack(emoji.id),
-	});
+			const name = file.name.split('.')[0].match(/^[a-z0-9_]+$/) ? file.name.split('.')[0] : `_${rndstr('a-z0-9', 8)}_`;
 
-	insertModerationLog(me, 'addEmoji', {
-		emojiId: emoji.id,
-	});
+			const emoji = await this.emojisRepository.insert({
+				id: this.idService.genId(),
+				updatedAt: new Date(),
+				name: name,
+				category: null,
+				host: null,
+				aliases: [],
+				originalUrl: file.url,
+				publicUrl: file.webpublicUrl ?? file.url,
+				type: file.webpublicType ?? file.type,
+			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
-	return {
-		id: emoji.id,
-	};
-});
+			await this.db.queryResultCache!.remove(['meta_emojis']);
+
+			this.globalEventService.publishBroadcastStream('emojiAdded', {
+				emoji: await this.emojiEntityService.pack(emoji.id),
+			});
+
+			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
+				emojiId: emoji.id,
+			});
+
+			return {
+				id: emoji.id,
+			};
+		});
+	}
+}

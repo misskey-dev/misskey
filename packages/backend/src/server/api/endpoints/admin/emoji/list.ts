@@ -1,7 +1,9 @@
-import define from '../../../define.js';
-import { Emojis } from '@/models/index.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
-import { Emoji } from '@/models/entities/emoji.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { Emojis } from '@/models/index.js';
+import type { Emoji } from '@/models/entities/Emoji.js';
+import { QueryService } from '@/services/QueryService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -63,27 +65,37 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
-		.andWhere(`emoji.host IS NULL`);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.emojisRepository)
+		private emojisRepository: typeof Emojis,
 
-	let emojis: Emoji[];
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
+				.andWhere('emoji.host IS NULL');
 
-	if (ps.query) {
-		//q.andWhere('emoji.name ILIKE :q', { q: `%${ps.query}%` });
-		//const emojis = await q.take(ps.limit).getMany();
+			let emojis: Emoji[];
 
-		emojis = await q.getMany();
+			if (ps.query) {
+				//q.andWhere('emoji.name ILIKE :q', { q: `%${ps.query}%` });
+				//const emojis = await q.take(ps.limit).getMany();
 
-		emojis = emojis.filter(emoji =>
-			emoji.name.includes(ps.query!) ||
-			emoji.aliases.some(a => a.includes(ps.query!)) ||
-			emoji.category?.includes(ps.query!));
+				emojis = await q.getMany();
 
-		emojis.splice(ps.limit + 1);
-	} else {
-		emojis = await q.take(ps.limit).getMany();
+				emojis = emojis.filter(emoji =>
+					emoji.name.includes(ps.query!) ||
+					emoji.aliases.some(a => a.includes(ps.query!)) ||
+					emoji.category?.includes(ps.query!));
+
+				emojis.splice(ps.limit + 1);
+			} else {
+				emojis = await q.take(ps.limit).getMany();
+			}
+
+			return this.emojiEntityService.packMany(emojis);
+		});
 	}
-
-	return Emojis.packMany(emojis);
-});
+}

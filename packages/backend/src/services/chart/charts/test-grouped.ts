@@ -1,15 +1,26 @@
-import Chart, { KVs } from '../core.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { DataSource, DataSource } from 'typeorm';
+import { AppLockService } from '@/services/AppLockService.js';
+import { DI } from '@/di-symbols.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/test-grouped.js';
+import type { KVs } from '../core.js';
 
 /**
  * For testing
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class TestGroupedChart extends Chart<typeof schema> {
 	private total = {} as Record<string, number>;
 
-	constructor() {
-		super(name, schema, true);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

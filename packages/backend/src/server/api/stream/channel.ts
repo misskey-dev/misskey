@@ -1,4 +1,4 @@
-import Connection from '.';
+import type Connection from '.';
 
 /**
  * Stream channel

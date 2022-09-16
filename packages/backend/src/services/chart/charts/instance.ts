@@ -1,17 +1,41 @@
-import Chart, { KVs } from '../core.js';
-import { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { Note } from '@/models/entities/note.js';
-import { toPuny } from '@/misc/convert-host.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import type { DriveFiles, Followings, Users, Notes } from '@/models/index.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
+import { AppLockService } from '@/services/AppLockService.js';
+import { DI } from '@/di-symbols.js';
+import { UtilityService } from '@/services/UtilityService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/instance.js';
+import type { KVs } from '../core.js';
 
 /**
  * インスタンスごとのチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class InstanceChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema, true);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: typeof Users,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: typeof Notes,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: typeof DriveFiles,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: typeof Followings,
+
+		private utilityService: UtilityService,
+		private appLockService: AppLockService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
@@ -22,11 +46,11 @@ export default class InstanceChart extends Chart<typeof schema> {
 			followersCount,
 			driveFiles,
 		] = await Promise.all([
-			Notes.countBy({ userHost: group }),
-			Users.countBy({ host: group }),
-			Followings.countBy({ followerHost: group }),
-			Followings.countBy({ followeeHost: group }),
-			DriveFiles.countBy({ userHost: group }),
+			this.notesRepository.countBy({ userHost: group }),
+			this.usersRepository.countBy({ host: group }),
+			this.followingsRepository.countBy({ followerHost: group }),
+			this.followingsRepository.countBy({ followeeHost: group }),
+			this.driveFilesRepository.countBy({ userHost: group }),
 		]);
 
 		return {
@@ -45,21 +69,21 @@ export default class InstanceChart extends Chart<typeof schema> {
 	public async requestReceived(host: string): Promise<void> {
 		await this.commit({
 			'requests.received': 1,
-		}, toPuny(host));
+		}, this.utilityService.toPuny(host));
 	}
 
 	public async requestSent(host: string, isSucceeded: boolean): Promise<void> {
 		await this.commit({
 			'requests.succeeded': isSucceeded ? 1 : 0,
 			'requests.failed': isSucceeded ? 0 : 1,
-		}, toPuny(host));
+		}, this.utilityService.toPuny(host));
 	}
 
 	public async newUser(host: string): Promise<void> {
 		await this.commit({
 			'users.total': 1,
 			'users.inc': 1,
-		}, toPuny(host));
+		}, this.utilityService.toPuny(host));
 	}
 
 	public async updateNote(host: string, note: Note, isAdditional: boolean): Promise<void> {
@@ -71,7 +95,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 			'notes.diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.withFile': note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
-		}, toPuny(host));
+		}, this.utilityService.toPuny(host));
 	}
 
 	public async updateFollowing(host: string, isAdditional: boolean): Promise<void> {
@@ -79,7 +103,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 			'following.total': isAdditional ? 1 : -1,
 			'following.inc': isAdditional ? 1 : 0,
 			'following.dec': isAdditional ? 0 : 1,
-		}, toPuny(host));
+		}, this.utilityService.toPuny(host));
 	}
 
 	public async updateFollowers(host: string, isAdditional: boolean): Promise<void> {
@@ -87,7 +111,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 			'followers.total': isAdditional ? 1 : -1,
 			'followers.inc': isAdditional ? 1 : 0,
 			'followers.dec': isAdditional ? 0 : 1,
-		}, toPuny(host));
+		}, this.utilityService.toPuny(host));
 	}
 
 	public async updateDrive(file: DriveFile, isAdditional: boolean): Promise<void> {

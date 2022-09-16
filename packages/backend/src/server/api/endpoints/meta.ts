@@ -1,10 +1,15 @@
 import { IsNull, MoreThan } from 'typeorm';
-import config from '@/config/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Ads, Emojis, Users } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Users } from '@/models/index.js';
+import { Ads, Emojis } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import define from '../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
+import { MetaService } from '@/services/MetaService.js';
+import { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -26,7 +31,6 @@ export const meta = {
 			version: {
 				type: 'string',
 				optional: false, nullable: false,
-				example: config.version,
 			},
 			name: {
 				type: 'string',
@@ -304,111 +308,126 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const instance = await fetchMeta(true);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
+	
+		@Inject(DI.usersRepository)
+		private usersRepository: typeof Users,
 
-	const emojis = await Emojis.find({
-		where: {
-			host: IsNull(),
-		},
-		order: {
-			category: 'ASC',
-			name: 'ASC',
-		},
-		cache: {
-			id: 'meta_emojis',
-			milliseconds: 3600000,	// 1 hour
-		},
-	});
+		private userEntityService: UserEntityService,
+		private emojiEntityService: EmojiEntityService,
+		private metaService: MetaService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const instance = await this.metaService.fetch(true);
 
-	const ads = await Ads.find({
-		where: {
-			expiresAt: MoreThan(new Date()),
-		},
-	});
+			const emojis = await Emojis.find({
+				where: {
+					host: IsNull(),
+				},
+				order: {
+					category: 'ASC',
+					name: 'ASC',
+				},
+				cache: {
+					id: 'meta_emojis',
+					milliseconds: 3600000,	// 1 hour
+				},
+			});
 
-	const response: any = {
-		maintainerName: instance.maintainerName,
-		maintainerEmail: instance.maintainerEmail,
+			const ads = await Ads.find({
+				where: {
+					expiresAt: MoreThan(new Date()),
+				},
+			});
 
-		version: config.version,
+			const response: any = {
+				maintainerName: instance.maintainerName,
+				maintainerEmail: instance.maintainerEmail,
 
-		name: instance.name,
-		uri: config.url,
-		description: instance.description,
-		langs: instance.langs,
-		tosUrl: instance.ToSUrl,
-		repositoryUrl: instance.repositoryUrl,
-		feedbackUrl: instance.feedbackUrl,
-		disableRegistration: instance.disableRegistration,
-		disableLocalTimeline: instance.disableLocalTimeline,
-		disableGlobalTimeline: instance.disableGlobalTimeline,
-		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
-		emailRequiredForSignup: instance.emailRequiredForSignup,
-		enableHcaptcha: instance.enableHcaptcha,
-		hcaptchaSiteKey: instance.hcaptchaSiteKey,
-		enableRecaptcha: instance.enableRecaptcha,
-		recaptchaSiteKey: instance.recaptchaSiteKey,
-		swPublickey: instance.swPublicKey,
-		themeColor: instance.themeColor,
-		mascotImageUrl: instance.mascotImageUrl,
-		bannerUrl: instance.bannerUrl,
-		errorImageUrl: instance.errorImageUrl,
-		iconUrl: instance.iconUrl,
-		backgroundImageUrl: instance.backgroundImageUrl,
-		logoImageUrl: instance.logoImageUrl,
-		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-		emojis: await Emojis.packMany(emojis),
-		defaultLightTheme: instance.defaultLightTheme,
-		defaultDarkTheme: instance.defaultDarkTheme,
-		ads: ads.map(ad => ({
-			id: ad.id,
-			url: ad.url,
-			place: ad.place,
-			ratio: ad.ratio,
-			imageUrl: ad.imageUrl,
-		})),
-		enableEmail: instance.enableEmail,
+				version: this.config.version,
 
-		enableTwitterIntegration: instance.enableTwitterIntegration,
-		enableGithubIntegration: instance.enableGithubIntegration,
-		enableDiscordIntegration: instance.enableDiscordIntegration,
+				name: instance.name,
+				uri: this.config.url,
+				description: instance.description,
+				langs: instance.langs,
+				tosUrl: instance.ToSUrl,
+				repositoryUrl: instance.repositoryUrl,
+				feedbackUrl: instance.feedbackUrl,
+				disableRegistration: instance.disableRegistration,
+				disableLocalTimeline: instance.disableLocalTimeline,
+				disableGlobalTimeline: instance.disableGlobalTimeline,
+				driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
+				driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+				emailRequiredForSignup: instance.emailRequiredForSignup,
+				enableHcaptcha: instance.enableHcaptcha,
+				hcaptchaSiteKey: instance.hcaptchaSiteKey,
+				enableRecaptcha: instance.enableRecaptcha,
+				recaptchaSiteKey: instance.recaptchaSiteKey,
+				swPublickey: instance.swPublicKey,
+				themeColor: instance.themeColor,
+				mascotImageUrl: instance.mascotImageUrl,
+				bannerUrl: instance.bannerUrl,
+				errorImageUrl: instance.errorImageUrl,
+				iconUrl: instance.iconUrl,
+				backgroundImageUrl: instance.backgroundImageUrl,
+				logoImageUrl: instance.logoImageUrl,
+				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
+				emojis: await this.emojiEntityService.packMany(emojis),
+				defaultLightTheme: instance.defaultLightTheme,
+				defaultDarkTheme: instance.defaultDarkTheme,
+				ads: ads.map(ad => ({
+					id: ad.id,
+					url: ad.url,
+					place: ad.place,
+					ratio: ad.ratio,
+					imageUrl: ad.imageUrl,
+				})),
+				enableEmail: instance.enableEmail,
 
-		enableServiceWorker: instance.enableServiceWorker,
+				enableTwitterIntegration: instance.enableTwitterIntegration,
+				enableGithubIntegration: instance.enableGithubIntegration,
+				enableDiscordIntegration: instance.enableDiscordIntegration,
 
-		translatorAvailable: instance.deeplAuthKey != null,
+				enableServiceWorker: instance.enableServiceWorker,
 
-		...(ps.detail ? {
-			pinnedPages: instance.pinnedPages,
-			pinnedClipId: instance.pinnedClipId,
-			cacheRemoteFiles: instance.cacheRemoteFiles,
-			requireSetup: (await Users.countBy({
-				host: IsNull(),
-			})) === 0,
-		} : {}),
-	};
+				translatorAvailable: instance.deeplAuthKey != null,
 
-	if (ps.detail) {
-		const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+				...(ps.detail ? {
+					pinnedPages: instance.pinnedPages,
+					pinnedClipId: instance.pinnedClipId,
+					cacheRemoteFiles: instance.cacheRemoteFiles,
+					requireSetup: (await this.usersRepository.countBy({
+						host: IsNull(),
+					})) === 0,
+				} : {}),
+			};
 
-		response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
-		response.features = {
-			registration: !instance.disableRegistration,
-			localTimeLine: !instance.disableLocalTimeline,
-			globalTimeLine: !instance.disableGlobalTimeline,
-			emailRequiredForSignup: instance.emailRequiredForSignup,
-			elasticsearch: config.elasticsearch ? true : false,
-			hcaptcha: instance.enableHcaptcha,
-			recaptcha: instance.enableRecaptcha,
-			objectStorage: instance.useObjectStorage,
-			twitter: instance.enableTwitterIntegration,
-			github: instance.enableGithubIntegration,
-			discord: instance.enableDiscordIntegration,
-			serviceWorker: instance.enableServiceWorker,
-			miauth: true,
-		};
+			if (ps.detail) {
+				const proxyAccount = instance.proxyAccountId ? await this.userEntityService.pack(instance.proxyAccountId).catch(() => null) : null;
+
+				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
+				response.features = {
+					registration: !instance.disableRegistration,
+					localTimeLine: !instance.disableLocalTimeline,
+					globalTimeLine: !instance.disableGlobalTimeline,
+					emailRequiredForSignup: instance.emailRequiredForSignup,
+					elasticsearch: this.config.elasticsearch ? true : false,
+					hcaptcha: instance.enableHcaptcha,
+					recaptcha: instance.enableRecaptcha,
+					objectStorage: instance.useObjectStorage,
+					twitter: instance.enableTwitterIntegration,
+					github: instance.enableGithubIntegration,
+					discord: instance.enableDiscordIntegration,
+					serviceWorker: instance.enableServiceWorker,
+					miauth: true,
+				};
+			}
+
+			return response;
+		});
 	}
-
-	return response;
-});
+}

@@ -2,79 +2,80 @@
 import pg from 'pg';
 pg.types.setTypeParser(20, Number);
 
-import { Logger, DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import * as highlight from 'cli-highlight';
-import config from '@/config/index.js';
-
-import { User } from '@/models/entities/user.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { DriveFolder } from '@/models/entities/drive-folder.js';
-import { AccessToken } from '@/models/entities/access-token.js';
-import { App } from '@/models/entities/app.js';
-import { PollVote } from '@/models/entities/poll-vote.js';
-import { Note } from '@/models/entities/note.js';
-import { NoteReaction } from '@/models/entities/note-reaction.js';
-import { NoteWatching } from '@/models/entities/note-watching.js';
-import { NoteThreadMuting } from '@/models/entities/note-thread-muting.js';
-import { NoteUnread } from '@/models/entities/note-unread.js';
-import { Notification } from '@/models/entities/notification.js';
-import { Meta } from '@/models/entities/meta.js';
-import { Following } from '@/models/entities/following.js';
-import { Instance } from '@/models/entities/instance.js';
-import { Muting } from '@/models/entities/muting.js';
-import { SwSubscription } from '@/models/entities/sw-subscription.js';
-import { Blocking } from '@/models/entities/blocking.js';
-import { UserList } from '@/models/entities/user-list.js';
-import { UserListJoining } from '@/models/entities/user-list-joining.js';
-import { UserGroup } from '@/models/entities/user-group.js';
-import { UserGroupJoining } from '@/models/entities/user-group-joining.js';
-import { UserGroupInvitation } from '@/models/entities/user-group-invitation.js';
-import { Hashtag } from '@/models/entities/hashtag.js';
-import { NoteFavorite } from '@/models/entities/note-favorite.js';
-import { AbuseUserReport } from '@/models/entities/abuse-user-report.js';
-import { RegistrationTicket } from '@/models/entities/registration-tickets.js';
-import { MessagingMessage } from '@/models/entities/messaging-message.js';
-import { Signin } from '@/models/entities/signin.js';
-import { AuthSession } from '@/models/entities/auth-session.js';
-import { FollowRequest } from '@/models/entities/follow-request.js';
-import { Emoji } from '@/models/entities/emoji.js';
-import { UserNotePining } from '@/models/entities/user-note-pining.js';
-import { Poll } from '@/models/entities/poll.js';
-import { UserKeypair } from '@/models/entities/user-keypair.js';
-import { UserPublickey } from '@/models/entities/user-publickey.js';
-import { UserProfile } from '@/models/entities/user-profile.js';
-import { UserSecurityKey } from '@/models/entities/user-security-key.js';
-import { AttestationChallenge } from '@/models/entities/attestation-challenge.js';
-import { Page } from '@/models/entities/page.js';
-import { PageLike } from '@/models/entities/page-like.js';
-import { GalleryPost } from '@/models/entities/gallery-post.js';
-import { GalleryLike } from '@/models/entities/gallery-like.js';
-import { ModerationLog } from '@/models/entities/moderation-log.js';
-import { UsedUsername } from '@/models/entities/used-username.js';
-import { Announcement } from '@/models/entities/announcement.js';
-import { AnnouncementRead } from '@/models/entities/announcement-read.js';
-import { Clip } from '@/models/entities/clip.js';
-import { ClipNote } from '@/models/entities/clip-note.js';
-import { Antenna } from '@/models/entities/antenna.js';
-import { AntennaNote } from '@/models/entities/antenna-note.js';
-import { PromoNote } from '@/models/entities/promo-note.js';
-import { PromoRead } from '@/models/entities/promo-read.js';
-import { Relay } from '@/models/entities/relay.js';
-import { MutedNote } from '@/models/entities/muted-note.js';
-import { Channel } from '@/models/entities/channel.js';
-import { ChannelFollowing } from '@/models/entities/channel-following.js';
-import { ChannelNotePining } from '@/models/entities/channel-note-pining.js';
-import { RegistryItem } from '@/models/entities/registry-item.js';
-import { Ad } from '@/models/entities/ad.js';
-import { PasswordResetRequest } from '@/models/entities/password-reset-request.js';
-import { UserPending } from '@/models/entities/user-pending.js';
-import { Webhook } from '@/models/entities/webhook.js';
-import { UserIp } from '@/models/entities/user-ip.js';
-
 import { entities as charts } from '@/services/chart/entities.js';
+
+import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
+import { AccessToken } from '@/models/entities/AccessToken.js';
+import { Ad } from '@/models/entities/Ad.js';
+import { Announcement } from '@/models/entities/Announcement.js';
+import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
+import { Antenna } from '@/models/entities/Antenna.js';
+import { AntennaNote } from '@/models/entities/AntennaNote.js';
+import { App } from '@/models/entities/App.js';
+import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
+import { AuthSession } from '@/models/entities/AuthSession.js';
+import { Blocking } from '@/models/entities/Blocking.js';
+import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
+import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
+import { Clip } from '@/models/entities/Clip.js';
+import { ClipNote } from '@/models/entities/ClipNote.js';
+import { DriveFile } from '@/models/entities/DriveFile.js';
+import { DriveFolder } from '@/models/entities/DriveFolder.js';
+import { Emoji } from '@/models/entities/Emoji.js';
+import { Following } from '@/models/entities/Following.js';
+import { FollowRequest } from '@/models/entities/FollowRequest.js';
+import { GalleryLike } from '@/models/entities/GalleryLike.js';
+import { GalleryPost } from '@/models/entities/GalleryPost.js';
+import { Hashtag } from '@/models/entities/Hashtag.js';
+import { Instance } from '@/models/entities/Instance.js';
+import { MessagingMessage } from '@/models/entities/MessagingMessage.js';
+import { Meta } from '@/models/entities/Meta.js';
+import { ModerationLog } from '@/models/entities/ModerationLog.js';
+import { MutedNote } from '@/models/entities/MutedNote.js';
+import { Muting } from '@/models/entities/Muting.js';
+import { Note } from '@/models/entities/Note.js';
+import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
+import { NoteReaction } from '@/models/entities/NoteReaction.js';
+import { NoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
+import { NoteUnread } from '@/models/entities/NoteUnread.js';
+import { Notification } from '@/models/entities/Notification.js';
+import { Page } from '@/models/entities/Page.js';
+import { PageLike } from '@/models/entities/PageLike.js';
+import { PasswordResetRequest } from '@/models/entities/PasswordResetRequest.js';
+import { Poll } from '@/models/entities/Poll.js';
+import { PollVote } from '@/models/entities/PollVote.js';
+import { PromoNote } from '@/models/entities/PromoNote.js';
+import { PromoRead } from '@/models/entities/PromoRead.js';
+import { RegistrationTicket } from '@/models/entities/RegistrationTickets.js';
+import { RegistryItem } from '@/models/entities/RegistryItem.js';
+import { Relay } from '@/models/entities/Relay.js';
+import { Signin } from '@/models/entities/Signin.js';
+import { SwSubscription } from '@/models/entities/SwSubscription.js';
+import { UsedUsername } from '@/models/entities/UsedUsername.js';
+import { User } from '@/models/entities/User.js';
+import { UserGroup } from '@/models/entities/UserGroup.js';
+import { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.js';
+import { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
+import { UserIp } from '@/models/entities/UserIp.js';
+import { UserKeypair } from '@/models/entities/UserKeypair.js';
+import { UserList } from '@/models/entities/UserList.js';
+import { UserListJoining } from '@/models/entities/UserListJoining.js';
+import { UserNotePining } from '@/models/entities/UserNotePining.js';
+import { UserPending } from '@/models/entities/UserPending.js';
+import { UserProfile } from '@/models/entities/UserProfile.js';
+import { UserPublickey } from '@/models/entities/UserPublickey.js';
+import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
+import { Webhook } from '@/models/entities/Webhook.js';
+import { Channel } from '@/models/entities/Channel.js';
+
+import { loadConfig } from '@/config.js';
+import Logger from '@/logger.js';
 import { envOption } from '../env.js';
-import { dbLogger } from './logger.js';
 import { redisClient } from './redis.js';
+
+export const dbLogger = new Logger('db');
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
@@ -138,7 +139,6 @@ export const entities = [
 	Note,
 	NoteFavorite,
 	NoteReaction,
-	NoteWatching,
 	NoteThreadMuting,
 	NoteUnread,
 	Page,
@@ -180,6 +180,8 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
+const config = loadConfig();
+
 export const db = new DataSource({
 	type: 'postgres',
 	host: config.db.host,
@@ -201,7 +203,7 @@ export const db = new DataSource({
 			family: config.redis.family == null ? 0 : config.redis.family,
 			password: config.redis.pass,
 			keyPrefix: `${config.redis.prefix}:query:`,
-			db: config.redis.db || 0,
+			db: config.redis.db ?? 0,
 		},
 	} : false,
 	logging: log,

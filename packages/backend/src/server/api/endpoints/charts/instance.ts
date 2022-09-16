@@ -1,11 +1,13 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { getJsonSchema } from '@/services/chart/core.js';
-import { instanceChart } from '@/services/chart/index.js';
-import define from '../../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import InstanceChart from '@/services/chart/charts/instance.js';
+import { schema } from '@/services/chart/charts/entities/instance.js';
 
 export const meta = {
 	tags: ['charts'],
 
-	res: getJsonSchema(instanceChart.schema),
+	res: getJsonSchema(schema),
 
 	allowGet: true,
 	cacheSec: 60 * 60,
@@ -23,6 +25,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await instanceChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.host);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private instanceChart: InstanceChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.instanceChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.host);
+		});
+	}
+}

@@ -1,7 +1,11 @@
-import Chart, { KVs } from '../core.js';
-import { User } from '@/models/entities/user.js';
-import { Users } from '@/models/index.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { AppLockService } from '@/services/AppLockService.js';
+import type { User } from '@/models/entities/User.js';
+import { DI } from '@/di-symbols.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/active-users.js';
+import type { KVs } from '../core.js';
 
 const week = 1000 * 60 * 60 * 24 * 7;
 const month = 1000 * 60 * 60 * 24 * 30;
@@ -11,9 +15,15 @@ const year = 1000 * 60 * 60 * 24 * 365;
  * アクティブユーザーに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class ActiveUsersChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

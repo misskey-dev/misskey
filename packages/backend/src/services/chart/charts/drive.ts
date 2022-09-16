@@ -1,16 +1,26 @@
-import Chart, { KVs } from '../core.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { Not, IsNull, DataSource } from 'typeorm';
 import { DriveFiles } from '@/models/index.js';
-import { Not, IsNull } from 'typeorm';
-import { DriveFile } from '@/models/entities/drive-file.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import { AppLockService } from '@/services/AppLockService.js';
+import { DI } from '@/di-symbols.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/drive.js';
+import type { KVs } from '../core.js';
 
 /**
  * ドライブに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class DriveChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

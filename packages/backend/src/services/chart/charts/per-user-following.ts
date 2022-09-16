@@ -1,16 +1,28 @@
-import Chart, { KVs } from '../core.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { Not, IsNull, DataSource } from 'typeorm';
 import { Followings, Users } from '@/models/index.js';
-import { Not, IsNull } from 'typeorm';
-import { User } from '@/models/entities/user.js';
+import type { User } from '@/models/entities/User.js';
+import { AppLockService } from '@/services/AppLockService.js';
+import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/per-user-following.js';
+import type { KVs } from '../core.js';
 
 /**
  * ユーザーごとのフォローに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class PerUserFollowingChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema, true);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+		private userEntityService: UserEntityService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
@@ -39,8 +51,8 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 	}
 
 	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean): Promise<void> {
-		const prefixFollower = Users.isLocalUser(follower) ? 'local' : 'remote';
-		const prefixFollowee = Users.isLocalUser(followee) ? 'local' : 'remote';
+		const prefixFollower = this.userEntityService.isLocalUser(follower) ? 'local' : 'remote';
+		const prefixFollowee = this.userEntityService.isLocalUser(followee) ? 'local' : 'remote';
 
 		this.commit({
 			[`${prefixFollower}.followings.total`]: isFollow ? 1 : -1,

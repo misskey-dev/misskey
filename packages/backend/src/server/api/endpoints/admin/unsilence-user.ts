@@ -1,7 +1,9 @@
-import define from '../../define.js';
-import { Users } from '@/models/index.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { Users } from '@/models/index.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -19,20 +21,31 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: typeof Users,
 
-	if (user == null) {
-		throw new Error('user not found');
+		private moderationLogService: ModerationLogService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
+
+			if (user == null) {
+				throw new Error('user not found');
+			}
+
+			await this.usersRepository.update(user.id, {
+				isSilenced: false,
+			});
+
+			this.globalEventService.publishInternalEvent('userChangeSilencedState', { id: user.id, isSilenced: false });
+
+			this.moderationLogService.insertModerationLog(me, 'unsilence', {
+				targetId: user.id,
+			});
+		});
 	}
-
-	await Users.update(user.id, {
-		isSilenced: false,
-	});
-
-	publishInternalEvent('userChangeSilencedState', { id: user.id, isSilenced: false });
-
-	insertModerationLog(me, 'unsilence', {
-		targetId: user.id,
-	});
-});
+}

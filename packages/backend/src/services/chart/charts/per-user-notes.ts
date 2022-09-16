@@ -1,16 +1,27 @@
-import Chart, { KVs } from '../core.js';
-import { User } from '@/models/entities/user.js';
+import { Injectable, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import type { User } from '@/models/entities/User.js';
 import { Notes } from '@/models/index.js';
-import { Note } from '@/models/entities/note.js';
+import type { Note } from '@/models/entities/Note.js';
+import { AppLockService } from '@/services/AppLockService.js';
+import { DI } from '@/di-symbols.js';
+import Chart from '../core.js';
 import { name, schema } from './entities/per-user-notes.js';
+import type { KVs } from '../core.js';
 
 /**
  * ユーザーごとのノートに関するチャート
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable()
 export default class PerUserNotesChart extends Chart<typeof schema> {
-	constructor() {
-		super(name, schema, true);
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		private appLockService: AppLockService,
+	) {
+		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

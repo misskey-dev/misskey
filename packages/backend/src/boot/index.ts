@@ -2,7 +2,7 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import Xev from 'xev';
 
-import Logger from '@/services/logger.js';
+import Logger from '@/logger.js';
 import { envOption } from '../env.js';
 
 // for typeorm

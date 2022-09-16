@@ -1,8 +1,9 @@
-import define from '../../define.js';
-import { createImportFollowingJob } from '@/queue/index.js';
+import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { ApiError } from '../../error.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueueService } from '@/services/QueueService.js';
 import { DriveFiles } from '@/models/index.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	secure: true,
@@ -48,13 +49,20 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const file = await DriveFiles.findOneBy({ id: ps.fileId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private queueService: QueueService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const file = await DriveFiles.findOneBy({ id: ps.fileId });
 
-	if (file == null) throw new ApiError(meta.errors.noSuchFile);
-	//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
-	if (file.size > 50000) throw new ApiError(meta.errors.tooBigFile);
-	if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
+			if (file == null) throw new ApiError(meta.errors.noSuchFile);
+			//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
+			if (file.size > 50000) throw new ApiError(meta.errors.tooBigFile);
+			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
 
-	createImportFollowingJob(user, file.id);
-});
+			this.queueService.createImportFollowingJob(me, file.id);
+		});
+	}
+}
