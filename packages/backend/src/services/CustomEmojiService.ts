@@ -8,7 +8,7 @@ import { IdService } from '@/services/IdService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { Cache } from '@/misc/cache.js';
-import { query } from '@/prelude/url';
+import { query } from '@/prelude/url.js';
 import type { Note } from '@/models/entities/Note.js';
 import { UtilityService } from './UtilityService.js';
 import { ReactionService } from './ReactionService.js';

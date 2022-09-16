@@ -16,7 +16,6 @@ import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/services/chart/charts/instance.js';
 import ApRequestChart from '@/services/chart/charts/ap-request.js';
 import FederationChart from '@/services/chart/charts/federation.js';
-import { LdSignature } from '@/services/remote/activitypub/misc/ld-signature.js';
 import { getApId } from '@/services/remote/activitypub/type.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { UserPublickey } from '@/models/entities/UserPublickey.js';
@@ -25,6 +24,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/services/UtilityService.js';
 import { ApPersonService } from '@/services/remote/activitypub/models/ApPersonService.js';
 import perform from '@/services/remote/activitypub/perform.js';
+import { LdSignatureService } from '@/services/remote/activitypub/LdSignatureService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData, InboxJobData } from '../types.js';
@@ -48,6 +48,7 @@ export class InboxProcessorService {
 		private metaService: MetaService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
+		private ldSignatureService: LdSignatureService,
 		private apRequestService: ApRequestService,
 		private apPersonService: ApPersonService,
 		private apDbResolverService: ApDbResolverService,
@@ -142,7 +143,7 @@ export class InboxProcessorService {
 				}
 
 				// LD-Signature検証
-				const ldSignature = new LdSignature();
+				const ldSignature = this.ldSignatureService.use();
 				const verified = await ldSignature.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
 				if (!verified) {
 					return 'skip: LD-Signatureの検証に失敗しました';

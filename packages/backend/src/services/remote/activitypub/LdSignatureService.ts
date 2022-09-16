@@ -1,17 +1,32 @@
 import * as crypto from 'node:crypto';
+import { Inject, Injectable } from '@nestjs/common';
 import jsonld from 'jsonld';
-import { CONTEXTS } from './contexts.js';
 import fetch from 'node-fetch';
-import { httpAgent, httpsAgent } from '@/misc/fetch.js';
+import { HttpRequestService } from '@/services/HttpRequestService.js';
+import { CONTEXTS } from './misc/contexts.js';
 
 // RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
 
-export class LdSignature {
+@Injectable()
+export class LdSignatureService {
+	constructor(
+		private httpRequestService: HttpRequestService,
+	) {
+	}
+
+	public use(): LdSignature {
+		return new LdSignature(this.httpRequestService);
+	}
+}
+
+class LdSignature {
 	public debug = false;
 	public preLoad = true;
 	public loderTimeout = 10 * 1000;
 
-	constructor() {
+	constructor(
+		private httpRequestService: HttpRequestService,
+	) {
 	}
 
 	public async signRsaSignature2017(data: any, privateKey: string, creator: string, domain?: string, created?: Date): Promise<any> {
@@ -115,7 +130,7 @@ export class LdSignature {
 			},
 			// TODO
 			//timeout: this.loderTimeout,
-			agent: u => u.protocol === 'http:' ? httpAgent : httpsAgent,
+			agent: u => u.protocol === 'http:' ? this.httpRequestService.httpAgent : this.httpRequestService.httpsAgent,
 		}).then(res => {
 			if (!res.ok) {
 				throw `${res.status} ${res.statusText}`;

@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Followings, Instances } from '@/models/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
+import { MetaService } from '@/services/MetaService.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/federation.js';
 import type { KVs } from '../core.js';
@@ -18,6 +18,7 @@ export default class FederationChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		private metaService: MetaService,
 		private appLockService: AppLockService,
 	) {
 		super(db, appLockService.getChartInsertLock, name, schema);
@@ -29,7 +30,7 @@ export default class FederationChart extends Chart<typeof schema> {
 	}
 
 	protected async tickMinor(): Promise<Partial<KVs<typeof schema>>> {
-		const meta = await fetchMeta();
+		const meta = await this.metaService.fetch();
 
 		const suspendedInstancesQuery = Instances.createQueryBuilder('instance')
 			.select('instance.host')

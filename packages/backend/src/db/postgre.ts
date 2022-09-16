@@ -71,10 +71,11 @@ import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 
 import { loadConfig } from '@/config.js';
+import Logger from '@/logger.js';
 import { envOption } from '../env.js';
 import { redisClient } from './redis.js';
-import { dbLogger } from './logger.js';
-import type { Logger } from 'typeorm';
+
+export const dbLogger = new Logger('db');
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 

@@ -4,7 +4,7 @@ import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import { escapeAttribute, escapeValue } from '@/prelude/xml';
+import { escapeAttribute, escapeValue } from '@/prelude/xml.js';
 import type { User } from '@/models/entities/User.js';
 import * as Acct from '@/misc/acct.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';

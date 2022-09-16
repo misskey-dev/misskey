@@ -1,9 +1,10 @@
+import { createPublicKey } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import type { Polls , DriveFiles, Emojis, Notes, Users } from '@/models/index.js';
+import type { UserProfiles , Polls , DriveFiles, Emojis, Notes, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import type { IMentionedRemoteUsers, Note } from '@/models/entities/Note.js';
@@ -17,7 +18,9 @@ import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
 import { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
 import { MfmService } from '@/services/MfmService.js';
-import { LdSignature } from './misc/ld-signature.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import { LdSignatureService } from './LdSignatureService.js';
 import type { IActivity } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
@@ -29,6 +32,9 @@ export class ApRendererService {
 
 		@Inject('usersRepository')
 		private usersRepository: typeof Users,
+
+		@Inject('userProfilesRepository')
+		private userProfilesRepository: typeof UserProfiles,
 
 		@Inject('notesRepository')
 		private notesRepository: typeof Notes,
@@ -42,6 +48,9 @@ export class ApRendererService {
 		@Inject('pollsRepository')
 		private pollsRepository: typeof Polls,
 
+		private userEntityService: UserEntityService,
+private driveFileEntityService: DriveFileEntityService,
+		private ldSignatureService: LdSignatureService,
 		private userKeypairStoreService: UserKeypairStoreService,
 		private mfmService: MfmService,
 	) {
@@ -137,7 +146,7 @@ export class ApRendererService {
 		return {
 			type: 'Document',
 			mediaType: file.type,
-			url: this.driveFilesRepository.getPublicUrl(file),
+			url: this.driveFileEntityService.getPublicUrl(file),
 			name: file.comment,
 		};
 	}
@@ -213,7 +222,7 @@ export class ApRendererService {
 	public renderImage(file: DriveFile) {
 		return {
 			type: 'Image',
-			url: this.driveFilesRepository.getPublicUrl(file),
+			url: this.driveFileEntityService.getPublicUrl(file),
 			sensitive: file.isSensitive,
 			name: file.comment,
 		};
@@ -415,7 +424,7 @@ export class ApRendererService {
 		const [avatar, banner, profile] = await Promise.all([
 			user.avatarId ? this.driveFilesRepository.findOneBy({ id: user.avatarId }) : Promise.resolve(undefined),
 			user.bannerId ? this.driveFilesRepository.findOneBy({ id: user.bannerId }) : Promise.resolve(undefined),
-			UserProfiles.findOneByOrFail({ userId: user.id }),
+			this.userProfilesRepository.findOneByOrFail({ userId: user.id }),
 		]);
 
 		const attachment: {
@@ -625,7 +634,7 @@ export class ApRendererService {
 	
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 	
-		const ldSignature = new LdSignature();
+		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
 		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
 	
