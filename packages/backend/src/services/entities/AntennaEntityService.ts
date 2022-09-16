@@ -8,8 +8,8 @@ import type { Antenna } from '@/models/entities/Antenna.js';
 @Injectable()
 export class AntennaEntityService {
 	constructor(
-		@Inject('antennaRepository')
-		private antennaRepository: typeof Antennas,
+		@Inject('antennasRepository')
+		private antennasRepository: typeof Antennas,
 
 		@Inject('antennaNotesRepository')
 		private antennaNotesRepository: typeof AntennaNotes,
@@ -22,7 +22,7 @@ export class AntennaEntityService {
 	public async pack(
 		src: Antenna['id'] | Antenna,
 	): Promise<Packed<'Antenna'>> {
-		const antenna = typeof src === 'object' ? src : await this.antennaRepository.findOneByOrFail({ id: src });
+		const antenna = typeof src === 'object' ? src : await this.antennasRepository.findOneByOrFail({ id: src });
 
 		const hasUnreadNote = (await this.antennaNotesRepository.findOneBy({ antennaId: antenna.id, read: false })) != null;
 		const userGroupJoining = antenna.userGroupJoiningId ? await this.userGroupJoiningsRepository.findOneBy({ id: antenna.userGroupJoiningId }) : null;

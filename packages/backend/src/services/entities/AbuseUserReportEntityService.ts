@@ -8,8 +8,8 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class AbuseUserReportEntityService {
 	constructor(
-		@Inject('abuseUserReportRepository')
-		private abuseUserReportRepository: typeof AbuseUserReports,
+		@Inject('abuseUserReportsRepository')
+		private abuseUserReportsRepository: typeof AbuseUserReports,
 
 		private userEntityService: UserEntityService,
 	) {
@@ -18,7 +18,7 @@ export class AbuseUserReportEntityService {
 	public async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {
-		const report = typeof src === 'object' ? src : await this.abuseUserReportRepository.findOneByOrFail({ id: src });
+		const report = typeof src === 'object' ? src : await this.abuseUserReportsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: report.id,
