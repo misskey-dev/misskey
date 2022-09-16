@@ -12,10 +12,10 @@ import { DriveFileEntityService } from './DriveFileEntityService.js';
 @Injectable()
 export class GalleryPostEntityService {
 	constructor(
-		@Inject('galleryPostsRepository')
+		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: typeof GalleryPosts,
 
-		@Inject('galleryLikesRepository')
+		@Inject(DI.galleryLikesRepository)
 		private galleryLikesRepository: typeof GalleryLikes,
 
 		private userEntityService: UserEntityService,

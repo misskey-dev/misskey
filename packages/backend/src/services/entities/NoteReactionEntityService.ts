@@ -21,7 +21,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject('noteReactionsRepository')
+		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: typeof NoteReactions,
 
 		//private userEntityService: UserEntityService,

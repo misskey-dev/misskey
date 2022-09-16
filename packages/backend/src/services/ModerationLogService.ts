@@ -7,7 +7,7 @@ import { IdService } from '@/services/IdService.js';
 @Injectable()
 export class ModerationLogService {
 	constructor(
-		@Inject('moderationLogsRepository')
+		@Inject(DI.moderationLogsRepository)
 		private moderationLogsRepository: typeof ModerationLogs,
 
 		private idService: IdService,

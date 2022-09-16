@@ -3,7 +3,7 @@ import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
-import type { Users , DriveFiles , UserProfiles } from '@/models/index.js';
+import type { Users, DriveFiles, UserProfiles } from '@/models/index.js';
 import { Pages } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
@@ -17,6 +17,7 @@ import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { UserFollowingService } from '@/services/UserFollowingService.js';
 import { AccountUpdateService } from '@/services/AccountUpdateService.js';
 import { HashtagService } from '@/services/HashtagService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -129,13 +130,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private userEntityService: UserEntityService,

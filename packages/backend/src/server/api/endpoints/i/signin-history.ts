@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Signins } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { SigninEntityService } from '@/services/entities/SigninEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -24,7 +25,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('signinsRepository')
+		@Inject(DI.signinsRepository)
 		private signinsRepository: typeof Signins,
 
 		private signinEntityService: SigninEntityService,

@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Notifications , Users } from '@/models/index.js';
+import type { Notifications, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
+import type { Notification } from '@/models/entities/Notification.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { GlobalEventService } from './GlobalEventService.js';
 import { PushNotificationService } from './PushNotificationService.js';
@@ -10,7 +11,7 @@ import { PushNotificationService } from './PushNotificationService.js';
 @Injectable()
 export class NotificationService {
 	constructor(
-		@Inject('notificationsRepository')
+		@Inject(DI.notificationsRepository)
 		private notificationsRepository: typeof Notifications,
 
 		private userEntityService: UserEntityService,

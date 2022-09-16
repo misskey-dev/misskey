@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MessagingMessages, UserGroupJoinings } from '@/models/index.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account', 'messaging'],
@@ -21,10 +22,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private globalEventService: GlobalEventService,

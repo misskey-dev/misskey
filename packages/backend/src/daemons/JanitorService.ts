@@ -11,7 +11,7 @@ export class JanitorService implements OnApplicationShutdown {
 	#intervalId: NodeJS.Timer;
 
 	constructor(
-		@Inject('attestationChallengesRepository')
+		@Inject(DI.attestationChallengesRepository)
 		private attestationChallengesRepository: typeof AttestationChallenges,
 	) {
 	}

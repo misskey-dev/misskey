@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users , Followings, FollowRequests , UserProfiles , Instances , Blockings } from '@/models/index.js';
+import type { Users, Followings, FollowRequests, UserProfiles, Instances, Blockings } from '@/models/index.js';
 import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/services/QueueService.js';
@@ -12,6 +12,7 @@ import InstanceChart from '@/services/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
 import { WebhookService } from '@/services/WebhookService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { DI } from '@/di-symbols.js';
 import Logger from '../logger.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
@@ -34,22 +35,22 @@ type Both = Local | Remote;
 @Injectable()
 export class UserFollowingService {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('followRequestsRepository')
+		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: typeof FollowRequests,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
 		private userEntityService: UserEntityService,
@@ -86,7 +87,7 @@ export class UserFollowingService {
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocked) {
 		// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
 			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, requestId), followee));
-			this.queueService.deliver(followee , content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox);
 			return;
 		} else if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocking) {
 		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。

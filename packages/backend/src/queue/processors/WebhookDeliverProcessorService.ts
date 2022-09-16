@@ -18,7 +18,7 @@ export class WebhookDeliverProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('webhooksRepository')
+		@Inject(DI.webhooksRepository)
 		private webhooksRepository: typeof Webhooks,
 
 		private httpRequestService: HttpRequestService,

@@ -5,6 +5,7 @@ import { QueryService } from '@/services/QueryService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { MetaService } from '@/services/MetaService.js';
 import ActiveUsersChart from '@/services/chart/charts/active-users.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -50,7 +51,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
 		private noteEntityService: NoteEntityService,

@@ -12,7 +12,7 @@ import { AppEntityService } from './AppEntityService.js';
 @Injectable()
 export class AuthSessionEntityService {
 	constructor(
-		@Inject('authSessionsRepository')
+		@Inject(DI.authSessionsRepository)
 		private authSessionsRepository: typeof AuthSessions,
 
 		private appEntityService: AppEntityService,

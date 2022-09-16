@@ -12,16 +12,16 @@ import { DriveFileEntityService } from './DriveFileEntityService.js';
 @Injectable()
 export class ChannelEntityService {
 	constructor(
-		@Inject('channelsRepository')
+		@Inject(DI.channelsRepository)
 		private channelsRepository: typeof Channels,
 
-		@Inject('channelFollowingsRepository')
+		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: typeof ChannelFollowings,
 
-		@Inject('noteUnreadsRepository')
+		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: typeof NoteUnreads,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private userEntityService: UserEntityService,

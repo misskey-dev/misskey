@@ -23,7 +23,7 @@ export class NoteDeleteService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
 		private userEntityService: UserEntityService,

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AuthSessions } from '@/models/index.js';
 import { AuthSessionEntityService } from '@/services/entities/AuthSessionEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -51,7 +52,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('authSessionsRepository')
+		@Inject(DI.authSessionsRepository)
 		private authSessionsRepository: typeof AuthSessions,
 
 		private authSessionEntityService: AuthSessionEntityService,

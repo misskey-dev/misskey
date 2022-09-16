@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Mutings } from '@/models/index.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';
 
@@ -45,7 +46,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
 		private globalEventService: GlobalEventService,

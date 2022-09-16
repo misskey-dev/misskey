@@ -4,7 +4,7 @@ import * as cbor from 'cbor';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type {
-	Users ,
+	Users,
 	UserProfiles } from '@/models/index.js';
 import {
 	UserSecurityKeys,
@@ -43,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
 		private userEntityService: UserEntityService,

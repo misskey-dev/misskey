@@ -5,7 +5,7 @@ import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import { Config } from '@/config.js';
-import type { UserProfiles , Users } from '@/models/index.js';
+import type { UserProfiles, Users } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/services/HttpRequestService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -24,10 +24,10 @@ export class DiscordServerService {
 		@Inject(DI.redis)
 		private redisClient: Redis,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
 		private userEntityService: UserEntityService,

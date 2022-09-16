@@ -21,13 +21,13 @@ export class ExportUserListsProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userListsRepository')
+		@Inject(DI.userListsRepository)
 		private userListsRepository: typeof UserLists,
 
-		@Inject('userListJoiningsRepository')
+		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: typeof UserListJoinings,
 
 		private utilityService: UtilityService,

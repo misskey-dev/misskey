@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -35,7 +36,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
 		private userEntityService: UserEntityService,

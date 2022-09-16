@@ -4,6 +4,7 @@ import type { Emojis } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { UtilityService } from '@/services/UtilityService.js';
 import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -74,7 +75,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('emojisRepository')
+		@Inject(DI.emojisRepository)
 		private emojisRepository: typeof Emojis,
 
 		private utilityService: UtilityService,

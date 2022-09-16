@@ -14,7 +14,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { KoaAdapter } from '@bull-board/koa';
 import { In, IsNull } from 'typeorm';
 import { Config } from '@/config.js';
-import type { Pages , Channels, Clips, GalleryPosts , Notes, UserProfiles, Users } from '@/models/index.js';
+import type { Pages, Channels, Clips, GalleryPosts, Notes, UserProfiles, Users } from '@/models/index.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
@@ -44,25 +44,25 @@ export class ClientServerService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('galleryPostsRepository')
+		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: typeof GalleryPosts,
 
-		@Inject('channelsRepository')
+		@Inject(DI.channelsRepository)
 		private channelsRepository: typeof Channels,
 
-		@Inject('clipsRepository')
+		@Inject(DI.clipsRepository)
 		private clipsRepository: typeof Clips,
 
-		@Inject('pagesRepository')
+		@Inject(DI.pagesRepository)
 		private pagesRepository: typeof Pages,
 
 		private userEntityService: UserEntityService,

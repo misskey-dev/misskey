@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFiles , DriveFolders } from '@/models/index.js';
+import type { DriveFiles, DriveFolders } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -65,10 +66,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('driveFoldersRepository')
+		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: typeof DriveFolders,
 
 		private driveFileEntityService: DriveFileEntityService,

@@ -10,7 +10,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class BlockingEntityService {
 	constructor(
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
 		private userEntityService: UserEntityService,

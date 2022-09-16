@@ -13,7 +13,7 @@ import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 @Injectable()
 export class GalleryLikeEntityService {
 	constructor(
-		@Inject('galleryLikesRepository')
+		@Inject(DI.galleryLikesRepository)
 		private galleryLikesRepository: typeof GalleryLikes,
 
 		private galleryPostEntityService: GalleryPostEntityService,

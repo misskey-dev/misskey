@@ -24,10 +24,10 @@ export class MessagingService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
 		private userEntityService: UserEntityService,
@@ -115,12 +115,12 @@ export class MessagingService {
 			const note = {
 				id: message.id,
 				createdAt: message.createdAt,
-				fileIds: message.fileId ? [ message.fileId ] : [],
+				fileIds: message.fileId ? [message.fileId] : [],
 				text: message.text,
 				userId: message.userId,
 				visibility: 'specified',
-				mentions: [ recipientUser ].map(u => u.id),
-				mentionedRemoteUsers: JSON.stringify([ recipientUser ].map(u => ({
+				mentions: [recipientUser].map(u => u.id),
+				mentionedRemoteUsers: JSON.stringify([recipientUser].map(u => ({
 					uri: u.uri,
 					username: u.username,
 					host: u.host,

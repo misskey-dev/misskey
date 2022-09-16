@@ -4,6 +4,7 @@ import type { User } from '@/models/entities/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 
 class UserListChannel extends Channel {
@@ -106,10 +107,10 @@ export class UserListChannelService {
 	public readonly requireCredential = UserListChannel.requireCredential;
 
 	constructor(
-		@Inject('userListsRepository')
+		@Inject(DI.userListsRepository)
 		private userListsRepository: typeof UserLists,
 
-		@Inject('userListJoiningsRepository')
+		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: typeof UserListJoinings,
 
 		private noteEntityService: NoteEntityService,

@@ -5,6 +5,7 @@ import type { UserGroup } from '@/models/entities/UserGroup.js';
 import type { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['groups'],
@@ -34,10 +35,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userGroupsRepository')
+		@Inject(DI.userGroupsRepository)
 		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private userGroupEntityService: UserGroupEntityService,

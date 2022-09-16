@@ -3,9 +3,10 @@ import * as crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfiles , AttestationChallenges } from '@/models/index.js';
+import type { UserProfiles, AttestationChallenges } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
+import { DI } from '@/di-symbols.js';
 
 const randomBytes = promisify(crypto.randomBytes);
 
@@ -27,10 +28,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('attestationChallengesRepository')
+		@Inject(DI.attestationChallengesRepository)
 		private attestationChallengesRepository: typeof AttestationChallenges,
 
 		private idService: IdService,

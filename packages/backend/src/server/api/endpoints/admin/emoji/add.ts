@@ -42,10 +42,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('emojisRepository')
+		@Inject(DI.emojisRepository)
 		private emojisRepository: typeof Emojis,
 
 		private emojiEntityService: EmojiEntityService,

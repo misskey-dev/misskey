@@ -16,7 +16,7 @@ export class CheckExpiredMutingsProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
 		private globalEventService: GlobalEventService,

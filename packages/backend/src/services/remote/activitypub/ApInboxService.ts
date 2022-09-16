@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AbuseUserReports , Followings, FollowRequests, MessagingMessages, Notes , Users } from '@/models/index.js';
+import type { AbuseUserReports, Followings, FollowRequests, MessagingMessages, Notes, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import { UserFollowingService } from '@/services/UserFollowingService.js';
@@ -41,22 +41,22 @@ export class ApInboxService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
-		@Inject('abuseUserReportsRepository')
+		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: typeof AbuseUserReports,
 
-		@Inject('followRequestsRepository')
+		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: typeof FollowRequests,
 
 		private userEntityService: UserEntityService,

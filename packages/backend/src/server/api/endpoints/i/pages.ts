@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Pages } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { PageEntityService } from '@/services/entities/PageEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account', 'pages'],
@@ -36,7 +37,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('pagesRepository')
+		@Inject(DI.pagesRepository)
 		private pagesRepository: typeof Pages,
 
 		private pageEntityService: PageEntityService,

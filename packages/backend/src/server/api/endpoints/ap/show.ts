@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users , Notes } from '@/models/index.js';
+import type { Users, Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { CacheableLocalUser, User } from '@/models/entities/User.js';
 import { isActor, isPost, getApId } from '@/services/remote/activitypub/type.js';
@@ -14,6 +14,7 @@ import { ApNoteService } from '@/services/remote/activitypub/models/ApNoteServic
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { UtilityService } from '@/services/UtilityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -83,10 +84,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
 		private utilityService: UtilityService,

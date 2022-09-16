@@ -5,6 +5,7 @@ import type { DriveFiles, GalleryPosts } from '@/models/index.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -48,10 +49,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('galleryPostsRepository')
+		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: typeof GalleryPosts,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private galleryPostEntityService: GalleryPostEntityService,

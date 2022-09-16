@@ -1,25 +1,26 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Mutings, Notifications, UserProfiles , Users } from '@/models/index.js';
+import type { Mutings, Notifications, UserProfiles, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { IdService } from '@/services/IdService.js';
+import { DI } from '@/di-symbols.js';
 import { NotificationEntityService } from './entities/NotificationEntityService.js';
 import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
 export class CreateNotificationService {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('notificationsRepository')
+		@Inject(DI.notificationsRepository)
 		private notificationsRepository: typeof Notifications,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
 		private notificationEntityService: NotificationEntityService,

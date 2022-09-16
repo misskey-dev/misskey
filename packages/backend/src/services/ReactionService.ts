@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { Emojis } from '@/models/index.js';
-import type { Blockings, NoteReactions , Users , Notes } from '@/models/index.js';
+import type { Blockings, NoteReactions, Users, Notes } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -54,19 +54,19 @@ type DecodedReaction = {
 @Injectable()
 export class ReactionService {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('noteReactionsRepository')
+		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: typeof NoteReactions,
 
-		@Inject('emojisRepository')
+		@Inject(DI.emojisRepository)
 		private emojisRepository: typeof Emojis,
 
 		private utilityService: UtilityService,

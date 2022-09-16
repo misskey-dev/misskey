@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennaNotes, ChannelFollowings, Followings, Mutings, NoteThreadMutings , NoteUnreads , Users } from '@/models/index.js';
-
+import type { AntennaNotes, ChannelFollowings, Followings, Mutings, NoteThreadMutings, NoteUnreads, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import type { Packed } from '@/misc/schema.js';
@@ -16,25 +15,25 @@ import { AntennaService } from './AntennaService.js';
 @Injectable()
 export class NoteReadService {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('noteUnreadsRepository')
+		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: typeof NoteUnreads,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
-		@Inject('noteThreadMutingsRepository')
+		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: typeof NoteThreadMutings,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('channelFollowingsRepository')
+		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: typeof ChannelFollowings,
 
-		@Inject('antennaNotesRepository')
+		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: typeof AntennaNotes,
 
 		private userEntityService: UserEntityService,

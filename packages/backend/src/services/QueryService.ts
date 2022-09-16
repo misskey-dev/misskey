@@ -1,32 +1,32 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NoteThreadMutings , Blockings , ChannelFollowings , MutedNotes , Followings , Mutings , UserProfiles } from '@/models/index.js';
+import type { NoteThreadMutings, Blockings, ChannelFollowings, MutedNotes, Followings, Mutings, UserProfiles } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class QueryService {
 	constructor(
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('channelFollowingsRepository')
+		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: typeof ChannelFollowings,
 
-		@Inject('mutedNotesRepository')
+		@Inject(DI.mutedNotesRepository)
 		private mutedNotesRepository: typeof MutedNotes,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('noteThreadMutingsRepository')
+		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: typeof NoteThreadMutings,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 	) {
 	}

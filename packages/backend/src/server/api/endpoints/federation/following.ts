@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Followings } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { FollowingEntityService } from '@/services/entities/FollowingEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -35,7 +36,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
 		private followingEntityService: FollowingEntityService,

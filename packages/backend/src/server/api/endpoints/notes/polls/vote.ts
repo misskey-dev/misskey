@@ -1,6 +1,6 @@
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users , Blockings , Polls , PollVotes } from '@/models/index.js';
+import type { Users, Blockings, Polls, PollVotes } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -10,6 +10,7 @@ import { PollService } from '@/services/PollService.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -73,16 +74,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('pollsRepository')
+		@Inject(DI.pollsRepository)
 		private pollsRepository: typeof Polls,
 
-		@Inject('pollVotesRepository')
+		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: typeof PollVotes,
 
 		private idService: IdService,

@@ -2,7 +2,7 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/User.js';
-import type { Users , Notes , Blockings } from '@/models/index.js';
+import type { Users, Notes, Blockings } from '@/models/index.js';
 import { DriveFiles, Channels } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -11,6 +11,7 @@ import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/services/NoteCreateService.js';
+import { DI } from '@/di-symbols.js';
 import { noteVisibilities } from '../../../../types.js';
 import { ApiError } from '../../error.js';
 
@@ -167,13 +168,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
 		private noteEntityService: NoteEntityService,

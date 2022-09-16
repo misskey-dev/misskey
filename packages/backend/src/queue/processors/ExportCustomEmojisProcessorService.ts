@@ -23,10 +23,10 @@ export class ExportCustomEmojisProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('emojisRepository')
+		@Inject(DI.emojisRepository)
 		private emojisRepository: typeof Emojis,
 
 		private driveService: DriveService,

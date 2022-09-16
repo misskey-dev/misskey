@@ -4,6 +4,7 @@ import type { Users } from '@/models/index.js';
 import { QueueService } from '@/services/QueueService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { UserSuspendService } from '@/services/UserSuspendService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -24,7 +25,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
 		private queueService: QueueService,

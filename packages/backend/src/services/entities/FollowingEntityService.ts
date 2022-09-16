@@ -35,7 +35,7 @@ type RemoteFolloweeFollowing = Following & {
 @Injectable()
 export class FollowingEntityService {
 	constructor(
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
 		private userEntityService: UserEntityService,

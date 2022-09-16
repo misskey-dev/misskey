@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFiles , Instances } from '@/models/index.js';
+import type { DriveFiles, Instances } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/services/MetaService.js';
@@ -29,10 +29,10 @@ export class DeliverProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private metaService: MetaService,

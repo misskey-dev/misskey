@@ -5,6 +5,7 @@ import type { Users } from '@/models/index.js';
 import { SignupService } from '@/services/SignupService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/entities/User.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -35,7 +36,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
 		private userEntityService: UserEntityService,

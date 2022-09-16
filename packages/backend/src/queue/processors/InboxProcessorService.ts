@@ -38,10 +38,10 @@ export class InboxProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private utilityService: UtilityService,

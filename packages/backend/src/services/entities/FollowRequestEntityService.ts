@@ -11,7 +11,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class FollowRequestEntityService {
 	constructor(
-		@Inject('followRequestsRepository')
+		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: typeof FollowRequests,
 
 		private userEntityService: UserEntityService,

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { DriveFiles , Pages , PageLikes } from '@/models/index.js';
+import type { DriveFiles, Pages, PageLikes } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -13,13 +13,13 @@ import { DriveFileEntityService } from './DriveFileEntityService.js';
 @Injectable()
 export class PageEntityService {
 	constructor(
-		@Inject('pagesRepository')
+		@Inject(DI.pagesRepository)
 		private pagesRepository: typeof Pages,
 
-		@Inject('pageLikesRepository')
+		@Inject(DI.pageLikesRepository)
 		private pageLikesRepository: typeof PageLikes,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private userEntityService: UserEntityService,

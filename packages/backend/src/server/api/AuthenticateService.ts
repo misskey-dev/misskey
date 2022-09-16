@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokens, Apps , Users } from '@/models/index.js';
+import type { AccessTokens, Apps, Users } from '@/models/index.js';
 import type { CacheableLocalUser, ILocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { Cache } from '@/misc/cache.js';
@@ -20,13 +20,13 @@ export class AuthenticateService {
 	#appCache: Cache<App>;
 
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('accessTokensRepository')
+		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: typeof AccessTokens,
 
-		@Inject('appsRepository')
+		@Inject(DI.appsRepository)
 		private appsRepository: typeof Apps,
 
 		private userCacheService: UserCacheService,

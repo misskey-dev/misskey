@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroups, UserGroupJoinings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -40,10 +41,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userGroupsRepository')
+		@Inject(DI.userGroupsRepository)
 		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private userGroupEntityService: UserGroupEntityService,

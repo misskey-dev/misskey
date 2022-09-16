@@ -28,7 +28,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	#userIpHistoriesClearIntervalId: NodeJS.Timer;
 
 	constructor(
-		@Inject('userIpsRepository')
+		@Inject(DI.userIpsRepository)
 		private userIpsRepository: typeof UserIps,
 
 		private metaService: MetaService,

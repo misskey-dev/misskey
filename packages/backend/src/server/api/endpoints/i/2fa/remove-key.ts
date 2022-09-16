@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users , UserProfiles , UserSecurityKeys } from '@/models/index.js';
-import { publishMainStream } from '@/services/stream.js';
+import type { Users, UserProfiles, UserSecurityKeys } from '@/models/index.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -25,10 +25,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userSecurityKeysRepository')
+		@Inject(DI.userSecurityKeysRepository)
 		private userSecurityKeysRepository: typeof UserSecurityKeys,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
 		private userEntityService: UserEntityService,

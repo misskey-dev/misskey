@@ -1,12 +1,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowRequests , Followings , UserLists , UserListJoinings , Users , Blockings } from '@/models/index.js';
+import type { FollowRequests, Followings, UserLists, UserListJoinings, Users, Blockings } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import type { CacheableUser, User } from '@/models/entities/User.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
 import { QueueService } from '@/services/QueueService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
+import { DI } from '@/di-symbols.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { WebhookService } from './WebhookService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
@@ -14,22 +15,22 @@ import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 @Injectable()
 export class UserBlockingService {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('followRequestsRepository')
+		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: typeof FollowRequests,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('userListsRepository')
+		@Inject(DI.userListsRepository)
 		private userListsRepository: typeof UserLists,
 
-		@Inject('userListJoiningsRepository')
+		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: typeof UserListJoinings,
 
 		private userEntityService: UserEntityService,

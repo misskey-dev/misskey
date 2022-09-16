@@ -4,6 +4,7 @@ import type { DriveFiles } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { DriveService } from '@/services/DriveService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -42,7 +43,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private driveService: DriveService,

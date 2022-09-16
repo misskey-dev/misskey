@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { MessagingMessages , Polls , Emojis, Users } from '@/models/index.js';
+import type { MessagingMessages, Polls, Emojis, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -40,13 +40,13 @@ export class ApNoteService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('pollsRepository')
+		@Inject(DI.pollsRepository)
 		private pollsRepository: typeof Polls,
 
-		@Inject('emojisRepository')
+		@Inject(DI.emojisRepository)
 		private emojisRepository: typeof Emojis,
 
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
 		private idService: IdService,

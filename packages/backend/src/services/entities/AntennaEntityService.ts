@@ -8,13 +8,13 @@ import type { Antenna } from '@/models/entities/Antenna.js';
 @Injectable()
 export class AntennaEntityService {
 	constructor(
-		@Inject('antennasRepository')
+		@Inject(DI.antennasRepository)
 		private antennasRepository: typeof Antennas,
 
-		@Inject('antennaNotesRepository')
+		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: typeof AntennaNotes,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 	) {
 	}

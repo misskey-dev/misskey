@@ -11,10 +11,10 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class UserListEntityService {
 	constructor(
-		@Inject('userListsRepository')
+		@Inject(DI.userListsRepository)
 		private userListsRepository: typeof UserLists,
 
-		@Inject('userListJoiningsRepository')
+		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: typeof UserListJoinings,
 
 		private userEntityService: UserEntityService,

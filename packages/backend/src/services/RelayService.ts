@@ -8,6 +8,7 @@ import type { Relay } from '@/models/entities/Relay.js';
 import { QueueService } from '@/services/QueueService.js';
 import { CreateSystemUserService } from '@/services/CreateSystemUserService.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
+import { DI } from '@/di-symbols.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 
@@ -16,10 +17,10 @@ export class RelayService {
 	#relaysCache: Cache<Relay[]>;
 
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('relaysRepository')
+		@Inject(DI.relaysRepository)
 		private relaysRepository: typeof Relays,
 
 		private idService: IdService,

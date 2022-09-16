@@ -45,7 +45,7 @@ export class PushNotificationService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('swSubscriptionsRepository')
+		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: typeof SwSubscriptions,
 
 		private metaService: MetaService,

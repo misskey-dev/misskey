@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users , UserProfiles } from '@/models/index.js';
+import type { Users, UserProfiles } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -36,10 +37,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 	) {
 		super(meta, paramDef, async (ps) => {

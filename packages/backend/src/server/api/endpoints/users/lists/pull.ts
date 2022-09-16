@@ -5,6 +5,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -44,10 +45,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userListsRepository')
+		@Inject(DI.userListsRepository)
 		private userListsRepository: typeof UserLists,
 
-		@Inject('userListJoiningsRepository')
+		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: typeof UserListJoinings,
 
 		private userEntityService: UserEntityService,

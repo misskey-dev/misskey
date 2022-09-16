@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFiles } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -38,7 +39,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private driveFileEntityService: DriveFileEntityService,

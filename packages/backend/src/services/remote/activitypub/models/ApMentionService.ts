@@ -8,7 +8,7 @@ import type { CacheableUser } from '@/models/entities/User.js';
 import { isMention } from '../type.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApPersonService } from './ApPersonService.js';
-import type { IObject , IApMention } from '../type.js';
+import type { IObject, IApMention } from '../type.js';
 
 @Injectable()
 export class ApMentionService {

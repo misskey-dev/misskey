@@ -8,7 +8,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class AbuseUserReportEntityService {
 	constructor(
-		@Inject('abuseUserReportsRepository')
+		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: typeof AbuseUserReports,
 
 		private userEntityService: UserEntityService,

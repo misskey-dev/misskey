@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Pages } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -37,7 +38,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('pagesRepository')
+		@Inject(DI.pagesRepository)
 		private pagesRepository: typeof Pages,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -3,11 +3,12 @@ import type { Users } from '@/models/index.js';
 import { QueueService } from '@/services/QueueService.js';
 import { UserSuspendService } from '@/services/UserSuspendService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 @Injectable()
 export class DeleteAccountService {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
 		private userSuspendService: UserSuspendService,

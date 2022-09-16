@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Announcements , AnnouncementReads } from '@/models/index.js';
+import type { Announcements, AnnouncementReads } from '@/models/index.js';
 import type { Announcement } from '@/models/entities/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -68,10 +69,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('announcementsRepository')
+		@Inject(DI.announcementsRepository)
 		private announcementsRepository: typeof Announcements,
 
-		@Inject('announcementReadsRepository')
+		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: typeof AnnouncementReads,
 
 		private queryService: QueryService,

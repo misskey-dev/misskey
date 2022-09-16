@@ -11,7 +11,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class EmojiEntityService {
 	constructor(
-		@Inject('emojisRepository')
+		@Inject(DI.emojisRepository)
 		private emojisRepository: typeof Emojis,
 
 		private userEntityService: UserEntityService,

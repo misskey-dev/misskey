@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFiles , UserListJoinings , UserLists } from '@/models/index.js';
+import type { DriveFiles, UserListJoinings, UserLists } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
@@ -23,16 +23,16 @@ export class ImportUserListsProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('userListsRepository')
+		@Inject(DI.userListsRepository)
 		private userListsRepository: typeof UserLists,
 
-		@Inject('userListJoiningsRepository')
+		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: typeof UserListJoinings,
 
 		private utilityService: UtilityService,

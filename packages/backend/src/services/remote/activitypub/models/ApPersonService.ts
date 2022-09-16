@@ -3,7 +3,7 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { Followings , Instances, UserProfiles, UserPublickeys, Users } from '@/models/index.js';
+import type { Followings, Instances, UserProfiles, UserPublickeys, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableUser, IRemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
@@ -34,12 +34,11 @@ import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
-import type { ApResolverService , Resolver } from '../ApResolverService.js';
+import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { ApImageService } from './ApImageService.js';
-
-import type { IActor, IObject , IApPropertyValue } from '../type.js';
+import type { IActor, IObject, IApPropertyValue } from '../type.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -103,19 +102,19 @@ export class ApPersonService implements OnModuleInit {
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('userPublickeysRepository')
+		@Inject(DI.userPublickeysRepository)
 		private userPublickeysRepository: typeof UserPublickeys,
 
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
 		//private utilityService: UtilityService,

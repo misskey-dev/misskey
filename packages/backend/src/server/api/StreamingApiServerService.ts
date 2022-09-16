@@ -24,19 +24,19 @@ export class StreamingApiServerService {
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('channelFollowingsRepository')
+		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: typeof ChannelFollowings,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 	
 		private globalEventService: GlobalEventService,

@@ -5,6 +5,7 @@ import { IdService } from '@/services/IdService.js';
 import { unique } from '@/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { AppEntityService } from '@/services/entities/AppEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['app'],
@@ -35,7 +36,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('appsRepository')
+		@Inject(DI.appsRepository)
 		private appsRepository: typeof Apps,
 
 		private appEntityService: AppEntityService,

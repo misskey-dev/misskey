@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishMainStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistryItems } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -27,7 +27,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('registryItemsRepository')
+		@Inject(DI.registryItemsRepository)
 		private registryItemsRepository: typeof RegistryItems,
 
 		private idService: IdService,

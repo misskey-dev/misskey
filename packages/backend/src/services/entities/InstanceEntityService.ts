@@ -12,7 +12,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class InstanceEntityService {
 	constructor(
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
 		private metaService: MetaService,

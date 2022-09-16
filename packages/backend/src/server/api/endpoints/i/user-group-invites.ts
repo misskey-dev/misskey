@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserGroupInvitations } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { UserGroupInvitationEntityService } from '@/services/entities/UserGroupInvitationEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account', 'groups'],
@@ -47,7 +48,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userGroupInvitationsRepository')
+		@Inject(DI.userGroupInvitationsRepository)
 		private userGroupInvitationsRepository: typeof UserGroupInvitations,
 
 		private userGroupInvitationEntityService: UserGroupInvitationEntityService,

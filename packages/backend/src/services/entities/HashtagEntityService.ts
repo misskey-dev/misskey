@@ -11,7 +11,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class HashtagEntityService {
 	constructor(
-		@Inject('hashtagsRepository')
+		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: typeof Hashtags,
 
 		private userEntityService: UserEntityService,

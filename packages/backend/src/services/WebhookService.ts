@@ -14,7 +14,7 @@ export class WebhookService implements OnApplicationShutdown {
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
 
-		@Inject('webhooksRepository')
+		@Inject(DI.webhooksRepository)
 		private webhooksRepository: typeof Webhooks,
 	) {
 		this.onMessage = this.onMessage.bind(this);

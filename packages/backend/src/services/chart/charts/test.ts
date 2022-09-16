@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { DataSource , DataSource } from 'typeorm';
+import { DataSource, DataSource } from 'typeorm';
 import { AppLockService } from '@/services/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import Chart from '../core.js';

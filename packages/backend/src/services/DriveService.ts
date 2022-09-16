@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFiles , Users , DriveFolders , UserProfiles } from '@/models/index.js';
+import type { DriveFiles, Users, DriveFolders, UserProfiles } from '@/models/index.js';
 import { Config } from '@/config.js';
 import Logger from '@/Logger.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
@@ -81,16 +81,16 @@ export class DriveService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('driveFoldersRepository')
+		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: typeof DriveFolders,
 
 		private fileInfoService: FileInfoService,

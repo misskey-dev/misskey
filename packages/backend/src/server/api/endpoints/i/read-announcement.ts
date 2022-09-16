@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/services/IdService.js';
-import type { Users , AnnouncementReads, Announcements } from '@/models/index.js';
+import type { Users, AnnouncementReads, Announcements } from '@/models/index.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -34,10 +35,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('announcementsRepository')
+		@Inject(DI.announcementsRepository)
 		private announcementsRepository: typeof Announcements,
 
-		@Inject('announcementReadsRepository')
+		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: typeof AnnouncementReads,
 
 		private userEntityService: UserEntityService,

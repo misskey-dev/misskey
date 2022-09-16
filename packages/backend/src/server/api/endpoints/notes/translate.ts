@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
+import { DI, DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { MetaService } from '@/services/MetaService.js';
 import { HttpRequestService } from '@/services/HttpRequestService.js';
@@ -46,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.config)
 		private config: Config,
 	
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
 		private noteEntityService: NoteEntityService,

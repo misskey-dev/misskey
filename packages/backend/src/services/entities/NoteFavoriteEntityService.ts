@@ -12,7 +12,7 @@ import { NoteEntityService } from './NoteEntityService.js';
 @Injectable()
 export class NoteFavoriteEntityService {
 	constructor(
-		@Inject('noteFavoritesRepository')
+		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: typeof NoteFavorites,
 
 		private noteEntityService: NoteEntityService,

@@ -3,6 +3,7 @@ import { IsNull } from 'typeorm';
 import type { Notes, Users } from '@/models/index.js';
 import { Instances, NoteReactions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: false,
@@ -55,10 +56,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 	) {
 		super(meta, paramDef, async () => {

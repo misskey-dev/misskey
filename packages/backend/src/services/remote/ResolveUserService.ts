@@ -20,7 +20,7 @@ export class ResolveUserService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
 		private utilityService: UtilityService,

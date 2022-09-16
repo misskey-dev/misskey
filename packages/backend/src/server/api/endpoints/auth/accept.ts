@@ -1,9 +1,10 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AuthSessions, Apps , AccessTokens } from '@/models/index.js';
+import type { AuthSessions, Apps, AccessTokens } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -34,13 +35,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('appsRepository')
+		@Inject(DI.appsRepository)
 		private appsRepository: typeof Apps,
 
-		@Inject('authSessionsRepository')
+		@Inject(DI.authSessionsRepository)
 		private authSessionsRepository: typeof AuthSessions,
 
-		@Inject('accessTokensRepository')
+		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: typeof AccessTokens,
 
 		private idService: IdService,

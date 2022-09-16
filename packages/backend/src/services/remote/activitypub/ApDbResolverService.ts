@@ -39,13 +39,13 @@ export class ApDbResolverService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('userPublickeysRepository')
+		@Inject(DI.userPublickeysRepository)
 		private userPublickeysRepository: typeof UserPublickeys,
 
 		private userCacheService: UserCacheService,

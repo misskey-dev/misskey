@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { publishDriveStream } from '@/services/stream.js';
 import type { DriveFolders, DriveFiles } from '@/models/index.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -39,10 +39,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('driveFoldersRepository')
+		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: typeof DriveFolders,
 
 		private globalEventService: GlobalEventService,

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import type { UserGroupJoinings, UserListJoinings , AntennaNotes, Mutings, Notes, Users , Blockings, Antennas } from '@/models/index.js';
+import type { UserGroupJoinings, UserListJoinings, AntennaNotes, Mutings, Notes, Users, Blockings, Antennas } from '@/models/index.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
@@ -24,25 +24,25 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('antennaNotesRepository')
+		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: typeof AntennaNotes,
 
-		@Inject('antennasRepository')
+		@Inject(DI.antennasRepository)
 		private antennasRepository: typeof Antennas,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
-		@Inject('userListJoiningsRepository')
+		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: typeof UserListJoinings,
 
 		private utilityService: UtilityService,

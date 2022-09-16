@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notes , NoteThreadMutings } from '@/models/index.js';
+import type { Notes, NoteThreadMutings } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { NoteReadService } from '@/services/NoteReadService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -34,10 +35,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('noteThreadMutingsRepository')
+		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: typeof NoteThreadMutings,
 
 		private getterService: GetterService,

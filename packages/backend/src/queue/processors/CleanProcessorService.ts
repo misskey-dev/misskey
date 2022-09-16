@@ -15,7 +15,7 @@ export class CleanProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('userIpsRepository')
+		@Inject(DI.userIpsRepository)
 		private userIpsRepository: typeof UserIps,
 
 		private queueLoggerService: QueueLoggerService,

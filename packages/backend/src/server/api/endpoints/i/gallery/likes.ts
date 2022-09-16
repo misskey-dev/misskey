@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { GalleryLikes } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { GalleryLikeEntityService } from '@/services/entities/GalleryLikeEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account', 'gallery'],
@@ -47,7 +48,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('galleryLikesRepository')
+		@Inject(DI.galleryLikesRepository)
 		private galleryLikesRepository: typeof GalleryLikes,
 
 		private galleryLikeEntityService: GalleryLikeEntityService,

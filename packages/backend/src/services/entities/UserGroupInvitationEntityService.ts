@@ -12,7 +12,7 @@ import { UserGroupEntityService } from './UserGroupEntityService.js';
 @Injectable()
 export class UserGroupInvitationEntityService {
 	constructor(
-		@Inject('userGroupInvitationsRepository')
+		@Inject(DI.userGroupInvitationsRepository)
 		private userGroupInvitationsRepository: typeof UserGroupInvitations,
 
 		private userGroupEntityService: UserGroupEntityService,

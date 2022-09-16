@@ -7,6 +7,7 @@ import type { Instance } from '@/models/entities/Instance.js';
 import type { Instances } from '@/models/index.js';
 import { AppLockService } from '@/services/AppLockService.js';
 import Logger from '@/logger.js';
+import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from './HttpRequestService.js';
 import type { DOMWindow } from 'jsdom';
 
@@ -33,7 +34,7 @@ type NodeInfo = {
 @Injectable()
 export class FetchInstanceMetadataService {
 	constructor(
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
 		private appLockService: AppLockService,

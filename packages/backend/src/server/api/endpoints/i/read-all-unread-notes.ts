@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NoteUnreads } from '@/models/index.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account'],
@@ -21,7 +22,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('noteUnreadsRepository')
+		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: typeof NoteUnreads,
 
 		private globalEventService: GlobalEventService,

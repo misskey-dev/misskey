@@ -11,7 +11,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class ClipEntityService {
 	constructor(
-		@Inject('clipsRepository')
+		@Inject(DI.clipsRepository)
 		private clipsRepository: typeof Clips,
 
 		private userEntityService: UserEntityService,

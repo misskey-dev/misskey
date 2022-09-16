@@ -3,6 +3,7 @@ import type { Notifications } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { PushNotificationService } from '@/services/PushNotificationService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['notifications', 'account'],
@@ -22,7 +23,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('notificationsRepository')
+		@Inject(DI.notificationsRepository)
 		private notificationsRepository: typeof Notifications,
 
 		private globalEventService: GlobalEventService,

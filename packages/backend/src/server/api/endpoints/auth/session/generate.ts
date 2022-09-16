@@ -52,10 +52,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('appsRepository')
+		@Inject(DI.appsRepository)
 		private appsRepository: typeof Apps,
 
-		@Inject('authSessionsRepository')
+		@Inject(DI.authSessionsRepository)
 		private authSessionsRepository: typeof AuthSessions,
 
 		private idService: IdService,

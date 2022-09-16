@@ -4,6 +4,7 @@ import type { Channels, DriveFiles } from '@/models/index.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { IdService } from '@/services/IdService.js';
 import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -42,10 +43,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('channelsRepository')
+		@Inject(DI.channelsRepository)
 		private channelsRepository: typeof Channels,
 
 		private idService: IdService,

@@ -11,10 +11,10 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class DriveFolderEntityService {
 	constructor(
-		@Inject('driveFoldersRepository')
+		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: typeof DriveFolders,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 	) {
 	}

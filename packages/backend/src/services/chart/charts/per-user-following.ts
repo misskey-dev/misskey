@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Not, IsNull , DataSource } from 'typeorm';
+import { Not, IsNull, DataSource } from 'typeorm';
 import { Followings, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/services/AppLockService.js';

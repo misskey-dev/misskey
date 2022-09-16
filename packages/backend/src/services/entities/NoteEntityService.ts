@@ -3,7 +3,7 @@ import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { Notes , Polls, PollVotes , DriveFiles , Channels , Followings , Users , NoteReactions } from '@/models/index.js';
+import type { Notes, Polls, PollVotes, DriveFiles, Channels, Followings, Users, NoteReactions } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { nyaize } from '@/misc/nyaize.js';
@@ -30,28 +30,28 @@ export class NoteEntityService implements OnModuleInit {
 		@Inject(DI.db)
 		private db: DataSource,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('pollsRepository')
+		@Inject(DI.pollsRepository)
 		private pollsRepository: typeof Polls,
 
-		@Inject('pollVotesRepository')
+		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: typeof PollVotes,
 
-		@Inject('noteReactionsRepository')
+		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: typeof NoteReactions,
 
-		@Inject('channelsRepository')
+		@Inject(DI.channelsRepository)
 		private channelsRepository: typeof Channels,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		//private userEntityService: UserEntityService,

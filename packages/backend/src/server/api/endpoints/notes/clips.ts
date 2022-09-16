@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { ClipNotes, Clips } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipEntityService } from '@/services/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';
 
@@ -42,10 +43,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('clipsRepository')
+		@Inject(DI.clipsRepository)
 		private clipsRepository: typeof Clips,
 
-		@Inject('clipNotesRepository')
+		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: typeof ClipNotes,
 
 		private clipEntityService: ClipEntityService,

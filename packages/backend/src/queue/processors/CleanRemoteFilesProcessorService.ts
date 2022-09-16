@@ -16,7 +16,7 @@ export class CleanRemoteFilesProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private driveService: DriveService,

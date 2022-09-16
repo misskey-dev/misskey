@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users , Notes , Followings , DriveFiles, NoteFavorites, NoteReactions, PageLikes, PollVotes } from '@/models/index.js';
+import type { Users, Notes, Followings, DriveFiles, NoteFavorites, NoteReactions, PageLikes, PollVotes } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -121,28 +122,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('noteReactionsRepository')
+		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: typeof NoteReactions,
 
-		@Inject('pageLikesRepository')
+		@Inject(DI.pageLikesRepository)
 		private pageLikesRepository: typeof PageLikes,
 
-		@Inject('noteFavoritesRepository')
+		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: typeof NoteFavorites,
 
-		@Inject('pollVotesRepository')
+		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: typeof PollVotes,
 
 		private driveFileEntityService: DriveFileEntityService,

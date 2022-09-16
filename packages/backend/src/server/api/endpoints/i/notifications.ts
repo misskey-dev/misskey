@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users , Followings, Mutings, UserProfiles } from '@/models/index.js';
+import type { Users, Followings, Mutings, UserProfiles } from '@/models/index.js';
 import { Notifications } from '@/models/index.js';
 import { notificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -8,6 +8,7 @@ import { QueryService } from '@/services/QueryService.js';
 import { NoteReadService } from '@/services/NoteReadService.js';
 import { NotificationEntityService } from '@/services/entities/NotificationEntityService.js';
 import { NotificationService } from '@/services/NotificationService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account', 'notifications'],
@@ -55,16 +56,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
 		private notificationEntityService: NotificationEntityService,

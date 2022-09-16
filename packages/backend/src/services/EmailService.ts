@@ -15,7 +15,7 @@ export class EmailService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
 		private metaService: MetaService,

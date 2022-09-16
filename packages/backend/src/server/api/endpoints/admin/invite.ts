@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTickets } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -35,7 +36,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('registrationTicketsRepository')
+		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: typeof RegistrationTickets,
 
 		private idService: IdService,

@@ -3,6 +3,7 @@ import type { Instances } from '@/models/index.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { Cache } from '@/misc/cache.js';
 import { IdService } from '@/services/IdService.js';
+import { DI } from '@/di-symbols.js';
 import { UtilityService } from './UtilityService.js';
 
 @Injectable()
@@ -10,7 +11,7 @@ export class FederatedInstanceService {
 	#cache: Cache<Instance>;
 
 	constructor(
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
 		private utilityService: UtilityService,

@@ -11,7 +11,7 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class SigninEntityService {
 	constructor(
-		@Inject('signinsRepository')
+		@Inject(DI.signinsRepository)
 		private signinsRepository: typeof Signins,
 
 		private userEntityService: UserEntityService,

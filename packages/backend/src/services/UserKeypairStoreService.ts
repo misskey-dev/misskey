@@ -3,13 +3,14 @@ import type { User } from '@/models/entities/User.js';
 import type { UserKeypairs } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
+import { DI } from '@/di-symbols.js';
 
 @Injectable()
 export class UserKeypairStoreService {
 	#cache: Cache<UserKeypair>;
 
 	constructor(
-		@Inject('userKeypairsRepository')
+		@Inject(DI.userKeypairsRepository)
 		private userKeypairsRepository: typeof UserKeypairs,
 	) {
 		this.#cache = new Cache<UserKeypair>(Infinity);

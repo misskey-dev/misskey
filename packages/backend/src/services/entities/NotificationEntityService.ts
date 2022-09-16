@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokens, NoteReactions , Notifications } from '@/models/index.js';
+import type { AccessTokens, NoteReactions, Notifications } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
@@ -24,13 +24,13 @@ export class NotificationEntityService implements OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject('notificationsRepository')
+		@Inject(DI.notificationsRepository)
 		private notificationsRepository: typeof Notifications,
 
-		@Inject('noteReactionsRepository')
+		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: typeof NoteReactions,
 
-		@Inject('accessTokensRepository')
+		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: typeof AccessTokens,
 
 		//private userEntityService: UserEntityService,

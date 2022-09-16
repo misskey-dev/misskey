@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { PromoReads } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';
 
@@ -31,7 +32,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('promoReadsRepository')
+		@Inject(DI.promoReadsRepository)
 		private promoReadsRepository: typeof PromoReads,
 
 		private idService: IdService,

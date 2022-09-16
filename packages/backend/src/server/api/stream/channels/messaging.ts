@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserGroupJoinings , Users , MessagingMessages } from '@/models/index.js';
+import type { UserGroupJoinings, Users, MessagingMessages } from '@/models/index.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { MessagingService } from '@/services/MessagingService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 import type { StreamMessages } from '../types.js';
 
@@ -123,13 +124,13 @@ export class MessagingChannelService {
 	public readonly requireCredential = MessagingChannel.requireCredential;
 
 	constructor(
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
 		private userEntityService: UserEntityService,

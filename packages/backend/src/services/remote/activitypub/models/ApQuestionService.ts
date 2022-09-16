@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Notes , Polls } from '@/models/index.js';
+import type { Notes, Polls } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { IPoll } from '@/models/entities/Poll.js';
 import type Logger from '@/logger.js';
@@ -8,7 +8,7 @@ import { isQuestion } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import type { Resolver } from '../ApResolverService.js';
-import type { IObject , IQuestion } from '../type.js';
+import type { IObject, IQuestion } from '../type.js';
 
 @Injectable()
 export class ApQuestionService {
@@ -18,10 +18,10 @@ export class ApQuestionService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('pollsRepository')
+		@Inject(DI.pollsRepository)
 		private pollsRepository: typeof Polls,
 
 		private apResolverService: ApResolverService,

@@ -5,6 +5,7 @@ import type { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -56,13 +57,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userGroupsRepository')
+		@Inject(DI.userGroupsRepository)
 		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('userGroupInvitationsRepository')
+		@Inject(DI.userGroupInvitationsRepository)
 		private userGroupInvitationsRepository: typeof UserGroupInvitations,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private idService: IdService,

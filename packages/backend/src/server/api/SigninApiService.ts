@@ -21,19 +21,19 @@ export class SigninApiService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userSecurityKeysRepository')
+		@Inject(DI.userSecurityKeysRepository)
 		private userSecurityKeysRepository: typeof UserSecurityKeys,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('attestationChallengesRepository')
+		@Inject(DI.attestationChallengesRepository)
 		private attestationChallengesRepository: typeof AttestationChallenges,
 
-		@Inject('signinsRepository')
+		@Inject(DI.signinsRepository)
 		private signinsRepository: typeof Signins,
 
 		private idService: IdService,

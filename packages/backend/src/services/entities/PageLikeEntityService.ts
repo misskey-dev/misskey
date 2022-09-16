@@ -12,7 +12,7 @@ import { PageEntityService } from './PageEntityService.js';
 @Injectable()
 export class PageLikeEntityService {
 	constructor(
-		@Inject('pageLikesRepository')
+		@Inject(DI.pageLikesRepository)
 		private pageLikesRepository: typeof PageLikes,
 
 		private pageEntityService: PageEntityService,

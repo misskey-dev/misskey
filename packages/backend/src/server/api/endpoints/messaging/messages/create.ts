@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Blockings , UserGroupJoinings , DriveFiles , UserGroups } from '@/models/index.js';
+import type { Blockings, UserGroupJoinings, DriveFiles, UserGroups } from '@/models/index.js';
 import { MessagingMessages } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
-import { createMessage } from '@/services/messages/create.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { MessagingService } from '@/services/MessagingService.js';
-import { getUser } from '../../../common/getters.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -94,16 +93,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userGroupsRepository')
+		@Inject(DI.userGroupsRepository)
 		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
 		private getterService: GetterService,

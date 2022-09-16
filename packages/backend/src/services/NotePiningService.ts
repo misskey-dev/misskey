@@ -19,13 +19,13 @@ export class NotePiningService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('userNotePiningsRepository')
+		@Inject(DI.userNotePiningsRepository)
 		private userNotePiningsRepository: typeof UserNotePinings,
 
 		private userEntityService: UserEntityService,

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserLists } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/services/entities/UserListEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['lists', 'account'],
@@ -33,7 +34,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userListsRepository')
+		@Inject(DI.userListsRepository)
 		private userListsRepository: typeof UserLists,
 
 		private userListEntityService: UserListEntityService,

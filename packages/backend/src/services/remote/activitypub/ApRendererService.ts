@@ -4,7 +4,7 @@ import { In, IsNull } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import type { UserProfiles , Polls , DriveFiles, Emojis, Notes, Users } from '@/models/index.js';
+import type { UserProfiles, Polls, DriveFiles, Emojis, Notes, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import type { IMentionedRemoteUsers, Note } from '@/models/entities/Note.js';
@@ -32,26 +32,26 @@ export class ApRendererService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('notesRepository')
+		@Inject(DI.notesRepository)
 		private notesRepository: typeof Notes,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('emojisRepository')
+		@Inject(DI.emojisRepository)
 		private emojisRepository: typeof Emojis,
 
-		@Inject('pollsRepository')
+		@Inject(DI.pollsRepository)
 		private pollsRepository: typeof Polls,
 
 		private userEntityService: UserEntityService,
-private driveFileEntityService: DriveFileEntityService,
+		private driveFileEntityService: DriveFileEntityService,
 		private ldSignatureService: LdSignatureService,
 		private userKeypairStoreService: UserKeypairStoreService,
 		private apMfmService: ApMfmService,
@@ -565,7 +565,7 @@ private driveFileEntityService: DriveFileEntityService,
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: `${this.config.url}/users/${user.id}`,
 			type: 'Update',
-			to: [ 'https://www.w3.org/ns/activitystreams#Public' ],
+			to: ['https://www.w3.org/ns/activitystreams#Public'],
 			object,
 			published: new Date().toISOString(),
 		} as any;

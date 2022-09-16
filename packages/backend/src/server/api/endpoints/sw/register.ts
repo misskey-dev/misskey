@@ -3,6 +3,7 @@ import { IdService } from '@/services/IdService.js';
 import type { SwSubscriptions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/services/MetaService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account'],
@@ -42,7 +43,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('swSubscriptionsRepository')
+		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: typeof SwSubscriptions,
 
 		private idService: IdService,

@@ -13,7 +13,7 @@ import { UserGroupEntityService } from './UserGroupEntityService.js';
 @Injectable()
 export class MessagingMessageEntityService {
 	constructor(
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
 		private userEntityService: UserEntityService,

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserIps } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -21,7 +22,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userIpsRepository')
+		@Inject(DI.userIpsRepository)
 		private userIpsRepository: typeof UserIps,
 	) {
 		super(meta, paramDef, async (ps, me) => {

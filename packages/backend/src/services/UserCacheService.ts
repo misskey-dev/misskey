@@ -18,7 +18,7 @@ export class UserCacheService implements OnApplicationShutdown {
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
 		private userEntityService: UserEntityService,

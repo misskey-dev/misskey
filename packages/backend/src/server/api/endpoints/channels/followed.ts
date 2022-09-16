@@ -4,6 +4,7 @@ import type { ChannelFollowings } from '@/models/index.js';
 import { Channels } from '@/models/index.js';
 import { QueryService } from '@/services/QueryService.js';
 import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['channels', 'account'],
@@ -37,7 +38,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('channelFollowingsRepository')
+		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: typeof ChannelFollowings,
 
 		private channelEntityService: ChannelEntityService,

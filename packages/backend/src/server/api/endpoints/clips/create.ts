@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/services/IdService.js';
 import type { Clips } from '@/models/index.js';
 import { ClipEntityService } from '@/services/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['clips'],
@@ -32,7 +33,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('clipsRepository')
+		@Inject(DI.clipsRepository)
 		private clipsRepository: typeof Clips,
 
 		private clipEntityService: ClipEntityService,

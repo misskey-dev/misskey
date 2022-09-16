@@ -1,319 +1,320 @@
 import { Module } from '@nestjs/common';
 import { AbuseUserReports, AccessTokens, Ads, AnnouncementReads, Announcements, AntennaNotes, Antennas, Apps, AttestationChallenges, AuthSessions, Blockings, ChannelFollowings, ChannelNotePinings, Channels, ClipNotes, Clips, DriveFiles, DriveFolders, Emojis, Followings, FollowRequests, GalleryLikes, GalleryPosts, Hashtags, Instances, MessagingMessages, Metas, ModerationLogs, MutedNotes, Mutings, NoteFavorites, NoteReactions, Notes, NoteThreadMutings, NoteUnreads, Notifications, PageLikes, Pages, PasswordResetRequests, Polls, PollVotes, PromoNotes, PromoReads, RegistrationTickets, RegistryItems, Relays, Signins, SwSubscriptions, UsedUsernames, UserGroupInvitations, UserGroupJoinings, UserGroups, UserIps, UserKeypairs, UserListJoinings, UserLists, UserNotePinings, UserPendings, UserProfiles, UserPublickeys, Users, UserSecurityKeys, Webhooks } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 import type { Provider } from '@nestjs/common';
 
 const $usersRepository: Provider = {
-	provide: 'usersRepository',
+	provide: DI.usersRepository,
 	useValue: Users,
 };
 
 const $notesRepository: Provider = {
-	provide: 'notesRepository',
+	provide: DI.notesRepository,
 	useValue: Notes,
 };
 
 const $announcementsRepository: Provider = {
-	provide: 'announcementsRepository',
+	provide: DI.announcementsRepository,
 	useValue: Announcements,
 };
 
 const $announcementReadsRepository: Provider = {
-	provide: 'announcementReadsRepository',
+	provide: DI.announcementReadsRepository,
 	useValue: AnnouncementReads,
 };
 
 const $appsRepository: Provider = {
-	provide: 'appsRepository',
+	provide: DI.appsRepository,
 	useValue: Apps,
 };
 
 const $noteFavoritesRepository: Provider = {
-	provide: 'noteFavoritesRepository',
+	provide: DI.noteFavoritesRepository,
 	useValue: NoteFavorites,
 };
 
 const $noteThreadMutingsRepository: Provider = {
-	provide: 'noteThreadMutingsRepository',
+	provide: DI.noteThreadMutingsRepository,
 	useValue: NoteThreadMutings,
 };
 
 const $noteReactionsRepository: Provider = {
-	provide: 'noteReactionsRepository',
+	provide: DI.noteReactionsRepository,
 	useValue: NoteReactions,
 };
 
 const $noteUnreadsRepository: Provider = {
-	provide: 'noteUnreadsRepository',
+	provide: DI.noteUnreadsRepository,
 	useValue: NoteUnreads,
 };
 
 const $pollsRepository: Provider = {
-	provide: 'pollsRepository',
+	provide: DI.pollsRepository,
 	useValue: Polls,
 };
 
 const $pollVotesRepository: Provider = {
-	provide: 'pollVotesRepository',
+	provide: DI.pollVotesRepository,
 	useValue: PollVotes,
 };
 
 const $userProfilesRepository: Provider = {
-	provide: 'userProfilesRepository',
+	provide: DI.userProfilesRepository,
 	useValue: UserProfiles,
 };
 
 const $userKeypairsRepository: Provider = {
-	provide: 'userKeypairsRepository',
+	provide: DI.userKeypairsRepository,
 	useValue: UserKeypairs,
 };
 
 const $userPendingsRepository: Provider = {
-	provide: 'userPendingsRepository',
+	provide: DI.userPendingsRepository,
 	useValue: UserPendings,
 };
 
 const $attestationChallengesRepository: Provider = {
-	provide: 'attestationChallengesRepository',
+	provide: DI.attestationChallengesRepository,
 	useValue: AttestationChallenges,
 };
 
 const $userSecurityKeysRepository: Provider = {
-	provide: 'userSecurityKeysRepository',
+	provide: DI.userSecurityKeysRepository,
 	useValue: UserSecurityKeys,
 };
 
 const $userPublickeysRepository: Provider = {
-	provide: 'userPublickeysRepository',
+	provide: DI.userPublickeysRepository,
 	useValue: UserPublickeys,
 };
 
 const $userListsRepository: Provider = {
-	provide: 'userListsRepository',
+	provide: DI.userListsRepository,
 	useValue: UserLists,
 };
 
 const $userListJoiningsRepository: Provider = {
-	provide: 'userListJoiningsRepository',
+	provide: DI.userListJoiningsRepository,
 	useValue: UserListJoinings,
 };
 
 const $userGroupsRepository: Provider = {
-	provide: 'userGroupsRepository',
+	provide: DI.userGroupsRepository,
 	useValue: UserGroups,
 };
 
 const $userGroupJoiningsRepository: Provider = {
-	provide: 'userGroupJoiningsRepository',
+	provide: DI.userGroupJoiningsRepository,
 	useValue: UserGroupJoinings,
 };
 
 const $userGroupInvitationsRepository: Provider = {
-	provide: 'userGroupInvitationsRepository',
+	provide: DI.userGroupInvitationsRepository,
 	useValue: UserGroupInvitations,
 };
 
 const $userNotePiningsRepository: Provider = {
-	provide: 'userNotePiningsRepository',
+	provide: DI.userNotePiningsRepository,
 	useValue: UserNotePinings,
 };
 
 const $userIpsRepository: Provider = {
-	provide: 'userIpsRepository',
+	provide: DI.userIpsRepository,
 	useValue: UserIps,
 };
 
 const $usedUsernamesRepository: Provider = {
-	provide: 'usedUsernamesRepository',
+	provide: DI.usedUsernamesRepository,
 	useValue: UsedUsernames,
 };
 
 const $followingsRepository: Provider = {
-	provide: 'followingsRepository',
+	provide: DI.followingsRepository,
 	useValue: Followings,
 };
 
 const $followRequestsRepository: Provider = {
-	provide: 'followRequestsRepository',
+	provide: DI.followRequestsRepository,
 	useValue: FollowRequests,
 };
 
 const $instancesRepository: Provider = {
-	provide: 'instancesRepository',
+	provide: DI.instancesRepository,
 	useValue: Instances,
 };
 
 const $emojisRepository: Provider = {
-	provide: 'emojisRepository',
+	provide: DI.emojisRepository,
 	useValue: Emojis,
 };
 
 const $driveFilesRepository: Provider = {
-	provide: 'driveFilesRepository',
+	provide: DI.driveFilesRepository,
 	useValue: DriveFiles,
 };
 
 const $driveFoldersRepository: Provider = {
-	provide: 'driveFoldersRepository',
+	provide: DI.driveFoldersRepository,
 	useValue: DriveFolders,
 };
 
 const $notificationsRepository: Provider = {
-	provide: 'notificationsRepository',
+	provide: DI.notificationsRepository,
 	useValue: Notifications,
 };
 
 const $metasRepository: Provider = {
-	provide: 'metasRepository',
+	provide: DI.metasRepository,
 	useValue: Metas,
 };
 
 const $mutingsRepository: Provider = {
-	provide: 'mutingsRepository',
+	provide: DI.mutingsRepository,
 	useValue: Mutings,
 };
 
 const $blockingsRepository: Provider = {
-	provide: 'blockingsRepository',
+	provide: DI.blockingsRepository,
 	useValue: Blockings,
 };
 
 const $swSubscriptionsRepository: Provider = {
-	provide: 'swSubscriptionsRepository',
+	provide: DI.swSubscriptionsRepository,
 	useValue: SwSubscriptions,
 };
 
 const $hashtagsRepository: Provider = {
-	provide: 'hashtagsRepository',
+	provide: DI.hashtagsRepository,
 	useValue: Hashtags,
 };
 
 const $abuseUserReportsRepository: Provider = {
-	provide: 'abuseUserReportsRepository',
+	provide: DI.abuseUserReportsRepository,
 	useValue: AbuseUserReports,
 };
 
 const $registrationTicketsRepository: Provider = {
-	provide: 'registrationTicketsRepository',
+	provide: DI.registrationTicketsRepository,
 	useValue: RegistrationTickets,
 };
 
 const $authSessionsRepository: Provider = {
-	provide: 'authSessionsRepository',
+	provide: DI.authSessionsRepository,
 	useValue: AuthSessions,
 };
 
 const $accessTokensRepository: Provider = {
-	provide: 'accessTokensRepository',
+	provide: DI.accessTokensRepository,
 	useValue: AccessTokens,
 };
 
 const $signinsRepository: Provider = {
-	provide: 'signinsRepository',
+	provide: DI.signinsRepository,
 	useValue: Signins,
 };
 
 const $messagingMessagesRepository: Provider = {
-	provide: 'messagingMessagesRepository',
+	provide: DI.messagingMessagesRepository,
 	useValue: MessagingMessages,
 };
 
 const $pagesRepository: Provider = {
-	provide: 'pagesRepository',
+	provide: DI.pagesRepository,
 	useValue: Pages,
 };
 
 const $pageLikesRepository: Provider = {
-	provide: 'pageLikesRepository',
+	provide: DI.pageLikesRepository,
 	useValue: PageLikes,
 };
 
 const $galleryPostsRepository: Provider = {
-	provide: 'galleryPostsRepository',
+	provide: DI.galleryPostsRepository,
 	useValue: GalleryPosts,
 };
 
 const $galleryLikesRepository: Provider = {
-	provide: 'galleryLikesRepository',
+	provide: DI.galleryLikesRepository,
 	useValue: GalleryLikes,
 };
 
 const $moderationLogsRepository: Provider = {
-	provide: 'moderationLogsRepository',
+	provide: DI.moderationLogsRepository,
 	useValue: ModerationLogs,
 };
 
 const $clipsRepository: Provider = {
-	provide: 'clipsRepository',
+	provide: DI.clipsRepository,
 	useValue: Clips,
 };
 
 const $clipNotesRepository: Provider = {
-	provide: 'clipNotesRepository',
+	provide: DI.clipNotesRepository,
 	useValue: ClipNotes,
 };
 
 const $antennasRepository: Provider = {
-	provide: 'antennasRepository',
+	provide: DI.antennasRepository,
 	useValue: Antennas,
 };
 
 const $antennaNotesRepository: Provider = {
-	provide: 'antennaNotesRepository',
+	provide: DI.antennaNotesRepository,
 	useValue: AntennaNotes,
 };
 
 const $promoNotesRepository: Provider = {
-	provide: 'promoNotesRepository',
+	provide: DI.promoNotesRepository,
 	useValue: PromoNotes,
 };
 
 const $promoReadsRepository: Provider = {
-	provide: 'promoReadsRepository',
+	provide: DI.promoReadsRepository,
 	useValue: PromoReads,
 };
 
 const $relaysRepository: Provider = {
-	provide: 'relaysRepository',
+	provide: DI.relaysRepository,
 	useValue: Relays,
 };
 
 const $mutedNotesRepository: Provider = {
-	provide: 'mutedNotesRepository',
+	provide: DI.mutedNotesRepository,
 	useValue: MutedNotes,
 };
 
 const $channelsRepository: Provider = {
-	provide: 'channelsRepository',
+	provide: DI.channelsRepository,
 	useValue: Channels,
 };
 
 const $channelFollowingsRepository: Provider = {
-	provide: 'channelFollowingsRepository',
+	provide: DI.channelFollowingsRepository,
 	useValue: ChannelFollowings,
 };
 
 const $channelNotePiningsRepository: Provider = {
-	provide: 'channelNotePiningsRepository',
+	provide: DI.channelNotePiningsRepository,
 	useValue: ChannelNotePinings,
 };
 
 const $registryItemsRepository: Provider = {
-	provide: 'registryItemsRepository',
+	provide: DI.registryItemsRepository,
 	useValue: RegistryItems,
 };
 
 const $webhooksRepository: Provider = {
-	provide: 'webhooksRepository',
+	provide: DI.webhooksRepository,
 	useValue: Webhooks,
 };
 
 const $adsRepository: Provider = {
-	provide: 'adsRepository',
+	provide: DI.adsRepository,
 	useValue: Ads,
 };
 
 const $passwordResetRequestsRepository: Provider = {
-	provide: 'passwordResetRequestsRepository',
+	provide: DI.passwordResetRequestsRepository,
 	useValue: PasswordResetRequests,
 };
 

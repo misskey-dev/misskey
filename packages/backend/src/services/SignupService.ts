@@ -25,10 +25,10 @@ export class SignupService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('usedUsernamesRepository')
+		@Inject(DI.usedUsernamesRepository)
 		private usedUsernamesRepository: typeof UsedUsernames,
 
 		private utilityService: UtilityService,

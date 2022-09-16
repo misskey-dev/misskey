@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Hashtags } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { HashtagEntityService } from '@/services/entities/HashtagEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -37,7 +38,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('hashtagsRepository')
+		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: typeof Hashtags,
 
 		private hashtagEntityService: HashtagEntityService,

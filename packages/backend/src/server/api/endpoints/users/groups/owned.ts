@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroups } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['groups', 'account'],
@@ -33,7 +34,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('userGroupsRepository')
+		@Inject(DI.userGroupsRepository)
 		private userGroupsRepository: typeof UserGroups,
 
 		private userGroupEntityService: UserGroupEntityService,

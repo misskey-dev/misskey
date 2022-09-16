@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { NoteFavorites } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -38,7 +39,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('noteFavoritesRepository')
+		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: typeof NoteFavorites,
 
 		private getterService: GetterService,

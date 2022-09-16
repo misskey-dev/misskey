@@ -10,10 +10,10 @@ import { UserEntityService } from './UserEntityService.js';
 @Injectable()
 export class AppEntityService {
 	constructor(
-		@Inject('appsRepository')
+		@Inject(DI.appsRepository)
 		private appsRepository: typeof Apps,
 
-		@Inject('accessTokensRepository')
+		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: typeof AccessTokens,
 	) {
 	}

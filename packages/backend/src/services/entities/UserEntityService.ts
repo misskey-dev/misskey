@@ -3,7 +3,7 @@ import { EntityRepository, Repository, In, Not } from 'typeorm';
 import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { Pages , AntennaNotes, Instances, MessagingMessages, UserSecurityKeys , Blockings, Mutings , Followings, FollowRequests, Users, DriveFiles, NoteUnreads, ChannelFollowings, Notifications, UserNotePinings, UserProfiles , AnnouncementReads, Announcements, UserGroupJoinings } from '@/models/index.js';
+import type { Pages, AntennaNotes, Instances, MessagingMessages, UserSecurityKeys, Blockings, Mutings, Followings, FollowRequests, Users, DriveFiles, NoteUnreads, ChannelFollowings, Notifications, UserNotePinings, UserProfiles, AnnouncementReads, Announcements, UserGroupJoinings } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Promiseable } from '@/prelude/await-all.js';
@@ -57,61 +57,61 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
-		@Inject('userSecurityKeysRepository')
+		@Inject(DI.userSecurityKeysRepository)
 		private userSecurityKeysRepository: typeof UserSecurityKeys,
 
-		@Inject('followingsRepository')
+		@Inject(DI.followingsRepository)
 		private followingsRepository: typeof Followings,
 
-		@Inject('followRequestsRepository')
+		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: typeof FollowRequests,
 
-		@Inject('blockingsRepository')
+		@Inject(DI.blockingsRepository)
 		private blockingsRepository: typeof Blockings,
 
-		@Inject('mutingsRepository')
+		@Inject(DI.mutingsRepository)
 		private mutingsRepository: typeof Mutings,
 
-		@Inject('driveFilesRepository')
+		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: typeof DriveFiles,
 
-		@Inject('noteUnreadsRepository')
+		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: typeof NoteUnreads,
 
-		@Inject('channelFollowingsRepository')
+		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: typeof ChannelFollowings,
 
-		@Inject('notificationsRepository')
+		@Inject(DI.notificationsRepository)
 		private notificationsRepository: typeof Notifications,
 
-		@Inject('userNotePiningsRepository')
+		@Inject(DI.userNotePiningsRepository)
 		private userNotePiningsRepository: typeof UserNotePinings,
 
-		@Inject('userProfilesRepository')
+		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: typeof UserProfiles,
 
-		@Inject('instancesRepository')
+		@Inject(DI.instancesRepository)
 		private instancesRepository: typeof Instances,
 
-		@Inject('announcementReadsRepository')
+		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: typeof AnnouncementReads,
 
-		@Inject('messagingMessagesRepository')
+		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: typeof MessagingMessages,
 
-		@Inject('userGroupJoiningsRepository')
+		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
-		@Inject('announcementsRepository')
+		@Inject(DI.announcementsRepository)
 		private announcementsRepository: typeof Announcements,
 
-		@Inject('antennaNotesRepository')
+		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: typeof AntennaNotes,
 
-		@Inject('pagesRepository')
+		@Inject(DI.pagesRepository)
 		private pagesRepository: typeof Pages,
 
 		//private noteEntityService: NoteEntityService,

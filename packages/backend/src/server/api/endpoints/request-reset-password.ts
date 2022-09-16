@@ -7,7 +7,7 @@ import { UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/services/IdService.js';
 import { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
+import { DI, DI } from '@/di-symbols.js';
 import { EmailService } from '@/services/EmailService.js';
 import { ApiError } from '../error.js';
 
@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.config)
 		private config: Config,
 		
-		@Inject('usersRepository')
+		@Inject(DI.usersRepository)
 		private usersRepository: typeof Users,
 
 		private idService: IdService,
