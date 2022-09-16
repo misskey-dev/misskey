@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishDriveStream } from '@/services/stream.js';
 import type { DriveFiles , DriveFolders } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -72,6 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFoldersRepository: typeof DriveFolders,
 
 		private driveFileEntityService: DriveFileEntityService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
@@ -120,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const fileObj = await this.driveFileEntityService.pack(file, { self: true });
 
 			// Publish fileUpdated event
-			publishDriveStream(me.id, 'fileUpdated', fileObj);
+			this.globalEventService.publishDriveStream(me.id, 'fileUpdated', fileObj);
 
 			return fileObj;
 		});
