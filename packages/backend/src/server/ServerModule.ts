@@ -21,6 +21,9 @@ import { SigninApiService } from './api/SigninApiService.js';
 import { SigninService } from './api/SigninService.js';
 import { SignupApiService } from './api/SignupApiService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
+import { ClientServerService } from './web/ClientServerService.js';
+import { FeedService } from './web/FeedService.js';
+import { UrlPreviewService } from './web/UrlPreviewService.js';
 
 @Module({
 	imports: [
@@ -28,6 +31,9 @@ import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 		CoreModule,
 	],
 	providers: [
+		ClientServerService,
+		FeedService,
+		UrlPreviewService,
 		ActivityPubServerService,
 		FileServerService,
 		MediaProxyServerService,
@@ -48,6 +54,9 @@ import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 		SigninService,
 		SignupApiService,
 		StreamingApiServerService,
+	],
+	exports: [
+		ServerService,
 	],
 })
 export class ServerModule {}

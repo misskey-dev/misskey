@@ -24,8 +24,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('messagingMessagesRepository')
 		private messagingMessagesRepository: typeof MessagingMessages,
 
-		@Inject('userGroupJoinings')
-		private userGroupJoinings: typeof UserGroupJoinings,
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private globalEventService: GlobalEventService,
 	) {
@@ -38,7 +38,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isRead: true,
 			});
 
-			const joinings = await this.userGroupJoinings.findBy({ userId: me.id });
+			const joinings = await this.userGroupJoiningsRepository.findBy({ userId: me.id });
 
 			await Promise.all(joinings.map(j => this.messagingMessagesRepository.createQueryBuilder().update()
 				.set({

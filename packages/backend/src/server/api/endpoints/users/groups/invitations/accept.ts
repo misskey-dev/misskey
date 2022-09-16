@@ -38,8 +38,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('userGroupInvitationsRepository')
 		private userGroupInvitationsRepository: typeof UserGroupInvitations,
 
-		@Inject('userGroupJoiningRepository')
-		private userGroupJoiningRepository: typeof UserGroupJoinings,
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private idService: IdService,
 	) {
@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Push the user
-			await this.userGroupJoiningRepository.insert({
+			await this.userGroupJoiningsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,

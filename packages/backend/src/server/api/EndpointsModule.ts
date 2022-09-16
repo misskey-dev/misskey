@@ -314,6 +314,7 @@ import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
 import { GetterService } from './common/GetterService.js';
+import { ApiLoggerService } from './ApiLoggerService.js';
 
 @Module({
 	imports: [
@@ -321,6 +322,7 @@ import { GetterService } from './common/GetterService.js';
 	],
 	providers: [
 		GetterService,
+		ApiLoggerService,
 		{ provide: 'ep:admin/meta', useClass: ep___admin_meta.default },
 		{ provide: 'ep:admin/abuse-user-reports', useClass: ep___admin_abuseUserReports.default },
 		{ provide: 'ep:admin/accounts/create', useClass: ep___admin_accounts_create.default },

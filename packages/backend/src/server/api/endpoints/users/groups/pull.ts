@@ -51,8 +51,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('userGroupsRepository')
 		private userGroupsRepository: typeof UserGroups,
 
-		@Inject('userGroupJoiningRepository')
-		private userGroupJoiningRepository: typeof UserGroupJoinings,
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private getterService: GetterService,
 	) {
@@ -78,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Pull the user
-			await this.userGroupJoiningRepository.delete({ userGroupId: userGroup.id, userId: user.id });
+			await this.userGroupJoiningsRepository.delete({ userGroupId: userGroup.id, userId: user.id });
 		});
 	}
 }

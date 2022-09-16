@@ -21,14 +21,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('noteUnreadsJoinings')
-		private noteUnreadsJoinings: typeof NoteUnreads,
+		@Inject('noteUnreadsRepository')
+		private noteUnreadsRepository: typeof NoteUnreads,
 
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Remove documents
-			await this.noteUnreadsJoinings.delete({
+			await this.noteUnreadsRepository.delete({
 				userId: me.id,
 			});
 

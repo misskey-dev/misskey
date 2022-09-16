@@ -62,8 +62,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject('userGroupInvitationsRepository')
 		private userGroupInvitationsRepository: typeof UserGroupInvitations,
 
-		@Inject('userGroupJoiningRepository')
-		private userGroupJoiningRepository: typeof UserGroupJoinings,
+		@Inject('userGroupJoiningsRepository')
+		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
 		private idService: IdService,
 		private getterService: GetterService,
@@ -86,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			const joining = await this.userGroupJoiningRepository.findOneBy({
+			const joining = await this.userGroupJoiningsRepository.findOneBy({
 				userGroupId: userGroup.id,
 				userId: user.id,
 			});
