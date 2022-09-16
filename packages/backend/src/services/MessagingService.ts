@@ -9,7 +9,7 @@ import type { Note } from '@/models/entities/Note.js';
 import type { User, CacheableUser, IRemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { QueueService } from '@/queue/queue.service.js';
-import { toArray } from '@/prelude/array';
+import { toArray } from '@/prelude/array.js';
 import { IdentifiableError } from '@/misc/identifiable-error';
 import { IdService } from './IdService.js';
 import { GlobalEventService } from './GlobalEventService.js';
