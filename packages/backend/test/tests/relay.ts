@@ -55,8 +55,28 @@ describe('RelayService', () => {
 		const result = await relayService.addRelay('https://example.com');
 
 		expect(result.inbox).toBe('https://example.com');
+		expect(result.status).toBe('requesting');
 		expect(queueService.deliver).toHaveBeenCalled();
 		expect(queueService.deliver.mock.lastCall![2]).toBe('https://example.com');
 		//expect(queueService.deliver.mock.lastCall![0].username).toBe('relay.actor');
+	});
+
+	it('listRelay', async () => {	
+		const result = await relayService.listRelay();
+
+		expect(result.length).toBe(1);
+		expect(result[0].inbox).toBe('https://example.com');
+		expect(result[0].status).toBe('requesting');
+	});
+
+	it('removeRelay', async () => {	
+		await relayService.removeRelay('https://example.com');
+
+		expect(queueService.deliver).toHaveBeenCalled();
+		expect(queueService.deliver.mock.lastCall![2]).toBe('https://example.com');
+		//expect(queueService.deliver.mock.lastCall![0].username).toBe('relay.actor');
+
+		const list = await relayService.listRelay();
+		expect(list.length).toBe(0);
 	});
 });
