@@ -52,8 +52,9 @@ fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).the
 });
 
 definePageMetadata(computed(() => props.url ? {
-    title: 'ytplayer',
-		path: `/notes/${props.url}`,
+	title: title?.toString() || 'ytplayer',
+	path: `/notes/${props.url}`,
+	icon: 'fa-brands fa-youtube'
 } : null));
 
 console.log(await player.url);
@@ -64,15 +65,16 @@ console.log(await player.url);
 	height: 100%;
 }
 .player {
-	position: relative;
-	width: 100%;
-	height: 100%;
+	height: calc(100% - 10px);
+	width: calc(100% - 10px);
+	padding: 5px;
+
 	>iframe {
 		height: 100%;
-		left: 0;
-		position: absolute;
-		top: 0;
 		width: 100%;
+		border-radius: 0 0 var(--radius) var(--radius);
+		left: 0;
+		top: 0;
 	}
 }
 </style>
