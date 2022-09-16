@@ -221,24 +221,25 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		// API invoking
 		const before = performance.now();
-		return await exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((e: Error) => {
-			if (e instanceof ApiError) {
-				throw e;
+		return await exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((err: Error) => {
+			if (err instanceof ApiError) {
+				throw err;
 			} else {
-				this.#logger.error(`Internal error occurred in ${ep.name}: ${e.message}`, {
+				this.#logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
 					ep: ep.name,
 					ps: data,
 					e: {
-						message: e.message,
-						code: e.name,
-						stack: e.stack,
+						message: err.message,
+						code: err.name,
+						stack: err.stack,
 					},
 				});
+				console.error(err);
 				throw new ApiError(null, {
 					e: {
-						message: e.message,
-						code: e.name,
-						stack: e.stack,
+						message: err.message,
+						code: err.name,
+						stack: err.stack,
 					},
 				});
 			}

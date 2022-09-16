@@ -16,8 +16,8 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
-	#antennasFetched = false;
-	#antennas: Antenna[] = [];
+	#antennasFetched: boolean;
+	#antennas: Antenna[];
 	#blockingCache: Cache<User['id'][]>;
 
 	constructor(
@@ -49,6 +49,8 @@ export class AntennaService implements OnApplicationShutdown {
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {
+		this.#antennasFetched = false;
+		this.#antennas = [];
 		this.#blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
 
 		this.redisSubscriber.on('message', this.onRedisMessage);

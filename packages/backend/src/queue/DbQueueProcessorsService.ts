@@ -41,19 +41,19 @@ export class DbQueueProcessorsService {
 
 	public start(dbQueue: Bull.Queue<DbJobData>) {
 		const jobs = {
-			deleteDriveFiles: this.deleteDriveFilesProcessorService.process,
-			exportCustomEmojis: this.exportCustomEmojisProcessorService.process,
-			exportNotes: this.exportNotesProcessorService.process,
-			exportFollowing: this.exportFollowingProcessorService.process,
-			exportMuting: this.exportMutingProcessorService.process,
-			exportBlocking: this.exportBlockingProcessorService.process,
-			exportUserLists: this.exportUserListsProcessorService.process,
-			importFollowing: this.importFollowingProcessorService.process,
-			importMuting: this.importMutingProcessorService.process,
-			importBlocking: this.importBlockingProcessorService.process,
-			importUserLists: this.importUserListsProcessorService.process,
-			importCustomEmojis: this.importCustomEmojisProcessorService.process,
-			deleteAccount: this.deleteAccountProcessorService.process,
+			deleteDriveFiles: (job, done) => this.deleteDriveFilesProcessorService.process(job, done),
+			exportCustomEmojis: (job, done) => this.exportCustomEmojisProcessorService.process(job, done),
+			exportNotes: (job, done) => this.exportNotesProcessorService.process(job, done),
+			exportFollowing: (job, done) => this.exportFollowingProcessorService.process(job, done),
+			exportMuting: (job, done) => this.exportMutingProcessorService.process(job, done),
+			exportBlocking: (job, done) => this.exportBlockingProcessorService.process(job, done),
+			exportUserLists: (job, done) => this.exportUserListsProcessorService.process(job, done),
+			importFollowing: (job, done) => this.importFollowingProcessorService.process(job, done),
+			importMuting: (job, done) => this.importMutingProcessorService.process(job, done),
+			importBlocking: (job, done) => this.importBlockingProcessorService.process(job, done),
+			importUserLists: (job, done) => this.importUserListsProcessorService.process(job, done),
+			importCustomEmojis: (job, done) => this.importCustomEmojisProcessorService.process(job, done),
+			deleteAccount: (job, done) => this.deleteAccountProcessorService.process(job, done),
 		} as Record<string, Bull.ProcessCallbackFunction<DbJobData | Bull.ProcessPromiseFunction<DbJobData>>>;
 		
 		for (const [k, v] of Object.entries(jobs)) {

@@ -24,11 +24,11 @@ export class SystemQueueProcessorsService {
 
 	public start(dbQueue: Bull.Queue<Record<string, unknown>>) {
 		const jobs = {
-			tickCharts: this.tickChartsProcessorService.process,
-			resyncCharts: this.resyncChartsProcessorService.process,
-			cleanCharts: this.cleanChartsProcessorService.process,
-			checkExpiredMutings: this.checkExpiredMutingsProcessorService.process,
-			clean: this.cleanProcessorService.process,
+			tickCharts: (job, done) => this.tickChartsProcessorService.process(job, done),
+			resyncCharts: (job, done) => this.resyncChartsProcessorService.process(job, done),
+			cleanCharts: (job, done) => this.cleanChartsProcessorService.process(job, done),
+			checkExpiredMutings: (job, done) => this.checkExpiredMutingsProcessorService.process(job, done),
+			clean: (job, done) => this.cleanProcessorService.process(job, done),
 		} as Record<string, Bull.ProcessCallbackFunction<Record<string, unknown>> | Bull.ProcessPromiseFunction<Record<string, unknown>>>;
 		
 		for (const [k, v] of Object.entries(jobs)) {
