@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Users } from '@/models/index.js';
+import type { Users } from '@/models/index.js';
 import { SignupService } from '@/services/SignupService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { localUsernameSchema, passwordSchema } from '@/models/entities/User.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -24,8 +25,8 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		username: Users.localUsernameSchema,
-		password: Users.passwordSchema,
+		username: localUsernameSchema,
+		password: passwordSchema,
 	},
 	required: ['username', 'password'],
 } as const;

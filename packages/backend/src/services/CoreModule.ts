@@ -113,6 +113,123 @@ import { ApPersonService } from './remote/activitypub/models/ApPersonService.js'
 import { ApQuestionService } from './remote/activitypub/models/ApQuestionService.js';
 import { QueueModule } from './queue/QueueModule.js';
 import { QueueService } from './QueueService.js';
+import type { Provider } from '@nestjs/common';
+
+//#region 文字列ベースでのinjection用(循環参照対応のため)
+const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useClass: AccountUpdateService };
+const $AiService: Provider = { provide: 'AiService', useClass: AiService };
+const $AntennaService: Provider = { provide: 'AntennaService', useClass: AntennaService };
+const $AppLockService: Provider = { provide: 'AppLockService', useClass: AppLockService };
+const $CaptchaService: Provider = { provide: 'CaptchaService', useClass: CaptchaService };
+const $CreateNotificationService: Provider = { provide: 'CreateNotificationService', useClass: CreateNotificationService };
+const $CreateSystemUserService: Provider = { provide: 'CreateSystemUserService', useClass: CreateSystemUserService };
+const $CustomEmojiService: Provider = { provide: 'CustomEmojiService', useClass: CustomEmojiService };
+const $DeleteAccountService: Provider = { provide: 'DeleteAccountService', useClass: DeleteAccountService };
+const $DownloadService: Provider = { provide: 'DownloadService', useClass: DownloadService };
+const $DriveService: Provider = { provide: 'DriveService', useClass: DriveService };
+const $EmailService: Provider = { provide: 'EmailService', useClass: EmailService };
+const $FederatedInstanceService: Provider = { provide: 'FederatedInstanceService', useClass: FederatedInstanceService };
+const $FetchInstanceMetadataService: Provider = { provide: 'FetchInstanceMetadataService', useClass: FetchInstanceMetadataService };
+const $GlobalEventService: Provider = { provide: 'GlobalEventService', useClass: GlobalEventService };
+const $HashtagService: Provider = { provide: 'HashtagService', useClass: HashtagService };
+const $HttpRequestService: Provider = { provide: 'HttpRequestService', useClass: HttpRequestService };
+const $IdService: Provider = { provide: 'IdService', useClass: IdService };
+const $ImageProcessingService: Provider = { provide: 'ImageProcessingService', useClass: ImageProcessingService };
+const $InstanceActorService: Provider = { provide: 'InstanceActorService', useClass: InstanceActorService };
+const $InternalStorageService: Provider = { provide: 'InternalStorageService', useClass: InternalStorageService };
+const $MessagingService: Provider = { provide: 'MessagingService', useClass: MessagingService };
+const $MetaService: Provider = { provide: 'MetaService', useClass: MetaService };
+const $MfmService: Provider = { provide: 'MfmService', useClass: MfmService };
+const $ModerationLogService: Provider = { provide: 'ModerationLogService', useClass: ModerationLogService };
+const $NoteCreateService: Provider = { provide: 'NoteCreateService', useClass: NoteCreateService };
+const $NoteDeleteService: Provider = { provide: 'NoteDeleteService', useClass: NoteDeleteService };
+const $NotePiningService: Provider = { provide: 'NotePiningService', useClass: NotePiningService };
+const $NoteReadService: Provider = { provide: 'NoteReadService', useClass: NoteReadService };
+const $NotificationService: Provider = { provide: 'NotificationService', useClass: NotificationService };
+const $PollService: Provider = { provide: 'PollService', useClass: PollService };
+const $ProxyAccountService: Provider = { provide: 'ProxyAccountService', useClass: ProxyAccountService };
+const $PushNotificationService: Provider = { provide: 'PushNotificationService', useClass: PushNotificationService };
+const $QueryService: Provider = { provide: 'QueryService', useClass: QueryService };
+const $ReactionService: Provider = { provide: 'ReactionService', useClass: ReactionService };
+const $RelayService: Provider = { provide: 'RelayService', useClass: RelayService };
+const $S3Service: Provider = { provide: 'S3Service', useClass: S3Service };
+const $SignupService: Provider = { provide: 'SignupService', useClass: SignupService };
+const $TwoFactorAuthenticationService: Provider = { provide: 'TwoFactorAuthenticationService', useClass: TwoFactorAuthenticationService };
+const $UserBlockingService: Provider = { provide: 'UserBlockingService', useClass: UserBlockingService };
+const $UserCacheService: Provider = { provide: 'UserCacheService', useClass: UserCacheService };
+const $UserFollowingService: Provider = { provide: 'UserFollowingService', useClass: UserFollowingService };
+const $UserKeypairStoreService: Provider = { provide: 'UserKeypairStoreService', useClass: UserKeypairStoreService };
+const $UserListService: Provider = { provide: 'UserListService', useClass: UserListService };
+const $UserMutingService: Provider = { provide: 'UserMutingService', useClass: UserMutingService };
+const $UserSuspendService: Provider = { provide: 'UserSuspendService', useClass: UserSuspendService };
+const $VideoProcessingService: Provider = { provide: 'VideoProcessingService', useClass: VideoProcessingService };
+const $WebhookService: Provider = { provide: 'WebhookService', useClass: WebhookService };
+const $UtilityService: Provider = { provide: 'UtilityService', useClass: UtilityService };
+const $FileInfoService: Provider = { provide: 'FileInfoService', useClass: FileInfoService };
+const $FederationChart: Provider = { provide: 'FederationChart', useClass: FederationChart };
+const $NotesChart: Provider = { provide: 'NotesChart', useClass: NotesChart };
+const $UsersChart: Provider = { provide: 'UsersChart', useClass: UsersChart };
+const $ActiveUsersChart: Provider = { provide: 'ActiveUsersChart', useClass: ActiveUsersChart };
+const $InstanceChart: Provider = { provide: 'InstanceChart', useClass: InstanceChart };
+const $PerUserNotesChart: Provider = { provide: 'PerUserNotesChart', useClass: PerUserNotesChart };
+const $DriveChart: Provider = { provide: 'DriveChart', useClass: DriveChart };
+const $PerUserReactionsChart: Provider = { provide: 'PerUserReactionsChart', useClass: PerUserReactionsChart };
+const $HashtagChart: Provider = { provide: 'HashtagChart', useClass: HashtagChart };
+const $PerUserFollowingChart: Provider = { provide: 'PerUserFollowingChart', useClass: PerUserFollowingChart };
+const $PerUserDriveChart: Provider = { provide: 'PerUserDriveChart', useClass: PerUserDriveChart };
+const $ApRequestChart: Provider = { provide: 'ApRequestChart', useClass: ApRequestChart };
+const $ChartManagementService: Provider = { provide: 'ChartManagementService', useClass: ChartManagementService };
+
+const $AbuseUserReportEntityService: Provider = { provide: 'AbuseUserReportEntityService', useClass: AbuseUserReportEntityService };
+const $AntennaEntityService: Provider = { provide: 'AntennaEntityService', useClass: AntennaEntityService };
+const $AppEntityService: Provider = { provide: 'AppEntityService', useClass: AppEntityService };
+const $AuthSessionEntityService: Provider = { provide: 'AuthSessionEntityService', useClass: AuthSessionEntityService };
+const $BlockingEntityService: Provider = { provide: 'BlockingEntityService', useClass: BlockingEntityService };
+const $ChannelEntityService: Provider = { provide: 'ChannelEntityService', useClass: ChannelEntityService };
+const $ClipEntityService: Provider = { provide: 'ClipEntityService', useClass: ClipEntityService };
+const $DriveFileEntityService: Provider = { provide: 'DriveFileEntityService', useClass: DriveFileEntityService };
+const $DriveFolderEntityService: Provider = { provide: 'DriveFolderEntityService', useClass: DriveFolderEntityService };
+const $EmojiEntityService: Provider = { provide: 'EmojiEntityService', useClass: EmojiEntityService };
+const $FollowingEntityService: Provider = { provide: 'FollowingEntityService', useClass: FollowingEntityService };
+const $FollowRequestEntityService: Provider = { provide: 'FollowRequestEntityService', useClass: FollowRequestEntityService };
+const $GalleryLikeEntityService: Provider = { provide: 'GalleryLikeEntityService', useClass: GalleryLikeEntityService };
+const $GalleryPostEntityService: Provider = { provide: 'GalleryPostEntityService', useClass: GalleryPostEntityService };
+const $HashtagEntityService: Provider = { provide: 'HashtagEntityService', useClass: HashtagEntityService };
+const $InstanceEntityService: Provider = { provide: 'InstanceEntityService', useClass: InstanceEntityService };
+const $MessagingMessageEntityService: Provider = { provide: 'MessagingMessageEntityService', useClass: MessagingMessageEntityService };
+const $ModerationLogEntityService: Provider = { provide: 'ModerationLogEntityService', useClass: ModerationLogEntityService };
+const $MutingEntityService: Provider = { provide: 'MutingEntityService', useClass: MutingEntityService };
+const $NoteEntityService: Provider = { provide: 'NoteEntityService', useClass: NoteEntityService };
+const $NoteFavoriteEntityService: Provider = { provide: 'NoteFavoriteEntityService', useClass: NoteFavoriteEntityService };
+const $NoteReactionEntityService: Provider = { provide: 'NoteReactionEntityService', useClass: NoteReactionEntityService };
+const $NotificationEntityService: Provider = { provide: 'NotificationEntityService', useClass: NotificationEntityService };
+const $PageEntityService: Provider = { provide: 'PageEntityService', useClass: PageEntityService };
+const $PageLikeEntityService: Provider = { provide: 'PageLikeEntityService', useClass: PageLikeEntityService };
+const $SigninEntityService: Provider = { provide: 'SigninEntityService', useClass: SigninEntityService };
+const $UserEntityService: Provider = { provide: 'UserEntityService', useClass: UserEntityService };
+const $UserGroupEntityService: Provider = { provide: 'UserGroupEntityService', useClass: UserGroupEntityService };
+const $UserGroupInvitationEntityService: Provider = { provide: 'UserGroupInvitationEntityService', useClass: UserGroupInvitationEntityService };
+const $UserListEntityService: Provider = { provide: 'UserListEntityService', useClass: UserListEntityService };
+
+const $ApAudienceService: Provider = { provide: 'ApAudienceService', useClass: ApAudienceService };
+const $ApDbResolverService: Provider = { provide: 'ApDbResolverService', useClass: ApDbResolverService };
+const $ApDeliverManagerService: Provider = { provide: 'ApDeliverManagerService', useClass: ApDeliverManagerService };
+const $ApInboxService: Provider = { provide: 'ApInboxService', useClass: ApInboxService };
+const $ApLoggerService: Provider = { provide: 'ApLoggerService', useClass: ApLoggerService };
+const $ApMfmService: Provider = { provide: 'ApMfmService', useClass: ApMfmService };
+const $ApRendererService: Provider = { provide: 'ApRendererService', useClass: ApRendererService };
+const $ApRequestService: Provider = { provide: 'ApRequestService', useClass: ApRequestService };
+const $ApResolverService: Provider = { provide: 'ApResolverService', useClass: ApResolverService };
+const $LdSignatureService: Provider = { provide: 'LdSignatureService', useClass: LdSignatureService };
+const $RemoteLoggerService: Provider = { provide: 'RemoteLoggerService', useClass: RemoteLoggerService };
+const $ResolveUserService: Provider = { provide: 'ResolveUserService', useClass: ResolveUserService };
+const $WebfingerService: Provider = { provide: 'WebfingerService', useClass: WebfingerService };
+const $ApImageService: Provider = { provide: 'ApImageService', useClass: ApImageService };
+const $ApMentionService: Provider = { provide: 'ApMentionService', useClass: ApMentionService };
+const $ApNoteService: Provider = { provide: 'ApNoteService', useClass: ApNoteService };
+const $ApPersonService: Provider = { provide: 'ApPersonService', useClass: ApPersonService };
+const $ApQuestionService: Provider = { provide: 'ApQuestionService', useClass: ApQuestionService };
+//#endregion
 
 @Module({
 	imports: [
@@ -231,6 +348,120 @@ import { QueueService } from './QueueService.js';
 		ApPersonService,
 		ApQuestionService,
 		QueueService,
+
+		//#region 文字列ベースでのinjection用(循環参照対応のため)
+		$AccountUpdateService,
+		$AiService,
+		$AntennaService,
+		$AppLockService,
+		$CaptchaService,
+		$CreateNotificationService,
+		$CreateSystemUserService,
+		$CustomEmojiService,
+		$DeleteAccountService,
+		$DownloadService,
+		$DriveService,
+		$EmailService,
+		$FederatedInstanceService,
+		$FetchInstanceMetadataService,
+		$GlobalEventService,
+		$HashtagService,
+		$HttpRequestService,
+		$IdService,
+		$ImageProcessingService,
+		$InstanceActorService,
+		$InternalStorageService,
+		$MessagingService,
+		$MetaService,
+		$MfmService,
+		$ModerationLogService,
+		$NoteCreateService,
+		$NoteDeleteService,
+		$NotePiningService,
+		$NoteReadService,
+		$NotificationService,
+		$PollService,
+		$ProxyAccountService,
+		$PushNotificationService,
+		$QueryService,
+		$ReactionService,
+		$RelayService,
+		$S3Service,
+		$SignupService,
+		$TwoFactorAuthenticationService,
+		$UserBlockingService,
+		$UserCacheService,
+		$UserFollowingService,
+		$UserKeypairStoreService,
+		$UserListService,
+		$UserMutingService,
+		$UserSuspendService,
+		$VideoProcessingService,
+		$WebhookService,
+		$UtilityService,
+		$FileInfoService,
+		$FederationChart,
+		$NotesChart,
+		$UsersChart,
+		$ActiveUsersChart,
+		$InstanceChart,
+		$PerUserNotesChart,
+		$DriveChart,
+		$PerUserReactionsChart,
+		$HashtagChart,
+		$PerUserFollowingChart,
+		$PerUserDriveChart,
+		$ApRequestChart,
+		$ChartManagementService,
+		$AbuseUserReportEntityService,
+		$AntennaEntityService,
+		$AppEntityService,
+		$AuthSessionEntityService,
+		$BlockingEntityService,
+		$ChannelEntityService,
+		$ClipEntityService,
+		$DriveFileEntityService,
+		$DriveFolderEntityService,
+		$EmojiEntityService,
+		$FollowingEntityService,
+		$FollowRequestEntityService,
+		$GalleryLikeEntityService,
+		$GalleryPostEntityService,
+		$HashtagEntityService,
+		$InstanceEntityService,
+		$MessagingMessageEntityService,
+		$ModerationLogEntityService,
+		$MutingEntityService,
+		$NoteEntityService,
+		$NoteFavoriteEntityService,
+		$NoteReactionEntityService,
+		$NotificationEntityService,
+		$PageEntityService,
+		$PageLikeEntityService,
+		$SigninEntityService,
+		$UserEntityService,
+		$UserGroupEntityService,
+		$UserGroupInvitationEntityService,
+		$UserListEntityService,
+		$ApAudienceService,
+		$ApDbResolverService,
+		$ApDeliverManagerService,
+		$ApInboxService,
+		$ApLoggerService,
+		$ApMfmService,
+		$ApRendererService,
+		$ApRequestService,
+		$ApResolverService,
+		$LdSignatureService,
+		$RemoteLoggerService,
+		$ResolveUserService,
+		$WebfingerService,
+		$ApImageService,
+		$ApMentionService,
+		$ApNoteService,
+		$ApPersonService,
+		$ApQuestionService,
+		//#endregion
 	],
 	exports: [
 		QueueModule,
@@ -346,6 +577,120 @@ import { QueueService } from './QueueService.js';
 		ApPersonService,
 		ApQuestionService,
 		QueueService,
+
+		//#region 文字列ベースでのinjection用(循環参照対応のため)
+		$AccountUpdateService,
+		$AiService,
+		$AntennaService,
+		$AppLockService,
+		$CaptchaService,
+		$CreateNotificationService,
+		$CreateSystemUserService,
+		$CustomEmojiService,
+		$DeleteAccountService,
+		$DownloadService,
+		$DriveService,
+		$EmailService,
+		$FederatedInstanceService,
+		$FetchInstanceMetadataService,
+		$GlobalEventService,
+		$HashtagService,
+		$HttpRequestService,
+		$IdService,
+		$ImageProcessingService,
+		$InstanceActorService,
+		$InternalStorageService,
+		$MessagingService,
+		$MetaService,
+		$MfmService,
+		$ModerationLogService,
+		$NoteCreateService,
+		$NoteDeleteService,
+		$NotePiningService,
+		$NoteReadService,
+		$NotificationService,
+		$PollService,
+		$ProxyAccountService,
+		$PushNotificationService,
+		$QueryService,
+		$ReactionService,
+		$RelayService,
+		$S3Service,
+		$SignupService,
+		$TwoFactorAuthenticationService,
+		$UserBlockingService,
+		$UserCacheService,
+		$UserFollowingService,
+		$UserKeypairStoreService,
+		$UserListService,
+		$UserMutingService,
+		$UserSuspendService,
+		$VideoProcessingService,
+		$WebhookService,
+		$UtilityService,
+		$FileInfoService,
+		$FederationChart,
+		$NotesChart,
+		$UsersChart,
+		$ActiveUsersChart,
+		$InstanceChart,
+		$PerUserNotesChart,
+		$DriveChart,
+		$PerUserReactionsChart,
+		$HashtagChart,
+		$PerUserFollowingChart,
+		$PerUserDriveChart,
+		$ApRequestChart,
+		$ChartManagementService,
+		$AbuseUserReportEntityService,
+		$AntennaEntityService,
+		$AppEntityService,
+		$AuthSessionEntityService,
+		$BlockingEntityService,
+		$ChannelEntityService,
+		$ClipEntityService,
+		$DriveFileEntityService,
+		$DriveFolderEntityService,
+		$EmojiEntityService,
+		$FollowingEntityService,
+		$FollowRequestEntityService,
+		$GalleryLikeEntityService,
+		$GalleryPostEntityService,
+		$HashtagEntityService,
+		$InstanceEntityService,
+		$MessagingMessageEntityService,
+		$ModerationLogEntityService,
+		$MutingEntityService,
+		$NoteEntityService,
+		$NoteFavoriteEntityService,
+		$NoteReactionEntityService,
+		$NotificationEntityService,
+		$PageEntityService,
+		$PageLikeEntityService,
+		$SigninEntityService,
+		$UserEntityService,
+		$UserGroupEntityService,
+		$UserGroupInvitationEntityService,
+		$UserListEntityService,
+		$ApAudienceService,
+		$ApDbResolverService,
+		$ApDeliverManagerService,
+		$ApInboxService,
+		$ApLoggerService,
+		$ApMfmService,
+		$ApRendererService,
+		$ApRequestService,
+		$ApResolverService,
+		$LdSignatureService,
+		$RemoteLoggerService,
+		$ResolveUserService,
+		$WebfingerService,
+		$ApImageService,
+		$ApMentionService,
+		$ApNoteService,
+		$ApPersonService,
+		$ApQuestionService,
+		//#endregion
 	],
 })
 export class CoreModule {}
