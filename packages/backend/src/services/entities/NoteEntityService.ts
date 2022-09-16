@@ -288,7 +288,7 @@ export class NoteEntityService implements OnModuleInit {
 			text: text,
 			cw: note.cw,
 			visibility: note.visibility,
-			localOnly: note.localOnly || undefined,
+			localOnly: note.localOnly ?? undefined,
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
@@ -299,22 +299,22 @@ export class NoteEntityService implements OnModuleInit {
 			files: this.driveFileEntityService.packMany(note.fileIds),
 			replyId: note.replyId,
 			renoteId: note.renoteId,
-			channelId: note.channelId || undefined,
+			channelId: note.channelId ?? undefined,
 			channel: channel ? {
 				id: channel.id,
 				name: channel.name,
 			} : undefined,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
-			uri: note.uri || undefined,
-			url: note.url || undefined,
+			uri: note.uri ?? undefined,
+			url: note.url ?? undefined,
 
 			...(opts.detail ? {
-				reply: note.replyId ? this.pack(note.reply || note.replyId, me, {
+				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					_hint_: options?._hint_,
 				}) : undefined,
 
-				renote: note.renoteId ? this.pack(note.renote || note.renoteId, me, {
+				renote: note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					_hint_: options?._hint_,
 				}) : undefined,
@@ -366,7 +366,7 @@ export class NoteEntityService implements OnModuleInit {
 			});
 
 			for (const target of targets) {
-				myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) || null);
+				myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) ?? null);
 			}
 		}
 

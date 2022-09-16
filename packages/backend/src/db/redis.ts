@@ -10,7 +10,7 @@ export function createConnection() {
 		family: config.redis.family == null ? 0 : config.redis.family,
 		password: config.redis.pass,
 		keyPrefix: `${config.redis.prefix}:`,
-		db: config.redis.db || 0,
+		db: config.redis.db ?? 0,
 	});
 }
 

@@ -163,7 +163,7 @@ private driveFileEntityService: DriveFileEntityService,
 			icon: {
 				type: 'Image',
 				mediaType: emoji.type ?? 'image/png',
-				url: emoji.publicUrl ?? emoji.originalUrl, // || emoji.originalUrl してるのは後方互換性のため
+				url: emoji.publicUrl ?? emoji.originalUrl, // ?? emoji.originalUrl してるのは後方互換性のため
 			},
 		};
 	}
@@ -233,7 +233,7 @@ private driveFileEntityService: DriveFileEntityService,
 
 	public renderKey(user: ILocalUser, key: UserKeypair, postfix?: string) {
 		return {
-			id: `${this.config.url}/users/${user.id}${postfix || '/publickey'}`,
+			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
 			owner: `${this.config.url}/users/${user.id}`,
 			publicKeyPem: createPublicKey(key.publicKey).export({

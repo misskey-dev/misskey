@@ -549,7 +549,7 @@ export class UserFollowingService {
 			followerId: follower.id,
 		});
 
-		const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request?.requestId || undefined), followee));
+		const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request?.requestId ?? undefined), followee));
 		this.queueService.deliver(followee, content, follower.inbox);
 	}
 

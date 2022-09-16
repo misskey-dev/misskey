@@ -69,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				createdAt: new Date(),
 				userId: me.id,
 				name: ps.name,
-				description: ps.description || null,
+				description: ps.description ?? null,
 				bannerId: banner ? banner.id : null,
 			} as Channel).then(x => this.channelsRepository.findOneByOrFail(x.identifiers[0]));
 

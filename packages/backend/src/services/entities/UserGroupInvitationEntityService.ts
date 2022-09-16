@@ -26,7 +26,7 @@ export class UserGroupInvitationEntityService {
 
 		return {
 			id: invitation.id,
-			group: await this.userGroupEntityService.pack(invitation.userGroup || invitation.userGroupId),
+			group: await this.userGroupEntityService.pack(invitation.userGroup ?? invitation.userGroupId),
 		};
 	}
 

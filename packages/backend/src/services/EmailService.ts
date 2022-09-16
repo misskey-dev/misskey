@@ -115,7 +115,7 @@ export class EmailService {
 	<body>
 		<main>
 			<header>
-				<img src="${ meta.logoImageUrl || meta.iconUrl || iconUrl }"/>
+				<img src="${ meta.logoImageUrl ?? meta.iconUrl ?? iconUrl }"/>
 			</header>
 			<article>
 				<h1>${ subject }</h1>

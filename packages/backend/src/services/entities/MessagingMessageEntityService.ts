@@ -8,6 +8,7 @@ import type { User } from '@/models/entities/User.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { UserGroupEntityService } from './UserGroupEntityService.js';
 
 @Injectable()
 export class MessagingMessageEntityService {
@@ -16,6 +17,7 @@ export class MessagingMessageEntityService {
 		private messagingMessagesRepository: typeof MessagingMessages,
 
 		private userEntityService: UserEntityService,
+		private userGroupEntityService: UserGroupEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 	) {
 	}
@@ -28,7 +30,7 @@ export class MessagingMessageEntityService {
 			populateGroup?: boolean,
 		},
 	): Promise<Packed<'MessagingMessage'>> {
-		const opts = options || {
+		const opts = options ?? {
 			populateRecipient: true,
 			populateGroup: true,
 		};
@@ -40,11 +42,11 @@ export class MessagingMessageEntityService {
 			createdAt: message.createdAt.toISOString(),
 			text: message.text,
 			userId: message.userId,
-			user: await this.userEntityService.pack(message.user || message.userId, me),
+			user: await this.userEntityService.pack(message.user ?? message.userId, me),
 			recipientId: message.recipientId,
-			recipient: message.recipientId && opts.populateRecipient ? await this.userEntityService.pack(message.recipient || message.recipientId, me) : undefined,
+			recipient: message.recipientId && opts.populateRecipient ? await this.userEntityService.pack(message.recipient ?? message.recipientId, me) : undefined,
 			groupId: message.groupId,
-			group: message.groupId && opts.populateGroup ? await this.userGroupEntityService.pack(message.group || message.groupId) : undefined,
+			group: message.groupId && opts.populateGroup ? await this.userGroupEntityService.pack(message.group ?? message.groupId) : undefined,
 			fileId: message.fileId,
 			file: message.fileId ? await this.driveFileEntityService.pack(message.fileId) : null,
 			isRead: message.isRead,

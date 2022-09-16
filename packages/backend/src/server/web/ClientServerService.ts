@@ -92,8 +92,8 @@ export class ClientServerService {
 
 		const instance = await this.metaService.fetch(true);
 
-		res.short_name = instance.name || 'Misskey';
-		res.name = instance.name || 'Misskey';
+		res.short_name = instance.name ?? 'Misskey';
+		res.name = instance.name ?? 'Misskey';
 		if (instance.themeColor) res.theme_color = instance.themeColor;
 
 		ctx.set('Cache-Control', 'max-age=300');
@@ -359,7 +359,7 @@ export class ClientServerService {
 					user, profile, me,
 					avatarUrl: await this.userEntityService.getAvatarUrl(user),
 					sub: ctx.params.sub,
-					instanceName: meta.name || 'Misskey',
+					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
@@ -403,7 +403,7 @@ export class ClientServerService {
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: note.userId })),
 					// TODO: Let locale changeable by instance setting
 					summary: getNoteSummary(_note),
-					instanceName: meta.name || 'Misskey',
+					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
@@ -439,7 +439,7 @@ export class ClientServerService {
 					page: _page,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: page.userId })),
-					instanceName: meta.name || 'Misskey',
+					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
@@ -471,7 +471,7 @@ export class ClientServerService {
 					clip: _clip,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: clip.userId })),
-					instanceName: meta.name || 'Misskey',
+					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
@@ -496,7 +496,7 @@ export class ClientServerService {
 					post: _post,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: post.userId })),
-					instanceName: meta.name || 'Misskey',
+					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
@@ -520,7 +520,7 @@ export class ClientServerService {
 				const meta = await this.metaService.fetch();
 				await ctx.render('channel', {
 					channel: _channel,
-					instanceName: meta.name || 'Misskey',
+					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
@@ -578,8 +578,8 @@ export class ClientServerService {
 			const meta = await this.metaService.fetch();
 			await ctx.render('base', {
 				img: meta.bannerUrl,
-				title: meta.name || 'Misskey',
-				instanceName: meta.name || 'Misskey',
+				title: meta.name ?? 'Misskey',
+				instanceName: meta.name ?? 'Misskey',
 				desc: meta.description,
 				icon: meta.iconUrl,
 				themeColor: meta.themeColor,

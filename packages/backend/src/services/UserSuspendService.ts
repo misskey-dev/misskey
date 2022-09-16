@@ -45,7 +45,7 @@ export class UserSuspendService {
 				select: ['followerSharedInbox', 'followeeSharedInbox'],
 			});
 	
-			const inboxes = followings.map(x => x.followerSharedInbox || x.followeeSharedInbox);
+			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
 	
 			for (const inbox of inboxes) {
 				if (inbox != null && !queue.includes(inbox)) queue.push(inbox);
@@ -74,7 +74,7 @@ export class UserSuspendService {
 				select: ['followerSharedInbox', 'followeeSharedInbox'],
 			});
 	
-			const inboxes = followings.map(x => x.followerSharedInbox || x.followeeSharedInbox);
+			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
 	
 			for (const inbox of inboxes) {
 				if (inbox != null && !queue.includes(inbox)) queue.push(inbox);

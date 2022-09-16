@@ -247,14 +247,14 @@ export class NoteCreateService {
 
 			const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
 
-			tags = data.apHashtags || extractHashtags(combinedTokens);
+			tags = data.apHashtags ?? extractHashtags(combinedTokens);
 
-			emojis = data.apEmojis || extractCustomEmojisFromMfm(combinedTokens);
+			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
 
-			mentionedUsers = data.apMentions || await this.#extractMentionedUsers(user, combinedTokens);
+			mentionedUsers = data.apMentions ?? await this.#extractMentionedUsers(user, combinedTokens);
 		}
 
-		tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
+		tags = tags.filter(tag => Array.from(tag ?? '').length <= 128).splice(0, 32);
 
 		if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
 			mentionedUsers.push(await this.usersRepository.findOneByOrFail({ id: data.reply!.userId }));
@@ -518,7 +518,7 @@ export class NoteCreateService {
 				if (data.reply.userHost === null) {
 					const threadMuted = await NoteThreadMutings.findOneBy({
 						userId: data.reply.userId,
-						threadId: data.reply.threadId || data.reply.id,
+						threadId: data.reply.threadId ?? data.reply.id,
 					});
 
 					if (!threadMuted) {
@@ -635,7 +635,7 @@ export class NoteCreateService {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
 			const threadMuted = await NoteThreadMutings.findOneBy({
 				userId: u.id,
-				threadId: note.threadId || note.id,
+				threadId: note.threadId ?? note.id,
 			});
 
 			if (threadMuted) {
@@ -678,7 +678,7 @@ export class NoteCreateService {
 		if (note.text == null || this.config.elasticsearch == null) return;
 		/*
 	es!.index({
-		index: this.config.elasticsearch.index || 'misskey_note',
+		index: this.config.elasticsearch.index ?? 'misskey_note',
 		id: note.id.toString(),
 		body: {
 			text: normalizeForSearch(note.text),
@@ -703,7 +703,7 @@ export class NoteCreateService {
 
 		const mentions = extractMentions(tokens);
 		let mentionedUsers = (await Promise.all(mentions.map(m =>
-			this.resolveUserService.resolveUser(m.username, m.host || user.host).catch(() => null),
+			this.resolveUserService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
 		))).filter(x => x != null) as User[];
 
 		// Drop duplicate users

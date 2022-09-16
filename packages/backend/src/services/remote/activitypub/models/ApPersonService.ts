@@ -271,7 +271,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const host = this.utilityService.toPuny(new URL(object.id).hostname);
 
-		const { fields } = this.analyzeAttachments(person.attachment || []);
+		const { fields } = this.analyzeAttachments(person.attachment ?? []);
 
 		const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
 
@@ -297,7 +297,7 @@ export class ApPersonService implements OnModuleInit {
 					usernameLower: person.preferredUsername!.toLowerCase(),
 					host,
 					inbox: person.inbox,
-					sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+					sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
 					followersUri: person.followers ? getApId(person.followers) : undefined,
 					featured: person.featured ? getApId(person.featured) : undefined,
 					uri: person.id,
@@ -313,7 +313,7 @@ export class ApPersonService implements OnModuleInit {
 					url: getOneApHrefNullable(person.url),
 					fields,
 					birthday: bday ? bday[0] : null,
-					location: person['vcard:Address'] || null,
+					location: person['vcard:Address'] ?? null,
 					userHost: host,
 				}));
 
@@ -379,8 +379,8 @@ export class ApPersonService implements OnModuleInit {
 	//#endregion
 
 	//#region カスタム絵文字取得
-	const emojis = await this.apNoteService.extractEmojis(person.tag || [], host).catch(e => {
-		this.#logger.info(`extractEmojis: ${e}`);
+	const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host).catch(err => {
+		this.#logger.info(`extractEmojis: ${err}`);
 		return [] as Emoji[];
 	});
 
@@ -421,7 +421,7 @@ export class ApPersonService implements OnModuleInit {
 
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = hint || await resolver.resolve(uri);
+		const object = hint ?? await resolver.resolve(uri);
 
 		const person = this.#validateActor(object, uri);
 
@@ -438,14 +438,14 @@ export class ApPersonService implements OnModuleInit {
 		));
 
 		// カスタム絵文字取得
-		const emojis = await this.apNoteService.extractEmojis(person.tag || [], exist.host).catch(e => {
+		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
 			this.#logger.info(`extractEmojis: ${e}`);
 			return [] as Emoji[];
 		});
 
 		const emojiNames = emojis.map(emoji => emoji.name);
 
-		const { fields } = this.analyzeAttachments(person.attachment || []);
+		const { fields } = this.analyzeAttachments(person.attachment ?? []);
 
 		const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
 
@@ -454,7 +454,7 @@ export class ApPersonService implements OnModuleInit {
 		const updates = {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+			sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
 			followersUri: person.followers ? getApId(person.followers) : undefined,
 			featured: person.featured,
 			emojis: emojiNames,
@@ -489,7 +489,7 @@ export class ApPersonService implements OnModuleInit {
 			fields,
 			description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 			birthday: bday ? bday[0] : null,
-			location: person['vcard:Address'] || null,
+			location: person['vcard:Address'] ?? null,
 		});
 
 		this.globalEventService.publishInternalEvent('remoteUserUpdated', { id: exist.id });
@@ -501,7 +501,7 @@ export class ApPersonService implements OnModuleInit {
 		await this.followingsRepository.update({
 			followerId: exist.id,
 		}, {
-			followerSharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+			followerSharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		});
 
 		await this.updateFeatured(exist.id).catch(err => this.#logger.error(err));

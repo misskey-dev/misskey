@@ -123,7 +123,7 @@ export class SigninApiService {
 				success: false,
 			});
 
-			error(status || 500, failure || { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
+			error(status ?? 500, failure ?? { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
 		};
 
 		if (!profile.twoFactorEnabled) {

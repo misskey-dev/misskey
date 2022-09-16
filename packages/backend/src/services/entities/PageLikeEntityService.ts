@@ -27,7 +27,7 @@ export class PageLikeEntityService {
 
 		return {
 			id: like.id,
-			page: await this.pageEntityService.pack(like.page || like.pageId, me),
+			page: await this.pageEntityService.pack(like.page ?? like.pageId, me),
 		};
 	}
 

@@ -130,7 +130,7 @@ export class DriveService {
 
 		if (meta.useObjectStorage) {
 		//#region ObjectStorage params
-			let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
+			let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) ?? ['']);
 
 			if (ext === '') {
 				if (type === 'image/jpeg') ext = '.jpg';
@@ -522,7 +522,7 @@ export class DriveService {
 		file.folderId = folder !== null ? folder.id : null;
 		file.comment = comment;
 		file.properties = properties;
-		file.blurhash = info.blurhash || null;
+		file.blurhash = info.blurhash ?? null;
 		file.isLink = isLink;
 		file.requestIp = requestIp;
 		file.requestHeaders = requestHeaders;
@@ -706,7 +706,7 @@ export class DriveService {
 		requestIp = null,
 		requestHeaders = null,
 	}: UploadFromUrlArgs): Promise<DriveFile> {
-		let name = new URL(url).pathname.split('/').pop() || null;
+		let name = new URL(url).pathname.split('/').pop() ?? null;
 		if (name == null || !this.driveFileEntityService.validateFileName(name)) {
 			name = null;
 		}

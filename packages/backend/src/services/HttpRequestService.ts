@@ -54,7 +54,7 @@ export class HttpRequestService {
 			lookup: cache.lookup,
 		} as https.AgentOptions);
 		
-		const maxSockets = Math.max(256, config.deliverJobConcurrency || 128);
+		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
 		
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
@@ -99,7 +99,7 @@ export class HttpRequestService {
 			headers: Object.assign({
 				'User-Agent': this.config.userAgent,
 				Accept: accept,
-			}, headers || {}),
+			}, headers ?? {}),
 			timeout,
 		});
 
@@ -113,7 +113,7 @@ export class HttpRequestService {
 			headers: Object.assign({
 				'User-Agent': this.config.userAgent,
 				Accept: accept,
-			}, headers || {}),
+			}, headers ?? {}),
 			timeout,
 		});
 
@@ -128,7 +128,7 @@ export class HttpRequestService {
 		timeout?: number,
 		size?: number,
 	}): Promise<Response> {
-		const timeout = args.timeout || 10 * 1000;
+		const timeout = args.timeout ?? 10 * 1000;
 
 		const controller = new AbortController();
 		setTimeout(() => {
@@ -140,7 +140,7 @@ export class HttpRequestService {
 			headers: args.headers,
 			body: args.body,
 			timeout,
-			size: args.size || 10 * 1024 * 1024,
+			size: args.size ?? 10 * 1024 * 1024,
 			agent: this.getAgentByUrl,
 			signal: controller.signal,
 		});

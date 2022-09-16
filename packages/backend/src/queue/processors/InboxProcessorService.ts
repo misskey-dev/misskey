@@ -94,13 +94,13 @@ export class InboxProcessorService {
 		if (authUser == null) {
 			try {
 				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor));
-			} catch (e) {
+			} catch (err) {
 			// 対象が4xxならスキップ
-				if (e instanceof StatusError) {
-					if (e.isClientError) {
-						return `skip: Ignored deleted actors on both ends ${activity.actor} - ${e.statusCode}`;
+				if (err instanceof StatusError) {
+					if (err.isClientError) {
+						return `skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`;
 					}
-					throw `Error in actor ${activity.actor} - ${e.statusCode || e}`;
+					throw `Error in actor ${activity.actor} - ${err.statusCode ?? err}`;
 				}
 			}
 		}

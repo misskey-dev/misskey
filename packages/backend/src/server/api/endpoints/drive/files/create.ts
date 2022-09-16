@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me, _, file, cleanup, ip, headers) => {
 			// Get 'name' parameter
-			let name = ps.name || file.originalname;
+			let name = ps.name ?? file.originalname;
 			if (name !== undefined && name !== null) {
 				name = name.trim();
 				if (name.length === 0) {

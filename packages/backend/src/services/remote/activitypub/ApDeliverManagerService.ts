@@ -176,7 +176,7 @@ class DeliverManager {
 			}[];
 
 			for (const following of followers) {
-				const inbox = following.followerSharedInbox || following.followerInbox;
+				const inbox = following.followerSharedInbox ?? following.followerInbox;
 				inboxes.add(inbox);
 			}
 		}

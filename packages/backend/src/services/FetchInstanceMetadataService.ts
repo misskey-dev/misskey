@@ -80,13 +80,13 @@ export class FetchInstanceMetadataService {
 				updates.softwareName = info.software?.name.toLowerCase();
 				updates.softwareVersion = info.software?.version;
 				updates.openRegistrations = info.openRegistrations;
-				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name || null) : null : null;
-				updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email || null) : null : null;
+				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name ?? null) : null : null;
+				updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email ?? null) : null : null;
 			}
 	
 			if (name) updates.name = name;
 			if (description) updates.description = description;
-			if (icon || favicon) updates.iconUrl = icon || favicon;
+			if (icon || favicon) updates.iconUrl = icon ?? favicon;
 			if (favicon) updates.faviconUrl = favicon;
 			if (themeColor) updates.themeColor = themeColor;
 	
@@ -122,7 +122,7 @@ export class FetchInstanceMetadataService {
 			const lnik1_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/1.0');
 			const lnik2_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.0');
 			const lnik2_1 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.1');
-			const link = lnik2_1 || lnik2_0 || lnik1_0;
+			const link = lnik2_1 ?? lnik2_0 ?? lnik1_0;
 	
 			if (link == null) {
 				throw 'No nodeinfo link provided';
@@ -222,7 +222,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	async #getThemeColor(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
-		const themeColor = info?.metadata?.themeColor || doc?.querySelector('meta[name="theme-color"]')?.getAttribute('content') || manifest?.theme_color;
+		const themeColor = info?.metadata?.themeColor ?? doc?.querySelector('meta[name="theme-color"]')?.getAttribute('content') ?? manifest?.theme_color;
 	
 		if (themeColor) {
 			const color = new tinycolor(themeColor);
@@ -235,7 +235,7 @@ export class FetchInstanceMetadataService {
 	async #getSiteName(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (info.metadata.nodeName || info.metadata.name) {
-				return info.metadata.nodeName || info.metadata.name;
+				return info.metadata.nodeName ?? info.metadata.name;
 			}
 		}
 	
@@ -248,7 +248,7 @@ export class FetchInstanceMetadataService {
 		}
 	
 		if (manifest) {
-			return manifest.name || manifest.short_name;
+			return manifest.name ?? manifest.short_name;
 		}
 	
 		return null;
@@ -257,7 +257,7 @@ export class FetchInstanceMetadataService {
 	async #getDescription(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (info.metadata.nodeDescription || info.metadata.description) {
-				return info.metadata.nodeDescription || info.metadata.description;
+				return info.metadata.nodeDescription ?? info.metadata.description;
 			}
 		}
 	
@@ -274,7 +274,7 @@ export class FetchInstanceMetadataService {
 		}
 	
 		if (manifest) {
-			return manifest.name || manifest.short_name;
+			return manifest.name ?? manifest.short_name;
 		}
 	
 		return null;

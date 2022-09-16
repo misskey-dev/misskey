@@ -64,7 +64,7 @@ export class NotificationEntityService implements OnModuleInit {
 			type: notification.type,
 			isRead: notification.isRead,
 			userId: notification.notifierId,
-			user: notification.notifierId ? this.userEntityService.pack(notification.notifier || notification.notifierId) : null,
+			user: notification.notifierId ? this.userEntityService.pack(notification.notifier ?? notification.notifierId) : null,
 			...(notification.type === 'mention' ? {
 				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
@@ -114,8 +114,8 @@ export class NotificationEntityService implements OnModuleInit {
 			} : {}),
 			...(notification.type === 'app' ? {
 				body: notification.customBody,
-				header: notification.customHeader || token?.name,
-				icon: notification.customIcon || token?.iconUrl,
+				header: notification.customHeader ?? token?.name,
+				icon: notification.customIcon ?? token?.iconUrl,
 			} : {}),
 		});
 	}
@@ -137,7 +137,7 @@ export class NotificationEntityService implements OnModuleInit {
 		});
 
 		for (const target of targets) {
-			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) || null);
+			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) ?? null);
 		}
 
 		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));

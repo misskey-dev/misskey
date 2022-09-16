@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(me.id);
 
 			return {
-				capacity: 1024 * 1024 * (me.driveCapacityOverrideMb || instance.localDriveCapacityMb),
+				capacity: 1024 * 1024 * (me.driveCapacityOverrideMb ?? instance.localDriveCapacityMb),
 				usage: usage,
 			};
 		});

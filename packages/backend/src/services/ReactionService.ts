@@ -160,7 +160,7 @@ export class ReactionService {
 			reaction: decodedReaction.reaction,
 			emoji: emoji != null ? {
 				name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
-				url: emoji.publicUrl || emoji.originalUrl, // || emoji.originalUrl してるのは後方互換性のため
+				url: emoji.publicUrl ?? emoji.originalUrl, // || emoji.originalUrl してるのは後方互換性のため
 			} : null,
 			userId: user.id,
 		});
@@ -317,10 +317,10 @@ export class ReactionService {
 
 		if (custom) {
 			const name = custom[1];
-			const host = custom[2] || null;
+			const host = custom[2] ?? null;
 
 			return {
-				reaction: `:${name}@${host || '.'}:`,	// ローカル分は@以降を省略するのではなく.にする
+				reaction: `:${name}@${host ?? '.'}:`,	// ローカル分は@以降を省略するのではなく.にする
 				name,
 				host,
 			};

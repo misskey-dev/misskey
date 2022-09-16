@@ -300,10 +300,10 @@ export class UserEntityService implements OnModuleInit {
 
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
 		} else if (user.avatarId) {
 			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFileEntityService.getPublicUrl(avatar, true) || this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(avatar, true) ?? this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -311,7 +311,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, true) || this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -379,12 +379,12 @@ export class UserEntityService implements OnModuleInit {
 			username: user.username,
 			host: user.host,
 			avatarUrl: this.getAvatarUrlSync(user),
-			avatarBlurhash: user.avatar?.blurhash || null,
+			avatarBlurhash: user.avatar?.blurhash ?? null,
 			avatarColor: null, // 後方互換性のため
-			isAdmin: user.isAdmin || falsy,
-			isModerator: user.isModerator || falsy,
-			isBot: user.isBot || falsy,
-			isCat: user.isCat || falsy,
+			isAdmin: user.isAdmin ?? falsy,
+			isModerator: user.isModerator ?? falsy,
+			isBot: user.isBot ?? falsy,
+			isCat: user.isCat ?? falsy,
 			instance: user.host ? this.#userInstanceCache.fetch(user.host,
 				() => this.instancesRepository.findOneBy({ host: user.host! }),
 				v => v != null,
@@ -407,11 +407,11 @@ export class UserEntityService implements OnModuleInit {
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
 				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
-				bannerBlurhash: user.banner?.blurhash || null,
+				bannerBlurhash: user.banner?.blurhash ?? null,
 				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
-				isSilenced: user.isSilenced || falsy,
-				isSuspended: user.isSuspended || falsy,
+				isSilenced: user.isSilenced ?? falsy,
+				isSuspended: user.isSuspended ?? falsy,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
@@ -469,7 +469,7 @@ export class UserEntityService implements OnModuleInit {
 				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
-				showTimelineReplies: user.showTimelineReplies || falsy,
+				showTimelineReplies: user.showTimelineReplies ?? falsy,
 			} : {}),
 
 			...(opts.includeSecrets ? {

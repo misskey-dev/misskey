@@ -61,7 +61,7 @@ export class NoteReadService {
 		// スレッドミュート
 		const threadMute = await this.noteThreadMutingsRepository.findOneBy({
 			userId: userId,
-			threadId: note.threadId || note.id,
+			threadId: note.threadId ?? note.id,
 		});
 		if (threadMute) return;
 	

@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { DriveFiles } from '@/models/index.js';
-import type { Pages , PageLikes } from '@/models/index.js';
+import type { DriveFiles , Pages , PageLikes } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -9,6 +8,7 @@ import type { User } from '@/models/entities/User.js';
 import type { Page } from '@/models/entities/Page.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { UserEntityService } from './UserEntityService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
 
 @Injectable()
 export class PageEntityService {
@@ -23,6 +23,7 @@ export class PageEntityService {
 		private driveFilesRepository: typeof DriveFiles,
 
 		private userEntityService: UserEntityService,
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 	}
 
@@ -80,7 +81,7 @@ export class PageEntityService {
 			createdAt: page.createdAt.toISOString(),
 			updatedAt: page.updatedAt.toISOString(),
 			userId: page.userId,
-			user: this.userEntityService.pack(page.user || page.userId, me), // { detail: true } すると無限ループするので注意
+			user: this.userEntityService.pack(page.user ?? page.userId, me), // { detail: true } すると無限ループするので注意
 			content: page.content,
 			variables: page.variables,
 			title: page.title,
@@ -91,8 +92,8 @@ export class PageEntityService {
 			font: page.font,
 			script: page.script,
 			eyeCatchingImageId: page.eyeCatchingImageId,
-			eyeCatchingImage: page.eyeCatchingImageId ? await DriveFiles.pack(page.eyeCatchingImageId) : null,
-			attachedFiles: DriveFiles.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null)),
+			eyeCatchingImage: page.eyeCatchingImageId ? await this.driveFileEntityService.pack(page.eyeCatchingImageId) : null,
+			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null)),
 			likedCount: page.likedCount,
 			isLiked: meId ? await this.pageLikesRepository.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
 		});

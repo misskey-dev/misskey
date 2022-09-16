@@ -86,7 +86,7 @@ export class ApQuestionService {
 
 		if (question.type !== 'Question') throw new Error('object is not a Question');
 
-		const apChoices = question.oneOf || question.anyOf;
+		const apChoices = question.oneOf ?? question.anyOf;
 
 		let changed = false;
 

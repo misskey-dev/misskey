@@ -35,7 +35,7 @@ class LdSignature {
 			creator,
 			domain,
 			nonce: crypto.randomBytes(16).toString('hex'),
-			created: (created || new Date()).toISOString(),
+			created: (created ?? new Date()).toISOString(),
 		} as {
 			type: string;
 			creator: string;

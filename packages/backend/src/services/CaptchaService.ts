@@ -34,8 +34,8 @@ export class CaptchaService {
 			// TODO
 			//timeout: 10 * 1000,
 			agent: (url, bypassProxy) => this.httpRequestService.getAgentByUrl(url, bypassProxy),
-		}).catch(e => {
-			throw `${e.message || e}`;
+		}).catch(err => {
+			throw `${err.message ?? err}`;
 		});
 	
 		if (!res.ok) {

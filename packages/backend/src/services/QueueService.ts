@@ -37,7 +37,7 @@ export class QueueService {
 		};
 
 		return this.deliverQueue.add(data, {
-			attempts: this.config.deliverJobMaxAttempts || 12,
+			attempts: this.config.deliverJobMaxAttempts ?? 12,
 			timeout: 1 * 60 * 1000,	// 1min
 			backoff: {
 				type: 'apBackoff',
@@ -54,7 +54,7 @@ export class QueueService {
 		};
 	
 		return this.inboxQueue.add(data, {
-			attempts: this.config.inboxJobMaxAttempts || 8,
+			attempts: this.config.inboxJobMaxAttempts ?? 8,
 			timeout: 5 * 60 * 1000,	// 5min
 			backoff: {
 				type: 'apBackoff',

@@ -32,7 +32,7 @@ export class HashtagService {
 			await this.updateHashtag(user, tag, true, true);
 		}
 
-		for (const tag of (user.tags || []).filter(x => !tags.includes(x))) {
+		for (const tag of (user.tags ?? []).filter(x => !tags.includes(x))) {
 			await this.updateHashtag(user, tag, true, false);
 		}
 	}

@@ -28,13 +28,13 @@ export class AbuseUserReportEntityService {
 			reporterId: report.reporterId,
 			targetUserId: report.targetUserId,
 			assigneeId: report.assigneeId,
-			reporter: this.userEntityService.pack(report.reporter || report.reporterId, null, {
+			reporter: this.userEntityService.pack(report.reporter ?? report.reporterId, null, {
 				detail: true,
 			}),
-			targetUser: this.userEntityService.pack(report.targetUser || report.targetUserId, null, {
+			targetUser: this.userEntityService.pack(report.targetUser ?? report.targetUserId, null, {
 				detail: true,
 			}),
-			assignee: report.assigneeId ? this.userEntityService.pack(report.assignee || report.assigneeId, null, {
+			assignee: report.assigneeId ? this.userEntityService.pack(report.assignee ?? report.assigneeId, null, {
 				detail: true,
 			}) : null,
 			forwarded: report.forwarded,

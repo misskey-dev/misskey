@@ -274,7 +274,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					multiple: ps.poll.multiple || false,
 					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 				} : undefined,
-				text: ps.text || undefined,
+				text: ps.text ?? undefined,
 				reply,
 				renote,
 				cw: ps.cw,

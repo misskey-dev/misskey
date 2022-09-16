@@ -104,7 +104,7 @@ export class CustomEmojiService {
 		const queryOrNull = async () => (await Emojis.findOneBy({
 			name,
 			host: host ?? IsNull(),
-		})) || null;
+		})) ?? null;
 
 		const emoji = await this.#cache.fetch(`${name} ${host}`, queryOrNull);
 

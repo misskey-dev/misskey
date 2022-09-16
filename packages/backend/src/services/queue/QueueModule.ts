@@ -12,7 +12,7 @@ function q<T>(config: Config, name: string, limitPerSec = -1) {
 			host: config.redis.host,
 			family: config.redis.family == null ? 0 : config.redis.family,
 			password: config.redis.pass,
-			db: config.redis.db || 0,
+			db: config.redis.db ?? 0,
 		},
 		prefix: config.redis.prefix ? `${config.redis.prefix}:queue` : 'queue',
 		limiter: limitPerSec > 0 ? {

@@ -5,7 +5,7 @@ import { ChartManagementService } from '@/services/chart/ChartManagementService.
 import { ServerService } from '@/server/ServerService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
 import { initDb } from '../db/postgre.js';
-import { AppModule } from '../app.module.js';
+import { AppModule } from '../AppModule.js';
 
 /**
  * Init worker process

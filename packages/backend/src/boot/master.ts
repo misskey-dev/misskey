@@ -6,13 +6,18 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
 import semver from 'semver';
+import { NestFactory } from '@nestjs/core';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
 import { lessThan } from '@/prelude/array.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { envOption } from '../env.js';
+import { DaemonModule } from '@/daemons/DaemonModule.js';
+import { JanitorService } from '@/daemons/JanitorService.js';
+import { QueueStatsService } from '@/daemons/QueueStatsService.js';
+import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 import { db, initDb } from '../db/postgre.js';
+import { envOption } from '../env.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -74,9 +79,10 @@ export async function masterMain() {
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
 
 	if (!envOption.noDaemons) {
-		import('../daemons/server-stats.js').then(x => x.default());
-		import('../daemons/queue-stats.js').then(x => x.default());
-		import('../daemons/janitor.js').then(x => x.default());
+		const daemons = await NestFactory.createApplicationContext(DaemonModule);
+		daemons.get(JanitorService).start();
+		daemons.get(QueueStatsService).start();
+		daemons.get(ServerStatsService).start();
 	}
 }
 

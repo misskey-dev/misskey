@@ -203,7 +203,7 @@ export const db = new DataSource({
 			family: config.redis.family == null ? 0 : config.redis.family,
 			password: config.redis.pass,
 			keyPrefix: `${config.redis.prefix}:query:`,
-			db: config.redis.db || 0,
+			db: config.redis.db ?? 0,
 		},
 	} : false,
 	logging: log,

@@ -22,10 +22,10 @@ export class S3Service {
 			: `${meta.objectStorageUseSSL ? 'https://' : 'http://'}example.net`;
 	
 		return new S3({
-			endpoint: meta.objectStorageEndpoint || undefined,
+			endpoint: meta.objectStorageEndpoint ?? undefined,
 			accessKeyId: meta.objectStorageAccessKey!,
 			secretAccessKey: meta.objectStorageSecretKey!,
-			region: meta.objectStorageRegion || undefined,
+			region: meta.objectStorageRegion ?? undefined,
 			sslEnabled: meta.objectStorageUseSSL,
 			s3ForcePathStyle: !meta.objectStorageEndpoint	// AWS with endPoint omitted
 				? false

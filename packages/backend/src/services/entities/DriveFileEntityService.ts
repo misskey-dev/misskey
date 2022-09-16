@@ -88,7 +88,7 @@ export class DriveFileEntityService {
 
 		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/svg+xml'].includes(file.type);
 
-		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
+		return thumbnail ? (file.thumbnailUrl ?? (isImage ? (file.webpublicUrl ?? file.url) : null)) : (file.webpublicUrl ?? file.url);
 	}
 
 	public async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
@@ -101,7 +101,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) || 0;
+		return parseInt(sum, 10) ?? 0;
 	}
 
 	public async calcDriveUsageOfHost(host: string): Promise<number> {
@@ -112,7 +112,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) || 0;
+		return parseInt(sum, 10) ?? 0;
 	}
 
 	public async calcDriveUsageOfLocal(): Promise<number> {
@@ -123,7 +123,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) || 0;
+		return parseInt(sum, 10) ?? 0;
 	}
 
 	public async calcDriveUsageOfRemote(): Promise<number> {
@@ -134,7 +134,7 @@ export class DriveFileEntityService {
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return parseInt(sum, 10) || 0;
+		return parseInt(sum, 10) ?? 0;
 	}
 
 	public async pack(

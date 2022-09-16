@@ -98,7 +98,7 @@ export class ApAudienceService {
 	
 	#isFollowers(id: string, actor: CacheableRemoteUser) {
 		return (
-			id === (actor.followersUri || `${actor.uri}/followers`)
+			id === (actor.followersUri ?? `${actor.uri}/followers`)
 		);
 	}
 }

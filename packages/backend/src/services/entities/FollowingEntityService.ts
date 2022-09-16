@@ -75,10 +75,10 @@ export class FollowingEntityService {
 			createdAt: following.createdAt.toISOString(),
 			followeeId: following.followeeId,
 			followerId: following.followerId,
-			followee: opts.populateFollowee ? this.userEntityService.pack(following.followee || following.followeeId, me, {
+			followee: opts.populateFollowee ? this.userEntityService.pack(following.followee ?? following.followeeId, me, {
 				detail: true,
 			}) : undefined,
-			follower: opts.populateFollower ? this.userEntityService.pack(following.follower || following.followerId, me, {
+			follower: opts.populateFollower ? this.userEntityService.pack(following.follower ?? following.followerId, me, {
 				detail: true,
 			}) : undefined,
 		});

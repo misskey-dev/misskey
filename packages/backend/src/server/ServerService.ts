@@ -59,7 +59,7 @@ export class ServerService {
 		const koa = new Koa();
 		koa.proxy = true;
 
-		if (!['production', 'test'].includes(process.env.NODE_ENV || '')) {
+		if (!['production', 'test'].includes(process.env.NODE_ENV ?? '')) {
 		// Logger
 			koa.use(koaLogger(str => {
 				serverLogger.info(str);

@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
+import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
 import type { DriveFiles, Notes, UserProfiles , Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
 
 @Injectable()
 export class FeedService {
@@ -22,6 +25,9 @@ export class FeedService {
 
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
+
+		private userEntityService: UserEntityService,
+		private driveFileEntityService: DriveFileEntityService,
 	) {
 	}
 
@@ -50,13 +56,13 @@ export class FeedService {
 			generator: 'Misskey',
 			description: `${user.notesCount} Notes, ${profile.ffVisibility === 'public' ? user.followingCount : '?'} Following, ${profile.ffVisibility === 'public' ? user.followersCount : '?'} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 			link: author.link,
-			image: await this.usersRepository.getAvatarUrl(user),
+			image: await this.userEntityService.getAvatarUrl(user),
 			feedLinks: {
 				json: `${author.link}.json`,
 				atom: `${author.link}.atom`,
 			},
 			author,
-			copyright: user.name || user.username,
+			copyright: user.name ?? user.username,
 		});
 	
 		for (const note of notes) {
@@ -69,9 +75,9 @@ export class FeedService {
 				title: `New note by ${author.name}`,
 				link: `${this.config.url}/notes/${note.id}`,
 				date: note.createdAt,
-				description: note.cw || undefined,
-				content: note.text || undefined,
-				image: file ? this.driveFilesRepository.getPublicUrl(file) || undefined : undefined,
+				description: note.cw ?? undefined,
+				content: note.text ?? undefined,
+				image: file ? this.driveFileEntityService.getPublicUrl(file) ?? undefined : undefined,
 			});
 		}
 	

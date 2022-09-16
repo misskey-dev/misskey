@@ -33,7 +33,7 @@ export class DownloadService {
 	
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
-		const maxSize = this.config.maxFileSize || 262144000;
+		const maxSize = this.config.maxFileSize ?? 262144000;
 	
 		const req = got.stream(url, {
 			headers: {
@@ -111,7 +111,7 @@ export class DownloadService {
 	}
 	
 	#isPrivateIp(ip: string): boolean {
-		for (const net of this.config.allowedPrivateNetworks || []) {
+		for (const net of this.config.allowedPrivateNetworks ?? []) {
 			const cidr = new IPCIDR(net);
 			if (cidr.contains(ip)) {
 				return false;

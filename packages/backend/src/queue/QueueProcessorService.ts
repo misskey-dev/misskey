@@ -99,10 +99,10 @@ export class QueueProcessorService {
 			.on('error', (job: any, err: Error) => webhookLogger.error(`error ${err}`, { job, e: renderError(err) }))
 			.on('stalled', (job) => webhookLogger.warn(`stalled ${getJobInfo(job)} to=${job.data.to}`));
 	
-		this.queueService.deliverQueue.process(this.config.deliverJobConcurrency ?? 128, this.deliverProcessorService.process);
-		this.queueService.inboxQueue.process(this.config.inboxJobConcurrency ?? 16, this.inboxProcessorService.process);
-		this.queueService.endedPollNotificationQueue.process(this.endedPollNotificationProcessorService.process);
-		this.queueService.webhookDeliverQueue.process(64, this.webhookDeliverProcessorService.process);
+		this.queueService.deliverQueue.process(this.config.deliverJobConcurrency ?? 128, (job, done) => this.deliverProcessorService.process(job));
+		this.queueService.inboxQueue.process(this.config.inboxJobConcurrency ?? 16, (job, done) => this.inboxProcessorService.process(job));
+		this.queueService.endedPollNotificationQueue.process((job, done) => this.endedPollNotificationProcessorService.process(job, done));
+		this.queueService.webhookDeliverQueue.process(64, (job, done) => this.webhookDeliverProcessorService.process(job));
 		this.dbQueueProcessorsService.start(this.queueService.dbQueue);
 		this.objectStorageQueueProcessorsService.start(this.queueService.objectStorageQueue);
 	

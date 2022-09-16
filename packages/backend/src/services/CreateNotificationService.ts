@@ -93,7 +93,7 @@ export class CreateNotificationService {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('follow')) return;
-		const locale = locales[userProfile.lang || 'ja-JP'];
+		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
 		sendEmail(userProfile.email, i18n.t('_email._follow.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
@@ -104,7 +104,7 @@ export class CreateNotificationService {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('receiveFollowRequest')) return;
-		const locale = locales[userProfile.lang || 'ja-JP'];
+		const locale = locales[userProfile.lang ?? 'ja-JP'];
 		const i18n = new I18n(locale);
 		// TODO: render user information html
 		sendEmail(userProfile.email, i18n.t('_email._receiveFollowRequest.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);

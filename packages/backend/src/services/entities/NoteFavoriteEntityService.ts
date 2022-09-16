@@ -29,7 +29,7 @@ export class NoteFavoriteEntityService {
 			id: favorite.id,
 			createdAt: favorite.createdAt.toISOString(),
 			noteId: favorite.noteId,
-			note: await this.noteEntityService.pack(favorite.note || favorite.noteId, me),
+			note: await this.noteEntityService.pack(favorite.note ?? favorite.noteId, me),
 		};
 	}
 

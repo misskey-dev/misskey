@@ -169,9 +169,9 @@ export class ApInboxService {
 		const note = await this.apNoteService.fetchNote(targetUri);
 		if (!note) return `skip: target note not found ${targetUri}`;
 
-		await this.apNoteService.extractEmojis(activity.tag || [], actor.host).catch(() => null);
+		await this.apNoteService.extractEmojis(activity.tag ?? [], actor.host).catch(() => null);
 
-		return await this.reactionService.create(actor, note, activity._misskey_reaction || activity.content || activity.name).catch(e => {
+		return await this.reactionService.create(actor, note, activity._misskey_reaction ?? activity.content ?? activity.name).catch(e => {
 			if (e.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
 				return 'skip: already reacted';
 			} else {
@@ -203,15 +203,15 @@ export class ApInboxService {
 	}
 
 	async #accept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
-		const uri = activity.id || activity;
+		const uri = activity.id ?? activity;
 
 		this.#logger.info(`Accept: ${uri}`);
 	
 		const resolver = this.apResolverService.createResolver();
 	
-		const object = await resolver.resolve(activity.object).catch(e => {
-			this.#logger.error(`Resolution failed: ${e}`);
-			throw e;
+		const object = await resolver.resolve(activity.object).catch(err => {
+			this.#logger.error(`Resolution failed: ${err}`);
+			throw err;
 		});
 	
 		if (isFollow(object)) return await this.#acceptFollow(actor, object);
@@ -295,17 +295,17 @@ export class ApInboxService {
 			let renote;
 			try {
 				renote = await this.apNoteService.resolveNote(targetUri);
-			} catch (e) {
+			} catch (err) {
 			// 対象が4xxならスキップ
-				if (e instanceof StatusError) {
-					if (e.isClientError) {
-						this.#logger.warn(`Ignored announce target ${targetUri} - ${e.statusCode}`);
+				if (err instanceof StatusError) {
+					if (err.isClientError) {
+						this.#logger.warn(`Ignored announce target ${targetUri} - ${err.statusCode}`);
 						return;
 					}
 
-					this.#logger.warn(`Error in announce target ${targetUri} - ${e.statusCode || e}`);
+					this.#logger.warn(`Error in announce target ${targetUri} - ${err.statusCode ?? err}`);
 				}
-				throw e;
+				throw err;
 			}
 
 			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
@@ -531,7 +531,7 @@ export class ApInboxService {
 	}
 
 	async #reject(actor: CacheableRemoteUser, activity: IReject): Promise<string> {
-		const uri = activity.id || activity;
+		const uri = activity.id ?? activity;
 
 		this.#logger.info(`Reject: ${uri}`);
 
@@ -594,7 +594,7 @@ export class ApInboxService {
 			throw new Error('invalid actor');
 		}
 	
-		const uri = activity.id || activity;
+		const uri = activity.id ?? activity;
 	
 		this.#logger.info(`Undo: ${uri}`);
 	

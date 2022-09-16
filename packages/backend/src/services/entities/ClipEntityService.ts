@@ -27,7 +27,7 @@ export class ClipEntityService {
 			id: clip.id,
 			createdAt: clip.createdAt.toISOString(),
 			userId: clip.userId,
-			user: this.userEntityService.pack(clip.user || clip.userId),
+			user: this.userEntityService.pack(clip.user ?? clip.userId),
 			name: clip.name,
 			description: clip.description,
 			isPublic: clip.isPublic,

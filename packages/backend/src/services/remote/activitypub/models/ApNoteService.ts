@@ -270,7 +270,7 @@ export class ApNoteService {
 			}
 		}
 	
-		const emojis = await this.extractEmojis(note.tag || [], actor.host).catch(e => {
+		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
 			this.#logger.info(`extractEmojis: ${e}`);
 			return [] as Emoji[];
 		});
@@ -281,7 +281,7 @@ export class ApNoteService {
 	
 		if (isMessaging) {
 			for (const recipient of visibleUsers) {
-				await this.messagingService.createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null, object.id);
+				await this.messagingService.createMessage(actor, recipient, undefined, text ?? undefined, (files && files.length > 0) ? files[0] : null, object.id);
 				return null;
 			}
 		}

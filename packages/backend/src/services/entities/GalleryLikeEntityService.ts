@@ -28,7 +28,7 @@ export class GalleryLikeEntityService {
 
 		return {
 			id: like.id,
-			post: await this.galleryPostEntityService.pack(like.post || like.postId, me),
+			post: await this.galleryPostEntityService.pack(like.post ?? like.postId, me),
 		};
 	}
 
