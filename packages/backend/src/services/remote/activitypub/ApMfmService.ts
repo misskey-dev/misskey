@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import { MfmService } from '@/services/MfmService.js';
+import type { Note } from '@/models/entities/Note.js';
 import { extractApHashtagObjects } from './models/tag.js';
 import type { IObject } from './type.js';
 
@@ -20,4 +22,9 @@ export class ApMfmService {
 	
 		return this.mfmService.fromHtml(html, hashtagNames);
 	}
+
+	public getNoteHtml(note: Note) {
+		if (!note.text) return '';
+		return this.mfmService.toHtml(mfm.parse(note.text), JSON.parse(note.mentionedRemoteUsers));
+	}	
 }

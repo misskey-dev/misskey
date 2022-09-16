@@ -3,6 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { NoteReactions } from '@/models/index.js';
 import { awaitAll } from '@/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
+import type { OnModuleInit } from '@nestjs/common';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
@@ -12,7 +13,7 @@ import type { NoteEntityService } from './NoteEntityService.js';
 import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
-export class NoteReactionEntityService {
+export class NoteReactionEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private noteEntityService: NoteEntityService;
 	private reactionService: ReactionService;
@@ -27,6 +28,9 @@ export class NoteReactionEntityService {
 		//private noteEntityService: NoteEntityService,
 		//private reactionService: ReactionService,
 	) {
+	}
+
+	onModuleInit() {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.reactionService = this.moduleRef.get('ReactionService');

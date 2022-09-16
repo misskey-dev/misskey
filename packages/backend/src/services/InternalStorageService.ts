@@ -9,7 +9,7 @@ import { Config } from '@/config.js';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const path = Path.resolve(_dirname, '../../../../../files');
+const path = Path.resolve(_dirname, '../../../../files');
 
 @Injectable()
 export class InternalStorageService {

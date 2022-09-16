@@ -13,6 +13,7 @@ import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
+import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
@@ -42,7 +43,7 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 }
 
 @Injectable()
-export class UserEntityService {
+export class UserEntityService implements OnModuleInit {
 	private noteEntityService: NoteEntityService;
 	private driveFileEntityService: DriveFileEntityService;
 	private pageEntityService: PageEntityService;
@@ -119,12 +120,15 @@ export class UserEntityService {
 		//private customEmojiService: CustomEmojiService,
 		//private antennaService: AntennaService,
 	) {
+		this.#userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
+	}
+
+	onModuleInit() {
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.antennaService = this.moduleRef.get('AntennaService');
-		this.#userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	//#region Validators

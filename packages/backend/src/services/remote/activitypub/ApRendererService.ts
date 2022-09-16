@@ -20,7 +20,9 @@ import { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
 import { MfmService } from '@/services/MfmService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { LdSignatureService } from './LdSignatureService.js';
+import { ApMfmService } from './ApMfmService.js';
 import type { IActivity } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
@@ -52,6 +54,7 @@ export class ApRendererService {
 private driveFileEntityService: DriveFileEntityService,
 		private ldSignatureService: LdSignatureService,
 		private userKeypairStoreService: UserKeypairStoreService,
+		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
 	) {
 	}
@@ -359,7 +362,7 @@ private driveFileEntityService: DriveFileEntityService,
 	
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
 	
-		const content = this.mfmService.toHtml(Object.assign({}, note, {
+		const content = this.apMfmService.getNoteHtml(Object.assign({}, note, {
 			text: apText,
 		}));
 	
@@ -374,7 +377,7 @@ private driveFileEntityService: DriveFileEntityService,
 	
 		const asPoll = poll ? {
 			type: 'Question',
-			content: this.mfmService.toHtml(Object.assign({}, note, {
+			content: this.apMfmService.getNoteHtml(Object.assign({}, note, {
 				text: text,
 			})),
 			[poll.expiresAt && poll.expiresAt < new Date() ? 'closed' : 'endTime']: poll.expiresAt,

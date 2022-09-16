@@ -8,7 +8,7 @@ import type { SelectQueryBuilder } from 'typeorm';
 @Injectable()
 export class QueryService {
 	constructor(
-		@Inject('usersRepository')
+		@Inject('userProfilesRepository')
 		private userProfilesRepository: typeof UserProfiles,
 
 		@Inject('followingsRepository')

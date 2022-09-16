@@ -31,6 +31,7 @@ import type { UtilityService } from '@/services/UtilityService.js';
 import type { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
+import type { OnModuleInit } from '@nestjs/common';
 import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { ApResolverService , Resolver } from '../ApResolverService.js';
@@ -74,7 +75,7 @@ function addService(target: { [x: string]: any }, source: IApPropertyValue) {
 }
 
 @Injectable()
-export class ApPersonService {
+export class ApPersonService implements OnModuleInit {
 	private utilityService: UtilityService;
 	private userEntityService: UserEntityService;
 	private idService: IdService;
@@ -134,6 +135,9 @@ export class ApPersonService {
 		//private instanceChart: InstanceChart,
 		//private apLoggerService: ApLoggerService,
 	) {
+	}
+
+	onModuleInit() {
 		this.utilityService = this.moduleRef.get('UtilityService');
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.idService = this.moduleRef.get('IdService');

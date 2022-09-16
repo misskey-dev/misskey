@@ -8,13 +8,14 @@ import type { Notification } from '@/models/entities/Notification.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Packed } from '@/misc/schema.js';
+import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { UserGroupInvitationEntityService } from './UserGroupInvitationEntityService.js';
 
 @Injectable()
-export class NotificationEntityService {
+export class NotificationEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private noteEntityService: NoteEntityService;
 	private userGroupInvitationEntityService: UserGroupInvitationEntityService;
@@ -37,6 +38,9 @@ export class NotificationEntityService {
 		//private userGroupInvitationEntityService: UserGroupInvitationEntityService,
 		//private customEmojiService: CustomEmojiService,
 	) {
+	}
+
+	onModuleInit() {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.userGroupInvitationEntityService = this.moduleRef.get('UserGroupInvitationEntityService');
