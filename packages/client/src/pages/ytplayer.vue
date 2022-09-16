@@ -1,15 +1,13 @@
 <template>
-<MkStickyContainer>
-    <div class="poamfof">
-        <transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
-            <div v-if="player.url" class="player">
-	            <iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="'100%'" :heigth="player.height || 500" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
-            </div>
-        </transition>
-				<MkLoading v-if="fetching" />
-        <MkError v-else-if="!player.url" @retry="fetch()" />
-    </div>
-</MkStickyContainer>
+  <div class="poamfof fill">
+      <transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+          <div v-if="player.url" class="player">
+	          <iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+          </div>
+      </transition>
+			<MkLoading v-if="fetching" />
+      <MkError v-else-if="!player.url" @retry="fetch()" />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -62,11 +60,15 @@ console.log(await player.url);
 </script>
 
 <style lang="scss">
+.fill {
+	height: 100%;
+}
 .player {
 	position: relative;
 	width: 100%;
+	height: 100%;
 	>iframe {
-		height: 500px;
+		height: 100%;
 		left: 0;
 		position: absolute;
 		top: 0;
