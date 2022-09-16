@@ -14,7 +14,7 @@ export function createConnection() {
 	});
 }
 
-export const subsdcriber = createConnection();
-subsdcriber.subscribe(loadConfig().host);
+export const redisSubscriber = createConnection();
+redisSubscriber.subscribe(loadConfig().host);
 
 export const redisClient = createConnection();

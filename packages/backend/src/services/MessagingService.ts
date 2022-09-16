@@ -8,7 +8,7 @@ import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User, CacheableUser, IRemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { toArray } from '@/prelude/array.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { IdService } from './IdService.js';

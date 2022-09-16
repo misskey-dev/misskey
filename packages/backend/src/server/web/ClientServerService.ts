@@ -19,7 +19,7 @@ import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/services/MetaService.js';
-import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/queue/queue.module.js';
+import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/services/queue/QueueModule.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { PageEntityService } from '@/services/entities/PageEntityService.js';

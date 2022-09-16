@@ -5,8 +5,8 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './queue.module.js';
-import type { ThinUser } from './types.js';
+import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './queue/QueueModule.js';
+import type { ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
 
 @Injectable()

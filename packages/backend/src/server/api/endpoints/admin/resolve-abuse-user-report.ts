@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users , AbuseUserReports } from '@/models/index.js';
 import { InstanceActorService } from '@/services/InstanceActorService.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 
 export const meta = {

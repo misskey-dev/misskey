@@ -16,8 +16,6 @@ export class DriveFolderEntityService {
 
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 

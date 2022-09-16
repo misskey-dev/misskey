@@ -2,7 +2,7 @@ import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typ
 import { notificationTypes } from '@/types.js';
 import { id } from '../id.js';
 import { User } from './User.js';
-import { Note } from './note.js';
+import { Note } from './Note.js';
 import { FollowRequest } from './FollowRequest.js';
 import { UserGroupInvitation } from './UserGroupInvitation.js';
 import { AccessToken } from './AccessToken.js';

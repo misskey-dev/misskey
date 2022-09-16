@@ -3,6 +3,7 @@ import Redis from 'ioredis';
 import type { Users } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
+import { DI } from '@/di-symbols.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
@@ -14,7 +15,7 @@ export class UserCacheService implements OnApplicationShutdown {
 	public uriPersonCache: Cache<CacheableUser | null>;
 
 	constructor(
-		@Inject('redisSubscriber')
+		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
 
 		@Inject('usersRepository')

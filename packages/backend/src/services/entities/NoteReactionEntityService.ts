@@ -6,20 +6,30 @@ import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
-import { ReactionService } from '../ReactionService.js';
-import { UserEntityService } from './UserEntityService.js';
-import { NoteEntityService } from './NoteEntityService.js';
+import type { ReactionService } from '../ReactionService.js';
+import type { UserEntityService } from './UserEntityService.js';
+import type { NoteEntityService } from './NoteEntityService.js';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class NoteReactionEntityService {
+	private userEntityService: UserEntityService;
+	private noteEntityService: NoteEntityService;
+	private reactionService: ReactionService;
+	
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject('noteReactionsRepository')
 		private noteReactionsRepository: typeof NoteReactions,
 
-		private userEntityService: UserEntityService,
-		private noteEntityService: NoteEntityService,
-		private reactionService: ReactionService,
+		//private userEntityService: UserEntityService,
+		//private noteEntityService: NoteEntityService,
+		//private reactionService: ReactionService,
 	) {
+		this.userEntityService = this.moduleRef.get('UserEntityService');
+		this.noteEntityService = this.moduleRef.get('NoteEntityService');
+		this.reactionService = this.moduleRef.get('ReactionService');
 	}
 
 	public async pack(

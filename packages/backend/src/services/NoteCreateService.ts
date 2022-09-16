@@ -20,7 +20,6 @@ import { checkWordMute } from '@/misc/check-word-mute.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { getAntennas } from '@/misc/antenna-cache.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
 import { db } from '@/db/postgre.js';
@@ -37,7 +36,7 @@ import { CreateNotificationService } from '@/services/CreateNotificationService.
 import { WebhookService } from '@/services/WebhookService.js';
 import { HashtagService } from '@/services/HashtagService.js';
 import { AntennaService } from '@/services/AntennaService.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { NoteEntityService } from './entities/NoteEntityService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { NoteReadService } from './NoteReadService.js';
@@ -427,7 +426,7 @@ export class NoteCreateService {
 		});
 
 		// Antenna
-		for (const antenna of (await getAntennas())) {
+		for (const antenna of (await this.antennaService.getAntennas())) {
 			this.antennaService.checkHitAntenna(antenna, note, user).then(hit => {
 				if (hit) {
 					this.antennaService.addNoteToAntenna(antenna, note, user);

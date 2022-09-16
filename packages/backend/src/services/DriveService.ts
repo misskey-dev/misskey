@@ -19,7 +19,7 @@ import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { VideoProcessingService } from '@/services/VideoProcessingService.js';
 import { ImageProcessingService } from '@/services/ImageProcessingService.js';
 import type { IImage } from '@/services/ImageProcessingService.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import type { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { createTemp } from '@/misc/create-temp.js';
 import DriveChart from '@/services/chart/charts/drive.js';

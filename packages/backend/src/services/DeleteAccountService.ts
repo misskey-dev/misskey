@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users } from '@/models/index.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { UserSuspendService } from '@/services/UserSuspendService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 

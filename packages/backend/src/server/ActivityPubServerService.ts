@@ -9,7 +9,7 @@ import type { Emojis, NoteReactions , UserProfiles , UserNotePinings , Users } f
 import * as url from '@/prelude/url.js';
 import { Config } from '@/config.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import type { ILocalUser, User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/services/UserKeypairStoreService.js';
 import type { Following } from '@/models/entities/Following.js';

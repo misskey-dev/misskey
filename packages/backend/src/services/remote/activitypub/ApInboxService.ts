@@ -20,7 +20,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/services/UtilityService.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { MessagingService } from '@/services/MessagingService.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';

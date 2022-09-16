@@ -4,7 +4,7 @@ import type { FollowRequests , Followings , UserLists , UserListJoinings , Users
 import { IdService } from '@/services/IdService.js';
 import type { CacheableUser, User } from '@/models/entities/User.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
 import { UserEntityService } from './entities/UserEntityService.js';

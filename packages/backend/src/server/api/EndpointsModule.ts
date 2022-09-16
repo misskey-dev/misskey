@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { CoreModule } from '@/services/CoreModule.js';
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
@@ -315,6 +316,7 @@ import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-o
 
 @Module({
 	imports: [
+		CoreModule,
 	],
 	providers: [
 		{ provide: 'ep:admin/meta', useClass: ep___admin_meta.default },

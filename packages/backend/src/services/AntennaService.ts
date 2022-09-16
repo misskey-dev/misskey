@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserGroupJoinings, UserListJoinings , AntennaNotes, Mutings, Notes, Users , Blockings } from '@/models/index.js';
+import Redis from 'ioredis';
+import type { UserGroupJoinings, UserListJoinings , AntennaNotes, Mutings, Notes, Users , Blockings, Antennas } from '@/models/index.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
@@ -9,13 +10,19 @@ import { GlobalEventService } from '@/services/GlobalEventService.js';
 import * as Acct from '@/misc/acct.js';
 import { Cache } from '@/misc/cache.js';
 import type { Packed } from '@/misc/schema.js';
+import { DI } from '@/di-symbols.js';
 import { UtilityService } from './UtilityService.js';
 
 @Injectable()
-export class AntennaService {
+export class AntennaService implements OnApplicationShutdown {
+	#antennasFetched = false;
+	#antennas: Antenna[] = [];
 	#blockingCache: Cache<User['id'][]>;
 
 	constructor(
+		@Inject(DI.redisSubscriber)
+		private redisSubscriber: Redis.Redis,
+
 		@Inject('mutingsRepository')
 		private mutingsRepository: typeof Mutings,
 
@@ -28,6 +35,9 @@ export class AntennaService {
 		@Inject('antennaNotesRepository')
 		private antennaNotesRepository: typeof AntennaNotes,
 
+		@Inject('antennasRepository')
+		private antennasRepository: typeof Antennas,
+
 		@Inject('userGroupJoiningsRepository')
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 
@@ -39,6 +49,33 @@ export class AntennaService {
 		private globalEventServie: GlobalEventService,
 	) {
 		this.#blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
+
+		this.redisSubscriber.on('message', this.onRedisMessage);
+	}
+
+	public onApplicationShutdown(signal?: string | undefined) {
+		this.redisSubscriber.off('message', this.onRedisMessage);
+	}
+
+	private async onRedisMessage(_, data) {
+		const obj = JSON.parse(data);
+
+		if (obj.channel === 'internal') {
+			const { type, body } = obj.message;
+			switch (type) {
+				case 'antennaCreated':
+					this.#antennas.push(body);
+					break;
+				case 'antennaUpdated':
+					this.#antennas[this.#antennas.findIndex(a => a.id === body.id)] = body;
+					break;
+				case 'antennaDeleted':
+					this.#antennas = this.#antennas.filter(a => a.id !== body.id);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	public async addNoteToAntenna(antenna: Antenna, note: Note, noteUser: { id: User['id']; }): Promise<void> {
@@ -175,5 +212,14 @@ export class AntennaService {
 		// TODO: eval expression
 	
 		return true;
+	}
+
+	public async getAntennas() {
+		if (!this.#antennasFetched) {
+			this.#antennas = await this.antennasRepository.find();
+			this.#antennasFetched = true;
+		}
+	
+		return this.#antennas;
 	}
 }

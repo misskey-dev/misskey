@@ -5,7 +5,7 @@ import type { Relays, Users } from '@/models/index.js';
 import { IdService } from '@/services/IdService.js';
 import { Cache } from '@/misc/cache.js';
 import type { Relay } from '@/models/entities/Relay.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { CreateSystemUserService } from '@/services/CreateSystemUserService.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 

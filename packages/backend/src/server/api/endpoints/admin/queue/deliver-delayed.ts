@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DeliverQueue } from '@/queue/queue.module.js';
+import { DeliverQueue } from '@/services/queue/QueueModule.js';
 
 export const meta = {
 	tags: ['admin'],

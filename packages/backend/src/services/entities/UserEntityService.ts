@@ -1,22 +1,23 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import Ajv from 'ajv';
+import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Pages , AntennaNotes, Instances, MessagingMessages, UserSecurityKeys , Blockings, Mutings , Followings, FollowRequests, Users, DriveFiles, NoteUnreads, ChannelFollowings, Notifications, UserNotePinings, UserProfiles , AnnouncementReads, Announcements, UserGroupJoinings } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Promiseable } from '@/prelude/await-all.js';
 import { awaitAll } from '@/prelude/await-all.js';
-import { getAntennas } from '@/misc/antenna-cache.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import { CustomEmojiService } from '../CustomEmojiService.js';
-import { NoteEntityService } from './NoteEntityService.js';
-import { DriveFileEntityService } from './DriveFileEntityService.js';
-import { PageEntityService } from './PageEntityService.js';
+import type { AntennaService } from '../AntennaService.js';
+import type { CustomEmojiService } from '../CustomEmojiService.js';
+import type { NoteEntityService } from './NoteEntityService.js';
+import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import type { PageEntityService } from './PageEntityService.js';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
@@ -42,9 +43,16 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 
 @Injectable()
 export class UserEntityService {
+	private noteEntityService: NoteEntityService;
+	private driveFileEntityService: DriveFileEntityService;
+	private pageEntityService: PageEntityService;
+	private customEmojiService: CustomEmojiService;
+	private antennaService: AntennaService;
 	#userInstanceCache: Cache<Instance | null>;
 
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.config)
 		private config: Config,
 
@@ -105,14 +113,17 @@ export class UserEntityService {
 		@Inject('pagesRepository')
 		private pagesRepository: typeof Pages,
 
-		// 循環参照のため / for circular dependency
-		@Inject(forwardRef(() => NoteEntityService))
-		private noteEntityService: NoteEntityService,
-
-		private driveFileEntityService: DriveFileEntityService,
-		private pageEntityService: PageEntityService,
-		private customEmojiService: CustomEmojiService,
+		//private noteEntityService: NoteEntityService,
+		//private driveFileEntityService: DriveFileEntityService,
+		//private pageEntityService: PageEntityService,
+		//private customEmojiService: CustomEmojiService,
+		//private antennaService: AntennaService,
 	) {
+		this.noteEntityService = this.moduleRef.get('NoteEntityService');
+		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
+		this.pageEntityService = this.moduleRef.get('PageEntityService');
+		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
+		this.antennaService = this.moduleRef.get('AntennaService');
 		this.#userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
@@ -225,7 +236,7 @@ export class UserEntityService {
 	}
 
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
-		const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
+		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
 		const unread = myAntennas.length > 0 ? await this.antennaNotesRepository.findOneBy({
 			antennaId: In(myAntennas.map(x => x.id)),

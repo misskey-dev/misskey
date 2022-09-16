@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Users , Followings, FollowRequests , UserProfiles , Instances , Blockings } from '@/models/index.js';
 import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import PerUserFollowingChart from '@/services/chart/charts/per-user-following.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { IdService } from '@/services/IdService.js';

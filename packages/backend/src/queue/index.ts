@@ -1,7 +1,7 @@
 
 import { DI } from '@/di-symbols.js';
+import { QueueService } from '../services/QueueService.js';
 import { getJobInfo } from './get-job-info.js';
-import { QueueService } from './queue.service.js';
 import { SystemQueueProcessorsService } from './SystemQueueProcessorsService.js';
 import { ObjectStorageQueueProcessorsService } from './ObjectStorageQueueProcessorsService.js';
 import { DbQueueProcessorsService } from './DbQueueProcessorsService.js';

@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
+import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Notes , Polls, PollVotes , DriveFiles , Channels , Followings , Users , NoteReactions } from '@/models/index.js';
 import { Config } from '@/config.js';
@@ -10,14 +11,21 @@ import { awaitAll } from '@/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
-import { CustomEmojiService } from '../CustomEmojiService.js';
-import { ReactionService } from '../ReactionService.js';
-import { UserEntityService } from './UserEntityService.js';
-import { DriveFileEntityService } from './DriveFileEntityService.js';
+import type { CustomEmojiService } from '../CustomEmojiService.js';
+import type { ReactionService } from '../ReactionService.js';
+import type { UserEntityService } from './UserEntityService.js';
+import type { DriveFileEntityService } from './DriveFileEntityService.js';
 
 @Injectable()
 export class NoteEntityService {
+	private userEntityService: UserEntityService;
+	private driveFileEntityService: DriveFileEntityService;
+	private customEmojiService: CustomEmojiService;
+	private reactionService: ReactionService;
+	
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.db)
 		private db: DataSource,
 
@@ -45,14 +53,15 @@ export class NoteEntityService {
 		@Inject('driveFilesRepository')
 		private driveFilesRepository: typeof DriveFiles,
 
-		// 循環参照のため / for circular dependency
-		@Inject(forwardRef(() => UserEntityService))
-		private userEntityService: UserEntityService,
-
-		private driveFileEntityService: DriveFileEntityService,
-		private customEmojiService: CustomEmojiService,
-		private reactionService: ReactionService,
+		//private userEntityService: UserEntityService,
+		//private driveFileEntityService: DriveFileEntityService,
+		//private customEmojiService: CustomEmojiService,
+		//private reactionService: ReactionService,
 	) {
+		this.userEntityService = this.moduleRef.get('UserEntityService');
+		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
+		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
+		this.reactionService = this.moduleRef.get('ReactionService');
 	}
 	
 	async #hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {

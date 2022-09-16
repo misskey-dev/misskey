@@ -5,7 +5,7 @@ import type { IRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/services/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
-import { QueueService } from '@/queue/queue.service.js';
+import { QueueService } from '@/services/QueueService.js';
 import { PollService } from '@/services/PollService.js';
 import { ApRendererService } from '@/services/remote/activitypub/ApRendererService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';

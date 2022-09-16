@@ -9,7 +9,6 @@ import type { Packed } from '@/misc/schema.js';
 import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/services/IdService.js';
 import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { getAntennas } from '@/misc/antenna-cache.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { NotificationService } from './NotificationService.js';
 import { AntennaService } from './AntennaService.js';
@@ -117,7 +116,7 @@ export class NoteReadService {
 			select: ['followeeId'],
 		})).map(x => x.followeeId));
 	
-		const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
+		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 		const readMentions: (Note | Packed<'Note'>)[] = [];
 		const readSpecifiedNotes: (Note | Packed<'Note'>)[] = [];
 		const readChannelNotes: (Note | Packed<'Note'>)[] = [];

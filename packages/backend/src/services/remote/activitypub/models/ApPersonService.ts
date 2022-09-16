@@ -1,42 +1,43 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
+import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Followings , Instances, UserProfiles, UserPublickeys, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableUser, IRemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
-import { UserCacheService } from '@/services/UserCacheService.js';
+import type { UserCacheService } from '@/services/UserCacheService.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type Logger from '@/logger.js';
 import type { Note } from '@/models/entities/Note.js';
-import { IdService } from '@/services/IdService.js';
-import { MfmService } from '@/services/MfmService.js';
+import type { IdService } from '@/services/IdService.js';
+import type { MfmService } from '@/services/MfmService.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { toArray } from '@/prelude/array.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
-import { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
+import type { GlobalEventService } from '@/services/GlobalEventService.js';
+import type { FederatedInstanceService } from '@/services/FederatedInstanceService.js';
+import type { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
 import { UserPublickey } from '@/models/entities/UserPublickey.js';
-import UsersChart from '@/services/chart/charts/users.js';
-import InstanceChart from '@/services/chart/charts/instance.js';
-import { HashtagService } from '@/services/HashtagService.js';
+import type UsersChart from '@/services/chart/charts/users.js';
+import type InstanceChart from '@/services/chart/charts/instance.js';
+import type { HashtagService } from '@/services/HashtagService.js';
 import { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { StatusError } from '@/misc/status-error.js';
-import { UtilityService } from '@/services/UtilityService.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import type { UtilityService } from '@/services/UtilityService.js';
+import type { UserEntityService } from '@/services/entities/UserEntityService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
-import { ApMfmService } from '../ApMfmService.js';
-import { ApResolverService } from '../ApResolverService.js';
-import { ApLoggerService } from '../ApLoggerService.js';
 import { extractApHashtags } from './tag.js';
+import type { ApNoteService } from './ApNoteService.js';
+import type { ApMfmService } from '../ApMfmService.js';
+import type { ApResolverService , Resolver } from '../ApResolverService.js';
+import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { ApNoteService } from './ApNoteService.js';
-import { ApImageService } from './ApImageService.js';
-import type { Resolver } from '../ApResolverService.js';
+import type { ApImageService } from './ApImageService.js';
+
 import type { IActor, IObject , IApPropertyValue } from '../type.js';
 
 const nameLength = 128;
@@ -74,9 +75,27 @@ function addService(target: { [x: string]: any }, source: IApPropertyValue) {
 
 @Injectable()
 export class ApPersonService {
+	private utilityService: UtilityService;
+	private userEntityService: UserEntityService;
+	private idService: IdService;
+	private globalEventService: GlobalEventService;
+	private federatedInstanceService: FederatedInstanceService;
+	private fetchInstanceMetadataService: FetchInstanceMetadataService;
+	private userCacheService: UserCacheService;
+	private apResolverService: ApResolverService;
+	private apNoteService: ApNoteService;
+	private apImageService: ApImageService;
+	private apMfmService: ApMfmService;
+	private mfmService: MfmService;
+	private hashtagService: HashtagService;
+	private usersChart: UsersChart;
+	private instanceChart: InstanceChart;
+	private apLoggerService: ApLoggerService;
 	#logger: Logger;
 
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.config)
 		private config: Config,
 
@@ -98,27 +117,39 @@ export class ApPersonService {
 		@Inject('followingsRepository')
 		private followingsRepository: typeof Followings,
 
-		private utilityService: UtilityService,
-		private userEntityService: UserEntityService,
-		private idService: IdService,
-		private globalEventService: GlobalEventService,
-		private federatedInstanceService: FederatedInstanceService,
-		private fetchInstanceMetadataService: FetchInstanceMetadataService,
-		private userCacheService: UserCacheService,
-		private apResolverService: ApResolverService,
-
-		// 循環参照のため / for circular dependency
-		@Inject(forwardRef(() => ApNoteService))
-		private apNoteService: ApNoteService,
-
-		private apImageService: ApImageService,
-		private apMfmService: ApMfmService,
-		private mfmService: MfmService,
-		private hashtagService: HashtagService,
-		private usersChart: UsersChart,
-		private instanceChart: InstanceChart,
-		private apLoggerService: ApLoggerService,
+		//private utilityService: UtilityService,
+		//private userEntityService: UserEntityService,
+		//private idService: IdService,
+		//private globalEventService: GlobalEventService,
+		//private federatedInstanceService: FederatedInstanceService,
+		//private fetchInstanceMetadataService: FetchInstanceMetadataService,
+		//private userCacheService: UserCacheService,
+		//private apResolverService: ApResolverService,
+		//private apNoteService: ApNoteService,
+		//private apImageService: ApImageService,
+		//private apMfmService: ApMfmService,
+		//private mfmService: MfmService,
+		//private hashtagService: HashtagService,
+		//private usersChart: UsersChart,
+		//private instanceChart: InstanceChart,
+		//private apLoggerService: ApLoggerService,
 	) {
+		this.utilityService = this.moduleRef.get('UtilityService');
+		this.userEntityService = this.moduleRef.get('UserEntityService');
+		this.idService = this.moduleRef.get('IdService');
+		this.globalEventService = this.moduleRef.get('GlobalEventService');
+		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
+		this.fetchInstanceMetadataService = this.moduleRef.get('FetchInstanceMetadataService');
+		this.userCacheService = this.moduleRef.get('UserCacheService');
+		this.apResolverService = this.moduleRef.get('ApResolverService');
+		this.apNoteService = this.moduleRef.get('ApNoteService');
+		this.apImageService = this.moduleRef.get('ApImageService');
+		this.apMfmService = this.moduleRef.get('ApMfmService');
+		this.mfmService = this.moduleRef.get('MfmService');
+		this.hashtagService = this.moduleRef.get('HashtagService');
+		this.usersChart = this.moduleRef.get('UsersChart');
+		this.instanceChart = this.moduleRef.get('InstanceChart');
+		this.apLoggerService = this.moduleRef.get('ApLoggerService');
 		this.#logger = this.apLoggerService.logger;
 	}
 

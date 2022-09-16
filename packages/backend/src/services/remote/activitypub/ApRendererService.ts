@@ -159,8 +159,8 @@ private driveFileEntityService: DriveFileEntityService,
 			updated: emoji.updatedAt != null ? emoji.updatedAt.toISOString() : new Date().toISOString,
 			icon: {
 				type: 'Image',
-				mediaType: emoji.type || 'image/png',
-				url: emoji.publicUrl || emoji.originalUrl, // || emoji.originalUrl してるのは後方互換性のため
+				mediaType: emoji.type ?? 'image/png',
+				url: emoji.publicUrl ?? emoji.originalUrl, // || emoji.originalUrl してるのは後方互換性のため
 			},
 		};
 	}
@@ -339,7 +339,7 @@ private driveFileEntityService: DriveFileEntityService,
 			id: In(note.mentions),
 		}) : [];
 	
-		const hashtagTags = (note.tags || []).map(tag => this.renderHashtag(tag));
+		const hashtagTags = (note.tags ?? []).map(tag => this.renderHashtag(tag));
 		const mentionTags = mentionedUsers.map(u => this.renderMention(u));
 	
 		const files = await getPromisedFiles(note.fileIds);
@@ -449,7 +449,7 @@ private driveFileEntityService: DriveFileEntityService,
 		const emojis = await this.#getEmojis(user.emojis);
 		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
 
-		const hashtagTags = (user.tags || []).map(tag => this.renderHashtag(tag));
+		const hashtagTags = (user.tags ?? []).map(tag => this.renderHashtag(tag));
 
 		const tag = [
 			...apemojis,
@@ -498,7 +498,7 @@ private driveFileEntityService: DriveFileEntityService,
 			type: 'Question',
 			id: `${this.config.url}/questions/${note.id}`,
 			actor: `${this.config.url}/users/${user.id}`,
-			content: note.text || '',
+			content: note.text ?? '',
 			[poll.multiple ? 'anyOf' : 'oneOf']: poll.choices.map((text, i) => ({
 				name: text,
 				_misskey_votes: poll.votes[i],
