@@ -233,6 +233,7 @@ import { QueueService } from './QueueService.js';
 		QueueService,
 	],
 	exports: [
+		QueueModule,
 		AccountUpdateService,
 		AiService,
 		AntennaService,
