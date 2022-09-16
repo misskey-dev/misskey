@@ -10,7 +10,7 @@ import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import { HttpRequestService } from '@/services/HttpRequestService.js';
-import { createTemp } from '@/misc/create-temp';
+import { createTemp } from '@/misc/create-temp.js';
 import { StatusError } from '@/misc/status-error.js';
 
 const pipeline = util.promisify(stream.pipeline);
