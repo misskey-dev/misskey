@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { removePinned } from '@/services/i/pin.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { UserEntityService } from '@/services/entities/UserEntityService.js';

@@ -7,7 +7,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
 import { NoteReadService } from '@/services/NoteReadService.js';
 import { NotificationEntityService } from '@/services/entities/NotificationEntityService.js';
-import { readNotification } from '../../common/read-notification.js';
+import { NotificationService } from '@/services/NotificationService.js';
 
 export const meta = {
 	tags: ['account', 'notifications'],
@@ -68,6 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userProfilesRepository: typeof UserProfiles,
 
 		private notificationEntityService: NotificationEntityService,
+		private notificationService: NotificationService,
 		private queryService: QueryService,
 		private noteReadService: NoteReadService,
 	) {
@@ -153,7 +154,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Mark all as read
 			if (notifications.length > 0 && ps.markAsRead) {
-				readNotification(me.id, notifications.map(x => x.id));
+				this.notificationService.readNotification(me.id, notifications.map(x => x.id));
 			}
 
 			const notes = notifications.filter(notification => ['mention', 'reply', 'quote'].includes(notification.type)).map(notification => notification.note!);
