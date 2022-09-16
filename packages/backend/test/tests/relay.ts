@@ -57,6 +57,7 @@ describe('RelayService', () => {
 		expect(result.inbox).toBe('https://example.com');
 		expect(result.status).toBe('requesting');
 		expect(queueService.deliver).toHaveBeenCalled();
+		expect(queueService.deliver.mock.lastCall![1].type).toBe('Follow');
 		expect(queueService.deliver.mock.lastCall![2]).toBe('https://example.com');
 		//expect(queueService.deliver.mock.lastCall![0].username).toBe('relay.actor');
 	});
@@ -73,6 +74,8 @@ describe('RelayService', () => {
 		await relayService.removeRelay('https://example.com');
 
 		expect(queueService.deliver).toHaveBeenCalled();
+		expect(queueService.deliver.mock.lastCall![1].type).toBe('Undo');
+		expect(queueService.deliver.mock.lastCall![1].object.type).toBe('Follow');
 		expect(queueService.deliver.mock.lastCall![2]).toBe('https://example.com');
 		//expect(queueService.deliver.mock.lastCall![0].username).toBe('relay.actor');
 
