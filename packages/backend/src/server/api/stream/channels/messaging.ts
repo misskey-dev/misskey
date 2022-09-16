@@ -2,8 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroupJoinings , Users , MessagingMessages } from '@/models/index.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
+import { MessagingService } from '@/services/MessagingService.js';
+import { UserEntityService } from '@/services/entities/UserEntityService.js';
 import Channel from '../channel.js';
-import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message.js';
 import type { StreamMessages } from '../types.js';
 
 class MessagingChannel extends Channel {
@@ -22,6 +23,8 @@ class MessagingChannel extends Channel {
 		private usersRepository: typeof Users,
 		private userGroupJoiningsRepository: typeof UserGroupJoinings,
 		private messagingMessagesRepository: typeof MessagingMessages,
+		private userEntityService: UserEntityService,
+		private messagingService: MessagingService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -76,16 +79,16 @@ class MessagingChannel extends Channel {
 		switch (type) {
 			case 'read':
 				if (this.otherpartyId) {
-					readUserMessagingMessage(this.user!.id, this.otherpartyId, [body.id]);
+					this.messagingService.readUserMessagingMessage(this.user!.id, this.otherpartyId, [body.id]);
 
 					// リモートユーザーからのメッセージだったら既読配信
 					if (this.userEntityService.isLocalUser(this.user!) && this.userEntityService.isRemoteUser(this.otherparty!)) {
 						this.messagingMessagesRepository.findOneBy({ id: body.id }).then(message => {
-							if (message) deliverReadActivity(this.user as ILocalUser, this.otherparty as IRemoteUser, message);
+							if (message) this.messagingService.deliverReadActivity(this.user as ILocalUser, this.otherparty as IRemoteUser, message);
 						});
 					}
 				} else if (this.groupId) {
-					readGroupMessagingMessage(this.user!.id, this.groupId, [body.id]);
+					this.messagingService.readGroupMessagingMessage(this.user!.id, this.groupId, [body.id]);
 				}
 				break;
 		}
@@ -128,6 +131,9 @@ export class MessagingChannelService {
 
 		@Inject('messagingMessagesRepository')
 		private messagingMessagesRepository: typeof MessagingMessages,
+
+		private userEntityService: UserEntityService,
+		private messagingService: MessagingService,
 	) {
 	}
 
@@ -136,6 +142,8 @@ export class MessagingChannelService {
 			this.usersRepository,
 			this.userGroupJoiningsRepository,
 			this.messagingMessagesRepository,
+			this.userEntityService,
+			this.messagingService,
 			id,
 			connection,
 		);
