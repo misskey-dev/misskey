@@ -38,7 +38,6 @@ import { WebhookService } from '@/services/WebhookService.js';
 import { HashtagService } from '@/services/HashtagService.js';
 import { AntennaService } from '@/services/AntennaService.js';
 import { QueueService } from '@/queue/queue.service.js';
-import es from '../db/elasticsearch.js';
 import { NoteEntityService } from './entities/NoteEntityService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { NoteReadService } from './NoteReadService.js';
@@ -516,9 +515,6 @@ export class NoteCreateService {
 
 			// If has in reply to note
 			if (data.reply) {
-				// Fetch watchers
-				nmRelatedPromises.push(this.#notifyToWatchersOfReplyee(data.reply, user, nm));
-
 				// 通知
 				if (data.reply.userHost === null) {
 					const threadMuted = await NoteThreadMutings.findOneBy({
@@ -548,9 +544,6 @@ export class NoteCreateService {
 				if (data.renote.userHost === null) {
 					nm.push(data.renote.userId, type);
 				}
-
-				// Fetch watchers
-				nmRelatedPromises.push(this.#notifyToWatchersOfRenotee(data.renote, user, nm, type));
 
 				// Publish event
 				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
@@ -684,7 +677,7 @@ export class NoteCreateService {
 
 	#index(note: Note) {
 		if (note.text == null || this.config.elasticsearch == null) return;
-
+		/*
 	es!.index({
 		index: this.config.elasticsearch.index || 'misskey_note',
 		id: note.id.toString(),
@@ -693,29 +686,7 @@ export class NoteCreateService {
 			userId: note.userId,
 			userHost: note.userHost,
 		},
-	});
-	}
-
-	async #notifyToWatchersOfRenotee(renote: Note, user: { id: User['id']; }, nm: NotificationManager, type: NotificationType) {
-		const watchers = await NoteWatchings.findBy({
-			noteId: renote.id,
-			userId: Not(user.id),
-		});
-
-		for (const watcher of watchers) {
-			nm.push(watcher.userId, type);
-		}
-	}
-
-	async #notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; }, nm: NotificationManager) {
-		const watchers = await NoteWatchings.findBy({
-			noteId: reply.id,
-			userId: Not(user.id),
-		});
-
-		for (const watcher of watchers) {
-			nm.push(watcher.userId, 'reply');
-		}
+	});*/
 	}
 
 	#incNotesCountOfUser(user: { id: User['id']; }) {
