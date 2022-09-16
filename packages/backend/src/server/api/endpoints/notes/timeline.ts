@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Notes , Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/services/QueryService.js';
-import ActiveUsersChart from '@/services/chart/charts/active-users';
+import ActiveUsersChart from '@/services/chart/charts/active-users.js';
 import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
 import { MetaService } from '@/services/MetaService.js';
 
