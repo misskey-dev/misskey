@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { publishDriveStream } from '@/services/stream.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFolders } from '@/models/index.js';
 import { DriveFolderEntityService } from '@/services/entities/DriveFolderEntityService.js';
+import { GlobalEventService } from '@/services/GlobalEventService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -57,6 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFoldersRepository: typeof DriveFolders,
 
 		private driveFolderEntityService: DriveFolderEntityService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch folder
@@ -122,7 +123,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const folderObj = await this.driveFolderEntityService.pack(folder);
 
 			// Publish folderUpdated event
-			publishDriveStream(me.id, 'folderUpdated', folderObj);
+			this.globalEventService.publishDriveStream(me.id, 'folderUpdated', folderObj);
 
 			return folderObj;
 		});
