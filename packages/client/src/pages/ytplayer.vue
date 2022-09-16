@@ -19,8 +19,6 @@ const props = defineProps<{
     url: string;
 }>();
 
-console.log(props.url);
-
 const requestUrl = new URL(props.url);
 
 let fetching = $ref(true);
@@ -53,7 +51,6 @@ definePageMetadata(computed(() => props.url ? {
 	icon: 'fa-brands fa-youtube'
 } : null));
 
-console.log(await player.url);
 </script>
 
 <style lang="scss">
