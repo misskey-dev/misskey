@@ -117,6 +117,7 @@ export type DriveFile = {
 	size: number;
 	md5: string;
 	blurhash: string;
+	comment: string | null;
 	properties: Record<string, any>;
 };
 
