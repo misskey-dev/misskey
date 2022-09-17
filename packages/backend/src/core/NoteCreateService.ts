@@ -6,7 +6,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import { Note } from '@/models/entities/Note.js';
-import { NotesRepository, UsersRepository, Mutings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
+import { ChannelFollowingsRepository, ChannelsRepository, InstancesRepository, MutedNotesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { App } from '@/models/entities/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -54,7 +54,12 @@ class NotificationManager {
 		reason: NotificationType;
 	}[];
 
-	constructor(private createNotificationService: CreateNotificationService, notifier: { id: User['id']; }, note: Note) {
+	constructor(
+		private mutingsRepository: MutingsRepository,
+		private createNotificationService: CreateNotificationService,
+		notifier: { id: User['id']; },
+		note: Note,
+	) {
 		this.notifier = notifier;
 		this.note = note;
 		this.queue = [];
@@ -82,7 +87,7 @@ class NotificationManager {
 	public async deliver() {
 		for (const x of this.queue) {
 			// ミュート情報を取得
-			const mentioneeMutes = await Mutings.findBy({
+			const mentioneeMutes = await this.mutingsRepository.findBy({
 				muterId: x.target,
 			});
 
@@ -142,6 +147,27 @@ export class NoteCreateService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.mutingsRepository)
+		private mutingsRepository: MutingsRepository,
+
+		@Inject(DI.instancesRepository)
+		private instancesRepository: InstancesRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.mutedNotesRepository)
+		private mutedNotesRepository: MutedNotesRepository,
+
+		@Inject(DI.channelsRepository)
+		private channelsRepository: ChannelsRepository,
+
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingsRepository: ChannelFollowingsRepository,
+
+		@Inject(DI.noteThreadMutingsRepository)
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
+
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
@@ -174,7 +200,7 @@ export class NoteCreateService {
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
 			if (data.reply.channelId) {
-				data.channel = await Channels.findOneBy({ id: data.reply.channelId });
+				data.channel = await this.channelsRepository.findOneBy({ id: data.reply.channelId });
 			} else {
 				data.channel = null;
 			}
@@ -183,7 +209,7 @@ export class NoteCreateService {
 		// チャンネル内にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && (data.channel == null) && data.reply.channelId) {
-			data.channel = await Channels.findOneBy({ id: data.reply.channelId });
+			data.channel = await this.channelsRepository.findOneBy({ id: data.reply.channelId });
 		}
 
 		if (data.createdAt == null) data.createdAt = new Date();
@@ -326,7 +352,7 @@ export class NoteCreateService {
 		// Append mentions data
 		if (mentionedUsers.length > 0) {
 			insert.mentions = mentionedUsers.map(u => u.id);
-			const profiles = await UserProfiles.findBy({ userId: In(insert.mentions) });
+			const profiles = await this.userProfilesRepository.findBy({ userId: In(insert.mentions) });
 			insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u)).map(u => {
 				const profile = profiles.find(p => p.userId === u.id);
 				const url = profile != null ? profile.url : null;
@@ -392,7 +418,7 @@ export class NoteCreateService {
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
 			this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
-				Instances.increment({ id: i.id }, 'notesCount', 1);
+				this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
 				this.instanceChart.updateNote(i.host, note, true);
 			});
 		}
@@ -406,7 +432,7 @@ export class NoteCreateService {
 		this.#incNotesCountOfUser(user);
 
 		// Word mute
-		mutedWordsCache.fetch(null, () => UserProfiles.find({
+		mutedWordsCache.fetch(null, () => this.userProfilesRepository.find({
 			where: {
 				enableWordMute: true,
 			},
@@ -415,7 +441,7 @@ export class NoteCreateService {
 			for (const u of us) {
 				checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 					if (shouldMute) {
-						MutedNotes.insert({
+						this.mutedNotesRepository.insert({
 							id: this.idService.genId(),
 							userId: u.userId,
 							noteId: note.id,
@@ -437,7 +463,7 @@ export class NoteCreateService {
 
 		// Channel
 		if (note.channelId) {
-			ChannelFollowings.findBy({ followeeId: note.channelId }).then(followings => {
+			this.channelFollowingsRepository.findBy({ followeeId: note.channelId }).then(followings => {
 				for (const following of followings) {
 					this.noteReadService.insertNoteUnread(following.followerId, note, {
 						isSpecified: false,
@@ -508,7 +534,7 @@ export class NoteCreateService {
 				}
 			});
 
-			const nm = new NotificationManager(this.createNotificationService, user, note);
+			const nm = new NotificationManager(this.mutingsRepository, this.createNotificationService, user, note);
 			const nmRelatedPromises = [];
 
 			await this.#createMentionedEvents(mentionedUsers, note, nm);
@@ -517,7 +543,7 @@ export class NoteCreateService {
 			if (data.reply) {
 				// 通知
 				if (data.reply.userHost === null) {
-					const threadMuted = await NoteThreadMutings.findOneBy({
+					const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
 						userId: data.reply.userId,
 						threadId: data.reply.threadId ?? data.reply.id,
 					});
@@ -601,8 +627,8 @@ export class NoteCreateService {
 		}
 
 		if (data.channel) {
-			Channels.increment({ id: data.channel.id }, 'notesCount', 1);
-			Channels.update(data.channel.id, {
+			this.channelsRepository.increment({ id: data.channel.id }, 'notesCount', 1);
+			this.channelsRepository.update(data.channel.id, {
 				lastNotedAt: new Date(),
 			});
 
@@ -613,7 +639,7 @@ export class NoteCreateService {
 				// この処理が行われるのはノート作成後なので、ノートが一つしかなかったら最初の投稿だと判断できる
 				// TODO: とはいえノートを削除して何回も投稿すればその分だけインクリメントされる雑さもあるのでどうにかしたい
 				if (count === 1) {
-					Channels.increment({ id: data.channel!.id }, 'usersCount', 1);
+					this.channelsRepository.increment({ id: data.channel!.id }, 'usersCount', 1);
 				}
 			});
 		}
@@ -634,7 +660,7 @@ export class NoteCreateService {
 
 	async #createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
-			const threadMuted = await NoteThreadMutings.findOneBy({
+			const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
 				userId: u.id,
 				threadId: note.threadId ?? note.id,
 			});

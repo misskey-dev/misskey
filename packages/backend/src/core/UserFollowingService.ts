@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users, Followings, FollowRequests, UserProfiles, Instances, Blockings } from '@/models/index.js';
 import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -165,12 +164,12 @@ export class UserFollowingService {
 			followeeHost: followee.host,
 			followeeInbox: this.userEntityService.isRemoteUser(followee) ? followee.inbox : null,
 			followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : null,
-		}).catch(e => {
-			if (isDuplicateKeyValueError(e) && this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+		}).catch(err => {
+			if (isDuplicateKeyValueError(err) && this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 				logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
 				alreadyFollowed = true;
 			} else {
-				throw e;
+				throw err;
 			}
 		});
 	

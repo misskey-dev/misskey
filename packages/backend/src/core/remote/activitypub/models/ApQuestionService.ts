@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository } from '@/models/index.js';
+import { NotesRepository, PollsRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { IPoll } from '@/models/entities/Poll.js';
 import type Logger from '@/logger.js';

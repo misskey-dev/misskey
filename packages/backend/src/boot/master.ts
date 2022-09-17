@@ -63,7 +63,7 @@ export async function masterMain() {
 		await showMachineInfo(bootLogger);
 		showNodejsVersion();
 		config = loadConfigBoot();
-		await connectDb();
+		//await connectDb();
 	} catch (e) {
 		bootLogger.error('Fatal error occurred during initialization', null, true);
 		process.exit(1);
@@ -132,6 +132,7 @@ function loadConfigBoot(): Config {
 	return config;
 }
 
+/*
 async function connectDb(): Promise<void> {
 	const dbLogger = bootLogger.createSubLogger('db');
 
@@ -147,6 +148,7 @@ async function connectDb(): Promise<void> {
 		process.exit(1);
 	}
 }
+*/
 
 async function spawnWorkers(limit = 1) {
 	const workers = Math.min(limit, os.cpus().length);

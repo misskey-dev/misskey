@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { UsersRepository, Notes, UserNotePinings } from '@/models/index.js';
+import { UsersRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -42,7 +42,7 @@ export class NotePiningService {
 	 */
 	public async addPinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch pinee
-		const note = await Notes.findOneBy({
+		const note = await this.notesRepository.findOneBy({
 			id: noteId,
 			userId: user.id,
 		});
@@ -81,7 +81,7 @@ export class NotePiningService {
 	 */
 	public async removePinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch unpinee
-		const note = await Notes.findOneBy({
+		const note = await this.notesRepository.findOneBy({
 			id: noteId,
 			userId: user.id,
 		});
@@ -90,7 +90,7 @@ export class NotePiningService {
 			throw new IdentifiableError('b302d4cf-c050-400a-bbb3-be208681f40c', 'No such note.');
 		}
 
-		UserNotePinings.delete({
+		this.userNotePiningsRepository.delete({
 			userId: user.id,
 			noteId: note.id,
 		});

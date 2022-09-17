@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
-import { DriveFiles } from '@/models/index.js';
+import { DriveFilesRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -53,10 +54,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
 		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const file = await DriveFiles.findOneBy({ id: ps.fileId });
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 
 			if (file == null) throw new ApiError(meta.errors.noSuchFile);
 			//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);

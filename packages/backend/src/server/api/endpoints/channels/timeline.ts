@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NotesRepository, Channels } from '@/models/index.js';
+import { ChannelsRepository, NotesRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -51,12 +51,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.channelsRepository)
+		private channelsRepository: ChannelsRepository,
+
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const channel = await Channels.findOneBy({
+			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
 			});
 

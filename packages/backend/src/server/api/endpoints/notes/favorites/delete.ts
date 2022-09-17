@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NoteFavorites } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { DI } from '@/di-symbols.js';
+import { NoteFavoritesRepository } from '@/models/index.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Delete favorite
-			await NoteFavorites.delete(exist.id);
+			await this.noteFavoritesRepository.delete(exist.id);
 		});
 	}
 }

@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AbuseUserReports, Followings, FollowRequests, MessagingMessages, Notes, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';

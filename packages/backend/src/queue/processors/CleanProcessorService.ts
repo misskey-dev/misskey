@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UserIpsRepository } from '@/models/index.js';
+import { UserIpsRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';

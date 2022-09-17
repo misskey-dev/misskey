@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, Notifications } from '@/models/index.js';
+import { UsersRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, NotificationsRepository } from '@/models/index.js';
 import { notificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -67,6 +67,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		@Inject(DI.notificationsRepository)
+		private notificationsRepository: NotificationsRepository,
+
 		private notificationEntityService: NotificationEntityService,
 		private notificationService: NotificationService,
 		private queryService: QueryService,
@@ -97,7 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.select('users.id')
 				.where('users.isSuspended = TRUE');
 
-			const query = this.queryService.makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.notificationsRepository.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
 				.andWhere('notification.notifieeId = :meId', { meId: me.id })
 				.leftJoinAndSelect('notification.notifier', 'notifier')
 				.leftJoinAndSelect('notification.note', 'note')

@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, IsNull } from 'typeorm';
-import { Emojis } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
@@ -10,6 +9,7 @@ import type { Emoji } from '@/models/entities/Emoji.js';
 import { Cache } from '@/misc/cache.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Note } from '@/models/entities/Note.js';
+import { EmojisRepository } from '@/models/index.js';
 import { UtilityService } from './UtilityService.js';
 import { ReactionService } from './ReactionService.js';
 
@@ -60,7 +60,7 @@ export class CustomEmojiService {
 			originalUrl: data.driveFile.url,
 			publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
 			type: data.driveFile.webpublicType ?? data.driveFile.type,
-		}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		await this.db.queryResultCache!.remove(['meta_emojis']);
 
@@ -101,7 +101,7 @@ export class CustomEmojiService {
 		const { name, host } = this.#parseEmojiStr(emojiName, noteUserHost);
 		if (name == null) return null;
 
-		const queryOrNull = async () => (await Emojis.findOneBy({
+		const queryOrNull = async () => (await this.emojisRepository.findOneBy({
 			name,
 			host: host ?? IsNull(),
 		})) ?? null;
@@ -164,7 +164,7 @@ export class CustomEmojiService {
 				host: host ?? IsNull(),
 			});
 		}
-		const _emojis = emojisQuery.length > 0 ? await Emojis.find({
+		const _emojis = emojisQuery.length > 0 ? await this.emojisRepository.find({
 			where: emojisQuery,
 			select: ['name', 'host', 'originalUrl', 'publicUrl'],
 		}) : [];

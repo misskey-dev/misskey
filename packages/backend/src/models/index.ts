@@ -129,7 +129,7 @@ export {
 	Channel,
 };
 
-export type AbuseUserReportsReposiory = Repository<AbuseUserReport>;
+export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
 export type AccessTokensRepository = Repository<AccessToken>;
 export type AdsRepository = Repository<Ad>;
 export type AnnouncementsRepository = Repository<Announcement>;

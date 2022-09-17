@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/User.js';
-import type { UserKeypairsRepository } from '@/models/index.js';
+import { UserKeypairsRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { DI } from '@/di-symbols.js';

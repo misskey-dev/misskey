@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { DriveFilesRepository, Users } from '@/models/index.js';
+import { DriveFilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -65,10 +65,10 @@ export class ImportMutingProcessorService {
 				const acct = line.split(',')[0].trim();
 				const { username, host } = Acct.parse(acct);
 
-				let target = this.utilityService.isSelfHost(host!) ? await Users.findOneBy({
+				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
-				}) : await Users.findOneBy({
+				}) : await this.usersRepository.findOneBy({
 					host: this.utilityService.toPuny(host!),
 					usernameLower: username.toLowerCase(),
 				});

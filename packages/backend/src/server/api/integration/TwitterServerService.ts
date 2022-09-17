@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import autwh from 'autwh';
 import { Config } from '@/config.js';
-import { UserProfilesRepository, Users } from '@/models/index.js';
+import { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -163,7 +163,7 @@ export class TwitterServerService {
 					return;
 				}
 
-				this.signinService.signin(ctx, await Users.findOneBy({ id: link.userId }) as ILocalUser, true);
+				this.signinService.signin(ctx, await this.usersRepository.findOneBy({ id: link.userId }) as ILocalUser, true);
 			} else {
 				const verifier = ctx.query.oauth_verifier;
 
@@ -215,7 +215,7 @@ export class TwitterServerService {
 	}
 
 	#getUserToken(ctx: Koa.BaseContext): string | null {
-		return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
+		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
 	#compareOrigin(ctx: Koa.BaseContext): boolean {

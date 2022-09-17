@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/index.js';
-import { NoteFavorites } from '@/models/index.js';
+import { NotesRepository, NoteThreadMutingsRepository, NoteFavoritesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -46,12 +45,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
+
+		@Inject(DI.noteFavoritesRepository)
+		private noteFavoritesRepository: NoteFavoritesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await this.notesRepository.findOneByOrFail({ id: ps.noteId });
 
 			const [favorite, threadMuting] = await Promise.all([
-				NoteFavorites.count({
+				this.noteFavoritesRepository.count({
 					where: {
 						userId: me.id,
 						noteId: note.id,

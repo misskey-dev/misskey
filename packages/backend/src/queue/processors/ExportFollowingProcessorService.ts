@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, MoreThan, Not } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import { Users, FollowingsRepository, MutingsRepository } from '@/models/index.js';
+import { FollowingsRepository, MutingsRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -81,7 +81,7 @@ export class ExportFollowingProcessorService {
 				cursor = followings[followings.length - 1].id;
 
 				for (const following of followings) {
-					const u = await Users.findOneBy({ id: following.followeeId });
+					const u = await this.usersRepository.findOneBy({ id: following.followeeId });
 					if (u == null) {
 						continue;
 					}

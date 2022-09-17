@@ -1,6 +1,6 @@
 import { IsNull, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository, Ads, Emojis } from '@/models/index.js';
+import { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -316,6 +316,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.adsRepository)
+		private adsRepository: AdsRepository,
+
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
+
 		private userEntityService: UserEntityService,
 		private emojiEntityService: EmojiEntityService,
 		private metaService: MetaService,
@@ -323,7 +329,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 
-			const emojis = await Emojis.find({
+			const emojis = await this.emojisRepository.find({
 				where: {
 					host: IsNull(),
 				},
@@ -337,7 +343,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			const ads = await Ads.find({
+			const ads = await this.adsRepository.find({
 				where: {
 					expiresAt: MoreThan(new Date()),
 				},

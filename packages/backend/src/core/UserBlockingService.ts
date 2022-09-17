@@ -1,6 +1,5 @@
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowRequests, Followings, UserLists, UserListJoinings, Users, Blockings } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { CacheableUser, User } from '@/models/entities/User.js';
 import type { Blocking } from '@/models/entities/Blocking.js';

@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import type { UserGroupJoinings, UserListJoinings, AntennaNotes, Mutings, Notes, Users, Blockings, Antennas } from '@/models/index.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
@@ -11,6 +10,7 @@ import * as Acct from '@/misc/acct.js';
 import { Cache } from '@/misc/cache.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI } from '@/di-symbols.js';
+import { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from './UtilityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 

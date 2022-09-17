@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository, UserProfiles } from '@/models/index.js';
+import { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -42,6 +42,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
 		private userEntityService: UserEntityService,
 	) {
@@ -101,7 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.getMany();
 
 				if (users.length < ps.limit) {
-					const profQuery = UserProfiles.createQueryBuilder('prof')
+					const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
 						.select('prof.userId')
 						.where('prof.description ILIKE :query', { query: '%' + ps.query + '%' });
 

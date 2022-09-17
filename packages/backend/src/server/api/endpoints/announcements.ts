@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Announcements, AnnouncementReads } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
+import { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models';
 
 export const meta = {
 	tags: ['meta'],
@@ -67,15 +68,21 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
+
+		@Inject(DI.announcementReadsRepository)
+		private announcementReadsRepository: AnnouncementReadsRepository,
+
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
 			const announcements = await query.take(ps.limit).getMany();
 
 			if (me) {
-				const reads = (await AnnouncementReads.findBy({
+				const reads = (await this.announcementReadsRepository.findBy({
 					userId: me.id,
 				})).map(x => x.announcementId);
 

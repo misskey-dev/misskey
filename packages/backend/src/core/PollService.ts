@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { NotesRepository, UsersRepository, BlockingsRepository, Polls, PollVotes } from '@/models/index.js';
+import { NotesRepository, UsersRepository, BlockingsRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import type { CacheableUser } from '@/models/entities/User.js';
@@ -74,7 +74,7 @@ export class PollService {
 		}
 	
 		// Create vote
-		await PollVotes.insert({
+		await this.pollVotesRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			noteId: note.id,
@@ -84,7 +84,7 @@ export class PollService {
 	
 		// Increment votes count
 		const index = choice + 1; // In SQL, array index is 1 based
-		await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
+		await this.pollsRepository.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
 	
 		this.globalEventServie.publishNoteStream(note.id, 'pollVoted', {
 			choice: choice,

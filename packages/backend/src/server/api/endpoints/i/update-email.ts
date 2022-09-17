@@ -3,7 +3,7 @@ import rndstr from 'rndstr';
 import ms from 'ms';
 import bcrypt from 'bcryptjs';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UsersRepository, UserProfiles } from '@/models/index.js';
+import { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { Config } from '@/config.js';
@@ -96,7 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.email != null) {
 				const code = rndstr('a-z0-9', 16);
 
-				await UserProfiles.update(me.id, {
+				await this.userProfilesRepository.update(me.id, {
 					emailVerifyCode: code,
 				});
 

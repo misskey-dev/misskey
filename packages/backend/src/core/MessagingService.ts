@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { MessagingMessages, Mutings, UserGroupJoinings, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
@@ -11,6 +10,7 @@ import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { QueueService } from '@/core/QueueService.js';
 import { toArray } from '@/misc/prelude/array.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { MessagingMessagesRepository, MutingsRepository, UserGroupJoiningsRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from './IdService.js';
 import { GlobalEventService } from './GlobalEventService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
@@ -29,6 +29,12 @@ export class MessagingService {
 
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
+
+		@Inject(DI.userGroupJoiningsRepository)
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+
+		@Inject(DI.mutingsRepository)
+		private mutingsRepository: MutingsRepository,
 
 		private userEntityService: UserEntityService,
 		private messagingMessageEntityService: MessagingMessageEntityService,
@@ -77,7 +83,7 @@ export class MessagingService {
 			this.globalEventService.publishGroupMessagingStream(recipientGroup.id, 'message', messageObj);
 	
 			// メンバーのストリーム
-			const joinings = await UserGroupJoinings.findBy({ userGroupId: recipientGroup.id });
+			const joinings = await this.userGroupJoiningsRepository.findBy({ userGroupId: recipientGroup.id });
 			for (const joining of joinings) {
 				this.globalEventService.publishMessagingIndexStream(joining.userId, 'message', messageObj);
 				this.globalEventService.publishMainStream(joining.userId, 'messagingMessage', messageObj);
@@ -86,14 +92,14 @@ export class MessagingService {
 	
 		// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 		setTimeout(async () => {
-			const freshMessage = await MessagingMessages.findOneBy({ id: message.id });
+			const freshMessage = await this.messagingMessagesRepository.findOneBy({ id: message.id });
 			if (freshMessage == null) return; // メッセージが削除されている場合もある
 	
 			if (recipientUser && this.userEntityService.isLocalUser(recipientUser)) {
 				if (freshMessage.isRead) return; // 既読
 	
 				//#region ただしミュートされているなら発行しない
-				const mute = await Mutings.findBy({
+				const mute = await this.mutingsRepository.findBy({
 					muterId: recipientUser.id,
 				});
 				if (mute.map(m => m.muteeId).includes(user.id)) return;
@@ -102,7 +108,7 @@ export class MessagingService {
 				this.globalEventService.publishMainStream(recipientUser.id, 'unreadMessagingMessage', messageObj);
 				this.pushNotificationService.pushNotification(recipientUser.id, 'unreadMessagingMessage', messageObj);
 			} else if (recipientGroup) {
-				const joinings = await UserGroupJoinings.findBy({ userGroupId: recipientGroup.id, userId: Not(user.id) });
+				const joinings = await this.userGroupJoiningsRepository.findBy({ userGroupId: recipientGroup.id, userId: Not(user.id) });
 				for (const joining of joinings) {
 					if (freshMessage.reads.includes(joining.userId)) return; // 既読
 					this.globalEventService.publishMainStream(joining.userId, 'unreadMessagingMessage', messageObj);
@@ -135,14 +141,14 @@ export class MessagingService {
 	}
 
 	public async deleteMessage(message: MessagingMessage) {
-		await MessagingMessages.delete(message.id);
+		await this.messagingMessagesRepository.delete(message.id);
 		this.#postDeleteMessage(message);
 	}
 	
 	async #postDeleteMessage(message: MessagingMessage) {
 		if (message.recipientId) {
-			const user = await Users.findOneByOrFail({ id: message.userId });
-			const recipient = await Users.findOneByOrFail({ id: message.recipientId });
+			const user = await this.usersRepository.findOneByOrFail({ id: message.userId });
+			const recipient = await this.usersRepository.findOneByOrFail({ id: message.recipientId });
 	
 			if (this.userEntityService.isLocalUser(user)) this.globalEventService.publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
 			if (this.userEntityService.isLocalUser(recipient)) this.globalEventService.publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
@@ -166,7 +172,7 @@ export class MessagingService {
 	) {
 		if (messageIds.length === 0) return;
 
-		const messages = await MessagingMessages.findBy({
+		const messages = await this.messagingMessagesRepository.findBy({
 			id: In(messageIds),
 		});
 
@@ -177,7 +183,7 @@ export class MessagingService {
 		}
 
 		// Update documents
-		await MessagingMessages.update({
+		await this.messagingMessagesRepository.update({
 			id: In(messageIds),
 			userId: otherpartyId,
 			recipientId: userId,
@@ -196,7 +202,7 @@ export class MessagingService {
 			this.pushNotificationService.pushNotification(userId, 'readAllMessagingMessages', undefined);
 		} else {
 		// そのユーザーとのメッセージで未読がなければイベント発行
-			const count = await MessagingMessages.count({
+			const count = await this.messagingMessagesRepository.count({
 				where: {
 					userId: otherpartyId,
 					recipientId: userId,
@@ -222,7 +228,7 @@ export class MessagingService {
 		if (messageIds.length === 0) return;
 
 		// check joined
-		const joining = await UserGroupJoinings.findOneBy({
+		const joining = await this.userGroupJoiningsRepository.findOneBy({
 			userId: userId,
 			userGroupId: groupId,
 		});
@@ -231,7 +237,7 @@ export class MessagingService {
 			throw new IdentifiableError('930a270c-714a-46b2-b776-ad27276dc569', 'Access denied (group).');
 		}
 
-		const messages = await MessagingMessages.findBy({
+		const messages = await this.messagingMessagesRepository.findBy({
 			id: In(messageIds),
 		});
 
@@ -242,7 +248,7 @@ export class MessagingService {
 			if (message.reads.includes(userId)) continue;
 
 			// Update document
-			await MessagingMessages.createQueryBuilder().update()
+			await this.messagingMessagesRepository.createQueryBuilder().update()
 				.set({
 					reads: (() => `array_append("reads", '${joining.userId}')`) as any,
 				})
@@ -265,7 +271,7 @@ export class MessagingService {
 			this.pushNotificationService.pushNotification(userId, 'readAllMessagingMessages', undefined);
 		} else {
 		// そのグループにおいて未読がなければイベント発行
-			const unreadExist = await MessagingMessages.createQueryBuilder('message')
+			const unreadExist = await this.messagingMessagesRepository.createQueryBuilder('message')
 				.where('message.groupId = :groupId', { groupId: groupId })
 				.andWhere('message.userId != :userId', { userId: userId })
 				.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })

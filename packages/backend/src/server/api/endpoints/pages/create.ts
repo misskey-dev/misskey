@@ -1,6 +1,6 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import { PagesRepository, DriveFiles } from '@/models/index.js';
+import { DriveFilesRepository, PagesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Page } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -68,13 +68,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
 		private pageEntityService: PageEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let eyeCatchingImage = null;
 			if (ps.eyeCatchingImageId != null) {
-				eyeCatchingImage = await DriveFiles.findOneBy({
+				eyeCatchingImage = await this.driveFilesRepository.findOneBy({
 					id: ps.eyeCatchingImageId,
 					userId: me.id,
 				});

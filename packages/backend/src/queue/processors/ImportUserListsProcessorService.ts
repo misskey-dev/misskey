@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { DriveFilesRepository, UserListJoiningsRepository, UserListsRepository, Users } from '@/models/index.js';
+import { DriveFilesRepository, UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -86,10 +86,10 @@ export class ImportUserListsProcessorService {
 					}).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
 				}
 
-				let target = this.utilityService.isSelfHost(host!) ? await Users.findOneBy({
+				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
-				}) : await Users.findOneBy({
+				}) : await this.usersRepository.findOneBy({
 					host: this.utilityService.toPuny(host!),
 					usernameLower: username.toLowerCase(),
 				});

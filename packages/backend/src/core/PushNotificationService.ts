@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import push from 'web-push';
 import { DI } from '@/di-symbols.js';
-import { SwSubscriptions } from '@/models/index.js';
-import type { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
+import { SwSubscriptionsRepository } from '@/models/index.js';
 import { MetaService } from './MetaService.js';
 
 // Defined also packages/sw/types.ts#L14-L21
@@ -89,7 +88,7 @@ export class PushNotificationService {
 				//swLogger.info(err.body);
 	
 				if (err.statusCode === 410) {
-					SwSubscriptions.delete({
+					this.swSubscriptionsRepository.delete({
 						userId: userId,
 						endpoint: subscription.endpoint,
 						auth: subscription.auth,

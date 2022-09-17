@@ -3,18 +3,12 @@ import bcrypt from 'bcryptjs';
 import * as cbor from 'cbor';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type {
-	Users,
-	UserProfiles } from '@/models/index.js';
-import {
-	UserSecurityKeys,
-	AttestationChallenges,
-} from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
+import { AttestationChallengesRepository, UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 
@@ -45,6 +39,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.userSecurityKeysRepository)
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
+
+		@Inject(DI.attestationChallengesRepository)
+		private attestationChallengesRepository: AttestationChallengesRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 			if (!verificationData.valid) throw new Error('signature invalid');
 
-			const attestationChallenge = await AttestationChallenges.findOneBy({
+			const attestationChallenge = await this.attestationChallengesRepository.findOneBy({
 				userId: me.id,
 				id: ps.challengeId,
 				registrationChallenge: true,
@@ -127,7 +127,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('non-existent challenge');
 			}
 
-			await AttestationChallenges.delete({
+			await this.attestationChallengesRepository.delete({
 				userId: me.id,
 				id: ps.challengeId,
 			});
@@ -142,7 +142,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const credentialIdString = credentialId.toString('hex');
 
-			await UserSecurityKeys.insert({
+			await this.userSecurityKeysRepository.insert({
 				userId: me.id,
 				id: credentialIdString,
 				lastUsed: new Date(),

@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { UsedUsernamesRepository, Users } from '@/models/index.js';
+import { UsedUsernamesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { User } from '@/models/entities/User.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
@@ -110,7 +110,7 @@ export class SignupService {
 				usernameLower: username.toLowerCase(),
 				host: this.utilityService.toPunyNullable(host),
 				token: secret,
-				isAdmin: (await Users.countBy({
+				isAdmin: (await this.usersRepository.countBy({
 					host: IsNull(),
 				})) === 0,
 			}));

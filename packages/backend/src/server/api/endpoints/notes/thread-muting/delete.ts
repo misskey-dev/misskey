@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { NoteThreadMutingsRepository } from '@/models/index.js';
+import { NoteThreadMutingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { DI } from '@/di-symbols.js';

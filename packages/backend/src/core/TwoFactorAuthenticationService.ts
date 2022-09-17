@@ -2,7 +2,7 @@ import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import * as jsrsasign from 'jsrsasign';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
+import { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 
 const ECC_PRELUDE = Buffer.from([0x04]);

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/index.js';
-import { UserGroups, MessagingMessagesRepository, UserGroupJoiningsRepository } from '@/models/index.js';
+import { UserGroupsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MessagingMessageEntityService } from '@/core/entities/MessagingMessageEntityService.js';
@@ -80,6 +80,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
 
+		@Inject(DI.userGroupRepository)
+		private userGroupRepository: UserGroupsRepository,
+
 		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
@@ -128,7 +131,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				})));
 			} else if (ps.groupId != null) {
 				// Fetch recipient (group)
-				const recipientGroup = await UserGroups.findOneBy({ id: ps.groupId });
+				const recipientGroup = await this.userGroupRepository.findOneBy({ id: ps.groupId });
 
 				if (recipientGroup == null) {
 					throw new ApiError(meta.errors.noSuchGroup);

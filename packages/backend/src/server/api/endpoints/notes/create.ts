@@ -2,7 +2,7 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/User.js';
-import { UsersRepository, NotesRepository, BlockingsRepository, DriveFiles, Channels } from '@/models/index.js';
+import { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Channel } from '@/models/entities/Channel.js';
@@ -176,6 +176,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
+		@Inject(DI.channelsRepository)
+		private channelsRepository: ChannelsRepository,
+
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
 	) {
@@ -190,7 +196,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			let files: DriveFile[] = [];
 			const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 			if (fileIds != null) {
-				files = await DriveFiles.createQueryBuilder('file')
+				files = await this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
 						userId: me.id,
 						fileIds,
@@ -258,7 +264,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let channel: Channel | null = null;
 			if (ps.channelId != null) {
-				channel = await Channels.findOneBy({ id: ps.channelId });
+				channel = await this.channelsRepository.findOneBy({ id: ps.channelId });
 
 				if (channel == null) {
 					throw new ApiError(meta.errors.noSuchChannel);

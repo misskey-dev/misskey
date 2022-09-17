@@ -6,7 +6,7 @@ import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
 import { ModuleRef } from '@nestjs/core';
 import { Config } from '@/config.js';
-import { UsersRepository, Instances, AccessTokens } from '@/models/index.js';
+import { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import endpoints from './endpoints.js';
@@ -27,6 +27,12 @@ export class ApiServerService {
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		@Inject(DI.instancesRepository)
+		private instancesRepository: InstancesRepository,
+
+		@Inject(DI.accessTokensRepository)
+		private accessTokensRepository: AccessTokensRepository,
 
 		private userEntityService: UserEntityService,
 		private apiCallService: ApiCallService,
@@ -112,7 +118,7 @@ export class ApiServerService {
 		router.use(this.twitterServerService.create().routes());
 
 		router.get('/v1/instance/peers', async ctx => {
-			const instances = await Instances.find({
+			const instances = await this.instancesRepository.find({
 				select: ['host'],
 			});
 
@@ -120,12 +126,12 @@ export class ApiServerService {
 		});
 
 		router.post('/miauth/:session/check', async ctx => {
-			const token = await AccessTokens.findOneBy({
+			const token = await this.accessTokensRepository.findOneBy({
 				session: ctx.params.session,
 			});
 
 			if (token && token.session != null && !token.fetched) {
-				AccessTokens.update(token.id, {
+				this.accessTokensRepository.update(token.id, {
 					fetched: true,
 				});
 

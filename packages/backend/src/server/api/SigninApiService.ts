@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallenges, Users } from '@/models/index.js';
+import { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallengesRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -87,7 +87,7 @@ export class SigninApiService {
 		}
 
 		// Fetch user
-		const user = await Users.findOneBy({
+		const user = await this.usersRepository.findOneBy({
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),
 		}) as ILocalUser;
@@ -171,7 +171,7 @@ export class SigninApiService {
 
 			const clientDataJSON = Buffer.from(body.clientDataJSON, 'hex');
 			const clientData = JSON.parse(clientDataJSON.toString('utf-8'));
-			const challenge = await AttestationChallenges.findOneBy({
+			const challenge = await this.attestationChallengesRepository.findOneBy({
 				userId: user.id,
 				id: body.challengeId,
 				registrationChallenge: false,

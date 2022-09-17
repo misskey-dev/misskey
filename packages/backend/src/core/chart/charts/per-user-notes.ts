@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { User } from '@/models/entities/User.js';
-import { Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
+import { NotesRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-notes.js';
 import type { KVs } from '../core.js';
@@ -19,6 +19,9 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private appLockService: AppLockService,
 	) {
 		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
@@ -26,7 +29,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {
 		const [count] = await Promise.all([
-			Notes.countBy({ userId: group }),
+			this.notesRepository.countBy({ userId: group }),
 		]);
 
 		return {

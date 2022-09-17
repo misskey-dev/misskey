@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import chalk from 'chalk';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
+import { UsersRepository } from '@/models/index.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';

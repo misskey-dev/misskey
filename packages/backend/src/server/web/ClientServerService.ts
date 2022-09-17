@@ -14,7 +14,6 @@ import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { KoaAdapter } from '@bull-board/koa';
 import { In, IsNull } from 'typeorm';
 import { Config } from '@/config.js';
-import type { Pages, Channels, Clips, GalleryPosts, Notes, UserProfiles, Users } from '@/models/index.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';

@@ -3,7 +3,7 @@ import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
-import { UsersRepository, DriveFilesRepository, UserProfilesRepository, Pages } from '@/models/index.js';
+import { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
@@ -138,6 +138,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.pagesRepository)
+		private pagesRepository: PagesRepository,
+
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
@@ -210,7 +213,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.pinnedPageId) {
-				const page = await Pages.findOneBy({ id: ps.pinnedPageId });
+				const page = await this.pagesRepository.findOneBy({ id: ps.pinnedPageId });
 
 				if (page == null || page.userId !== user.id) throw new ApiError(meta.errors.noSuchPage);
 

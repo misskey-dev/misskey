@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository } from '@/models/index.js';
+import { UserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';

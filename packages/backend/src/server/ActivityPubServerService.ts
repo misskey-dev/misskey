@@ -4,7 +4,7 @@ import json from 'koa-json-body';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { Followings, Notes, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
+import { EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
 import * as url from '@/misc/prelude/url.js';
 import { Config } from '@/config.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
@@ -228,7 +228,7 @@ export class ActivityPubServerService {
 			}
 	
 			// Get followings
-			const followings = await Followings.find({
+			const followings = await this.followingsRepository.find({
 				where: query,
 				take: limit + 1,
 				order: { id: -1 },
@@ -282,7 +282,7 @@ export class ActivityPubServerService {
 		});
 
 		const pinnedNotes = await Promise.all(pinings.map(pining =>
-			Notes.findOneByOrFail({ id: pining.noteId })));
+			this.notesRepository.findOneByOrFail({ id: pining.noteId })));
 
 		const renderedNotes = await Promise.all(pinnedNotes.map(note => this.apRendererService.renderNote(note)));
 

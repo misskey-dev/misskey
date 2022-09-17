@@ -2,7 +2,7 @@ import rndstr from 'rndstr';
 import ms from 'ms';
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository, UserProfiles, PasswordResetRequests } from '@/models/index.js';
+import { PasswordResetRequestsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { Config } from '@/config.js';
@@ -46,6 +46,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.passwordResetRequestsRepository)
+		private passwordResetRequestsRepository: PasswordResetRequestsRepository,
+
 		private idService: IdService,
 		private emailService: EmailService,
 	) {
@@ -60,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return;
 			}
 
-			const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 			// 合致するメアドが登録されていなかったら無視
 			if (profile.email !== ps.email) {
@@ -74,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const token = rndstr('a-z0-9', 64);
 
-			await PasswordResetRequests.insert({
+			await this.passwordResetRequestsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: profile.userId,

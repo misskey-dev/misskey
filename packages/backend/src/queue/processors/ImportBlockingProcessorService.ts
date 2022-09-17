@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { Users, BlockingsRepository, DriveFilesRepository } from '@/models/index.js';
+import { BlockingsRepository, DriveFilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -70,7 +70,7 @@ export class ImportBlockingProcessorService {
 				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
-				}) : await Users.findOneBy({
+				}) : await this.usersRepository.findOneBy({
 					host: this.utilityService.toPuny(host!),
 					usernameLower: username.toLowerCase(),
 				});

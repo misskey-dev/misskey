@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
-import { Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UsersRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/users.js';
 import type { KVs } from '../core.js';
@@ -19,6 +19,9 @@ export default class UsersChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private appLockService: AppLockService,
 		private userEntityService: UserEntityService,
 	) {
@@ -27,8 +30,8 @@ export default class UsersChart extends Chart<typeof schema> {
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {
 		const [localCount, remoteCount] = await Promise.all([
-			Users.countBy({ host: IsNull() }),
-			Users.countBy({ host: Not(IsNull()) }),
+			this.usersRepository.countBy({ host: IsNull() }),
+			this.usersRepository.countBy({ host: Not(IsNull()) }),
 		]);
 
 		return {

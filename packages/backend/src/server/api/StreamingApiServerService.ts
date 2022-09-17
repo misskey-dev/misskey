@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import * as websocket from 'websocket';
 import { DI } from '@/di-symbols.js';
-import { Users, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository } from '@/models/index.js';
+import { UsersRepository, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -22,6 +22,9 @@ export class StreamingApiServerService {
 
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
@@ -90,12 +93,12 @@ export class StreamingApiServerService {
 			);
 
 			const intervalId = user ? setInterval(() => {
-				Users.update(user.id, {
+				this.usersRepository.update(user.id, {
 					lastActiveDate: new Date(),
 				});
 			}, 1000 * 60 * 5) : null;
 			if (user) {
-				Users.update(user.id, {
+				this.usersRepository.update(user.id, {
 					lastActiveDate: new Date(),
 				});
 			}

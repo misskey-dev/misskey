@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { Hashtags, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { IdService } from '@/core/IdService.js';
 import type { Hashtag } from '@/models/entities/Hashtag.js';
 import HashtagChart from '@/core/chart/charts/hashtag.js';
+import { UserEntityService } from './entities/UserEntityService';
 
 @Injectable()
 export class HashtagService {
@@ -16,6 +16,7 @@ export class HashtagService {
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
 
+		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private hashtagChart: HashtagChart,
 	) {
@@ -45,7 +46,7 @@ export class HashtagService {
 		if (index == null && !inc) return;
 
 		if (index != null) {
-			const q = Hashtags.createQueryBuilder('tag').update()
+			const q = this.hashtagsRepository.createQueryBuilder('tag').update()
 				.where('name = :name', { name: tag });
 
 			const set = {} as any;
@@ -58,19 +59,19 @@ export class HashtagService {
 						set.attachedUsersCount = () => '"attachedUsersCount" + 1';
 					}
 					// 自分が(ローカル内で)初めてこのタグを使ったなら
-					if (Users.isLocalUser(user) && !index.attachedLocalUserIds.some(id => id === user.id)) {
+					if (this.userEntityService.isLocalUser(user) && !index.attachedLocalUserIds.some(id => id === user.id)) {
 						set.attachedLocalUserIds = () => `array_append("attachedLocalUserIds", '${user.id}')`;
 						set.attachedLocalUsersCount = () => '"attachedLocalUsersCount" + 1';
 					}
 					// 自分が(リモートで)初めてこのタグを使ったなら
-					if (Users.isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id === user.id)) {
+					if (this.userEntityService.isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id === user.id)) {
 						set.attachedRemoteUserIds = () => `array_append("attachedRemoteUserIds", '${user.id}')`;
 						set.attachedRemoteUsersCount = () => '"attachedRemoteUsersCount" + 1';
 					}
 				} else {
 					set.attachedUserIds = () => `array_remove("attachedUserIds", '${user.id}')`;
 					set.attachedUsersCount = () => '"attachedUsersCount" - 1';
-					if (Users.isLocalUser(user)) {
+					if (this.userEntityService.isLocalUser(user)) {
 						set.attachedLocalUserIds = () => `array_remove("attachedLocalUserIds", '${user.id}')`;
 						set.attachedLocalUsersCount = () => '"attachedLocalUsersCount" - 1';
 					} else {
@@ -85,12 +86,12 @@ export class HashtagService {
 					set.mentionedUsersCount = () => '"mentionedUsersCount" + 1';
 				}
 				// 自分が(ローカル内で)初めてこのタグを使ったなら
-				if (Users.isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id === user.id)) {
+				if (this.userEntityService.isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id === user.id)) {
 					set.mentionedLocalUserIds = () => `array_append("mentionedLocalUserIds", '${user.id}')`;
 					set.mentionedLocalUsersCount = () => '"mentionedLocalUsersCount" + 1';
 				}
 				// 自分が(リモートで)初めてこのタグを使ったなら
-				if (Users.isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id === user.id)) {
+				if (this.userEntityService.isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id === user.id)) {
 					set.mentionedRemoteUserIds = () => `array_append("mentionedRemoteUserIds", '${user.id}')`;
 					set.mentionedRemoteUsersCount = () => '"mentionedRemoteUsersCount" + 1';
 				}
@@ -102,7 +103,7 @@ export class HashtagService {
 			}
 		} else {
 			if (isUserAttached) {
-				Hashtags.insert({
+				this.hashtagsRepository.insert({
 					id: this.idService.genId(),
 					name: tag,
 					mentionedUserIds: [],
@@ -113,21 +114,21 @@ export class HashtagService {
 					mentionedRemoteUsersCount: 0,
 					attachedUserIds: [user.id],
 					attachedUsersCount: 1,
-					attachedLocalUserIds: Users.isLocalUser(user) ? [user.id] : [],
-					attachedLocalUsersCount: Users.isLocalUser(user) ? 1 : 0,
-					attachedRemoteUserIds: Users.isRemoteUser(user) ? [user.id] : [],
-					attachedRemoteUsersCount: Users.isRemoteUser(user) ? 1 : 0,
+					attachedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
+					attachedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
+					attachedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
+					attachedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
 				} as Hashtag);
 			} else {
-				Hashtags.insert({
+				this.hashtagsRepository.insert({
 					id: this.idService.genId(),
 					name: tag,
 					mentionedUserIds: [user.id],
 					mentionedUsersCount: 1,
-					mentionedLocalUserIds: Users.isLocalUser(user) ? [user.id] : [],
-					mentionedLocalUsersCount: Users.isLocalUser(user) ? 1 : 0,
-					mentionedRemoteUserIds: Users.isRemoteUser(user) ? [user.id] : [],
-					mentionedRemoteUsersCount: Users.isRemoteUser(user) ? 1 : 0,
+					mentionedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
+					mentionedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
+					mentionedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
+					mentionedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
 					attachedUserIds: [],
 					attachedUsersCount: 0,
 					attachedLocalUserIds: [],

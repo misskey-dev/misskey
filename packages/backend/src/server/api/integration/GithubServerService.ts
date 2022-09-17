@@ -272,7 +272,7 @@ export class GithubServerService {
 	}
 
 	#getUserToken(ctx: Koa.BaseContext): string | null {
-		return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
+		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
 	#compareOrigin(ctx: Koa.BaseContext): boolean {

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { Emojis, BlockingsRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
+import { EmojisRepository, BlockingsRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -300,7 +300,7 @@ export class ReactionService {
 		const custom = reaction.match(/^:([\w+-]+)(?:@\.)?:$/);
 		if (custom) {
 			const name = custom[1];
-			const emoji = await Emojis.findOneBy({
+			const emoji = await this.emojisRepository.findOneBy({
 				host: reacterHost ?? IsNull(),
 				name,
 			});

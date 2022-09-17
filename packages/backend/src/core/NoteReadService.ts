@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennaNotes, ChannelFollowings, Followings, Mutings, NoteThreadMutings, NoteUnreads, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import type { Packed } from '@/misc/schema.js';

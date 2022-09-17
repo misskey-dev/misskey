@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
-import { Followings, Users } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FollowingsRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-following.js';
 import type { KVs } from '../core.js';
@@ -19,6 +19,9 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
+
 		private appLockService: AppLockService,
 		private userEntityService: UserEntityService,
 	) {
@@ -32,10 +35,10 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 			remoteFollowingsCount,
 			remoteFollowersCount,
 		] = await Promise.all([
-			Followings.countBy({ followerId: group, followeeHost: IsNull() }),
-			Followings.countBy({ followeeId: group, followerHost: IsNull() }),
-			Followings.countBy({ followerId: group, followeeHost: Not(IsNull()) }),
-			Followings.countBy({ followeeId: group, followerHost: Not(IsNull()) }),
+			this.followingsRepository.countBy({ followerId: group, followeeHost: IsNull() }),
+			this.followingsRepository.countBy({ followeeId: group, followerHost: IsNull() }),
+			this.followingsRepository.countBy({ followerId: group, followeeHost: Not(IsNull()) }),
+			this.followingsRepository.countBy({ followeeId: group, followerHost: Not(IsNull()) }),
 		]);
 
 		return {

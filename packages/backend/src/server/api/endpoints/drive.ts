@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DriveFiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';

@@ -2,7 +2,7 @@ import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { Note, IMentionedRemoteUsers } from '@/models/entities/Note.js';
-import { NotesRepository, Users, Instances } from '@/models/index.js';
+import { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -22,8 +22,14 @@ export class NoteDeleteService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.instancesRepository)
+		private instancesRepository: InstancesRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventServie: GlobalEventService,
@@ -93,7 +99,7 @@ export class NoteDeleteService {
 
 			if (this.userEntityService.isRemoteUser(user)) {
 				this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
-					Instances.decrement({ id: i.id }, 'notesCount', 1);
+					this.instancesRepository.decrement({ id: i.id }, 'notesCount', 1);
 					this.instanceChart.updateNote(i.host, note, false);
 				});
 			}
@@ -147,7 +153,7 @@ export class NoteDeleteService {
 
 		if (where.length === 0) return [];
 
-		return await Users.find({
+		return await this.usersRepository.find({
 			where,
 		}) as IRemoteUser[];
 	}

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import { NotesRepository, UsersRepository, Instances, NoteReactions } from '@/models/index.js';
+import { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -60,6 +60,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.instancesRepository)
+		private instancesRepository: InstancesRepository,
+
+		@Inject(DI.noteReactionsRepository)
+		private noteReactionsRepository: NoteReactionsRepository,
 	) {
 		super(meta, paramDef, async () => {
 			const [
@@ -75,9 +81,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.notesRepository.count({ where: { userHost: IsNull() }, cache: 3600000 }),
 				this.usersRepository.count({ cache: 3600000 }),
 				this.usersRepository.count({ where: { host: IsNull() }, cache: 3600000 }),
-				NoteReactions.count({ cache: 3600000 }), // 1 hour
-				//NoteReactions.count({ where: { userHost: IsNull() }, cache: 3600000 }),
-				Instances.count({ cache: 3600000 }),
+				this.noteReactionsRepository.count({ cache: 3600000 }), // 1 hour
+				//this.noteReactionsRepository.count({ where: { userHost: IsNull() }, cache: 3600000 }),
+				this.instancesRepository.count({ cache: 3600000 }),
 			]);
 
 			return {

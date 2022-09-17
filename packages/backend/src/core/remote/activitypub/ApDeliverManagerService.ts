@@ -50,7 +50,7 @@ export class ApDeliverManagerService {
 	 */
 	public async deliverToFollowers(actor: { id: ILocalUser['id']; host: null; }, activity: any) {
 		const manager = new DeliverManager(
-			this.usersRepository,
+			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
 			actor,
@@ -67,7 +67,7 @@ export class ApDeliverManagerService {
 	 */
 	public async deliverToUser(actor: { id: ILocalUser['id']; host: null; }, activity: any, to: IRemoteUser) {
 		const manager = new DeliverManager(
-			this.usersRepository,
+			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
 			actor,

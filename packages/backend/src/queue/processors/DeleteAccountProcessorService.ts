@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { DriveFilesRepository, UserProfilesRepository, Notes, Users } from '@/models/index.js';
+import { DriveFilesRepository, UserProfilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
+import { EmailService } from '@/core/EmailService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserDeleteJobData } from '../types.js';
@@ -32,6 +33,7 @@ export class DeleteAccountProcessorService {
 		private driveFilesRepository: DriveFilesRepository,
 
 		private driveService: DriveService,
+		private emailService: EmailService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.#logger = this.queueLoggerService.logger.createSubLogger('delete-account');
@@ -66,7 +68,7 @@ export class DeleteAccountProcessorService {
 
 				cursor = notes[notes.length - 1].id;
 
-				await Notes.delete(notes.map(note => note.id));
+				await this.notesRepository.delete(notes.map(note => note.id));
 			}
 
 			this.#logger.succ('All of notes deleted');
@@ -104,7 +106,7 @@ export class DeleteAccountProcessorService {
 		{ // Send email notification
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 			if (profile.email && profile.emailVerified) {
-				sendEmail(profile.email, 'Account deleted',
+				this.emailService.sendEmail(profile.email, 'Account deleted',
 					'Your account has been deleted.',
 					'Your account has been deleted.');
 			}
@@ -114,7 +116,7 @@ export class DeleteAccountProcessorService {
 		if (job.data.soft) {
 		// nop
 		} else {
-			await Users.delete(job.data.user.id);
+			await this.usersRepository.delete(job.data.user.id);
 		}
 
 		return 'Account deleted';

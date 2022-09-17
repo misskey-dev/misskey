@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
-import { MessagingMessagesRepository, NotesRepository, UserPublickeysRepository, Users } from '@/models/index.js';
+import { MessagingMessagesRepository, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser, CacheableUser } from '@/models/entities/User.js';
 import { Cache } from '@/misc/cache.js';
@@ -37,6 +37,9 @@ export class ApDbResolverService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
@@ -120,11 +123,11 @@ export class ApDbResolverService {
 		if (parsed.local) {
 			if (parsed.type !== 'users') return null;
 
-			return await this.userCacheService.userByIdCache.fetchMaybe(parsed.id, () => Users.findOneBy({
+			return await this.userCacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
 				id: parsed.id,
 			}).then(x => x ?? undefined)) ?? null;
 		} else {
-			return await this.userCacheService.uriPersonCache.fetch(parsed.uri, () => Users.findOneBy({
+			return await this.userCacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
 				uri: parsed.uri,
 			}));
 		}
@@ -150,7 +153,7 @@ export class ApDbResolverService {
 		if (key == null) return null;
 
 		return {
-			user: await this.userCacheService.userByIdCache.fetch(key.userId, () => Users.findOneByOrFail({ id: key.userId })) as CacheableRemoteUser,
+			user: await this.userCacheService.userByIdCache.fetch(key.userId, () => this.usersRepository.findOneByOrFail({ id: key.userId })) as CacheableRemoteUser,
 			key,
 		};
 	}

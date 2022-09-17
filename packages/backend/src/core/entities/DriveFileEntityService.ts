@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
+import { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';

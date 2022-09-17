@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import httpSignature from '@peertube/http-signature';
 import { DI } from '@/di-symbols.js';
-import { Instances, DriveFilesRepository } from '@/models/index.js';
+import { DriveFilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -175,7 +175,7 @@ export class InboxProcessorService {
 
 		// Update stats
 		this.federatedInstanceService.registerOrFetchInstanceDoc(authUser.user.host).then(i => {
-			Instances.update(i.id, {
+			this.instancesRepository.update(i.id, {
 				latestRequestReceivedAt: new Date(),
 				lastCommunicatedAt: new Date(),
 				isNotResponding: false,

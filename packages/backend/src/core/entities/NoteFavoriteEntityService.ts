@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NoteFavoritesRepository } from '@/models/index.js';
+import { NoteFavoritesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
