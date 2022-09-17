@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Signins } from '@/models/index.js';
-import { QueryService } from '@/services/QueryService.js';
-import { SigninEntityService } from '@/services/entities/SigninEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

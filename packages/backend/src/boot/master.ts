@@ -10,13 +10,13 @@ import { NestFactory } from '@nestjs/core';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
-import { lessThan } from '@/prelude/array.js';
+import { lessThan } from '@/misc/prelude/array.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { DaemonModule } from '@/daemons/DaemonModule.js';
 import { JanitorService } from '@/daemons/JanitorService.js';
 import { QueueStatsService } from '@/daemons/QueueStatsService.js';
 import { ServerStatsService } from '@/daemons/ServerStatsService.js';
-import { db, initDb } from '../db/postgre.js';
+import { db, initDb } from '../postgre.js';
 import { envOption } from '../env.js';
 
 const _filename = fileURLToPath(import.meta.url);

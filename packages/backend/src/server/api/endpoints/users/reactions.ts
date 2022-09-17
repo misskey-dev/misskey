@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserProfiles, NoteReactions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/services/QueryService.js';
-import { NoteReactionEntityService } from '@/services/entities/NoteReactionEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

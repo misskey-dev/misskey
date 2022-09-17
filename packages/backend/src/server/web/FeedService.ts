@@ -5,8 +5,8 @@ import { DI } from '@/di-symbols.js';
 import type { DriveFiles, Notes, UserProfiles, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
-import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 
 @Injectable()
 export class FeedService {

@@ -3,7 +3,7 @@ import type { Notes } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class HashtagChannel extends Channel {

@@ -8,13 +8,13 @@ import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { createTemp } from '@/misc/create-temp.js';
-import { DownloadService } from '@/services/DownloadService.js';
-import { ImageProcessingService } from '@/services/ImageProcessingService.js';
-import type { IImage } from '@/services/ImageProcessingService.js';
+import { DownloadService } from '@/core/DownloadService.js';
+import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import type { IImage } from '@/core/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import Logger from '@/logger.js';
-import { FileInfoService } from '@/services/FileInfoService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
 
 const serverLogger = new Logger('server', 'gray', false);
 

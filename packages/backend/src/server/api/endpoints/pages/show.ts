@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Users, Pages } from '@/models/index.js';
 import type { Page } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { PageEntityService } from '@/services/entities/PageEntityService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

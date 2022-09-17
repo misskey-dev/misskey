@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EndpointsModule } from '@/server/api/EndpointsModule.js';
-import { CoreModule } from '@/services/CoreModule.js';
+import { CoreModule } from '@/core/CoreModule.js';
 import { ApiCallService } from './api/ApiCallService.js';
 import { FileServerService } from './FileServerService.js';
 import { MediaProxyServerService } from './MediaProxyServerService.js';

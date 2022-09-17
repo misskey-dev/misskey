@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Hashtags } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { HashtagEntityService } from '@/services/entities/HashtagEntityService.js';
+import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

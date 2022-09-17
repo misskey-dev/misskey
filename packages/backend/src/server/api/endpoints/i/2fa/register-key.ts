@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfiles, AttestationChallenges } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
-import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
+import { IdService } from '@/core/IdService.js';
+import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import { DI } from '@/di-symbols.js';
 
 const randomBytes = promisify(crypto.randomBytes);

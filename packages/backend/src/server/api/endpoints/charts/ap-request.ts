@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { getJsonSchema } from '@/services/chart/core.js';
+import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import ApRequestChart from '@/services/chart/charts/ap-request.js';
-import { schema } from '@/services/chart/charts/entities/ap-request.js';
+import ApRequestChart from '@/core/chart/charts/ap-request.js';
+import { schema } from '@/core/chart/charts/entities/ap-request.js';
 
 export const meta = {
 	tags: ['charts'],

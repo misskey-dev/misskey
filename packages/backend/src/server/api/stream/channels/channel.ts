@@ -3,8 +3,8 @@ import type { Notes, Users } from '@/models/index.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { User } from '@/models/entities/User.js';
 import type { Packed } from '@/misc/schema.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import Channel from '../channel.js';
 import type { StreamMessages } from '../types.js';
 

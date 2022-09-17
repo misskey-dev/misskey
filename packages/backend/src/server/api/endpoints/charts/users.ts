@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { getJsonSchema } from '@/services/chart/core.js';
+import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import UsersChart from '@/services/chart/charts/users.js';
-import { schema } from '@/services/chart/charts/entities/users.js';
+import UsersChart from '@/core/chart/charts/users.js';
+import { schema } from '@/core/chart/charts/entities/users.js';
 
 export const meta = {
 	tags: ['charts', 'users'],

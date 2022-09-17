@@ -2,7 +2,7 @@ import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTickets } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

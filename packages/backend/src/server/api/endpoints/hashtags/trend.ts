@@ -5,7 +5,7 @@ import type { Notes } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { MetaService } from '@/services/MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 
 /*

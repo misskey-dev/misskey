@@ -2,10 +2,10 @@ import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Notes, Followings } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/services/QueryService.js';
-import ActiveUsersChart from '@/services/chart/charts/active-users.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
-import { MetaService } from '@/services/MetaService.js';
+import { QueryService } from '@/core/QueryService.js';
+import ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

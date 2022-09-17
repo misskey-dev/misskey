@@ -4,8 +4,8 @@ import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
-import { MetaService } from '@/services/MetaService.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class GlobalTimelineChannel extends Channel {

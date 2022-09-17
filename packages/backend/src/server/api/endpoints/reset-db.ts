@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { resetDb } from '@/db/postgre.js';
+import { resetDb } from '@/postgre.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../error.js';
 

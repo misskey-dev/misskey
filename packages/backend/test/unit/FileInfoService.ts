@@ -5,11 +5,11 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { initDb } from '@/db/postgre.js';
+import { initDb } from '@/postgre.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { FileInfoService } from '@/services/FileInfoService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
 import { DI } from '@/di-symbols.js';
-import { AiService } from '@/services/AiService.js';
+import { AiService } from '@/core/AiService.js';
 import type { jest } from '@jest/globals';
 import type { MockFunctionMetadata } from 'jest-mock';
 

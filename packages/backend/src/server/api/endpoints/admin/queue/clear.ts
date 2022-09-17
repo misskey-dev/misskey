@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/services/ModerationLogService.js';
-import { QueueService } from '@/services/QueueService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	tags: ['admin'],

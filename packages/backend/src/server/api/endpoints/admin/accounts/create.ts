@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
-import { SignupService } from '@/services/SignupService.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { SignupService } from '@/core/SignupService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 

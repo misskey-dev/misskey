@@ -7,11 +7,11 @@ import { IsNull } from 'typeorm';
 import { Config } from '@/config.js';
 import type { UserProfiles, Users } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import { HttpRequestService } from '@/services/HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { MetaService } from '@/services/MetaService.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { SigninService } from '../SigninService.js';
 import type Koa from 'koa';
 

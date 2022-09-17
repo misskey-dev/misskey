@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Mutings } from '@/models/index.js';
-import { QueryService } from '@/services/QueryService.js';
-import { MutingEntityService } from '@/services/entities/MutingEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { MutingEntityService } from '@/core/entities/MutingEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

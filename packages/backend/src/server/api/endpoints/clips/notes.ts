@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Notes, Clips } from '@/models/index.js';
 import { ClipNotes } from '@/models/index.js';
-import { QueryService } from '@/services/QueryService.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

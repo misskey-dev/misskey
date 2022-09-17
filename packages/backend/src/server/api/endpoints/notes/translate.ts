@@ -5,9 +5,9 @@ import type { Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Config } from '@/config.js';
 import { DI, DI } from '@/di-symbols.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
-import { MetaService } from '@/services/MetaService.js';
-import { HttpRequestService } from '@/services/HttpRequestService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';
 

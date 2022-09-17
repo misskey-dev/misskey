@@ -5,8 +5,8 @@ import type { GalleryPosts } from '@/models/index.js';
 import { DriveFiles } from '@/models/index.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
-import { IdService } from '@/services/IdService.js';
-import { GalleryPostEntityService } from '@/services/entities/GalleryPostEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

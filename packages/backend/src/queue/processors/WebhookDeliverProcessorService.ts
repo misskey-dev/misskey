@@ -4,7 +4,7 @@ import { DI } from '@/di-symbols.js';
 import type { Webhooks } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { HttpRequestService } from '@/services/HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Ads } from '@/models/index.js';
-import { QueryService } from '@/services/QueryService.js';
+import { QueryService } from '@/core/QueryService.js';
 
 export const meta = {
 	tags: ['admin'],

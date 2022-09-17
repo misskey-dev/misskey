@@ -1,9 +1,9 @@
 import { Not, In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { maximum } from '@/prelude/array.js';
+import { maximum } from '@/misc/prelude/array.js';
 import type { Notes, Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';

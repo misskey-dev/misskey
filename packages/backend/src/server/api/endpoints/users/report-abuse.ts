@@ -1,11 +1,11 @@
 import * as sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users, AbuseUserReports } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { MetaService } from '@/services/MetaService.js';
-import { EmailService } from '@/services/EmailService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { EmailService } from '@/core/EmailService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';

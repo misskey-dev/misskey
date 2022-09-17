@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserLists, UserListJoinings } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

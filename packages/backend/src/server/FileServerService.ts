@@ -14,12 +14,12 @@ import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import Logger from '@/logger.js';
-import { DownloadService } from '@/services/DownloadService.js';
-import { ImageProcessingService } from '@/services/ImageProcessingService.js';
-import { VideoProcessingService } from '@/services/VideoProcessingService.js';
-import { InternalStorageService } from '@/services/InternalStorageService.js';
+import { DownloadService } from '@/core/DownloadService.js';
+import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import { VideoProcessingService } from '@/core/VideoProcessingService.js';
+import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
-import { FileInfoService } from '@/services/FileInfoService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
 
 const serverLogger = new Logger('server', 'gray', false);
 

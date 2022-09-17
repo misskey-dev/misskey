@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 
 export const meta = {
 	tags: ['notifications'],

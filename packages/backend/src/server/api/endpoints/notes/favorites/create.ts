@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { NoteFavorites } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { DI } from '@/di-symbols.js';

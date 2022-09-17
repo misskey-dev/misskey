@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

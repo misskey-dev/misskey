@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
-import { QueueService } from '@/services/QueueService.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { UserSuspendService } from '@/services/UserSuspendService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

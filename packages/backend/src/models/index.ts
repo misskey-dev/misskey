@@ -1,5 +1,5 @@
 import { } from 'typeorm';
-import { db } from '@/db/postgre.js';
+import { db } from '@/postgre.js';
 
 import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { AccessToken } from '@/models/entities/AccessToken.js';

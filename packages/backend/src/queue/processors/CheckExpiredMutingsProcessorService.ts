@@ -4,7 +4,7 @@ import { DI } from '@/di-symbols.js';
 import type { Mutings } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 

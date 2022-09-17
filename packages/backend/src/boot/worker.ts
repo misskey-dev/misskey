@@ -1,10 +1,10 @@
 import cluster from 'node:cluster';
 import { NestFactory } from '@nestjs/core';
 import { envOption } from '@/env.js';
-import { ChartManagementService } from '@/services/chart/ChartManagementService.js';
+import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { ServerService } from '@/server/ServerService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
-import { initDb } from '../db/postgre.js';
+import { initDb } from '../postgre.js';
 import { AppModule } from '../AppModule.js';
 
 /**

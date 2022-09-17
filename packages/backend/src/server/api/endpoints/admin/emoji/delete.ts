@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Emojis } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

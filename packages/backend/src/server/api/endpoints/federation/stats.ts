@@ -1,9 +1,9 @@
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Followings, Instances } from '@/models/index.js';
-import { awaitAll } from '@/prelude/await-all.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { InstanceEntityService } from '@/services/entities/InstanceEntityService.js';
+import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

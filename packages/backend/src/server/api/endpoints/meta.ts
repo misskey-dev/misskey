@@ -5,9 +5,9 @@ import { Ads, Emojis } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
-import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
-import { MetaService } from '@/services/MetaService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 

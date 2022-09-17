@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Antennas } from '@/models/index.js';
-import { AntennaEntityService } from '@/services/entities/AntennaEntityService.js';
+import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

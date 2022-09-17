@@ -4,10 +4,10 @@ import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Notes, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import { MetaService } from '@/services/MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';

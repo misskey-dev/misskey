@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Clips } from '@/models/index.js';
-import { ClipEntityService } from '@/services/entities/ClipEntityService.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CoreModule } from '@/services/CoreModule.js';
+import { CoreModule } from '@/core/CoreModule.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QueueProcessorService } from './QueueProcessorService.js';
 import { DbQueueProcessorsService } from './DbQueueProcessorsService.js';

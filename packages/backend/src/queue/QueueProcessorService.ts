@@ -3,7 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { QueueService } from '../services/QueueService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { getJobInfo } from './get-job-info.js';
 import { SystemQueueProcessorsService } from './SystemQueueProcessorsService.js';
 import { ObjectStorageQueueProcessorsService } from './ObjectStorageQueueProcessorsService.js';

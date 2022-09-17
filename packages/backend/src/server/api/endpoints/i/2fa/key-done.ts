@@ -10,11 +10,11 @@ import {
 	UserSecurityKeys,
 	AttestationChallenges,
 } from '@/models/index.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { TwoFactorAuthenticationService } from '@/services/TwoFactorAuthenticationService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 

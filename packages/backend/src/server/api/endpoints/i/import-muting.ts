@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueueService } from '@/services/QueueService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { DriveFiles } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 

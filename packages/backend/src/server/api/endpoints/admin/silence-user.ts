@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Users } from '@/models/index.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

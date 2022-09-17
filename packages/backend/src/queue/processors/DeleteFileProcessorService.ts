@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { ObjectStorageFileJobData } from '../types.js';

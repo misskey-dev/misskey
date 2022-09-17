@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Xev from 'xev';
 import { DI } from '@/di-symbols.js';
-import { QueueService } from '@/services/QueueService.js';
+import { QueueService } from '@/core/QueueService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();

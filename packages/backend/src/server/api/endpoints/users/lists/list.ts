@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserLists } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserListEntityService } from '@/services/entities/UserListEntityService.js';
+import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

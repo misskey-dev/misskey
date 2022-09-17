@@ -3,10 +3,10 @@ import summaly from 'summaly';
 import { DI } from '@/di-symbols.js';
 import type { Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import { MetaService } from '@/services/MetaService.js';
-import { HttpRequestService } from '@/services/HttpRequestService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import Logger from '@/logger.js';
-import { query } from '@/prelude/url.js';
+import { query } from '@/misc/prelude/url.js';
 import type Koa from 'koa';
 
 @Injectable()

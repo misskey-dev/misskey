@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFiles , Emojis } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
+import type { DriveFiles, Emojis } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { ModerationLogService } from '@/services/ModerationLogService.js';
-import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

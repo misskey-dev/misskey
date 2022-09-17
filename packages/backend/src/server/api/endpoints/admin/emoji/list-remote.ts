@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Emojis } from '@/models/index.js';
-import { QueryService } from '@/services/QueryService.js';
-import { UtilityService } from '@/services/UtilityService.js';
-import { EmojiEntityService } from '@/services/entities/EmojiEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

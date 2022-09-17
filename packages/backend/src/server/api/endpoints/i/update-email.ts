@@ -5,11 +5,11 @@ import bcrypt from 'bcryptjs';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users } from '@/models/index.js';
 import { UserProfiles } from '@/models/index.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
-import { EmailService } from '@/services/EmailService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { EmailService } from '@/core/EmailService.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

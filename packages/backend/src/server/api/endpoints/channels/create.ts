@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Channels, DriveFiles } from '@/models/index.js';
 import type { Channel } from '@/models/entities/Channel.js';
-import { IdService } from '@/services/IdService.js';
-import { ChannelEntityService } from '@/services/entities/ChannelEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

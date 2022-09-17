@@ -4,10 +4,10 @@ import type { Users, Followings, Mutings, UserProfiles } from '@/models/index.js
 import { Notifications } from '@/models/index.js';
 import { notificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/services/QueryService.js';
-import { NoteReadService } from '@/services/NoteReadService.js';
-import { NotificationEntityService } from '@/services/entities/NotificationEntityService.js';
-import { NotificationService } from '@/services/NotificationService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteReadService } from '@/core/NoteReadService.js';
+import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

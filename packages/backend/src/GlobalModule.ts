@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
+import { redisClient, redisSubscriber } from '@/redis.js';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
-import { db } from './db/postgre.js';
-import { redisClient, redisSubscriber } from './db/redis.js';
+import { db } from './postgre.js';
 import { RepositoryModule } from './RepositoryModule.js';
 import type { Provider } from '@nestjs/common';
 

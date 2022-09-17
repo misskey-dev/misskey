@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { PageLikes } from '@/models/index.js';
-import { QueryService } from '@/services/QueryService.js';
-import { PageLikeEntityService } from '@/services/entities/PageLikeEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { PageLikeEntityService } from '@/core/entities/PageLikeEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

@@ -4,7 +4,7 @@ import type { Users, Followings } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
 import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

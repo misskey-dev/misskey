@@ -1,7 +1,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueueService } from '@/services/QueueService.js';
+import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	secure: true,

@@ -9,9 +9,9 @@ import { DI } from '@/di-symbols.js';
 import type { Emojis, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
-import { DownloadService } from '@/services/DownloadService.js';
+import { DownloadService } from '@/core/DownloadService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 

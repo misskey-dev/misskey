@@ -6,7 +6,7 @@ import type { CacheableLocalUser, User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
 import type { UserIps } from '@/models/index.js';
-import { MetaService } from '@/services/MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';

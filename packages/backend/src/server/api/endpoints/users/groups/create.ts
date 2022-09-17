@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroups, UserGroupJoinings } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import type { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserGroupEntityService } from '@/services/entities/UserGroupEntityService.js';
+import { UserGroupEntityService } from '@/core/entities/UserGroupEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

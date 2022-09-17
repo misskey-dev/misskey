@@ -3,7 +3,7 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { DriveFiles } from '@/models/index.js';
 import { Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

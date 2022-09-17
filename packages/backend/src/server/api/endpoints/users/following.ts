@@ -2,9 +2,9 @@ import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users, Followings, UserProfiles } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/services/QueryService.js';
-import { FollowingEntityService } from '@/services/entities/FollowingEntityService.js';
-import { UtilityService } from '@/services/UtilityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

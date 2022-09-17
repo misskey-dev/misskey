@@ -12,11 +12,11 @@ import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { UserFollowingService } from '@/services/UserFollowingService.js';
-import { AccountUpdateService } from '@/services/AccountUpdateService.js';
-import { HashtagService } from '@/services/HashtagService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { AntennaEntityService } from '@/services/entities/AntennaEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

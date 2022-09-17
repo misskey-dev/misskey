@@ -2,7 +2,7 @@ import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFiles } from '@/models/index.js';
-import { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

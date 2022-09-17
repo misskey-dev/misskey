@@ -2,10 +2,10 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Pages } from '@/models/index.js';
 import { DriveFiles } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { Page } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { PageEntityService } from '@/services/entities/PageEntityService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

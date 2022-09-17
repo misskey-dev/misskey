@@ -4,12 +4,12 @@ import bcrypt from 'bcryptjs';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTickets, UserPendings, UserProfiles, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
-import { MetaService } from '@/services/MetaService.js';
-import { CaptchaService } from '@/services/CaptchaService.js';
-import { IdService } from '@/services/IdService.js';
-import { SignupService } from '@/services/SignupService.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
-import { EmailService } from '@/services/EmailService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { CaptchaService } from '@/core/CaptchaService.js';
+import { IdService } from '@/core/IdService.js';
+import { SignupService } from '@/core/SignupService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { EmailService } from '@/core/EmailService.js';
 import { SigninService } from './SigninService.js';
 import type Koa from 'koa';
 

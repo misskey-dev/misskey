@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import { HttpRequestService } from '@/services/HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 const rssParser = new Parser();
 

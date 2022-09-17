@@ -2,7 +2,7 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Users, Notes } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NoteDeleteService } from '@/services/NoteDeleteService.js';
+import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';

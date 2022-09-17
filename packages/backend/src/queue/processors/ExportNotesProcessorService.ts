@@ -6,7 +6,7 @@ import { DI } from '@/di-symbols.js';
 import type { Notes, Polls, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { Note } from '@/models/entities/Note.js';

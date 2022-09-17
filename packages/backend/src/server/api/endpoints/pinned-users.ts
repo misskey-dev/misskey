@@ -4,8 +4,8 @@ import type { Users } from '@/models/index.js';
 import * as Acct from '@/misc/acct.js';
 import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MetaService } from '@/services/MetaService.js';
-import { UserEntityService } from '@/services/entities/UserEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

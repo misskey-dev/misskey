@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Meta } from '@/models/entities/Meta.js';
-import { ModerationLogService } from '@/services/ModerationLogService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';

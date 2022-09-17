@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Users, Followings, Notifications } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { ModerationLogService } from '@/services/ModerationLogService.js';
-import { UserSuspendService } from '@/services/UserSuspendService.js';
-import { UserFollowingService } from '@/services/UserFollowingService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { UserSuspendService } from '@/core/UserSuspendService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

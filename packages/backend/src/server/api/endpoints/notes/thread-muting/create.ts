@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Notes, NoteThreadMutings } from '@/models/index.js';
-import { IdService } from '@/services/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
-import { NoteReadService } from '@/services/NoteReadService.js';
+import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

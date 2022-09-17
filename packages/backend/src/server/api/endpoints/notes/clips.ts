@@ -2,7 +2,7 @@ import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { ClipNotes, Clips } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ClipEntityService } from '@/services/entities/ClipEntityService.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';

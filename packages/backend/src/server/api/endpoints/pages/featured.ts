@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Pages } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { PageEntityService } from '@/services/entities/PageEntityService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

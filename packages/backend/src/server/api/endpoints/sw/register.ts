@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IdService } from '@/services/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import type { SwSubscriptions } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MetaService } from '@/services/MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

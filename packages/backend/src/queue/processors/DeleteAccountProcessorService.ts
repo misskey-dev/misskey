@@ -5,7 +5,7 @@ import type { DriveFiles, UserProfiles } from '@/models/index.js';
 import { Notes, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { DriveService } from '@/services/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';

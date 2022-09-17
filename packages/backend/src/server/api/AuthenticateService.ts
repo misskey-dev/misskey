@@ -5,7 +5,7 @@ import type { CacheableLocalUser, ILocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { Cache } from '@/misc/cache.js';
 import type { App } from '@/models/entities/App.js';
-import { UserCacheService } from '@/services/UserCacheService.js';
+import { UserCacheService } from '@/core/UserCacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 
 export class AuthenticationError extends Error {

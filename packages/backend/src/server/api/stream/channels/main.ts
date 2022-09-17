@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Notes } from '@/models/index.js';
 import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
-import { NoteEntityService } from '@/services/entities/NoteEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import Channel from '../channel.js';
 
 class MainChannel extends Channel {

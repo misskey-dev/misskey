@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Notes, AntennaNotes } from '@/models/index.js';
 import { Antennas } from '@/models/index.js';
-import { QueryService } from '@/services/QueryService.js';
-import { NoteReadService } from '@/services/NoteReadService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 

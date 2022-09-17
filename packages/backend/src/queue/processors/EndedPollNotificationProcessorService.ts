@@ -4,7 +4,7 @@ import { DI } from '@/di-symbols.js';
 import type { PollVotes, Notes } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { CreateNotificationService } from '@/services/CreateNotificationService.js';
+import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { EndedPollNotificationJobData } from '../types.js';

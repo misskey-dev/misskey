@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Notifications } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GlobalEventService } from '@/services/GlobalEventService.js';
-import { PushNotificationService } from '@/services/PushNotificationService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

@@ -5,7 +5,7 @@ import { MessagingMessages } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
-import { MessagingService } from '@/services/MessagingService.js';
+import { MessagingService } from '@/core/MessagingService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

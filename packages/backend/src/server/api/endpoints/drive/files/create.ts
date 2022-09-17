@@ -4,9 +4,9 @@ import type { DriveFiles } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFileEntityService } from '@/services/entities/DriveFileEntityService.js';
-import { MetaService } from '@/services/MetaService.js';
-import { DriveService } from '@/services/DriveService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

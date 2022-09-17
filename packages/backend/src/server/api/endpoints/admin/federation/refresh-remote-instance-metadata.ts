@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Instances } from '@/models/index.js';
-import { FetchInstanceMetadataService } from '@/services/FetchInstanceMetadataService.js';
-import { UtilityService } from '@/services/UtilityService.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AuthSessions } from '@/models/index.js';
-import { AuthSessionEntityService } from '@/services/entities/AuthSessionEntityService.js';
+import { AuthSessionEntityService } from '@/core/entities/AuthSessionEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

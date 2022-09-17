@@ -3,7 +3,7 @@ import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { Mutings, UserGroupJoinings, MessagingMessages } from '@/models/index.js';
-import { MessagingMessageEntityService } from '@/services/entities/MessagingMessageEntityService.js';
+import { MessagingMessageEntityService } from '@/core/entities/MessagingMessageEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
