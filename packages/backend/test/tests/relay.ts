@@ -10,6 +10,8 @@ import { ApRendererService } from '@/services/remote/activitypub/ApRendererServi
 import { CreateSystemUserService } from '@/services/CreateSystemUserService.js';
 import { QueueService } from '@/services/QueueService.js';
 import { IdService } from '@/services/IdService.js';
+import type { Relays } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 import type { MockFunctionMetadata } from 'jest-mock';
 
 const moduleMocker = new ModuleMocker(global);
@@ -17,6 +19,7 @@ const moduleMocker = new ModuleMocker(global);
 describe('RelayService', () => {
 	let relayService: RelayService;
 	let queueService: jest.Mocked<QueueService>;
+	let relaysRepository: typeof Relays;
 
 	beforeAll(async () => {
 		//await initTestDb();
@@ -49,6 +52,7 @@ describe('RelayService', () => {
 
 		relayService = moduleRef.get<RelayService>(RelayService);
 		queueService = moduleRef.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
+		relaysRepository = moduleRef.get<typeof Relays>(DI.relaysRepository);
 	});
 
 	it('addRelay', async () => {	

@@ -632,9 +632,7 @@ export class ApRendererService {
 		}, x);
 	}
 	
-	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity | null> {
-		if (activity == null) return null;
-	
+	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 	
 		const ldSignature = this.ldSignatureService.use();
