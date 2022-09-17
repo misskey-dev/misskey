@@ -74,7 +74,7 @@ describe('RelayService', () => {
 		expect(result[0].status).toBe('requesting');
 	});
 
-	it('removeRelay', async () => {	
+	it('removeRelay: succ', async () => {	
 		await relayService.removeRelay('https://example.com');
 
 		expect(queueService.deliver).toHaveBeenCalled();
@@ -85,5 +85,10 @@ describe('RelayService', () => {
 
 		const list = await relayService.listRelay();
 		expect(list.length).toBe(0);
+	});
+
+	it('removeRelay: fail', async () => {	
+		await expect(relayService.removeRelay('https://x.example.com'))
+			.rejects.toThrow('relay not found');
 	});
 });
