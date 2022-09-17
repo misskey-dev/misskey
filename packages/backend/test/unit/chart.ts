@@ -72,6 +72,10 @@ describe('Chart', () => {
 		clock.uninstall();
 	});
 
+	afterAll(async () => {
+		if (db) await db.destroy();
+	});
+
 	it('Can updates', async () => {
 		await testChart.increment();
 		await testChart.save();

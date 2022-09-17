@@ -14,6 +14,7 @@ export async function workerMain() {
 	await initDb();
 
 	const app = await NestFactory.createApplicationContext(AppModule);
+	app.enableShutdownHooks();
 
 	// start server
 	const serverService = app.get(ServerService);

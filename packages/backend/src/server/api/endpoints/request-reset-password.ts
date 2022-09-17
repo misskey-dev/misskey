@@ -7,7 +7,7 @@ import { UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { Config } from '@/config.js';
-import { DI, DI } from '@/di-symbols.js';
+import { DI } from '@/di-symbols.js';
 import { EmailService } from '@/core/EmailService.js';
 import { ApiError } from '../error.js';
 

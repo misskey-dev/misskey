@@ -13,7 +13,7 @@ import { type predictionType } from 'nsfwjs';
 import sharp from 'sharp';
 import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
-import { AiService } from './AiService.js';
+import { AiService } from '@/core/AiService.js';
 
 const pipeline = util.promisify(stream.pipeline);
 

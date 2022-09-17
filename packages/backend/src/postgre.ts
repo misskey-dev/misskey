@@ -73,7 +73,6 @@ import { Channel } from '@/models/entities/Channel.js';
 import { loadConfig } from '@/config.js';
 import Logger from '@/logger.js';
 import { envOption } from './env.js';
-import { redisClient } from './redis.js';
 
 export const dbLogger = new Logger('db');
 
@@ -226,33 +225,5 @@ export async function initDb(force = false) {
 		// nop
 	} else {
 		await db.initialize();
-	}
-}
-
-export async function resetDb() {
-	const reset = async () => {
-		await redisClient.flushdb();
-		const tables = await db.query(`SELECT relname AS "table"
-		FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
-		WHERE nspname NOT IN ('pg_catalog', 'information_schema')
-			AND C.relkind = 'r'
-			AND nspname !~ '^pg_toast';`);
-		for (const table of tables) {
-			await db.query(`DELETE FROM "${table.table}" CASCADE`);
-		}
-	};
-
-	for (let i = 1; i <= 3; i++) {
-		try {
-			await reset();
-		} catch (e) {
-			if (i === 3) {
-				throw e;
-			} else {
-				await new Promise(resolve => setTimeout(resolve, 1000));
-				continue;
-			}
-		}
-		break;
 	}
 }

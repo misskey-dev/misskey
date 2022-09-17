@@ -5,11 +5,12 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { initDb } from '@/postgre.js';
+import { db, initDb } from '@/postgre.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';
+import type { TestingModule } from '@nestjs/testing';
 import type { jest } from '@jest/globals';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -20,6 +21,7 @@ const resources = `${_dirname}/../resources`;
 const moduleMocker = new ModuleMocker(global);
 
 describe('FileInfoService', () => {
+	let app: TestingModule;
 	let fileInfoService: FileInfoService;
 
 	beforeAll(async () => {
@@ -27,8 +29,14 @@ describe('FileInfoService', () => {
 		await initDb();
 	});
 
+	afterAll(async () => {
+		await db.destroy();
+	});
+
 	beforeEach(async () => {
-		const moduleRef = await Test.createTestingModule({
+		if (app) await app.close();
+
+		app = await Test.createTestingModule({
 			imports: [
 				GlobalModule,
 			],
@@ -49,7 +57,9 @@ describe('FileInfoService', () => {
 			})
 			.compile();
 
-		fileInfoService = moduleRef.get<FileInfoService>(FileInfoService);
+		app.enableShutdownHooks();
+
+		fileInfoService = app.get<FileInfoService>(FileInfoService);
 	});
 
 	it('Empty file', async () => {

@@ -80,6 +80,7 @@ export async function masterMain() {
 
 	if (!envOption.noDaemons) {
 		const daemons = await NestFactory.createApplicationContext(DaemonModule);
+		daemons.enableShutdownHooks();
 		daemons.get(JanitorService).start();
 		daemons.get(QueueStatsService).start();
 		daemons.get(ServerStatsService).start();

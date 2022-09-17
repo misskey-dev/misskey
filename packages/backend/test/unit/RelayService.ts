@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { initDb } from '@/postgre.js';
+import { db, initDb } from '@/postgre.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
@@ -12,11 +12,13 @@ import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Relays } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
+import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
 const moduleMocker = new ModuleMocker(global);
 
 describe('RelayService', () => {
+	let app: TestingModule;
 	let relayService: RelayService;
 	let queueService: jest.Mocked<QueueService>;
 	let relaysRepository: typeof Relays;
@@ -26,8 +28,14 @@ describe('RelayService', () => {
 		await initDb();
 	});
 
+	afterAll(async () => {
+		await db.destroy();
+	});
+
 	beforeEach(async () => {
-		const moduleRef = await Test.createTestingModule({
+		if (app) await app.close();
+
+		app = await Test.createTestingModule({
 			imports: [
 				GlobalModule,
 			],
@@ -50,9 +58,11 @@ describe('RelayService', () => {
 			})
 			.compile();
 
-		relayService = moduleRef.get<RelayService>(RelayService);
-		queueService = moduleRef.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
-		relaysRepository = moduleRef.get<typeof Relays>(DI.relaysRepository);
+		app.enableShutdownHooks();
+
+		relayService = app.get<RelayService>(RelayService);
+		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
+		relaysRepository = app.get<typeof Relays>(DI.relaysRepository);
 	});
 
 	it('addRelay', async () => {	
