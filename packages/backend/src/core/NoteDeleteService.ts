@@ -3,7 +3,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { Note, IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
-import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -51,7 +50,7 @@ export class NoteDeleteService {
 		const deletedAt = new Date();
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
-		if (note.renoteId && (await countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
+		if (note.renoteId && (await this.noteEntityService.countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
 			this.notesRepository.decrement({ id: note.renoteId }, 'renoteCount', 1);
 			this.notesRepository.decrement({ id: note.renoteId }, 'score', 1);
 		}

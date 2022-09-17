@@ -16,7 +16,6 @@ import type { IPoll } from '@/models/entities/Poll.js';
 import { Poll } from '@/models/entities/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
-import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Cache } from '@/misc/cache.js';
@@ -478,7 +477,7 @@ export class NoteCreateService {
 		}
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
-		if (data.renote && (await countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
+		if (data.renote && (await this.noteEntityService.countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
 			this.#incRenoteCount(data.renote);
 		}
 
