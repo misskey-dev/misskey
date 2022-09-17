@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { NotesRepository, ClipsRepository, ClipNotes } from '@/models/index.js';
+import { NotesRepository, ClipsRepository, ClipNotesRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -53,6 +53,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.clipNotesRepository)
+		private clipNotesRepository: ClipNotesRepository,
+
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 	) {
@@ -70,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-				.innerJoin(ClipNotes.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
+				.innerJoin(this.clipNotesRepository.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')

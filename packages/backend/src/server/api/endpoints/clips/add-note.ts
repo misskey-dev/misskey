@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ClipNotes, Clips } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
+import { DI } from '@/di-symbols.js';
+import { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';
 
@@ -46,11 +47,17 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.clipsRepository)
+		private clipsRepository: ClipsRepository,
+
+		@Inject(DI.clipNotesRepository)
+		private clipNotesRepository: ClipNotesRepository,
+
 		private idService: IdService,
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clip = await Clips.findOneBy({
+			const clip = await this.clipsRepository.findOneBy({
 				id: ps.clipId,
 				userId: me.id,
 			});
@@ -64,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			});
 
-			const exist = await ClipNotes.findOneBy({
+			const exist = await this.clipNotesRepository.findOneBy({
 				noteId: note.id,
 				clipId: clip.id,
 			});
@@ -73,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.alreadyClipped);
 			}
 
-			await ClipNotes.insert({
+			await this.clipNotesRepository.insert({
 				id: this.idService.genId(),
 				noteId: note.id,
 				clipId: clip.id,
