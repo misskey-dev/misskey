@@ -1,9 +1,9 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { jest } from '@jest/globals';
 import * as lolex from '@sinonjs/fake-timers';
 import { DataSource } from 'typeorm';
-import config from '@/config/index.js';
 import TestChart from '@/services/chart/charts/test.js';
 import TestGroupedChart from '@/services/chart/charts/test-grouped.js';
 import TestUniqueChart from '@/services/chart/charts/test-unique.js';
@@ -12,8 +12,15 @@ import { entity as TestChartEntity } from '@/services/chart/charts/entities/test
 import { entity as TestGroupedChartEntity } from '@/services/chart/charts/entities/test-grouped.js';
 import { entity as TestUniqueChartEntity } from '@/services/chart/charts/entities/test-unique.js';
 import { entity as TestIntersectionChartEntity } from '@/services/chart/charts/entities/test-intersection.js';
+import { loadConfig } from '@/config.js';
+import type { AppLockService } from '@/services/AppLockService';
 
 describe('Chart', () => {
+	const config = loadConfig();
+	const appLockService = {
+		getChartInsertLock: jest.fn().mockImplementation(() => Promise.resolve(() => {})),
+	} as unknown as jest.Mocked<AppLockService>;
+
 	let db: DataSource | undefined;
 
 	let testChart: TestChart;
@@ -50,10 +57,10 @@ describe('Chart', () => {
 
 		await db.initialize();
 
-		testChart = new TestChart(db);
-		testGroupedChart = new TestGroupedChart(db);
-		testUniqueChart = new TestUniqueChart(db);
-		testIntersectionChart = new TestIntersectionChart(db);
+		testChart = new TestChart(db, appLockService);
+		testGroupedChart = new TestGroupedChart(db, appLockService);
+		testUniqueChart = new TestUniqueChart(db, appLockService);
+		testIntersectionChart = new TestIntersectionChart(db, appLockService);
 
 		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),
