@@ -4,8 +4,7 @@ import json from 'koa-json-body';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { Followings, Notes } from '@/models/index.js';
-import type { Emojis, NoteReactions, UserProfiles, UserNotePinings, Users } from '@/models/index.js';
+import { Followings, Notes, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
 import * as url from '@/misc/prelude/url.js';
 import { Config } from '@/config.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
@@ -30,25 +29,25 @@ export class ActivityPubServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: typeof NoteReactions,
+		private noteReactionsRepository: NoteReactionsRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: typeof Emojis,
+		private emojisRepository: EmojisRepository,
 
 		@Inject(DI.userNotePiningsRepository)
-		private userNotePiningsRepository: typeof UserNotePinings,
+		private userNotePiningsRepository: UserNotePiningsRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,

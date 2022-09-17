@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { Mutings, Users, Blockings } from '@/models/index.js';
+import { MutingsRepository, UsersRepository, BlockingsRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -22,13 +22,13 @@ export class ExportMutingProcessorService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 
 		private utilityService: UtilityService,
 		private driveService: DriveService,

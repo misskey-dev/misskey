@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { PageLikes } from '@/models/index.js';
+import type { PageLikesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -13,7 +13,7 @@ import { PageEntityService } from './PageEntityService.js';
 export class PageLikeEntityService {
 	constructor(
 		@Inject(DI.pageLikesRepository)
-		private pageLikesRepository: typeof PageLikes,
+		private pageLikesRepository: PageLikesRepository,
 
 		private pageEntityService: PageEntityService,
 	) {

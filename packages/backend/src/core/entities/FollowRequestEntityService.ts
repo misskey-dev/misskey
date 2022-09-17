@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequests } from '@/models/index.js';
+import type { FollowRequestsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -12,7 +12,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class FollowRequestEntityService {
 	constructor(
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: typeof FollowRequests,
+		private followRequestsRepository: FollowRequestsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

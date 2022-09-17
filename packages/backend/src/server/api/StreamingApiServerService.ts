@@ -3,8 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import * as websocket from 'websocket';
 import { DI } from '@/di-symbols.js';
-import { Users } from '@/models/index.js';
-import type { Blockings, ChannelFollowings, Followings, Mutings, UserProfiles } from '@/models/index.js';
+import { Users, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -25,19 +24,19 @@ export class StreamingApiServerService {
 		private redisSubscriber: Redis.Redis,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: typeof ChannelFollowings,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 	
 		private globalEventService: GlobalEventService,
 		private noteReadService: NoteReadService,

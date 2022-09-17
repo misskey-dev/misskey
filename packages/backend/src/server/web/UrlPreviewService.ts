@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import summaly from 'summaly';
 import { DI } from '@/di-symbols.js';
-import type { Users } from '@/models/index.js';
+import { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -18,7 +18,7 @@ export class UrlPreviewService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private metaService: MetaService,
 		private httpRequestService: HttpRequestService,

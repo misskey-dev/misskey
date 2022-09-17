@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { Notes, Polls, Users } from '@/models/index.js';
+import { NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -23,13 +23,13 @@ export class ExportNotesProcessorService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: typeof Polls,
+		private pollsRepository: PollsRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,

@@ -58,61 +58,61 @@ export class UserEntityService implements OnModuleInit {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userSecurityKeysRepository)
-		private userSecurityKeysRepository: typeof UserSecurityKeys,
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: typeof FollowRequests,
+		private followRequestsRepository: FollowRequestsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.noteUnreadsRepository)
-		private noteUnreadsRepository: typeof NoteUnreads,
+		private noteUnreadsRepository: NoteUnreadsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: typeof ChannelFollowings,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		@Inject(DI.notificationsRepository)
-		private notificationsRepository: typeof Notifications,
+		private notificationsRepository: NotificationsRepository,
 
 		@Inject(DI.userNotePiningsRepository)
-		private userNotePiningsRepository: typeof UserNotePinings,
+		private userNotePiningsRepository: UserNotePiningsRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: typeof Instances,
+		private instancesRepository: InstancesRepository,
 
 		@Inject(DI.announcementReadsRepository)
-		private announcementReadsRepository: typeof AnnouncementReads,
+		private announcementReadsRepository: AnnouncementReadsRepository,
 
 		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: typeof MessagingMessages,
+		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		@Inject(DI.announcementsRepository)
-		private announcementsRepository: typeof Announcements,
+		private announcementsRepository: AnnouncementsRepository,
 
 		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: typeof AntennaNotes,
+		private antennaNotesRepository: AntennaNotesRepository,
 
 		@Inject(DI.pagesRepository)
-		private pagesRepository: typeof Pages,
+		private pagesRepository: PagesRepository,
 
 		//private noteEntityService: NoteEntityService,
 		//private driveFileEntityService: DriveFileEntityService,

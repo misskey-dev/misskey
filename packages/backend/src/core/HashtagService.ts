@@ -11,10 +11,10 @@ import HashtagChart from '@/core/chart/charts/hashtag.js';
 export class HashtagService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.hashtagsRepository)
-		private hashtagsRepository: typeof Hashtags,
+		private hashtagsRepository: HashtagsRepository,
 
 		private idService: IdService,
 		private hashtagChart: HashtagChart,

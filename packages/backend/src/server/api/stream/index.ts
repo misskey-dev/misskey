@@ -1,6 +1,6 @@
 import type { User } from '@/models/entities/User.js';
 import type { Channel as ChannelModel } from '@/models/entities/Channel.js';
-import type { Followings, Mutings, UserProfiles, ChannelFollowings, Blockings } from '@/models/index.js';
+import type { FollowingsRepository, MutingsRepository, UserProfilesRepository, ChannelFollowingsRepository, BlockingsRepository } from '@/models/index.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
@@ -32,11 +32,11 @@ export default class Connection {
 	private cachedNotes: Packed<'Note'>[] = [];
 
 	constructor(
-		private followingsRepository: typeof Followings,
-		private mutingsRepository: typeof Mutings,
-		private blockingsRepository: typeof Blockings,
-		private channelFollowingsRepository: typeof ChannelFollowings,
-		private userProfilesRepository: typeof UserProfiles,
+		private followingsRepository: FollowingsRepository,
+		private mutingsRepository: MutingsRepository,
+		private blockingsRepository: BlockingsRepository,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
+		private userProfilesRepository: UserProfilesRepository,
 		private channelsService: ChannelsService,
 		private globalEventService: GlobalEventService,
 		private noteReadService: NoteReadService,

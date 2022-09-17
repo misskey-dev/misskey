@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
-import type { Followings, Users } from '@/models/index.js';
+import { FollowingsRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -16,10 +16,10 @@ export class UserSuspendService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		private userEntityService: UserEntityService,
 		private queueService: QueueService,

@@ -5,7 +5,7 @@ import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import { Config } from '@/config.js';
-import type { UserProfiles, Users } from '@/models/index.js';
+import { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -25,10 +25,10 @@ export class GithubServerService {
 		private redisClient: Redis,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		private userEntityService: UserEntityService,
 		private httpRequestService: HttpRequestService,

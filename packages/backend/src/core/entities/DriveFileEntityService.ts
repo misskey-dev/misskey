@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import type { Notes, DriveFiles } from '@/models/index.js';
+import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -29,10 +29,10 @@ export class DriveFileEntityService {
 		private db: DataSource,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		// 循環参照のため / for circular dependency
 		@Inject(forwardRef(() => UserEntityService))

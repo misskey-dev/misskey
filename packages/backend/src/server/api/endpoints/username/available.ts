@@ -1,6 +1,6 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsedUsernames, Users } from '@/models/index.js';
+import type { UsedUsernamesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { localUsernameSchema } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
@@ -35,10 +35,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.usedUsernamesRepository)
-		private usedUsernamesRepository: typeof UsedUsernames,
+		private usedUsernamesRepository: UsedUsernamesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get exist

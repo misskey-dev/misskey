@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserGroupInvitations } from '@/models/index.js';
+import { UserGroupInvitationsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserGroupInvitationEntityService } from '@/core/entities/UserGroupInvitationEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -49,7 +49,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userGroupInvitationsRepository)
-		private userGroupInvitationsRepository: typeof UserGroupInvitations,
+		private userGroupInvitationsRepository: UserGroupInvitationsRepository,
 
 		private userGroupInvitationEntityService: UserGroupInvitationEntityService,
 		private queryService: QueryService,

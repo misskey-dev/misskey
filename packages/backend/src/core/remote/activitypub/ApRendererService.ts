@@ -33,22 +33,22 @@ export class ApRendererService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: typeof Emojis,
+		private emojisRepository: EmojisRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: typeof Polls,
+		private pollsRepository: PollsRepository,
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,

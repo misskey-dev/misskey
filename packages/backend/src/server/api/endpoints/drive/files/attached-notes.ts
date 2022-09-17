@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Notes, DriveFiles } from '@/models/index.js';
+import { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -46,10 +46,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
 	) {

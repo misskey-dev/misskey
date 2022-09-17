@@ -2,8 +2,7 @@ import rndstr from 'rndstr';
 import ms from 'ms';
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
-import { UserProfiles, PasswordResetRequests } from '@/models/index.js';
+import { UsersRepository, UserProfiles, PasswordResetRequests } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { Config } from '@/config.js';
@@ -45,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 		
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private idService: IdService,
 		private emailService: EmailService,

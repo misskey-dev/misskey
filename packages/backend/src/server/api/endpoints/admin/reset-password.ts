@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users, UserProfiles } from '@/models/index.js';
+import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -38,10 +38,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 	) {
 		super(meta, paramDef, async (ps) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });

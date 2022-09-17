@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { Users } from '@/models/index.js';
-import type { Blockings, DriveFiles } from '@/models/index.js';
+import { Users, BlockingsRepository, DriveFilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -23,13 +22,13 @@ export class ImportBlockingProcessorService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,

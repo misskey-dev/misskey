@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { UserGroupJoinings, UserGroups } from '@/models/index.js';
+import type { UserGroupJoiningsRepository, UserGroupsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -12,10 +12,10 @@ import { UserEntityService } from './UserEntityService.js';
 export class UserGroupEntityService {
 	constructor(
 		@Inject(DI.userGroupsRepository)
-		private userGroupsRepository: typeof UserGroups,
+		private userGroupsRepository: UserGroupsRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

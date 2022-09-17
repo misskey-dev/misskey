@@ -1,7 +1,7 @@
 import * as speakeasy from 'speakeasy';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfiles } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -23,7 +23,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const token = ps.token.replace(/\s/g, '');

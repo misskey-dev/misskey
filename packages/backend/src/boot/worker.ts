@@ -4,15 +4,12 @@ import { envOption } from '@/env.js';
 import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { ServerService } from '@/server/ServerService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
-import { initDb } from '../postgre.js';
 import { AppModule } from '../AppModule.js';
 
 /**
  * Init worker process
  */
 export async function workerMain() {
-	await initDb();
-
 	const app = await NestFactory.createApplicationContext(AppModule);
 	app.enableShutdownHooks();
 

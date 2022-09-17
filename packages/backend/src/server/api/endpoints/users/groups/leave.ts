@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserGroups, UserGroupJoinings } from '@/models/index.js';
+import type { UserGroupsRepository, UserGroupJoiningsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -41,10 +41,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userGroupsRepository)
-		private userGroupsRepository: typeof UserGroups,
+		private userGroupsRepository: UserGroupsRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch the group

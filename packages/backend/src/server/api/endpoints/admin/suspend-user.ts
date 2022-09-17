@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users, Followings, Notifications } from '@/models/index.js';
+import { UsersRepository, FollowingsRepository, NotificationsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -28,13 +28,13 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.notificationsRepository)
-		private notificationsRepository: typeof Notifications,
+		private notificationsRepository: NotificationsRepository,
 
 		private userFollowingService: UserFollowingService,
 		private userSuspendService: UserSuspendService,

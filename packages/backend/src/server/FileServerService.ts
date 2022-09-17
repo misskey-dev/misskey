@@ -8,7 +8,7 @@ import Router from '@koa/router';
 import send from 'koa-send';
 import rename from 'rename';
 import { Config } from '@/config.js';
-import type { DriveFiles } from '@/models/index.js';
+import { DriveFilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
@@ -41,7 +41,7 @@ export class FileServerService {
 		private config: Config,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		private fileInfoService: FileInfoService,
 		private downloadService: DownloadService,

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users, Mutings } from '@/models/index.js';
+import { UsersRepository, MutingsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -10,10 +10,10 @@ import { DI } from '@/di-symbols.js';
 export class UserMutingService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 
 		private idService: IdService,
 		private queueService: QueueService,

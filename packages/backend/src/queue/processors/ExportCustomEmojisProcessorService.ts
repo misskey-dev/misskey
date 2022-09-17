@@ -6,7 +6,7 @@ import { ulid } from 'ulid';
 import mime from 'mime-types';
 import archiver from 'archiver';
 import { DI } from '@/di-symbols.js';
-import type { Emojis, Users } from '@/models/index.js';
+import { EmojisRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -24,10 +24,10 @@ export class ExportCustomEmojisProcessorService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: typeof Emojis,
+		private emojisRepository: EmojisRepository,
 
 		private driveService: DriveService,
 		private downloadService: DownloadService,

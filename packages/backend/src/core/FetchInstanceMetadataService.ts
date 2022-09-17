@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 import tinycolor from 'tinycolor2';
 import type { Instance } from '@/models/entities/Instance.js';
-import type { Instances } from '@/models/index.js';
+import { InstancesRepository } from '@/models/index.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
@@ -35,7 +35,7 @@ type NodeInfo = {
 export class FetchInstanceMetadataService {
 	constructor(
 		@Inject(DI.instancesRepository)
-		private instancesRepository: typeof Instances,
+		private instancesRepository: InstancesRepository,
 
 		private appLockService: AppLockService,
 		private httpRequestService: HttpRequestService,

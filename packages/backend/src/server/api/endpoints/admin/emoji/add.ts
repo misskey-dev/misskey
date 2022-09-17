@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFiles, Emojis } from '@/models/index.js';
+import { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -43,10 +43,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private db: DataSource,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: typeof Emojis,
+		private emojisRepository: EmojisRepository,
 
 		private emojiEntityService: EmojiEntityService,
 		private idService: IdService,

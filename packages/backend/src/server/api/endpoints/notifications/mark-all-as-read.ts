@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notifications } from '@/models/index.js';
+import { NotificationsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
@@ -24,7 +24,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notificationsRepository)
-		private notificationsRepository: typeof Notifications,
+		private notificationsRepository: NotificationsRepository,
 
 		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,

@@ -42,22 +42,22 @@ export class ApInboxService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: typeof MessagingMessages,
+		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: typeof AbuseUserReports,
+		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: typeof FollowRequests,
+		private followRequestsRepository: FollowRequestsRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,

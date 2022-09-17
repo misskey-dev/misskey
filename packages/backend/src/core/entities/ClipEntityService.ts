@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Clips } from '@/models/index.js';
+import type { ClipsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -12,7 +12,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class ClipEntityService {
 	constructor(
 		@Inject(DI.clipsRepository)
-		private clipsRepository: typeof Clips,
+		private clipsRepository: ClipsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

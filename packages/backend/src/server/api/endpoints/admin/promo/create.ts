@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { PromoNotes } from '@/models/index.js';
+import type { PromoNotesRepository } from '@/models/index.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -40,7 +40,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.promoNotesRepository)
-		private promoNotesRepository: typeof PromoNotes,
+		private promoNotesRepository: PromoNotesRepository,
 
 		private getterService: GetterService,
 	) {

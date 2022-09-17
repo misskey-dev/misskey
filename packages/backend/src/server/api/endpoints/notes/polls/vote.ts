@@ -1,6 +1,6 @@
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users, Blockings, Polls, PollVotes } from '@/models/index.js';
+import { UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -75,16 +75,16 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: typeof Polls,
+		private pollsRepository: PollsRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: typeof PollVotes,
+		private pollVotesRepository: PollVotesRepository,
 
 		private idService: IdService,
 		private getterService: GetterService,

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MessagingMessages } from '@/models/index.js';
+import type { MessagingMessagesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -14,7 +14,7 @@ import { UserGroupEntityService } from './UserGroupEntityService.js';
 export class MessagingMessageEntityService {
 	constructor(
 		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: typeof MessagingMessages,
+		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		private userEntityService: UserEntityService,
 		private userGroupEntityService: UserGroupEntityService,

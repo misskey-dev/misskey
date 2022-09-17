@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IdService } from '@/core/IdService.js';
-import type { SwSubscriptions } from '@/models/index.js';
+import { SwSubscriptionsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
@@ -44,7 +44,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.swSubscriptionsRepository)
-		private swSubscriptionsRepository: typeof SwSubscriptions,
+		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
 		private idService: IdService,
 		private metaService: MetaService,

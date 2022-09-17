@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserGroupJoinings, Users, MessagingMessages } from '@/models/index.js';
+import { UserGroupJoiningsRepository, UsersRepository, MessagingMessagesRepository } from '@/models/index.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { MessagingService } from '@/core/MessagingService.js';
@@ -21,9 +21,9 @@ class MessagingChannel extends Channel {
 	private emitTypersIntervalId: ReturnType<typeof setInterval>;
 
 	constructor(
-		private usersRepository: typeof Users,
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
-		private messagingMessagesRepository: typeof MessagingMessages,
+		private usersRepository: UsersRepository,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+		private messagingMessagesRepository: MessagingMessagesRepository,
 		private userEntityService: UserEntityService,
 		private messagingService: MessagingService,
 
@@ -125,13 +125,13 @@ export class MessagingChannelService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: typeof MessagingMessages,
+		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		private userEntityService: UserEntityService,
 		private messagingService: MessagingService,

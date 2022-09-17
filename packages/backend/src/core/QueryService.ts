@@ -9,25 +9,25 @@ import type { SelectQueryBuilder } from 'typeorm';
 export class QueryService {
 	constructor(
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: typeof ChannelFollowings,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: typeof MutedNotes,
+		private mutedNotesRepository: MutedNotesRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: typeof NoteThreadMutings,
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 	) {
 	}
 

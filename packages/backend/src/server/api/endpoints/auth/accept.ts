@@ -1,7 +1,7 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AuthSessions, Apps, AccessTokens } from '@/models/index.js';
+import { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
@@ -36,13 +36,13 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.appsRepository)
-		private appsRepository: typeof Apps,
+		private appsRepository: AppsRepository,
 
 		@Inject(DI.authSessionsRepository)
-		private authSessionsRepository: typeof AuthSessions,
+		private authSessionsRepository: AuthSessionsRepository,
 
 		@Inject(DI.accessTokensRepository)
-		private accessTokensRepository: typeof AccessTokens,
+		private accessTokensRepository: AccessTokensRepository,
 
 		private idService: IdService,
 	) {

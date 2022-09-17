@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Users } from '@/models/index.js';
-import { Notes, UserNotePinings } from '@/models/index.js';
+import { UsersRepository, Notes, UserNotePinings } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -20,13 +19,13 @@ export class NotePiningService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.userNotePiningsRepository)
-		private userNotePiningsRepository: typeof UserNotePinings,
+		private userNotePiningsRepository: UserNotePiningsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

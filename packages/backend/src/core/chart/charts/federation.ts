@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { Followings, Instances } from '@/models/index.js';
+import { FollowingsRepository, InstancesRepository } from '@/models/index.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -19,10 +19,10 @@ export default class FederationChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: typeof Instances,
+		private instancesRepository: InstancesRepository,
 
 		private metaService: MetaService,
 		private appLockService: AppLockService,

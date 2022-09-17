@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserLists } from '@/models/index.js';
+import { UserListsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { UserList } from '@/models/entities/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -35,7 +35,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userListsRepository)
-		private userListsRepository: typeof UserLists,
+		private userListsRepository: UserListsRepository,
 
 		private userListEntityService: UserListEntityService,
 		private idService: IdService,

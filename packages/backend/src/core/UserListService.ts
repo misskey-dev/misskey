@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoinings, Users } from '@/models/index.js';
+import { UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { UserList } from '@/models/entities/UserList.js';
 import type { UserListJoining } from '@/models/entities/UserListJoining.js';
@@ -14,10 +14,10 @@ import { ProxyAccountService } from './ProxyAccountService.js';
 export class UserListService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: typeof UserListJoinings,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

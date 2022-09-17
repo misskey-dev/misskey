@@ -4,8 +4,7 @@ import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UserSecurityKeys, Signins, UserProfiles } from '@/models/index.js';
-import { AttestationChallenges, Users } from '@/models/index.js';
+import { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallenges, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -22,19 +21,19 @@ export class SigninApiService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userSecurityKeysRepository)
-		private userSecurityKeysRepository: typeof UserSecurityKeys,
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.attestationChallengesRepository)
-		private attestationChallengesRepository: typeof AttestationChallenges,
+		private attestationChallengesRepository: AttestationChallengesRepository,
 
 		@Inject(DI.signinsRepository)
-		private signinsRepository: typeof Signins,
+		private signinsRepository: SigninsRepository,
 
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,

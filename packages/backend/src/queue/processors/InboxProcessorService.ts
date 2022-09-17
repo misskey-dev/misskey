@@ -3,8 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import httpSignature from '@peertube/http-signature';
 import { DI } from '@/di-symbols.js';
-import { Instances } from '@/models/index.js';
-import type { DriveFiles } from '@/models/index.js';
+import { Instances, DriveFilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -39,10 +38,10 @@ export class InboxProcessorService {
 		private config: Config,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: typeof Instances,
+		private instancesRepository: InstancesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		private utilityService: UtilityService,
 		private metaService: MetaService,

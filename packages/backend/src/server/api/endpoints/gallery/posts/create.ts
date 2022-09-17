@@ -1,8 +1,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GalleryPosts } from '@/models/index.js';
-import { DriveFiles } from '@/models/index.js';
+import { GalleryPostsRepository, DriveFiles } from '@/models/index.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
@@ -51,7 +50,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.galleryPostsRepository)
-		private galleryPostsRepository: typeof GalleryPosts,
+		private galleryPostsRepository: GalleryPostsRepository,
 
 		private galleryPostEntityService: GalleryPostEntityService,
 		private idService: IdService,

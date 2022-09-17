@@ -2,13 +2,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import rndstr from 'rndstr';
-import { initDb } from '../../src/postgre.js';
 
 describe('ActivityPub', () => {
-	beforeAll(async () => {
-		await initDb();
-	});
-
 	describe('Parse minimum object', () => {
 		const host = 'https://host1.test';
 		const preferredUsername = `${rndstr('A-Z', 4)}${rndstr('a-z', 4)}`;

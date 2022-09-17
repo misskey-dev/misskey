@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserLists, UserListJoinings } from '@/models/index.js';
-import { Users } from '@/models/index.js';
+import { UserListsRepository, UserListJoiningsRepository, Users } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
@@ -46,10 +45,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userListsRepository)
-		private userListsRepository: typeof UserLists,
+		private userListsRepository: UserListsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: typeof UserListJoinings,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private userEntityService: UserEntityService,
 		private getterService: GetterService,

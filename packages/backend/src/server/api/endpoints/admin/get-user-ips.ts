@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserIps } from '@/models/index.js';
+import type { UserIpsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -23,7 +23,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userIpsRepository)
-		private userIpsRepository: typeof UserIps,
+		private userIpsRepository: UserIpsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const ips = await this.userIpsRepository.find({

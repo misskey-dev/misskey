@@ -16,25 +16,25 @@ import { AntennaService } from './AntennaService.js';
 export class NoteReadService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.noteUnreadsRepository)
-		private noteUnreadsRepository: typeof NoteUnreads,
+		private noteUnreadsRepository: NoteUnreadsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: typeof NoteThreadMutings,
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: typeof ChannelFollowings,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: typeof AntennaNotes,
+		private antennaNotesRepository: AntennaNotesRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

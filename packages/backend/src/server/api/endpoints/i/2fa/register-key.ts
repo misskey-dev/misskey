@@ -3,7 +3,7 @@ import * as crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfiles, AttestationChallenges } from '@/models/index.js';
+import { UserProfilesRepository, AttestationChallengesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import { DI } from '@/di-symbols.js';
@@ -29,10 +29,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.attestationChallengesRepository)
-		private attestationChallengesRepository: typeof AttestationChallenges,
+		private attestationChallengesRepository: AttestationChallengesRepository,
 
 		private idService: IdService,
 		private twoFactorAuthenticationService: TwoFactorAuthenticationService,

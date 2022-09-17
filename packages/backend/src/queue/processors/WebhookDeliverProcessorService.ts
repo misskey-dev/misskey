@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Webhooks } from '@/models/index.js';
+import { WebhooksRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -19,7 +19,7 @@ export class WebhookDeliverProcessorService {
 		private config: Config,
 
 		@Inject(DI.webhooksRepository)
-		private webhooksRepository: typeof Webhooks,
+		private webhooksRepository: WebhooksRepository,
 
 		private httpRequestService: HttpRequestService,
 		private queueLoggerService: QueueLoggerService,

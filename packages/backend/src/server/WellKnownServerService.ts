@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Users } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
 import type { User } from '@/models/entities/User.js';
@@ -17,7 +17,7 @@ export class WellKnownServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private nodeinfoServerService: NodeinfoServerService,
 	) {

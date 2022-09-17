@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Webhooks } from '@/models/index.js';
+import type { WebhooksRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -22,7 +22,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.webhooksRepository)
-		private webhooksRepository: typeof Webhooks,
+		private webhooksRepository: WebhooksRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const webhooks = await this.webhooksRepository.findBy({

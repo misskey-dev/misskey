@@ -10,7 +10,7 @@ import * as slow from 'koa-slow';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { Config } from '@/config.js';
-import type { UserProfiles, Users } from '@/models/index.js';
+import { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import Logger from '@/logger.js';
 import { envOption } from '@/env.js';
@@ -36,10 +36,10 @@ export class ServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Mutings, Notifications, UserProfiles, Users } from '@/models/index.js';
+import { MutingsRepository, NotificationsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -12,16 +12,16 @@ import { PushNotificationService } from './PushNotificationService.js';
 export class CreateNotificationService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.notificationsRepository)
-		private notificationsRepository: typeof Notifications,
+		private notificationsRepository: NotificationsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 
 		private notificationEntityService: NotificationEntityService,
 		private idService: IdService,

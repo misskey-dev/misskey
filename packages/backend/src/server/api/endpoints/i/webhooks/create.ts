@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
-import type { Webhooks } from '@/models/index.js';
+import { WebhooksRepository } from '@/models/index.js';
 import { webhookEventTypes } from '@/models/entities/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -34,7 +34,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.webhooksRepository)
-		private webhooksRepository: typeof Webhooks,
+		private webhooksRepository: WebhooksRepository,
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,

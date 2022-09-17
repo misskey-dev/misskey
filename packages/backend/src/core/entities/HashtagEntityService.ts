@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Hashtags } from '@/models/index.js';
+import type { HashtagsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -12,7 +12,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class HashtagEntityService {
 	constructor(
 		@Inject(DI.hashtagsRepository)
-		private hashtagsRepository: typeof Hashtags,
+		private hashtagsRepository: HashtagsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

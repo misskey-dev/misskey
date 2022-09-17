@@ -1,7 +1,6 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Pages } from '@/models/index.js';
-import { DriveFiles } from '@/models/index.js';
+import { PagesRepository, DriveFiles } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Page } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -67,7 +66,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.pagesRepository)
-		private pagesRepository: typeof Pages,
+		private pagesRepository: PagesRepository,
 
 		private pageEntityService: PageEntityService,
 		private idService: IdService,

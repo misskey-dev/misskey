@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { FollowRequests } from '@/models/index.js';
+import { FollowRequestsRepository } from '@/models/index.js';
 import { FollowRequestEntityService } from '@/core/entities/FollowRequestEntityService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -49,7 +49,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: typeof FollowRequests,
+		private followRequestsRepository: FollowRequestsRepository,
 
 		private followRequestEntityService: FollowRequestEntityService,
 	) {

@@ -16,7 +16,6 @@ import { DaemonModule } from '@/daemons/DaemonModule.js';
 import { JanitorService } from '@/daemons/JanitorService.js';
 import { QueueStatsService } from '@/daemons/QueueStatsService.js';
 import { ServerStatsService } from '@/daemons/ServerStatsService.js';
-import { db, initDb } from '../postgre.js';
 import { envOption } from '../env.js';
 
 const _filename = fileURLToPath(import.meta.url);

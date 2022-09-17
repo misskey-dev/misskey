@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollVotes, Notes } from '@/models/index.js';
+import { PollVotesRepository, NotesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
@@ -18,10 +18,10 @@ export class EndedPollNotificationProcessorService {
 		private config: Config,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: typeof PollVotes,
+		private pollVotesRepository: PollVotesRepository,
 
 		private createNotificationService: CreateNotificationService,
 		private queueLoggerService: QueueLoggerService,

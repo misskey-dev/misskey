@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Users, MessagingMessages, UserGroupJoinings } from '@/models/index.js';
-import { UserGroups } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
+import { UserGroups, MessagingMessagesRepository, UserGroupJoiningsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MessagingMessageEntityService } from '@/core/entities/MessagingMessageEntityService.js';
@@ -78,10 +78,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: typeof MessagingMessages,
+		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		private messagingMessageEntityService: MessagingMessageEntityService,
 		private messagingService: MessagingService,

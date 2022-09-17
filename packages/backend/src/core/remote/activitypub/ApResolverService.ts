@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ILocalUser } from '@/models/entities/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
-import type { Notes, Polls, NoteReactions, Users } from '@/models/index.js';
+import { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -20,16 +20,16 @@ export class ApResolverService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: typeof Polls,
+		private pollsRepository: PollsRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: typeof NoteReactions,
+		private noteReactionsRepository: NoteReactionsRepository,
 
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
@@ -65,10 +65,10 @@ export class Resolver {
 
 	constructor(
 		private config: Config,
-		private usersRepository: typeof Users,
-		private notesRepository: typeof Notes,
-		private pollsRepository: typeof Polls,
-		private noteReactionsRepository: typeof NoteReactions,
+		private usersRepository: UsersRepository,
+		private notesRepository: NotesRepository,
+		private pollsRepository: PollsRepository,
+		private noteReactionsRepository: NoteReactionsRepository,
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
 		private metaService: MetaService,

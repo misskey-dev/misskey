@@ -33,7 +33,7 @@ export class CustomEmojiService {
 		private db: DataSource,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: typeof Emojis,
+		private emojisRepository: EmojisRepository,
 
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,

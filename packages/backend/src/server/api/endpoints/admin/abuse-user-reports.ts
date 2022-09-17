@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AbuseUserReports } from '@/models/index.js';
+import { AbuseUserReportsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -91,7 +91,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: typeof AbuseUserReports,
+		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
 		private queryService: QueryService,
 	) {

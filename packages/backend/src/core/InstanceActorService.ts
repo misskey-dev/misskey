@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import type { ILocalUser } from '@/models/entities/User.js';
-import type { Users } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
 import { CreateSystemUserService } from './CreateSystemUserService.js';
@@ -14,7 +14,7 @@ export class InstanceActorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private createSystemUserService: CreateSystemUserService,
 	) {

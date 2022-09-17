@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
-import type { MessagingMessages, Notes, UserPublickeys } from '@/models/index.js';
-import { Users } from '@/models/index.js';
+import { MessagingMessagesRepository, NotesRepository, UserPublickeysRepository, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser, CacheableUser } from '@/models/entities/User.js';
 import { Cache } from '@/misc/cache.js';
@@ -40,13 +39,13 @@ export class ApDbResolverService {
 		private config: Config,
 
 		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: typeof MessagingMessages,
+		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.userPublickeysRepository)
-		private userPublickeysRepository: typeof UserPublickeys,
+		private userPublickeysRepository: UserPublickeysRepository,
 
 		private userCacheService: UserCacheService,
 		private apPersonService: ApPersonService,

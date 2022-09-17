@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NoteFavorites } from '@/models/index.js';
+import type { NoteFavoritesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -13,7 +13,7 @@ import { NoteEntityService } from './NoteEntityService.js';
 export class NoteFavoriteEntityService {
 	constructor(
 		@Inject(DI.noteFavoritesRepository)
-		private noteFavoritesRepository: typeof NoteFavorites,
+		private noteFavoritesRepository: NoteFavoritesRepository,
 
 		private noteEntityService: NoteEntityService,
 	) {

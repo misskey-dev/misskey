@@ -2,8 +2,7 @@ import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { Note, IMentionedRemoteUsers } from '@/models/entities/Note.js';
-import type { Notes } from '@/models/index.js';
-import { Users, Instances } from '@/models/index.js';
+import { NotesRepository, Users, Instances } from '@/models/index.js';
 import { countSameRenotes } from '@/misc/count-same-renotes.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -24,7 +23,7 @@ export class NoteDeleteService {
 		private config: Config,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventServie: GlobalEventService,

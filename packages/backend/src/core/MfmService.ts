@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as parse5 from 'parse5';
 import { JSDOM } from 'jsdom';
 import { DI } from '@/di-symbols.js';
-import type { Users } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';

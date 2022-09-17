@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Notes, Users } from '@/models/index.js';
+import { NotesRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
@@ -19,10 +19,10 @@ export class NodeinfoServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,

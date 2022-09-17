@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AntennaNotes, Antennas, UserGroupJoinings } from '@/models/index.js';
+import type { AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
@@ -9,13 +9,13 @@ import type { Antenna } from '@/models/entities/Antenna.js';
 export class AntennaEntityService {
 	constructor(
 		@Inject(DI.antennasRepository)
-		private antennasRepository: typeof Antennas,
+		private antennasRepository: AntennasRepository,
 
 		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: typeof AntennaNotes,
+		private antennaNotesRepository: AntennaNotesRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 	) {
 	}
 

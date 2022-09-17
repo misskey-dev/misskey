@@ -1,7 +1,6 @@
 import { IsNull, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
-import { Ads, Emojis } from '@/models/index.js';
+import { UsersRepository, Ads, Emojis } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -315,7 +314,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 	
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private userEntityService: UserEntityService,
 		private emojiEntityService: EmojiEntityService,

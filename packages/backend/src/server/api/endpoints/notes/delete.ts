@@ -1,6 +1,6 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
+import { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { DI } from '@/di-symbols.js';
@@ -48,7 +48,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private getterService: GetterService,
 		private noteDeleteService: NoteDeleteService,

@@ -1,13 +1,12 @@
 import * as mfm from 'mfm-js';
-import { Not, In } from 'typeorm';
+import { Not, In, DataSource } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import { Note } from '@/models/entities/Note.js';
-import type { Notes, Users } from '@/models/index.js';
-import { Mutings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
+import { NotesRepository, UsersRepository, Mutings, Instances, UserProfiles, MutedNotes, Channels, ChannelFollowings, NoteThreadMutings } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { App } from '@/models/entities/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -22,7 +21,6 @@ import type { Channel } from '@/models/entities/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
-import { db } from '@/postgre.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -135,11 +133,14 @@ export class NoteCreateService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.db)
+		private db: DataSource,
+
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -342,7 +343,7 @@ export class NoteCreateService {
 		try {
 			if (insert.hasPoll) {
 			// Start transaction
-				await db.transaction(async transactionalEntityManager => {
+				await this.db.transaction(async transactionalEntityManager => {
 					await transactionalEntityManager.insert(Note, insert);
 
 					const poll = new Poll({

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Signins, Users } from '@/models/index.js';
+import { SigninsRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { IdService } from '@/core/IdService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -15,7 +16,7 @@ export class SigninService {
 		private config: Config,
 
 		@Inject(DI.signinsRepository)
-		private signinsRepository: typeof Signins,
+		private signinsRepository: SigninsRepository,
 
 		private signinEntityService: SigninEntityService,
 		private idService: IdService,

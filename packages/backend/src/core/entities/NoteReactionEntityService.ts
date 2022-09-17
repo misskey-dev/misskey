@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NoteReactions } from '@/models/index.js';
+import type { NoteReactionsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -22,7 +22,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: typeof NoteReactions,
+		private noteReactionsRepository: NoteReactionsRepository,
 
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { NoteThreadMutings } from '@/models/index.js';
+import type { NoteThreadMutingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { DI } from '@/di-symbols.js';
@@ -34,7 +34,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: typeof NoteThreadMutings,
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
 		private getterService: GetterService,
 	) {

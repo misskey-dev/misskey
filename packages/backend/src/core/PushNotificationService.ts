@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import push from 'web-push';
 import { DI } from '@/di-symbols.js';
 import { SwSubscriptions } from '@/models/index.js';
-import type { Users } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
@@ -46,7 +46,7 @@ export class PushNotificationService {
 		private config: Config,
 
 		@Inject(DI.swSubscriptionsRepository)
-		private swSubscriptionsRepository: typeof SwSubscriptions,
+		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
 		private metaService: MetaService,
 	) {

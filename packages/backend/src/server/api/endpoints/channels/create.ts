@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Channels, DriveFiles } from '@/models/index.js';
+import { ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { IdService } from '@/core/IdService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
@@ -44,10 +44,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.channelsRepository)
-		private channelsRepository: typeof Channels,
+		private channelsRepository: ChannelsRepository,
 
 		private idService: IdService,
 		private channelEntityService: ChannelEntityService,

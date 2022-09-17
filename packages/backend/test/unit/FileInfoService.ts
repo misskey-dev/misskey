@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { db, initDb } from '@/postgre.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { DI } from '@/di-symbols.js';
@@ -25,17 +24,6 @@ describe('FileInfoService', () => {
 	let fileInfoService: FileInfoService;
 
 	beforeAll(async () => {
-		//await initTestDb();
-		await initDb();
-	});
-
-	afterAll(async () => {
-		await db.destroy();
-	});
-
-	beforeEach(async () => {
-		if (app) await app.close();
-
 		app = await Test.createTestingModule({
 			imports: [
 				GlobalModule,
@@ -60,6 +48,10 @@ describe('FileInfoService', () => {
 		app.enableShutdownHooks();
 
 		fileInfoService = app.get<FileInfoService>(FileInfoService);
+	});
+
+	afterAll(async () => {
+		await app.close();
 	});
 
 	it('Empty file', async () => {

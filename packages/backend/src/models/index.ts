@@ -1,6 +1,3 @@
-import { } from 'typeorm';
-import { db } from '@/postgre.js';
-
 import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { AccessToken } from '@/models/entities/AccessToken.js';
 import { Ad } from '@/models/entities/Ad.js';
@@ -64,67 +61,134 @@ import { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
+import type { Repository } from 'typeorm';
 
-export const Announcements = db.getRepository(Announcement);
-export const AnnouncementReads = db.getRepository(AnnouncementRead);
-export const Apps = db.getRepository(App);
-export const Notes = db.getRepository(Note);
-export const NoteFavorites = db.getRepository(NoteFavorite);
-export const NoteThreadMutings = db.getRepository(NoteThreadMuting);
-export const NoteReactions = db.getRepository(NoteReaction);
-export const NoteUnreads = db.getRepository(NoteUnread);
-export const Polls = db.getRepository(Poll);
-export const PollVotes = db.getRepository(PollVote);
-export const Users = db.getRepository(User);
-export const UserProfiles = db.getRepository(UserProfile);
-export const UserKeypairs = db.getRepository(UserKeypair);
-export const UserPendings = db.getRepository(UserPending);
-export const AttestationChallenges = db.getRepository(AttestationChallenge);
-export const UserSecurityKeys = db.getRepository(UserSecurityKey);
-export const UserPublickeys = db.getRepository(UserPublickey);
-export const UserLists = db.getRepository(UserList);
-export const UserListJoinings = db.getRepository(UserListJoining);
-export const UserGroups = db.getRepository(UserGroup);
-export const UserGroupJoinings = db.getRepository(UserGroupJoining);
-export const UserGroupInvitations = db.getRepository(UserGroupInvitation);
-export const UserNotePinings = db.getRepository(UserNotePining);
-export const UserIps = db.getRepository(UserIp);
-export const UsedUsernames = db.getRepository(UsedUsername);
-export const Followings = db.getRepository(Following);
-export const FollowRequests = db.getRepository(FollowRequest);
-export const Instances = db.getRepository(Instance);
-export const Emojis = db.getRepository(Emoji);
-export const DriveFiles = db.getRepository(DriveFile);
-export const DriveFolders = db.getRepository(DriveFolder);
-export const Notifications = db.getRepository(Notification);
-export const Metas = db.getRepository(Meta);
-export const Mutings = db.getRepository(Muting);
-export const Blockings = db.getRepository(Blocking);
-export const SwSubscriptions = db.getRepository(SwSubscription);
-export const Hashtags = db.getRepository(Hashtag);
-export const AbuseUserReports = db.getRepository(AbuseUserReport);
-export const RegistrationTickets = db.getRepository(RegistrationTicket);
-export const AuthSessions = db.getRepository(AuthSession);
-export const AccessTokens = db.getRepository(AccessToken);
-export const Signins = db.getRepository(Signin);
-export const MessagingMessages = db.getRepository(MessagingMessage);
-export const Pages = db.getRepository(Page);
-export const PageLikes = db.getRepository(PageLike);
-export const GalleryPosts = db.getRepository(GalleryPost);
-export const GalleryLikes = db.getRepository(GalleryLike);
-export const ModerationLogs = db.getRepository(ModerationLog);
-export const Clips = db.getRepository(Clip);
-export const ClipNotes = db.getRepository(ClipNote);
-export const Antennas = db.getRepository(Antenna);
-export const AntennaNotes = db.getRepository(AntennaNote);
-export const PromoNotes = db.getRepository(PromoNote);
-export const PromoReads = db.getRepository(PromoRead);
-export const Relays = db.getRepository(Relay);
-export const MutedNotes = db.getRepository(MutedNote);
-export const Channels = db.getRepository(Channel);
-export const ChannelFollowings = db.getRepository(ChannelFollowing);
-export const ChannelNotePinings = db.getRepository(ChannelNotePining);
-export const RegistryItems = db.getRepository(RegistryItem);
-export const Webhooks = db.getRepository(Webhook);
-export const Ads = db.getRepository(Ad);
-export const PasswordResetRequests = db.getRepository(PasswordResetRequest);
+export {
+	AbuseUserReport,
+	AccessToken,
+	Ad,
+	Announcement,
+	AnnouncementRead,
+	Antenna,
+	AntennaNote,
+	App,
+	AttestationChallenge,
+	AuthSession,
+	Blocking,
+	ChannelFollowing,
+	ChannelNotePining,
+	Clip,
+	ClipNote,
+	DriveFile,
+	DriveFolder,
+	Emoji,
+	Following,
+	FollowRequest,
+	GalleryLike,
+	GalleryPost,
+	Hashtag,
+	Instance,
+	MessagingMessage,
+	Meta,
+	ModerationLog,
+	MutedNote,
+	Muting,
+	Note,
+	NoteFavorite,
+	NoteReaction,
+	NoteThreadMuting,
+	NoteUnread,
+	Notification,
+	Page,
+	PageLike,
+	PasswordResetRequest,
+	Poll,
+	PollVote,
+	PromoNote,
+	PromoRead,
+	RegistrationTicket,
+	RegistryItem,
+	Relay,
+	Signin,
+	SwSubscription,
+	UsedUsername,
+	User,
+	UserGroup,
+	UserGroupInvitation,
+	UserGroupJoining,
+	UserIp,
+	UserKeypair,
+	UserList,
+	UserListJoining,
+	UserNotePining,
+	UserPending,
+	UserProfile,
+	UserPublickey,
+	UserSecurityKey,
+	Webhook,
+	Channel,
+};
+
+export type AbuseUserReportsReposiory = Repository<AbuseUserReport>;
+export type AccessTokensRepository = Repository<AccessToken>;
+export type AdsRepository = Repository<Ad>;
+export type AnnouncementsRepository = Repository<Announcement>;
+export type AnnouncementReadsRepository = Repository<AnnouncementRead>;
+export type AntennasRepository = Repository<Antenna>;
+export type AntennaNotesRepository = Repository<AntennaNote>;
+export type AppsRepository = Repository<App>;
+export type AttestationChallengesRepository = Repository<AttestationChallenge>;
+export type AuthSessionsRepository = Repository<AuthSession>;
+export type BlockingsRepository = Repository<Blocking>;
+export type ChannelFollowingsRepository = Repository<ChannelFollowing>;
+export type ChannelNotePiningsRepository = Repository<ChannelNotePining>;
+export type ClipsRepository = Repository<Clip>;
+export type ClipNotesRepository = Repository<ClipNote>;
+export type DriveFilesRepository = Repository<DriveFile>;
+export type DriveFoldersRepository = Repository<DriveFolder>;
+export type EmojisRepository = Repository<Emoji>;
+export type FollowingsRepository = Repository<Following>;
+export type FollowRequestsRepository = Repository<FollowRequest>;
+export type GalleryLikesRepository = Repository<GalleryLike>;
+export type GalleryPostsRepository = Repository<GalleryPost>;
+export type HashtagsRepository = Repository<Hashtag>;
+export type InstancesRepository = Repository<Instance>;
+export type MessagingMessagesRepository = Repository<MessagingMessage>;
+export type MetasRepository = Repository<Meta>;
+export type ModerationLogsRepository = Repository<ModerationLog>;
+export type MutedNotesRepository = Repository<MutedNote>;
+export type MutingsRepository = Repository<Muting>;
+export type NotesRepository = Repository<Note>;
+export type NoteFavoritesRepository = Repository<NoteFavorite>;
+export type NoteReactionsRepository = Repository<NoteReaction>;
+export type NoteThreadMutingsRepository = Repository<NoteThreadMuting>;
+export type NoteUnreadsRepository = Repository<NoteUnread>;
+export type NotificationsRepository = Repository<Notification>;
+export type PagesRepository = Repository<Page>;
+export type PageLikesRepository = Repository<PageLike>;
+export type PasswordResetRequestsRepository = Repository<PasswordResetRequest>;
+export type PollsRepository = Repository<Poll>;
+export type PollVotesRepository = Repository<PollVote>;
+export type PromoNotesRepository = Repository<PromoNote>;
+export type PromoReadsRepository = Repository<PromoRead>;
+export type RegistrationTicketsRepository = Repository<RegistrationTicket>;
+export type RegistryItemsRepository = Repository<RegistryItem>;
+export type RelaysRepository = Repository<Relay>;
+export type SigninsRepository = Repository<Signin>;
+export type SwSubscriptionsRepository = Repository<SwSubscription>;
+export type UsedUsernamesRepository = Repository<UsedUsername>;
+export type UsersRepository = Repository<User>;
+export type UserGroupsRepository = Repository<UserGroup>;
+export type UserGroupInvitationsRepository = Repository<UserGroupInvitation>;
+export type UserGroupJoiningsRepository = Repository<UserGroupJoining>;
+export type UserIpsRepository = Repository<UserIp>;
+export type UserKeypairsRepository = Repository<UserKeypair>;
+export type UserListsRepository = Repository<UserList>;
+export type UserListJoiningsRepository = Repository<UserListJoining>;
+export type UserNotePiningsRepository = Repository<UserNotePining>;
+export type UserPendingsRepository = Repository<UserPending>;
+export type UserProfilesRepository = Repository<UserProfile>;
+export type UserPublickeysRepository = Repository<UserPublickey>;
+export type UserSecurityKeysRepository = Repository<UserSecurityKey>;
+export type WebhooksRepository = Repository<Webhook>;
+export type ChannelsRepository = Repository<Channel>;

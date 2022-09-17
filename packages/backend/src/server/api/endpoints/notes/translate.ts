@@ -1,7 +1,7 @@
 import { URLSearchParams } from 'node:url';
 import fetch from 'node-fetch';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notes } from '@/models/index.js';
+import { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 	
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,

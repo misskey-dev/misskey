@@ -40,7 +40,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteFavoritesRepository)
-		private noteFavoritesRepository: typeof NoteFavorites,
+		private noteFavoritesRepository: NoteFavoritesRepository,
 
 		private getterService: GetterService,
 	) {

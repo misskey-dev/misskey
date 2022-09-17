@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { Users } from '@/models/index.js';
+import { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
@@ -15,7 +15,7 @@ export class AccountUpdateService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,

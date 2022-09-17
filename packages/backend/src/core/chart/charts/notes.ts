@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
-import type { Notes } from '@/models/index.js';
+import { NotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
@@ -19,7 +19,7 @@ export default class NotesChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		private appLockService: AppLockService,
 	) {

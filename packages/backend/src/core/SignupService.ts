@@ -3,8 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsedUsernames } from '@/models/index.js';
-import { Users } from '@/models/index.js';
+import { UsedUsernamesRepository, Users } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { User } from '@/models/entities/User.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
@@ -26,10 +25,10 @@ export class SignupService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.usedUsernamesRepository)
-		private usedUsernamesRepository: typeof UsedUsernames,
+		private usedUsernamesRepository: UsedUsernamesRepository,
 
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,

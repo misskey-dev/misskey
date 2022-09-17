@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/User.js';
-import type { UserKeypairs } from '@/models/index.js';
+import type { UserKeypairsRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
@@ -11,7 +11,7 @@ export class UserKeypairStoreService {
 
 	constructor(
 		@Inject(DI.userKeypairsRepository)
-		private userKeypairsRepository: typeof UserKeypairs,
+		private userKeypairsRepository: UserKeypairsRepository,
 	) {
 		this.#cache = new Cache<UserKeypair>(Infinity);
 	}

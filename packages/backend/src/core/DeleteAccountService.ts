@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Users } from '@/models/index.js';
+import { UsersRepository } from '@/models/index.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 export class DeleteAccountService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private userSuspendService: UserSuspendService,
 		private queueService: QueueService,

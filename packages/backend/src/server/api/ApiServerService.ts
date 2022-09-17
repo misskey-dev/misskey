@@ -6,8 +6,7 @@ import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
 import { ModuleRef } from '@nestjs/core';
 import { Config } from '@/config.js';
-import type { Users } from '@/models/index.js';
-import { Instances, AccessTokens } from '@/models/index.js';
+import { UsersRepository, Instances, AccessTokens } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import endpoints from './endpoints.js';
@@ -27,7 +26,7 @@ export class ApiServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		private userEntityService: UserEntityService,
 		private apiCallService: ApiCallService,

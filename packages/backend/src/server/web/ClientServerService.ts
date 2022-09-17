@@ -45,25 +45,25 @@ export class ClientServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.galleryPostsRepository)
-		private galleryPostsRepository: typeof GalleryPosts,
+		private galleryPostsRepository: GalleryPostsRepository,
 
 		@Inject(DI.channelsRepository)
-		private channelsRepository: typeof Channels,
+		private channelsRepository: ChannelsRepository,
 
 		@Inject(DI.clipsRepository)
-		private clipsRepository: typeof Clips,
+		private clipsRepository: ClipsRepository,
 
 		@Inject(DI.pagesRepository)
-		private pagesRepository: typeof Pages,
+		private pagesRepository: PagesRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,

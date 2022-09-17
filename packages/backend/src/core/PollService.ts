@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { Notes, Users, Blockings } from '@/models/index.js';
-import { Polls, PollVotes } from '@/models/index.js';
+import { NotesRepository, UsersRepository, BlockingsRepository, Polls, PollVotes } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import type { CacheableUser } from '@/models/entities/User.js';
@@ -17,19 +16,19 @@ import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerSe
 export class PollService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: typeof Polls,
+		private pollsRepository: PollsRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: typeof PollVotes,
+		private pollVotesRepository: PollVotesRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

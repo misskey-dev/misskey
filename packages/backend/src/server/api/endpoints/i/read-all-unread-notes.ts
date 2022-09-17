@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NoteUnreads } from '@/models/index.js';
+import { NoteUnreadsRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -23,7 +23,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteUnreadsRepository)
-		private noteUnreadsRepository: typeof NoteUnreads,
+		private noteUnreadsRepository: NoteUnreadsRepository,
 
 		private globalEventService: GlobalEventService,
 	) {

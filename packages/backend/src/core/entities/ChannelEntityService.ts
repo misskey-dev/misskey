@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ChannelFollowings, Channels, DriveFiles, NoteUnreads } from '@/models/index.js';
+import type { ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -13,16 +13,16 @@ import { DriveFileEntityService } from './DriveFileEntityService.js';
 export class ChannelEntityService {
 	constructor(
 		@Inject(DI.channelsRepository)
-		private channelsRepository: typeof Channels,
+		private channelsRepository: ChannelsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: typeof ChannelFollowings,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		@Inject(DI.noteUnreadsRepository)
-		private noteUnreadsRepository: typeof NoteUnreads,
+		private noteUnreadsRepository: NoteUnreadsRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,

@@ -5,7 +5,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import Logger from '@/logger.js';
-import type { UserProfiles } from '@/models/index.js';
+import { UserProfilesRepository } from '@/models/index.js';
 
 @Injectable()
 export class EmailService {
@@ -16,7 +16,7 @@ export class EmailService {
 		private config: Config,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		private metaService: MetaService,
 	) {

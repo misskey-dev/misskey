@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ModerationLogs } from '@/models/index.js';
+import type { ModerationLogsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -12,7 +12,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class ModerationLogEntityService {
 	constructor(
 		@Inject(DI.moderationLogsRepository)
-		private moderationLogsRepository: typeof ModerationLogs,
+		private moderationLogsRepository: ModerationLogsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

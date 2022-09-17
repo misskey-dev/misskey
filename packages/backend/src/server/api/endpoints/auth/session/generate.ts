@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Apps, AuthSessions } from '@/models/index.js';
+import { AppsRepository, AuthSessionsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -53,10 +53,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 
 		@Inject(DI.appsRepository)
-		private appsRepository: typeof Apps,
+		private appsRepository: AppsRepository,
 
 		@Inject(DI.authSessionsRepository)
-		private authSessionsRepository: typeof AuthSessions,
+		private authSessionsRepository: AuthSessionsRepository,
 
 		private idService: IdService,
 	) {

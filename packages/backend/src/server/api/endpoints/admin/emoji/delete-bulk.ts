@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Emojis } from '@/models/index.js';
+import { EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
@@ -32,7 +32,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private db: DataSource,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: typeof Emojis,
+		private emojisRepository: EmojisRepository,
 
 		private moderationLogService: ModerationLogService,
 	) {

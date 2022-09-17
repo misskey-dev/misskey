@@ -3,7 +3,7 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { Followings, Instances, UserProfiles, UserPublickeys, Users } from '@/models/index.js';
+import { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type { CacheableUser, IRemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
@@ -103,19 +103,19 @@ export class ApPersonService implements OnModuleInit {
 		private db: DataSource,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: typeof UserProfiles,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.userPublickeysRepository)
-		private userPublickeysRepository: typeof UserPublickeys,
+		private userPublickeysRepository: UserPublickeysRepository,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: typeof Instances,
+		private instancesRepository: InstancesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		//private utilityService: UtilityService,
 		//private userEntityService: UserEntityService,

@@ -123,28 +123,28 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: typeof Followings,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: typeof NoteReactions,
+		private noteReactionsRepository: NoteReactionsRepository,
 
 		@Inject(DI.pageLikesRepository)
-		private pageLikesRepository: typeof PageLikes,
+		private pageLikesRepository: PageLikesRepository,
 
 		@Inject(DI.noteFavoritesRepository)
-		private noteFavoritesRepository: typeof NoteFavorites,
+		private noteFavoritesRepository: NoteFavoritesRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: typeof PollVotes,
+		private pollVotesRepository: PollVotesRepository,
 
 		private driveFileEntityService: DriveFileEntityService,
 	) {

@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan, DataSource } from 'typeorm';
 import unzipper from 'unzipper';
 import { DI } from '@/di-symbols.js';
-import type { Emojis, DriveFiles, Users } from '@/models/index.js';
+import { EmojisRepository, DriveFilesRepository, UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
@@ -27,13 +27,13 @@ export class ImportCustomEmojisProcessorService {
 		private db: DataSource,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: typeof Users,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: typeof DriveFiles,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: typeof Emojis,
+		private emojisRepository: EmojisRepository,
 
 		private customEmojiService: CustomEmojiService,
 		private driveService: DriveService,

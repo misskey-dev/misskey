@@ -1,321 +1,385 @@
 import { Module } from '@nestjs/common';
-import { AbuseUserReports, AccessTokens, Ads, AnnouncementReads, Announcements, AntennaNotes, Antennas, Apps, AttestationChallenges, AuthSessions, Blockings, ChannelFollowings, ChannelNotePinings, Channels, ClipNotes, Clips, DriveFiles, DriveFolders, Emojis, Followings, FollowRequests, GalleryLikes, GalleryPosts, Hashtags, Instances, MessagingMessages, Metas, ModerationLogs, MutedNotes, Mutings, NoteFavorites, NoteReactions, Notes, NoteThreadMutings, NoteUnreads, Notifications, PageLikes, Pages, PasswordResetRequests, Polls, PollVotes, PromoNotes, PromoReads, RegistrationTickets, RegistryItems, Relays, Signins, SwSubscriptions, UsedUsernames, UserGroupInvitations, UserGroupJoinings, UserGroups, UserIps, UserKeypairs, UserListJoinings, UserLists, UserNotePinings, UserPendings, UserProfiles, UserPublickeys, Users, UserSecurityKeys, Webhooks } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
+import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserGroup, UserGroupJoining, UserGroupInvitation, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, MessagingMessage, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, AntennaNote, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelNotePining, RegistryItem, Webhook, Ad, PasswordResetRequest } from './models';
+import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
 
 const $usersRepository: Provider = {
 	provide: DI.usersRepository,
-	useValue: Users,
+	useFactory: (db: DataSource) => db.getRepository(User),
+	inject: [DI.db],
 };
 
 const $notesRepository: Provider = {
 	provide: DI.notesRepository,
-	useValue: Notes,
+	useFactory: (db: DataSource) => db.getRepository(Note),
+	inject: [DI.db],
 };
 
 const $announcementsRepository: Provider = {
 	provide: DI.announcementsRepository,
-	useValue: Announcements,
+	useFactory: (db: DataSource) => db.getRepository(Announcement),
+	inject: [DI.db],
 };
 
 const $announcementReadsRepository: Provider = {
 	provide: DI.announcementReadsRepository,
-	useValue: AnnouncementReads,
+	useFactory: (db: DataSource) => db.getRepository(AnnouncementRead),
+	inject: [DI.db],
 };
 
 const $appsRepository: Provider = {
 	provide: DI.appsRepository,
-	useValue: Apps,
+	useFactory: (db: DataSource) => db.getRepository(App),
+	inject: [DI.db],
 };
 
 const $noteFavoritesRepository: Provider = {
 	provide: DI.noteFavoritesRepository,
-	useValue: NoteFavorites,
+	useFactory: (db: DataSource) => db.getRepository(NoteFavorite),
+	inject: [DI.db],
 };
 
 const $noteThreadMutingsRepository: Provider = {
 	provide: DI.noteThreadMutingsRepository,
-	useValue: NoteThreadMutings,
+	useFactory: (db: DataSource) => db.getRepository(NoteThreadMuting),
+	inject: [DI.db],
 };
 
 const $noteReactionsRepository: Provider = {
 	provide: DI.noteReactionsRepository,
-	useValue: NoteReactions,
+	useFactory: (db: DataSource) => db.getRepository(NoteReaction),
+	inject: [DI.db],
 };
 
 const $noteUnreadsRepository: Provider = {
 	provide: DI.noteUnreadsRepository,
-	useValue: NoteUnreads,
+	useFactory: (db: DataSource) => db.getRepository(NoteUnread),
+	inject: [DI.db],
 };
 
 const $pollsRepository: Provider = {
 	provide: DI.pollsRepository,
-	useValue: Polls,
+	useFactory: (db: DataSource) => db.getRepository(Poll),
+	inject: [DI.db],
 };
 
 const $pollVotesRepository: Provider = {
 	provide: DI.pollVotesRepository,
-	useValue: PollVotes,
+	useFactory: (db: DataSource) => db.getRepository(PollVote),
+	inject: [DI.db],
 };
 
 const $userProfilesRepository: Provider = {
 	provide: DI.userProfilesRepository,
-	useValue: UserProfiles,
+	useFactory: (db: DataSource) => db.getRepository(UserProfile),
+	inject: [DI.db],
 };
 
 const $userKeypairsRepository: Provider = {
 	provide: DI.userKeypairsRepository,
-	useValue: UserKeypairs,
+	useFactory: (db: DataSource) => db.getRepository(UserKeypair),
+	inject: [DI.db],
 };
 
 const $userPendingsRepository: Provider = {
 	provide: DI.userPendingsRepository,
-	useValue: UserPendings,
+	useFactory: (db: DataSource) => db.getRepository(UserPending),
+	inject: [DI.db],
 };
 
 const $attestationChallengesRepository: Provider = {
 	provide: DI.attestationChallengesRepository,
-	useValue: AttestationChallenges,
+	useFactory: (db: DataSource) => db.getRepository(AttestationChallenge),
+	inject: [DI.db],
 };
 
 const $userSecurityKeysRepository: Provider = {
 	provide: DI.userSecurityKeysRepository,
-	useValue: UserSecurityKeys,
+	useFactory: (db: DataSource) => db.getRepository(UserSecurityKey),
+	inject: [DI.db],
 };
 
 const $userPublickeysRepository: Provider = {
 	provide: DI.userPublickeysRepository,
-	useValue: UserPublickeys,
+	useFactory: (db: DataSource) => db.getRepository(UserPublickey),
+	inject: [DI.db],
 };
 
 const $userListsRepository: Provider = {
 	provide: DI.userListsRepository,
-	useValue: UserLists,
+	useFactory: (db: DataSource) => db.getRepository(UserList),
+	inject: [DI.db],
 };
 
 const $userListJoiningsRepository: Provider = {
 	provide: DI.userListJoiningsRepository,
-	useValue: UserListJoinings,
+	useFactory: (db: DataSource) => db.getRepository(UserListJoining),
+	inject: [DI.db],
 };
 
 const $userGroupsRepository: Provider = {
 	provide: DI.userGroupsRepository,
-	useValue: UserGroups,
+	useFactory: (db: DataSource) => db.getRepository(UserGroup),
+	inject: [DI.db],
 };
 
 const $userGroupJoiningsRepository: Provider = {
 	provide: DI.userGroupJoiningsRepository,
-	useValue: UserGroupJoinings,
+	useFactory: (db: DataSource) => db.getRepository(UserGroupJoining),
+	inject: [DI.db],
 };
 
 const $userGroupInvitationsRepository: Provider = {
 	provide: DI.userGroupInvitationsRepository,
-	useValue: UserGroupInvitations,
+	useFactory: (db: DataSource) => db.getRepository(UserGroupInvitation),
+	inject: [DI.db],
 };
 
 const $userNotePiningsRepository: Provider = {
 	provide: DI.userNotePiningsRepository,
-	useValue: UserNotePinings,
+	useFactory: (db: DataSource) => db.getRepository(UserNotePining),
+	inject: [DI.db],
 };
 
 const $userIpsRepository: Provider = {
 	provide: DI.userIpsRepository,
-	useValue: UserIps,
+	useFactory: (db: DataSource) => db.getRepository(UserIp),
+	inject: [DI.db],
 };
 
 const $usedUsernamesRepository: Provider = {
 	provide: DI.usedUsernamesRepository,
-	useValue: UsedUsernames,
+	useFactory: (db: DataSource) => db.getRepository(UsedUsername),
+	inject: [DI.db],
 };
 
 const $followingsRepository: Provider = {
 	provide: DI.followingsRepository,
-	useValue: Followings,
+	useFactory: (db: DataSource) => db.getRepository(Following),
+	inject: [DI.db],
 };
 
 const $followRequestsRepository: Provider = {
 	provide: DI.followRequestsRepository,
-	useValue: FollowRequests,
+	useFactory: (db: DataSource) => db.getRepository(FollowRequest),
+	inject: [DI.db],
 };
 
 const $instancesRepository: Provider = {
 	provide: DI.instancesRepository,
-	useValue: Instances,
+	useFactory: (db: DataSource) => db.getRepository(Instance),
+	inject: [DI.db],
 };
 
 const $emojisRepository: Provider = {
 	provide: DI.emojisRepository,
-	useValue: Emojis,
+	useFactory: (db: DataSource) => db.getRepository(Emoji),
+	inject: [DI.db],
 };
 
 const $driveFilesRepository: Provider = {
 	provide: DI.driveFilesRepository,
-	useValue: DriveFiles,
+	useFactory: (db: DataSource) => db.getRepository(DriveFile),
+	inject: [DI.db],
 };
 
 const $driveFoldersRepository: Provider = {
 	provide: DI.driveFoldersRepository,
-	useValue: DriveFolders,
+	useFactory: (db: DataSource) => db.getRepository(DriveFolder),
+	inject: [DI.db],
 };
 
 const $notificationsRepository: Provider = {
 	provide: DI.notificationsRepository,
-	useValue: Notifications,
+	useFactory: (db: DataSource) => db.getRepository(Notification),
+	inject: [DI.db],
 };
 
 const $metasRepository: Provider = {
 	provide: DI.metasRepository,
-	useValue: Metas,
+	useFactory: (db: DataSource) => db.getRepository(Meta),
+	inject: [DI.db],
 };
 
 const $mutingsRepository: Provider = {
 	provide: DI.mutingsRepository,
-	useValue: Mutings,
+	useFactory: (db: DataSource) => db.getRepository(Muting),
+	inject: [DI.db],
 };
 
 const $blockingsRepository: Provider = {
 	provide: DI.blockingsRepository,
-	useValue: Blockings,
+	useFactory: (db: DataSource) => db.getRepository(Blocking),
+	inject: [DI.db],
 };
 
 const $swSubscriptionsRepository: Provider = {
 	provide: DI.swSubscriptionsRepository,
-	useValue: SwSubscriptions,
+	useFactory: (db: DataSource) => db.getRepository(SwSubscription),
+	inject: [DI.db],
 };
 
 const $hashtagsRepository: Provider = {
 	provide: DI.hashtagsRepository,
-	useValue: Hashtags,
+	useFactory: (db: DataSource) => db.getRepository(Hashtag),
+	inject: [DI.db],
 };
 
 const $abuseUserReportsRepository: Provider = {
 	provide: DI.abuseUserReportsRepository,
-	useValue: AbuseUserReports,
+	useFactory: (db: DataSource) => db.getRepository(AbuseUserReport),
+	inject: [DI.db],
 };
 
 const $registrationTicketsRepository: Provider = {
 	provide: DI.registrationTicketsRepository,
-	useValue: RegistrationTickets,
+	useFactory: (db: DataSource) => db.getRepository(RegistrationTicket),
+	inject: [DI.db],
 };
 
 const $authSessionsRepository: Provider = {
 	provide: DI.authSessionsRepository,
-	useValue: AuthSessions,
+	useFactory: (db: DataSource) => db.getRepository(AuthSession),
+	inject: [DI.db],
 };
 
 const $accessTokensRepository: Provider = {
 	provide: DI.accessTokensRepository,
-	useValue: AccessTokens,
+	useFactory: (db: DataSource) => db.getRepository(AccessToken),
+	inject: [DI.db],
 };
 
 const $signinsRepository: Provider = {
 	provide: DI.signinsRepository,
-	useValue: Signins,
+	useFactory: (db: DataSource) => db.getRepository(Signin),
+	inject: [DI.db],
 };
 
 const $messagingMessagesRepository: Provider = {
 	provide: DI.messagingMessagesRepository,
-	useValue: MessagingMessages,
+	useFactory: (db: DataSource) => db.getRepository(MessagingMessage),
+	inject: [DI.db],
 };
 
 const $pagesRepository: Provider = {
 	provide: DI.pagesRepository,
-	useValue: Pages,
+	useFactory: (db: DataSource) => db.getRepository(Page),
+	inject: [DI.db],
 };
 
 const $pageLikesRepository: Provider = {
 	provide: DI.pageLikesRepository,
-	useValue: PageLikes,
+	useFactory: (db: DataSource) => db.getRepository(PageLike),
+	inject: [DI.db],
 };
 
 const $galleryPostsRepository: Provider = {
 	provide: DI.galleryPostsRepository,
-	useValue: GalleryPosts,
+	useFactory: (db: DataSource) => db.getRepository(GalleryPost),
+	inject: [DI.db],
 };
 
 const $galleryLikesRepository: Provider = {
 	provide: DI.galleryLikesRepository,
-	useValue: GalleryLikes,
+	useFactory: (db: DataSource) => db.getRepository(GalleryLike),
+	inject: [DI.db],
 };
 
 const $moderationLogsRepository: Provider = {
 	provide: DI.moderationLogsRepository,
-	useValue: ModerationLogs,
+	useFactory: (db: DataSource) => db.getRepository(ModerationLog),
+	inject: [DI.db],
 };
 
 const $clipsRepository: Provider = {
 	provide: DI.clipsRepository,
-	useValue: Clips,
+	useFactory: (db: DataSource) => db.getRepository(Clip),
+	inject: [DI.db],
 };
 
 const $clipNotesRepository: Provider = {
 	provide: DI.clipNotesRepository,
-	useValue: ClipNotes,
+	useFactory: (db: DataSource) => db.getRepository(ClipNote),
+	inject: [DI.db],
 };
 
 const $antennasRepository: Provider = {
 	provide: DI.antennasRepository,
-	useValue: Antennas,
+	useFactory: (db: DataSource) => db.getRepository(Antenna),
+	inject: [DI.db],
 };
 
 const $antennaNotesRepository: Provider = {
 	provide: DI.antennaNotesRepository,
-	useValue: AntennaNotes,
+	useFactory: (db: DataSource) => db.getRepository(AntennaNote),
+	inject: [DI.db],
 };
 
 const $promoNotesRepository: Provider = {
 	provide: DI.promoNotesRepository,
-	useValue: PromoNotes,
+	useFactory: (db: DataSource) => db.getRepository(PromoNote),
+	inject: [DI.db],
 };
 
 const $promoReadsRepository: Provider = {
 	provide: DI.promoReadsRepository,
-	useValue: PromoReads,
+	useFactory: (db: DataSource) => db.getRepository(PromoRead),
+	inject: [DI.db],
 };
 
 const $relaysRepository: Provider = {
 	provide: DI.relaysRepository,
-	useValue: Relays,
+	useFactory: (db: DataSource) => db.getRepository(Relay),
+	inject: [DI.db],
 };
 
 const $mutedNotesRepository: Provider = {
 	provide: DI.mutedNotesRepository,
-	useValue: MutedNotes,
+	useFactory: (db: DataSource) => db.getRepository(MutedNote),
+	inject: [DI.db],
 };
 
 const $channelsRepository: Provider = {
 	provide: DI.channelsRepository,
-	useValue: Channels,
+	useFactory: (db: DataSource) => db.getRepository(Channel),
+	inject: [DI.db],
 };
 
 const $channelFollowingsRepository: Provider = {
 	provide: DI.channelFollowingsRepository,
-	useValue: ChannelFollowings,
+	useFactory: (db: DataSource) => db.getRepository(ChannelFollowing),
+	inject: [DI.db],
 };
 
 const $channelNotePiningsRepository: Provider = {
 	provide: DI.channelNotePiningsRepository,
-	useValue: ChannelNotePinings,
+	useFactory: (db: DataSource) => db.getRepository(ChannelNotePining),
+	inject: [DI.db],
 };
 
 const $registryItemsRepository: Provider = {
 	provide: DI.registryItemsRepository,
-	useValue: RegistryItems,
+	useFactory: (db: DataSource) => db.getRepository(RegistryItem),
+	inject: [DI.db],
 };
 
 const $webhooksRepository: Provider = {
 	provide: DI.webhooksRepository,
-	useValue: Webhooks,
+	useFactory: (db: DataSource) => db.getRepository(Webhook),
+	inject: [DI.db],
 };
 
 const $adsRepository: Provider = {
 	provide: DI.adsRepository,
-	useValue: Ads,
+	useFactory: (db: DataSource) => db.getRepository(Ad),
+	inject: [DI.db],
 };
 
 const $passwordResetRequestsRepository: Provider = {
 	provide: DI.passwordResetRequestsRepository,
-	useValue: PasswordResetRequests,
+	useFactory: (db: DataSource) => db.getRepository(PasswordResetRequest),
+	inject: [DI.db],
 };
 
 @Module({

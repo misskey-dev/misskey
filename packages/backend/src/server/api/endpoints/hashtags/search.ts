@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Hashtags } from '@/models/index.js';
+import type { HashtagsRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -33,7 +33,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.hashtagsRepository)
-		private hashtagsRepository: typeof Hashtags,
+		private hashtagsRepository: HashtagsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const hashtags = await this.hashtagsRepository.createQueryBuilder('tag')

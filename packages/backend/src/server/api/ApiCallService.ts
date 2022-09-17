@@ -5,7 +5,7 @@ import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { CacheableLocalUser, User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
-import type { UserIps } from '@/models/index.js';
+import { UserIpsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
@@ -29,7 +29,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.userIpsRepository)
-		private userIpsRepository: typeof UserIps,
+		private userIpsRepository: UserIpsRepository,
 
 		private metaService: MetaService,
 		private authenticateService: AuthenticateService,

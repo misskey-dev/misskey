@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Instances } from '@/models/index.js';
+import { InstancesRepository } from '@/models/index.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { Cache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
@@ -12,7 +12,7 @@ export class FederatedInstanceService {
 
 	constructor(
 		@Inject(DI.instancesRepository)
-		private instancesRepository: typeof Instances,
+		private instancesRepository: InstancesRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,

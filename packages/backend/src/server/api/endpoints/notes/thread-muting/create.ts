@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Notes, NoteThreadMutings } from '@/models/index.js';
+import { NotesRepository, NoteThreadMutingsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
@@ -36,10 +36,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: typeof NoteThreadMutings,
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
 		private getterService: GetterService,
 		private noteReadService: NoteReadService,

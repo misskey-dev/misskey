@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import { createRedisConnection } from '@/redis.js';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
-import { db } from './postgre.js';
+import { createPostgreDataSource } from './postgre.js';
 import { RepositoryModule } from './RepositoryModule.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
@@ -17,7 +17,10 @@ const $config: Provider = {
 
 const $db: Provider = {
 	provide: DI.db,
-	useValue: db,
+	useFactory: async () => {
+		const db = createPostgreDataSource();
+		return await db.initialize();
+	},
 };
 
 const $redis: Provider = {

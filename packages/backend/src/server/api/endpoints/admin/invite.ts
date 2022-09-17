@@ -1,7 +1,7 @@
 import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistrationTickets } from '@/models/index.js';
+import { RegistrationTicketsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -37,7 +37,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.registrationTicketsRepository)
-		private registrationTicketsRepository: typeof RegistrationTickets,
+		private registrationTicketsRepository: RegistrationTicketsRepository,
 
 		private idService: IdService,
 	) {

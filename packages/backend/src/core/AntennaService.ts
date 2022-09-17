@@ -25,25 +25,25 @@ export class AntennaService implements OnApplicationShutdown {
 		private redisSubscriber: Redis.Redis,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: typeof Mutings,
+		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: typeof Blockings,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: typeof Notes,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: typeof AntennaNotes,
+		private antennaNotesRepository: AntennaNotesRepository,
 
 		@Inject(DI.antennasRepository)
-		private antennasRepository: typeof Antennas,
+		private antennasRepository: AntennasRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: typeof UserGroupJoinings,
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: typeof UserListJoinings,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
