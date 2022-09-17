@@ -1,7 +1,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GalleryPostsRepository, DriveFiles } from '@/models/index.js';
+import { DriveFilesRepository, GalleryPostsRepository } from '@/models/index.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
@@ -52,12 +52,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: GalleryPostsRepository,
 
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
 		private galleryPostEntityService: GalleryPostEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const files = (await Promise.all(ps.fileIds.map(fileId =>
-				DriveFiles.findOneBy({
+				this.driveFilesRepository.findOneBy({
 					id: fileId,
 					userId: me.id,
 				}),
