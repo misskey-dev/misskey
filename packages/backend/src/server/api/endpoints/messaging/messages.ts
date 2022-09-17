@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
 
-		@Inject(DI.userGroupRepository)
+		@Inject(DI.userGroupsRepository)
 		private userGroupRepository: UserGroupsRepository,
 
 		@Inject(DI.userGroupJoiningsRepository)
