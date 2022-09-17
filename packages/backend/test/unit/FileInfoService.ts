@@ -1,15 +1,60 @@
+process.env.NODE_ENV = 'test';
+
 import * as assert from 'assert';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { getFileInfo } from '../../src/misc/get-file-info.js';
+import { ModuleMocker } from 'jest-mock';
+import { Test } from '@nestjs/testing';
+import { initDb } from '@/db/postgre.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { FileInfoService } from '@/services/FileInfoService.js';
+import { DI } from '@/di-symbols.js';
+import { AiService } from '@/services/AiService.js';
+import type { jest } from '@jest/globals';
+import type { MockFunctionMetadata } from 'jest-mock';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
+const resources = `${_dirname}/../resources`;
 
-describe('Get file info', () => {
+const moduleMocker = new ModuleMocker(global);
+
+describe('FileInfoService', () => {
+	let fileInfoService: FileInfoService;
+
+	beforeAll(async () => {
+		//await initTestDb();
+		await initDb();
+	});
+
+	beforeEach(async () => {
+		const moduleRef = await Test.createTestingModule({
+			imports: [
+				GlobalModule,
+			],
+			providers: [
+				AiService,
+				FileInfoService,
+			],
+		})
+			.useMocker((token) => {
+				//if (token === AiService) {
+				//	return {  };
+				//}
+				if (typeof token === 'function') {
+					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
+					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
+					return new Mock();
+				}
+			})
+			.compile();
+
+		fileInfoService = moduleRef.get<FileInfoService>(FileInfoService);
+	});
+
 	it('Empty file', async () => {
-		const path = `${_dirname}/resources/emptyfile`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/emptyfile`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -28,8 +73,8 @@ describe('Get file info', () => {
 	});
 
 	it('Generic JPEG', async () => {
-		const path = `${_dirname}/resources/Lenna.jpg`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/Lenna.jpg`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -48,8 +93,8 @@ describe('Get file info', () => {
 	});
 
 	it('Generic APNG', async () => {
-		const path = `${_dirname}/resources/anime.png`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/anime.png`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -68,8 +113,8 @@ describe('Get file info', () => {
 	});
 
 	it('Generic AGIF', async () => {
-		const path = `${_dirname}/resources/anime.gif`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/anime.gif`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -88,8 +133,8 @@ describe('Get file info', () => {
 	});
 
 	it('PNG with alpha', async () => {
-		const path = `${_dirname}/resources/with-alpha.png`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/with-alpha.png`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -108,8 +153,8 @@ describe('Get file info', () => {
 	});
 
 	it('Generic SVG', async () => {
-		const path = `${_dirname}/resources/image.svg`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/image.svg`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -129,8 +174,8 @@ describe('Get file info', () => {
 
 	it('SVG with XML definition', async () => {
 		// https://github.com/misskey-dev/misskey/issues/4413
-		const path = `${_dirname}/resources/with-xml-def.svg`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/with-xml-def.svg`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -149,8 +194,8 @@ describe('Get file info', () => {
 	});
 
 	it('Dimension limit', async () => {
-		const path = `${_dirname}/resources/25000x25000.png`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/25000x25000.png`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
@@ -169,8 +214,8 @@ describe('Get file info', () => {
 	});
 
 	it('Rotate JPEG', async () => {
-		const path = `${_dirname}/resources/rotate.jpg`;
-		const info = await getFileInfo(path, { skipSensitiveDetection: true }) as any;
+		const path = `${resources}/rotate.jpg`;
+		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
 		delete info.blurhash;
 		delete info.sensitive;
