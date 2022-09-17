@@ -6,6 +6,7 @@
 		<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 		<p class="username"><MkAcct :user="user"/></p>
 	</div>
+	<span v-if="$i && $i.id !== user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
 	<div class="description">
 		<div v-if="user.description" class="mfm">
 			<Mfm :text="user.description" :author="user" :i="$i" :custom-emojis="user.emojis"/>
@@ -81,7 +82,18 @@ defineProps<{
 			opacity: 0.7;
 		}
 	}
-
+	
+	> .followed {
+		position: absolute;
+		top: 12px;
+		left: 12px;
+		padding: 4px 8px;
+		color: #fff;
+		background: rgba(0, 0, 0, 0.7);
+		font-size: 0.7em;
+		border-radius: 6px;
+	}
+	
 	> .description {
 		padding: 16px;
 		font-size: 0.8em;
