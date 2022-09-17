@@ -65,7 +65,7 @@ async function shutdownHandler(signalOrEvent: string) {
 			await listener(signalOrEvent);
 		} catch (err) {
 			if (err instanceof Error) {
-				console.warn(`A shutdown handler failed before completing with: ${err.message || err}`);
+				console.warn(`A shutdown handler failed before completing with: ${err.message ?? err}`);
 			}
 		}
 	}

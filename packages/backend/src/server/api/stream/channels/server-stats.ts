@@ -1,9 +1,10 @@
 import Xev from 'xev';
+import { Inject, Injectable } from '@nestjs/common';
 import Channel from '../channel.js';
 
 const ev = new Xev();
 
-export default class extends Channel {
+class ServerStatsChannel extends Channel {
 	public readonly chName = 'serverStats';
 	public static shouldShare = true;
 	public static requireCredential = false;
@@ -38,5 +39,22 @@ export default class extends Channel {
 
 	public dispose() {
 		ev.removeListener('serverStats', this.onStats);
+	}
+}
+
+@Injectable()
+export class ServerStatsChannelService {
+	public readonly shouldShare = ServerStatsChannel.shouldShare;
+	public readonly requireCredential = ServerStatsChannel.requireCredential;
+
+	constructor(
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): ServerStatsChannel {
+		return new ServerStatsChannel(
+			id,
+			connection,
+		);
 	}
 }
