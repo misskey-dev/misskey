@@ -16,9 +16,9 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
-	#antennasFetched: boolean;
-	#antennas: Antenna[];
-	#blockingCache: Cache<User['id'][]>;
+	private antennasFetched: boolean;
+	private antennas: Antenna[];
+	private blockingCache: Cache<User['id'][]>;
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -49,9 +49,9 @@ export class AntennaService implements OnApplicationShutdown {
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
 	) {
-		this.#antennasFetched = false;
-		this.#antennas = [];
-		this.#blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
+		this.antennasFetched = false;
+		this.antennas = [];
+		this.blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
 
 		this.redisSubscriber.on('message', this.onRedisMessage);
 	}
@@ -67,13 +67,13 @@ export class AntennaService implements OnApplicationShutdown {
 			const { type, body } = obj.message;
 			switch (type) {
 				case 'antennaCreated':
-					this.#antennas.push(body);
+					this.antennas.push(body);
 					break;
 				case 'antennaUpdated':
-					this.#antennas[this.#antennas.findIndex(a => a.id === body.id)] = body;
+					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = body;
 					break;
 				case 'antennaDeleted':
-					this.#antennas = this.#antennas.filter(a => a.id !== body.id);
+					this.antennas = this.antennas.filter(a => a.id !== body.id);
 					break;
 				default:
 					break;
@@ -137,7 +137,7 @@ export class AntennaService implements OnApplicationShutdown {
 		if (note.visibility === 'specified') return false;
 	
 		// アンテナ作成者がノート作成者にブロックされていたらスキップ
-		const blockings = await this.#blockingCache.fetch(noteUser.id, () => this.blockingsRepository.findBy({ blockerId: noteUser.id }).then(res => res.map(x => x.blockeeId)));
+		const blockings = await this.blockingCache.fetch(noteUser.id, () => this.blockingsRepository.findBy({ blockerId: noteUser.id }).then(res => res.map(x => x.blockeeId)));
 		if (blockings.some(blocking => blocking === antenna.userId)) return false;
 	
 		if (note.visibility === 'followers') {
@@ -218,11 +218,11 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	public async getAntennas() {
-		if (!this.#antennasFetched) {
-			this.#antennas = await this.antennasRepository.find();
-			this.#antennasFetched = true;
+		if (!this.antennasFetched) {
+			this.antennas = await this.antennasRepository.find();
+			this.antennasFetched = true;
 		}
 	
-		return this.#antennas;
+		return this.antennas;
 	}
 }

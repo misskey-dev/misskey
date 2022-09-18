@@ -30,7 +30,7 @@ import { ClientServerService } from './web/ClientServerService.js';
 
 @Injectable()
 export class ServerService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -54,7 +54,7 @@ export class ServerService {
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 	) {
-		this.#logger = this.loggerService.getLogger('server', 'gray', false);
+		this.logger = this.loggerService.getLogger('server', 'gray', false);
 	}
 
 	public launch() {
@@ -65,7 +65,7 @@ export class ServerService {
 		if (!['production', 'test'].includes(process.env.NODE_ENV ?? '')) {
 		// Logger
 			koa.use(koaLogger(str => {
-				this.#logger.info(str);
+				this.logger.info(str);
 			}));
 
 			// Delay
@@ -157,13 +157,13 @@ export class ServerService {
 		server.on('error', err => {
 			switch ((err as any).code) {
 				case 'EACCES':
-					this.#logger.error(`You do not have permission to listen on port ${this.config.port}.`);
+					this.logger.error(`You do not have permission to listen on port ${this.config.port}.`);
 					break;
 				case 'EADDRINUSE':
-					this.#logger.error(`Port ${this.config.port} is already in use by another process.`);
+					this.logger.error(`Port ${this.config.port} is already in use by another process.`);
 					break;
 				default:
-					this.#logger.error(err);
+					this.logger.error(err);
 					break;
 			}
 

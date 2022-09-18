@@ -71,13 +71,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			(async () => {
 				await this.userSuspendService.doPostSuspend(user).catch(e => {});
-				await this.#unFollowAll(user).catch(e => {});
-				await this.#readAllNotify(user).catch(e => {});
+				await this.unFollowAll(user).catch(e => {});
+				await this.readAllNotify(user).catch(e => {});
 			})();
 		});
 	}
 
-	async #unFollowAll(follower: User) {
+	private async unFollowAll(follower: User) {
 		const followings = await this.followingsRepository.findBy({
 			followerId: follower.id,
 		});
@@ -95,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		}
 	}
 	
-	async #readAllNotify(notifier: User) {
+	private async readAllNotify(notifier: User) {
 		await this.notificationsRepository.update({
 			notifierId: notifier.id,
 			isRead: false,

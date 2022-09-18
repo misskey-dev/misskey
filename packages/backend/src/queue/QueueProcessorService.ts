@@ -16,7 +16,7 @@ import { QueueLoggerService } from './QueueLoggerService.js';
 
 @Injectable()
 export class QueueProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -32,7 +32,7 @@ export class QueueProcessorService {
 		private deliverProcessorService: DeliverProcessorService,
 		private inboxProcessorService: InboxProcessorService,
 	) {
-		this.#logger = this.queueLoggerService.logger;
+		this.logger = this.queueLoggerService.logger;
 	}
 
 	public start() {
@@ -44,12 +44,12 @@ export class QueueProcessorService {
 			};
 		}
 	
-		const systemLogger = this.#logger.createSubLogger('system');
-		const deliverLogger = this.#logger.createSubLogger('deliver');
-		const webhookLogger = this.#logger.createSubLogger('webhook');
-		const inboxLogger = this.#logger.createSubLogger('inbox');
-		const dbLogger = this.#logger.createSubLogger('db');
-		const objectStorageLogger = this.#logger.createSubLogger('objectStorage');
+		const systemLogger = this.logger.createSubLogger('system');
+		const deliverLogger = this.logger.createSubLogger('deliver');
+		const webhookLogger = this.logger.createSubLogger('webhook');
+		const inboxLogger = this.logger.createSubLogger('inbox');
+		const dbLogger = this.logger.createSubLogger('db');
+		const objectStorageLogger = this.logger.createSubLogger('objectStorage');
 		
 		this.queueService.systemQueue
 			.on('waiting', (jobId) => systemLogger.debug(`waiting id=${jobId}`))

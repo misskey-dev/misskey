@@ -35,7 +35,7 @@ import type { IObject, IPost } from '../type.js';
 
 @Injectable()
 export class ApNoteService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -71,7 +71,7 @@ export class ApNoteService {
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
 	) {
-		this.#logger = this.apLoggerService.logger;
+		this.logger = this.apLoggerService.logger;
 	}
 
 	public validateNote(object: any, uri: string) {
@@ -116,7 +116,7 @@ export class ApNoteService {
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);
 		if (err) {
-			this.#logger.error(`${err.message}`, {
+			this.logger.error(`${err.message}`, {
 				resolver: {
 					history: resolver.getHistory(),
 				},
@@ -128,9 +128,9 @@ export class ApNoteService {
 	
 		const note: IPost = object;
 	
-		this.#logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
+		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 	
-		this.#logger.info(`Creating the Note: ${note.id}`);
+		this.logger.info(`Creating the Note: ${note.id}`);
 	
 		// 投稿者をフェッチ
 		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as CacheableRemoteUser;
@@ -174,7 +174,7 @@ export class ApNoteService {
 		const reply: Note | null = note.inReplyTo
 			? await this.resolveNote(note.inReplyTo, resolver).then(x => {
 				if (x == null) {
-					this.#logger.warn('Specified inReplyTo, but nout found');
+					this.logger.warn('Specified inReplyTo, but nout found');
 					throw new Error('inReplyTo not found');
 				} else {
 					return x;
@@ -191,7 +191,7 @@ export class ApNoteService {
 					}
 				}
 	
-				this.#logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
+				this.logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
 				throw err;
 			})
 			: null;
@@ -255,9 +255,9 @@ export class ApNoteService {
 	
 			const tryCreateVote = async (name: string, index: number): Promise<null> => {
 				if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
-					this.#logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+					this.logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				} else if (index >= 0) {
-					this.#logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+					this.logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 					await this.pollService.vote(actor, reply, index);
 	
 					// リモートフォロワーにUpdate配信
@@ -272,7 +272,7 @@ export class ApNoteService {
 		}
 	
 		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
-			this.#logger.info(`extractEmojis: ${e}`);
+			this.logger.info(`extractEmojis: ${e}`);
 			return [] as Emoji[];
 		});
 	
@@ -386,7 +386,7 @@ export class ApNoteService {
 				return exists;
 			}
 	
-			this.#logger.info(`register emoji host=${host}, name=${name}`);
+			this.logger.info(`register emoji host=${host}, name=${name}`);
 	
 			return await this.emojisRepository.insert({
 				id: this.idService.genId(),

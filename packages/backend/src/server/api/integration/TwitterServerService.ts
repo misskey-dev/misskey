@@ -42,12 +42,12 @@ export class TwitterServerService {
 		const router = new Router();
 
 		router.get('/disconnect/twitter', async ctx => {
-			if (!this.#compareOrigin(ctx)) {
+			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
 			}
 
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 			if (userToken == null) {
 				ctx.throw(400, 'signin required');
 				return;
@@ -90,12 +90,12 @@ export class TwitterServerService {
 		};
 
 		router.get('/connect/twitter', async ctx => {
-			if (!this.#compareOrigin(ctx)) {
+			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
 			}
 
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 			if (userToken == null) {
 				ctx.throw(400, 'signin required');
 				return;
@@ -125,7 +125,7 @@ export class TwitterServerService {
 		});
 
 		router.get('/tw/cb', async ctx => {
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 
 			const twAuth = await getTwAuth();
 
@@ -214,11 +214,11 @@ export class TwitterServerService {
 		return router;
 	}
 
-	#getUserToken(ctx: Koa.BaseContext): string | null {
+	private getUserToken(ctx: Koa.BaseContext): string | null {
 		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
-	#compareOrigin(ctx: Koa.BaseContext): boolean {
+	private compareOrigin(ctx: Koa.BaseContext): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
 		}

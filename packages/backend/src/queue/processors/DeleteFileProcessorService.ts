@@ -9,7 +9,7 @@ import type { ObjectStorageFileJobData } from '../types.js';
 
 @Injectable()
 export class DeleteFileProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -18,7 +18,7 @@ export class DeleteFileProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('delete-file');
+		this.logger = this.queueLoggerService.logger.createSubLogger('delete-file');
 	}
 
 	public async process(job: Bull.Job<ObjectStorageFileJobData>): Promise<string> {

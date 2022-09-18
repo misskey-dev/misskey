@@ -7,16 +7,16 @@ import { DI } from '@/di-symbols.js';
 
 @Injectable()
 export class UserKeypairStoreService {
-	#cache: Cache<UserKeypair>;
+	private cache: Cache<UserKeypair>;
 
 	constructor(
 		@Inject(DI.userKeypairsRepository)
 		private userKeypairsRepository: UserKeypairsRepository,
 	) {
-		this.#cache = new Cache<UserKeypair>(Infinity);
+		this.cache = new Cache<UserKeypair>(Infinity);
 	}
 
 	public async getUserKeypair(userId: User['id']): Promise<UserKeypair> {
-		return await this.#cache.fetch(userId, () => this.userKeypairsRepository.findOneByOrFail({ userId: userId }));
+		return await this.cache.fetch(userId, () => this.userKeypairsRepository.findOneByOrFail({ userId: userId }));
 	}
 }

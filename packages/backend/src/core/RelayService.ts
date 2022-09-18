@@ -14,7 +14,7 @@ const ACTOR_USERNAME = 'relay.actor' as const;
 
 @Injectable()
 export class RelayService {
-	#relaysCache: Cache<Relay[]>;
+	private relaysCache: Cache<Relay[]>;
 
 	constructor(
 		@Inject(DI.usersRepository)
@@ -28,10 +28,10 @@ export class RelayService {
 		private createSystemUserService: CreateSystemUserService,
 		private apRendererService: ApRendererService,
 	) {
-		this.#relaysCache = new Cache<Relay[]>(1000 * 60 * 10);
+		this.relaysCache = new Cache<Relay[]>(1000 * 60 * 10);
 	}
 
-	async #getRelayActor(): Promise<ILocalUser> {
+	private async getRelayActor(): Promise<ILocalUser> {
 		const user = await this.usersRepository.findOneBy({
 			host: IsNull(),
 			username: ACTOR_USERNAME,
@@ -50,7 +50,7 @@ export class RelayService {
 			status: 'requesting',
 		}).then(x => this.relaysRepository.findOneByOrFail(x.identifiers[0]));
 	
-		const relayActor = await this.#getRelayActor();
+		const relayActor = await this.getRelayActor();
 		const follow = await this.apRendererService.renderFollowRelay(relay, relayActor);
 		const activity = this.apRendererService.renderActivity(follow);
 		this.queueService.deliver(relayActor, activity, relay.inbox);
@@ -67,7 +67,7 @@ export class RelayService {
 			throw new Error('relay not found');
 		}
 	
-		const relayActor = await this.#getRelayActor();
+		const relayActor = await this.getRelayActor();
 		const follow = this.apRendererService.renderFollowRelay(relay, relayActor);
 		const undo = this.apRendererService.renderUndo(follow, relayActor);
 		const activity = this.apRendererService.renderActivity(undo);
@@ -100,7 +100,7 @@ export class RelayService {
 	public async deliverToRelays(user: { id: User['id']; host: null; }, activity: any): Promise<void> {
 		if (activity == null) return;
 	
-		const relays = await this.#relaysCache.fetch(null, () => this.relaysRepository.findBy({
+		const relays = await this.relaysCache.fetch(null, () => this.relaysRepository.findBy({
 			status: 'accepted',
 		}));
 		if (relays.length === 0) return;

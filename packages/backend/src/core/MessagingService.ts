@@ -142,10 +142,10 @@ export class MessagingService {
 
 	public async deleteMessage(message: MessagingMessage) {
 		await this.messagingMessagesRepository.delete(message.id);
-		this.#postDeleteMessage(message);
+		this.postDeleteMessage(message);
 	}
 	
-	async #postDeleteMessage(message: MessagingMessage) {
+	private async postDeleteMessage(message: MessagingMessage) {
 		if (message.recipientId) {
 			const user = await this.usersRepository.findOneByOrFail({ id: message.userId });
 			const recipient = await this.usersRepository.findOneByOrFail({ id: message.recipientId });

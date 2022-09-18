@@ -25,8 +25,8 @@ export class ApAudienceService {
 	}
 
 	public async parseAudience(actor: CacheableRemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
-		const toGroups = this.#groupingAudience(getApIds(to), actor);
-		const ccGroups = this.#groupingAudience(getApIds(cc), actor);
+		const toGroups = this.groupingAudience(getApIds(to), actor);
+		const ccGroups = this.groupingAudience(getApIds(cc), actor);
 	
 		const others = unique(concat([toGroups.other, ccGroups.other]));
 	
@@ -66,7 +66,7 @@ export class ApAudienceService {
 		};
 	}
 	
-	#groupingAudience(ids: string[], actor: CacheableRemoteUser) {
+	private groupingAudience(ids: string[], actor: CacheableRemoteUser) {
 		const groups = {
 			public: [] as string[],
 			followers: [] as string[],
@@ -74,9 +74,9 @@ export class ApAudienceService {
 		};
 	
 		for (const id of ids) {
-			if (this.#isPublic(id)) {
+			if (this.isPublic(id)) {
 				groups.public.push(id);
-			} else if (this.#isFollowers(id, actor)) {
+			} else if (this.isFollowers(id, actor)) {
 				groups.followers.push(id);
 			} else {
 				groups.other.push(id);
@@ -88,7 +88,7 @@ export class ApAudienceService {
 		return groups;
 	}
 	
-	#isPublic(id: string) {
+	private isPublic(id: string) {
 		return [
 			'https://www.w3.org/ns/activitystreams#Public',
 			'as#Public',
@@ -96,7 +96,7 @@ export class ApAudienceService {
 		].includes(id);
 	}
 	
-	#isFollowers(id: string, actor: CacheableRemoteUser) {
+	private isFollowers(id: string, actor: CacheableRemoteUser) {
 		return (
 			id === (actor.followersUri ?? `${actor.uri}/followers`)
 		);

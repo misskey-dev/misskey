@@ -23,7 +23,7 @@ type PopulatedEmoji = {
 
 @Injectable()
 export class CustomEmojiService {
-	#cache: Cache<Emoji | null>;
+	private cache: Cache<Emoji | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -40,7 +40,7 @@ export class CustomEmojiService {
 		private utilityService: UtilityService,
 		private reactionService: ReactionService,
 	) {
-		this.#cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);
+		this.cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);
 	}
 
 	public async add(data: {
@@ -67,7 +67,7 @@ export class CustomEmojiService {
 		return emoji;
 	}
 	
-	#normalizeHost(src: string | undefined, noteUserHost: string | null): string | null {
+	private normalizeHost(src: string | undefined, noteUserHost: string | null): string | null {
 	// クエリに使うホスト
 		let host = src === '.' ? null	// .はローカルホスト (ここがマッチするのはリアクションのみ)
 			: src === undefined ? noteUserHost	// ノートなどでホスト省略表記の場合はローカルホスト (ここがリアクションにマッチすることはない)
@@ -79,14 +79,14 @@ export class CustomEmojiService {
 		return host;
 	}
 
-	#parseEmojiStr(emojiName: string, noteUserHost: string | null) {
+	private parseEmojiStr(emojiName: string, noteUserHost: string | null) {
 		const match = emojiName.match(/^(\w+)(?:@([\w.-]+))?$/);
 		if (!match) return { name: null, host: null };
 
 		const name = match[1];
 
 		// ホスト正規化
-		const host = this.utilityService.toPunyNullable(this.#normalizeHost(match[2], noteUserHost));
+		const host = this.utilityService.toPunyNullable(this.normalizeHost(match[2], noteUserHost));
 
 		return { name, host };
 	}
@@ -98,7 +98,7 @@ export class CustomEmojiService {
  * @returns 絵文字情報, nullは未マッチを意味する
  */
 	public async populateEmoji(emojiName: string, noteUserHost: string | null): Promise<PopulatedEmoji | null> {
-		const { name, host } = this.#parseEmojiStr(emojiName, noteUserHost);
+		const { name, host } = this.parseEmojiStr(emojiName, noteUserHost);
 		if (name == null) return null;
 
 		const queryOrNull = async () => (await this.emojisRepository.findOneBy({
@@ -106,7 +106,7 @@ export class CustomEmojiService {
 			host: host ?? IsNull(),
 		})) ?? null;
 
-		const emoji = await this.#cache.fetch(`${name} ${host}`, queryOrNull);
+		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
 
@@ -132,20 +132,20 @@ export class CustomEmojiService {
 		let emojis: { name: string | null; host: string | null; }[] = [];
 		for (const note of notes) {
 			emojis = emojis.concat(note.emojis
-				.map(e => this.#parseEmojiStr(e, note.userHost)));
+				.map(e => this.parseEmojiStr(e, note.userHost)));
 			if (note.renote) {
 				emojis = emojis.concat(note.renote.emojis
-					.map(e => this.#parseEmojiStr(e, note.renote!.userHost)));
+					.map(e => this.parseEmojiStr(e, note.renote!.userHost)));
 				if (note.renote.user) {
 					emojis = emojis.concat(note.renote.user.emojis
-						.map(e => this.#parseEmojiStr(e, note.renote!.userHost)));
+						.map(e => this.parseEmojiStr(e, note.renote!.userHost)));
 				}
 			}
 			const customReactions = Object.keys(note.reactions).map(x => this.reactionService.decodeReaction(x)).filter(x => x.name != null) as typeof emojis;
 			emojis = emojis.concat(customReactions);
 			if (note.user) {
 				emojis = emojis.concat(note.user.emojis
-					.map(e => this.#parseEmojiStr(e, note.userHost)));
+					.map(e => this.parseEmojiStr(e, note.userHost)));
 			}
 		}
 		return emojis.filter(x => x.name != null) as { name: string; host: string | null; }[];
@@ -155,7 +155,7 @@ export class CustomEmojiService {
  * 与えられた絵文字のリストをデータベースから取得し、キャッシュに追加します
  */
 	public async prefetchEmojis(emojis: { name: string; host: string | null; }[]): Promise<void> {
-		const notCachedEmojis = emojis.filter(emoji => this.#cache.get(`${emoji.name} ${emoji.host}`) == null);
+		const notCachedEmojis = emojis.filter(emoji => this.cache.get(`${emoji.name} ${emoji.host}`) == null);
 		const emojisQuery: any[] = [];
 		const hosts = new Set(notCachedEmojis.map(e => e.host));
 		for (const host of hosts) {
@@ -169,7 +169,7 @@ export class CustomEmojiService {
 			select: ['name', 'host', 'originalUrl', 'publicUrl'],
 		}) : [];
 		for (const emoji of _emojis) {
-			this.#cache.set(`${emoji.name} ${emoji.host}`, emoji);
+			this.cache.set(`${emoji.name} ${emoji.host}`, emoji);
 		}
 	}
 }

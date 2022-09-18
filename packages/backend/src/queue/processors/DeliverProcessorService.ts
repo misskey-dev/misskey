@@ -21,9 +21,9 @@ import type { DeliverJobData } from '../types.js';
 
 @Injectable()
 export class DeliverProcessorService {
-	#logger: Logger;
-	#suspendedHostsCache: Cache<Instance[]>;
-	#latest: string | null;
+	private logger: Logger;
+	private suspendedHostsCache: Cache<Instance[]>;
+	private latest: string | null;
 
 	constructor(
 		@Inject(DI.config)
@@ -45,9 +45,9 @@ export class DeliverProcessorService {
 		private federationChart: FederationChart,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.#suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
-		this.#latest = null;
+		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
+		this.suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
+		this.latest = null;
 	}
 
 	public async process(job: Bull.Job<DeliverJobData>): Promise<string> {
@@ -60,22 +60,22 @@ export class DeliverProcessorService {
 		}
 
 		// isSuspendedなら中断
-		let suspendedHosts = this.#suspendedHostsCache.get(null);
+		let suspendedHosts = this.suspendedHostsCache.get(null);
 		if (suspendedHosts == null) {
 			suspendedHosts = await this.instancesRepository.find({
 				where: {
 					isSuspended: true,
 				},
 			});
-			this.#suspendedHostsCache.set(null, suspendedHosts);
+			this.suspendedHostsCache.set(null, suspendedHosts);
 		}
 		if (suspendedHosts.map(x => x.host).includes(this.utilityService.toPuny(host))) {
 			return 'skip (suspended)';
 		}
 
 		try {
-			if (this.#latest !== (this.#latest = JSON.stringify(job.data.content, null, 2))) {
-				this.#logger.debug(`delivering ${this.#latest}`);
+			if (this.latest !== (this.latest = JSON.stringify(job.data.content, null, 2))) {
+				this.logger.debug(`delivering ${this.latest}`);
 			}
 
 			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content);

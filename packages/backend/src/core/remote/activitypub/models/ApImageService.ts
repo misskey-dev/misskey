@@ -14,7 +14,7 @@ import { ApLoggerService } from '../ApLoggerService.js';
 
 @Injectable()
 export class ApImageService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -28,7 +28,7 @@ export class ApImageService {
 		private driveService: DriveService,
 		private apLoggerService: ApLoggerService,
 	) {
-		this.#logger = this.apLoggerService.logger;
+		this.logger = this.apLoggerService.logger;
 	}
 	
 	/**
@@ -46,7 +46,7 @@ export class ApImageService {
 			throw new Error('invalid image: url not privided');
 		}
 
-		this.#logger.info(`Creating the Image: ${image.url}`);
+		this.logger.info(`Creating the Image: ${image.url}`);
 
 		const instance = await this.metaService.fetch();
 

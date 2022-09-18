@@ -10,7 +10,7 @@ import type Bull from 'bull';
 
 @Injectable()
 export class CheckExpiredMutingsProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -22,11 +22,11 @@ export class CheckExpiredMutingsProcessorService {
 		private globalEventService: GlobalEventService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('check-expired-mutings');
+		this.logger = this.queueLoggerService.logger.createSubLogger('check-expired-mutings');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
-		this.#logger.info('Checking expired mutings...');
+		this.logger.info('Checking expired mutings...');
 
 		const expired = await this.mutingsRepository.createQueryBuilder('muting')
 			.where('muting.expiresAt IS NOT NULL')
@@ -44,7 +44,7 @@ export class CheckExpiredMutingsProcessorService {
 			}
 		}
 
-		this.#logger.succ('All expired mutings checked.');
+		this.logger.succ('All expired mutings checked.');
 		done();
 	}
 }

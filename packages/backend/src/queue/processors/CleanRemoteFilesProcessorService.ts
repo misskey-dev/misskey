@@ -10,7 +10,7 @@ import type Bull from 'bull';
 
 @Injectable()
 export class CleanRemoteFilesProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -22,11 +22,11 @@ export class CleanRemoteFilesProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('clean-remote-files');
+		this.logger = this.queueLoggerService.logger.createSubLogger('clean-remote-files');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
-		this.#logger.info('Deleting cached remote files...');
+		this.logger.info('Deleting cached remote files...');
 
 		let deletedCount = 0;
 		let cursor: any = null;
@@ -63,7 +63,7 @@ export class CleanRemoteFilesProcessorService {
 			job.progress(deletedCount / total);
 		}
 
-		this.#logger.succ('All cahced remote files has been deleted.');
+		this.logger.succ('All cahced remote files has been deleted.');
 		done();
 	}
 }

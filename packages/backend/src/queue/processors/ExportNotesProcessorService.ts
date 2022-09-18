@@ -16,7 +16,7 @@ import type { DbUserJobData } from '../types.js';
 
 @Injectable()
 export class ExportNotesProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -34,11 +34,11 @@ export class ExportNotesProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('export-notes');
+		this.logger = this.queueLoggerService.logger.createSubLogger('export-notes');
 	}
 
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
-		this.#logger.info(`Exporting notes of ${job.data.user.id} ...`);
+		this.logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
@@ -49,7 +49,7 @@ export class ExportNotesProcessorService {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
 
-		this.#logger.info(`Temp file is ${path}`);
+		this.logger.info(`Temp file is ${path}`);
 
 		try {
 			const stream = fs.createWriteStream(path, { flags: 'a' });
@@ -58,7 +58,7 @@ export class ExportNotesProcessorService {
 				return new Promise<void>((res, rej) => {
 					stream.write(text, err => {
 						if (err) {
-							this.#logger.error(err);
+							this.logger.error(err);
 							rej(err);
 						} else {
 							res();
@@ -112,12 +112,12 @@ export class ExportNotesProcessorService {
 			await write(']');
 
 			stream.end();
-			this.#logger.succ(`Exported to: ${path}`);
+			this.logger.succ(`Exported to: ${path}`);
 
 			const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.json';
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true });
 
-			this.#logger.succ(`Exported to: ${driveFile.id}`);
+			this.logger.succ(`Exported to: ${driveFile.id}`);
 		} finally {
 			cleanup();
 		}

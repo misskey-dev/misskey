@@ -36,14 +36,14 @@ export class ApRequestService {
 	) {
 	}
 
-	#createSignedPost(args: { key: PrivateKey, url: string, body: string, additionalHeaders: Record<string, string> }): Signed {
+	private createSignedPost(args: { key: PrivateKey, url: string, body: string, additionalHeaders: Record<string, string> }): Signed {
 		const u = new URL(args.url);
 		const digestHeader = `SHA-256=${crypto.createHash('sha256').update(args.body).digest('base64')}`;
 
 		const request: Request = {
 			url: u.href,
 			method: 'POST',
-			headers: this.#objectAssignWithLcKey({
+			headers: this.objectAssignWithLcKey({
 				'Date': new Date().toUTCString(),
 				'Host': u.hostname,
 				'Content-Type': 'application/activity+json',
@@ -51,7 +51,7 @@ export class ApRequestService {
 			}, args.additionalHeaders),
 		};
 
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
+		const result = this.signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'digest']);
 
 		return {
 			request,
@@ -61,20 +61,20 @@ export class ApRequestService {
 		};
 	}
 
-	#createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Signed {
+	private createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Signed {
 		const u = new URL(args.url);
 
 		const request: Request = {
 			url: u.href,
 			method: 'GET',
-			headers: this.#objectAssignWithLcKey({
+			headers: this.objectAssignWithLcKey({
 				'Accept': 'application/activity+json, application/ld+json',
 				'Date': new Date().toUTCString(),
 				'Host': new URL(args.url).hostname,
 			}, args.additionalHeaders),
 		};
 
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
+		const result = this.signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
 
 		return {
 			request,
@@ -84,12 +84,12 @@ export class ApRequestService {
 		};
 	}
 
-	#signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Signed {
-		const signingString = this.#genSigningString(request, includeHeaders);
+	private signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Signed {
+		const signingString = this.genSigningString(request, includeHeaders);
 		const signature = crypto.sign('sha256', Buffer.from(signingString), key.privateKeyPem).toString('base64');
 		const signatureHeader = `keyId="${key.keyId}",algorithm="rsa-sha256",headers="${includeHeaders.join(' ')}",signature="${signature}"`;
 
-		request.headers = this.#objectAssignWithLcKey(request.headers, {
+		request.headers = this.objectAssignWithLcKey(request.headers, {
 			Signature: signatureHeader,
 		});
 
@@ -101,8 +101,8 @@ export class ApRequestService {
 		};
 	}
 
-	#genSigningString(request: Request, includeHeaders: string[]): string {
-		request.headers = this.#lcObjectKey(request.headers);
+	private genSigningString(request: Request, includeHeaders: string[]): string {
+		request.headers = this.lcObjectKey(request.headers);
 
 		const results: string[] = [];
 
@@ -117,14 +117,14 @@ export class ApRequestService {
 		return results.join('\n');
 	}
 
-	#lcObjectKey(src: Record<string, string>): Record<string, string> {
+	private lcObjectKey(src: Record<string, string>): Record<string, string> {
 		const dst: Record<string, string> = {};
 		for (const key of Object.keys(src).filter(x => x !== '__proto__' && typeof src[x] === 'string')) dst[key.toLowerCase()] = src[key];
 		return dst;
 	}
 
-	#objectAssignWithLcKey(a: Record<string, string>, b: Record<string, string>): Record<string, string> {
-		return Object.assign(this.#lcObjectKey(a), this.#lcObjectKey(b));
+	private objectAssignWithLcKey(a: Record<string, string>, b: Record<string, string>): Record<string, string> {
+		return Object.assign(this.lcObjectKey(a), this.lcObjectKey(b));
 	}
 
 	public async signedPost(user: { id: User['id'] }, url: string, object: any) {
@@ -132,7 +132,7 @@ export class ApRequestService {
 
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 
-		const req = this.#createSignedPost({
+		const req = this.createSignedPost({
 			key: {
 				privateKeyPem: keypair.privateKey,
 				keyId: `${this.config.url}/users/${user.id}#main-key`,
@@ -160,7 +160,7 @@ export class ApRequestService {
 	public async signedGet(url: string, user: { id: User['id'] }) {
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 
-		const req = this.#createSignedGet({
+		const req = this.createSignedGet({
 			key: {
 				privateKeyPem: keypair.privateKey,
 				keyId: `${this.config.url}/users/${user.id}#main-key`,

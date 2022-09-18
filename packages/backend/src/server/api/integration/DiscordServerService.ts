@@ -42,12 +42,12 @@ export class DiscordServerService {
 		const router = new Router();
 
 		router.get('/disconnect/discord', async ctx => {
-			if (!this.#compareOrigin(ctx)) {
+			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
 			}
 
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 			if (!userToken) {
 				ctx.throw(400, 'signin required');
 				return;
@@ -91,12 +91,12 @@ export class DiscordServerService {
 		};
 
 		router.get('/connect/discord', async ctx => {
-			if (!this.#compareOrigin(ctx)) {
+			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
 			}
 
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 			if (!userToken) {
 				ctx.throw(400, 'signin required');
 				return;
@@ -138,7 +138,7 @@ export class DiscordServerService {
 		});
 
 		router.get('/dc/cb', async ctx => {
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 
 			const oauth2 = await getOAuth2();
 
@@ -299,11 +299,11 @@ export class DiscordServerService {
 		return router;
 	}
 
-	#getUserToken(ctx: Koa.BaseContext): string | null {
+	private getUserToken(ctx: Koa.BaseContext): string | null {
 		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
-	#compareOrigin(ctx: Koa.BaseContext): boolean {
+	private compareOrigin(ctx: Koa.BaseContext): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
 		}

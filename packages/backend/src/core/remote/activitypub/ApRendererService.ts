@@ -365,7 +365,7 @@ export class ApRendererService {
 			text: apText,
 		}));
 	
-		const emojis = await this.#getEmojis(note.emojis);
+		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
 	
 		const tag = [
@@ -448,7 +448,7 @@ export class ApRendererService {
 			}
 		}
 
-		const emojis = await this.#getEmojis(user.emojis);
+		const emojis = await this.getEmojis(user.emojis);
 		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
 
 		const hashtagTags = (user.tags ?? []).map(tag => this.renderHashtag(tag));
@@ -687,7 +687,7 @@ export class ApRendererService {
 		return page;
 	}
 
-	async #getEmojis(names: string[]): Promise<Emoji[]> {
+	private async getEmojis(names: string[]): Promise<Emoji[]> {
 		if (names == null || names.length === 0) return [];
 
 		const emojis = await Promise.all(

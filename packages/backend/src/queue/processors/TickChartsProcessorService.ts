@@ -20,7 +20,7 @@ import type Bull from 'bull';
 
 @Injectable()
 export class TickChartsProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -41,11 +41,11 @@ export class TickChartsProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('tick-charts');
+		this.logger = this.queueLoggerService.logger.createSubLogger('tick-charts');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
-		this.#logger.info('Tick charts...');
+		this.logger.info('Tick charts...');
 
 		await Promise.all([
 			this.federationChart.tick(false),
@@ -62,7 +62,7 @@ export class TickChartsProcessorService {
 			this.apRequestChart.tick(false),
 		]);
 
-		this.#logger.succ('All charts successfully ticked.');
+		this.logger.succ('All charts successfully ticked.');
 		done();
 	}
 }

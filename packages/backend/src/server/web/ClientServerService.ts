@@ -84,7 +84,7 @@ export class ClientServerService {
 	) {
 	}
 
-	async #manifestHandler(ctx: Koa.Context) {
+	private async manifestHandler(ctx: Koa.Context) {
 		// TODO
 		//const res = structuredClone(manifest);
 		const res = JSON.parse(JSON.stringify(manifest));
@@ -264,7 +264,7 @@ export class ClientServerService {
 		});
 
 		// Manifest
-		router.get('/manifest.json', ctx => this.#manifestHandler(ctx));
+		router.get('/manifest.json', ctx => this.manifestHandler(ctx));
 
 		router.get('/robots.txt', async ctx => {
 			await send(ctx as any, '/robots.txt', {

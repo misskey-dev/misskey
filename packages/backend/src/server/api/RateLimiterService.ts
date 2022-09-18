@@ -8,7 +8,7 @@ import type { IEndpointMeta } from './endpoints.js';
 
 @Injectable()
 export class RateLimiterService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.redis)
@@ -16,7 +16,7 @@ export class RateLimiterService {
 
 		private loggerService: LoggerService,
 	) {
-		this.#logger = this.loggerService.getLogger('limiter');
+		this.logger = this.loggerService.getLogger('limiter');
 	}
 
 	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string) {
@@ -37,7 +37,7 @@ export class RateLimiterService {
 						return reject('ERR');
 					}
 		
-					this.#logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
+					this.logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
 		
 					if (info.remaining === 0) {
 						reject('BRIEF_REQUEST_INTERVAL');
@@ -65,7 +65,7 @@ export class RateLimiterService {
 						return reject('ERR');
 					}
 		
-					this.#logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
+					this.logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
 		
 					if (info.remaining === 0) {
 						reject('RATE_LIMIT_EXCEEDED');

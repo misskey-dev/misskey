@@ -91,7 +91,7 @@ export class ApPersonService implements OnModuleInit {
 	private usersChart: UsersChart;
 	private instanceChart: InstanceChart;
 	private apLoggerService: ApLoggerService;
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -153,7 +153,7 @@ export class ApPersonService implements OnModuleInit {
 		this.usersChart = this.moduleRef.get('UsersChart');
 		this.instanceChart = this.moduleRef.get('InstanceChart');
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
-		this.#logger = this.apLoggerService.logger;
+		this.logger = this.apLoggerService.logger;
 	}
 
 	/**
@@ -161,7 +161,7 @@ export class ApPersonService implements OnModuleInit {
 	 * @param x Fetched object
 	 * @param uri Fetch target URI
 	 */
-	#validateActor(x: IObject, uri: string): IActor {
+	private validateActor(x: IObject, uri: string): IActor {
 		const expectHost = this.utilityService.toPuny(new URL(uri).hostname);
 
 		if (x == null) {
@@ -264,9 +264,9 @@ export class ApPersonService implements OnModuleInit {
 
 		const object = await resolver.resolve(uri) as any;
 
-		const person = this.#validateActor(object, uri);
+		const person = this.validateActor(object, uri);
 
-		this.#logger.info(`Creating the Person: ${person.id}`);
+		this.logger.info(`Creating the Person: ${person.id}`);
 
 		const host = this.utilityService.toPuny(new URL(object.id).hostname);
 
@@ -338,7 +338,7 @@ export class ApPersonService implements OnModuleInit {
 					throw new Error('already registered');
 				}
 			} else {
-				this.#logger.error(e instanceof Error ? e : new Error(e as string));
+				this.logger.error(e instanceof Error ? e : new Error(e as string));
 				throw e;
 			}
 		}
@@ -379,7 +379,7 @@ export class ApPersonService implements OnModuleInit {
 
 	//#region カスタム絵文字取得
 	const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host).catch(err => {
-		this.#logger.info(`extractEmojis: ${err}`);
+		this.logger.info(`extractEmojis: ${err}`);
 		return [] as Emoji[];
 	});
 
@@ -390,7 +390,7 @@ export class ApPersonService implements OnModuleInit {
 	});
 	//#endregion
 
-	await this.updateFeatured(user!.id).catch(err => this.#logger.error(err));
+	await this.updateFeatured(user!.id).catch(err => this.logger.error(err));
 
 	return user!;
 	}
@@ -422,9 +422,9 @@ export class ApPersonService implements OnModuleInit {
 
 		const object = hint ?? await resolver.resolve(uri);
 
-		const person = this.#validateActor(object, uri);
+		const person = this.validateActor(object, uri);
 
-		this.#logger.info(`Updating the Person: ${person.id}`);
+		this.logger.info(`Updating the Person: ${person.id}`);
 
 		// アバターとヘッダー画像をフェッチ
 		const [avatar, banner] = await Promise.all([
@@ -438,7 +438,7 @@ export class ApPersonService implements OnModuleInit {
 
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
-			this.#logger.info(`extractEmojis: ${e}`);
+			this.logger.info(`extractEmojis: ${e}`);
 			return [] as Emoji[];
 		});
 
@@ -503,7 +503,7 @@ export class ApPersonService implements OnModuleInit {
 			followerSharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		});
 
-		await this.updateFeatured(exist.id).catch(err => this.#logger.error(err));
+		await this.updateFeatured(exist.id).catch(err => this.logger.error(err));
 	}
 
 	/**
@@ -556,7 +556,7 @@ export class ApPersonService implements OnModuleInit {
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
 
-		this.#logger.info(`Updating the featured: ${user.uri}`);
+		this.logger.info(`Updating the featured: ${user.uri}`);
 
 		const resolver = this.apResolverService.createResolver();
 

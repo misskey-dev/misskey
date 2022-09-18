@@ -34,7 +34,7 @@ import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow
 
 @Injectable()
 export class ApInboxService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -81,7 +81,7 @@ export class ApInboxService {
 		private queueService: QueueService,
 		private messagingService: MessagingService,
 	) {
-		this.#logger = this.apLoggerService.logger;
+		this.logger = this.apLoggerService.logger;
 	}
 	
 	public async performActivity(actor: CacheableRemoteUser, activity: IObject) {
@@ -93,7 +93,7 @@ export class ApInboxService {
 					await this.performOneActivity(actor, act);
 				} catch (err) {
 					if (err instanceof Error || typeof err === 'string') {
-						this.#logger.error(err);
+						this.logger.error(err);
 					}
 				}
 			}
@@ -115,39 +115,39 @@ export class ApInboxService {
 		if (actor.isSuspended) return;
 
 		if (isCreate(activity)) {
-			await this.#create(actor, activity);
+			await this.create(actor, activity);
 		} else if (isDelete(activity)) {
-			await this.#delete(actor, activity);
+			await this.delete(actor, activity);
 		} else if (isUpdate(activity)) {
-			await this.#update(actor, activity);
+			await this.update(actor, activity);
 		} else if (isRead(activity)) {
-			await this.#read(actor, activity);
+			await this.read(actor, activity);
 		} else if (isFollow(activity)) {
-			await this.#follow(actor, activity);
+			await this.follow(actor, activity);
 		} else if (isAccept(activity)) {
-			await this.#accept(actor, activity);
+			await this.accept(actor, activity);
 		} else if (isReject(activity)) {
-			await this.#reject(actor, activity);
+			await this.reject(actor, activity);
 		} else if (isAdd(activity)) {
-			await this.#add(actor, activity).catch(err => this.#logger.error(err));
+			await this.add(actor, activity).catch(err => this.logger.error(err));
 		} else if (isRemove(activity)) {
-			await this.#remove(actor, activity).catch(err => this.#logger.error(err));
+			await this.remove(actor, activity).catch(err => this.logger.error(err));
 		} else if (isAnnounce(activity)) {
-			await this.#announce(actor, activity);
+			await this.announce(actor, activity);
 		} else if (isLike(activity)) {
-			await this.#like(actor, activity);
+			await this.like(actor, activity);
 		} else if (isUndo(activity)) {
-			await this.#undo(actor, activity);
+			await this.undo(actor, activity);
 		} else if (isBlock(activity)) {
-			await this.#block(actor, activity);
+			await this.block(actor, activity);
 		} else if (isFlag(activity)) {
-			await this.#flag(actor, activity);
+			await this.flag(actor, activity);
 		} else {
-			this.#logger.warn(`unrecognized activity type: ${(activity as any).type}`);
+			this.logger.warn(`unrecognized activity type: ${(activity as any).type}`);
 		}
 	}
 
-	async #follow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
+	private async follow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 	
 		if (followee == null) {
@@ -162,7 +162,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
-	async #like(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
+	private async like(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
 		const note = await this.apNoteService.fetchNote(targetUri);
@@ -179,7 +179,7 @@ export class ApInboxService {
 		}).then(() => 'ok');
 	}
 
-	async #read(actor: CacheableRemoteUser, activity: IRead): Promise<string> {
+	private async read(actor: CacheableRemoteUser, activity: IRead): Promise<string> {
 		const id = await getApId(activity.object);
 
 		if (!this.utilityService.isSelfHost(this.utilityService.extractDbHost(id))) {
@@ -201,24 +201,24 @@ export class ApInboxService {
 		return `ok: mark as read (${message.userId} => ${message.recipientId} ${message.id})`;
 	}
 
-	async #accept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
+	private async accept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
 		const uri = activity.id ?? activity;
 
-		this.#logger.info(`Accept: ${uri}`);
+		this.logger.info(`Accept: ${uri}`);
 	
 		const resolver = this.apResolverService.createResolver();
 	
 		const object = await resolver.resolve(activity.object).catch(err => {
-			this.#logger.error(`Resolution failed: ${err}`);
+			this.logger.error(`Resolution failed: ${err}`);
 			throw err;
 		});
 	
-		if (isFollow(object)) return await this.#acceptFollow(actor, object);
+		if (isFollow(object)) return await this.acceptFollow(actor, object);
 	
 		return `skip: Unknown Accept type: ${getApType(object)}`;
 	}
 
-	async #acceptFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
+	private async acceptFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 
 		const follower = await this.apDbResolverService.getUserFromApId(activity.actor);
@@ -241,7 +241,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
-	async #add(actor: CacheableRemoteUser, activity: IAdd): Promise<void> {
+	private async add(actor: CacheableRemoteUser, activity: IAdd): Promise<void> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
@@ -260,17 +260,17 @@ export class ApInboxService {
 		throw new Error(`unknown target: ${activity.target}`);
 	}
 
-	async #announce(actor: CacheableRemoteUser, activity: IAnnounce): Promise<void> {
+	private async announce(actor: CacheableRemoteUser, activity: IAnnounce): Promise<void> {
 		const uri = getApId(activity);
 
-		this.#logger.info(`Announce: ${uri}`);
+		this.logger.info(`Announce: ${uri}`);
 
 		const targetUri = getApId(activity.object);
 
-		this.#announceNote(actor, activity, targetUri);
+		this.announceNote(actor, activity, targetUri);
 	}
 
-	async #announceNote(actor: CacheableRemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
+	private async announceNote(actor: CacheableRemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
 		const uri = getApId(activity);
 
 		if (actor.isSuspended) {
@@ -298,18 +298,18 @@ export class ApInboxService {
 			// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
 					if (err.isClientError) {
-						this.#logger.warn(`Ignored announce target ${targetUri} - ${err.statusCode}`);
+						this.logger.warn(`Ignored announce target ${targetUri} - ${err.statusCode}`);
 						return;
 					}
 
-					this.#logger.warn(`Error in announce target ${targetUri} - ${err.statusCode ?? err}`);
+					this.logger.warn(`Error in announce target ${targetUri} - ${err.statusCode ?? err}`);
 				}
 				throw err;
 			}
 
 			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
 
-			this.#logger.info(`Creating the (Re)Note: ${uri}`);
+			this.logger.info(`Creating the (Re)Note: ${uri}`);
 
 			const activityAudience = await this.apAudienceService.parseAudience(actor, activity.to, activity.cc);
 
@@ -325,7 +325,7 @@ export class ApInboxService {
 		}
 	}
 
-	async #block(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
+	private async block(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
 		// ※ activity.objectにブロック対象があり、それは存在するローカルユーザーのはず
 
 		const blockee = await this.apDbResolverService.getUserFromApId(activity.object);
@@ -342,10 +342,10 @@ export class ApInboxService {
 		return 'ok';
 	}
 
-	async #create(actor: CacheableRemoteUser, activity: ICreate): Promise<void> {
+	private async create(actor: CacheableRemoteUser, activity: ICreate): Promise<void> {
 		const uri = getApId(activity);
 
-		this.#logger.info(`Create: ${uri}`);
+		this.logger.info(`Create: ${uri}`);
 
 		// copy audiences between activity <=> object.
 		if (typeof activity.object === 'object') {
@@ -366,18 +366,18 @@ export class ApInboxService {
 		const resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
-			this.#logger.error(`Resolution failed: ${e}`);
+			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
 
 		if (isPost(object)) {
-			this.#createNote(resolver, actor, object, false, activity);
+			this.createNote(resolver, actor, object, false, activity);
 		} else {
-			this.#logger.warn(`Unknown type: ${getApType(object)}`);
+			this.logger.warn(`Unknown type: ${getApType(object)}`);
 		}
 	}
 
-	async #createNote(resolver: Resolver, actor: CacheableRemoteUser, note: IObject, silent = false, activity?: ICreate): Promise<string> {
+	private async createNote(resolver: Resolver, actor: CacheableRemoteUser, note: IObject, silent = false, activity?: ICreate): Promise<string> {
 		const uri = getApId(note);
 
 		if (typeof note === 'object') {
@@ -411,7 +411,7 @@ export class ApInboxService {
 		}
 	}
 
-	async #delete(actor: CacheableRemoteUser, activity: IDelete): Promise<string> {
+	private async delete(actor: CacheableRemoteUser, activity: IDelete): Promise<string> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
@@ -444,16 +444,16 @@ export class ApInboxService {
 		}
 	
 		if (validPost.includes(formerType)) {
-			return await this.#deleteNote(actor, uri);
+			return await this.deleteNote(actor, uri);
 		} else if (validActor.includes(formerType)) {
-			return await this.#deleteActor(actor, uri);
+			return await this.deleteActor(actor, uri);
 		} else {
 			return `Unknown type ${formerType}`;
 		}
 	}
 
-	async #deleteActor(actor: CacheableRemoteUser, uri: string): Promise<string> {
-		this.#logger.info(`Deleting the Actor: ${uri}`);
+	private async deleteActor(actor: CacheableRemoteUser, uri: string): Promise<string> {
+		this.logger.info(`Deleting the Actor: ${uri}`);
 	
 		if (actor.uri !== uri) {
 			return `skip: delete actor ${actor.uri} !== ${uri}`;
@@ -461,7 +461,7 @@ export class ApInboxService {
 	
 		const user = await this.usersRepository.findOneByOrFail({ id: actor.id });
 		if (user.isDeleted) {
-			this.#logger.info('skip: already deleted');
+			this.logger.info('skip: already deleted');
 		}
 	
 		const job = await this.queueService.createDeleteAccountJob(actor);
@@ -473,8 +473,8 @@ export class ApInboxService {
 		return `ok: queued ${job.name} ${job.id}`;
 	}
 
-	async #deleteNote(actor: CacheableRemoteUser, uri: string): Promise<string> {
-		this.#logger.info(`Deleting the Note: ${uri}`);
+	private async deleteNote(actor: CacheableRemoteUser, uri: string): Promise<string> {
+		this.logger.info(`Deleting the Note: ${uri}`);
 	
 		const unlock = await this.appLockService.getApLock(uri);
 	
@@ -505,7 +505,7 @@ export class ApInboxService {
 		}
 	}
 
-	async #flag(actor: CacheableRemoteUser, activity: IFlag): Promise<string> {
+	private async flag(actor: CacheableRemoteUser, activity: IFlag): Promise<string> {
 		// objectは `(User|Note) | (User|Note)[]` だけど、全パターンDBスキーマと対応させられないので
 		// 対象ユーザーは一番最初のユーザー として あとはコメントとして格納する
 		const uris = getApIds(activity.object);
@@ -529,24 +529,24 @@ export class ApInboxService {
 		return 'ok';
 	}
 
-	async #reject(actor: CacheableRemoteUser, activity: IReject): Promise<string> {
+	private async reject(actor: CacheableRemoteUser, activity: IReject): Promise<string> {
 		const uri = activity.id ?? activity;
 
-		this.#logger.info(`Reject: ${uri}`);
+		this.logger.info(`Reject: ${uri}`);
 
 		const resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
-			this.#logger.error(`Resolution failed: ${e}`);
+			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
 
-		if (isFollow(object)) return await this.#rejectFollow(actor, object);
+		if (isFollow(object)) return await this.rejectFollow(actor, object);
 
 		return `skip: Unknown Reject type: ${getApType(object)}`;
 	}
 
-	async #rejectFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
+	private async rejectFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 	
 		const follower = await this.apDbResolverService.getUserFromApId(activity.actor);
@@ -569,7 +569,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
-	async #remove(actor: CacheableRemoteUser, activity: IRemove): Promise<void> {
+	private async remove(actor: CacheableRemoteUser, activity: IRemove): Promise<void> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
@@ -588,32 +588,32 @@ export class ApInboxService {
 		throw new Error(`unknown target: ${activity.target}`);
 	}
 
-	async #undo(actor: CacheableRemoteUser, activity: IUndo): Promise<string> {
+	private async undo(actor: CacheableRemoteUser, activity: IUndo): Promise<string> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 	
 		const uri = activity.id ?? activity;
 	
-		this.#logger.info(`Undo: ${uri}`);
+		this.logger.info(`Undo: ${uri}`);
 	
 		const resolver = this.apResolverService.createResolver();
 	
 		const object = await resolver.resolve(activity.object).catch(e => {
-			this.#logger.error(`Resolution failed: ${e}`);
+			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
 	
-		if (isFollow(object)) return await this.#undoFollow(actor, object);
-		if (isBlock(object)) return await this.#undoBlock(actor, object);
-		if (isLike(object)) return await this.#undoLike(actor, object);
-		if (isAnnounce(object)) return await this.#undoAnnounce(actor, object);
-		if (isAccept(object)) return await this.#undoAccept(actor, object);
+		if (isFollow(object)) return await this.undoFollow(actor, object);
+		if (isBlock(object)) return await this.undoBlock(actor, object);
+		if (isLike(object)) return await this.undoLike(actor, object);
+		if (isAnnounce(object)) return await this.undoAnnounce(actor, object);
+		if (isAccept(object)) return await this.undoAccept(actor, object);
 	
 		return `skip: unknown object type ${getApType(object)}`;
 	}
 
-	async #undoAccept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
+	private async undoAccept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
 		const follower = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (follower == null) {
 			return 'skip: follower not found';
@@ -632,7 +632,7 @@ export class ApInboxService {
 		return 'skip: フォローされていない';
 	}
 
-	async #undoAnnounce(actor: CacheableRemoteUser, activity: IAnnounce): Promise<string> {
+	private async undoAnnounce(actor: CacheableRemoteUser, activity: IAnnounce): Promise<string> {
 		const uri = getApId(activity);
 
 		const note = await this.notesRepository.findOneBy({
@@ -646,7 +646,7 @@ export class ApInboxService {
 		return 'ok: deleted';
 	}
 
-	async #undoBlock(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
+	private async undoBlock(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
 		const blockee = await this.apDbResolverService.getUserFromApId(activity.object);
 
 		if (blockee == null) {
@@ -661,7 +661,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
-	async #undoFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
+	private async undoFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (followee == null) {
 			return 'skip: followee not found';
@@ -694,7 +694,7 @@ export class ApInboxService {
 		return 'skip: リクエストもフォローもされていない';
 	}
 
-	async #undoLike(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
+	private async undoLike(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
 		const note = await this.apNoteService.fetchNote(targetUri);
@@ -708,17 +708,17 @@ export class ApInboxService {
 		return 'ok';
 	}
 
-	async #update(actor: CacheableRemoteUser, activity: IUpdate): Promise<string> {
+	private async update(actor: CacheableRemoteUser, activity: IUpdate): Promise<string> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			return 'skip: invalid actor';
 		}
 	
-		this.#logger.debug('Update');
+		this.logger.debug('Update');
 	
 		const resolver = this.apResolverService.createResolver();
 	
 		const object = await resolver.resolve(activity.object).catch(e => {
-			this.#logger.error(`Resolution failed: ${e}`);
+			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
 	

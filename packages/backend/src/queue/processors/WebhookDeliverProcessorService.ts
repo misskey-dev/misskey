@@ -12,7 +12,7 @@ import type { WebhookDeliverJobData } from '../types.js';
 
 @Injectable()
 export class WebhookDeliverProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -24,12 +24,12 @@ export class WebhookDeliverProcessorService {
 		private httpRequestService: HttpRequestService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('webhook');
+		this.logger = this.queueLoggerService.logger.createSubLogger('webhook');
 	}
 
 	public async process(job: Bull.Job<WebhookDeliverJobData>): Promise<string> {
 		try {
-			this.#logger.debug(`delivering ${job.data.webhookId}`);
+			this.logger.debug(`delivering ${job.data.webhookId}`);
 	
 			const res = await this.httpRequestService.getResponse({
 				url: job.data.to,

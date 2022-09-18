@@ -17,7 +17,7 @@ import type Bull from 'bull';
 
 @Injectable()
 export class ExportCustomEmojisProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -33,11 +33,11 @@ export class ExportCustomEmojisProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('export-custom-emojis');
+		this.logger = this.queueLoggerService.logger.createSubLogger('export-custom-emojis');
 	}
 
 	public async process(job: Bull.Job, done: () => void): Promise<void> {
-		this.#logger.info('Exporting custom emojis ...');
+		this.logger.info('Exporting custom emojis ...');
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
@@ -47,7 +47,7 @@ export class ExportCustomEmojisProcessorService {
 
 		const [path, cleanup] = await createTempDir();
 
-		this.#logger.info(`Temp dir is ${path}`);
+		this.logger.info(`Temp dir is ${path}`);
 
 		const metaPath = path + '/meta.json';
 
@@ -59,7 +59,7 @@ export class ExportCustomEmojisProcessorService {
 			return new Promise<void>((res, rej) => {
 				metaStream.write(text, err => {
 					if (err) {
-						this.#logger.error(err);
+						this.logger.error(err);
 						rej(err);
 					} else {
 						res();
@@ -90,7 +90,7 @@ export class ExportCustomEmojisProcessorService {
 				await this.downloadService.downloadUrl(emoji.originalUrl, emojiPath);
 				downloaded = true;
 			} catch (e) { // TODO: 何度か再試行
-				this.#logger.error(e instanceof Error ? e : new Error(e as string));
+				this.logger.error(e instanceof Error ? e : new Error(e as string));
 			}
 
 			if (!downloaded) {
@@ -118,12 +118,12 @@ export class ExportCustomEmojisProcessorService {
 			zlib: { level: 0 },
 		});
 		archiveStream.on('close', async () => {
-			this.#logger.succ(`Exported to: ${archivePath}`);
+			this.logger.succ(`Exported to: ${archivePath}`);
 
 			const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.zip';
 			const driveFile = await this.driveService.addFile({ user, path: archivePath, name: fileName, force: true });
 
-			this.#logger.succ(`Exported to: ${driveFile.id}`);
+			this.logger.succ(`Exported to: ${driveFile.id}`);
 			cleanup();
 			archiveCleanup();
 			done();

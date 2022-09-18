@@ -74,8 +74,8 @@ type UploadFromUrlArgs = {
 
 @Injectable()
 export class DriveService {
-	#registerLogger: Logger;
-	#downloaderLogger: Logger;
+	private registerLogger: Logger;
+	private downloaderLogger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -110,8 +110,8 @@ export class DriveService {
 		private instanceChart: InstanceChart,
 	) {
 		const logger = new Logger('drive', 'blue');
-		this.#registerLogger = logger.createSubLogger('register', 'yellow');
-		this.#downloaderLogger = logger.createSubLogger('downloader');
+		this.registerLogger = logger.createSubLogger('register', 'yellow');
+		this.downloaderLogger = logger.createSubLogger('downloader');
 	}
 
 	/***
@@ -122,7 +122,7 @@ export class DriveService {
 	 * @param hash Hash for original
 	 * @param size Size for original
 	 */
-	async #save(file: DriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<DriveFile> {
+	private async save(file: DriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<DriveFile> {
 	// thunbnail, webpublic を必要なら生成
 		const alts = await this.generateAlts(path, type, !file.uri);
 
@@ -161,25 +161,25 @@ export class DriveService {
 			//#endregion
 
 			//#region Uploads
-			this.#registerLogger.info(`uploading original: ${key}`);
+			this.registerLogger.info(`uploading original: ${key}`);
 			const uploads = [
-				this.#upload(key, fs.createReadStream(path), type, name),
+				this.upload(key, fs.createReadStream(path), type, name),
 			];
 
 			if (alts.webpublic) {
 				webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid()}.${alts.webpublic.ext}`;
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
-				this.#registerLogger.info(`uploading webpublic: ${webpublicKey}`);
-				uploads.push(this.#upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
+				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
+				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
 			}
 
 			if (alts.thumbnail) {
 				thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid()}.${alts.thumbnail.ext}`;
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
-				this.#registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
-				uploads.push(this.#upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
+				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
+				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
 			}
 
 			await Promise.all(uploads);
@@ -211,12 +211,12 @@ export class DriveService {
 
 			if (alts.thumbnail) {
 				thumbnailUrl = this.internalStorageService.saveFromBuffer(thumbnailAccessKey, alts.thumbnail.data);
-				this.#registerLogger.info(`thumbnail stored: ${thumbnailAccessKey}`);
+				this.registerLogger.info(`thumbnail stored: ${thumbnailAccessKey}`);
 			}
 
 			if (alts.webpublic) {
 				webpublicUrl = this.internalStorageService.saveFromBuffer(webpublicAccessKey, alts.webpublic.data);
-				this.#registerLogger.info(`web stored: ${webpublicAccessKey}`);
+				this.registerLogger.info(`web stored: ${webpublicAccessKey}`);
 			}
 
 			file.storedInternal = true;
@@ -251,7 +251,7 @@ export class DriveService {
 					thumbnail,
 				};
 			} catch (err) {
-				this.#registerLogger.warn(`GenerateVideoThumbnail failed: ${err}`);
+				this.registerLogger.warn(`GenerateVideoThumbnail failed: ${err}`);
 				return {
 					webpublic: null,
 					thumbnail: null,
@@ -260,7 +260,7 @@ export class DriveService {
 		}
 
 		if (!['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(type)) {
-			this.#registerLogger.debug('web image and thumbnail not created (not an required file)');
+			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
 			return {
 				webpublic: null,
 				thumbnail: null,
@@ -290,7 +290,7 @@ export class DriveService {
 			metadata.height && metadata.height <= 2048
 			);
 		} catch (err) {
-			this.#registerLogger.warn(`sharp failed: ${err}`);
+			this.registerLogger.warn(`sharp failed: ${err}`);
 			return {
 				webpublic: null,
 				thumbnail: null,
@@ -301,7 +301,7 @@ export class DriveService {
 		let webpublic: IImage | null = null;
 
 		if (generateWeb && !satisfyWebpublic) {
-			this.#registerLogger.info('creating web image');
+			this.registerLogger.info('creating web image');
 
 			try {
 				if (['image/jpeg', 'image/webp'].includes(type)) {
@@ -311,14 +311,14 @@ export class DriveService {
 				} else if (['image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
 				} else {
-					this.#registerLogger.debug('web image not created (not an required image)');
+					this.registerLogger.debug('web image not created (not an required image)');
 				}
 			} catch (err) {
-				this.#registerLogger.warn('web image not created (an error occured)', err as Error);
+				this.registerLogger.warn('web image not created (an error occured)', err as Error);
 			}
 		} else {
-			if (satisfyWebpublic) this.#registerLogger.info('web image not created (original satisfies webpublic)');
-			else this.#registerLogger.info('web image not created (from remote)');
+			if (satisfyWebpublic) this.registerLogger.info('web image not created (original satisfies webpublic)');
+			else this.registerLogger.info('web image not created (from remote)');
 		}
 		// #endregion webpublic
 
@@ -329,10 +329,10 @@ export class DriveService {
 			if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(type)) {
 				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 280);
 			} else {
-				this.#registerLogger.debug('thumbnail not created (not an required file)');
+				this.registerLogger.debug('thumbnail not created (not an required file)');
 			}
 		} catch (err) {
-			this.#registerLogger.warn('thumbnail not created (an error occured)', err as Error);
+			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
 		}
 		// #endregion thumbnail
 
@@ -345,7 +345,7 @@ export class DriveService {
 	/**
 	 * Upload to ObjectStorage
 	 */
-	async #upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
@@ -369,10 +369,10 @@ export class DriveService {
 		});
 
 		const result = await upload.promise();
-		if (result) this.#registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+		if (result) this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 	}
 
-	async #deleteOldFile(user: IRemoteUser) {
+	private async deleteOldFile(user: IRemoteUser) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -430,7 +430,7 @@ export class DriveService {
 			sensitiveThresholdForPorn: 0.75,
 			enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 		});
-		this.#registerLogger.info(`${JSON.stringify(info)}`);
+		this.registerLogger.info(`${JSON.stringify(info)}`);
 
 		// 現状 false positive が多すぎて実用に耐えない
 		//if (info.porn && instance.disallowUploadWhenPredictedAsPorn) {
@@ -448,7 +448,7 @@ export class DriveService {
 			});
 
 			if (much) {
-				this.#registerLogger.info(`file with same hash is found: ${much.id}`);
+				this.registerLogger.info(`file with same hash is found: ${much.id}`);
 				return much;
 			}
 		}
@@ -463,11 +463,11 @@ export class DriveService {
 
 			if (this.userEntityService.isLocalUser(user) && u?.driveCapacityOverrideMb != null) {
 				driveCapacity = 1024 * 1024 * u.driveCapacityOverrideMb;
-				this.#registerLogger.debug('drive capacity override applied');
-				this.#registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
+				this.registerLogger.debug('drive capacity override applied');
+				this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 			}
 
-			this.#registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
+			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
 			// If usage limit exceeded
 			if (usage + info.size > driveCapacity) {
@@ -475,7 +475,7 @@ export class DriveService {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-					this.#deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
+					this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
 				}
 			}
 		}
@@ -566,22 +566,22 @@ export class DriveService {
 			} catch (err) {
 			// duplicate key error (when already registered)
 				if (isDuplicateKeyValueError(err)) {
-					this.#registerLogger.info(`already registered ${file.uri}`);
+					this.registerLogger.info(`already registered ${file.uri}`);
 
 					file = await this.driveFilesRepository.findOneBy({
 						uri: file.uri!,
 						userId: user ? user.id : IsNull(),
 					}) as DriveFile;
 				} else {
-					this.#registerLogger.error(err as Error);
+					this.registerLogger.error(err as Error);
 					throw err;
 				}
 			}
 		} else {
-			file = await (this.#save(file, path, detectedName, info.type.mime, info.md5, info.size));
+			file = await (this.save(file, path, detectedName, info.type.mime, info.md5, info.size));
 		}
 
-		this.#registerLogger.succ(`drive file has been created ${file.id}`);
+		this.registerLogger.succ(`drive file has been created ${file.id}`);
 
 		if (user) {
 			this.driveFileEntityService.pack(file, { self: true }).then(packedFile => {
@@ -624,7 +624,7 @@ export class DriveService {
 			}
 		}
 
-		this.#deletePostProcess(file, isExpired);
+		this.deletePostProcess(file, isExpired);
 	}
 
 	public async deleteFileSync(file: DriveFile, isExpired = false) {
@@ -654,10 +654,10 @@ export class DriveService {
 			await Promise.all(promises);
 		}
 
-		this.#deletePostProcess(file, isExpired);
+		this.deletePostProcess(file, isExpired);
 	}
 
-	async #deletePostProcess(file: DriveFile, isExpired = false) {
+	private async deletePostProcess(file: DriveFile, isExpired = false) {
 	// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
 			this.driveFilesRepository.update(file.id, {
@@ -725,10 +725,10 @@ export class DriveService {
 			await this.downloadService.downloadUrl(url, path);
 	
 			const driveFile = await this.addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
-			this.#downloaderLogger.succ(`Got: ${driveFile.id}`);
+			this.downloaderLogger.succ(`Got: ${driveFile.id}`);
 			return driveFile!;
 		} catch (err) {
-			this.#downloaderLogger.error(`Failed to create drive file: ${err}`, {
+			this.downloaderLogger.error(`Failed to create drive file: ${err}`, {
 				url: url,
 				e: err,
 			});

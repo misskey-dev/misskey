@@ -18,7 +18,7 @@ const pipeline = util.promisify(stream.pipeline);
 
 @Injectable()
 export class DownloadService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -27,11 +27,11 @@ export class DownloadService {
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
-		this.#logger = this.loggerService.getLogger('download');
+		this.logger = this.loggerService.getLogger('download');
 	}
 
 	public async downloadUrl(url: string, path: string): Promise<void> {
-		this.#logger.info(`Downloading ${chalk.cyan(url)} ...`);
+		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
 	
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
@@ -60,8 +60,8 @@ export class DownloadService {
 			},
 		}).on('response', (res: Got.Response) => {
 			if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !this.config.proxy && res.ip) {
-				if (this.#isPrivateIp(res.ip)) {
-					this.#logger.warn(`Blocked address: ${res.ip}`);
+				if (this.isPrivateIp(res.ip)) {
+					this.logger.warn(`Blocked address: ${res.ip}`);
 					req.destroy();
 				}
 			}
@@ -70,13 +70,13 @@ export class DownloadService {
 			if (contentLength != null) {
 				const size = Number(contentLength);
 				if (size > maxSize) {
-					this.#logger.warn(`maxSize exceeded (${size} > ${maxSize}) on response`);
+					this.logger.warn(`maxSize exceeded (${size} > ${maxSize}) on response`);
 					req.destroy();
 				}
 			}
 		}).on('downloadProgress', (progress: Got.Progress) => {
 			if (progress.transferred > maxSize) {
-				this.#logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
+				this.logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
 				req.destroy();
 			}
 		});
@@ -91,14 +91,14 @@ export class DownloadService {
 			}
 		}
 	
-		this.#logger.succ(`Download finished: ${chalk.cyan(url)}`);
+		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 
 	public async downloadTextFile(url: string): Promise<string> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
 	
-		this.#logger.info(`text file: Temp file is ${path}`);
+		this.logger.info(`text file: Temp file is ${path}`);
 	
 		try {
 			// write content at URL to temp file
@@ -112,7 +112,7 @@ export class DownloadService {
 		}
 	}
 	
-	#isPrivateIp(ip: string): boolean {
+	private isPrivateIp(ip: string): boolean {
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
 			const cidr = new IPCIDR(net);
 			if (cidr.contains(ip)) {

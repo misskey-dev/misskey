@@ -23,9 +23,9 @@ const accessDenied = {
 
 @Injectable()
 export class ApiCallService implements OnApplicationShutdown {
-	#logger: Logger;
-	#userIpHistories: Map<User['id'], Set<string>>;
-	#userIpHistoriesClearIntervalId: NodeJS.Timer;
+	private logger: Logger;
+	private userIpHistories: Map<User['id'], Set<string>>;
+	private userIpHistoriesClearIntervalId: NodeJS.Timer;
 
 	constructor(
 		@Inject(DI.userIpsRepository)
@@ -36,11 +36,11 @@ export class ApiCallService implements OnApplicationShutdown {
 		private rateLimiterService: RateLimiterService,
 		private apiLoggerService: ApiLoggerService,
 	) {
-		this.#logger = this.apiLoggerService.logger;
-		this.#userIpHistories = new Map<User['id'], Set<string>>();
+		this.logger = this.apiLoggerService.logger;
+		this.userIpHistories = new Map<User['id'], Set<string>>();
 
-		this.#userIpHistoriesClearIntervalId = setInterval(() => {
-			this.#userIpHistories.clear();
+		this.userIpHistoriesClearIntervalId = setInterval(() => {
+			this.userIpHistories.clear();
 		}, 1000 * 60 * 60);
 	}
 
@@ -76,7 +76,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			// Authentication
 			this.authenticateService.authenticate(body['i']).then(([user, app]) => {
 				// API invoking
-				this.#call(endpoint, exec, user, app, body, ctx).then((res: any) => {
+				this.call(endpoint, exec, user, app, body, ctx).then((res: any) => {
 					if (ctx.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
 						ctx.set('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 					}
@@ -90,10 +90,10 @@ export class ApiCallService implements OnApplicationShutdown {
 					this.metaService.fetch().then(meta => {
 						if (!meta.enableIpLogging) return;
 						const ip = ctx.ip;
-						const ips = this.#userIpHistories.get(user.id);
+						const ips = this.userIpHistories.get(user.id);
 						if (ips == null || !ips.has(ip)) {
 							if (ips == null) {
-								this.#userIpHistories.set(user.id, new Set([ip]));
+								this.userIpHistories.set(user.id, new Set([ip]));
 							} else {
 								ips.add(ip);
 							}
@@ -123,7 +123,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		});
 	}
 
-	async #call(
+	private async call(
 		ep: IEndpoint,
 		exec: any,
 		user: CacheableLocalUser | null | undefined,
@@ -225,7 +225,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (err instanceof ApiError) {
 				throw err;
 			} else {
-				this.#logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
+				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
 					ep: ep.name,
 					ps: data,
 					e: {
@@ -247,12 +247,12 @@ export class ApiCallService implements OnApplicationShutdown {
 			const after = performance.now();
 			const time = after - before;
 			if (time > 1000) {
-				this.#logger.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
+				this.logger.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 			}
 		});
 	}
 
 	public onApplicationShutdown(signal?: string | undefined) {
-		clearInterval(this.#userIpHistoriesClearIntervalId);
+		clearInterval(this.userIpHistoriesClearIntervalId);
 	}
 }

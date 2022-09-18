@@ -17,7 +17,7 @@ import type { DbUserImportJobData } from '../types.js';
 // TODO: 名前衝突時の動作を選べるようにする
 @Injectable()
 export class ImportCustomEmojisProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -40,11 +40,11 @@ export class ImportCustomEmojisProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('import-custom-emojis');
+		this.logger = this.queueLoggerService.logger.createSubLogger('import-custom-emojis');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
-		this.#logger.info('Importing custom emojis ...');
+		this.logger.info('Importing custom emojis ...');
 
 		const file = await this.driveFilesRepository.findOneBy({
 			id: job.data.fileId,
@@ -56,7 +56,7 @@ export class ImportCustomEmojisProcessorService {
 
 		const [path, cleanup] = await createTempDir();
 
-		this.#logger.info(`Temp dir is ${path}`);
+		this.logger.info(`Temp dir is ${path}`);
 
 		const destPath = path + '/emojis.zip';
 
@@ -65,7 +65,7 @@ export class ImportCustomEmojisProcessorService {
 			await this.downloadService.downloadUrl(file.url, destPath);
 		} catch (e) { // TODO: 何度か再試行
 			if (e instanceof Error || typeof e === 'string') {
-				this.#logger.error(e);
+				this.logger.error(e);
 			}
 			throw e;
 		}
@@ -101,10 +101,10 @@ export class ImportCustomEmojisProcessorService {
 
 			cleanup();
 	
-			this.#logger.succ('Imported');
+			this.logger.succ('Imported');
 			done();
 		});
 		unzipStream.pipe(extractor);
-		this.#logger.succ(`Unzipping to ${outputPath}`);
+		this.logger.succ(`Unzipping to ${outputPath}`);
 	}
 }

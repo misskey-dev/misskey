@@ -19,7 +19,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 
 @Injectable()
 export class MediaProxyServerService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -30,7 +30,7 @@ export class MediaProxyServerService {
 		private imageProcessingService: ImageProcessingService,
 		private loggerService: LoggerService,
 	) {
-		this.#logger = this.loggerService.getLogger('server', 'gray', false);
+		this.logger = this.loggerService.getLogger('server', 'gray', false);
 	}
 
 	public createServer() {
@@ -44,7 +44,7 @@ export class MediaProxyServerService {
 		// Init router
 		const router = new Router();
 
-		router.get('/:url*', ctx => this.#handler(ctx));
+		router.get('/:url*', ctx => this.handler(ctx));
 
 		// Register router
 		app.use(router.routes());
@@ -52,7 +52,7 @@ export class MediaProxyServerService {
 		return app;
 	}
 
-	async #handler(ctx: Koa.Context) {
+	private async handler(ctx: Koa.Context) {
 		const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
 	
 		if (typeof url !== 'string') {
@@ -126,7 +126,7 @@ export class MediaProxyServerService {
 			ctx.set('Cache-Control', 'max-age=31536000, immutable');
 			ctx.body = image.data;
 		} catch (err) {
-			this.#logger.error(`${err}`);
+			this.logger.error(`${err}`);
 	
 			if (err instanceof StatusError && (err.statusCode === 302 || err.isClientError)) {
 				ctx.status = err.statusCode;

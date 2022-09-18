@@ -100,7 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private apNoteService: ApNoteService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const object = await this.#fetchAny(ps.uri, me);
+			const object = await this.fetchAny(ps.uri, me);
 			if (object) {
 				return object;
 			} else {
@@ -112,12 +112,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	/***
 	 * URIからUserかNoteを解決する
 	 */
-	async #fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+	private async fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
 		if (fetchedMeta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) return null;
 
-		let local = await this.#mergePack(me, ...await Promise.all([
+		let local = await this.mergePack(me, ...await Promise.all([
 			this.apDbResolverService.getUserFromApId(uri),
 			this.apDbResolverService.getNoteFromApId(uri),
 		]));
@@ -130,21 +130,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
 		// これはDBに存在する可能性があるため再度DB検索
 		if (uri !== object.id) {
-			local = await this.#mergePack(me, ...await Promise.all([
+			local = await this.mergePack(me, ...await Promise.all([
 				this.apDbResolverService.getUserFromApId(object.id),
 				this.apDbResolverService.getNoteFromApId(object.id),
 			]));
 			if (local != null) return local;
 		}
 
-		return await this.#mergePack(
+		return await this.mergePack(
 			me,
 			isActor(object) ? await this.apPersonService.createPerson(getApId(object)) : null,
 			isPost(object) ? await this.apNoteService.createNote(getApId(object), undefined, true) : null,
 		);
 	}
 
-	async #mergePack(me: CacheableLocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
+	private async mergePack(me: CacheableLocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
 		if (user != null) {
 			return {
 				type: 'User',

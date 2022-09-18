@@ -8,7 +8,7 @@ import { UtilityService } from './UtilityService.js';
 
 @Injectable()
 export class FederatedInstanceService {
-	#cache: Cache<Instance>;
+	private cache: Cache<Instance>;
 
 	constructor(
 		@Inject(DI.instancesRepository)
@@ -17,13 +17,13 @@ export class FederatedInstanceService {
 		private utilityService: UtilityService,
 		private idService: IdService,
 	) {
-		this.#cache = new Cache<Instance>(1000 * 60 * 60);
+		this.cache = new Cache<Instance>(1000 * 60 * 60);
 	}
 
 	public async registerOrFetchInstanceDoc(host: string): Promise<Instance> {
 		host = this.utilityService.toPuny(host);
 	
-		const cached = this.#cache.get(host);
+		const cached = this.cache.get(host);
 		if (cached) return cached;
 	
 		const index = await this.instancesRepository.findOneBy({ host });
@@ -36,10 +36,10 @@ export class FederatedInstanceService {
 				lastCommunicatedAt: new Date(),
 			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
 	
-			this.#cache.set(host, i);
+			this.cache.set(host, i);
 			return i;
 		} else {
-			this.#cache.set(host, index);
+			this.cache.set(host, index);
 			return index;
 		}
 	}

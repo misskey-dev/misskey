@@ -38,8 +38,8 @@ export class NotificationService {
 
 		if (result.affected === 0) return;
 
-		if (!await this.userEntityService.getHasUnreadNotification(userId)) return this.#postReadAllNotifications(userId);
-		else return this.#postReadNotifications(userId, notificationIds);
+		if (!await this.userEntityService.getHasUnreadNotification(userId)) return this.postReadAllNotifications(userId);
+		else return this.postReadNotifications(userId, notificationIds);
 	}
 
 	public async readNotificationByQuery(
@@ -55,12 +55,12 @@ export class NotificationService {
 		return this.readNotification(userId, notificationIds);
 	}
 
-	#postReadAllNotifications(userId: User['id']) {
+	private postReadAllNotifications(userId: User['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
 		return this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
-	#postReadNotifications(userId: User['id'], notificationIds: Notification['id'][]) {
+	private postReadNotifications(userId: User['id'], notificationIds: Notification['id'][]) {
 		this.globalEventService.publishMainStream(userId, 'readNotifications', notificationIds);
 		return this.pushNotificationService.pushNotification(userId, 'readNotifications', { notificationIds });
 	}

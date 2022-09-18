@@ -12,7 +12,7 @@ import type { IObject, IQuestion } from '../type.js';
 
 @Injectable()
 export class ApQuestionService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -27,7 +27,7 @@ export class ApQuestionService {
 		private apResolverService: ApResolverService,
 		private apLoggerService: ApLoggerService,
 	) {
-		this.#logger = this.apLoggerService.logger;
+		this.logger = this.apLoggerService.logger;
 	}
 
 	public async extractPollFromQuestion(source: string | IObject, resolver?: Resolver): Promise<IPoll> {
@@ -82,7 +82,7 @@ export class ApQuestionService {
 		// resolve new Question object
 		const resolver = this.apResolverService.createResolver();
 		const question = await resolver.resolve(value) as IQuestion;
-		this.#logger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
+		this.logger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
 
 		if (question.type !== 'Question') throw new Error('object is not a Question');
 

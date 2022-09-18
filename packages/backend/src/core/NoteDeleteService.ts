@@ -79,16 +79,16 @@ export class NoteDeleteService {
 					? this.apRendererService.renderUndo(this.apRendererService.renderAnnounce(renote.uri ?? `${this.config.url}/notes/${renote.id}`, note), user)
 					: this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${note.id}`), user));
 
-				this.#deliverToConcerned(user, note, content);
+				this.deliverToConcerned(user, note, content);
 			}
 
 			// also deliever delete activity to cascaded notes
-			const cascadingNotes = (await this.#findCascadingNotes(note)).filter(note => !note.localOnly); // filter out local-only notes
+			const cascadingNotes = (await this.findCascadingNotes(note)).filter(note => !note.localOnly); // filter out local-only notes
 			for (const cascadingNote of cascadingNotes) {
 				if (!cascadingNote.user) continue;
 				if (!this.userEntityService.isLocalUser(cascadingNote.user)) continue;
 				const content = this.apRendererService.renderActivity(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
-				this.#deliverToConcerned(cascadingNote.user, cascadingNote, content);
+				this.deliverToConcerned(cascadingNote.user, cascadingNote, content);
 			}
 			//#endregion
 
@@ -110,7 +110,7 @@ export class NoteDeleteService {
 		});
 	}
 
-	async #findCascadingNotes(note: Note) {
+	private async findCascadingNotes(note: Note) {
 		const cascadingNotes: Note[] = [];
 
 		const recursive = async (noteId: string) => {
@@ -132,7 +132,7 @@ export class NoteDeleteService {
 		return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
 	}
 
-	async #getMentionedRemoteUsers(note: Note) {
+	private async getMentionedRemoteUsers(note: Note) {
 		const where = [] as any[];
 
 		// mention / reply / dm
@@ -157,10 +157,10 @@ export class NoteDeleteService {
 		}) as IRemoteUser[];
 	}
 
-	async #deliverToConcerned(user: { id: ILocalUser['id']; host: null; }, note: Note, content: any) {
+	private async deliverToConcerned(user: { id: ILocalUser['id']; host: null; }, note: Note, content: any) {
 		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);
-		const remoteUsers = await this.#getMentionedRemoteUsers(note);
+		const remoteUsers = await this.getMentionedRemoteUsers(note);
 		for (const remoteUser of remoteUsers) {
 			this.apDeliverManagerService.deliverToUser(user, content, remoteUser);
 		}

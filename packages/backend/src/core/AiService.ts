@@ -15,7 +15,7 @@ let isSupportedCpu: undefined | boolean = undefined;
 
 @Injectable()
 export class AiService {
-	#model: nsfw.NSFWJS;
+	private model: nsfw.NSFWJS;
 
 	constructor(
 		@Inject(DI.config)
@@ -26,7 +26,7 @@ export class AiService {
 	public async detectSensitive(path: string): Promise<nsfw.predictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
-				const cpuFlags = await this.#getCpuFlags();
+				const cpuFlags = await this.getCpuFlags();
 				isSupportedCpu = REQUIRED_CPU_FLAGS.every(required => cpuFlags.includes(required));
 			}
 	
@@ -37,12 +37,12 @@ export class AiService {
 	
 			const tf = await import('@tensorflow/tfjs-node');
 	
-			if (this.#model == null) this.#model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
+			if (this.model == null) this.model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
 	
 			const buffer = await fs.promises.readFile(path);
 			const image = await tf.node.decodeImage(buffer, 3) as any;
 			try {
-				const predictions = await this.#model.classify(image);
+				const predictions = await this.model.classify(image);
 				return predictions;
 			} finally {
 				image.dispose();
@@ -53,7 +53,7 @@ export class AiService {
 		}
 	}
 
-	async #getCpuFlags(): Promise<string[]> {
+	private async getCpuFlags(): Promise<string[]> {
 		const str = await si.cpuFlags();
 		return str.split(/\s+/);
 	}

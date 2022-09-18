@@ -68,7 +68,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 	}
 	
-	async #hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
+	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
@@ -128,7 +128,7 @@ export class NoteEntityService implements OnModuleInit {
 		}
 	}
 
-	async #populatePoll(note: Note, meId: User['id'] | null) {
+	private async populatePoll(note: Note, meId: User['id'] | null) {
 		const poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 		const choices = poll.choices.map(c => ({
 			text: c,
@@ -166,7 +166,7 @@ export class NoteEntityService implements OnModuleInit {
 		};
 	}
 
-	async #populateMyReaction(note: Note, meId: User['id'], _hint_?: {
+	private async populateMyReaction(note: Note, meId: User['id'], _hint_?: {
 		myReactions: Map<Note['id'], NoteReaction | null>;
 	}) {
 		if (_hint_?.myReactions) {
@@ -319,10 +319,10 @@ export class NoteEntityService implements OnModuleInit {
 					_hint_: options?._hint_,
 				}) : undefined,
 
-				poll: note.hasPoll ? this.#populatePoll(note, meId) : undefined,
+				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
 				...(meId ? {
-					myReaction: this.#populateMyReaction(note, meId, options?._hint_),
+					myReaction: this.populateMyReaction(note, meId, options?._hint_),
 				} : {}),
 			} : {}),
 		});
@@ -339,7 +339,7 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		if (!opts.skipHide) {
-			await this.#hideNote(packed, meId);
+			await this.hideNote(packed, meId);
 		}
 
 		return packed;

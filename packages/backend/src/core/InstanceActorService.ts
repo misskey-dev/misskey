@@ -10,7 +10,7 @@ const ACTOR_USERNAME = 'instance.actor' as const;
 
 @Injectable()
 export class InstanceActorService {
-	#cache: Cache<ILocalUser>;
+	private cache: Cache<ILocalUser>;
 
 	constructor(
 		@Inject(DI.usersRepository)
@@ -18,11 +18,11 @@ export class InstanceActorService {
 
 		private createSystemUserService: CreateSystemUserService,
 	) {
-		this.#cache = new Cache<ILocalUser>(Infinity);
+		this.cache = new Cache<ILocalUser>(Infinity);
 	}
 
 	public async getInstanceActor(): Promise<ILocalUser> {
-		const cached = this.#cache.get(null);
+		const cached = this.cache.get(null);
 		if (cached) return cached;
 	
 		const user = await this.usersRepository.findOneBy({
@@ -31,11 +31,11 @@ export class InstanceActorService {
 		}) as ILocalUser | undefined;
 	
 		if (user) {
-			this.#cache.set(null, user);
+			this.cache.set(null, user);
 			return user;
 		} else {
 			const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME) as ILocalUser;
-			this.#cache.set(null, created);
+			this.cache.set(null, created);
 			return created;
 		}
 	}

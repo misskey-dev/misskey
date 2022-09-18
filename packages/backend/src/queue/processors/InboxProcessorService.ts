@@ -31,7 +31,7 @@ import type { DeliverJobData, InboxJobData } from '../types.js';
 // ユーザーのinboxにアクティビティが届いた時の処理
 @Injectable()
 export class InboxProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -57,7 +57,7 @@ export class InboxProcessorService {
 		private federationChart: FederationChart,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('inbox');
+		this.logger = this.queueLoggerService.logger.createSubLogger('inbox');
 	}
 
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
@@ -67,7 +67,7 @@ export class InboxProcessorService {
 		//#region Log
 		const info = Object.assign({}, activity) as any;
 		delete info['@context'];
-		this.#logger.debug(JSON.stringify(info, null, 2));
+		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
 
 		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);

@@ -11,13 +11,13 @@ const retryDelay = 100;
 
 @Injectable()
 export class AppLockService {
-	#lock: (key: string, timeout?: number) => Promise<() => void>;
+	private lock: (key: string, timeout?: number) => Promise<() => void>;
 
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 	) {
-		this.#lock = promisify(redisLock(this.redisClient, retryDelay));
+		this.lock = promisify(redisLock(this.redisClient, retryDelay));
 	}
 
 	/**
@@ -27,14 +27,14 @@ export class AppLockService {
 	 * @returns Unlock function
 	 */
 	public getApLock(uri: string, timeout = 30 * 1000): Promise<() => void> {
-		return this.#lock(`ap-object:${uri}`, timeout);
+		return this.lock(`ap-object:${uri}`, timeout);
 	}
 
 	public getFetchInstanceMetadataLock(host: string, timeout = 30 * 1000): Promise<() => void> {
-		return this.#lock(`instance:${host}`, timeout);
+		return this.lock(`instance:${host}`, timeout);
 	}
 
 	public getChartInsertLock(lockKey: string, timeout = 30 * 1000): Promise<() => void> {
-		return this.#lock(`chart-insert:${lockKey}`, timeout);
+		return this.lock(`chart-insert:${lockKey}`, timeout);
 	}
 }

@@ -9,19 +9,19 @@ import { genObjectId } from '@/misc/id/object-id.js';
 
 @Injectable()
 export class IdService {
-	#metohd: string;
+	private metohd: string;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
 	) {
-		this.#metohd = config.id.toLowerCase();
+		this.metohd = config.id.toLowerCase();
 	}
 
 	public genId(date?: Date): string {
 		if (!date || (date > new Date())) date = new Date();
 	
-		switch (this.#metohd) {
+		switch (this.metohd) {
 			case 'aid': return genAid(date);
 			case 'meid': return genMeid(date);
 			case 'meidg': return genMeidg(date);

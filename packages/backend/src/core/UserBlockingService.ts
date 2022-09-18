@@ -44,11 +44,11 @@ export class UserBlockingService {
 
 	public async block(blocker: User, blockee: User) {
 		await Promise.all([
-			this.#cancelRequest(blocker, blockee),
-			this.#cancelRequest(blockee, blocker),
-			this.#unFollow(blocker, blockee),
-			this.#unFollow(blockee, blocker),
-			this.#removeFromList(blockee, blocker),
+			this.cancelRequest(blocker, blockee),
+			this.cancelRequest(blockee, blocker),
+			this.unFollow(blocker, blockee),
+			this.unFollow(blockee, blocker),
+			this.removeFromList(blockee, blocker),
 		]);
 
 		const blocking = {
@@ -68,7 +68,7 @@ export class UserBlockingService {
 		}
 	}
 
-	async #cancelRequest(follower: User, followee: User) {
+	private async cancelRequest(follower: User, followee: User) {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
 			followerId: follower.id,
@@ -118,7 +118,7 @@ export class UserBlockingService {
 		}
 	}
 
-	async #unFollow(follower: User, followee: User) {
+	private async unFollow(follower: User, followee: User) {
 		const following = await this.followingsRepository.findOneBy({
 			followerId: follower.id,
 			followeeId: followee.id,
@@ -159,7 +159,7 @@ export class UserBlockingService {
 		}
 	}
 
-	async #removeFromList(listOwner: User, user: User) {
+	private async removeFromList(listOwner: User, user: User) {
 		const userLists = await this.userListsRepository.findBy({
 			userId: listOwner.id,
 		});

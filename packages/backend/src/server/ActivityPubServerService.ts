@@ -58,7 +58,7 @@ export class ActivityPubServerService {
 	) {
 	}
 
-	#setResponseType(ctx: Router.RouterContext) {
+	private setResponseType(ctx: Router.RouterContext) {
 		const accept = ctx.accepts(ACTIVITY_JSON, LD_JSON);
 		if (accept === LD_JSON) {
 			ctx.response.type = LD_JSON;
@@ -71,7 +71,7 @@ export class ActivityPubServerService {
 	 * Pack Create<Note> or Announce Activity
 	 * @param note Note
 	 */
-	async #packActivity(note: Note): Promise<any> {
+	private async packActivity(note: Note): Promise<any> {
 		if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
 			const renote = await Notes.findOneByOrFail({ id: note.renoteId });
 			return this.apRendererService.renderAnnounce(renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`, note);
@@ -80,7 +80,7 @@ export class ActivityPubServerService {
 		return this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 	}
 
-	#inbox(ctx: Router.RouterContext) {
+	private inbox(ctx: Router.RouterContext) {
 		let signature;
 
 		try {
@@ -95,7 +95,7 @@ export class ActivityPubServerService {
 		ctx.status = 202;
 	}
 
-	async #followers(ctx: Router.RouterContext) {
+	private async followers(ctx: Router.RouterContext) {
 		const userId = ctx.params.user;
 
 		const cursor = ctx.request.query.cursor;
@@ -169,17 +169,17 @@ export class ActivityPubServerService {
 			);
 
 			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
 			ctx.body = this.apRendererService.renderActivity(rendered);
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		}
 	}
 
-	async #following(ctx: Router.RouterContext) {
+	private async following(ctx: Router.RouterContext) {
 		const userId = ctx.params.user;
 
 		const cursor = ctx.request.query.cursor;
@@ -253,17 +253,17 @@ export class ActivityPubServerService {
 			);
 	
 			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`);
 			ctx.body = this.apRendererService.renderActivity(rendered);
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		}
 	}
 
-	async #featured(ctx: Router.RouterContext) {
+	private async featured(ctx: Router.RouterContext) {
 		const userId = ctx.params.user;
 
 		const user = await this.usersRepository.findOneBy({
@@ -293,10 +293,10 @@ export class ActivityPubServerService {
 
 		ctx.body = this.apRendererService.renderActivity(rendered);
 		ctx.set('Cache-Control', 'public, max-age=180');
-		this.#setResponseType(ctx);
+		this.setResponseType(ctx);
 	}
 
-	async #outbox(ctx: Router.RouterContext) {
+	private async outbox(ctx: Router.RouterContext) {
 		const userId = ctx.params.user;
 
 		const sinceId = ctx.request.query.since_id;
@@ -344,7 +344,7 @@ export class ActivityPubServerService {
 	
 			if (sinceId) notes.reverse();
 	
-			const activities = await Promise.all(notes.map(note => this.#packActivity(note)));
+			const activities = await Promise.all(notes.map(note => this.packActivity(note)));
 			const rendered = this.apRendererService.renderOrderedCollectionPage(
 				`${partOf}?${url.query({
 					page: 'true',
@@ -363,7 +363,7 @@ export class ActivityPubServerService {
 			);
 	
 			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.notesCount,
@@ -372,11 +372,11 @@ export class ActivityPubServerService {
 			);
 			ctx.body = this.apRendererService.renderActivity(rendered);
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		}
 	}
 
-	async #userInfo(ctx: Router.RouterContext, user: User | null) {
+	private async userInfo(ctx: Router.RouterContext, user: User | null) {
 		if (user == null) {
 			ctx.status = 404;
 			return;
@@ -384,7 +384,7 @@ export class ActivityPubServerService {
 
 		ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser));
 		ctx.set('Cache-Control', 'public, max-age=180');
-		this.#setResponseType(ctx);
+		this.setResponseType(ctx);
 	}
 
 	public createRouter() {
@@ -399,8 +399,8 @@ export class ActivityPubServerService {
 		}
 
 		// inbox
-		router.post('/inbox', json(), ctx => this.#inbox(ctx));
-		router.post('/users/:user/inbox', json(), ctx => this.#inbox(ctx));
+		router.post('/inbox', json(), ctx => this.inbox(ctx));
+		router.post('/users/:user/inbox', json(), ctx => this.inbox(ctx));
 
 		// note
 		router.get('/notes/:note', async (ctx, next) => {
@@ -429,7 +429,7 @@ export class ActivityPubServerService {
 
 			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderNote(note, false));
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		});
 
 		// note activity
@@ -446,22 +446,22 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.#packActivity(note));
+			ctx.body = this.apRendererService.renderActivity(await this.packActivity(note));
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		});
 
 		// outbox
-		router.get('/users/:user/outbox', (ctx) => this.#outbox(ctx));
+		router.get('/users/:user/outbox', (ctx) => this.outbox(ctx));
 
 		// followers
-		router.get('/users/:user/followers', (ctx) => this.#followers(ctx));
+		router.get('/users/:user/followers', (ctx) => this.followers(ctx));
 
 		// following
-		router.get('/users/:user/following', (ctx) => this.#following(ctx));
+		router.get('/users/:user/following', (ctx) => this.following(ctx));
 
 		// featured
-		router.get('/users/:user/collections/featured', (ctx) => this.#featured(ctx));
+		router.get('/users/:user/collections/featured', (ctx) => this.featured(ctx));
 
 		// publickey
 		router.get('/users/:user/publickey', async ctx => {
@@ -482,7 +482,7 @@ export class ActivityPubServerService {
 			if (this.userEntityService.isLocalUser(user)) {
 				ctx.body = this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair));
 				ctx.set('Cache-Control', 'public, max-age=180');
-				this.#setResponseType(ctx);
+				this.setResponseType(ctx);
 			} else {
 				ctx.status = 400;
 			}
@@ -499,7 +499,7 @@ export class ActivityPubServerService {
 				isSuspended: false,
 			});
 
-			await this.#userInfo(ctx, user);
+			await this.userInfo(ctx, user);
 		});
 
 		router.get('/@:user', async (ctx, next) => {
@@ -511,7 +511,7 @@ export class ActivityPubServerService {
 				isSuspended: false,
 			});
 
-			await this.#userInfo(ctx, user);
+			await this.userInfo(ctx, user);
 		});
 		//#endregion
 
@@ -529,7 +529,7 @@ export class ActivityPubServerService {
 
 			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderEmoji(emoji));
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		});
 
 		// like
@@ -550,7 +550,7 @@ export class ActivityPubServerService {
 
 			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderLike(reaction, note));
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		});
 
 		// follow
@@ -576,7 +576,7 @@ export class ActivityPubServerService {
 
 			ctx.body = this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee));
 			ctx.set('Cache-Control', 'public, max-age=180');
-			this.#setResponseType(ctx);
+			this.setResponseType(ctx);
 		});
 
 		return router;

@@ -15,7 +15,7 @@ import type { DbUserImportJobData } from '../types.js';
 
 @Injectable()
 export class ImportFollowingProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -33,11 +33,11 @@ export class ImportFollowingProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('import-following');
+		this.logger = this.queueLoggerService.logger.createSubLogger('import-following');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
-		this.#logger.info(`Importing following of ${job.data.user.id} ...`);
+		this.logger.info(`Importing following of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
@@ -85,15 +85,15 @@ export class ImportFollowingProcessorService {
 				// skip myself
 				if (target.id === job.data.user.id) continue;
 
-				this.#logger.info(`Follow[${linenum}] ${target.id} ...`);
+				this.logger.info(`Follow[${linenum}] ${target.id} ...`);
 
 				this.userFollowingService.follow(user, target);
 			} catch (e) {
-				this.#logger.warn(`Error in line:${linenum} ${e}`);
+				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}
 		}
 
-		this.#logger.succ('Imported');
+		this.logger.succ('Imported');
 		done();
 	}
 }

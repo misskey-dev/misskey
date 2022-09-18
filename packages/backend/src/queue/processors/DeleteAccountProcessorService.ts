@@ -14,7 +14,7 @@ import type { DbUserDeleteJobData } from '../types.js';
 
 @Injectable()
 export class DeleteAccountProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -36,11 +36,11 @@ export class DeleteAccountProcessorService {
 		private emailService: EmailService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('delete-account');
+		this.logger = this.queueLoggerService.logger.createSubLogger('delete-account');
 	}
 
 	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | void> {
-		this.#logger.info(`Deleting account of ${job.data.user.id} ...`);
+		this.logger.info(`Deleting account of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
@@ -71,7 +71,7 @@ export class DeleteAccountProcessorService {
 				await this.notesRepository.delete(notes.map(note => note.id));
 			}
 
-			this.#logger.succ('All of notes deleted');
+			this.logger.succ('All of notes deleted');
 		}
 
 		{ // Delete files
@@ -100,7 +100,7 @@ export class DeleteAccountProcessorService {
 				}
 			}
 
-			this.#logger.succ('All of files deleted');
+			this.logger.succ('All of files deleted');
 		}
 
 		{ // Send email notification

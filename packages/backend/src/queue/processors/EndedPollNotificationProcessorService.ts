@@ -11,7 +11,7 @@ import type { EndedPollNotificationJobData } from '../types.js';
 
 @Injectable()
 export class EndedPollNotificationProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -26,7 +26,7 @@ export class EndedPollNotificationProcessorService {
 		private createNotificationService: CreateNotificationService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('ended-poll-notification');
+		this.logger = this.queueLoggerService.logger.createSubLogger('ended-poll-notification');
 	}
 
 	public async process(job: Bull.Job<EndedPollNotificationJobData>, done: () => void): Promise<void> {

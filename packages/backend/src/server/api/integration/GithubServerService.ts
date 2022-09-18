@@ -42,12 +42,12 @@ export class GithubServerService {
 		const router = new Router();
 
 		router.get('/disconnect/github', async ctx => {
-			if (!this.#compareOrigin(ctx)) {
+			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
 			}
 
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 			if (!userToken) {
 				ctx.throw(400, 'signin required');
 				return;
@@ -91,12 +91,12 @@ export class GithubServerService {
 		};
 
 		router.get('/connect/github', async ctx => {
-			if (!this.#compareOrigin(ctx)) {
+			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
 			}
 
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 			if (!userToken) {
 				ctx.throw(400, 'signin required');
 				return;
@@ -136,7 +136,7 @@ export class GithubServerService {
 		});
 
 		router.get('/gh/cb', async ctx => {
-			const userToken = this.#getUserToken(ctx);
+			const userToken = this.getUserToken(ctx);
 
 			const oauth2 = await getOath2();
 
@@ -271,11 +271,11 @@ export class GithubServerService {
 		return router;
 	}
 
-	#getUserToken(ctx: Koa.BaseContext): string | null {
+	private getUserToken(ctx: Koa.BaseContext): string | null {
 		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
-	#compareOrigin(ctx: Koa.BaseContext): boolean {
+	private compareOrigin(ctx: Koa.BaseContext): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
 		}

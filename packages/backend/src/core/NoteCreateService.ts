@@ -277,7 +277,7 @@ export class NoteCreateService {
 
 			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
 
-			mentionedUsers = data.apMentions ?? await this.#extractMentionedUsers(user, combinedTokens);
+			mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
 		}
 
 		tags = tags.filter(tag => Array.from(tag ?? '').length <= 128).splice(0, 32);
@@ -300,14 +300,14 @@ export class NoteCreateService {
 			}
 		}
 
-		const note = await this.#insertNote(user, data, tags, emojis, mentionedUsers);
+		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
-		setImmediate(() => this.#postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
+		setImmediate(() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
 
 		return note;
 	}
 
-	async #insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
+	private async insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new Note({
 			id: this.idService.genId(data.createdAt!),
 			createdAt: data.createdAt!,
@@ -403,7 +403,7 @@ export class NoteCreateService {
 		}
 	}
 
-	async #postNoteCreated(note: Note, user: {
+	private async postNoteCreated(note: Note, user: {
 		id: User['id'];
 		username: User['username'];
 		host: User['host'];
@@ -428,7 +428,7 @@ export class NoteCreateService {
 		}
 
 		// Increment notes count (user)
-		this.#incNotesCountOfUser(user);
+		this.incNotesCountOfUser(user);
 
 		// Word mute
 		mutedWordsCache.fetch(null, () => this.userProfilesRepository.find({
@@ -473,12 +473,12 @@ export class NoteCreateService {
 		}
 
 		if (data.reply) {
-			this.#saveReply(data.reply, note);
+			this.saveReply(data.reply, note);
 		}
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 		if (data.renote && (await this.noteEntityService.countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
-			this.#incRenoteCount(data.renote);
+			this.incRenoteCount(data.renote);
 		}
 
 		if (data.poll && data.poll.expiresAt) {
@@ -536,7 +536,7 @@ export class NoteCreateService {
 			const nm = new NotificationManager(this.mutingsRepository, this.createNotificationService, user, note);
 			const nmRelatedPromises = [];
 
-			await this.#createMentionedEvents(mentionedUsers, note, nm);
+			await this.createMentionedEvents(mentionedUsers, note, nm);
 
 			// If has in reply to note
 			if (data.reply) {
@@ -590,7 +590,7 @@ export class NoteCreateService {
 			//#region AP deliver
 			if (this.userEntityService.isLocalUser(user)) {
 				(async () => {
-					const noteActivity = await this.#renderNoteOrRenoteActivity(data, note);
+					const noteActivity = await this.renderNoteOrRenoteActivity(data, note);
 					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
 
 					// メンションされたリモートユーザーに配送
@@ -644,10 +644,10 @@ export class NoteCreateService {
 		}
 
 		// Register to search database
-		this.#index(note);
+		this.index(note);
 	}
 
-	#incRenoteCount(renote: Note) {
+	private incRenoteCount(renote: Note) {
 		this.notesRepository.createQueryBuilder().update()
 			.set({
 				renoteCount: () => '"renoteCount" + 1',
@@ -657,7 +657,7 @@ export class NoteCreateService {
 			.execute();
 	}
 
-	async #createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
+	private async createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
 			const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
 				userId: u.id,
@@ -686,11 +686,11 @@ export class NoteCreateService {
 		}
 	}
 
-	#saveReply(reply: Note, note: Note) {
+	private saveReply(reply: Note, note: Note) {
 		this.notesRepository.increment({ id: reply.id }, 'repliesCount', 1);
 	}
 
-	async #renderNoteOrRenoteActivity(data: Option, note: Note) {
+	private async renderNoteOrRenoteActivity(data: Option, note: Note) {
 		if (data.localOnly) return null;
 
 		const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)
@@ -700,7 +700,7 @@ export class NoteCreateService {
 		return this.apRendererService.renderActivity(content);
 	}
 
-	#index(note: Note) {
+	private index(note: Note) {
 		if (note.text == null || this.config.elasticsearch == null) return;
 		/*
 	es!.index({
@@ -714,7 +714,7 @@ export class NoteCreateService {
 	});*/
 	}
 
-	#incNotesCountOfUser(user: { id: User['id']; }) {
+	private incNotesCountOfUser(user: { id: User['id']; }) {
 		this.usersRepository.createQueryBuilder().update()
 			.set({
 				updatedAt: new Date(),
@@ -724,7 +724,7 @@ export class NoteCreateService {
 			.execute();
 	}
 
-	async #extractMentionedUsers(user: { host: User['host']; }, tokens: mfm.MfmNode[]): Promise<User[]> {
+	private async extractMentionedUsers(user: { host: User['host']; }, tokens: mfm.MfmNode[]): Promise<User[]> {
 		if (tokens == null) return [];
 
 		const mentions = extractMentions(tokens);

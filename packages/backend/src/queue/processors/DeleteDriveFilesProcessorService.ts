@@ -11,7 +11,7 @@ import type { DbUserJobData } from '../types.js';
 
 @Injectable()
 export class DeleteDriveFilesProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -26,11 +26,11 @@ export class DeleteDriveFilesProcessorService {
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('delete-drive-files');
+		this.logger = this.queueLoggerService.logger.createSubLogger('delete-drive-files');
 	}
 
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
-		this.#logger.info(`Deleting drive files of ${job.data.user.id} ...`);
+		this.logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
@@ -72,7 +72,7 @@ export class DeleteDriveFilesProcessorService {
 			job.progress(deletedCount / total);
 		}
 
-		this.#logger.succ(`All drive files (${deletedCount}) of ${user.id} has been deleted.`);
+		this.logger.succ(`All drive files (${deletedCount}) of ${user.id} has been deleted.`);
 		done();
 	}
 }

@@ -7,8 +7,8 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class WebhookService implements OnApplicationShutdown {
-	#webhooksFetched = false;
-	#webhooks: Webhook[] = [];
+	private webhooksFetched = false;
+	private webhooks: Webhook[] = [];
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -22,14 +22,14 @@ export class WebhookService implements OnApplicationShutdown {
 	}
 
 	public async getActiveWebhooks() {
-		if (!this.#webhooksFetched) {
-			this.#webhooks = await this.webhooksRepository.findBy({
+		if (!this.webhooksFetched) {
+			this.webhooks = await this.webhooksRepository.findBy({
 				active: true,
 			});
-			this.#webhooksFetched = true;
+			this.webhooksFetched = true;
 		}
 	
-		return this.#webhooks;
+		return this.webhooks;
 	}
 
 	private async onMessage(_, data) {
@@ -40,23 +40,23 @@ export class WebhookService implements OnApplicationShutdown {
 			switch (type) {
 				case 'webhookCreated':
 					if (body.active) {
-						this.#webhooks.push(body);
+						this.webhooks.push(body);
 					}
 					break;
 				case 'webhookUpdated':
 					if (body.active) {
-						const i = this.#webhooks.findIndex(a => a.id === body.id);
+						const i = this.webhooks.findIndex(a => a.id === body.id);
 						if (i > -1) {
-							this.#webhooks[i] = body;
+							this.webhooks[i] = body;
 						} else {
-							this.#webhooks.push(body);
+							this.webhooks.push(body);
 						}
 					} else {
-						this.#webhooks = this.#webhooks.filter(a => a.id !== body.id);
+						this.webhooks = this.webhooks.filter(a => a.id !== body.id);
 					}
 					break;
 				case 'webhookDeleted':
-					this.#webhooks = this.#webhooks.filter(a => a.id !== body.id);
+					this.webhooks = this.webhooks.filter(a => a.id !== body.id);
 					break;
 				default:
 					break;

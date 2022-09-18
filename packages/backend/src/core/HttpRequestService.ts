@@ -15,12 +15,12 @@ export class HttpRequestService {
 	/**
 	 * Get http non-proxy agent
 	 */
-	#http: http.Agent;
+	private http: http.Agent;
 
 	/**
 	 * Get https non-proxy agent
 	 */
-	#https: https.Agent;
+	private https: https.Agent;
 
 	/**
 	 * Get http proxy or non-proxy agent
@@ -42,13 +42,13 @@ export class HttpRequestService {
 			lookup: false,	// nativeのdns.lookupにfallbackしない
 		});
 		
-		this.#http = new http.Agent({
+		this.http = new http.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup,
 		} as http.AgentOptions);
 		
-		this.#https = new https.Agent({
+		this.https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
 			lookup: cache.lookup,
@@ -65,7 +65,7 @@ export class HttpRequestService {
 				scheduling: 'lifo',
 				proxy: config.proxy,
 			})
-			: this.#http;
+			: this.http;
 
 		this.httpsAgent = config.proxy
 			? new HttpsProxyAgent({
@@ -76,7 +76,7 @@ export class HttpRequestService {
 				scheduling: 'lifo',
 				proxy: config.proxy,
 			})
-			: this.#https;
+			: this.https;
 	}
 
 	/**
@@ -86,7 +86,7 @@ export class HttpRequestService {
 	 */
 	public getAgentByUrl(url: URL, bypassProxy = false): http.Agent | https.Agent {
 		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
-			return url.protocol === 'http:' ? this.#http : this.#https;
+			return url.protocol === 'http:' ? this.http : this.https;
 		} else {
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;
 		}

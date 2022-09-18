@@ -17,7 +17,7 @@ export class AuthenticationError extends Error {
 
 @Injectable()
 export class AuthenticateService {
-	#appCache: Cache<App>;
+	private appCache: Cache<App>;
 
 	constructor(
 		@Inject(DI.usersRepository)
@@ -31,7 +31,7 @@ export class AuthenticateService {
 
 		private userCacheService: UserCacheService,
 	) {
-		this.#appCache = new Cache<App>(Infinity);
+		this.appCache = new Cache<App>(Infinity);
 	}
 
 	public async authenticate(token: string | null): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> {
@@ -71,7 +71,7 @@ export class AuthenticateService {
 				}) as Promise<ILocalUser>);
 	
 			if (accessToken.appId) {
-				const app = await this.#appCache.fetch(accessToken.appId,
+				const app = await this.appCache.fetch(accessToken.appId,
 					() => this.appsRepository.findOneByOrFail({ id: accessToken.appId! }));
 	
 				return [user, {

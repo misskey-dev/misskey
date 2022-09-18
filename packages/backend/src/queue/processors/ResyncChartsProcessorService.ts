@@ -20,7 +20,7 @@ import type Bull from 'bull';
 
 @Injectable()
 export class ResyncChartsProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -41,11 +41,11 @@ export class ResyncChartsProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('resync-charts');
+		this.logger = this.queueLoggerService.logger.createSubLogger('resync-charts');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
-		this.#logger.info('Resync charts...');
+		this.logger.info('Resync charts...');
 
 		// TODO: ユーザーごとのチャートも更新する
 		// TODO: インスタンスごとのチャートも更新する
@@ -55,7 +55,7 @@ export class ResyncChartsProcessorService {
 			this.usersChart.resync(),
 		]);
 
-		this.#logger.succ('All charts successfully resynced.');
+		this.logger.succ('All charts successfully resynced.');
 		done();
 	}
 }

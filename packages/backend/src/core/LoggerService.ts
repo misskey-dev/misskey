@@ -6,14 +6,14 @@ import Logger from '@/logger.js';
 
 @Injectable()
 export class LoggerService {
-	#syslogClient;
+	private syslogClient;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
 	) {
 		if (this.config.syslog) {
-			this.#syslogClient = new SyslogPro.RFC5424({
+			this.syslogClient = new SyslogPro.RFC5424({
 				applacationName: 'Misskey',
 				timestamp: true,
 				encludeStructuredData: true,
@@ -28,6 +28,6 @@ export class LoggerService {
 	}
 
 	public getLogger(domain: string, color?: string | undefined, store?: boolean) {
-		return new Logger(domain, color, store, this.#syslogClient);
+		return new Logger(domain, color, store, this.syslogClient);
 	}
 }

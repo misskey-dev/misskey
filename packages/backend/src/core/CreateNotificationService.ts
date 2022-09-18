@@ -78,8 +78,8 @@ export class CreateNotificationService {
 			this.globalEventServie.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
 	
-			if (type === 'follow') this.#emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
-			if (type === 'receiveFollowRequest') this.#emailNotificationReceiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
+			if (type === 'follow') this.emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
+			if (type === 'receiveFollowRequest') this.emailNotificationReceiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));
 		}, 2000);
 	
 		return notification;
@@ -90,7 +90,7 @@ export class CreateNotificationService {
 
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
-	async #emailNotificationFollow(userId: User['id'], follower: User) {
+	private async emailNotificationFollow(userId: User['id'], follower: User) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('follow')) return;
@@ -101,7 +101,7 @@ export class CreateNotificationService {
 		*/
 	}
 	
-	async #emailNotificationReceiveFollowRequest(userId: User['id'], follower: User) {
+	private async emailNotificationReceiveFollowRequest(userId: User['id'], follower: User) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
 		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('receiveFollowRequest')) return;

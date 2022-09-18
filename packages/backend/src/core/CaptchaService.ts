@@ -19,7 +19,7 @@ export class CaptchaService {
 	) {
 	}
 
-	async #getCaptchaResponse(url: string, secret: string, response: string): Promise<CaptchaResponse> {
+	private async getCaptchaResponse(url: string, secret: string, response: string): Promise<CaptchaResponse> {
 		const params = new URLSearchParams({
 			secret,
 			response,
@@ -46,7 +46,7 @@ export class CaptchaService {
 	}	
 	
 	public async verifyRecaptcha(secret: string, response: string): Promise<void> {
-		const result = await this.#getCaptchaResponse('https://www.recaptcha.net/recaptcha/api/siteverify', secret, response).catch(e => {
+		const result = await this.getCaptchaResponse('https://www.recaptcha.net/recaptcha/api/siteverify', secret, response).catch(e => {
 			throw `recaptcha-request-failed: ${e}`;
 		});
 
@@ -57,7 +57,7 @@ export class CaptchaService {
 	}
 
 	public async verifyHcaptcha(secret: string, response: string): Promise<void> {
-		const result = await this.#getCaptchaResponse('https://hcaptcha.com/siteverify', secret, response).catch(e => {
+		const result = await this.getCaptchaResponse('https://hcaptcha.com/siteverify', secret, response).catch(e => {
 			throw `hcaptcha-request-failed: ${e}`;
 		});
 

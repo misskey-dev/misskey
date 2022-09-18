@@ -29,7 +29,7 @@ const assets = `${_dirname}/../../server/file/assets/`;
 
 @Injectable()
 export class FileServerService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -45,12 +45,12 @@ export class FileServerService {
 		private internalStorageService: InternalStorageService,
 		private loggerService: LoggerService,
 	) {
-		this.#logger = this.loggerService.getLogger('server', 'gray', false);
+		this.logger = this.loggerService.getLogger('server', 'gray', false);
 	}
 
 	public commonReadableHandlerGenerator(ctx: Koa.Context) {
 		return (e: Error): void => {
-			this.#logger.error(e);
+			this.logger.error(e);
 			ctx.status = 500;
 			ctx.set('Cache-Control', 'max-age=300');
 		};
@@ -74,8 +74,8 @@ export class FileServerService {
 			ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		});
 
-		router.get('/:key', ctx => this.#sendDriveFile(ctx));
-		router.get('/:key/(.*)', ctx => this.#sendDriveFile(ctx));
+		router.get('/:key', ctx => this.sendDriveFile(ctx));
+		router.get('/:key/(.*)', ctx => this.sendDriveFile(ctx));
 
 		// Register router
 		app.use(router.routes());
@@ -83,7 +83,7 @@ export class FileServerService {
 		return app;
 	}
 
-	async #sendDriveFile(ctx: Koa.Context) {
+	private async sendDriveFile(ctx: Koa.Context) {
 		const key = ctx.params.key;
 
 		// Fetch drive file
@@ -139,7 +139,7 @@ export class FileServerService {
 					ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
 					ctx.set('Cache-Control', 'max-age=31536000, immutable');
 				} catch (err) {
-					this.#logger.error(`${err}`);
+					this.logger.error(`${err}`);
 
 					if (err instanceof StatusError && err.isClientError) {
 						ctx.status = err.statusCode;

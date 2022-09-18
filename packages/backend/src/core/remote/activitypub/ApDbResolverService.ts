@@ -31,8 +31,8 @@ export type UriParseResult = {
 
 @Injectable()
 export class ApDbResolverService {
-	#publicKeyCache: Cache<UserPublickey | null>;
-	#publicKeyByUserIdCache: Cache<UserPublickey | null>;
+	private publicKeyCache: Cache<UserPublickey | null>;
+	private publicKeyByUserIdCache: Cache<UserPublickey | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -53,8 +53,8 @@ export class ApDbResolverService {
 		private userCacheService: UserCacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.#publicKeyCache = new Cache<UserPublickey | null>(Infinity);
-		this.#publicKeyByUserIdCache = new Cache<UserPublickey | null>(Infinity);
+		this.publicKeyCache = new Cache<UserPublickey | null>(Infinity);
+		this.publicKeyByUserIdCache = new Cache<UserPublickey | null>(Infinity);
 	}
 
 	public parseUri(value: string | IObject): UriParseResult {
@@ -140,7 +140,7 @@ export class ApDbResolverService {
 		user: CacheableRemoteUser;
 		key: UserPublickey;
 	} | null> {
-		const key = await this.#publicKeyCache.fetch(keyId, async () => {
+		const key = await this.publicKeyCache.fetch(keyId, async () => {
 			const key = await this.userPublickeysRepository.findOneBy({
 				keyId,
 			});
@@ -169,7 +169,7 @@ export class ApDbResolverService {
 
 		if (user == null) return null;
 
-		const key = await this.#publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null); 
+		const key = await this.publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null); 
 
 		return {
 			user,

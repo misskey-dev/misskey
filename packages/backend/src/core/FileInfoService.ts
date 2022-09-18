@@ -61,7 +61,7 @@ export class FileInfoService {
 		const warnings = [] as string[];
 
 		const size = await this.getFileSize(path);
-		const md5 = await this.#calcHash(path);
+		const md5 = await this.calcHash(path);
 
 		let type = await this.detectType(path);
 
@@ -71,7 +71,7 @@ export class FileInfoService {
 		let orientation: number | undefined;
 
 		if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime)) {
-			const imageSize = await this.#detectImageSize(path).catch(e => {
+			const imageSize = await this.detectImageSize(path).catch(e => {
 				warnings.push(`detectImageSize failed: ${e}`);
 				return undefined;
 			});
@@ -98,7 +98,7 @@ export class FileInfoService {
 		let blurhash: string | undefined;
 
 		if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime)) {
-			blurhash = await this.#getBlurhash(path).catch(e => {
+			blurhash = await this.getBlurhash(path).catch(e => {
 				warnings.push(`getBlurhash failed: ${e}`);
 				return undefined;
 			});
@@ -108,7 +108,7 @@ export class FileInfoService {
 		let porn = false;
 
 		if (!opts.skipSensitiveDetection) {
-			await this.#detectSensitivity(
+			await this.detectSensitivity(
 				path,
 				type.mime,
 				opts.sensitiveThreshold ?? 0.5,
@@ -135,7 +135,7 @@ export class FileInfoService {
 		};
 	}
 
-	async #detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number, analyzeVideo: boolean): Promise<[sensitive: boolean, porn: boolean]> {
+	private async detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number, analyzeVideo: boolean): Promise<[sensitive: boolean, porn: boolean]> {
 		let sensitive = false;
 		let porn = false;
 	
@@ -204,7 +204,7 @@ export class FileInfoService {
 				let frameIndex = 0;
 				let targetIndex = 0;
 				let nextIndex = 1;
-				for await (const path of this.#asyncIterateFrames(outDir, command)) {
+				for await (const path of this.asyncIterateFrames(outDir, command)) {
 					try {
 						const index = frameIndex++;
 						if (index !== targetIndex) {
@@ -230,7 +230,7 @@ export class FileInfoService {
 		return [sensitive, porn];
 	}
 	
-	async *#asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
+	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
 		const watcher = new FSWatcher({
 			cwd,
 			disableGlobbing: true,
@@ -245,7 +245,7 @@ export class FileInfoService {
 			const current = `${i}.png`;
 			const next = `${i + 1}.png`;
 			const framePath = join(cwd, current);
-			if (await this.#exists(join(cwd, next))) {
+			if (await this.exists(join(cwd, next))) {
 				yield framePath;
 			} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 				watcher.add(next);
@@ -261,7 +261,7 @@ export class FileInfoService {
 					command.once('error', reject);
 				});
 				yield framePath;
-			} else if (await this.#exists(framePath)) {
+			} else if (await this.exists(framePath)) {
 				yield framePath;
 			} else {
 				return;
@@ -269,7 +269,7 @@ export class FileInfoService {
 		}
 	}
 	
-	#exists(path: string): Promise<boolean> {
+	private exists(path: string): Promise<boolean> {
 		return fs.promises.access(path).then(() => true, () => false);
 	}
 
@@ -333,7 +333,7 @@ export class FileInfoService {
 	/**
 	 * Calculate MD5 hash
 	 */
-	async #calcHash(path: string): Promise<string> {
+	private async calcHash(path: string): Promise<string> {
 		const hash = crypto.createHash('md5').setEncoding('hex');
 		await pipeline(fs.createReadStream(path), hash);
 		return hash.read();
@@ -342,7 +342,7 @@ export class FileInfoService {
 	/**
 	 * Detect dimensions of image
 	 */
-	async #detectImageSize(path: string): Promise<{
+	private async detectImageSize(path: string): Promise<{
 	width: number;
 	height: number;
 	wUnits: string;
@@ -358,7 +358,7 @@ export class FileInfoService {
 	/**
 	 * Calculate average color of image
 	 */
-	#getBlurhash(path: string): Promise<string> {
+	private getBlurhash(path: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			sharp(path)
 				.raw()

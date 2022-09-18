@@ -15,7 +15,7 @@ import type { DbUserImportJobData } from '../types.js';
 
 @Injectable()
 export class ImportBlockingProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -36,11 +36,11 @@ export class ImportBlockingProcessorService {
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('import-blocking');
+		this.logger = this.queueLoggerService.logger.createSubLogger('import-blocking');
 	}
 
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
-		this.#logger.info(`Importing blocking of ${job.data.user.id} ...`);
+		this.logger.info(`Importing blocking of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
@@ -88,15 +88,15 @@ export class ImportBlockingProcessorService {
 				// skip myself
 				if (target.id === job.data.user.id) continue;
 
-				this.#logger.info(`Block[${linenum}] ${target.id} ...`);
+				this.logger.info(`Block[${linenum}] ${target.id} ...`);
 
 				await this.userBlockingService.block(user, target);
 			} catch (e) {
-				this.#logger.warn(`Error in line:${linenum} ${e}`);
+				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}
 		}
 
-		this.#logger.succ('Imported');
+		this.logger.succ('Imported');
 		done();
 	}
 }

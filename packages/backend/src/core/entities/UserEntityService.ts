@@ -48,7 +48,7 @@ export class UserEntityService implements OnModuleInit {
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
-	#userInstanceCache: Cache<Instance | null>;
+	private userInstanceCache: Cache<Instance | null>;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -119,7 +119,7 @@ export class UserEntityService implements OnModuleInit {
 		//private customEmojiService: CustomEmojiService,
 		//private antennaService: AntennaService,
 	) {
-		this.#userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
+		this.userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	onModuleInit() {
@@ -384,7 +384,7 @@ export class UserEntityService implements OnModuleInit {
 			isModerator: user.isModerator ?? falsy,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			instance: user.host ? this.#userInstanceCache.fetch(user.host,
+			instance: user.host ? this.userInstanceCache.fetch(user.host,
 				() => this.instancesRepository.findOneBy({ host: user.host! }),
 				v => v != null,
 			).then(instance => instance ? {

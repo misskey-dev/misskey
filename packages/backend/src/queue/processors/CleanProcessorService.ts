@@ -9,7 +9,7 @@ import type Bull from 'bull';
 
 @Injectable()
 export class CleanProcessorService {
-	#logger: Logger;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -20,17 +20,17 @@ export class CleanProcessorService {
 
 		private queueLoggerService: QueueLoggerService,
 	) {
-		this.#logger = this.queueLoggerService.logger.createSubLogger('clean');
+		this.logger = this.queueLoggerService.logger.createSubLogger('clean');
 	}
 
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
-		this.#logger.info('Cleaning...');
+		this.logger.info('Cleaning...');
 
 		this.userIpsRepository.delete({
 			createdAt: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90))),
 		});
 
-		this.#logger.succ('Cleaned.');
+		this.logger.succ('Cleaned.');
 		done();
 	}
 }

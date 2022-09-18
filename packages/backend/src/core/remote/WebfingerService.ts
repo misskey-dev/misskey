@@ -26,12 +26,12 @@ export class WebfingerService {
 	}
 
 	public async webfinger(query: string): Promise<IWebFinger> {
-		const url = this.#genUrl(query);
+		const url = this.genUrl(query);
 
 		return await this.httpRequestService.getJson(url, 'application/jrd+json, application/json') as IWebFinger;
 	}
 
-	#genUrl(query: string): string {
+	private genUrl(query: string): string {
 		if (query.match(/^https?:\/\//)) {
 			const u = new URL(query);
 			return `${u.protocol}//${u.hostname}/.well-known/webfinger?` + urlQuery({ resource: query });
