@@ -10,8 +10,8 @@
 	"scripts": {
 		"postinstall": "node ./scripts/install-packages.js",
 		"build": "node ./scripts/build.js",
-		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
-		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
+		"start": "cd packages/backend && node --experimental-json-modules ./built/boot/index.js",
+		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/boot/index.js",
 		"init": "npm run migrate",
 		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
 		"migrateandstart": "npm run migrate && npm run start",
