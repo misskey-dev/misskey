@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
+import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
@@ -22,21 +23,24 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { MessagingService } from '@/core/MessagingService.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
-import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApResolverService } from './ApResolverService.js';
 import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
+import type { ApNoteService } from './models/ApNoteService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IRead, IReject, IRemove, IUndo, IUpdate } from './type.js';
 
 @Injectable()
 export class ApInboxService {
+	private apNoteService: ApNoteService;
 	#logger: Logger;
 
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.config)
 		private config: Config,
 
@@ -75,12 +79,13 @@ export class ApInboxService {
 		private apResolverService: ApResolverService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
-		private apNoteService: ApNoteService,
+		//private apNoteService: ApNoteService,
 		private apPersonService: ApPersonService,
 		private apQuestionService: ApQuestionService,
 		private queueService: QueueService,
 		private messagingService: MessagingService,
 	) {
+		this.apNoteService = this.moduleRef.get('ApNoteService');
 		this.#logger = this.apLoggerService.logger;
 	}
 	
@@ -170,11 +175,11 @@ export class ApInboxService {
 
 		await this.apNoteService.extractEmojis(activity.tag ?? [], actor.host).catch(() => null);
 
-		return await this.reactionService.create(actor, note, activity._misskey_reaction ?? activity.content ?? activity.name).catch(e => {
-			if (e.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
+		return await this.reactionService.create(actor, note, activity._misskey_reaction ?? activity.content ?? activity.name).catch(err => {
+			if (err.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
 				return 'skip: already reacted';
 			} else {
-				throw e;
+				throw err;
 			}
 		}).then(() => 'ok');
 	}
@@ -400,11 +405,11 @@ export class ApInboxService {
 
 			await this.apNoteService.createNote(note, resolver, silent);
 			return 'ok';
-		} catch (e) {
-			if (e instanceof StatusError && e.isClientError) {
-				return `skip ${e.statusCode}`;
+		} catch (err) {
+			if (err instanceof StatusError && err.isClientError) {
+				return `skip ${err.statusCode}`;
 			} else {
-				throw e;
+				throw err;
 			}
 		} finally {
 			unlock();
