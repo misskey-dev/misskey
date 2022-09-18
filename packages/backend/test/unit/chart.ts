@@ -14,6 +14,7 @@ import { entity as TestUniqueChartEntity } from '@/core/chart/charts/entities/te
 import { entity as TestIntersectionChartEntity } from '@/core/chart/charts/entities/test-intersection.js';
 import { loadConfig } from '@/config.js';
 import type { AppLockService } from '@/core/AppLockService';
+import Logger from '@/logger.js';
 
 describe('Chart', () => {
 	const config = loadConfig();
@@ -57,10 +58,11 @@ describe('Chart', () => {
 
 		await db.initialize();
 
-		testChart = new TestChart(db, appLockService);
-		testGroupedChart = new TestGroupedChart(db, appLockService);
-		testUniqueChart = new TestUniqueChart(db, appLockService);
-		testIntersectionChart = new TestIntersectionChart(db, appLockService);
+		const logger = new Logger('chart'); // TODO: モックにする
+		testChart = new TestChart(db, appLockService, logger);
+		testGroupedChart = new TestGroupedChart(db, appLockService, logger);
+		testUniqueChart = new TestUniqueChart(db, appLockService, logger);
+		testIntersectionChart = new TestIntersectionChart(db, appLockService, logger);
 
 		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),
