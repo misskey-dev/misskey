@@ -6,7 +6,7 @@ import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
-import Logger from '@/Logger.js';
+import Logger from '@/logger.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
