@@ -8,10 +8,11 @@ import got, * as Got from 'got';
 import chalk from 'chalk';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
-import Logger from '@/logger.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { StatusError } from '@/misc/status-error.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -24,8 +25,9 @@ export class DownloadService {
 		private config: Config,
 
 		private httpRequestService: HttpRequestService,
+		private loggerService: LoggerService,
 	) {
-		this.#logger = new Logger('download');
+		this.#logger = this.loggerService.getLogger('download');
 	}
 
 	public async downloadUrl(url: string, path: string): Promise<void> {

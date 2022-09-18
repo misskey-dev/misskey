@@ -4,8 +4,9 @@ import { validate as validateEmail } from 'deep-email-validator';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { Config } from '@/config.js';
-import Logger from '@/logger.js';
+import type Logger from '@/logger.js';
 import { UserProfilesRepository } from '@/models/index.js';
+import { LoggerService } from '@/core/LoggerService.js';
 
 @Injectable()
 export class EmailService {
@@ -19,8 +20,9 @@ export class EmailService {
 		private userProfilesRepository: UserProfilesRepository,
 
 		private metaService: MetaService,
+		private loggerService: LoggerService,
 	) {
-		this.#logger = new Logger('email');
+		this.#logger = this.loggerService.getLogger('email');
 	}
 
 	public async sendEmail(to: string, subject: string, html: string, text: string) {

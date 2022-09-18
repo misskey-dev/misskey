@@ -6,6 +6,7 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UsersRepository } from '@/models/index.js';
 import Chart from '../core.js';
+import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/users.js';
 import type { KVs } from '../core.js';
 
@@ -24,8 +25,9 @@ export default class UsersChart extends Chart<typeof schema> {
 
 		private appLockService: AppLockService,
 		private userEntityService: UserEntityService,
+		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
+		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

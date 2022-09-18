@@ -13,29 +13,24 @@ import { DI } from '@/di-symbols.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
-import Logger from '@/logger.js';
+import type Logger from '@/logger.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
-
-const serverLogger = new Logger('server', 'gray', false);
+import { LoggerService } from '@/core/LoggerService.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const assets = `${_dirname}/../../server/file/assets/`;
 
-const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
-	serverLogger.error(e);
-	ctx.status = 500;
-	ctx.set('Cache-Control', 'max-age=300');
-};
-
 @Injectable()
 export class FileServerService {
+	#logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -48,9 +43,19 @@ export class FileServerService {
 		private imageProcessingService: ImageProcessingService,
 		private videoProcessingService: VideoProcessingService,
 		private internalStorageService: InternalStorageService,
+		private loggerService: LoggerService,
 	) {
+		this.#logger = this.loggerService.getLogger('server', 'gray', false);
 	}
 
+	public commonReadableHandlerGenerator(ctx: Koa.Context) {
+		return (e: Error): void => {
+			this.#logger.error(e);
+			ctx.status = 500;
+			ctx.set('Cache-Control', 'max-age=300');
+		};
+	}
+	
 	public createServer() {
 		const app = new Koa();
 		app.use(cors());
@@ -134,7 +139,7 @@ export class FileServerService {
 					ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
 					ctx.set('Cache-Control', 'max-age=31536000, immutable');
 				} catch (err) {
-					serverLogger.error(`${err}`);
+					this.#logger.error(`${err}`);
 
 					if (err instanceof StatusError && err.isClientError) {
 						ctx.status = err.statusCode;

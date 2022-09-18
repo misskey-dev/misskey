@@ -6,12 +6,11 @@ import tinycolor from 'tinycolor2';
 import type { Instance } from '@/models/entities/Instance.js';
 import { InstancesRepository } from '@/models/index.js';
 import { AppLockService } from '@/core/AppLockService.js';
-import Logger from '@/logger.js';
+import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from './HttpRequestService.js';
 import type { DOMWindow } from 'jsdom';
-
-const logger = new Logger('metadata', 'cyan');
 
 type NodeInfo = {
 	openRegistrations?: any;
@@ -33,13 +32,17 @@ type NodeInfo = {
 
 @Injectable()
 export class FetchInstanceMetadataService {
+	#logger: Logger;
+
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
 		private appLockService: AppLockService,
 		private httpRequestService: HttpRequestService,
+		private loggerService: LoggerService,
 	) {
+		this.#logger = this.loggerService.getLogger('metadata', 'cyan');
 	}
 
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
@@ -54,7 +57,7 @@ export class FetchInstanceMetadataService {
 			}
 		}
 	
-		logger.info(`Fetching metadata of ${instance.host} ...`);
+		this.#logger.info(`Fetching metadata of ${instance.host} ...`);
 	
 		try {
 			const [info, dom, manifest] = await Promise.all([
@@ -71,7 +74,7 @@ export class FetchInstanceMetadataService {
 				this.#getDescription(info, dom, manifest).catch(() => null),
 			]);
 	
-			logger.succ(`Successfuly fetched metadata of ${instance.host}`);
+			this.#logger.succ(`Successfuly fetched metadata of ${instance.host}`);
 	
 			const updates = {
 				infoUpdatedAt: new Date(),
@@ -93,16 +96,16 @@ export class FetchInstanceMetadataService {
 	
 			await this.instancesRepository.update(instance.id, updates);
 	
-			logger.succ(`Successfuly updated metadata of ${instance.host}`);
+			this.#logger.succ(`Successfuly updated metadata of ${instance.host}`);
 		} catch (e) {
-			logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
+			this.#logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
 		} finally {
 			unlock();
 		}
 	}
 
 	async #fetchNodeinfo(instance: Instance): Promise<NodeInfo> {
-		logger.info(`Fetching nodeinfo of ${instance.host} ...`);
+		this.#logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 	
 		try {
 			const wellknown = await this.httpRequestService.getJson('https://' + instance.host + '/.well-known/nodeinfo')
@@ -134,18 +137,18 @@ export class FetchInstanceMetadataService {
 					throw err.statusCode ?? err.message;
 				});
 	
-			logger.succ(`Successfuly fetched nodeinfo of ${instance.host}`);
+			this.#logger.succ(`Successfuly fetched nodeinfo of ${instance.host}`);
 	
 			return info as NodeInfo;
 		} catch (err) {
-			logger.error(`Failed to fetch nodeinfo of ${instance.host}: ${err}`);
+			this.#logger.error(`Failed to fetch nodeinfo of ${instance.host}: ${err}`);
 	
 			throw err;
 		}
 	}
 
 	async #fetchDom(instance: Instance): Promise<DOMWindow['document']> {
-		logger.info(`Fetching HTML of ${instance.host} ...`);
+		this.#logger.info(`Fetching HTML of ${instance.host} ...`);
 	
 		const url = 'https://' + instance.host;
 	

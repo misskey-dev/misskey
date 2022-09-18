@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import Chart from '../core.js';
+import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/test.js';
 import type { KVs } from '../core.js';
 
@@ -19,8 +20,9 @@ export default class TestChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		private appLockService: AppLockService,
+		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
+		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

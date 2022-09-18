@@ -2,17 +2,21 @@ import { Inject, Injectable } from '@nestjs/common';
 import Limiter from 'ratelimiter';
 import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
-import Logger from '@/logger.js';
+import type Logger from '@/logger.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import type { IEndpointMeta } from './endpoints.js';
-
-const logger = new Logger('limiter');
 
 @Injectable()
 export class RateLimiterService {
+	#logger: Logger;
+
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
+
+		private loggerService: LoggerService,
 	) {
+		this.#logger = this.loggerService.getLogger('limiter');
 	}
 
 	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string) {
@@ -33,7 +37,7 @@ export class RateLimiterService {
 						return reject('ERR');
 					}
 		
-					logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
+					this.#logger.debug(`${actor} ${limitation.key} min remaining: ${info.remaining}`);
 		
 					if (info.remaining === 0) {
 						reject('BRIEF_REQUEST_INTERVAL');
@@ -61,7 +65,7 @@ export class RateLimiterService {
 						return reject('ERR');
 					}
 		
-					logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
+					this.#logger.debug(`${actor} ${limitation.key} max remaining: ${info.remaining}`);
 		
 					if (info.remaining === 0) {
 						reject('RATE_LIMIT_EXCEEDED');

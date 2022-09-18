@@ -5,8 +5,9 @@ import { UsersRepository } from '@/models/index.js';
 import { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import Logger from '@/logger.js';
+import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import type Koa from 'koa';
 
 @Injectable()
@@ -22,8 +23,9 @@ export class UrlPreviewService {
 
 		private metaService: MetaService,
 		private httpRequestService: HttpRequestService,
+		private loggerService: LoggerService,
 	) {
-		this.#logger = new Logger('url-preview');
+		this.#logger = this.loggerService.getLogger('url-preview');
 	}
 
 	#wrap(url?: string): string | null {

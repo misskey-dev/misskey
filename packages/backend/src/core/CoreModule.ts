@@ -50,6 +50,7 @@ import { WebhookService } from './WebhookService.js';
 import { ProxyAccountService } from './ProxyAccountService.js';
 import { UtilityService } from './UtilityService.js';
 import { FileInfoService } from './FileInfoService.js';
+import { ChartLoggerService } from './chart/ChartLoggerService.js';
 import FederationChart from './chart/charts/federation.js';
 import NotesChart from './chart/charts/notes.js';
 import UsersChart from './chart/charts/users.js';
@@ -113,9 +114,11 @@ import { ApPersonService } from './remote/activitypub/models/ApPersonService.js'
 import { ApQuestionService } from './remote/activitypub/models/ApQuestionService.js';
 import { QueueModule } from './queue/QueueModule.js';
 import { QueueService } from './QueueService.js';
+import { LoggerService } from './LoggerService.js';
 import type { Provider } from '@nestjs/common';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
+const $LoggerService: Provider = { provide: 'LoggerService', useExisting: LoggerService };
 const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useExisting: AccountUpdateService };
 const $AiService: Provider = { provide: 'AiService', useExisting: AiService };
 const $AntennaService: Provider = { provide: 'AntennaService', useExisting: AntennaService };
@@ -166,6 +169,7 @@ const $VideoProcessingService: Provider = { provide: 'VideoProcessingService', u
 const $WebhookService: Provider = { provide: 'WebhookService', useExisting: WebhookService };
 const $UtilityService: Provider = { provide: 'UtilityService', useExisting: UtilityService };
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
+const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
 const $NotesChart: Provider = { provide: 'NotesChart', useExisting: NotesChart };
 const $UsersChart: Provider = { provide: 'UsersChart', useExisting: UsersChart };
@@ -236,6 +240,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueueModule,
 	],
 	providers: [
+		LoggerService,
 		AccountUpdateService,
 		AiService,
 		AntennaService,
@@ -286,6 +291,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		WebhookService,
 		UtilityService,
 		FileInfoService,
+		ChartLoggerService,
 		FederationChart,
 		NotesChart,
 		UsersChart,
@@ -350,6 +356,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueueService,
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
+		$LoggerService,
 		$AccountUpdateService,
 		$AiService,
 		$AntennaService,
@@ -400,6 +407,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$WebhookService,
 		$UtilityService,
 		$FileInfoService,
+		$ChartLoggerService,
 		$FederationChart,
 		$NotesChart,
 		$UsersChart,
@@ -465,6 +473,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 	],
 	exports: [
 		QueueModule,
+		LoggerService,
 		AccountUpdateService,
 		AiService,
 		AntennaService,
@@ -579,6 +588,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueueService,
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
+		$LoggerService,
 		$AccountUpdateService,
 		$AiService,
 		$AntennaService,

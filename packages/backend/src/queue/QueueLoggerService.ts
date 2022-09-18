@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Logger from '@/logger.js';
+import type Logger from '@/logger.js';
+import { LoggerService } from '@/core/LoggerService.js';
 
 @Injectable()
 export class QueueLoggerService {
 	public logger: Logger;
 
 	constructor(
+		private loggerService: LoggerService,
 	) {
-		this.logger = new Logger('queue', 'orange');
+		this.logger = this.loggerService.getLogger('queue', 'orange');
 	}
 }

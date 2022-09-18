@@ -7,6 +7,7 @@ import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import Chart from '../core.js';
+import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/instance.js';
 import type { KVs } from '../core.js';
 
@@ -34,8 +35,9 @@ export default class InstanceChart extends Chart<typeof schema> {
 
 		private utilityService: UtilityService,
 		private appLockService: AppLockService,
+		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
+		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

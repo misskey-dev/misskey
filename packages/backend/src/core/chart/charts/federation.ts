@@ -5,6 +5,7 @@ import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import Chart from '../core.js';
+import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/federation.js';
 import type { KVs } from '../core.js';
 
@@ -26,8 +27,9 @@ export default class FederationChart extends Chart<typeof schema> {
 
 		private metaService: MetaService,
 		private appLockService: AppLockService,
+		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => appLockService.getChartInsertLock(k), name, schema);
+		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

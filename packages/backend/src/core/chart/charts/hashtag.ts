@@ -5,6 +5,7 @@ import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import Chart from '../core.js';
+import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/hashtag.js';
 import type { KVs } from '../core.js';
 
@@ -20,8 +21,9 @@ export default class HashtagChart extends Chart<typeof schema> {
 
 		private appLockService: AppLockService,
 		private userEntityService: UserEntityService,
+		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => appLockService.getChartInsertLock(k), name, schema, true);
+		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema, true);
 	}
 
 	protected async tickMajor(): Promise<Partial<KVs<typeof schema>>> {

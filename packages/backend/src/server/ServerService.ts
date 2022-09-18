@@ -12,12 +12,13 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { Config } from '@/config.js';
 import { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import Logger from '@/logger.js';
+import type Logger from '@/logger.js';
 import { envOption } from '@/env.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -27,10 +28,10 @@ import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 
-const serverLogger = new Logger('server', 'gray', false);
-
 @Injectable()
 export class ServerService {
+	#logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -51,7 +52,9 @@ export class ServerService {
 		private mediaProxyServerService: MediaProxyServerService,
 		private clientServerService: ClientServerService,
 		private globalEventService: GlobalEventService,
+		private loggerService: LoggerService,
 	) {
+		this.#logger = this.loggerService.getLogger('server', 'gray', false);
 	}
 
 	public launch() {
@@ -62,7 +65,7 @@ export class ServerService {
 		if (!['production', 'test'].includes(process.env.NODE_ENV ?? '')) {
 		// Logger
 			koa.use(koaLogger(str => {
-				serverLogger.info(str);
+				this.#logger.info(str);
 			}));
 
 			// Delay
@@ -151,16 +154,16 @@ export class ServerService {
 
 		this.streamingApiServerService.attachStreamingApi(server);
 
-		server.on('error', e => {
-			switch ((e as any).code) {
+		server.on('error', err => {
+			switch ((err as any).code) {
 				case 'EACCES':
-					serverLogger.error(`You do not have permission to listen on port ${this.config.port}.`);
+					this.#logger.error(`You do not have permission to listen on port ${this.config.port}.`);
 					break;
 				case 'EADDRINUSE':
-					serverLogger.error(`Port ${this.config.port} is already in use by another process.`);
+					this.#logger.error(`Port ${this.config.port} is already in use by another process.`);
 					break;
 				default:
-					serverLogger.error(e);
+					this.#logger.error(err);
 					break;
 			}
 
