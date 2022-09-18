@@ -172,7 +172,7 @@ export class FileServerService {
 			ctx.set('Content-Disposition', contentDisposition('inline', filename));
 		} else {
 			const readable = this.internalStorageService.read(file.accessKey!);
-			readable.on('error', commonReadableHandlerGenerator(ctx));
+			readable.on('error', this.commonReadableHandlerGenerator(ctx));
 			ctx.body = readable;
 			ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
 			ctx.set('Cache-Control', 'max-age=31536000, immutable');
