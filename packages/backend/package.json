@@ -37,7 +37,7 @@
 		"autwh": "0.1.0",
 		"aws-sdk": "2.1213.0",
 		"bcryptjs": "2.4.3",
-		"blurhash": "2.0.0",
+		"blurhash": "1.1.5",
 		"bull": "4.9.0",
 		"cacheable-lookup": "6.1.0",
 		"cbor": "8.1.0",

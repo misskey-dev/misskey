@@ -2318,10 +2318,10 @@ bluebird@~3.4.1:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.7.tgz#f72d760be09b7f76d08ed8fae98b289a8d05fab3"
   integrity sha1-9y12C+Cbf3bQjtj66Ysomo0F+rM=
 
-blurhash@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/blurhash/-/blurhash-2.0.0.tgz#c2e6392043d5355241cf9ddaec9359023ea57a40"
-  integrity sha512-fdEZnyJZ5E5s9neCfZUMSMkKfMtdKz1fG53t/iYvMjUFUsDnyZ1YnRRayKBK/B8cilNwe5gaIrPF8QlLrukEZQ==
+blurhash@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/blurhash/-/blurhash-1.1.5.tgz#3034104cd5dce5a3e5caa871ae2f0f1f2d0ab566"
+  integrity sha512-a+LO3A2DfxTaTztsmkbLYmUzUeApi0LZuKalwbNmqAHR6HhJGMt1qSV/R3wc+w4DL28holjqO3Bg74aUGavGjg==
 
 bn.js@^4.0.0:
   version "4.11.8"
