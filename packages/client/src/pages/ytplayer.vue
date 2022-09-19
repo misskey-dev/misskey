@@ -1,18 +1,18 @@
 <template>
-	<div class="poamfof fill">
-		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
-			<div v-if="player.url" class="player">
-				<iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
-			</div>
-		</transition>
-		<MkLoading v-if="fetching" />
-		<MkError v-else-if="!player.url" @retry="ytFetch()" />
-	</div>
+<div class="poamfof fill">
+	<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+		<div v-if="player.url" class="player">
+			<iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+		</div>
+	</transition>
+	<MkLoading v-if="fetching"/>
+	<MkError v-else-if="!player.url" @retry="ytFetch()"/>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { definePageMetadata } from '@/scripts/page-metadata';
 import { computed } from 'vue';
+import { definePageMetadata } from '@/scripts/page-metadata';
 import { lang } from '@/config';
 
 const props = defineProps<{
@@ -24,14 +24,14 @@ const requestUrl = new URL(props.url);
 let fetching = $ref(true);
 let title = $ref<string | null>(null);
 let player = $ref({
-    url: null,
-    width: null,
-    height: null,
+	url: null,
+	width: null,
+	height: null,
 });
 
-const requestLang = (lang || 'ja-JP').replace('ja-KS', 'ja-JP');
+const requestLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
 
-const ytFetch = () => {
+const ytFetch = (): void => {
 	fetching = true;
 	fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
 		res.json().then(info => {
@@ -46,9 +46,9 @@ const ytFetch = () => {
 ytFetch();
 
 definePageMetadata(computed(() => props.url ? {
-	title: title?.toString() || 'Youtube Player',
+	title: title?.toString() ?? 'Youtube Player',
 	path: `/notes/${props.url}`,
-	icon: 'fa-brands fa-youtube'
+	icon: 'fa-brands fa-youtube',
 } : null));
 
 </script>

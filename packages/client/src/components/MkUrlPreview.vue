@@ -108,7 +108,7 @@ function adjustTweetHeight(message: any) {
 	if (height) tweetHeight = height;
 }
 
-const openPlayer = () => {
+const openPlayer = (): void => {
 	os.pageWindow(`/ytplayer/${encodeURIComponent(requestUrl.href)}`);
 };
 
