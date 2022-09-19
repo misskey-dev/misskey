@@ -45,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			await this.noteThreadMutingsRepository.delete({
-				threadId: note.threadId || note.id,
+				threadId: note.threadId ?? note.id,
 				userId: me.id,
 			});
 		});

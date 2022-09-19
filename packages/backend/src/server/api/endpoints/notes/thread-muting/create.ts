@@ -53,9 +53,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const mutedNotes = await this.notesRepository.find({
 				where: [{
-					id: note.threadId || note.id,
+					id: note.threadId ?? note.id,
 				}, {
-					threadId: note.threadId || note.id,
+					threadId: note.threadId ?? note.id,
 				}],
 			});
 
@@ -64,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.noteThreadMutingsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
-				threadId: note.threadId || note.id,
+				threadId: note.threadId ?? note.id,
 				userId: me.id,
 			});
 		});

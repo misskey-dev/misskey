@@ -25,7 +25,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const ep = endpoints.find(x => x.name === ps.endpoint);
 			if (ep == null) return null;
 			return {
-				params: Object.entries(ep.params.properties || {}).map(([k, v]) => ({
+				params: Object.entries(ep.params.properties ?? {}).map(([k, v]) => ({
 					name: k,
 					type: v.type.charAt(0).toUpperCase() + v.type.slice(1),
 				})),
