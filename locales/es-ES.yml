@@ -2,6 +2,7 @@
 _lang_: "Español"
 headlineMisskey: "Red conectada por notas"
 introMisskey: "¡Bienvenido/a! Misskey es un servicio de microblogging descentralizado de código abierto.\nEscribe \"notas\" para compartir lo que te ocurre ahora o para contar sobre ti a todos 📡\nCon la función de \"reacciones\", puedes también añadir una reacción rápida a las notas de todos 👍\n¡Exploremos juntos un nuevo mundo! 🚀"
+poweredByMisskeyDescription: "{name} es uno de los servicios (también llamado instancia) que usa la plataforma de código abierto <b>Misskey</b>"
 monthAndDay: "{day}/{month}"
 search: "Buscar"
 notifications: "Notificaciones"
