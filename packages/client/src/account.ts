@@ -146,7 +146,7 @@ export async function openAccountMenu(opts: {
 	onChoose?: (account: misskey.entities.UserDetailed) => void;
 }, ev: MouseEvent) {
 	function showSigninDialog() {
-		popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				success();
@@ -155,7 +155,7 @@ export async function openAccountMenu(opts: {
 	}
 
 	function createAccount() {
-		popup(defineAsyncComponent(() => import('@/components/signup-dialog.vue')), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				switchAccountWithToken(res.i);

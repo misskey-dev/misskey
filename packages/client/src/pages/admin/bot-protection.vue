@@ -47,14 +47,14 @@
 import { defineAsyncComponent } from 'vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 
-const MkCaptcha = defineAsyncComponent(() => import('@/components/captcha.vue'));
+const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
 
 let provider = $ref(null);
 let hcaptchaSiteKey: string | null = $ref(null);

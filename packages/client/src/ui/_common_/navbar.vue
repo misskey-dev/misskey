@@ -146,7 +146,7 @@ function openInstanceMenu(ev: MouseEvent) {
 }
 
 function more(ev: MouseEvent) {
-	os.popup(defineAsyncComponent(() => import('@/components/launch-pad.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
 		src: ev.currentTarget ?? ev.target,
 	}, {
 	}, 'closed');

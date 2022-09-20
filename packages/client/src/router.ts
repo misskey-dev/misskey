@@ -106,6 +106,10 @@ export const routes = [{
 		name: 'sounds',
 		component: page(() => import('./pages/settings/sounds.vue')),
 	}, {
+		path: '/plugin/install',
+		name: 'plugin',
+		component: page(() => import('./pages/settings/plugin.install.vue')),
+	}, {
 		path: '/plugin',
 		name: 'plugin',
 		component: page(() => import('./pages/settings/plugin.vue')),
@@ -130,6 +134,10 @@ export const routes = [{
 		name: 'api',
 		component: page(() => import('./pages/settings/api.vue')),
 	}, {
+		path: '/apps',
+		name: 'api',
+		component: page(() => import('./pages/settings/apps.vue')),
+	}, {
 		path: '/webhook/edit/:webhookId',
 		name: 'webhook',
 		component: page(() => import('./pages/settings/webhook.edit.vue')),
@@ -145,6 +153,26 @@ export const routes = [{
 		path: '/deck',
 		name: 'deck',
 		component: page(() => import('./pages/settings/deck.vue')),
+	}, {
+		path: '/preferences-backups',
+		name: 'preferences-backups',
+		component: page(() => import('./pages/settings/preferences-backups.vue')),
+	}, {
+		path: '/custom-css',
+		name: 'general',
+		component: page(() => import('./pages/settings/custom-css.vue')),
+	}, {
+		path: '/accounts',
+		name: 'profile',
+		component: page(() => import('./pages/settings/accounts.vue')),
+	}, {
+		path: '/account-info',
+		name: 'other',
+		component: page(() => import('./pages/settings/account-info.vue')),
+	}, {
+		path: '/delete-account',
+		name: 'other',
+		component: page(() => import('./pages/settings/delete-account.vue')),
 	}, {
 		path: '/other',
 		name: 'other',
@@ -447,7 +475,7 @@ mainRouter.addListener('push', ctx => {
 	if (scrollPos !== 0) {
 		window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 			window.scroll({ top: scrollPos, behavior: 'instant' });
-		}, 1000);
+		}, 100);
 	}
 });
 
@@ -465,7 +493,7 @@ window.addEventListener('popstate', (event) => {
 	window.scroll({ top: scrollPos, behavior: 'instant' });
 	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 		window.scroll({ top: scrollPos, behavior: 'instant' });
-	}, 1000);
+	}, 100);
 });
 
 export function useRouter(): Router {

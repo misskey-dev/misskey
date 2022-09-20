@@ -1,5 +1,5 @@
 declare module '@peertube/http-signature' {
-	import { IncomingMessage, ClientRequest } from 'node:http';
+	import type { IncomingMessage, ClientRequest } from 'node:http';
 
 	interface ISignature {
 		keyId: string;

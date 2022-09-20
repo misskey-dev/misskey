@@ -49,12 +49,12 @@
 import { } from 'vue';
 import { toUnicode } from 'punycode/';
 import XTimeline from './welcome.timeline.vue';
-import MarqueeText from '@/components/marquee.vue';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import MkButton from '@/components/ui/button.vue';
-import XNote from '@/components/note.vue';
-import MkFeaturedPhotos from '@/components/featured-photos.vue';
+import MarqueeText from '@/components/MkMarquee.vue';
+import XSigninDialog from '@/components/MkSigninDialog.vue';
+import XSignupDialog from '@/components/MkSignupDialog.vue';
+import MkButton from '@/components/MkButton.vue';
+import XNote from '@/components/MkNote.vue';
+import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import number from '@/filters/number';

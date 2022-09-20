@@ -1,15 +1,15 @@
 import { VNode, defineComponent, h } from 'vue';
 import * as mfm from 'mfm-js';
-import MkUrl from '@/components/global/url.vue';
-import MkLink from '@/components/link.vue';
-import MkMention from '@/components/mention.vue';
-import MkEmoji from '@/components/global/emoji.vue';
+import MkUrl from '@/components/global/MkUrl.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkMention from '@/components/MkMention.vue';
+import MkEmoji from '@/components/global/MkEmoji.vue';
 import { concat } from '@/scripts/array';
-import MkFormula from '@/components/formula.vue';
-import MkCode from '@/components/code.vue';
-import MkGoogle from '@/components/google.vue';
-import MkSparkle from '@/components/sparkle.vue';
-import MkA from '@/components/global/a.vue';
+import MkFormula from '@/components/MkFormula.vue';
+import MkCode from '@/components/MkCode.vue';
+import MkGoogle from '@/components/MkGoogle.vue';
+import MkSparkle from '@/components/MkSparkle.vue';
+import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
 

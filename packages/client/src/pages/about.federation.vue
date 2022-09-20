@@ -48,11 +48,11 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkInstanceCardMini from '@/components/instance-card-mini.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

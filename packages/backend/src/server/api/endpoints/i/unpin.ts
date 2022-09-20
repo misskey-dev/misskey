@@ -1,7 +1,9 @@
-import { removePinned } from '@/services/i/pin.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository } from '@/models/index.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { NotePiningService } from '@/core/NotePiningService.js';
 import { ApiError } from '../../error.js';
-import { Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['account', 'notes'],
@@ -34,13 +36,21 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	await removePinned(user, ps.noteId).catch(e => {
-		if (e.id === 'b302d4cf-c050-400a-bbb3-be208681f40c') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private userEntityService: UserEntityService,
+		private notePiningService: NotePiningService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			await this.notePiningService.removePinned(me, ps.noteId).catch(err => {
+				if (err.id === 'b302d4cf-c050-400a-bbb3-be208681f40c') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
+			});
 
-	return await Users.pack<true, true>(user.id, user, {
-		detail: true,
-	});
-});
+			return await this.userEntityService.pack<true, true>(me.id, me, {
+				detail: true,
+			});
+		});
+	}
+}

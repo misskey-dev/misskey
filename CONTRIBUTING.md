@@ -124,7 +124,7 @@ npm run test
 
 #### Run specify test
 ```
-npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" npx mocha test/foo.ts --require ts-node/register
+npm run jest -- foo.ts
 ```
 
 ### e2e tests

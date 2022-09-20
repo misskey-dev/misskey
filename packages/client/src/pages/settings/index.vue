@@ -24,8 +24,8 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
-import MkInfo from '@/components/ui/info.vue';
-import MkSuperMenu from '@/components/ui/super-menu.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { scroll } from '@/scripts/scroll';
 import { signout , $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
@@ -171,6 +171,11 @@ const menuDef = computed(() => [{
 	}],
 }, {
 	items: [{
+		icon: 'fas fa-floppy-disk',
+		text: i18n.ts.preferencesBackups,
+		to: '/settings/preferences-backups',
+		active: currentPage?.route.name === 'preferences-backups',
+	}, {
 		type: 'button',
 		icon: 'fas fa-trash',
 		text: i18n.ts.clearCache,

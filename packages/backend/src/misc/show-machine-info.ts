@@ -1,6 +1,6 @@
 import * as os from 'node:os';
 import sysUtils from 'systeminformation';
-import Logger from '@/services/logger.js';
+import type Logger from '@/logger.js';
 
 export async function showMachineInfo(parentLogger: Logger) {
 	const logger = parentLogger.createSubLogger('machine');

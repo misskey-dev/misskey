@@ -1,5 +1,5 @@
 declare module 'koa-json-body' {
-	import { Middleware } from 'koa';
+	import type { Middleware } from 'koa';
 
 	interface IKoaJsonBodyOptions {
 		strict: boolean;

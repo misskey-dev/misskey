@@ -9,15 +9,35 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 12.119.0 (2022/09/10)
 
 ### Improvements
+- Client: Add following badge to user preview popup @nvisser
+- Client: mobile twitter url can be used as widget @caipira113
+- Client: Improve clock widget @syuilo
+
+### Bugfixes
+- マイグレーションに失敗する問題を修正
+- Server: 他人の通知を既読にできる可能性があるのを修正 @syuilo
+- Client: アクセストークン管理画面、アカウント管理画面表示できないのを修正 @futchitwo
+
+## 12.118.1 (2022/08/08)
+
+### Bugfixes
+- Client: can not show some setting pages @syuilo
+
+## 12.118.0 (2022/08/07)
+
+### Improvements
+- Client: 設定のバックアップ/リストア機能
 - Client: Add vi-VN language support
+- Client: Add unix time widget @syuilo
 
 ### Bugfixes
 - Server: リモートユーザーを正しくブロックできるように修正する @xianonn
 - Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
 - Client: MiAuth認証ページが機能していない @syuilo
+- Client: 一部のアプリからファイルを投稿フォームへドロップできない場合がある問題を修正 @m-hayabusa
 
 ## 12.117.1 (2022/07/19)
 

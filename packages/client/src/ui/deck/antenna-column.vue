@@ -12,7 +12,7 @@
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
-import XTimeline from '@/components/timeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 

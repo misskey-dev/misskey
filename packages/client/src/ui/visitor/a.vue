@@ -42,7 +42,7 @@ import XHeader from './header.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { ColdDeviceStorage } from '@/store';
 import { mainRouter } from '@/router';
 

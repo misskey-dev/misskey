@@ -165,8 +165,8 @@ import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';
 import XPie from './overview.pie.vue';
-import MkNumberDiff from '@/components/number-diff.vue';
-import MkTagCloud from '@/components/tag-cloud.vue';
+import MkNumberDiff from '@/components/MkNumberDiff.vue';
+import MkTagCloud from '@/components/MkTagCloud.vue';
 import { version, url } from '@/config';
 import number from '@/filters/number';
 import * as os from '@/os';
@@ -176,7 +176,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import MkFileListForAdmin from '@/components/file-list-for-admin.vue';
+import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 
 Chart.register(
 	ArcElement,

@@ -13,6 +13,9 @@ report.*.json
 cypress/screenshots
 cypress/videos
 
+# Coverage
+coverage
+
 # config
 /.config/*
 !/.config/example.yml

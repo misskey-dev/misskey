@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.118.0-beta.3",
+	"version": "12.120.0-alpha.4",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -10,8 +10,8 @@
 	"scripts": {
 		"postinstall": "node ./scripts/install-packages.js",
 		"build": "node ./scripts/build.js",
-		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
-		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
+		"start": "cd packages/backend && node --experimental-json-modules ./built/boot/index.js",
+		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/boot/index.js",
 		"init": "npm run migrate",
 		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
 		"migrateandstart": "npm run migrate && npm run start",
@@ -22,8 +22,10 @@
 		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "cypress run",
 		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
-		"mocha": "cd packages/backend && cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
-		"test": "npm run mocha",
+		"jest": "cd packages/backend && cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --detectOpenHandles --runInBand",
+		"jest-and-coverage": "cd packages/backend && cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --detectOpenHandles --runInBand",
+		"test": "npm run jest",
+		"test-and-coverage": "npm run jest-and-coverage",
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
@@ -41,10 +43,10 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.9",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/parser": "5.30.6",
+		"@typescript-eslint/parser": "5.38.0",
 		"cross-env": "7.0.3",
-		"cypress": "10.3.0",
+		"cypress": "10.8.0",
 		"start-server-and-test": "1.14.0",
-		"typescript": "4.7.4"
+		"typescript": "4.8.3"
 	}
 }

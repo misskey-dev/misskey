@@ -17,8 +17,8 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

@@ -21,7 +21,7 @@
 import { computed, ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store';

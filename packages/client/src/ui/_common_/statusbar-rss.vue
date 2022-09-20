@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
-import MarqueeText from '@/components/marquee.vue';
+import MarqueeText from '@/components/MkMarquee.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
 import { shuffle } from '@/scripts/shuffle';

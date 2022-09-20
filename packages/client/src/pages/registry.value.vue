@@ -45,11 +45,11 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSplit from '@/components/form/split.vue';
-import FormInfo from '@/components/ui/info.vue';
+import FormInfo from '@/components/MkInfo.vue';
 
 const props = defineProps<{
 	path: string;

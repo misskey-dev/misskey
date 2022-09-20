@@ -21,7 +21,7 @@ import XNet from './net.vue';
 import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { stream } from '@/stream';
