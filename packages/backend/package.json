@@ -86,6 +86,7 @@
 		"node-fetch": "3.2.10",
 		"nodemailer": "6.7.8",
 		"nsfwjs": "2.4.2",
+		"oauth": "^0.10.0",
 		"os-utils": "0.0.14",
 		"parse5": "7.1.1",
 		"pg": "8.8.0",
