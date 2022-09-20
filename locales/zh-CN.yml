@@ -2,6 +2,7 @@
 _lang_: "中文(简体)"
 headlineMisskey: "通过帖子连接在一起的网络"
 introMisskey: "欢迎！Misskey是一个开源的、去中心化的“微博客”服务。\n通过编写「帖文」来和大家分享你的以及你周围的事情吧！📡\n通过「回应」功能，可以让你快速地对大家的帖文表达反馈👍\n来探索新的世界吧！🚀"
+poweredByMisskeyDescription: "{name} 使用开源平台 <b>Misskey</b> 的服务（称为 Misskey 实例）"
 monthAndDay: "{month}月 {day}日"
 search: "搜索"
 notifications: "通知"
