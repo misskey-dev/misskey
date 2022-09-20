@@ -14,7 +14,6 @@
 	],
 	"private": true,
 	"scripts": {
-		"postinstall": "node ./scripts/install-packages.js",
 		"build": "yarn workspaces foreach run build && yarn run gulp",
 		"start": "cd packages/backend && node --experimental-json-modules ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/boot/index.js",
