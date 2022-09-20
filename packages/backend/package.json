@@ -16,6 +16,7 @@
 		"test-and-coverage": "yarn jest-and-coverage"
 	},
 	"optionalDependencies": {
+		"@tensorflow/tfjs": "^3.20.0",
 		"@tensorflow/tfjs-node": "3.20.0"
 	},
 	"dependencies": {
@@ -33,7 +34,6 @@
 		"@peertube/http-signature": "1.7.0",
 		"@sinonjs/fake-timers": "9.1.2",
 		"@syuilo/aiscript": "0.11.1",
-		"@tensorflow/tfjs": "^3.20.0",
 		"@types/pg": "8.6.5",
 		"ajv": "8.11.0",
 		"archiver": "5.3.1",
@@ -78,6 +78,7 @@
 		"koa-send": "5.0.1",
 		"koa-slow": "2.1.0",
 		"koa-views": "7.0.2",
+		"long": "^5.2.0",
 		"mfm-js": "0.23.0",
 		"mime-types": "2.1.35",
 		"misskey-js": "0.0.14",
@@ -109,6 +110,7 @@
 		"rxjs": "7.5.6",
 		"s-age": "1.1.2",
 		"sanitize-html": "2.7.2",
+		"seedrandom": "^3.0.5",
 		"semver": "7.3.7",
 		"sharp": "0.30.6",
 		"speakeasy": "2.0.0",

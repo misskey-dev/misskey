@@ -3821,6 +3821,7 @@ __metadata:
     koa-send: 5.0.1
     koa-slow: 2.1.0
     koa-views: 7.0.2
+    long: ^5.2.0
     mfm-js: 0.23.0
     mime-types: 2.1.35
     misskey-js: 0.0.14
@@ -3852,6 +3853,7 @@ __metadata:
     rxjs: 7.5.6
     s-age: 1.1.2
     sanitize-html: 2.7.2
+    seedrandom: ^3.0.5
     semver: 7.3.7
     sharp: 0.30.6
     speakeasy: 2.0.0
@@ -3878,6 +3880,8 @@ __metadata:
     ws: 8.8.1
     xev: 3.0.2
   dependenciesMeta:
+    "@tensorflow/tfjs":
+      optional: true
     "@tensorflow/tfjs-node":
       optional: true
   languageName: unknown
@@ -4092,10 +4096,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-image-resizer@git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.2":
-  version: 2.2.1-misskey.2
-  resolution: "browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer.git#commit=a58834f5fe2af9f9f31ff115121aef3de6f9d416"
-  checksum: eb5ddfe7f6a2de96340ef420df9be03a75f2bfd8f568a60be22cc8f2ccdcb754105b7799cf706c09add3f9d82b7ce1c6f963842f80a85f234b26ef6bf1b8da09
+"browser-image-resizer@git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3":
+  version: 2.2.1-misskey.3
+  resolution: "browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer.git#commit=0227e860621e55cbed0aabe6dc601096a7748c4a"
+  checksum: 2c5b3bbea6c7b30153c8aa339eaff14c4c17f7a3992525e7c103d5b6674ad5015ba6d822cd8e9a1835d642743bcd1ff7fb47f9322065971db9e5da5f43d3bd72
   languageName: node
   linkType: hard
 
@@ -4770,7 +4774,7 @@ __metadata:
     autosize: 5.0.1
     blurhash: 1.1.5
     broadcast-channel: 4.17.0
-    browser-image-resizer: "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.2"
+    browser-image-resizer: "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3"
     chart.js: 3.9.1
     chartjs-adapter-date-fns: 2.0.0
     chartjs-plugin-gradient: 0.5.1
@@ -11173,6 +11177,13 @@ __metadata:
   version: 4.0.0
   resolution: "long@npm:4.0.0"
   checksum: 16afbe8f749c7c849db1f4de4e2e6a31ac6e617cead3bdc4f9605cb703cd20e1e9fc1a7baba674ffcca57d660a6e5b53a9e236d7b25a295d3855cca79cc06744
+  languageName: node
+  linkType: hard
+
+"long@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "long@npm:5.2.0"
+  checksum: 37aa4e67b9c3eebc6d9d675adcc9d06f06059ca268922a71273de389746bf07f0ff282f9e604d17fdf84c4149099b44e936ea2b621a6c4759a216621afa97efd
   languageName: node
   linkType: hard
 

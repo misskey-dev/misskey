@@ -19,7 +19,7 @@
 		"autosize": "5.0.1",
 		"blurhash": "1.1.5",
 		"broadcast-channel": "4.17.0",
-		"browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.2",
+		"browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
 		"chart.js": "3.9.1",
 		"chartjs-adapter-date-fns": "2.0.0",
 		"chartjs-plugin-gradient": "0.5.1",
