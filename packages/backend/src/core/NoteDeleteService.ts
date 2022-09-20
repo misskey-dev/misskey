@@ -14,6 +14,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
+import { NoteEntityService } from './entities/NoteEntityService.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -31,6 +32,7 @@ export class NoteDeleteService {
 		private instancesRepository: InstancesRepository,
 
 		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
 		private globalEventServie: GlobalEventService,
 		private relayService: RelayService,
 		private federatedInstanceService: FederatedInstanceService,
@@ -42,10 +44,10 @@ export class NoteDeleteService {
 	) {}
 	
 	/**
- * 投稿を削除します。
- * @param user 投稿者
- * @param note 投稿
- */
+	 * 投稿を削除します。
+	 * @param user 投稿者
+	 * @param note 投稿
+	 */
 	async delete(user: { id: User['id']; uri: User['uri']; host: User['host']; }, note: Note, quiet = false) {
 		const deletedAt = new Date();
 
