@@ -1679,6 +1679,7 @@ __metadata:
     argparse: ^1.0.10
     chalk: ^4.1.0
     core-js: 3
+    long: ^5.2.0
     regenerator-runtime: ^0.13.5
     yargs: ^16.0.3
   bin:
