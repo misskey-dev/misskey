@@ -23,8 +23,8 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch } from 'vue';
-import XTimeline from '@/components/timeline.vue';
-import XPostForm from '@/components/post-form.vue';
+import XTimeline from '@/components/MkTimeline.vue';
+import XPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { defaultStore } from '@/store';

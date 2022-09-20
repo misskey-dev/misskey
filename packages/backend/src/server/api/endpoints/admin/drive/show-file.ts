@@ -1,5 +1,7 @@
-import { DriveFiles } from '@/models/index.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DriveFilesRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -169,25 +171,33 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const file = ps.fileId ? await DriveFiles.findOneBy({ id: ps.fileId }) : await DriveFiles.findOne({
-		where: [{
-			url: ps.url,
-		}, {
-			thumbnailUrl: ps.url,
-		}, {
-			webpublicUrl: ps.url,
-		}],
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const file = ps.fileId ? await this.driveFilesRepository.findOneBy({ id: ps.fileId }) : await this.driveFilesRepository.findOne({
+				where: [{
+					url: ps.url,
+				}, {
+					thumbnailUrl: ps.url,
+				}, {
+					webpublicUrl: ps.url,
+				}],
+			});
 
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
+			}
+
+			if (!me.isAdmin) {
+				delete file.requestIp;
+				delete file.requestHeaders;
+			}
+
+			return file;
+		});
 	}
-
-	if (!me.isAdmin) {
-		delete file.requestIp;
-		delete file.requestHeaders;
-	}
-
-	return file;
-});
+}

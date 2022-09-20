@@ -2,6 +2,7 @@ _lang_: "日本語"
 
 headlineMisskey: "ノートでつながるネットワーク"
 introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
+poweredByMisskeyDescription: "{name}は、オープンソースのプラットフォーム<b>Misskey</b>を使ったサービス(Misskeyインスタンスと呼ばれます)のひとつです。"
 monthAndDay: "{month}月 {day}日"
 search: "検索"
 notifications: "通知"

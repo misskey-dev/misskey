@@ -93,7 +93,7 @@ import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
 import MkTextarea from '@/components/form/textarea.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import MkInput from '@/components/form/input.vue';

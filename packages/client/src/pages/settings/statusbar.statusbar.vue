@@ -86,7 +86,7 @@ import FormSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormRange from '@/components/form/range.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';

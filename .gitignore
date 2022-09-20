@@ -24,6 +24,9 @@ packages/sw/.yarn/cache
 cypress/screenshots
 cypress/videos
 
+# Coverage
+coverage
+
 # config
 /.config/*
 !/.config/example.yml

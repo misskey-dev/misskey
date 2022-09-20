@@ -33,10 +33,10 @@
 
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
-import MkContainer from '@/components/ui/container.vue';
-import XPostForm from '@/components/post-form.vue';
-import XTimeline from '@/components/timeline.vue';
-import XChannelFollowButton from '@/components/channel-follow-button.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import XPostForm from '@/components/MkPostForm.vue';
+import XTimeline from '@/components/MkTimeline.vue';
+import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { $i } from '@/account';

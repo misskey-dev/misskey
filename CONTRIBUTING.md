@@ -124,7 +124,7 @@ yarn test
 
 #### Run specify test
 ```
-TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" yarn dlx mocha test/foo.ts --require ts-node/register
+yarn jest -- foo.ts
 ```
 
 ### e2e tests

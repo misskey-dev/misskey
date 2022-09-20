@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import XNotes from '@/components/notes.vue';
-import MkTab from '@/components/tab.vue';
+import XNotes from '@/components/MkNotes.vue';
+import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n';
 
 const paginationForNotes = {

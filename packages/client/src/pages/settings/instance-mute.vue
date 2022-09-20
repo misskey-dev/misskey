@@ -12,8 +12,8 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
-import MkInfo from '@/components/ui/info.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';

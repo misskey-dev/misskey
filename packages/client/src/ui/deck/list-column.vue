@@ -12,7 +12,7 @@
 import { } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
-import XTimeline from '@/components/timeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -52,20 +52,6 @@ const menu = [{
 	text: i18n.ts.selectList,
 	action: setList,
 }];
-
-/*
-function focus() {
-	timeline.focus();
-}
-
-export default defineComponent({
-	watch: {
-		mediaOnly() {
-			(this.$refs.timeline as any).reload();
-		}
-	}
-});
-*/
 </script>
 
 <style lang="scss" scoped>

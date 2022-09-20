@@ -1,9 +1,6 @@
 import rndstr from 'rndstr';
-import { Note } from '@/models/entities/note.js';
-import { User } from '@/models/entities/user.js';
-import { Notes, UserProfiles, NoteReactions } from '@/models/index.js';
-import { generateMutedUserQuery } from './generate-muted-user-query.js';
-import { generateBlockedUserQuery } from './generate-block-query.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { User } from '@/models/entities/User.js';
 
 // TODO: リアクション、Renote、返信などをしたノートは除外する
 
@@ -21,9 +18,9 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 	const query = Notes.createQueryBuilder('note')
 		.addSelect('note.score')
 		.where('note.userHost IS NULL')
-		.andWhere(`note.score > 0`)
-		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
-		.andWhere(`note.visibility = 'public'`)
+		.andWhere('note.score > 0')
+		.andWhere('note.createdAt > :date', { date: new Date(Date.now() - day) })
+		.andWhere('note.visibility = \'public\'')
 		.innerJoinAndSelect('note.user', 'user');
 
 	if (user) {

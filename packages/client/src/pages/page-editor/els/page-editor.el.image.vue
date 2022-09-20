@@ -18,7 +18,7 @@
 /* eslint-disable vue/no-mutating-props */
 import { onMounted } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
+import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os';
 
 const props = withDefaults(defineProps<{

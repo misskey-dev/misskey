@@ -56,13 +56,13 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, inject, watch } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
-import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
-import MkFollowButton from '@/components/follow-button.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
+import MkFollowButton from '@/components/MkFollowButton.vue';
 import { url } from '@/config';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';

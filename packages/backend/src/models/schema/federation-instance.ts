@@ -1,5 +1,3 @@
-import config from '@/config/index.js';
-
 export const packedFederationInstanceSchema = {
 	type: 'object',
 	properties: {
@@ -64,7 +62,6 @@ export const packedFederationInstanceSchema = {
 		softwareVersion: {
 			type: 'string',
 			optional: false, nullable: true,
-			example: config.version,
 		},
 		openRegistrations: {
 			type: 'boolean',

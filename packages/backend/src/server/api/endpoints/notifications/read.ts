@@ -1,5 +1,6 @@
-import define from '../../define.js';
-import { readNotification } from '../../common/read-notification.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NotificationService } from '@/core/NotificationService.js';
 
 export const meta = {
 	tags: ['notifications', 'account'],
@@ -43,7 +44,14 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	if ('notificationId' in ps) return readNotification(user.id, [ps.notificationId]);
-	return readNotification(user.id, ps.notificationIds);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private notificationService: NotificationService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			if ('notificationId' in ps) return this.notificationService.readNotification(me.id, [ps.notificationId]);
+			return this.notificationService.readNotification(me.id, ps.notificationIds);
+		});
+	}
+}

@@ -1,5 +1,5 @@
 <template>
-<div class="timctyfi" :class="{ disabled }">
+<div class="timctyfi" :class="{ disabled, easing }">
 	<div class="label"><slot name="label"></slot></div>
 	<div v-adaptive-border class="body">
 		<div ref="containerEl" class="container">
@@ -28,9 +28,11 @@ const props = withDefaults(defineProps<{
 	step?: number;
 	textConverter?: (value: number) => string,
 	showTicks?: boolean;
+	easing?: boolean;
 }>(), {
 	step: 1,
 	textConverter: (v) => v.toString(),
+	easing: false,
 });
 
 const emit = defineEmits<{
@@ -96,7 +98,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	ev.preventDefault();
 
 	const tooltipShowing = ref(true);
-	os.popup(defineAsyncComponent(() => import('@/components/ui/tooltip.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 		showing: tooltipShowing,
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
@@ -198,7 +200,6 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 					height: 100%;
 					background: var(--accent);
 					opacity: 0.5;
-					//transition: width 0.2s cubic-bezier(0,0,0,1);
 				}
 			}
 
@@ -231,10 +232,25 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 				cursor: grab;
 				background: var(--accent);
 				border-radius: 999px;
-				//transition: left 0.2s cubic-bezier(0,0,0,1);
 
 				&:hover {
 					background: var(--accentLighten);
+				}
+			}
+		}
+	}
+
+	&.easing {
+		> .body {
+			> .container {
+				> .track {
+					> .highlight {
+						transition: width 0.2s cubic-bezier(0,0,0,1);
+					}
+				}
+
+				> .thumb {
+					transition: left 0.2s cubic-bezier(0,0,0,1);
 				}
 			}
 		}
