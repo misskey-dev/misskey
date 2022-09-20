@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { beforeShutdown } from '@/misc/before-shutdown.js';
 
 import FederationChart from './charts/federation.js';
 import NotesChart from './charts/notes.js';
@@ -13,9 +12,13 @@ import HashtagChart from './charts/hashtag.js';
 import PerUserFollowingChart from './charts/per-user-following.js';
 import PerUserDriveChart from './charts/per-user-drive.js';
 import ApRequestChart from './charts/ap-request.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class ChartManagementService {
+export class ChartManagementService implements OnApplicationShutdown {
+	private charts;
+	private saveIntervalId: NodeJS.Timer;
+
 	constructor(
 		private federationChart: FederationChart,
 		private notesChart: NotesChart,
@@ -29,10 +32,8 @@ export class ChartManagementService {
 		private perUserFollowingChart: PerUserFollowingChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private apRequestChart: ApRequestChart,
-	) {}
-
-	public async run() {
-		const charts = [
+	) {
+		this.charts = [
 			this.federationChart,
 			this.notesChart,
 			this.usersChart,
@@ -46,14 +47,21 @@ export class ChartManagementService {
 			this.perUserDriveChart,
 			this.apRequestChart,
 		];
-		
+	}
+
+	public async run() {
 		// 20分おきにメモリ情報をDBに書き込み
-		setInterval(() => {
-			for (const chart of charts) {
+		this.saveIntervalId = setInterval(() => {
+			for (const chart of this.charts) {
 				chart.save();
 			}
 		}, 1000 * 60 * 20);
-		
-		beforeShutdown(() => Promise.all(charts.map(chart => chart.save())));
+	}
+
+	async onApplicationShutdown(signal: string): Promise<void> {
+		clearInterval(this.saveIntervalId);
+		await Promise.all(
+			this.charts.map(chart => chart.save()),
+		);
 	}
 }

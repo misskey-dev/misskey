@@ -53,6 +53,7 @@ jobs:
     - name: Upload Coverage
       uses: codecov/codecov-action@v3
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: ./packages/backend/coverage/coverage-final.json
 
   e2e:

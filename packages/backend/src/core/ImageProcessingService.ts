@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 
 export type IImage = {
 	data: Buffer;

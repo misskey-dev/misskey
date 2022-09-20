@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { MutingsRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { MutingsRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';

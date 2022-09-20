@@ -4,8 +4,8 @@ import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -147,7 +147,7 @@ export class DriveService {
 			}
 
 			const baseUrl = meta.objectStorageBaseUrl
-			|| `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
+				?? `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
 
 			// for original
 			const key = `${meta.objectStoragePrefix}/${uuid()}${ext}`;
@@ -285,7 +285,7 @@ export class DriveService {
 
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && type !== 'image/webp' &&
-			!(metadata.exif || metadata.iptc || metadata.xmp || metadata.tifftagPhotoshop) &&
+			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
 			);
@@ -438,7 +438,7 @@ export class DriveService {
 		//}
 
 		// detect name
-		const detectedName = name || (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
+		const detectedName = name ?? (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
 
 		if (user && !force) {
 		// Check if there is a file with the same hash

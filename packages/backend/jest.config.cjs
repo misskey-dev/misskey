@@ -64,6 +64,7 @@ module.exports = {
 		"ts-jest": {
 			"useESM": true,
 			tsconfig: "test/tsconfig.json",
+			isolatedModules: true,
 			diagnostics: {
         exclude: ['**'],
       },

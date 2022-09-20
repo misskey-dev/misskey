@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { SwSubscriptionsRepository } from '@/models/index.js';
+import type { SwSubscriptionsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 

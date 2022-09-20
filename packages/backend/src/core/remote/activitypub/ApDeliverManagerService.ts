@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { FollowingsRepository, UsersRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';

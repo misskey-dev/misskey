@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
+import type { ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { IdService } from '@/core/IdService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';

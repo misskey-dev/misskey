@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NoteThreadMutingsRepository } from '@/models/index.js';
+import type { NoteThreadMutingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/common/GetterService.js';
 import { DI } from '@/di-symbols.js';
@@ -45,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			await this.noteThreadMutingsRepository.delete({
-				threadId: note.threadId || note.id,
+				threadId: note.threadId ?? note.id,
 				userId: me.id,
 			});
 		});

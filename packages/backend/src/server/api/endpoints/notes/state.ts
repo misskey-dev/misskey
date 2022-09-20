@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NotesRepository, NoteThreadMutingsRepository, NoteFavoritesRepository } from '@/models/index.js';
+import type { NotesRepository, NoteThreadMutingsRepository, NoteFavoritesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 

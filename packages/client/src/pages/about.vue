@@ -5,16 +5,16 @@
 		<div class="_formRoot">
 			<div class="_formBlock fwhjspax" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 				<div class="content">
-					<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
+					<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
 					<div class="name">
-						<b>{{ $instance.name || host }}</b>
+						<b>{{ $instance.name ?? host }}</b>
 					</div>
 				</div>
 			</div>
 
 			<MkKeyValue class="_formBlock">
 				<template #key>{{ i18n.ts.description }}</template>
-				<template #value>{{ $instance.description }}</template>
+				<template #value><div v-html="$instance.description"></div></template>
 			</MkKeyValue>
 
 			<FormSection>
@@ -22,6 +22,8 @@
 					<template #key>Misskey</template>
 					<template #value>{{ version }}</template>
 				</MkKeyValue>
+				<div class="_formBlock" v-html="i18n.t('poweredByMisskeyDescription', { name: $instance.name ?? host })">
+				</div>
 				<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
 			</FormSection>
 
@@ -83,7 +85,7 @@
 import { ref, computed } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { version, instanceName , host } from '@/config';
+import { version, instanceName, host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';

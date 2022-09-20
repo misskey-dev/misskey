@@ -38,7 +38,7 @@ module.exports = {
 		'vue/no-multi-spaces': ['error', {
 			'ignoreProperties': false,
 		}],
-		'vue/no-v-html': 'error',
+		'vue/no-v-html': 'warn',
 		'vue/order-in-components': 'error',
 		'vue/html-indent': ['warn', 'tab', {
 			'attribute': 1,

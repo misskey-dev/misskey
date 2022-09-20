@@ -1,5 +1,5 @@
 import { Global, Inject, Module } from '@nestjs/common';
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { createRedisConnection } from '@/redis.js';
 import { DI } from './di-symbols.js';
@@ -49,8 +49,8 @@ const $redisSubscriber: Provider = {
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.db) private db: DataSource,
-		@Inject(DI.redis) private redisClient: Redis,
-		@Inject(DI.redisSubscriber) private redisSubscriber: Redis,
+		@Inject(DI.redis) private redisClient: Redis.Redis,
+		@Inject(DI.redisSubscriber) private redisSubscriber: Redis.Redis,
 	) {}
 
 	async onApplicationShutdown(signal: string): Promise<void> {
