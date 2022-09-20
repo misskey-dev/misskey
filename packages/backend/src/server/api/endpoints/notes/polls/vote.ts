@@ -1,6 +1,6 @@
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

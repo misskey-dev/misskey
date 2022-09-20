@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

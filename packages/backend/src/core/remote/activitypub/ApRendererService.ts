@@ -4,7 +4,7 @@ import { In, IsNull } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import type { IMentionedRemoteUsers, Note } from '@/models/entities/Note.js';
 import type { Blocking } from '@/models/entities/Blocking.js';

@@ -5,7 +5,7 @@ import cors from '@koa/cors';
 import Router from '@koa/router';
 import sharp from 'sharp';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { DownloadService } from '@/core/DownloadService.js';

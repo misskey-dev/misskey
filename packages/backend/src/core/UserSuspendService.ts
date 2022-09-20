@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
-import { FollowingsRepository, UsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 

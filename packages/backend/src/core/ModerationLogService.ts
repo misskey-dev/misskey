@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { ModerationLogsRepository } from '@/models/index.js';
+import type { ModerationLogsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 

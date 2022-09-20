@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import type { ILocalUser, User } from '@/models/entities/User.js';
-import { RelaysRepository, UsersRepository } from '@/models/index.js';
+import type { RelaysRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Cache } from '@/misc/cache.js';
 import type { Relay } from '@/models/entities/Relay.js';

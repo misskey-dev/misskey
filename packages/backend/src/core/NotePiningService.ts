@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import type { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { RelayService } from '@/core/RelayService.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
