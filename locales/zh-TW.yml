@@ -2,6 +2,7 @@
 _lang_: "繁體中文"
 headlineMisskey: "貼文連繫網路"
 introMisskey: "歡迎！ Misskey是一個開放原始碼且去中心化的社群網路。\n透過「貼文」分享周邊新鮮事，並告訴其他人您的想法！📡\n透過「反應」功能，對大家的貼文表達情感！👍\n一起來探索這個新的世界吧！🚀"
+poweredByMisskeyDescription: "{name}是使用開放原始碼平台<b>Misskey</b>的服務之一（稱為 Misskey 實例）。\n"
 monthAndDay: "{month}月 {day}日"
 search: "搜尋"
 notifications: "通知"
