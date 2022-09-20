@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import Router from '@koa/router';
 import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';

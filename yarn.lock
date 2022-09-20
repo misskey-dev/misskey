@@ -1666,7 +1666,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tensorflow/tfjs@npm:3.20.0":
+"@tensorflow/tfjs@npm:3.20.0, @tensorflow/tfjs@npm:^3.20.0":
   version: 3.20.0
   resolution: "@tensorflow/tfjs@npm:3.20.0"
   dependencies:
@@ -3725,6 +3725,7 @@ __metadata:
     "@redocly/openapi-core": 1.0.0-beta.108
     "@sinonjs/fake-timers": 9.1.2
     "@syuilo/aiscript": 0.11.1
+    "@tensorflow/tfjs": ^3.20.0
     "@tensorflow/tfjs-node": 3.20.0
     "@types/bcryptjs": 2.4.2
     "@types/bull": 3.15.9
