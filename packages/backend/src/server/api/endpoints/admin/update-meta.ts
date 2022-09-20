@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Meta } from '@/models/entities/Meta.js';
+import type { Meta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -116,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.db)
 		private db: DataSource,
 
-		private globalEventService: GlobalEventService,
+		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -438,32 +439,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
 			}
 
-			const updated = await this.db.transaction(async transactionalEntityManager => {
-				const metas = await transactionalEntityManager.find(Meta, {
-					order: {
-						id: 'DESC',
-					},
-				});
-
-				const meta = metas[0];
-
-				if (meta) {
-					await transactionalEntityManager.update(Meta, meta.id, set);
-
-					const metas = await transactionalEntityManager.find(Meta, {
-						order: {
-							id: 'DESC',
-						},
-					});
-
-					return metas[0];
-				} else {
-					return await transactionalEntityManager.save(Meta, set);
-				}
-			});
-
-			this.globalEventService.publishInternalEvent('metaUpdated', updated);
-
+			await this.metaService.update(set);
 			this.moderationLogService.insertModerationLog(me, 'updateMeta');
 		});
 	}

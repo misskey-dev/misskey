@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { Meta } from '@/models/entities/Meta.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -16,6 +17,8 @@ export class MetaService implements OnApplicationShutdown {
 
 		@Inject(DI.db)
 		private db: DataSource,
+
+		private globalEventService: GlobalEventService,
 	) {
 		this.onMessage = this.onMessage.bind(this);
 
@@ -29,6 +32,22 @@ export class MetaService implements OnApplicationShutdown {
 		}
 
 		this.redisSubscriber.on('message', this.onMessage);
+	}
+
+	private async onMessage(_, data): Promise<void> {
+		const obj = JSON.parse(data);
+
+		if (obj.channel === 'internal') {
+			const { type, body } = obj.message;
+			switch (type) {
+				case 'metaUpdated': {
+					this.cache = body;
+					break;
+				}
+				default:
+					break;
+			}
+		}
 	}
 
 	public async fetch(noCache = false): Promise<Meta> {
@@ -65,20 +84,34 @@ export class MetaService implements OnApplicationShutdown {
 		});
 	}
 
-	private async onMessage(_, data) {
-		const obj = JSON.parse(data);
+	public async update(data: Partial<Meta>): Promise<Meta> {
+		const updated = await this.db.transaction(async transactionalEntityManager => {
+			const metas = await transactionalEntityManager.find(Meta, {
+				order: {
+					id: 'DESC',
+				},
+			});
 
-		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
-			switch (type) {
-				case 'metaUpdated': {
-					this.cache = body;
-					break;
-				}
-				default:
-					break;
+			const meta = metas[0];
+
+			if (meta) {
+				await transactionalEntityManager.update(Meta, meta.id, data);
+
+				const metas = await transactionalEntityManager.find(Meta, {
+					order: {
+						id: 'DESC',
+					},
+				});
+
+				return metas[0];
+			} else {
+				return await transactionalEntityManager.save(Meta, data);
 			}
-		}
+		});
+
+		this.globalEventService.publishInternalEvent('metaUpdated', updated);
+
+		return updated;
 	}
 
 	public onApplicationShutdown(signal?: string | undefined) {
