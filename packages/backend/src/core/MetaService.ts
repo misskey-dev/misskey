@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { UsersRepository } from '@/models/index.js';
+import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { Meta } from '@/models/entities/Meta.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
@@ -11,19 +11,27 @@ export class MetaService implements OnApplicationShutdown {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
+		@Inject(DI.redisSubscriber)
+		private redisSubscriber: Redis.Redis,
+
 		@Inject(DI.db)
 		private db: DataSource,
 	) {
+		this.onMessage = this.onMessage.bind(this);
+
 		if (process.env.NODE_ENV !== 'test') {
 			this.intervalId = setInterval(() => {
 				this.fetch(true).then(meta => {
+					// fetch内でもセットしてるけど仕様変更の可能性もあるため一応
 					this.cache = meta;
 				});
-			}, 1000 * 10);
+			}, 1000 * 60 * 5);
 		}
+
+		this.redisSubscriber.on('message', this.onMessage);
 	}
 
-	async fetch(noCache = false): Promise<Meta> {
+	public async fetch(noCache = false): Promise<Meta> {
 		if (!noCache && this.cache) return this.cache;
 	
 		return await this.db.transaction(async transactionalEntityManager => {
@@ -56,8 +64,25 @@ export class MetaService implements OnApplicationShutdown {
 			}
 		});
 	}
-	
+
+	private async onMessage(_, data) {
+		const obj = JSON.parse(data);
+
+		if (obj.channel === 'internal') {
+			const { type, body } = obj.message;
+			switch (type) {
+				case 'metaUpdated': {
+					this.cache = body;
+					break;
+				}
+				default:
+					break;
+			}
+		}
+	}
+
 	public onApplicationShutdown(signal?: string | undefined) {
 		clearInterval(this.intervalId);
+		this.redisSubscriber.off('message', this.onMessage);
 	}
 }

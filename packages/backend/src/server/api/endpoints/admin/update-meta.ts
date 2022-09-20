@@ -5,6 +5,7 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -115,6 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -436,7 +438,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
 			}
 
-			await this.db.transaction(async transactionalEntityManager => {
+			const updated = await this.db.transaction(async transactionalEntityManager => {
 				const metas = await transactionalEntityManager.find(Meta, {
 					order: {
 						id: 'DESC',
@@ -447,10 +449,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				if (meta) {
 					await transactionalEntityManager.update(Meta, meta.id, set);
+
+					const metas = await transactionalEntityManager.find(Meta, {
+						order: {
+							id: 'DESC',
+						},
+					});
+
+					return metas[0];
 				} else {
-					await transactionalEntityManager.save(Meta, set);
+					return await transactionalEntityManager.save(Meta, set);
 				}
 			});
+
+			this.globalEventService.publishInternalEvent('metaUpdated', updated);
 
 			this.moderationLogService.insertModerationLog(me, 'updateMeta');
 		});
