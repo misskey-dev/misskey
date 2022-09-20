@@ -2,6 +2,7 @@
 _lang_: "Deutsch"
 headlineMisskey: "Ein durch Notizen verbundenes Netzwerk"
 introMisskey: "Willkommen! Misskey ist eine dezentralisierte Open-Source Microblogging-Platform.\nVerfasse „Notizen“ um mitzuteilen, was gerade passiert oder um Ereignisse mit anderen zu teilen. 📡\nMit „Reaktionen“ kannst du außerdem schnell deine Gefühle über Notizen anderer Benutzer zum Ausdruck bringen. 👍\nEine neue Welt wartet auf dich! 🚀"
+poweredByMisskeyDescription: "{name} ist einer der durch die Open-Source-Plattform <b>Misskey</b> betriebenen Dienste (meist als \"Misskey-Instanz\" bezeichnet)."
 monthAndDay: "{day}.{month}."
 search: "Suchen"
 notifications: "Benachrichtigungen"
