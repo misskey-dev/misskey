@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, PropType, TransitionGroup } from 'vue';
-import MkAd from '@/components/global/ad.vue';
+import MkAd from '@/components/global/MkAd.vue';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
