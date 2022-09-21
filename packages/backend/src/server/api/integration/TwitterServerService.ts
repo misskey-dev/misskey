@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import Router from '@koa/router';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
@@ -22,7 +22,7 @@ export class TwitterServerService {
 		private config: Config,
 
 		@Inject(DI.redis)
-		private redisClient: Redis,
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
