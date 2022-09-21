@@ -3,9 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/index.js';
 import { LoggerService } from '@/core/LoggerService.js';
 
 @Injectable()

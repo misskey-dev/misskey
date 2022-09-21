@@ -4,7 +4,7 @@ import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Notes, Polls, PollVotes, DriveFiles, Channels, Followings, Users, NoteReactions } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UsersRepository, NotesRepository } from '@/models/index.js';
+import type { UsersRepository, NotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { CacheableLocalUser, User } from '@/models/entities/User.js';
 import { isActor, isPost, getApId } from '@/core/remote/activitypub/type.js';

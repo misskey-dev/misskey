@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import summaly from 'summaly';
 import { DI } from '@/di-symbols.js';
-import { UsersRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';

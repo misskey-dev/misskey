@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 import tinycolor from 'tinycolor2';
 import type { Instance } from '@/models/entities/Instance.js';
-import { InstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/index.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';

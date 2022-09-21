@@ -1,9 +1,7 @@
 import Redis from 'ioredis';
-import { loadConfig } from '@/config.js';
+import { Config } from '@/config.js';
 
-export function createRedisConnection(): Redis.Redis {
-	const config = loadConfig();
-
+export function createRedisConnection(config: Config): Redis.Redis {
 	return new Redis({
 		port: config.redis.port,
 		host: config.redis.host,

@@ -2,7 +2,7 @@ import { URL } from 'node:url';
 import { toASCII } from 'punycode';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class UtilityService {

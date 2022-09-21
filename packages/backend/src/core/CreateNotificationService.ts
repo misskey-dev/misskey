@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MutingsRepository, NotificationsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { MutingsRepository, NotificationsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';

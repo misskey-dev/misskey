@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { AttestationChallengesRepository } from '@/models/index.js';
+import type { AttestationChallengesRepository } from '@/models/index.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const interval = 30 * 60 * 1000;

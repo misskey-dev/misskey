@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
+import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
 import type { NotesRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';

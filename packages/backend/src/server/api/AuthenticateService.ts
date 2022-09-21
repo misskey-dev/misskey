@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
 import type { CacheableLocalUser, ILocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { Cache } from '@/misc/cache.js';

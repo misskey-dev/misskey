@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
+import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../common/GetterService.js';
 

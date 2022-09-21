@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';

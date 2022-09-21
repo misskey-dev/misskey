@@ -4,8 +4,8 @@ import Router from '@koa/router';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import autwh from 'autwh';
-import { Config } from '@/config.js';
-import { UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
+import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -22,7 +22,7 @@ export class TwitterServerService {
 		private config: Config,
 
 		@Inject(DI.redis)
-		private redisClient: Redis,
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,

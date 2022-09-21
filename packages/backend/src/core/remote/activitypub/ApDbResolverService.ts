@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
-import { MessagingMessagesRepository, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { MessagingMessagesRepository, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type { CacheableRemoteUser, CacheableUser } from '@/models/entities/User.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserPublickey } from '@/models/entities/UserPublickey.js';

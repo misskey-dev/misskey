@@ -1,13 +1,13 @@
 import { IsNull, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
+import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models';
+import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models';
 
 export const meta = {
 	tags: ['meta'],
