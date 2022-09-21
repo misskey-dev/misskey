@@ -78,7 +78,6 @@
 		"koa-send": "5.0.1",
 		"koa-slow": "2.1.0",
 		"koa-views": "7.0.2",
-		"long": "^5.2.0",
 		"mfm-js": "0.23.0",
 		"mime-types": "2.1.35",
 		"misskey-js": "0.0.14",

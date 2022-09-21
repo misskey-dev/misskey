@@ -730,13 +730,13 @@ __metadata:
   linkType: hard
 
 "@humanwhocodes/config-array@npm:^0.10.4":
-  version: 0.10.4
-  resolution: "@humanwhocodes/config-array@npm:0.10.4"
+  version: 0.10.5
+  resolution: "@humanwhocodes/config-array@npm:0.10.5"
   dependencies:
     "@humanwhocodes/object-schema": ^1.2.1
     debug: ^4.1.1
     minimatch: ^3.0.4
-  checksum: d480e5d57e6d787565b6cff78e27c3d1b380692d4ffb0ada7d7f5957a56c9032f034da05a3e443065dbd0671ebf4d859036ced34e96b325bbc1badbae3c05300
+  checksum: af4fa2633c57414be22ddba0a072cc611ef9a07104542fa24bde918a0153b89b6e08ca6a20ccc9079de6079e219e2406e38414d1b662db8bb59a3ba9d6eee6e3
   languageName: node
   linkType: hard
 
@@ -1679,7 +1679,6 @@ __metadata:
     argparse: ^1.0.10
     chalk: ^4.1.0
     core-js: 3
-    long: ^5.2.0
     regenerator-runtime: ^0.13.5
     yargs: ^16.0.3
   bin:
@@ -3822,7 +3821,6 @@ __metadata:
     koa-send: 5.0.1
     koa-slow: 2.1.0
     koa-views: 7.0.2
-    long: ^5.2.0
     mfm-js: 0.23.0
     mime-types: 2.1.35
     misskey-js: 0.0.14
@@ -4433,16 +4431,16 @@ __metadata:
   linkType: hard
 
 "caniuse-db@npm:^1.0.30000529, caniuse-db@npm:^1.0.30000634, caniuse-db@npm:^1.0.30000639":
-  version: 1.0.30001406
-  resolution: "caniuse-db@npm:1.0.30001406"
-  checksum: 229e870d6350548aa16f1a400f8c12a864158ee61f285645df78114d562cf0f5bd5c9ac7e82ec157f3c5c32da1c1eca2c2b62d67913072127efaa7cb862aa453
+  version: 1.0.30001409
+  resolution: "caniuse-db@npm:1.0.30001409"
+  checksum: d63afb36d91f514a6cb5f2b28849cbfd72a586d36bad46d362479bc54659b7696ae3faf78e9e193f2a327c2add31e6abe591fb688ec64d2c0d645f7e46ee86df
   languageName: node
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001400":
-  version: 1.0.30001406
-  resolution: "caniuse-lite@npm:1.0.30001406"
-  checksum: 1ae9701f0c58462f93add1236ed88f51ce3d7939f57afcde720763d1b18f78aa9afb0bfda620d47a32f5e14661e506037835e441ca4437cb821f4bba7bd7bcf8
+  version: 1.0.30001409
+  resolution: "caniuse-lite@npm:1.0.30001409"
+  checksum: d8581693491295ad8716db7ad6dccf74de970fc3ef4723b38bbc03b972862d363a9710c2a7582abcb741e1619164ddceca1df4dcf3d53d550e74829a9cb5ca82
   languageName: node
   linkType: hard
 
@@ -6178,9 +6176,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.2.7, electron-to-chromium@npm:^1.4.251":
-  version: 1.4.255
-  resolution: "electron-to-chromium@npm:1.4.255"
-  checksum: 9fd4e0b4a05b072e211b5a1ad2e20b099d7cd54a47b6cbf700dc9ef2020291b5b2d179af0dd0fc71be74b3c765a71ad14f7ff20afb637c0b58e7abc26ff3b68e
+  version: 1.4.256
+  resolution: "electron-to-chromium@npm:1.4.256"
+  checksum: 878ca8e33a05165808a662b52ac332a42a5fcf842540de38c4cdde462e4c2cb2f2c10c4864cd44c486f8470f88818f42d275774865666aad424e1e4f500d91e8
   languageName: node
   linkType: hard
 
@@ -7471,11 +7469,11 @@ __metadata:
   linkType: hard
 
 "fb-watchman@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "fb-watchman@npm:2.0.1"
+  version: 2.0.2
+  resolution: "fb-watchman@npm:2.0.2"
   dependencies:
     bser: 2.1.1
-  checksum: 8510230778ab3a51c27dffb1b76ef2c24fab672a42742d3c0a45c2e9d1e5f20210b1fbca33486088da4a9a3958bde96b5aec0a63aac9894b4e9df65c88b2cbd6
+  checksum: b15a124cef28916fe07b400eb87cbc73ca082c142abf7ca8e8de6af43eca79ca7bd13eb4d4d48240b3bd3136eaac40d16e42d6edf87a8e5d1dd8070626860c78
   languageName: node
   linkType: hard
 
@@ -11174,17 +11172,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"long@npm:*":
+  version: 5.2.0
+  resolution: "long@npm:5.2.0"
+  checksum: 37aa4e67b9c3eebc6d9d675adcc9d06f06059ca268922a71273de389746bf07f0ff282f9e604d17fdf84c4149099b44e936ea2b621a6c4759a216621afa97efd
+  languageName: node
+  linkType: hard
+
 "long@npm:4.0.0":
   version: 4.0.0
   resolution: "long@npm:4.0.0"
   checksum: 16afbe8f749c7c849db1f4de4e2e6a31ac6e617cead3bdc4f9605cb703cd20e1e9fc1a7baba674ffcca57d660a6e5b53a9e236d7b25a295d3855cca79cc06744
-  languageName: node
-  linkType: hard
-
-"long@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "long@npm:5.2.0"
-  checksum: 37aa4e67b9c3eebc6d9d675adcc9d06f06059ca268922a71273de389746bf07f0ff282f9e604d17fdf84c4149099b44e936ea2b621a6c4759a216621afa97efd
   languageName: node
   linkType: hard
 
@@ -11704,7 +11702,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msgpackr-extract@npm:^2.0.2":
+"msgpackr-extract@npm:^2.1.2":
   version: 2.1.2
   resolution: "msgpackr-extract@npm:2.1.2"
   dependencies:
@@ -11736,14 +11734,14 @@ __metadata:
   linkType: hard
 
 "msgpackr@npm:^1.5.2":
-  version: 1.6.3
-  resolution: "msgpackr@npm:1.6.3"
+  version: 1.7.0
+  resolution: "msgpackr@npm:1.7.0"
   dependencies:
-    msgpackr-extract: ^2.0.2
+    msgpackr-extract: ^2.1.2
   dependenciesMeta:
     msgpackr-extract:
       optional: true
-  checksum: e784d25f68e6e323c64a2677032c3c303ad78acc618b6d25511dc7ece130e43d825143ed53d509d75ed12bdd7e3c4d33c888545378561239cc464796e882cd45
+  checksum: f83c96dd4ec781fb7aa687ad3050dbfa82ad5b792f93a5f59224468d09130cf6cef2b0466f25449ccad3aa070d5a7df88bc3cd781f0d8dfe6446c6798de1d081
   languageName: node
   linkType: hard
 
