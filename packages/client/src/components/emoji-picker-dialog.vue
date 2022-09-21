@@ -15,12 +15,13 @@
 	<MkEmojiPicker
 		ref="picker"
 		class="ryghynhb _popup _shadow"
-		:class="{ drawer: type === 'drawer' }"
+		:class="{ drawer: type === 'drawer', hasPadding: !isFocused }"
 		:show-pinned="showPinned"
 		:as-reaction-picker="asReactionPicker"
 		:as-drawer="type === 'drawer'"
 		:max-height="maxHeight"
 		@chosen="chosen"
+		@focused="focused"
 	/>
 </MkModal>
 </template>
@@ -50,6 +51,7 @@ const emit = defineEmits<{
 
 const modal = ref<InstanceType<typeof MkModal>>();
 const picker = ref<InstanceType<typeof MkEmojiPicker>>();
+const isFocused = ref(false);
 
 function chosen(emoji: any) {
 	emit('done', emoji);
@@ -60,6 +62,10 @@ function opening() {
 	picker.value?.reset();
 	picker.value?.focus();
 }
+
+function focused(v: boolean): void {
+	isFocused.value = v;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -68,6 +74,10 @@ function opening() {
 		border-radius: 24px;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
+
+		&.hasPadding {
+			padding-bottom: env(safe-area-inset-bottom);
+		}
 	}
 }
 </style>

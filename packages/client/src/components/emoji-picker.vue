@@ -1,6 +1,6 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @paste.stop="paste" @keyup.enter="done()">
+	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @paste.stop="paste" @keyup.enter="done()" @focus="isFocused = true" @blur="isFocused = false">
 	<div ref="emojis" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
@@ -102,6 +102,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
+	(ev: 'focused', v: boolean): void;
 }>();
 
 const search = ref<HTMLInputElement>();
@@ -125,6 +126,11 @@ const q = ref<string | null>(null);
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
+const isFocused = ref(false);
+
+watch([isFocused], () => {
+	emit('focused', isFocused.value);
+});
 
 watch(q, () => {
 	if (emojis.value) emojis.value.scrollTop = 0;
@@ -432,10 +438,6 @@ defineExpose({
 					}
 				}
 			}
-		}
-
-		> .search:not(:focus):not(.filled) {
-			margin-bottom: env(safe-area-inset-bottom);
 		}
 	}
 
