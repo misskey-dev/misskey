@@ -70,7 +70,7 @@ import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 
-import { loadConfig } from '@/config.js';
+import { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import { envOption } from './env.js';
 
@@ -179,9 +179,7 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
-const config = loadConfig();
-
-export function createPostgreDataSource() {
+export function createPostgreDataSource(config: Config) {
 	return new DataSource({
 		type: 'postgres',
 		host: config.db.host,
