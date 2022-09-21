@@ -22,7 +22,7 @@ export class TwitterServerService {
 		private config: Config,
 
 		@Inject(DI.redis)
-		private redisClient: Redis,
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
