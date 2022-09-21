@@ -141,7 +141,4 @@ defineExpose({
 	min-height: 100%;
 	background: var(--bg);
 }
-.yrolvcoq:has(.fill) {
-	height: 100%;
-}
 </style>
