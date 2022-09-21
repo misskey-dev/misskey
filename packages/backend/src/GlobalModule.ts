@@ -17,27 +17,30 @@ const $config: Provider = {
 
 const $db: Provider = {
 	provide: DI.db,
-	useFactory: async () => {
-		const db = createPostgreDataSource();
+	useFactory: async (config) => {
+		const db = createPostgreDataSource(config);
 		return await db.initialize();
 	},
+	inject: [DI.config],
 };
 
 const $redis: Provider = {
 	provide: DI.redis,
-	useFactory: () => {
-		const redisClient = createRedisConnection();
+	useFactory: (config) => {
+		const redisClient = createRedisConnection(config);
 		return redisClient;
 	},
+	inject: [DI.config],
 };
 
 const $redisSubscriber: Provider = {
 	provide: DI.redisSubscriber,
-	useFactory: () => {
-		const redisSubscriber = createRedisConnection();
+	useFactory: (config) => {
+		const redisSubscriber = createRedisConnection(config);
 		redisSubscriber.subscribe(config.host);
 		return redisSubscriber;
 	},
+	inject: [DI.config],
 };
 
 @Global()

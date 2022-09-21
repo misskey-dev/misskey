@@ -61,14 +61,6 @@ module.exports = {
 
 	// A set of global variables that need to be available in all test environments
 	globals: {
-		"ts-jest": {
-			"useESM": true,
-			tsconfig: "test/tsconfig.json",
-			isolatedModules: true,
-			diagnostics: {
-        exclude: ['**'],
-      },
-		}
 	},
 
 	// The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
@@ -105,7 +97,7 @@ module.exports = {
 	// notifyMode: "failure-change",
 
 	// A preset that is used as a base for Jest's configuration
-	preset: "ts-jest/presets/js-with-ts-esm",
+	//preset: "ts-jest/presets/js-with-ts-esm",
 
 	// Run tests from one or more projects
 	// projects: undefined,
@@ -185,12 +177,7 @@ module.exports = {
 
 	// A map from regular expressions to paths to transformers
 	transform: {
-		"<regex_match_files>": [
-			"ts-jest",
-			{
-				"useESM": true
-			}
-		]
+		"^.+\\.(t|j)sx?$": ["@swc/jest"],
 	},
 
 	// An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
