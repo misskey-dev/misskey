@@ -53,7 +53,7 @@ export class DbQueueProcessorsService {
 			importBlocking: (job, done) => this.importBlockingProcessorService.process(job, done),
 			importUserLists: (job, done) => this.importUserListsProcessorService.process(job, done),
 			importCustomEmojis: (job, done) => this.importCustomEmojisProcessorService.process(job, done),
-			deleteAccount: (job, done) => this.deleteAccountProcessorService.process(job, done),
+			deleteAccount: (job) => this.deleteAccountProcessorService.process(job),
 		} as Record<string, Bull.ProcessCallbackFunction<DbJobData | Bull.ProcessPromiseFunction<DbJobData>>>;
 		
 		for (const [k, v] of Object.entries(jobs)) {

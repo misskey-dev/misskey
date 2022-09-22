@@ -21,6 +21,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { MessagingService } from '@/core/MessagingService.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, MessagingMessagesRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/index.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';

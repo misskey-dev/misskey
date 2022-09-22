@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { EntityRepository, Repository, In, Not } from 'typeorm';
+import { In, Not } from 'typeorm';
 import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
@@ -12,6 +12,7 @@ import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository } from '@/models/index.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';

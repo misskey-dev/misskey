@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, MoreThan, Not } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, MutingsRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository, MutingsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';

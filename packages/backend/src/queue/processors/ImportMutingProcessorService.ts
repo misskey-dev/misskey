@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { UsersRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { ResolveUserService } from '@/core/remote/ResolveUserService.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import type { UserFollowingService } from '@/core/UserFollowingService.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
