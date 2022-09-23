@@ -534,7 +534,6 @@ export class NoteCreateService {
 			});
 
 			const nm = new NotificationManager(this.mutingsRepository, this.createNotificationService, user, note);
-			const nmRelatedPromises = [];
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 
@@ -583,9 +582,7 @@ export class NoteCreateService {
 				}
 			}
 
-			Promise.all(nmRelatedPromises).then(() => {
-				nm.deliver();
-			});
+			nm.deliver();
 
 			//#region AP deliver
 			if (this.userEntityService.isLocalUser(user)) {

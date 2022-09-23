@@ -13,20 +13,21 @@ import { HttpRequestService } from './HttpRequestService.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
-	openRegistrations?: any;
+	openRegistrations?: unknown;
 	software?: {
-		name?: any;
-		version?: any;
+		name?: unknown;
+		version?: unknown;
 	};
 	metadata?: {
-		name?: any;
-		nodeName?: any;
-		nodeDescription?: any;
-		description?: any;
+		name?: unknown;
+		nodeName?: unknown;
+		nodeDescription?: unknown;
+		description?: unknown;
 		maintainer?: {
-			name?: any;
-			email?: any;
+			name?: unknown;
+			email?: unknown;
 		};
+		themeColor?: unknown;
 	};
 };
 
@@ -81,7 +82,7 @@ export class FetchInstanceMetadataService {
 			} as Record<string, any>;
 	
 			if (info) {
-				updates.softwareName = info.software?.name.toLowerCase();
+				updates.softwareName = typeof info.software?.name === 'string' ? info.software.name.toLowerCase() : '?';
 				updates.softwareVersion = info.software?.version;
 				updates.openRegistrations = info.openRegistrations;
 				updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name ?? null) : null : null;
@@ -238,8 +239,10 @@ export class FetchInstanceMetadataService {
 
 	private async getSiteName(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
-			if (info.metadata.nodeName || info.metadata.name) {
-				return info.metadata.nodeName ?? info.metadata.name;
+			if (typeof info.metadata.nodeName === 'string') {
+				return info.metadata.nodeName;
+			} else if (typeof info.metadata.name === 'string') {
+				return info.metadata.name;
 			}
 		}
 	
@@ -260,8 +263,10 @@ export class FetchInstanceMetadataService {
 
 	private async getDescription(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
-			if (info.metadata.nodeDescription || info.metadata.description) {
-				return info.metadata.nodeDescription ?? info.metadata.description;
+			if (typeof info.metadata.nodeDescription === 'string') {
+				return info.metadata.nodeDescription;
+			} else if (typeof info.metadata.description === 'string') {
+				return info.metadata.description;
 			}
 		}
 	

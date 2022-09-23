@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsedUsernamesRepository } from '@/models/index.js';
+import type { UsedUsernamesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { User } from '@/models/entities/User.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
