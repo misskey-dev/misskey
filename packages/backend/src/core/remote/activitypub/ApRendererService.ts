@@ -243,7 +243,7 @@ export class ApRendererService {
 		};
 	}
 
-	public async renderLike(noteReaction: NoteReaction, note: Note) {
+	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }) {
 		const reaction = noteReaction.reaction;
 
 		const object = {

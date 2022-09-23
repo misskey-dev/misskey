@@ -18,7 +18,7 @@ export default class TestIntersectionChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		private appLockService: AppLockService,
-		private logger: Logger,
+		logger: Logger,
 	) {
 		super(db, (k) => appLockService.getChartInsertLock(k), logger, name, schema);
 	}

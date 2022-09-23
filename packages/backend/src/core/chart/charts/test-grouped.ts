@@ -20,7 +20,7 @@ export default class TestGroupedChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		private appLockService: AppLockService,
-		private logger: Logger,
+		logger: Logger,
 	) {
 		super(db, (k) => appLockService.getChartInsertLock(k), logger, name, schema, true);
 	}
