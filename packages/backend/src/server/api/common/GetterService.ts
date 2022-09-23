@@ -4,6 +4,7 @@ import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 @Injectable()
 export class GetterService {
@@ -13,6 +14,8 @@ export class GetterService {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		private userEntityService: UserEntityService,
 	) {
 	}
 

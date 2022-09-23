@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { UsersRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';

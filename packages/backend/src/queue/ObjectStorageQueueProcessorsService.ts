@@ -19,8 +19,8 @@ export class ObjectStorageQueueProcessorsService {
 
 	public start(q: Bull.Queue) {
 		const jobs = {
-			deleteFile: (job, done) => this.deleteFileProcessorService.process(job, done),
-			cleanRemoteFiles: (job, done) => this.cleanRemoteFilesProcessorService.process(job, done),
+			deleteFile: (job) => this.deleteFileProcessorService.process(job),
+			cleanRemoteFiles: (job) => this.cleanRemoteFilesProcessorService.process(job),
 		} as Record<string, Bull.ProcessCallbackFunction<ObjectStorageJobData | Bull.ProcessPromiseFunction<ObjectStorageJobData>>>;
 		
 		for (const [k, v] of Object.entries(jobs)) {

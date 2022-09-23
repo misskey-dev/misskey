@@ -7,6 +7,8 @@ import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { DI } from '@/di-symbols.js';
+import logger from '@/logger.js';
+import type { UsersRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { WebhookService } from './WebhookService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';

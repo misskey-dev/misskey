@@ -3,7 +3,6 @@ import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { Notes, Polls, PollVotes, DriveFiles, Channels, Followings, Users, NoteReactions } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { nyaize } from '@/misc/nyaize.js';
@@ -11,6 +10,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -267,7 +267,7 @@ export class NoteEntityService implements OnModuleInit {
 		let text = note.text;
 
 		if (note.name && (note.url ?? note.uri)) {
-			text = `【${note.name}】\n${(note.text || '').trim()}\n\n${note.url ?? note.uri}`;
+			text = `【${note.name}】\n${(note.text ?? '').trim()}\n\n${note.url ?? note.uri}`;
 		}
 
 		const channel = note.channelId

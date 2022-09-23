@@ -24,7 +24,7 @@ export class QueueService {
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {}
 
-	public deliver(user: ThinUser, content: IActivity, to: string | null) {
+	public deliver(user: ThinUser, content: IActivity | null, to: string | null) {
 		if (content == null) return null;
 		if (to == null) return null;
 

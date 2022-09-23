@@ -81,12 +81,12 @@ class LdSignature {
 		delete transformedOptions['id'];
 		delete transformedOptions['signatureValue'];
 		const canonizedOptions = await this.normalize(transformedOptions);
-		const optionsHash = this.sha256(canonizedOptions);
+		const optionsHash = this.sha256(canonizedOptions.toString());
 		const transformedData = { ...data };
 		delete transformedData['signature'];
 		const cannonidedData = await this.normalize(transformedData);
 		if (this.debug) console.debug(`cannonidedData: ${cannonidedData}`);
-		const documentHash = this.sha256(cannonidedData);
+		const documentHash = this.sha256(cannonidedData.toString());
 		const verifyData = `${optionsHash}${documentHash}`;
 		return verifyData;
 	}

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository, BlockingsRepository } from '@/models/index.js';
+import type { NotesRepository, UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import type { CacheableUser } from '@/models/entities/User.js';
