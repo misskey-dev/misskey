@@ -3,7 +3,7 @@ import type { UserGroupsRepository, UserGroupJoiningsRepository, UserGroupInvita
 import { IdService } from '@/core/IdService.js';
 import type { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
