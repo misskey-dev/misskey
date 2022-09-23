@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const channel = await Channels.findOneBy({
+			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
 			});
 

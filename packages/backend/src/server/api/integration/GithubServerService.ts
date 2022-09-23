@@ -157,6 +157,7 @@ export class GithubServerService {
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
 					this.redisClient.get(sessid, async (_, state) => {
+						if (state == null) throw new Error('empty state');
 						res(JSON.parse(state));
 					});
 				});
@@ -167,17 +168,17 @@ export class GithubServerService {
 				}
 
 				const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2!.getOAuthAccessToken(code, {
-				redirect_uri,
-			}, (err, accessToken, refresh, result) => {
-				if (err) {
-					rej(err);
-				} else if (result.error) {
-					rej(result.error);
-				} else {
-					res({ accessToken });
-				}
-			}));
+					oauth2!.getOAuthAccessToken(code, {
+						redirect_uri,
+					}, (err, accessToken, refresh, result) => {
+						if (err) {
+							rej(err);
+						} else if (result.error) {
+							rej(result.error);
+						} else {
+							res({ accessToken });
+						}
+					}));
 
 				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
 					'Authorization': `bearer ${accessToken}`,
@@ -208,6 +209,7 @@ export class GithubServerService {
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
 					this.redisClient.get(userToken, async (_, state) => {
+						if (state == null) throw new Error('empty state');
 						res(JSON.parse(state));
 					});
 				});
@@ -218,18 +220,18 @@ export class GithubServerService {
 				}
 
 				const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2!.getOAuthAccessToken(
-				code,
-				{ redirect_uri },
-				(err, accessToken, refresh, result) => {
-					if (err) {
-						rej(err);
-					} else if (result.error) {
-						rej(result.error);
-					} else {
-						res({ accessToken });
-					}
-				}));
+					oauth2!.getOAuthAccessToken(
+						code,
+						{ redirect_uri },
+						(err, accessToken, refresh, result) => {
+							if (err) {
+								rej(err);
+							} else if (result.error) {
+								rej(result.error);
+							} else {
+								res({ accessToken });
+							}
+						}));
 
 				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
 					'Authorization': `bearer ${accessToken}`,

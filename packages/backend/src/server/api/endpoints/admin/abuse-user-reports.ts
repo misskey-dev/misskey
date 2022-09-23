@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AbuseUserReportsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import { AbuseUserReportEntityService } from '@/core/entities/AbuseUserReportEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -93,6 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
+		private abuseUserReportEntityService: AbuseUserReportEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

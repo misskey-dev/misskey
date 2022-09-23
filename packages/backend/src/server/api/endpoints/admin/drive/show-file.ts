@@ -192,12 +192,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
+			const res = file as Partial<typeof file>;
+
 			if (!me.isAdmin) {
-				delete file.requestIp;
-				delete file.requestHeaders;
+				delete res.requestIp;
+				delete res.requestHeaders;
 			}
 
-			return file;
+			return res;
 		});
 	}
 }
