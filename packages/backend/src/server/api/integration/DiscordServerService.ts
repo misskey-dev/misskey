@@ -80,11 +80,11 @@ export class DiscordServerService {
 
 			if (meta.enableDiscordIntegration) {
 				return new OAuth2(
-			meta.discordClientId!,
-			meta.discordClientSecret!,
-			'https://discord.com/',
-			'api/oauth2/authorize',
-			'api/oauth2/token');
+					meta.discordClientId!,
+					meta.discordClientSecret!,
+					'https://discord.com/',
+					'api/oauth2/authorize',
+					'api/oauth2/token');
 			} else {
 				return null;
 			}

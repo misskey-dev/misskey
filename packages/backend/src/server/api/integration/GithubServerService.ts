@@ -167,7 +167,7 @@ export class GithubServerService {
 					return;
 				}
 
-				const { accessToken } = await new Promise<any>((res, rej) =>
+				const { accessToken } = await new Promise<{ accessToken: string }>((res, rej) =>
 					oauth2!.getOAuthAccessToken(code, {
 						redirect_uri,
 					}, (err, accessToken, refresh, result) => {
@@ -219,7 +219,7 @@ export class GithubServerService {
 					return;
 				}
 
-				const { accessToken } = await new Promise<any>((res, rej) =>
+				const { accessToken } = await new Promise<{ accessToken: string }>((res, rej) =>
 					oauth2!.getOAuthAccessToken(
 						code,
 						{ redirect_uri },
