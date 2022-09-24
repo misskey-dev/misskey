@@ -32,6 +32,7 @@
 		"@sinonjs/fake-timers": "9.1.2",
 		"@syuilo/aiscript": "0.11.1",
 		"@types/pg": "8.6.5",
+		"@types/unzipper": "0.10.5",
 		"ajv": "8.11.0",
 		"archiver": "5.3.1",
 		"autobind-decorator": "2.4.0",

@@ -159,7 +159,7 @@ export class EmailService {
 			validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
 			validateDisposable: true, // 捨てアドかどうかチェック
 			validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
-		}) : { valid: true };
+		}) : { valid: true, reason: null };
 	
 		const available = exist === 0 && validated.valid;
 	
