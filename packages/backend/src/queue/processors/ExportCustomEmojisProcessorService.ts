@@ -80,7 +80,7 @@ export class ExportCustomEmojisProcessorService {
 		});
 
 		for (const emoji of customEmojis) {
-			const ext = mime.extension(emoji.type);
+			const ext = mime.extension(emoji.type ?? 'image/png');
 			const fileName = emoji.name + (ext ? '.' + ext : '');
 			const emojiPath = path + '/' + fileName;
 			fs.writeFileSync(emojiPath, '', 'binary');
