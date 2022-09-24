@@ -39,25 +39,19 @@ export class DbQueueProcessorsService {
 	) {
 	}
 
-	public start(dbQueue: Bull.Queue<DbJobData>) {
-		const jobs = {
-			deleteDriveFiles: (job, done) => this.deleteDriveFilesProcessorService.process(job, done),
-			exportCustomEmojis: (job, done) => this.exportCustomEmojisProcessorService.process(job, done),
-			exportNotes: (job, done) => this.exportNotesProcessorService.process(job, done),
-			exportFollowing: (job, done) => this.exportFollowingProcessorService.process(job, done),
-			exportMuting: (job, done) => this.exportMutingProcessorService.process(job, done),
-			exportBlocking: (job, done) => this.exportBlockingProcessorService.process(job, done),
-			exportUserLists: (job, done) => this.exportUserListsProcessorService.process(job, done),
-			importFollowing: (job, done) => this.importFollowingProcessorService.process(job, done),
-			importMuting: (job, done) => this.importMutingProcessorService.process(job, done),
-			importBlocking: (job, done) => this.importBlockingProcessorService.process(job, done),
-			importUserLists: (job, done) => this.importUserListsProcessorService.process(job, done),
-			importCustomEmojis: (job, done) => this.importCustomEmojisProcessorService.process(job, done),
-			deleteAccount: (job) => this.deleteAccountProcessorService.process(job),
-		} as Record<string, Bull.ProcessCallbackFunction<DbJobData | Bull.ProcessPromiseFunction<DbJobData>>>;
-		
-		for (const [k, v] of Object.entries(jobs)) {
-			dbQueue.process(k, v);
-		}
+	public start(q: Bull.Queue): void {
+		q.process('deleteDriveFiles', (job, done) => this.deleteDriveFilesProcessorService.process(job, done));
+		q.process('exportCustomEmojis', (job, done) => this.exportCustomEmojisProcessorService.process(job, done));
+		q.process('exportNotes', (job, done) => this.exportNotesProcessorService.process(job, done));
+		q.process('exportFollowing', (job, done) => this.exportFollowingProcessorService.process(job, done));
+		q.process('exportMuting', (job, done) => this.exportMutingProcessorService.process(job, done));
+		q.process('exportBlocking', (job, done) => this.exportBlockingProcessorService.process(job, done));
+		q.process('exportUserLists', (job, done) => this.exportUserListsProcessorService.process(job, done));
+		q.process('importFollowing', (job, done) => this.importFollowingProcessorService.process(job, done));
+		q.process('importMuting', (job, done) => this.importMutingProcessorService.process(job, done));
+		q.process('importBlocking', (job, done) => this.importBlockingProcessorService.process(job, done));
+		q.process('importUserLists', (job, done) => this.importUserListsProcessorService.process(job, done));
+		q.process('importCustomEmojis', (job, done) => this.importCustomEmojisProcessorService.process(job, done));
+		q.process('deleteAccount', (job) => this.deleteAccountProcessorService.process(job));
 	}
 }
