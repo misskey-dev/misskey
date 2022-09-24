@@ -16,10 +16,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			isWatching: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
 			isMutedThread: {
 				type: 'boolean',
 				optional: false, nullable: false,
