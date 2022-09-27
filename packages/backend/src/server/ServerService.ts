@@ -67,9 +67,9 @@ export class ServerService {
 			});
 		}
 
-		fastify.register(this.apiServerService.createServer);
-		fastify.register(this.fileServerService.createServer);
-		fastify.register(this.mediaProxyServerService.createServer);
+		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
+		fastify.register(this.fileServerService.createServer, { prefix: '/files' });
+		fastify.register(this.mediaProxyServerService.createServer, { prefix: '/proxy' });
 		fastify.register(this.activityPubServerService.createRouter);
 		fastify.register(this.nodeinfoServerService.createRouter);
 		fastify.register(this.wellKnownServerService.createRouter);

@@ -6,7 +6,7 @@ import ms from 'ms';
 import sharp from 'sharp';
 import pug from 'pug';
 import { In, IsNull } from 'typeorm';
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import pointOfView from 'point-of-view';
 import type { Config } from '@/config.js';
@@ -81,7 +81,7 @@ export class ClientServerService {
 	) {
 	}
 
-	private async manifestHandler(ctx: Koa.Context) {
+	private async manifestHandler(reply: FastifyReply) {
 		// TODO
 		//const res = structuredClone(manifest);
 		const res = JSON.parse(JSON.stringify(manifest));
@@ -93,7 +93,7 @@ export class ClientServerService {
 		if (instance.themeColor) res.theme_color = instance.themeColor;
 
 		reply.header('Cache-Control', 'max-age=300');
-		ctx.body = res;
+		return reply.send(res);
 	}
 
 	public createServer(fastify: FastifyInstance) {
@@ -152,8 +152,6 @@ export class ClientServerService {
 			},
 		});
 
-		app.use(favicon(`${_dirname}/../../../assets/favicon.ico`));
-
 		fastify.addHook('onRequest', (request, reply) => {
 			// クリックジャッキング防止のためiFrameの中に入れられないようにする
 			reply.header('X-Frame-Options', 'DENY');
@@ -187,7 +185,10 @@ export class ClientServerService {
 			decorateReply: false,
 		});
 
-		// Apple touch icon
+		fastify.get('/favicon.ico', async (request, reply) => {
+			reply.sendFile('/favicon.ico', staticAssets);
+		});
+
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
 			reply.sendFile('/apple-touch-icon.png', staticAssets);
 		});
@@ -258,13 +259,26 @@ export class ClientServerService {
 		});
 
 		// Manifest
-		fastify.get('/manifest.json', ctx => this.manifestHandler(ctx));
+		fastify.get('/manifest.json', async (request, reply) => await this.manifestHandler(reply));
 
 		fastify.get('/robots.txt', async (request, reply) => {
 			await reply.sendFile('/robots.txt', staticAssets);
 		});
 
 		//#endregion
+
+		const renderBase = async (reply: FastifyReply) => {
+			const meta = await this.metaService.fetch();
+			reply.header('Cache-Control', 'public, max-age=15');
+			return await reply.view('base', {
+				img: meta.bannerUrl,
+				title: meta.name ?? 'Misskey',
+				instanceName: meta.name ?? 'Misskey',
+				desc: meta.description,
+				icon: meta.iconUrl,
+				themeColor: meta.themeColor,
+			});
+		};
 
 		// URL preview endpoint
 		fastify.get('/url', ctx => this.urlPreviewService.handle(ctx));
@@ -318,7 +332,7 @@ export class ClientServerService {
 
 		//#region SSR (for crawlers)
 		// User
-		fastify.get(['/@:user', '/@:user/:sub'], async (request, reply) => {
+		fastify.get<{ Params: { user: string; sub?: string; } }>('/@:user/:sub?', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: username.toLowerCase(),
@@ -347,7 +361,7 @@ export class ClientServerService {
 			} else {
 				// リモートユーザーなので
 				// モデレータがAPI経由で参照可能にするために404にはしない
-				await next();
+				return await renderBase(reply);
 			}
 		});
 
@@ -388,9 +402,9 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
+			} else {
+				return await renderBase(reply);
 			}
-
-			await next();
 		});
 
 		// Page
@@ -425,9 +439,9 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
+			} else {
+				return await renderBase(reply);
 			}
-
-			await next();
 		});
 
 		// Clip
@@ -450,9 +464,9 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
+			} else {
+				return await renderBase(reply);
 			}
-
-			await next();
 		});
 
 		// Gallery post
@@ -472,9 +486,9 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
+			} else {
+				return await renderBase(reply);
 			}
-
-			await next();
 		});
 
 		// Channel
@@ -493,9 +507,9 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
+			} else {
+				return await renderBase(reply);
 			}
-
-			await next();
 		});
 		//#endregion
 
@@ -540,16 +554,7 @@ export class ClientServerService {
 
 		// Render base html for all requests
 		fastify.get('*', async (request, reply) => {
-			const meta = await this.metaService.fetch();
-			reply.header('Cache-Control', 'public, max-age=15');
-			return await reply.view('base', {
-				img: meta.bannerUrl,
-				title: meta.name ?? 'Misskey',
-				instanceName: meta.name ?? 'Misskey',
-				desc: meta.description,
-				icon: meta.iconUrl,
-				themeColor: meta.themeColor,
-			});
+			return await renderBase(reply);
 		});
 	}
 }

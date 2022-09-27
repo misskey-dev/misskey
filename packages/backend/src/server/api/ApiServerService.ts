@@ -75,7 +75,7 @@ export class ApiServerService {
 			Params: { endpoint: string; },
 			Body: Record<string, unknown>,
 			Querystring: Record<string, unknown>,
-		}>('/api/:endpoint(.*)', (request, reply) => {
+		}>('/:endpoint(.*)', (request, reply) => {
 			const endpoint = endpointsMap.get(request.params.endpoint);
 			if (endpoint == null) {
 				reply.code(404);
