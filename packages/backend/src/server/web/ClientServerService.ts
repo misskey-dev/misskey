@@ -3,16 +3,12 @@ import { fileURLToPath } from 'node:url';
 import { PathOrFileDescriptor, readFileSync } from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import Koa from 'koa';
-import Router from '@koa/router';
-import send from 'koa-send';
-import favicon from 'koa-favicon';
-import views from 'koa-views';
 import sharp from 'sharp';
-import { createBullBoard } from '@bull-board/api';
-import { BullAdapter } from '@bull-board/api/bullAdapter.js';
-import { KoaAdapter } from '@bull-board/koa';
+import pug from 'pug';
 import { In, IsNull } from 'typeorm';
+import { FastifyInstance } from 'fastify';
+import fastifyStatic from '@fastify/static';
+import pointOfView from 'point-of-view';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
@@ -96,27 +92,26 @@ export class ClientServerService {
 		res.name = instance.name ?? 'Misskey';
 		if (instance.themeColor) res.theme_color = instance.themeColor;
 
-		ctx.set('Cache-Control', 'max-age=300');
+		reply.header('Cache-Control', 'max-age=300');
 		ctx.body = res;
 	}
 
-	public createApp() {
-		const app = new Koa();
-
+	public createServer(fastify: FastifyInstance) {
+		/* TODO
 		//#region Bull Dashboard
 		const bullBoardPath = '/queue';
 
 		// Authenticate
-		app.use(async (ctx, next) => {
+		app.use(async (request, reply) => {
 			if (ctx.path === bullBoardPath || ctx.path.startsWith(bullBoardPath + '/')) {
 				const token = ctx.cookies.get('token');
 				if (token == null) {
-					ctx.status = 401;
+					reply.code(401);
 					return;
 				}
 				const user = await this.usersRepository.findOneBy({ token });
 				if (user == null || !(user.isAdmin || user.isModerator)) {
-					ctx.status = 403;
+					reply.code(403);
 					return;
 				}
 			}
@@ -141,83 +136,82 @@ export class ClientServerService {
 		serverAdapter.setBasePath(bullBoardPath);
 		app.use(serverAdapter.registerPlugin());
 		//#endregion
+		*/
 
-		// Init renderer
-		app.use(views(_dirname + '/views', {
-			extension: 'pug',
-			options: {
+		fastify.register(pointOfView, {
+			root: _dirname + '/views',
+			engine: {
+				pug: pug,
+			},
+			defaultContext: {
 				version: this.config.version,
 				getClientEntry: () => process.env.NODE_ENV === 'production' ?
 					this.config.clientEntry :
 					JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'],
 				config: this.config,
 			},
-		}));
-
-		// Serve favicon
-		app.use(favicon(`${_dirname}/../../../assets/favicon.ico`));
-
-		// Common request handler
-		app.use(async (ctx, next) => {
-			// IFrameの中に入れられないようにする
-			ctx.set('X-Frame-Options', 'DENY');
-			await next();
 		});
 
-		// Init router
-		const router = new Router();
+		app.use(favicon(`${_dirname}/../../../assets/favicon.ico`));
+
+		fastify.addHook('onRequest', (request, reply) => {
+			// クリックジャッキング防止のためiFrameの中に入れられないようにする
+			reply.header('X-Frame-Options', 'DENY');
+		});
 
 		//#region static assets
 
-		router.get('/static-assets/(.*)', async ctx => {
-			await send(ctx as any, ctx.path.replace('/static-assets/', ''), {
-				root: staticAssets,
-				maxage: ms('7 days'),
-			});
+		fastify.register(fastifyStatic, {
+			root: '',
+			serve: false,
 		});
 
-		router.get('/client-assets/(.*)', async ctx => {
-			await send(ctx as any, ctx.path.replace('/client-assets/', ''), {
-				root: clientAssets,
-				maxage: ms('7 days'),
-			});
+		fastify.register(fastifyStatic, {
+			root: staticAssets,
+			prefix: '/static-assets/',
+			maxAge: ms('7 days'),
+			decorateReply: false,
 		});
 
-		router.get('/assets/(.*)', async ctx => {
-			await send(ctx as any, ctx.path.replace('/assets/', ''), {
-				root: assets,
-				maxage: ms('7 days'),
-			});
+		fastify.register(fastifyStatic, {
+			root: clientAssets,
+			prefix: '/client-assets/',
+			maxAge: ms('7 days'),
+			decorateReply: false,
+		});
+
+		fastify.register(fastifyStatic, {
+			root: assets,
+			prefix: '/assets/',
+			maxAge: ms('7 days'),
+			decorateReply: false,
 		});
 
 		// Apple touch icon
-		router.get('/apple-touch-icon.png', async ctx => {
-			await send(ctx as any, '/apple-touch-icon.png', {
-				root: staticAssets,
-			});
+		fastify.get('/apple-touch-icon.png', async (request, reply) => {
+			reply.sendFile('/apple-touch-icon.png', staticAssets);
 		});
 
-		router.get('/twemoji/(.*)', async ctx => {
-			const path = ctx.path.replace('/twemoji/', '');
+		fastify.get<{ Params: { path: string } }>('/twemoji/:path(.*)', async (request, reply) => {
+			const path = request.params.path;
 
 			if (!path.match(/^[0-9a-f-]+\.svg$/)) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
-			ctx.set('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			await send(ctx as any, path, {
-				root: `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`,
-				maxage: ms('30 days'),
+			await reply.sendFile(path, `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`, {
+				maxAge: ms('30 days'),
 			});
 		});
 
-		router.get('/twemoji-badge/(.*)', async ctx => {
-			const path = ctx.path.replace('/twemoji-badge/', '');
+		fastify.get<{ Params: { path: string } }>('/twemoji-badge/:path(.*)', async (request, reply) => {
+			const path = request.params.path;
 
 			if (!path.match(/^[0-9a-f-]+\.png$/)) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
@@ -250,44 +244,30 @@ export class ClientServerService {
 				.png()
 				.toBuffer();
 
-			ctx.set('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
-			ctx.set('Cache-Control', 'max-age=2592000');
-			ctx.set('Content-Type', 'image/png');
-			ctx.body = buffer;
+			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+			reply.header('Cache-Control', 'max-age=2592000');
+			reply.header('Content-Type', 'image/png');
+			reply.send(buffer);
 		});
 
 		// ServiceWorker
-		router.get('/sw.js', async ctx => {
-			await send(ctx as any, '/sw.js', {
-				root: swAssets,
-				maxage: ms('10 minutes'),
+		fastify.get('/sw.js', async (request, reply) => {
+			await reply.sendFile('/sw.js', swAssets, {
+				maxAge: ms('10 minutes'),
 			});
 		});
 
 		// Manifest
-		router.get('/manifest.json', ctx => this.manifestHandler(ctx));
+		fastify.get('/manifest.json', ctx => this.manifestHandler(ctx));
 
-		router.get('/robots.txt', async ctx => {
-			await send(ctx as any, '/robots.txt', {
-				root: staticAssets,
-			});
+		fastify.get('/robots.txt', async (request, reply) => {
+			await reply.sendFile('/robots.txt', staticAssets);
 		});
 
 		//#endregion
 
-		// Docs
-		router.get('/api-doc', async ctx => {
-			await send(ctx as any, '/redoc.html', {
-				root: staticAssets,
-			});
-		});
-
 		// URL preview endpoint
-		router.get('/url', ctx => this.urlPreviewService.handle(ctx));
-
-		router.get('/api.json', async ctx => {
-			ctx.body = genOpenapiSpec();
-		});
+		fastify.get('/url', ctx => this.urlPreviewService.handle(ctx));
 
 		const getFeed = async (acct: string) => {
 			const { username, host } = Acct.parse(acct);
@@ -301,45 +281,45 @@ export class ClientServerService {
 		};
 
 		// Atom
-		router.get('/@:user.atom', async ctx => {
-			const feed = await getFeed(ctx.params.user);
+		fastify.get<{ Params: { user: string; } }>('/@:user.atom', async (request, reply) => {
+			const feed = await getFeed(request.params.user);
 
 			if (feed) {
-				ctx.set('Content-Type', 'application/atom+xml; charset=utf-8');
-				ctx.body = feed.atom1();
+				reply.header('Content-Type', 'application/atom+xml; charset=utf-8');
+				reply.send(feed.atom1());
 			} else {
-				ctx.status = 404;
+				reply.code(404);
 			}
 		});
 
 		// RSS
-		router.get('/@:user.rss', async ctx => {
-			const feed = await getFeed(ctx.params.user);
+		fastify.get<{ Params: { user: string; } }>('/@:user.rss', async (request, reply) => {
+			const feed = await getFeed(request.params.user);
 
 			if (feed) {
-				ctx.set('Content-Type', 'application/rss+xml; charset=utf-8');
-				ctx.body = feed.rss2();
+				reply.header('Content-Type', 'application/rss+xml; charset=utf-8');
+				reply.send(feed.rss2());
 			} else {
-				ctx.status = 404;
+				reply.code(404);
 			}
 		});
 
 		// JSON
-		router.get('/@:user.json', async ctx => {
-			const feed = await getFeed(ctx.params.user);
+		fastify.get<{ Params: { user: string; } }>('/@:user.json', async (request, reply) => {
+			const feed = await getFeed(request.params.user);
 
 			if (feed) {
-				ctx.set('Content-Type', 'application/json; charset=utf-8');
-				ctx.body = feed.json1();
+				reply.header('Content-Type', 'application/json; charset=utf-8');
+				reply.send(feed.json1());
 			} else {
-				ctx.status = 404;
+				reply.code(404);
 			}
 		});
 
 		//#region SSR (for crawlers)
 		// User
-		router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
-			const { username, host } = Acct.parse(ctx.params.user);
+		fastify.get(['/@:user', '/@:user/:sub'], async (request, reply) => {
+			const { username, host } = Acct.parse(request.params.user);
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: username.toLowerCase(),
 				host: host ?? IsNull(),
@@ -355,15 +335,15 @@ export class ClientServerService {
 						.map(field => field.value)
 					: [];
 
-				await ctx.render('user', {
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('user', {
 					user, profile, me,
 					avatarUrl: await this.userEntityService.getAvatarUrl(user),
-					sub: ctx.params.sub,
+					sub: request.params.sub,
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
-				ctx.set('Cache-Control', 'public, max-age=15');
 			} else {
 				// リモートユーザーなので
 				// モデレータがAPI経由で参照可能にするために404にはしない
@@ -371,25 +351,25 @@ export class ClientServerService {
 			}
 		});
 
-		router.get('/users/:user', async ctx => {
+		fastify.get<{ Params: { user: string; } }>('/users/:user', async (request, reply) => {
 			const user = await this.usersRepository.findOneBy({
-				id: ctx.params.user,
+				id: request.params.user,
 				host: IsNull(),
 				isSuspended: false,
 			});
 
 			if (user == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
-			ctx.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+			reply.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
 		});
 
 		// Note
-		router.get('/notes/:note', async (ctx, next) => {
+		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
-				id: ctx.params.note,
+				id: request.params.note,
 				visibility: In(['public', 'home']),
 			});
 
@@ -397,7 +377,8 @@ export class ClientServerService {
 				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				const meta = await this.metaService.fetch();
-				await ctx.render('note', {
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('note', {
 					note: _note,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: note.userId })),
@@ -407,18 +388,14 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
-
-				ctx.set('Cache-Control', 'public, max-age=15');
-
-				return;
 			}
 
 			await next();
 		});
 
 		// Page
-		router.get('/@:user/pages/:page', async (ctx, next) => {
-			const { username, host } = Acct.parse(ctx.params.user);
+		fastify.get<{ Params: { user: string; page: string; } }>('/@:user/pages/:page', async (request, reply) => {
+			const { username, host } = Acct.parse(request.params.user);
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: username.toLowerCase(),
 				host: host ?? IsNull(),
@@ -427,7 +404,7 @@ export class ClientServerService {
 			if (user == null) return;
 
 			const page = await this.pagesRepository.findOneBy({
-				name: ctx.params.page,
+				name: request.params.page,
 				userId: user.id,
 			});
 
@@ -435,7 +412,12 @@ export class ClientServerService {
 				const _page = await this.pageEntityService.pack(page);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: page.userId });
 				const meta = await this.metaService.fetch();
-				await ctx.render('page', {
+				if (['public'].includes(page.visibility)) {
+					reply.header('Cache-Control', 'public, max-age=15');
+				} else {
+					reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
+				}
+				return await reply.view('page', {
 					page: _page,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: page.userId })),
@@ -443,14 +425,6 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
-
-				if (['public'].includes(page.visibility)) {
-					ctx.set('Cache-Control', 'public, max-age=15');
-				} else {
-					ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-				}
-
-				return;
 			}
 
 			await next();
@@ -458,16 +432,17 @@ export class ClientServerService {
 
 		// Clip
 		// TODO: 非publicなclipのハンドリング
-		router.get('/clips/:clip', async (ctx, next) => {
+		fastify.get<{ Params: { clip: string; } }>('/clips/:clip', async (request, reply) => {
 			const clip = await this.clipsRepository.findOneBy({
-				id: ctx.params.clip,
+				id: request.params.clip,
 			});
 
 			if (clip) {
 				const _clip = await this.clipEntityService.pack(clip);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
 				const meta = await this.metaService.fetch();
-				await ctx.render('clip', {
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('clip', {
 					clip: _clip,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: clip.userId })),
@@ -475,24 +450,21 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
-
-				ctx.set('Cache-Control', 'public, max-age=15');
-
-				return;
 			}
 
 			await next();
 		});
 
 		// Gallery post
-		router.get('/gallery/:post', async (ctx, next) => {
-			const post = await this.galleryPostsRepository.findOneBy({ id: ctx.params.post });
+		fastify.get<{ Params: { post: string; } }>('/gallery/:post', async (request, reply) => {
+			const post = await this.galleryPostsRepository.findOneBy({ id: request.params.post });
 
 			if (post) {
 				const _post = await this.galleryPostEntityService.pack(post);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: post.userId });
 				const meta = await this.metaService.fetch();
-				await ctx.render('gallery-post', {
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('gallery-post', {
 					post: _post,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: post.userId })),
@@ -500,46 +472,39 @@ export class ClientServerService {
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
-
-				ctx.set('Cache-Control', 'public, max-age=15');
-
-				return;
 			}
 
 			await next();
 		});
 
 		// Channel
-		router.get('/channels/:channel', async (ctx, next) => {
+		fastify.get<{ Params: { channel: string; } }>('/channels/:channel', async (request, reply) => {
 			const channel = await this.channelsRepository.findOneBy({
-				id: ctx.params.channel,
+				id: request.params.channel,
 			});
 
 			if (channel) {
 				const _channel = await this.channelEntityService.pack(channel);
 				const meta = await this.metaService.fetch();
-				await ctx.render('channel', {
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('channel', {
 					channel: _channel,
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
 				});
-
-				ctx.set('Cache-Control', 'public, max-age=15');
-
-				return;
 			}
 
 			await next();
 		});
 		//#endregion
 
-		router.get('/_info_card_', async ctx => {
+		fastify.get('/_info_card_', async (request, reply) => {
 			const meta = await this.metaService.fetch(true);
 
-			ctx.remove('X-Frame-Options');
+			reply.removeHeader('X-Frame-Options');
 
-			await ctx.render('info-card', {
+			return await reply.view('info-card', {
 				version: this.config.version,
 				host: this.config.host,
 				meta: meta,
@@ -548,14 +513,14 @@ export class ClientServerService {
 			});
 		});
 
-		router.get('/bios', async ctx => {
-			await ctx.render('bios', {
+		fastify.get('/bios', async (request, reply) => {
+			return await reply.view('bios', {
 				version: this.config.version,
 			});
 		});
 
-		router.get('/cli', async ctx => {
-			await ctx.render('cli', {
+		fastify.get('/cli', async (request, reply) => {
+			return await reply.view('cli', {
 				version: this.config.version,
 			});
 		});
@@ -563,20 +528,21 @@ export class ClientServerService {
 		const override = (source: string, target: string, depth = 0) =>
 			[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
 
-		router.get('/flush', async ctx => {
-			await ctx.render('flush');
+		fastify.get('/flush', async (request, reply) => {
+			return await reply.view('flush');
 		});
 
 		// streamingに非WebSocketリクエストが来た場合にbase htmlをキャシュ付きで返すと、Proxy等でそのパスがキャッシュされておかしくなる
-		router.get('/streaming', async ctx => {
-			ctx.status = 503;
-			ctx.set('Cache-Control', 'private, max-age=0');
+		fastify.get('/streaming', async (request, reply) => {
+			reply.code(503);
+			reply.header('Cache-Control', 'private, max-age=0');
 		});
 
 		// Render base html for all requests
-		router.get('(.*)', async ctx => {
+		fastify.get('*', async (request, reply) => {
 			const meta = await this.metaService.fetch();
-			await ctx.render('base', {
+			reply.header('Cache-Control', 'public, max-age=15');
+			return await reply.view('base', {
 				img: meta.bannerUrl,
 				title: meta.name ?? 'Misskey',
 				instanceName: meta.name ?? 'Misskey',
@@ -584,12 +550,6 @@ export class ClientServerService {
 				icon: meta.iconUrl,
 				themeColor: meta.themeColor,
 			});
-			ctx.set('Cache-Control', 'public, max-age=15');
 		});
-
-		// Register router
-		app.use(router.routes());
-
-		return app;
 	}
 }

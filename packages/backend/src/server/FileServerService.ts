@@ -51,31 +51,31 @@ export class FileServerService {
 	public commonReadableHandlerGenerator(ctx: Koa.Context) {
 		return (e: Error): void => {
 			this.logger.error(e);
-			ctx.status = 500;
-			ctx.set('Cache-Control', 'max-age=300');
+			reply.code(500);
+			reply.header('Cache-Control', 'max-age=300');
 		};
 	}
 	
 	public createServer() {
 		const app = new Koa();
 		app.use(cors());
-		app.use(async (ctx, next) => {
-			ctx.set('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
+		app.use(async (request, reply) => {
+			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 			await next();
 		});
 
 		// Init router
 		const router = new Router();
 
-		router.get('/app-default.jpg', ctx => {
+		fastify.get('/app-default.jpg', ctx => {
 			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
 			ctx.body = file;
-			ctx.set('Content-Type', 'image/jpeg');
-			ctx.set('Cache-Control', 'max-age=31536000, immutable');
+			reply.header('Content-Type', 'image/jpeg');
+			reply.header('Cache-Control', 'max-age=31536000, immutable');
 		});
 
-		router.get('/:key', ctx => this.sendDriveFile(ctx));
-		router.get('/:key/(.*)', ctx => this.sendDriveFile(ctx));
+		fastify.get('/:key', ctx => this.sendDriveFile(ctx));
+		fastify.get('/:key/(.*)', ctx => this.sendDriveFile(ctx));
 
 		// Register router
 		app.use(router.routes());
@@ -84,7 +84,7 @@ export class FileServerService {
 	}
 
 	private async sendDriveFile(ctx: Koa.Context) {
-		const key = ctx.params.key;
+		const key = request.params.key;
 
 		// Fetch drive file
 		const file = await this.driveFilesRepository.createQueryBuilder('file')
@@ -94,8 +94,8 @@ export class FileServerService {
 			.getOne();
 
 		if (file == null) {
-			ctx.status = 404;
-			ctx.set('Cache-Control', 'max-age=86400');
+			reply.code(404);
+			reply.header('Cache-Control', 'max-age=86400');
 			await send(ctx as any, '/dummy.png', { root: assets });
 			return;
 		}
@@ -136,17 +136,17 @@ export class FileServerService {
 
 					const image = await convertFile();
 					ctx.body = image.data;
-					ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
-					ctx.set('Cache-Control', 'max-age=31536000, immutable');
+					reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+					reply.header('Cache-Control', 'max-age=31536000, immutable');
 				} catch (err) {
 					this.logger.error(`${err}`);
 
 					if (err instanceof StatusError && err.isClientError) {
-						ctx.status = err.statusCode;
-						ctx.set('Cache-Control', 'max-age=86400');
+						reply.code(err.statusCode);
+						reply.header('Cache-Control', 'max-age=86400');
 					} else {
-						ctx.status = 500;
-						ctx.set('Cache-Control', 'max-age=300');
+						reply.code(500);
+						reply.header('Cache-Control', 'max-age=300');
 					}
 				} finally {
 					cleanup();
@@ -154,8 +154,8 @@ export class FileServerService {
 				return;
 			}
 
-			ctx.status = 204;
-			ctx.set('Cache-Control', 'max-age=86400');
+			reply.code(204);
+			reply.header('Cache-Control', 'max-age=86400');
 			return;
 		}
 
@@ -167,16 +167,16 @@ export class FileServerService {
 			}).toString();
 
 			ctx.body = this.internalStorageService.read(key);
-			ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream');
-			ctx.set('Cache-Control', 'max-age=31536000, immutable');
-			ctx.set('Content-Disposition', contentDisposition('inline', filename));
+			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream');
+			reply.header('Cache-Control', 'max-age=31536000, immutable');
+			reply.header('Content-Disposition', contentDisposition('inline', filename));
 		} else {
 			const readable = this.internalStorageService.read(file.accessKey!);
 			readable.on('error', this.commonReadableHandlerGenerator(ctx));
 			ctx.body = readable;
-			ctx.set('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
-			ctx.set('Cache-Control', 'max-age=31536000, immutable');
-			ctx.set('Content-Disposition', contentDisposition('inline', file.name));
+			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
+			reply.header('Cache-Control', 'max-age=31536000, immutable');
+			reply.header('Content-Disposition', contentDisposition('inline', file.name));
 		}
 	}
 }

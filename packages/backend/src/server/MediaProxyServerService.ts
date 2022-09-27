@@ -36,15 +36,15 @@ export class MediaProxyServerService {
 	public createServer() {
 		const app = new Koa();
 		app.use(cors());
-		app.use(async (ctx, next) => {
-			ctx.set('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
+		app.use(async (request, reply) => {
+			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 			await next();
 		});
 
 		// Init router
 		const router = new Router();
 
-		router.get('/:url*', ctx => this.handler(ctx));
+		fastify.get('/:url*', ctx => this.handler(ctx));
 
 		// Register router
 		app.use(router.routes());
@@ -53,10 +53,10 @@ export class MediaProxyServerService {
 	}
 
 	private async handler(ctx: Koa.Context) {
-		const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
+		const url = 'url' in ctx.query ? ctx.query.url : 'https://' + request.params.url;
 	
 		if (typeof url !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
@@ -122,16 +122,16 @@ export class MediaProxyServerService {
 				};
 			}
 	
-			ctx.set('Content-Type', image.type);
-			ctx.set('Cache-Control', 'max-age=31536000, immutable');
+			reply.header('Content-Type', image.type);
+			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			ctx.body = image.data;
 		} catch (err) {
 			this.logger.error(`${err}`);
 	
 			if (err instanceof StatusError && (err.statusCode === 302 || err.isClientError)) {
-				ctx.status = err.statusCode;
+				reply.code(err.statusCode);
 			} else {
-				ctx.status = 500;
+				reply.code(500);
 			}
 		} finally {
 			cleanup();

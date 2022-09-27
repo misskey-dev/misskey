@@ -41,7 +41,7 @@ export class DiscordServerService {
 	public create() {
 		const router = new Router();
 
-		router.get('/disconnect/discord', async ctx => {
+		fastify.get('/disconnect/discord', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
@@ -90,7 +90,7 @@ export class DiscordServerService {
 			}
 		};
 
-		router.get('/connect/discord', async ctx => {
+		fastify.get('/connect/discord', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
@@ -115,7 +115,7 @@ export class DiscordServerService {
 			ctx.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		router.get('/signin/discord', async ctx => {
+		fastify.get('/signin/discord', async (request, reply) => {
 			const sessid = uuid();
 
 			const params = {
@@ -137,7 +137,7 @@ export class DiscordServerService {
 			ctx.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		router.get('/dc/cb', async ctx => {
+		fastify.get('/dc/cb', async (request, reply) => {
 			const userToken = this.getUserToken(ctx);
 
 			const oauth2 = await getOAuth2();

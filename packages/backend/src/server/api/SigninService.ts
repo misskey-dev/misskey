@@ -42,7 +42,7 @@ export class SigninService {
 				id: user.id,
 				i: user.token,
 			};
-			ctx.status = 200;
+			reply.code(200);
 		}
 	
 		(async () => {

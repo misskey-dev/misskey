@@ -71,20 +71,20 @@ export class SignupApiService {
 	
 		if (instance.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 	
 			const available = await this.emailService.validateEmailForAccount(emailAddress);
 			if (!available) {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 		}
 	
 		if (instance.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 	
@@ -93,7 +93,7 @@ export class SignupApiService {
 			});
 	
 			if (ticket == null) {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 	
@@ -122,7 +122,7 @@ export class SignupApiService {
 				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 				`To complete signup, please click this link: ${link}`);
 	
-			ctx.status = 204;
+			reply.code(204);
 		} else {
 			try {
 				const { account, secret } = await this.signupService.signup({

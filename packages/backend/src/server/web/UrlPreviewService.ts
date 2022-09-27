@@ -42,13 +42,13 @@ export class UrlPreviewService {
 	public async handle(ctx: Koa.Context) {
 		const url = ctx.query.url;
 		if (typeof url !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
 		const lang = ctx.query.lang;
 		if (Array.isArray(lang)) {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
@@ -73,13 +73,13 @@ export class UrlPreviewService {
 			summary.thumbnail = this.wrap(summary.thumbnail);
 	
 			// Cache 7days
-			ctx.set('Cache-Control', 'max-age=604800, immutable');
+			reply.header('Cache-Control', 'max-age=604800, immutable');
 	
 			ctx.body = summary;
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);
-			ctx.status = 200;
-			ctx.set('Cache-Control', 'max-age=86400, immutable');
+			reply.code(200);
+			reply.header('Cache-Control', 'max-age=86400, immutable');
 			ctx.body = '{}';
 		}
 	}

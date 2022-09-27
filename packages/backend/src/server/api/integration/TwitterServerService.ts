@@ -41,7 +41,7 @@ export class TwitterServerService {
 	public create() {
 		const router = new Router();
 
-		router.get('/disconnect/twitter', async ctx => {
+		fastify.get('/disconnect/twitter', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
@@ -89,7 +89,7 @@ export class TwitterServerService {
 			}
 		};
 
-		router.get('/connect/twitter', async ctx => {
+		fastify.get('/connect/twitter', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
@@ -107,7 +107,7 @@ export class TwitterServerService {
 			ctx.redirect(twCtx.url);
 		});
 
-		router.get('/signin/twitter', async ctx => {
+		fastify.get('/signin/twitter', async (request, reply) => {
 			const twAuth = await getTwAuth();
 			const twCtx = await twAuth!.begin();
 
@@ -124,7 +124,7 @@ export class TwitterServerService {
 			ctx.redirect(twCtx.url);
 		});
 
-		router.get('/tw/cb', async ctx => {
+		fastify.get('/tw/cb', async (request, reply) => {
 			const userToken = this.getUserToken(ctx);
 
 			const twAuth = await getTwAuth();

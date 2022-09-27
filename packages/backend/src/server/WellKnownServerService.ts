@@ -39,8 +39,8 @@ export class WellKnownServerService {
 		const jrd = 'application/jrd+json';
 		const xrd = 'application/xrd+xml';
 
-		router.use(allPath, async (ctx, next) => {
-			ctx.set({
+		router.use(allPath, async (request, reply) => {
+			reply.header({
 				'Access-Control-Allow-Headers': 'Accept',
 				'Access-Control-Allow-Methods': 'GET, OPTIONS',
 				'Access-Control-Allow-Origin': '*',
@@ -50,11 +50,11 @@ export class WellKnownServerService {
 		});
 
 		router.options(allPath, async ctx => {
-			ctx.status = 204;
+			reply.code(204);
 		});
 
-		router.get('/.well-known/host-meta', async ctx => {
-			ctx.set('Content-Type', xrd);
+		fastify.get('/.well-known/host-meta', async (request, reply) => {
+			reply.header('Content-Type', xrd);
 			ctx.body = XRD({ element: 'Link', attributes: {
 				rel: 'lrdd',
 				type: xrd,
@@ -62,8 +62,8 @@ export class WellKnownServerService {
 			} });
 		});
 
-		router.get('/.well-known/host-meta.json', async ctx => {
-			ctx.set('Content-Type', jrd);
+		fastify.get('/.well-known/host-meta.json', async (request, reply) => {
+			reply.header('Content-Type', jrd);
 			ctx.body = {
 				links: [{
 					rel: 'lrdd',
@@ -73,16 +73,16 @@ export class WellKnownServerService {
 			};
 		});
 
-		router.get('/.well-known/nodeinfo', async ctx => {
+		fastify.get('/.well-known/nodeinfo', async (request, reply) => {
 			ctx.body = { links: this.nodeinfoServerService.getLinks() };
 		});
 
 		/* TODO
-router.get('/.well-known/change-password', async ctx => {
+fastify.get('/.well-known/change-password', async (request, reply) => {
 });
 */
 
-		router.get(webFingerPath, async ctx => {
+		fastify.get(webFingerPath, async ctx => {
 			const fromId = (id: User['id']): FindOptionsWhere<User> => ({
 				id,
 				host: IsNull(),
@@ -105,21 +105,21 @@ router.get('/.well-known/change-password', async ctx => {
 				} : 422;
 
 			if (typeof ctx.query.resource !== 'string') {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 
 			const query = generateQuery(ctx.query.resource.toLowerCase());
 
 			if (typeof query === 'number') {
-				ctx.status = query;
+				reply.code(query);
 				return;
 			}
 
 			const user = await this.usersRepository.findOneBy(query);
 
 			if (user == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
@@ -155,12 +155,12 @@ router.get('/.well-known/change-password', async ctx => {
 			}
 
 			ctx.vary('Accept');
-			ctx.set('Cache-Control', 'public, max-age=180');
+			reply.header('Cache-Control', 'public, max-age=180');
 		});
 
 		// Return 404 for other .well-known
 		router.all(allPath, async ctx => {
-			ctx.status = 404;
+			reply.code(404);
 		});
 
 		return router;

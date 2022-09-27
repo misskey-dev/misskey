@@ -41,7 +41,7 @@ export class GithubServerService {
 	public create() {
 		const router = new Router();
 
-		router.get('/disconnect/github', async ctx => {
+		fastify.get('/disconnect/github', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
@@ -90,7 +90,7 @@ export class GithubServerService {
 			}
 		};
 
-		router.get('/connect/github', async ctx => {
+		fastify.get('/connect/github', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
 				return;
@@ -114,7 +114,7 @@ export class GithubServerService {
 			ctx.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		router.get('/signin/github', async ctx => {
+		fastify.get('/signin/github', async (request, reply) => {
 			const sessid = uuid();
 
 			const params = {
@@ -135,7 +135,7 @@ export class GithubServerService {
 			ctx.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		router.get('/gh/cb', async ctx => {
+		fastify.get('/gh/cb', async (request, reply) => {
 			const userToken = this.getUserToken(ctx);
 
 			const oauth2 = await getOath2();

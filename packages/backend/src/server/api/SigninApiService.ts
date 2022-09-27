@@ -43,8 +43,8 @@ export class SigninApiService {
 	}
 
 	public async signin(ctx: Koa.Context) {
-		ctx.set('Access-Control-Allow-Origin', this.config.url);
-		ctx.set('Access-Control-Allow-Credentials', 'true');
+		reply.header('Access-Control-Allow-Origin', this.config.url);
+		reply.header('Access-Control-Allow-Credentials', 'true');
 
 		const body = ctx.request.body as any;
 		const username = body['username'];
@@ -52,7 +52,7 @@ export class SigninApiService {
 		const token = body['token'];
 
 		function error(status: number, error: { id: string }) {
-			ctx.status = status;
+			reply.code(status);
 			ctx.body = { error };
 		}
 
@@ -60,7 +60,7 @@ export class SigninApiService {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
 			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(ctx.ip));
 		} catch (err) {
-			ctx.status = 429;
+			reply.code(429);
 			ctx.body = {
 				error: {
 					message: 'Too many failed attempts to sign in. Try again later.',
@@ -72,17 +72,17 @@ export class SigninApiService {
 		}
 
 		if (typeof username !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 
 		if (typeof password !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 
 		if (token != null && typeof token !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 
@@ -273,7 +273,7 @@ export class SigninApiService {
 					id: key.id,
 				})),
 			};
-			ctx.status = 200;
+			reply.code(200);
 			return;
 		}
 	// never get here

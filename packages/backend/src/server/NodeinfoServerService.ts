@@ -108,20 +108,20 @@ export class NodeinfoServerService {
 
 		const cache = new Cache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
 
-		router.get(nodeinfo2_1path, async ctx => {
+		fastify.get(nodeinfo2_1path, async ctx => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
 			ctx.body = { version: '2.1', ...base };
-			ctx.set('Cache-Control', 'public, max-age=600');
+			reply.header('Cache-Control', 'public, max-age=600');
 		});
 
-		router.get(nodeinfo2_0path, async ctx => {
+		fastify.get(nodeinfo2_0path, async ctx => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
 			delete (base as any).software.repository;
 
 			ctx.body = { version: '2.0', ...base };
-			ctx.set('Cache-Control', 'public, max-age=600');
+			reply.header('Cache-Control', 'public, max-age=600');
 		});
 
 		return router;

@@ -1,5 +1,6 @@
 import { performance } from 'perf_hooks';
 import { Inject, Injectable } from '@nestjs/common';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { CacheableLocalUser, User } from '@/models/entities/User.js';
@@ -13,7 +14,6 @@ import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
-import type Koa from 'koa';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -44,92 +44,96 @@ export class ApiCallService implements OnApplicationShutdown {
 		}, 1000 * 60 * 60);
 	}
 
-	public handleRequest(endpoint: IEndpoint, exec: any, ctx: Koa.Context) {
-		return new Promise<void>((res) => {
-			const body = ctx.is('multipart/form-data')
-				? (ctx.request as any).body
-				: ctx.method === 'GET'
-					? ctx.query
-					: ctx.request.body;
-		
-			const reply = (x?: any, y?: ApiError) => {
-				if (x == null) {
-					ctx.status = 204;
-				} else if (typeof x === 'number' && y) {
-					ctx.status = x;
-					ctx.body = {
-						error: {
-							message: y!.message,
-							code: y!.code,
-							id: y!.id,
-							kind: y!.kind,
-							...(y!.info ? { info: y!.info } : {}),
-						},
-					};
-				} else {
-					// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
-					ctx.body = typeof x === 'string' ? JSON.stringify(x) : x;
-				}
-				res();
-			};
-		
-			// Authentication
-			this.authenticateService.authenticate(body['i']).then(([user, app]) => {
-				// API invoking
-				this.call(endpoint, exec, user, app, body, ctx).then((res: any) => {
-					if (ctx.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
-						ctx.set('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
-					}
-					reply(res);
-				}).catch((e: ApiError) => {
-					reply(e.httpStatusCode ? e.httpStatusCode : e.kind === 'client' ? 400 : 500, e);
+	public handleRequest(
+		endpoint: IEndpoint & { exec: any },
+		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
+		reply: FastifyReply,
+	): void {
+		const body = request.isMultipart()
+			? request.body
+			: request.method === 'GET'
+				? request.query
+				: request.body;
+	
+		const send = (x?: any, y?: ApiError) => {
+			if (x == null) {
+				reply.code(204);
+			} else if (typeof x === 'number' && y) {
+				reply.code(x);
+				reply.send({
+					error: {
+						message: y!.message,
+						code: y!.code,
+						id: y!.id,
+						kind: y!.kind,
+						...(y!.info ? { info: y!.info } : {}),
+					},
 				});
-		
-				// Log IP
-				if (user) {
-					this.metaService.fetch().then(meta => {
-						if (!meta.enableIpLogging) return;
-						const ip = ctx.ip;
-						const ips = this.userIpHistories.get(user.id);
-						if (ips == null || !ips.has(ip)) {
-							if (ips == null) {
-								this.userIpHistories.set(user.id, new Set([ip]));
-							} else {
-								ips.add(ip);
-							}
-		
-							try {
-								this.userIpsRepository.createQueryBuilder().insert().values({
-									createdAt: new Date(),
-									userId: user.id,
-									ip: ip,
-								}).orIgnore(true).execute();
-							} catch {
-							}
-						}
-					});
+			} else {
+				// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
+				request.body = typeof x === 'string' ? JSON.stringify(x) : x;
+			}
+		};
+	
+		const token = body['i'];
+		if (token != null && typeof token !== 'string') {
+			reply.code(400);
+			return;
+		}
+		this.authenticateService.authenticate(token).then(([user, app]) => {
+			// API invoking
+			this.call(endpoint, user, app, body, request).then((res: any) => {
+				if (request.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
+					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
-			}).catch(e => {
-				if (e instanceof AuthenticationError) {
-					reply(403, new ApiError({
-						message: 'Authentication failed. Please ensure your token is correct.',
-						code: 'AUTHENTICATION_FAILED',
-						id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
-					}));
-				} else {
-					reply(500, new ApiError());
-				}
+				send(res);
+			}).catch((err: ApiError) => {
+				send(err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
 			});
+
+			// Log IP
+			if (user) {
+				this.metaService.fetch().then(meta => {
+					if (!meta.enableIpLogging) return;
+					const ip = request.ip;
+					const ips = this.userIpHistories.get(user.id);
+					if (ips == null || !ips.has(ip)) {
+						if (ips == null) {
+							this.userIpHistories.set(user.id, new Set([ip]));
+						} else {
+							ips.add(ip);
+						}
+	
+						try {
+							this.userIpsRepository.createQueryBuilder().insert().values({
+								createdAt: new Date(),
+								userId: user.id,
+								ip: ip,
+							}).orIgnore(true).execute();
+						} catch {
+						}
+					}
+				});
+			}
+		}).catch(err => {
+			if (err instanceof AuthenticationError) {
+				send(403, new ApiError({
+					message: 'Authentication failed. Please ensure your token is correct.',
+					code: 'AUTHENTICATION_FAILED',
+					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
+				}));
+			} else {
+				send(500, new ApiError());
+			}
 		});
 	}
 
 	private async call(
-		ep: IEndpoint,
-		exec: any,
+		ep: IEndpoint & { exec: any },
 		user: CacheableLocalUser | null | undefined,
 		token: AccessToken | null | undefined,
 		data: any,
-		ctx?: Koa.Context,
+		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 	) {
 		const isSecure = user != null && token == null;
 		const isModerator = user != null && (user.isModerator || user.isAdmin);
@@ -144,7 +148,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (user) {
 				limitActor = user.id;
 			} else {
-				limitActor = getIpHash(ctx!.ip);
+				limitActor = getIpHash(request.ip);
 			}
 
 			const limit = Object.assign({}, ep.meta.limit);
@@ -154,7 +158,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 
 			// Rate limit
-			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor).catch(e => {
+			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor).catch(err => {
 				throw new ApiError({
 					message: 'Rate limit exceeded. Please try again later.',
 					code: 'RATE_LIMIT_EXCEEDED',
@@ -199,7 +203,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// Cast non JSON input
-		if ((ep.meta.requireFile || ctx?.method === 'GET') && ep.params.properties) {
+		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
 			for (const k of Object.keys(ep.params.properties)) {
 				const param = ep.params.properties![k];
 				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
@@ -221,7 +225,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		// API invoking
 		const before = performance.now();
-		return await exec(data, user, token, ctx?.file, ctx?.ip, ctx?.headers).catch((err: Error) => {
+		return await ep.exec(data, user, token, request.file, request.ip, request.headers).catch((err: Error) => {
 			if (err instanceof ApiError) {
 				throw err;
 			} else {
