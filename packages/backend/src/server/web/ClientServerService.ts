@@ -186,11 +186,11 @@ export class ClientServerService {
 		});
 
 		fastify.get('/favicon.ico', async (request, reply) => {
-			reply.sendFile('/favicon.ico', staticAssets);
+			return reply.sendFile('/favicon.ico', staticAssets);
 		});
 
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
-			reply.sendFile('/apple-touch-icon.png', staticAssets);
+			return reply.sendFile('/apple-touch-icon.png', staticAssets);
 		});
 
 		fastify.get<{ Params: { path: string } }>('/twemoji/:path(.*)', async (request, reply) => {
@@ -203,7 +203,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			await reply.sendFile(path, `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`, {
+			return await reply.sendFile(path, `${_dirname}/../../../node_modules/@discordapp/twemoji/dist/svg/`, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -253,7 +253,7 @@ export class ClientServerService {
 
 		// ServiceWorker
 		fastify.get('/sw.js', async (request, reply) => {
-			await reply.sendFile('/sw.js', swAssets, {
+			return await reply.sendFile('/sw.js', swAssets, {
 				maxAge: ms('10 minutes'),
 			});
 		});
@@ -262,7 +262,7 @@ export class ClientServerService {
 		fastify.get('/manifest.json', async (request, reply) => await this.manifestHandler(reply));
 
 		fastify.get('/robots.txt', async (request, reply) => {
-			await reply.sendFile('/robots.txt', staticAssets);
+			return await reply.sendFile('/robots.txt', staticAssets);
 		});
 
 		//#endregion

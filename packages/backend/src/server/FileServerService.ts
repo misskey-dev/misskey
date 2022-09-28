@@ -88,8 +88,7 @@ export class FileServerService {
 		if (file == null) {
 			reply.code(404);
 			reply.header('Cache-Control', 'max-age=86400');
-			reply.sendFile('/dummy.png', assets);
-			return;
+			return reply.sendFile('/dummy.png', assets);
 		}
 
 		const isThumbnail = file.thumbnailAccessKey === key;
