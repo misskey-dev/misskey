@@ -93,7 +93,7 @@ export class ClientServerService {
 		if (instance.themeColor) res.theme_color = instance.themeColor;
 
 		reply.header('Cache-Control', 'max-age=300');
-		return reply.send(res);
+		return (res);
 	}
 
 	public createServer(fastify: FastifyInstance) {

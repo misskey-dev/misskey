@@ -674,7 +674,7 @@ export class ApRendererService {
 	 * @param last URL of last page (optional)
 	 * @param orderedItems attached objects (optional)
 	 */
-	public renderOrderedCollection(id: string | null, totalItems: any, first?: string, last?: string, orderedItems?: Record<string, unknown>[]) {
+	public renderOrderedCollection(id: string | null, totalItems: any, first?: string, last?: string, orderedItems?: IObject[]) {
 		const page: any = {
 			id,
 			type: 'OrderedCollection',

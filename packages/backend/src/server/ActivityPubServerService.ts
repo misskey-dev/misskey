@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Router from '@koa/router';
-import json from 'koa-json-body';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import accepts from '@fastify/accepts';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -58,12 +58,12 @@ export class ActivityPubServerService {
 	) {
 	}
 
-	private setResponseType(ctx: Router.RouterContext) {
-		const accept = ctx.accepts(ACTIVITY_JSON, LD_JSON);
+	private setResponseType(request: FastifyRequest, reply: FastifyReply): void {
+		const accept = request.accepts().type([ACTIVITY_JSON, LD_JSON]);
 		if (accept === LD_JSON) {
-			ctx.response.type = LD_JSON;
+			reply.type(LD_JSON);
 		} else {
-			ctx.response.type = ACTIVITY_JSON;
+			reply.type(ACTIVITY_JSON);
 		}
 	}
 
@@ -80,31 +80,34 @@ export class ActivityPubServerService {
 		return this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 	}
 
-	private inbox(ctx: Router.RouterContext) {
+	private inbox(request: FastifyRequest, reply: FastifyReply) {
 		let signature;
 
 		try {
-			signature = httpSignature.parseRequest(ctx.req, { 'headers': [] });
+			signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
 		} catch (e) {
 			reply.code(401);
 			return;
 		}
 
-		this.queueService.inbox(ctx.request.body, signature);
+		this.queueService.inbox(request.body, signature);
 
 		reply.code(202);
 	}
 
-	private async followers(ctx: Router.RouterContext) {
+	private async followers(
+		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
+		reply: FastifyReply,
+	) {
 		const userId = request.params.user;
 
-		const cursor = ctx.request.query.cursor;
+		const cursor = request.query.cursor;
 		if (cursor != null && typeof cursor !== 'string') {
 			reply.code(400);
 			return;
 		}
 
-		const page = ctx.request.query.page === 'true';
+		const page = request.query.page === 'true';
 
 		const user = await this.usersRepository.findOneBy({
 			id: userId,
@@ -168,27 +171,30 @@ export class ActivityPubServerService {
 				})}` : undefined,
 			);
 
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
-			ctx.body = this.apRendererService.renderActivity(rendered);
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		}
 	}
 
-	private async following(ctx: Router.RouterContext) {
+	private async following(
+		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
+		reply: FastifyReply,
+	) {
 		const userId = request.params.user;
 
-		const cursor = ctx.request.query.cursor;
+		const cursor = request.query.cursor;
 		if (cursor != null && typeof cursor !== 'string') {
 			reply.code(400);
 			return;
 		}
 	
-		const page = ctx.request.query.page === 'true';
+		const page = request.query.page === 'true';
 	
 		const user = await this.usersRepository.findOneBy({
 			id: userId,
@@ -252,18 +258,18 @@ export class ActivityPubServerService {
 				})}` : undefined,
 			);
 	
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`);
-			ctx.body = this.apRendererService.renderActivity(rendered);
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		}
 	}
 
-	private async featured(ctx: Router.RouterContext) {
+	private async featured(request: FastifyRequest<{ Params: { user: string; }; }>, reply: FastifyReply) {
 		const userId = request.params.user;
 
 		const user = await this.usersRepository.findOneBy({
@@ -291,27 +297,33 @@ export class ActivityPubServerService {
 			renderedNotes.length, undefined, undefined, renderedNotes,
 		);
 
-		ctx.body = this.apRendererService.renderActivity(rendered);
 		reply.header('Cache-Control', 'public, max-age=180');
-		this.setResponseType(ctx);
+		this.setResponseType(request, reply);
+		return (this.apRendererService.renderActivity(rendered));
 	}
 
-	private async outbox(ctx: Router.RouterContext) {
+	private async outbox(
+		request: FastifyRequest<{
+			Params: { user: string; };
+			Querystring: { since_id?: string; until_id?: string; page?: string; };
+		}>,
+		reply: FastifyReply,
+	) {
 		const userId = request.params.user;
 
-		const sinceId = ctx.request.query.since_id;
+		const sinceId = request.query.since_id;
 		if (sinceId != null && typeof sinceId !== 'string') {
 			reply.code(400);
 			return;
 		}
 	
-		const untilId = ctx.request.query.until_id;
+		const untilId = request.query.until_id;
 		if (untilId != null && typeof untilId !== 'string') {
 			reply.code(400);
 			return;
 		}
 	
-		const page = ctx.request.query.page === 'true';
+		const page = request.query.page === 'true';
 	
 		if (countIf(x => x != null, [sinceId, untilId]) > 1) {
 			reply.code(400);
@@ -362,48 +374,47 @@ export class ActivityPubServerService {
 				})}` : undefined,
 			);
 	
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.notesCount,
 				`${partOf}?page=true`,
 				`${partOf}?page=true&since_id=000000000000000000000000`,
 			);
-			ctx.body = this.apRendererService.renderActivity(rendered);
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		}
 	}
 
-	private async userInfo(ctx: Router.RouterContext, user: User | null) {
+	private async userInfo(request: FastifyRequest, reply: FastifyReply, user: User | null) {
 		if (user == null) {
 			reply.code(404);
 			return;
 		}
 
-		ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser));
 		reply.header('Cache-Control', 'public, max-age=180');
-		this.setResponseType(ctx);
+		this.setResponseType(request, reply);
+		return (this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser)));
 	}
 
-	public createRouter() {
-		// Init router
-		const router = new Router();
+	public createServer(fastify: FastifyInstance) {
+		fastify.register(accepts);
 
 		//#region Routing
-		function isActivityPubReq(ctx: Router.RouterContext) {
-			ctx.response.vary('Accept');
-			const accepted = ctx.accepts('html', ACTIVITY_JSON, LD_JSON);
+		function isActivityPubReq(request: FastifyRequest, reply: FastifyReply): boolean {
+			reply.vary('Accept');
+			const accepted = request.accepts().type(['html', ACTIVITY_JSON, LD_JSON]);
 			return typeof accepted === 'string' && !accepted.match(/html/);
 		}
 
 		// inbox
-		fastify.post('/inbox', json(), ctx => this.inbox(ctx));
-		fastify.post('/users/:user/inbox', json(), ctx => this.inbox(ctx));
+		fastify.post('/inbox', async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/users/:user/inbox', async (request, reply) => await this.inbox(request, reply));
 
 		// note
-		fastify.get('/notes/:note', async (request, reply) => {
+		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
 			if (!isActivityPubReq(ctx)) return await next();
 
 			const note = await this.notesRepository.findOneBy({
@@ -423,17 +434,17 @@ export class ActivityPubServerService {
 					reply.code(500);
 					return;
 				}
-				ctx.redirect(note.uri);
+				reply.redirect(note.uri);
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderNote(note, false));
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.apRendererService.renderNote(note, false)));
 		});
 
 		// note activity
-		fastify.get('/notes/:note/activity', async (request, reply) => {
+		fastify.get<{ Params: { note: string; } }>('/notes/:note/activity', async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				userHost: IsNull(),
@@ -446,25 +457,34 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.packActivity(note));
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.packActivity(note)));
 		});
 
 		// outbox
-		fastify.get('/users/:user/outbox', (ctx) => this.outbox(ctx));
+		fastify.get<{
+			Params: { user: string; };
+			Querystring: { since_id?: string; until_id?: string; page?: string; };
+		}>('/users/:user/outbox', async (request, reply) => await this.outbox(request, reply));
 
 		// followers
-		fastify.get('/users/:user/followers', (ctx) => this.followers(ctx));
+		fastify.get<{
+			Params: { user: string; };
+			Querystring: { cursor?: string; page?: string; };
+		}>('/users/:user/followers', async (request, reply) => await this.followers(request, reply));
 
 		// following
-		fastify.get('/users/:user/following', (ctx) => this.following(ctx));
+		fastify.get<{
+			Params: { user: string; };
+			Querystring: { cursor?: string; page?: string; };
+		}>('/users/:user/following', async (request, reply) => await this.following(request, reply));
 
 		// featured
-		fastify.get('/users/:user/collections/featured', (ctx) => this.featured(ctx));
+		fastify.get<{ Params: { user: string; }; }>('/users/:user/collections/featured', async (request, reply) => await this.featured(request, reply));
 
 		// publickey
-		fastify.get('/users/:user/publickey', async (request, reply) => {
+		fastify.get<{ Params: { user: string; } }>('/users/:user/publickey', async (request, reply) => {
 			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
@@ -480,15 +500,15 @@ export class ActivityPubServerService {
 			const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 
 			if (this.userEntityService.isLocalUser(user)) {
-				ctx.body = this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair));
 				reply.header('Cache-Control', 'public, max-age=180');
-				this.setResponseType(ctx);
+				this.setResponseType(request, reply);
+				return (this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair)));
 			} else {
 				reply.code(400);
 			}
 		});
 
-		fastify.get('/users/:user', async (request, reply) => {
+		fastify.get<{ Params: { user: string; } }>('/users/:user', async (request, reply) => {
 			if (!isActivityPubReq(ctx)) return await next();
 
 			const userId = request.params.user;
@@ -499,10 +519,10 @@ export class ActivityPubServerService {
 				isSuspended: false,
 			});
 
-			await this.userInfo(ctx, user);
+			return await this.userInfo(request, reply, user);
 		});
 
-		fastify.get('/@:user', async (request, reply) => {
+		fastify.get<{ Params: { user: string; } }>('/@:user', async (request, reply) => {
 			if (!isActivityPubReq(ctx)) return await next();
 
 			const user = await this.usersRepository.findOneBy({
@@ -511,12 +531,12 @@ export class ActivityPubServerService {
 				isSuspended: false,
 			});
 
-			await this.userInfo(ctx, user);
+			return await this.userInfo(request, reply, user);
 		});
 		//#endregion
 
 		// emoji
-		fastify.get('/emojis/:emoji', async (request, reply) => {
+		fastify.get<{ Params: { emoji: string; } }>('/emojis/:emoji', async (request, reply) => {
 			const emoji = await this.emojisRepository.findOneBy({
 				host: IsNull(),
 				name: request.params.emoji,
@@ -527,13 +547,13 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderEmoji(emoji));
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.apRendererService.renderEmoji(emoji)));
 		});
 
 		// like
-		fastify.get('/likes/:like', async (request, reply) => {
+		fastify.get<{ Params: { like: string; } }>('/likes/:like', async (request, reply) => {
 			const reaction = await this.noteReactionsRepository.findOneBy({ id: request.params.like });
 
 			if (reaction == null) {
@@ -548,13 +568,13 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderLike(reaction, note));
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.apRendererService.renderLike(reaction, note)));
 		});
 
 		// follow
-		fastify.get('/follows/:follower/:followee', async (request, reply) => {
+		fastify.get<{ Params: { follower: string; followee: string; } }>('/follows/:follower/:followee', async (request, reply) => {
 			// This may be used before the follow is completed, so we do not
 			// check if the following exists.
 
@@ -574,11 +594,9 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee));
 			reply.header('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee)));
 		});
-
-		return router;
 	}
 }
