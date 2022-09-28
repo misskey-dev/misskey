@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Router from '@koa/router';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
@@ -23,9 +23,7 @@ export class WellKnownServerService {
 	) {
 	}
 
-	public createRouter() {
-		const router = new Router();
-
+	public createServer(fastify: FastifyInstance) {
 		const XRD = (...x: { element: string, value?: string, attributes?: Record<string, string> }[]) =>
 			`<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">${x.map(({ element, value, attributes }) =>
 				`<${
@@ -39,23 +37,20 @@ export class WellKnownServerService {
 		const jrd = 'application/jrd+json';
 		const xrd = 'application/xrd+xml';
 
-		router.use(allPath, async (request, reply) => {
-			reply.header({
-				'Access-Control-Allow-Headers': 'Accept',
-				'Access-Control-Allow-Methods': 'GET, OPTIONS',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Expose-Headers': 'Vary',
-			});
-			await next();
+		fastify.addHook('onRequest', (request, reply) => {
+			reply.header('Access-Control-Allow-Headers', 'Accept');
+			reply.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+			reply.header('Access-Control-Allow-Origin', '*');
+			reply.header('Access-Control-Expose-Headers', 'Vary');
 		});
 
-		router.options(allPath, async ctx => {
+		fastify.options(allPath, async (request, reply) => {
 			reply.code(204);
 		});
 
 		fastify.get('/.well-known/host-meta', async (request, reply) => {
 			reply.header('Content-Type', xrd);
-			ctx.body = XRD({ element: 'Link', attributes: {
+			return XRD({ element: 'Link', attributes: {
 				rel: 'lrdd',
 				type: xrd,
 				template: `${this.config.url}${webFingerPath}?resource={uri}`,
@@ -64,7 +59,7 @@ export class WellKnownServerService {
 
 		fastify.get('/.well-known/host-meta.json', async (request, reply) => {
 			reply.header('Content-Type', jrd);
-			ctx.body = {
+			return {
 				links: [{
 					rel: 'lrdd',
 					type: jrd,
@@ -74,7 +69,7 @@ export class WellKnownServerService {
 		});
 
 		fastify.get('/.well-known/nodeinfo', async (request, reply) => {
-			ctx.body = { links: this.nodeinfoServerService.getLinks() };
+			return { links: this.nodeinfoServerService.getLinks() };
 		});
 
 		/* TODO
@@ -82,7 +77,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 });
 */
 
-		fastify.get(webFingerPath, async ctx => {
+		fastify.get<{ Querystring: { resource: string } }>(webFingerPath, async (request, reply) => {
 			const fromId = (id: User['id']): FindOptionsWhere<User> => ({
 				id,
 				host: IsNull(),
@@ -104,12 +99,12 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 					isSuspended: false,
 				} : 422;
 
-			if (typeof ctx.query.resource !== 'string') {
+			if (typeof request.query.resource !== 'string') {
 				reply.code(400);
 				return;
 			}
 
-			const query = generateQuery(ctx.query.resource.toLowerCase());
+			const query = generateQuery(request.query.resource.toLowerCase());
 
 			if (typeof query === 'number') {
 				reply.code(query);
@@ -139,30 +134,28 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 				template: `${this.config.url}/authorize-follow?acct={uri}`,
 			};
 
-			if (ctx.accepts(jrd, xrd) === xrd) {
-				ctx.body = XRD(
+			ctx.vary('Accept');
+			reply.header('Cache-Control', 'public, max-age=180');
+
+			if (request.accepts().type([jrd, xrd]) === xrd) {
+				reply.type(xrd);
+				return XRD(
 					{ element: 'Subject', value: subject },
 					{ element: 'Link', attributes: self },
 					{ element: 'Link', attributes: profilePage },
 					{ element: 'Link', attributes: subscribe });
-				ctx.type = xrd;
 			} else {
-				ctx.body = {
+				reply.type(jrd);
+				return {
 					subject,
 					links: [self, profilePage, subscribe],
 				};
-				ctx.type = jrd;
 			}
-
-			ctx.vary('Accept');
-			reply.header('Cache-Control', 'public, max-age=180');
 		});
 
 		// Return 404 for other .well-known
-		router.all(allPath, async ctx => {
+		fastify.all(allPath, async (request, reply) => {
 			reply.code(404);
 		});
-
-		return router;
 	}
 }
