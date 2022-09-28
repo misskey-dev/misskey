@@ -71,7 +71,7 @@ export class ApiCallService implements OnApplicationShutdown {
 				});
 			} else {
 				// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
-				request.body = typeof x === 'string' ? JSON.stringify(x) : x;
+				reply.send(typeof x === 'string' ? JSON.stringify(x) : x);
 			}
 		};
 	

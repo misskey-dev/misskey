@@ -68,7 +68,7 @@ export class FileServerService {
 			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
 			reply.header('Content-Type', 'image/jpeg');
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			return file;
+			return reply.send(file);
 		});
 
 		fastify.get<{ Params: { key: string; } }>('/:key', async (request, reply) => await this.sendDriveFile(request, reply));
