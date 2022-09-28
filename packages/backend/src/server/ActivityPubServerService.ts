@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import accepts from '@fastify/accepts';
+import fastifyAccepts from '@fastify/accepts';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -18,6 +18,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { FindOptionsWhere } from 'typeorm';
+import accepts from 'accepts';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -400,23 +401,35 @@ export class ActivityPubServerService {
 	}
 
 	public createServer(fastify: FastifyInstance) {
-		fastify.register(accepts);
+		fastify.addConstraintStrategy({
+			name: 'apOrHtml',
+			storage() {
+				const store = {};
+				return {
+					get(key) {
+						return store[key] || null;
+					},
+					set(key, value) {
+						store[key] = value;
+					},
+				},
+			},
+			deriveConstraint(request, ctx) {
+				const accepted = accepts(request).type(['html', ACTIVITY_JSON, LD_JSON]);
+				const isAp = typeof accepted === 'string' && !accepted.match(/html/);
+				return isAp ? 'ap' : 'html'
+			},
+		});
+
+		fastify.register(fastifyAccepts);
 
 		//#region Routing
-		function isActivityPubReq(request: FastifyRequest, reply: FastifyReply): boolean {
-			reply.vary('Accept');
-			const accepted = request.accepts().type(['html', ACTIVITY_JSON, LD_JSON]);
-			return typeof accepted === 'string' && !accepted.match(/html/);
-		}
-
 		// inbox
 		fastify.post('/inbox', async (request, reply) => await this.inbox(request, reply));
 		fastify.post('/users/:user/inbox', async (request, reply) => await this.inbox(request, reply));
 
 		// note
-		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
-			if (!isActivityPubReq(ctx)) return await next();
-
+		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				visibility: In(['public' as const, 'home' as const]),
@@ -508,9 +521,7 @@ export class ActivityPubServerService {
 			}
 		});
 
-		fastify.get<{ Params: { user: string; } }>('/users/:user', async (request, reply) => {
-			if (!isActivityPubReq(ctx)) return await next();
-
+		fastify.get<{ Params: { user: string; } }>('/users/:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
@@ -522,9 +533,7 @@ export class ActivityPubServerService {
 			return await this.userInfo(request, reply, user);
 		});
 
-		fastify.get<{ Params: { user: string; } }>('/@:user', async (request, reply) => {
-			if (!isActivityPubReq(ctx)) return await next();
-
+		fastify.get<{ Params: { user: string; } }>('/@:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: request.params.user.toLowerCase(),
 				host: IsNull(),
