@@ -70,9 +70,9 @@ export class ServerService {
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.fileServerService.createServer, { prefix: '/files' });
 		fastify.register(this.mediaProxyServerService.createServer, { prefix: '/proxy' });
-		fastify.register(this.activityPubServerService.createRouter);
-		fastify.register(this.nodeinfoServerService.createRouter);
-		fastify.register(this.wellKnownServerService.createRouter);
+		fastify.register(this.activityPubServerService.createServer);
+		fastify.register(this.nodeinfoServerService.createServer);
+		fastify.register(this.wellKnownServerService.createServer);
 
 		fastify.get<{ Params: { acct: string } }>('/avatar/@:acct', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.acct);

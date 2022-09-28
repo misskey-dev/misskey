@@ -2,10 +2,8 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
-import Koa from 'koa';
-import cors from '@koa/cors';
-import Router from '@koa/router';
-import send from 'koa-send';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import fastifyStatic from '@fastify/static';
 import rename from 'rename';
 import type { Config } from '@/config.js';
 import type { DriveFilesRepository } from '@/models/index.js';
@@ -48,42 +46,36 @@ export class FileServerService {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
 	}
 
-	public commonReadableHandlerGenerator(ctx: Koa.Context) {
-		return (e: Error): void => {
-			this.logger.error(e);
+	public commonReadableHandlerGenerator(reply: FastifyReply) {
+		return (err: Error): void => {
+			this.logger.error(err);
 			reply.code(500);
 			reply.header('Cache-Control', 'max-age=300');
 		};
 	}
 	
-	public createServer() {
-		const app = new Koa();
-		app.use(cors());
-		app.use(async (request, reply) => {
+	public createServer(fastify: FastifyInstance) {
+		fastify.addHook('onRequest', (request, reply) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
-			await next();
 		});
 
-		// Init router
-		const router = new Router();
+		fastify.register(fastifyStatic, {
+			root: '',
+			serve: false,
+		});
 
-		fastify.get('/app-default.jpg', ctx => {
+		fastify.get('/app-default.jpg', (request, reply) => {
 			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
-			ctx.body = file;
 			reply.header('Content-Type', 'image/jpeg');
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
+			return file;
 		});
 
-		fastify.get('/:key', ctx => this.sendDriveFile(ctx));
-		fastify.get('/:key/(.*)', ctx => this.sendDriveFile(ctx));
-
-		// Register router
-		app.use(router.routes());
-
-		return app;
+		fastify.get<{ Params: { key: string; } }>('/:key', async (request, reply) => await this.sendDriveFile(request, reply));
+		fastify.get<{ Params: { key: string; } }>('/:key/(.*)', async (request, reply) => await this.sendDriveFile(request, reply));
 	}
 
-	private async sendDriveFile(ctx: Koa.Context) {
+	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
 		const key = request.params.key;
 
 		// Fetch drive file
@@ -96,7 +88,7 @@ export class FileServerService {
 		if (file == null) {
 			reply.code(404);
 			reply.header('Cache-Control', 'max-age=86400');
-			await send(ctx as any, '/dummy.png', { root: assets });
+			reply.sendFile('/dummy.png', assets);
 			return;
 		}
 
@@ -135,9 +127,9 @@ export class FileServerService {
 					};
 
 					const image = await convertFile();
-					ctx.body = image.data;
 					reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
 					reply.header('Cache-Control', 'max-age=31536000, immutable');
+					return image.data;
 				} catch (err) {
 					this.logger.error(`${err}`);
 
@@ -166,18 +158,17 @@ export class FileServerService {
 				extname: ext ? `.${ext}` : undefined,
 			}).toString();
 
-			ctx.body = this.internalStorageService.read(key);
 			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream');
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			reply.header('Content-Disposition', contentDisposition('inline', filename));
+			return this.internalStorageService.read(key);
 		} else {
 			const readable = this.internalStorageService.read(file.accessKey!);
-			readable.on('error', this.commonReadableHandlerGenerator(ctx));
-			ctx.body = readable;
+			readable.on('error', this.commonReadableHandlerGenerator(reply));
 			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			reply.header('Content-Disposition', contentDisposition('inline', file.name));
+			return readable;
 		}
 	}
 }
-
