@@ -48,7 +48,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	): void {
+	) {
 		const body = request.isMultipart()
 			? request.body
 			: request.method === 'GET'

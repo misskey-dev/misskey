@@ -96,7 +96,7 @@ export class ServerService {
 			const [temp, cleanup] = await createTemp();
 			await genIdenticon(request.params.x, fs.createWriteStream(temp));
 			reply.header('Content-Type', 'image/png');
-			reply.send(fs.createReadStream(temp).on('close', () => cleanup()));
+			return fs.createReadStream(temp).on('close', () => cleanup());
 		});
 
 		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
@@ -105,9 +105,6 @@ export class ServerService {
 			});
 
 			if (profile != null) {
-				reply.code(200);
-				reply.send('Verify succeeded!');
-
 				await this.userProfilesRepository.update({ userId: profile.userId }, {
 					emailVerified: true,
 					emailVerifyCode: null,
@@ -117,6 +114,9 @@ export class ServerService {
 					detail: true,
 					includeSecrets: true,
 				}));
+
+				reply.code(200);
+				return 'Verify succeeded!';
 			} else {
 				reply.code(404);
 			}

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import Router from '@koa/router';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import autwh from 'autwh';
@@ -13,7 +13,6 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { SigninService } from '../SigninService.js';
-import type Koa from 'koa';
 
 @Injectable()
 export class TwitterServerService {
@@ -38,9 +37,7 @@ export class TwitterServerService {
 	) {
 	}
 
-	public create() {
-		const router = new Router();
-
+	public create(fastify: FastifyInstance) {
 		fastify.get('/disconnect/twitter', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');

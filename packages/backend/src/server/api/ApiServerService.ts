@@ -93,16 +93,16 @@ export class ApiServerService {
 		fastify.post('/signin', ctx => this.signinApiServiceService.signin(ctx));
 		fastify.post('/signup-pending', ctx => this.signupApiServiceService.signupPending(ctx));
 
-		router.use(this.discordServerService.create().routes());
-		router.use(this.githubServerService.create().routes());
-		router.use(this.twitterServerService.create().routes());
+		fastify.register(this.discordServerService.create);
+		fastify.register(this.githubServerService.create);
+		fastify.register(this.twitterServerService.create);
 
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({
 				select: ['host'],
 			});
 
-			ctx.body = instances.map(instance => instance.host);
+			return instances.map(instance => instance.host);
 		});
 
 		fastify.post<{ Params: { session: string; } }>('/miauth/:session/check', async (request, reply) => {
@@ -115,15 +115,15 @@ export class ApiServerService {
 					fetched: true,
 				});
 
-				reply.send({
+				return {
 					ok: true,
 					token: token.token,
 					user: await this.userEntityService.pack(token.userId, null, { detail: true }),
-				});
+				};
 			} else {
-				reply.send({
+				return {
 					ok: false,
-				});
+				};
 			}
 		});
 
@@ -131,8 +131,5 @@ export class ApiServerService {
 		fastify.all('*', (request, reply) => {
 			reply.code(404);
 		});
-
-		// Register router
-		apiServer.use(router.routes());
 	}
 }

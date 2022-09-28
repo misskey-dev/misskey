@@ -248,7 +248,7 @@ export class ClientServerService {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 			reply.header('Cache-Control', 'max-age=2592000');
 			reply.header('Content-Type', 'image/png');
-			reply.send(buffer);
+			return buffer;
 		});
 
 		// ServiceWorker
@@ -300,7 +300,7 @@ export class ClientServerService {
 
 			if (feed) {
 				reply.header('Content-Type', 'application/atom+xml; charset=utf-8');
-				reply.send(feed.atom1());
+				return feed.atom1();
 			} else {
 				reply.code(404);
 			}
@@ -312,7 +312,7 @@ export class ClientServerService {
 
 			if (feed) {
 				reply.header('Content-Type', 'application/rss+xml; charset=utf-8');
-				reply.send(feed.rss2());
+				return feed.rss2();
 			} else {
 				reply.code(404);
 			}
@@ -324,7 +324,7 @@ export class ClientServerService {
 
 			if (feed) {
 				reply.header('Content-Type', 'application/json; charset=utf-8');
-				reply.send(feed.json1());
+				return feed.json1();
 			} else {
 				reply.code(404);
 			}

@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import Router from '@koa/router';
 import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -13,7 +13,6 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { SigninService } from '../SigninService.js';
-import type Koa from 'koa';
 
 @Injectable()
 export class GithubServerService {
@@ -38,9 +37,7 @@ export class GithubServerService {
 	) {
 	}
 
-	public create() {
-		const router = new Router();
-
+	public create(fastify: FastifyInstance) {
 		fastify.get('/disconnect/github', async (request, reply) => {
 			if (!this.compareOrigin(ctx)) {
 				ctx.throw(400, 'invalid origin');
