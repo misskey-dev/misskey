@@ -45,7 +45,8 @@ onMounted(() => {
 					src: media.url,
 					w: media.properties.width,
 					h: media.properties.height,
-					alt: media.name,
+					alt: media.comment || media.name,
+					comment: media.comment || media.name,
 				};
 				if (media.properties.orientation != null && media.properties.orientation >= 5) {
 					[item.w, item.h] = [item.h, item.w];
@@ -88,7 +89,26 @@ onMounted(() => {
 			[itemData.w, itemData.h] = [itemData.h, itemData.w];
 		}
 		itemData.msrc = file.thumbnailUrl;
+		itemData.alt = file.comment || file.name;
+		itemData.comment = file.comment || file.name;
 		itemData.thumbCropped = true;
+	});
+
+	lightbox.on('uiRegister', () => {
+		lightbox.pswp.ui.registerElement({
+			name: 'altText',
+			className: 'pwsp__alt-text-container',
+			appendTo: 'wrapper',
+			onInit: (el, pwsp) => {
+				let textBox = document.createElement('p');
+				textBox.className = 'pwsp__alt-text';
+				el.appendChild(textBox);
+
+				pwsp.on('change', (a) => {
+					textBox.textContent = pwsp.currSlide.data.comment;
+				});
+			},
+		});
 	});
 
 	lightbox.init();
@@ -185,5 +205,26 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	// なぜか機能しない
   //z-index: v-bind(pswpZIndex);
 	z-index: 2000000;
+}
+.pwsp__alt-text-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	position: absolute;
+	bottom: 30px;
+	left: 50%;
+	transform: translateX(-50%);
+
+	width: 75%;
+}
+
+.pwsp__alt-text {
+	color: white;
+	margin: 0 auto;
+	text-align: center;
+	padding: 10px;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
 }
 </style>
