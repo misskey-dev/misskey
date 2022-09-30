@@ -17,7 +17,6 @@ COPY ["packages/sw/.npmrc", "packages/sw/.yarnrc", "packages/sw/package.json", "
 RUN yarn install
 
 COPY . ./
-RUN git submodule update --init
 RUN yarn build
 
 FROM node:16.17.1-bullseye-slim AS runner
