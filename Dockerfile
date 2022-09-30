@@ -14,7 +14,7 @@ COPY ["packages/backend/.npmrc", "packages/backend/.yarnrc", "packages/backend/p
 COPY ["packages/client/.npmrc", "packages/client/.yarnrc", "packages/client/package.json", "packages/client/yarn.lock", "./packages/client/"]
 COPY ["packages/sw/.npmrc", "packages/sw/.yarnrc", "packages/sw/package.json", "packages/sw/yarn.lock", "./packages/sw/"]
 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 COPY . ./
 RUN yarn build
