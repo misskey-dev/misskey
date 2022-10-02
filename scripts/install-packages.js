@@ -5,7 +5,7 @@ const execa = require('execa');
 
 	const args = process.env.npm_config_argv?.original || ['install'];
 
-	await execa('yarn', ['--force'].concat(aegs), {
+	await execa('yarn', ['--force'].concat(args), {
 		cwd: __dirname + '/../packages/backend',
 		stdout: process.stdout,
 		stderr: process.stderr,
