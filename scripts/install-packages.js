@@ -1,9 +1,9 @@
 const execa = require('execa');
 
 (async () => {
-	console.log('installing dependencies of packages/backend ...');
-
 	const args = process.env.npm_config_argv?.original || ['install'];
+
+	console.log('installing dependencies of packages/backend ...');
 
 	await execa('yarn', ['--force'].concat(args), {
 		cwd: __dirname + '/../packages/backend',
