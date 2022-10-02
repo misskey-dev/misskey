@@ -58,7 +58,7 @@ const src = computed(() => {
 	switch (props.provider) {
 		case 'hcaptcha': return 'https://js.hcaptcha.com/1/api.js?render=explicit&recaptchacompat=off';
 		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
-		case 'turnstile': return 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+		case 'turnstile': return 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 	}
 });
 
