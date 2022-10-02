@@ -47,6 +47,14 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableTurnstile: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			turnstileSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			swPublickey: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -197,6 +205,10 @@ export const meta = {
 				type: 'string',
 				optional: true, nullable: true,
 			},
+			turnstileSecretKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			}
 			sensitiveMediaDetection: {
 				type: 'string',
 				optional: true, nullable: false,
@@ -374,6 +386,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
 				enableRecaptcha: instance.enableRecaptcha,
 				recaptchaSiteKey: instance.recaptchaSiteKey,
+				enableTurnstile: instance.enableTurnstile,
+				turnstileSiteKey: instance.turnstileSiteKey,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
@@ -400,6 +414,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				blockedHosts: instance.blockedHosts,
 				hcaptchaSecretKey: instance.hcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
+				turnstileSecretKey: instance.turnstileSecretKey,
 				sensitiveMediaDetection: instance.sensitiveMediaDetection,
 				sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
