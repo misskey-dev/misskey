@@ -1,1 +1,26 @@
 ---
+_lang_: "Αγγλικά"
+monthAndDay: "{μήνας}/{ημέρα}"
+search: "Αναζήτηση"
+notifications: "Ειδοποιήσεις"
+username: "Όνομα χρήστη-στριας"
+password: "Κωδικός πρόσβασης"
+forgotPassword: "Ξέχασα τον κωδικό πρόσβασης"
+ok: "Εντάξει"
+gotIt: "Το έπιασα!"
+cancel: "Ακύρωση"
+enterUsername: "Εισάγετε το όνομα χρήστη-στριας"
+smtpUser: "Όνομα χρήστη-στριας"
+smtpPass: "Κωδικός πρόσβασης"
+searchByGoogle: "Αναζήτηση"
+_mfm:
+  search: "Αναζήτηση"
+_sfx:
+  notification: "Ειδοποιήσεις"
+_widgets:
+  notifications: "Ειδοποιήσεις"
+_profile:
+  username: "Όνομα χρήστη-στριας"
+_deck:
+  _columns:
+    notifications: "Ειδοποιήσεις"
