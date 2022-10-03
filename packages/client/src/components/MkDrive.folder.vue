@@ -106,6 +106,8 @@ function onDragover(ev: DragEvent) {
 				ev.dataTransfer.dropEffect = 'none';
 				break;
 		}
+	} else {
+		ev.dataTransfer.dropEffect = 'none';
 	}
 }
 

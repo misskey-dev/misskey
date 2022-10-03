@@ -212,6 +212,8 @@ function onDragover(ev: DragEvent): any {
 				ev.dataTransfer.dropEffect = 'none';
 				break;
 		}
+	} else {
+		ev.dataTransfer.dropEffect = 'none';
 	}
 
 	return false;
