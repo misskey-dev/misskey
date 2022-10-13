@@ -154,9 +154,10 @@ export class SignupApiService {
 					includeSecrets: true,
 				});
 	
-				(res as any).token = secret;
-	
-				return res;
+				return {
+					...res,
+					token: secret,
+				};
 			} catch (err) {
 				ctx.throw(400, err);
 			}
