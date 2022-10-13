@@ -95,8 +95,8 @@ export class SignupApiService {
 				return;
 			}
 	
-			const available = await this.emailService.validateEmailForAccount(emailAddress);
-			if (!available) {
+			const res = await this.emailService.validateEmailForAccount(emailAddress);
+			if (!res.available) {
 				reply.code(400);
 				return;
 			}
