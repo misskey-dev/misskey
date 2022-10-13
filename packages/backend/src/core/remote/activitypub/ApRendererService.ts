@@ -23,7 +23,7 @@ import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IActivity } from './type.js';
+import type { IActivity, IObject } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -243,7 +243,7 @@ export class ApRendererService {
 		};
 	}
 
-	public async renderLike(noteReaction: NoteReaction, note: Note) {
+	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }) {
 		const reaction = noteReaction.reaction;
 
 		const object = {
@@ -276,7 +276,7 @@ export class ApRendererService {
 		};
 	}
 
-	public async renderNote(note: Note, dive = true, isTalk = false): Promise<Record<string, unknown>> {
+	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IObject> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
@@ -399,8 +399,8 @@ export class ApRendererService {
 			id: `${this.config.url}/notes/${note.id}`,
 			type: 'Note',
 			attributedTo,
-			summary,
-			content,
+			summary: summary ?? undefined,
+			content: content ?? undefined,
 			_misskey_content: text,
 			source: {
 				content: text,

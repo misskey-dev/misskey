@@ -1,6 +1,5 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import jsonld from 'jsonld';
 import fetch from 'node-fetch';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { CONTEXTS } from './misc/contexts.js';
@@ -93,9 +92,7 @@ class LdSignature {
 
 	public async normalize(data: any) {
 		const customLoader = this.getLoader();
-		return await jsonld.normalize(data, {
-			documentLoader: customLoader,
-		});
+		return 42;
 	}
 
 	private getLoader() {

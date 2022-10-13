@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
+import type { InstancesRepository, NoteReactionsRepository, NotesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 

@@ -80,11 +80,11 @@ export class DiscordServerService {
 
 			if (meta.enableDiscordIntegration) {
 				return new OAuth2(
-			meta.discordClientId!,
-			meta.discordClientSecret!,
-			'https://discord.com/',
-			'api/oauth2/authorize',
-			'api/oauth2/token');
+					meta.discordClientId!,
+					meta.discordClientSecret!,
+					'https://discord.com/',
+					'api/oauth2/authorize',
+					'api/oauth2/token');
 			} else {
 				return null;
 			}
@@ -159,6 +159,7 @@ export class DiscordServerService {
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
 					this.redisClient.get(sessid, async (_, state) => {
+						if (state == null) throw new Error('empty state');
 						res(JSON.parse(state));
 					});
 				});
@@ -169,22 +170,22 @@ export class DiscordServerService {
 				}
 
 				const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2!.getOAuthAccessToken(code, {
-				grant_type: 'authorization_code',
-				redirect_uri,
-			}, (err, accessToken, refreshToken, result) => {
-				if (err) {
-					rej(err);
-				} else if (result.error) {
-					rej(result.error);
-				} else {
-					res({
-						accessToken,
-						refreshToken,
-						expiresDate: Date.now() + Number(result.expires_in) * 1000,
-					});
-				}
-			}));
+					oauth2!.getOAuthAccessToken(code, {
+						grant_type: 'authorization_code',
+						redirect_uri,
+					}, (err, accessToken, refreshToken, result) => {
+						if (err) {
+							rej(err);
+						} else if (result.error) {
+							rej(result.error);
+						} else {
+							res({
+								accessToken,
+								refreshToken,
+								expiresDate: Date.now() + Number(result.expires_in) * 1000,
+							});
+						}
+					}));
 
 				const { id, username, discriminator } = (await this.httpRequestService.getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 					'Authorization': `Bearer ${accessToken}`,
@@ -230,6 +231,7 @@ export class DiscordServerService {
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
 					this.redisClient.get(userToken, async (_, state) => {
+						if (state == null) throw new Error('empty state');
 						res(JSON.parse(state));
 					});
 				});
@@ -240,22 +242,22 @@ export class DiscordServerService {
 				}
 
 				const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2!.getOAuthAccessToken(code, {
-				grant_type: 'authorization_code',
-				redirect_uri,
-			}, (err, accessToken, refreshToken, result) => {
-				if (err) {
-					rej(err);
-				} else if (result.error) {
-					rej(result.error);
-				} else {
-					res({
-						accessToken,
-						refreshToken,
-						expiresDate: Date.now() + Number(result.expires_in) * 1000,
-					});
-				}
-			}));
+					oauth2!.getOAuthAccessToken(code, {
+						grant_type: 'authorization_code',
+						redirect_uri,
+					}, (err, accessToken, refreshToken, result) => {
+						if (err) {
+							rej(err);
+						} else if (result.error) {
+							rej(result.error);
+						} else {
+							res({
+								accessToken,
+								refreshToken,
+								expiresDate: Date.now() + Number(result.expires_in) * 1000,
+							});
+						}
+					}));
 
 				const { id, username, discriminator } = (await this.httpRequestService.getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 					'Authorization': `Bearer ${accessToken}`,

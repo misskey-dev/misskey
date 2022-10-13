@@ -2,7 +2,7 @@
 import pg from 'pg';
 pg.types.setTypeParser(20, Number);
 
-import { DataSource } from 'typeorm';
+import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
@@ -71,10 +71,10 @@ import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 
 import { Config } from '@/config.js';
-import Logger from '@/logger.js';
+import MisskeyLogger from '@/logger.js';
 import { envOption } from './env.js';
 
-export const dbLogger = new Logger('db');
+export const dbLogger = new MisskeyLogger('db');
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 

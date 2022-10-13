@@ -60,7 +60,7 @@ export class AntennaService implements OnApplicationShutdown {
 		this.redisSubscriber.off('message', this.onRedisMessage);
 	}
 
-	private async onRedisMessage(_, data) {
+	private async onRedisMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {

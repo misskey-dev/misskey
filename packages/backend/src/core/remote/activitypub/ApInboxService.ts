@@ -295,8 +295,9 @@ export class ApInboxService {
 			let renote;
 			try {
 				renote = await this.apNoteService.resolveNote(targetUri);
+				if (renote == null) throw new Error('announce target is null');
 			} catch (err) {
-			// 対象が4xxならスキップ
+				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
 					if (err.isClientError) {
 						this.logger.warn(`Ignored announce target ${targetUri} - ${err.statusCode}`);
@@ -308,7 +309,10 @@ export class ApInboxService {
 				throw err;
 			}
 
-			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
+			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) {
+				this.logger.warn('skip: invalid actor for this activity');
+				return;
+			}
 
 			this.logger.info(`Creating the (Re)Note: ${uri}`);
 

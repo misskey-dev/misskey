@@ -33,7 +33,7 @@ export class UserCacheService implements OnApplicationShutdown {
 		this.redisSubscriber.on('message', this.onMessage);
 	}
 
-	private async onMessage(_, data) {
+	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {

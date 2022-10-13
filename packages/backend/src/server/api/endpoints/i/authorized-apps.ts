@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { IsNull, Not } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AccessTokensRepository } from '@/models/index.js';
 import { AppEntityService } from '@/core/entities/AppEntityService.js';
@@ -34,6 +35,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const tokens = await this.accessTokensRepository.find({
 				where: {
 					userId: me.id,
+					appId: Not(IsNull()),
 				},
 				take: ps.limit,
 				skip: ps.offset,
@@ -42,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			return await Promise.all(tokens.map(token => this.appEntityService.pack(token.appId, me, {
+			return await Promise.all(tokens.map(token => this.appEntityService.pack(token.appId!, me, {
 				detail: true,
 			})));
 		});

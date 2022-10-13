@@ -2,7 +2,7 @@
 <XWindow :initial-width="640" :initial-height="402" :can-resize="true" :close-button="true">
 	<template #header>
 		<i class="icon fa-brands fa-youtube" style="margin-right: 0.5em;"></i>
-		<span>{{ title ?? 'Youtube Player' }}</span>
+		<span>{{ title ?? 'YouTube Player' }}</span>
 	</template>
 
 	<div class="poamfof">

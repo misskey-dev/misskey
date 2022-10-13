@@ -118,7 +118,7 @@ export class NodeinfoServerService {
 		router.get(nodeinfo2_0path, async ctx => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
-			delete base.software.repository;
+			delete (base as any).software.repository;
 
 			ctx.body = { version: '2.0', ...base };
 			ctx.set('Cache-Control', 'public, max-age=600');

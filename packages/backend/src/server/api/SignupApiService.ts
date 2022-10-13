@@ -10,6 +10,7 @@ import { IdService } from '@/core/IdService.js';
 import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
+import { ILocalUser } from '@/models/entities/User.js';
 import { SigninService } from './SigninService.js';
 import type Koa from 'koa';
 
@@ -57,6 +58,12 @@ export class SignupApiService {
 	
 			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
 				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
+					ctx.throw(400, e);
+				});
+			}
+
+			if (instance.enableTurnstile && instance.turnstileSecretKey) {
+				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(e => {
 					ctx.throw(400, e);
 				});
 			}
@@ -117,7 +124,7 @@ export class SignupApiService {
 	
 			const link = `${this.config.url}/signup-complete/${code}`;
 	
-			sendEmail(emailAddress, 'Signup',
+			this.emailService.sendEmail(emailAddress, 'Signup',
 				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 				`To complete signup, please click this link: ${link}`);
 	
@@ -167,7 +174,7 @@ export class SignupApiService {
 				emailVerifyCode: null,
 			});
 
-			this.signinService.signin(ctx, account);
+			this.signinService.signin(ctx, account as ILocalUser);
 		} catch (e) {
 			ctx.throw(400, e);
 		}

@@ -725,10 +725,10 @@ export interface IEndpoint {
 	params: Schema;
 }
 
-const endpoints: IEndpoint[] = eps.map(([name, ep]) => {
+const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {
 	return {
 		name: name,
-		meta: ep.meta || {},
+		meta: ep.meta ?? {},
 		params: ep.paramDef,
 	};
 });

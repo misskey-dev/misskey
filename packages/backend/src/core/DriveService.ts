@@ -61,7 +61,7 @@ type AddFileArgs = {
 
 type UploadFromUrlArgs = {
 	url: string;
-	user: { id: User['id']; host: User['host'] } | null;
+	user: { id: User['id']; host: User['host']; driveCapacityOverrideMb: User['driveCapacityOverrideMb'] } | null;
 	folderId?: DriveFolder['id'] | null;
 	uri?: string | null;
 	sensitive?: boolean;

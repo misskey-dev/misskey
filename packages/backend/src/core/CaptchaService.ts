@@ -66,5 +66,16 @@ export class CaptchaService {
 			throw `hcaptcha-failed: ${errorCodes}`;
 		}
 	}
+
+	public async verifyTurnstile(secret: string, response: string): Promise<void> {
+		const result = await this.getCaptchaResponse('https://challenges.cloudflare.com/turnstile/v0/siteverify', secret, response).catch(e => {
+			throw `turnstile-request-failed: ${e}`;
+		});
+
+		if (result.success !== true) {
+			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
+			throw `turnstile-failed: ${errorCodes}`;
+		}
+	}
 }
 

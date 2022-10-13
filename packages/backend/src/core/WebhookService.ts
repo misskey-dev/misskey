@@ -32,7 +32,7 @@ export class WebhookService implements OnApplicationShutdown {
 		return this.webhooks;
 	}
 
-	private async onMessage(_, data) {
+	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {

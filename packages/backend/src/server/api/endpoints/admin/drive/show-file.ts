@@ -76,23 +76,6 @@ export const meta = {
 			properties: {
 				type: 'object',
 				optional: false, nullable: false,
-				properties: {
-					width: {
-						type: 'number',
-						optional: false, nullable: false,
-						example: 1280,
-					},
-					height: {
-						type: 'number',
-						optional: false, nullable: false,
-						example: 720,
-					},
-					avgColor: {
-						type: 'string',
-						optional: true, nullable: false,
-						example: 'rgb(40,65,87)',
-					},
-				},
 			},
 			storedInternal: {
 				type: 'boolean',
@@ -116,15 +99,15 @@ export const meta = {
 			},
 			accessKey: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			thumbnailAccessKey: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			webpublicAccessKey: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			uri: {
 				type: 'string',
@@ -192,12 +175,36 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			if (!me.isAdmin) {
-				delete file.requestIp;
-				delete file.requestHeaders;
-			}
-
-			return file;
+			return {
+				id: file.id,
+				userId: file.userId,
+				userHost: file.userHost,
+				isLink: file.isLink,
+				maybePorn: file.maybePorn,
+				maybeSensitive: file.maybeSensitive,
+				isSensitive: file.isSensitive,
+				folderId: file.folderId,
+				src: file.src,
+				uri: file.uri,
+				webpublicAccessKey: file.webpublicAccessKey,
+				thumbnailAccessKey: file.thumbnailAccessKey,
+				accessKey: file.accessKey,
+				webpublicType: file.webpublicType,
+				webpublicUrl: file.webpublicUrl,
+				thumbnailUrl: file.thumbnailUrl,
+				url: file.url,
+				storedInternal: file.storedInternal,
+				properties: file.properties,
+				blurhash: file.blurhash,
+				comment: file.comment,
+				size: file.size,
+				type: file.type,
+				name: file.name,
+				md5: file.md5,
+				createdAt: file.createdAt.toISOString(),
+				requestIp: me.isAdmin ? file.requestIp : null,
+				requestHeaders: me.isAdmin ? file.requestHeaders : null,
+			};
 		});
 	}
 }

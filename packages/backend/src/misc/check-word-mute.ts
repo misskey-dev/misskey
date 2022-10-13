@@ -5,6 +5,7 @@ import type { User } from '@/models/entities/User.js';
 type NoteLike = {
 	userId: Note['userId'];
 	text: Note['text'];
+	cw?: Note['cw'];
 };
 
 type UserLike = {
