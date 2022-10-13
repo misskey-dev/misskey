@@ -12,6 +12,7 @@ import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { ILocalUser } from '@/models/entities/User.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { SigninService } from './SigninService.js';
 
 @Injectable()
@@ -66,19 +67,19 @@ export class SignupApiService {
 		if (process.env.NODE_ENV !== 'test') {
 			if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
 				await this.captchaService.verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
-					ctx.throw(400, err);
+					throw new FastifyReplyError(400, err);
 				});
 			}
 	
 			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
 				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
-					ctx.throw(400, err);
+					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (instance.enableTurnstile && instance.turnstileSecretKey) {
 				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(err => {
-					ctx.throw(400, err);
+					throw new FastifyReplyError(400, err);
 				});
 			}
 		}
@@ -159,7 +160,7 @@ export class SignupApiService {
 					token: secret,
 				};
 			} catch (err) {
-				ctx.throw(400, err);
+				throw new FastifyReplyError(400, err);
 			}
 		}
 	}
@@ -191,7 +192,7 @@ export class SignupApiService {
 
 			this.signinService.signin(request, reply, account as ILocalUser);
 		} catch (err) {
-			ctx.throw(400, err);
+			throw new FastifyReplyError(400, err);
 		}
 	}
 }

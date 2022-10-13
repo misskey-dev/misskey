@@ -12,6 +12,7 @@ import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { SigninService } from '../SigninService.js';
 
 @Injectable()
@@ -39,15 +40,13 @@ export class GithubServerService {
 
 	public create(fastify: FastifyInstance) {
 		fastify.get('/disconnect/github', async (request, reply) => {
-			if (!this.compareOrigin(ctx)) {
-				ctx.throw(400, 'invalid origin');
-				return;
+			if (!this.compareOrigin(request)) {
+				throw new FastifyReplyError(400, 'invalid origin');
 			}
 
-			const userToken = this.getUserToken(ctx);
+			const userToken = this.getUserToken(request);
 			if (!userToken) {
-				ctx.throw(400, 'signin required');
-				return;
+				throw new FastifyReplyError(400, 'signin required');
 			}
 
 			const user = await this.usersRepository.findOneByOrFail({
@@ -63,13 +62,13 @@ export class GithubServerService {
 				integrations: profile.integrations,
 			});
 
-			ctx.body = 'GitHubの連携を解除しました :v:';
-
 			// Publish i updated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', await this.userEntityService.pack(user, user, {
 				detail: true,
 				includeSecrets: true,
 			}));
+
+			return 'GitHubの連携を解除しました :v:';
 		});
 
 		const getOath2 = async () => {
@@ -88,15 +87,13 @@ export class GithubServerService {
 		};
 
 		fastify.get('/connect/github', async (request, reply) => {
-			if (!this.compareOrigin(ctx)) {
-				ctx.throw(400, 'invalid origin');
-				return;
+			if (!this.compareOrigin(request)) {
+				throw new FastifyReplyError(400, 'invalid origin');
 			}
 
-			const userToken = this.getUserToken(ctx);
+			const userToken = this.getUserToken(request);
 			if (!userToken) {
-				ctx.throw(400, 'signin required');
-				return;
+				throw new FastifyReplyError(400, 'signin required');
 			}
 
 			const params = {
@@ -108,7 +105,7 @@ export class GithubServerService {
 			this.redisClient.set(userToken, JSON.stringify(params));
 
 			const oauth2 = await getOath2();
-			ctx.redirect(oauth2!.getAuthorizeUrl(params));
+			reply.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
 		fastify.get('/signin/github', async (request, reply) => {
@@ -120,7 +117,7 @@ export class GithubServerService {
 				state: uuid(),
 			};
 
-			ctx.cookies.set('signin_with_github_sid', sessid, {
+			reply.cookies.set('signin_with_github_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,
@@ -129,27 +126,25 @@ export class GithubServerService {
 			this.redisClient.set(sessid, JSON.stringify(params));
 
 			const oauth2 = await getOath2();
-			ctx.redirect(oauth2!.getAuthorizeUrl(params));
+			reply.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
 		fastify.get('/gh/cb', async (request, reply) => {
-			const userToken = this.getUserToken(ctx);
+			const userToken = this.getUserToken(request);
 
 			const oauth2 = await getOath2();
 
 			if (!userToken) {
-				const sessid = ctx.cookies.get('signin_with_github_sid');
+				const sessid = request.cookies.get('signin_with_github_sid');
 
 				if (!sessid) {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
-				const code = ctx.query.code;
+				const code = request.query.code;
 
 				if (!code || typeof code !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
@@ -159,9 +154,8 @@ export class GithubServerService {
 					});
 				});
 
-				if (ctx.query.state !== state) {
-					ctx.throw(400, 'invalid session');
-					return;
+				if (request.query.state !== state) {
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { accessToken } = await new Promise<{ accessToken: string }>((res, rej) =>
@@ -181,8 +175,7 @@ export class GithubServerService {
 					'Authorization': `bearer ${accessToken}`,
 				})) as Record<string, unknown>;
 				if (typeof login !== 'string' || typeof id !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const link = await this.userProfilesRepository.createQueryBuilder()
@@ -191,17 +184,15 @@ export class GithubServerService {
 					.getOne();
 
 				if (link == null) {
-					ctx.throw(404, `@${login}と連携しているMisskeyアカウントはありませんでした...`);
-					return;
+					throw new FastifyReplyError(404, `@${login}と連携しているMisskeyアカウントはありませんでした...`);
 				}
 
-				this.signinService.signin(ctx, await this.usersRepository.findOneBy({ id: link.userId }) as ILocalUser, true);
+				return this.signinService.signin(request, reply, await this.usersRepository.findOneBy({ id: link.userId }) as ILocalUser, true);
 			} else {
-				const code = ctx.query.code;
+				const code = request.query.code;
 
 				if (!code || typeof code !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
@@ -211,9 +202,8 @@ export class GithubServerService {
 					});
 				});
 
-				if (ctx.query.state !== state) {
-					ctx.throw(400, 'invalid session');
-					return;
+				if (request.query.state !== state) {
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { accessToken } = await new Promise<{ accessToken: string }>((res, rej) =>
@@ -235,8 +225,7 @@ export class GithubServerService {
 				})) as Record<string, unknown>;
 
 				if (typeof login !== 'string' || typeof id !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const user = await this.usersRepository.findOneByOrFail({
@@ -257,29 +246,27 @@ export class GithubServerService {
 					},
 				});
 
-				ctx.body = `GitHub: @${login} を、Misskey: @${user.username} に接続しました！`;
-
 				// Publish i updated event
 				this.globalEventService.publishMainStream(user.id, 'meUpdated', await this.userEntityService.pack(user, user, {
 					detail: true,
 					includeSecrets: true,
 				}));
+
+				return `GitHub: @${login} を、Misskey: @${user.username} に接続しました！`;
 			}
 		});
-
-		return router;
 	}
 
-	private getUserToken(ctx: Koa.BaseContext): string | null {
-		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
+	private getUserToken(request: FastifyRequest): string | null {
+		return ((request.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
-	private compareOrigin(ctx: Koa.BaseContext): boolean {
+	private compareOrigin(request: FastifyRequest): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
 		}
 	
-		const referer = ctx.headers['referer'];
+		const referer = request.headers['referer'];
 	
 		return (normalizeUrl(referer) === normalizeUrl(this.config.url));
 	}
