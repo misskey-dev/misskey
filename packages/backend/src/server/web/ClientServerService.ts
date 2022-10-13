@@ -281,7 +281,7 @@ export class ClientServerService {
 		};
 
 		// URL preview endpoint
-		fastify.get('/url', ctx => this.urlPreviewService.handle(ctx));
+		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
 		const getFeed = async (acct: string) => {
 			const { username, host } = Acct.parse(acct);
