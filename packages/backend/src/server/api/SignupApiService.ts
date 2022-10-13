@@ -61,6 +61,12 @@ export class SignupApiService {
 					ctx.throw(400, e);
 				});
 			}
+
+			if (instance.enableTurnstile && instance.turnstileSecretKey) {
+				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(e => {
+					ctx.throw(400, e);
+				});
+			}
 		}
 	
 		const username = body['username'];
