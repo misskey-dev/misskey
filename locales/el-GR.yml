@@ -91,9 +91,22 @@ followRequests: "Αιτήματα ακολούθησης"
 unfollow: "Να μην ακολουθώ"
 followRequestPending: "Το αίτημα ακολούθησης εκκρεμεί"
 enterEmoji: "Εισάγετε ένα emoji"
+renote: "Κοινοποίηση σημειώματος"
+unrenote: "Ακύρωση κοινοποίησης"
+renoted: "Κοινοποιήθηκε."
+cantRenote: "Αυτή η δημοσίευση δεν μπορεί να κοινοποιηθεί."
+cantReRenote: "Μία κοινοποίηση δεν μπορεί να κοινοποιηθεί."
 quote: "Παράθεση"
+pinnedNote: "Καρφιτσωμένο σημείωμα"
 pinned: "Καρφίτσωμα στο προφίλ"
+you: "Εσύ"
+clickToShow: "Κάντε κλικ για εμφάνιση"
+add: "Προσθέστε"
+reaction: "Αντιδράσεις"
+reactionSetting: "Αντιδράσεις για εμφάνιση στην επιλογή αντίδρασης"
+reactionSettingDescription2: "Σύρετε για να αλλάξετε τη σειρά, κάντε κλικ για να διαγράψετε, πατήστε \"+\" για να προσθέσετε."
 remove: "Διαγραφή"
+pinnedNotes: "Καρφιτσωμένο σημείωμα"
 userList: "Λίστες"
 smtpUser: "Όνομα μέλους"
 smtpPass: "Κωδικός πρόσβασης"
@@ -110,6 +123,7 @@ _mfm:
 _theme:
   keys:
     mention: "Επισήμανση"
+    renote: "Κοινοποίηση σημειώματος"
 _sfx:
   note: "Σημειώματα"
   notification: "Ειδοποιήσεις"
@@ -149,9 +163,12 @@ _notification:
   _types:
     follow: "Ακολουθεί"
     mention: "Επισήμανση"
+    renote: "Κοινοποίηση σημειώματος"
     quote: "Παράθεση"
+    reaction: "Αντιδράσεις"
   _actions:
     reply: "Απάντηση"
+    renote: "Κοινοποίηση σημειώματος"
 _deck:
   _columns:
     notifications: "Ειδοποιήσεις"
