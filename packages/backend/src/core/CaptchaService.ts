@@ -45,9 +45,13 @@ export class CaptchaService {
 		return await res.json() as CaptchaResponse;
 	}	
 	
-	public async verifyRecaptcha(secret: string, response: string): Promise<void> {
-		const result = await this.getCaptchaResponse('https://www.recaptcha.net/recaptcha/api/siteverify', secret, response).catch(e => {
-			throw `recaptcha-request-failed: ${e}`;
+	public async verifyRecaptcha(secret: string, response: string | null | undefined): Promise<void> {
+		if (response == null) {
+			throw 'recaptcha-failed: no response provided';
+		}
+
+		const result = await this.getCaptchaResponse('https://www.recaptcha.net/recaptcha/api/siteverify', secret, response).catch(err => {
+			throw `recaptcha-request-failed: ${err}`;
 		});
 
 		if (result.success !== true) {
@@ -56,9 +60,13 @@ export class CaptchaService {
 		}
 	}
 
-	public async verifyHcaptcha(secret: string, response: string): Promise<void> {
-		const result = await this.getCaptchaResponse('https://hcaptcha.com/siteverify', secret, response).catch(e => {
-			throw `hcaptcha-request-failed: ${e}`;
+	public async verifyHcaptcha(secret: string, response: string | null | undefined): Promise<void> {
+		if (response == null) {
+			throw 'hcaptcha-failed: no response provided';
+		}
+
+		const result = await this.getCaptchaResponse('https://hcaptcha.com/siteverify', secret, response).catch(err => {
+			throw `hcaptcha-request-failed: ${err}`;
 		});
 
 		if (result.success !== true) {
@@ -67,9 +75,13 @@ export class CaptchaService {
 		}
 	}
 
-	public async verifyTurnstile(secret: string, response: string): Promise<void> {
-		const result = await this.getCaptchaResponse('https://challenges.cloudflare.com/turnstile/v0/siteverify', secret, response).catch(e => {
-			throw `turnstile-request-failed: ${e}`;
+	public async verifyTurnstile(secret: string, response: string | null | undefined): Promise<void> {
+		if (response == null) {
+			throw 'turnstile-failed: no response provided';
+		}
+	
+		const result = await this.getCaptchaResponse('https://challenges.cloudflare.com/turnstile/v0/siteverify', secret, response).catch(err => {
+			throw `turnstile-request-failed: ${err}`;
 		});
 
 		if (result.success !== true) {
