@@ -3,6 +3,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import fastifyAccepts from '@fastify/accepts';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
+import accepts from 'accepts';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
 import * as url from '@/misc/prelude/url.js';
@@ -18,7 +19,6 @@ import { QueryService } from '@/core/QueryService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { FindOptionsWhere } from 'typeorm';
-import accepts from 'accepts';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -407,17 +407,17 @@ export class ActivityPubServerService {
 				const store = {};
 				return {
 					get(key) {
-						return store[key] || null;
+						return store[key] ?? null;
 					},
 					set(key, value) {
 						store[key] = value;
 					},
-				},
+				};
 			},
 			deriveConstraint(request, ctx) {
 				const accepted = accepts(request).type(['html', ACTIVITY_JSON, LD_JSON]);
 				const isAp = typeof accepted === 'string' && !accepted.match(/html/);
-				return isAp ? 'ap' : 'html'
+				return isAp ? 'ap' : 'html';
 			},
 		});
 
