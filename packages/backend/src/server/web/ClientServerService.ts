@@ -6,7 +6,7 @@ import ms from 'ms';
 import sharp from 'sharp';
 import pug from 'pug';
 import { In, IsNull } from 'typeorm';
-import { FastifyInstance, FastifyReply } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import pointOfView from 'point-of-view';
 import type { Config } from '@/config.js';
@@ -79,6 +79,7 @@ export class ClientServerService {
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {
+		this.createServer = this.createServer.bind(this);
 	}
 
 	private async manifestHandler(reply: FastifyReply) {
@@ -96,7 +97,7 @@ export class ClientServerService {
 		return (res);
 	}
 
-	public createServer(fastify: FastifyInstance) {
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		/* TODO
 		//#region Bull Dashboard
 		const bullBoardPath = '/queue';
@@ -556,5 +557,7 @@ export class ClientServerService {
 		fastify.get('*', async (request, reply) => {
 			return await renderBase(reply);
 		});
+
+		done();
 	}
 }

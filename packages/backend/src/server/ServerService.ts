@@ -140,9 +140,9 @@ export class ServerService {
 			}
 
 			if (cluster.isWorker) {
-			process.send!('listenFailed');
+				process.send!('listenFailed');
 			} else {
-			// disableClustering
+				// disableClustering
 				process.exit(1);
 			}
 		});
