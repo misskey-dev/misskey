@@ -161,7 +161,7 @@ export class ClientServerService {
 		//#region static assets
 
 		fastify.register(fastifyStatic, {
-			root: '',
+			root: _dirname,
 			serve: false,
 		});
 

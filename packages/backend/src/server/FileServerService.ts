@@ -62,7 +62,7 @@ export class FileServerService {
 		});
 
 		fastify.register(fastifyStatic, {
-			root: '',
+			root: _dirname,
 			serve: false,
 		});
 
@@ -74,7 +74,7 @@ export class FileServerService {
 		});
 
 		fastify.get<{ Params: { key: string; } }>('/:key', async (request, reply) => await this.sendDriveFile(request, reply));
-		fastify.get<{ Params: { key: string; } }>('/:key/(.*)', async (request, reply) => await this.sendDriveFile(request, reply));
+		fastify.get<{ Params: { key: string; } }>('/:key/*', async (request, reply) => await this.sendDriveFile(request, reply));
 
 		done();
 	}
