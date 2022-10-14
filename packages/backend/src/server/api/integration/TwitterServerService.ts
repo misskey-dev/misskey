@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import autwh from 'autwh';
@@ -36,9 +36,10 @@ export class TwitterServerService {
 		private metaService: MetaService,
 		private signinService: SigninService,
 	) {
+		this.create = this.create.bind(this);
 	}
 
-	public create(fastify: FastifyInstance) {
+	public create(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.get('/disconnect/twitter', async (request, reply) => {
 			if (!this.compareOrigin(request)) {
 				throw new FastifyReplyError(400, 'invalid origin');
@@ -200,6 +201,8 @@ export class TwitterServerService {
 				return `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
 			}
 		});
+
+		done();
 	}
 
 	private getUserToken(request: FastifyRequest): string | null {

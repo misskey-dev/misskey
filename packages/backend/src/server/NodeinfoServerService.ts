@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UsersRepository } from '@/models/index.js';
@@ -27,6 +27,7 @@ export class NodeinfoServerService {
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
 	) {
+		this.createServer = this.createServer.bind(this);
 	}
 
 	public getLinks() {
@@ -39,7 +40,7 @@ export class NodeinfoServerService {
 			}];
 	}
 
-	public createServer(fastify: FastifyInstance) {
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		const nodeinfo2 = async () => {
 			const now = Date.now();
 			const [
@@ -121,5 +122,7 @@ export class NodeinfoServerService {
 			reply.header('Cache-Control', 'public, max-age=600');
 			return { version: '2.0', ...base };
 		});
+
+		done();
 	}
 }

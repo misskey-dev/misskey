@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
@@ -21,9 +21,10 @@ export class WellKnownServerService {
 
 		private nodeinfoServerService: NodeinfoServerService,
 	) {
+		this.createServer = this.createServer.bind(this);
 	}
 
-	public createServer(fastify: FastifyInstance) {
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		const XRD = (...x: { element: string, value?: string, attributes?: Record<string, string> }[]) =>
 			`<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">${x.map(({ element, value, attributes }) =>
 				`<${
@@ -157,5 +158,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 		fastify.all(allPath, async (request, reply) => {
 			reply.code(404);
 		});
+
+		done();
 	}
 }

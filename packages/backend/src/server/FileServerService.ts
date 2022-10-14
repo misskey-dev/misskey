@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import rename from 'rename';
 import type { Config } from '@/config.js';
@@ -44,6 +44,8 @@ export class FileServerService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
+
+		this.createServer = this.createServer.bind(this);
 	}
 
 	public commonReadableHandlerGenerator(reply: FastifyReply) {
@@ -54,7 +56,7 @@ export class FileServerService {
 		};
 	}
 	
-	public createServer(fastify: FastifyInstance) {
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addHook('onRequest', (request, reply) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 		});
@@ -73,6 +75,8 @@ export class FileServerService {
 
 		fastify.get<{ Params: { key: string; } }>('/:key', async (request, reply) => await this.sendDriveFile(request, reply));
 		fastify.get<{ Params: { key: string; } }>('/:key/(.*)', async (request, reply) => await this.sendDriveFile(request, reply));
+
+		done();
 	}
 
 	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {

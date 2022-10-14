@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import fastifyAccepts from '@fastify/accepts';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
@@ -57,6 +57,7 @@ export class ActivityPubServerService {
 		private userKeypairStoreService: UserKeypairStoreService,
 		private queryService: QueryService,
 	) {
+		this.createServer = this.createServer.bind(this);
 	}
 
 	private setResponseType(request: FastifyRequest, reply: FastifyReply): void {
@@ -400,7 +401,7 @@ export class ActivityPubServerService {
 		return (this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser)));
 	}
 
-	public createServer(fastify: FastifyInstance) {
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addConstraintStrategy({
 			name: 'apOrHtml',
 			storage() {
@@ -607,5 +608,7 @@ export class ActivityPubServerService {
 			this.setResponseType(request, reply);
 			return (this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee)));
 		});
+
+		done();
 	}
 }

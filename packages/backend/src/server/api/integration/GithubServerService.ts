@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -36,9 +36,10 @@ export class GithubServerService {
 		private metaService: MetaService,
 		private signinService: SigninService,
 	) {
+		this.create = this.create.bind(this);
 	}
 
-	public create(fastify: FastifyInstance) {
+	public create(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.get('/disconnect/github', async (request, reply) => {
 			if (!this.compareOrigin(request)) {
 				throw new FastifyReplyError(400, 'invalid origin');
@@ -255,6 +256,8 @@ export class GithubServerService {
 				return `GitHub: @${login} を、Misskey: @${user.username} に接続しました！`;
 			}
 		});
+
+		done();
 	}
 
 	private getUserToken(request: FastifyRequest): string | null {

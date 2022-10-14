@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import { ModuleRef, repl } from '@nestjs/core';
@@ -40,9 +40,10 @@ export class ApiServerService {
 		private discordServerService: DiscordServerService,
 		private twitterServerService: TwitterServerService,
 	) {
+		this.createServer = this.createServer.bind(this);
 	}
 
-	public createServer(fastify: FastifyInstance) {
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.register(cors, {
 			origin: '*',
 		});
@@ -89,9 +90,9 @@ export class ApiServerService {
 			this.apiCallService.handleRequest(endpoint, request, reply);
 		});
 
-		fastify.post('/signup', ctx => this.signupApiServiceService.signup(ctx));
-		fastify.post('/signin', ctx => this.signinApiServiceService.signin(ctx));
-		fastify.post('/signup-pending', ctx => this.signupApiServiceService.signupPending(ctx));
+		fastify.post('/signup', (request, reply) => this.signupApiServiceService.signup(request, reply));
+		fastify.post('/signin', (request, reply) => this.signinApiServiceService.signin(request, reply));
+		fastify.post('/signup-pending', (request, reply) => this.signupApiServiceService.signupPending(request, reply));
 
 		fastify.register(this.discordServerService.create);
 		fastify.register(this.githubServerService.create);
@@ -127,9 +128,6 @@ export class ApiServerService {
 			}
 		});
 
-		// Return 404 for unknown API
-		fastify.all('*', (request, reply) => {
-			reply.code(404);
-		});
+		done();
 	}
 }

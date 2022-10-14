@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import sharp from 'sharp';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -29,9 +29,11 @@ export class MediaProxyServerService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
+
+		this.createServer = this.createServer.bind(this);
 	}
 
-	public createServer(fastify: FastifyInstance) {
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addHook('onRequest', (request, reply) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 		});
@@ -40,6 +42,8 @@ export class MediaProxyServerService {
 			Params: { url: string; };
 			Querystring: { url?: string; };
 		}>('/:url*', async (request, reply) => await this.handler(request, reply));
+
+		done();
 	}
 
 	private async handler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {

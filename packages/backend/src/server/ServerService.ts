@@ -147,6 +147,6 @@ export class ServerService {
 			}
 		});
 
-		fastify.server.listen(this.config.port);
+		fastify.listen({ port: this.config.port });
 	}
 }
