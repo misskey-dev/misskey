@@ -454,6 +454,14 @@
     readable-stream "^4.0.0"
     send "^0.18.0"
 
+"@fastify/view@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@fastify/view/-/view-7.1.0.tgz#7fb3dcf24b0ad1fc5a393860a56d9a4939b8a68a"
+  integrity sha512-CLl5XnTvm1YZ3+VvXZDyA19Gejr+2jFG8dPTEO3D+lQlephSD2ukMbpgT56Insmu4ZEw+jikpXY3WBrVHFUt0g==
+  dependencies:
+    fastify-plugin "^4.0.0"
+    hashlru "^2.3.0"
+
 "@gar/promisify@^1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
@@ -4061,11 +4069,6 @@ fast-xml-parser@^3.19.0:
   resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.19.0.tgz#cb637ec3f3999f51406dd8ff0e6fc4d83e520d01"
   integrity sha512-4pXwmBplsCPv8FOY1WRakF970TjNGnGnfbOnLqjlYvMiF1SR3yOHyxMR/YCXpPTOspNF5gwudqktIP4VsWkvBg==
 
-fastify-plugin@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.1.tgz#79e84c29f401020f38b524f59f2402103fd21ed2"
-  integrity sha512-qKcDXmuZadJqdTm6vlCqioEbyewF60b/0LOFCcYN1B6BIZGlYJumWWOYs70SFYLDAH4YqdE1cxH/RKMG7rFxgA==
-
 fastify-plugin@^4.0.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-4.2.1.tgz#4b80020957938dbc44b8ad4a898fd8bcfbab3f65"
@@ -7428,14 +7431,6 @@ pngjs@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-5.0.0.tgz#e79dd2b215767fd9c04561c01236df960bce7fbb"
   integrity sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==
-
-point-of-view@5:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/point-of-view/-/point-of-view-5.3.0.tgz#6924ea638e490d7481c7e9d4446ccb247d7612a5"
-  integrity sha512-KFUtK1DEX2HDJeisS2chdIBSxwSaV4fZ925A1V4K3PbTJbZeKK0UwPiPZQMTbsDd3G2azo76JWmhYdK1M2GLSA==
-  dependencies:
-    fastify-plugin "^3.0.0"
-    hashlru "^2.3.0"
 
 postcss@^8.3.11:
   version "8.3.11"

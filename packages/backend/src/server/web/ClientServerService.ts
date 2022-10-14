@@ -8,7 +8,7 @@ import pug from 'pug';
 import { In, IsNull } from 'typeorm';
 import { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
-import pointOfView from 'point-of-view';
+import fastifyView from '@fastify/view';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
@@ -139,7 +139,7 @@ export class ClientServerService {
 		//#endregion
 		*/
 
-		fastify.register(pointOfView, {
+		fastify.register(fastifyView, {
 			root: _dirname + '/views',
 			engine: {
 				pug: pug,
