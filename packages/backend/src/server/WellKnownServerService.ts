@@ -154,11 +154,6 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 			}
 		});
 
-		// Return 404 for other .well-known
-		fastify.all(allPath, async (request, reply) => {
-			reply.code(404);
-		});
-
 		done();
 	}
 }
