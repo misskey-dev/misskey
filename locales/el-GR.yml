@@ -121,7 +121,7 @@ unsuspendConfirm: "Θέλετε σίγουρα να άρετε την αποβο
 selectList: "Επιλέξτε μία λίστα"
 selectAntenna: "Επιλέξτε μία κεραία"
 selectWidget: "Επιλέξτε ένα μαραφέτι"
-editWidgets: "Επεξεργασία μαραφετιών"
+editWidgets: "Επεξεργασία μαραφετίων"
 editWidgetsExit: "Ολοκληρώθηκε"
 customEmojis: "Επιπλέον emoji"
 emojiName: "Όνομα emoji"
@@ -276,6 +276,8 @@ _mfm:
   quote: "Παράθεση"
   emoji: "Επιπλέον emoji"
   search: "Αναζήτηση"
+_channel:
+  featured: "Δημοφιλή"
 _theme:
   keys:
     panel: "Πίνακας"
@@ -299,8 +301,16 @@ _antennaSources:
 _widgets:
   notifications: "Ειδοποιήσεις"
   timeline: "Χρονολόγιο"
+  calendar: "Ημερολόγιο"
+  trends: "Δημοφιλή"
+  clock: "Ρολόι"
   activity: "Δραστηριότητα"
+  photos: "Φωτογραφίες"
+  digitalClock: "Ψηφιακό ρολόι"
   federation: "Ομοσπονδία"
+  postForm: "Φόρμα δημοσίευσης"
+  button: "Κουμπί"
+  onlineUsers: "Συνδεδεμένα μέλη"
 _cw:
   show: "Φόρτωσε περισσότερα"
 _visibility:
@@ -356,7 +366,9 @@ _notification:
     reply: "Απάντηση"
     renote: "Κοινοποίηση σημειώματος"
 _deck:
+  widgetsIntroduction: "Παρακαλούμε επιλέξτε \"Επεξεργασία μαραφετίων\" στο μενού και προσθέστε μαραφέτι."
   _columns:
+    widgets: "Μαραφέτια"
     notifications: "Ειδοποιήσεις"
     tl: "Χρονολόγιο"
     antenna: "Κεραίες"
