@@ -24,7 +24,7 @@ noAccountDescription: "Αυτό το μέλος δεν έχει γράψει β�
 login: "Σύνδεση"
 loggingIn: "Συνδέεστε"
 logout: "Αποσύνδεση"
-signup: "Εγγραφή"
+signup: "Δημιουργία λογαριασμού"
 uploading: "Ανέβασμα..."
 save: "Αποθήκευση"
 users: "Μέλη"
@@ -237,6 +237,7 @@ next: "Επόμενο"
 noteOf: "Σημείωμα από {user}"
 inviteToGroup: "Πρόσκληση στην ομάδα"
 quoteAttached: "Παράθεση"
+signinRequired: "Παρακαλούμε δημιουργήστε λογαριασμό ή συνδεθείτε πριν συνεχίσετε"
 category: "Κατηγορία"
 tags: "Ετικέτες"
 createAccount: "Δημιουργία λογαριασμού"
@@ -264,6 +265,7 @@ info: "Πληροφορίες"
 user: "Μέλη"
 global: "Παγκόσμιο"
 searchResult: "Αποτελέσματα αναζήτησης"
+controlPanel: "Πίνακας ελέγχου"
 searchByGoogle: "Αναζήτηση"
 file: "Αρχεία"
 _email:
@@ -276,6 +278,7 @@ _mfm:
   search: "Αναζήτηση"
 _theme:
   keys:
+    panel: "Πίνακας"
     mention: "Επισήμανση"
     renote: "Κοινοποίηση σημειώματος"
 _sfx:
