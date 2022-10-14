@@ -62,8 +62,9 @@ export class ServerService {
 		// HSTS
 		// 6months (15552000sec)
 		if (this.config.url.startsWith('https') && !this.config.disableHsts) {
-			fastify.addHook('onRequest', (request, reply) => {
+			fastify.addHook('onRequest', (request, reply, done) => {
 				reply.header('strict-transport-security', 'max-age=15552000; preload');
+				done();
 			});
 		}
 

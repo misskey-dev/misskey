@@ -34,8 +34,9 @@ export class MediaProxyServerService {
 	}
 
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.addHook('onRequest', (request, reply) => {
+		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
+			done();
 		});
 
 		fastify.get<{

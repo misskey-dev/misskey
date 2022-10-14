@@ -38,11 +38,12 @@ export class WellKnownServerService {
 		const jrd = 'application/jrd+json';
 		const xrd = 'application/xrd+xml';
 
-		fastify.addHook('onRequest', (request, reply) => {
+		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Access-Control-Allow-Headers', 'Accept');
 			reply.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
 			reply.header('Access-Control-Allow-Origin', '*');
 			reply.header('Access-Control-Expose-Headers', 'Vary');
+			done();
 		});
 
 		fastify.options(allPath, async (request, reply) => {

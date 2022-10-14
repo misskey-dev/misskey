@@ -153,9 +153,10 @@ export class ClientServerService {
 			},
 		});
 
-		fastify.addHook('onRequest', (request, reply) => {
+		fastify.addHook('onRequest', (request, reply, done) => {
 			// クリックジャッキング防止のためiFrameの中に入れられないようにする
 			reply.header('X-Frame-Options', 'DENY');
+			done();
 		});
 
 		//#region static assets
