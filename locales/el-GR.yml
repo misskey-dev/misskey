@@ -173,7 +173,7 @@ startMessaging: "Ξεκινήστε μία συνομιλία"
 nUsersRead: "διαβάστηκε από {n}"
 tos: "Όροι χρήσης"
 start: "Ας αρχίσουμε"
-home: "Αρχική"
+home: "Σπιτικό"
 activity: "Δραστηριότητα"
 images: "Εικόνες"
 birthday: "Γενέθλια"
@@ -256,14 +256,19 @@ smtpUser: "Όνομα μέλους"
 smtpPass: "Κωδικός πρόσβασης"
 notificationSetting: "Ρυθμίσεις ειδοποιήσεων"
 notificationSettingDesc: "Επιλέξτε τους τύπους ειδοποιήσεων που εμφανίζονται"
+noteFavoritesCount: "Αριθμός αγαπημένων σημειωμάτων"
 clearCache: "Εκκαθάριση προσωρινής μνήμης"
+emailNotification: "Ειδοποιήσεις μέσω mail"
+inChannelSearch: "Αναζήτηση στο κανάλι"
 info: "Πληροφορίες"
 user: "Μέλη"
+global: "Παγκόσμιο"
+searchResult: "Αποτελέσματα αναζήτησης"
 searchByGoogle: "Αναζήτηση"
 file: "Αρχεία"
 _email:
   _follow:
-    title: "σε ακολούθησε"
+    title: "Έχετε ένα νέο ακόλουθο"
 _mfm:
   mention: "Επισήμανση"
   quote: "Παράθεση"
@@ -277,9 +282,17 @@ _sfx:
   note: "Σημειώματα"
   notification: "Ειδοποιήσεις"
   chat: "Συνομιλία"
+  chatBg: "Συνομιλία (Παρασκήνιο)"
+  channel: "Ειδοποιήσεις καναλιών"
 _permissions:
+  "read:favorites": "Δείτε τη λίστα των αγαπημένων σας"
+  "write:favorites": "Επεξεργαστείτε τη λίστα των αγαπημένων σας"
+  "read:messaging": "Δείτε τις συνομιλίες σας"
+  "write:messaging": "Γράψτε ή διαγράψτε μηνύματα συνομιλίας"
   "read:notifications": "Δείτε τις ειδοποιήσεις σας"
   "write:notifications": "Διαχειριστείτε τις ειδοποιήσεις σας"
+_antennaSources:
+  homeTimeline: "Σημειώματα από μέλη που ακολουθείτε"
 _widgets:
   notifications: "Ειδοποιήσεις"
   timeline: "Χρονολόγιο"
@@ -288,7 +301,8 @@ _widgets:
 _cw:
   show: "Φόρτωσε περισσότερα"
 _visibility:
-  home: "Αρχική"
+  home: "Σπιτικό"
+  homeDescription: "Δημοσίευση στο σπιτικό χρονολόγιο μόνο"
   followers: "Ακολουθούν"
 _profile:
   name: "Όνομα"
@@ -301,7 +315,10 @@ _exportOrImport:
 _charts:
   federation: "Ομοσπονδία"
 _timelines:
-  home: "Αρχική"
+  home: "Σπιτικό"
+  local: "Τοπικό"
+  social: "Κοινωνικό"
+  global: "Παγκόσμιο"
 _pages:
   blocks:
     image: "Εικόνες"
@@ -324,9 +341,10 @@ _pages:
     types:
       array: "Λίστες"
 _notification:
+  youGotMessagingMessageFromUser: "{name} σάς έστειλε ένα μήνυμα συνομιλίας"
   youWereFollowed: "σε ακολούθησε"
   _types:
-    follow: "Ακολουθεί"
+    follow: "Νέοι ακόλουθοι"
     mention: "Επισήμανση"
     renote: "Κοινοποίηση σημειώματος"
     quote: "Παράθεση"
