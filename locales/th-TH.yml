@@ -1248,26 +1248,69 @@ _cw:
   show: "โหลดเพิ่มเติม"
   files: "{count} ไฟล์"
 _poll:
+  noOnlyOneChoice: "จำเป็นต้องมีอย่างน้อยสองตัวเลือก"
+  choiceN: "ตัวเลือก {n}"
+  noMore: "คุณไม่สามารถเพิ่มตัวเลือกอื่นได้"
   canMultipleVote: "สามารถตอบได้หลายคำตอบ"
   expiration: "สิ้นสุดการสำรวจความคิดเห็น"
   infinite: "ไม่ต้องเลย"
+  at: "จบที่..."
+  after: "สิ้นสุดหลัง..."
   deadlineDate: "วันสิ้นสุด"
   deadlineTime: "ชั่วโมง"
   duration: "ระยะเวลา"
   votesCount: "{n} คะแนนเสียง"
   totalVotes: "{n} คะแนนเสียงทั้งหมด"
   vote: "โหวต"
+  showResult: "ดูผลลัพธ์"
+  voted: "โหวตแล้ว"
+  closed: "สิ้นสุดแล้ว"
+  remainingDays: "{d} วัน(s) {h} ชั่วโมง(s) ที่เหลืออยู่"
+  remainingHours: "{h} ชั่วโมง(s) {m} นาที(s) ที่เหลืออยู่"
+  remainingMinutes: "{m} นาที(s) {s} วินาที(s) ที่เหลืออยู่"
+  remainingSeconds: "{s} นาที(s) ที่เหลืออยู่"
 _visibility:
+  public: "สาธารณะ"
+  publicDescription: "โน้ตของคุณจะปรากฏแก่ผู้ใช้ทุกคน"
   home: "หน้าแรก"
+  homeDescription: "โพสลงไทม์ไลน์ที่บ้านเท่านั้น"
   followers: "ผู้ติดตาม"
+  followersDescription: "ทำให้ผู้ติดตามนั้นมองเห็นแค่คุณเท่านั้น"
+  specified: "ไดเร็ค"
+  specifiedDescription: "ทำให้มองเห็นได้เฉพาะผู้ใช้ที่ระบุเท่านั้น"
+  localOnly: "เฉพาะท้องถิ่น"
+  localOnlyDescription: "ผู้ใช้ระยะไกลนั้นไม่สามารถมองเห็นได้"
+_postForm:
+  replyPlaceholder: "ตอบกลับโน้ตนี้..."
+  quotePlaceholder: "อ้างโน้ตนี้..."
+  channelPlaceholder: "โพสต์ลงช่อง..."
+  _placeholders:
+    a: "คุณเป็นอะไรไปหรอ?"
+    b: "เกิดอะไรขึ้นรอบตัวคุณ?"
+    c: "คุณกำลังคิดอะไรอยู่?"
+    d: "คุณต้องการจะพูดอะไร?"
+    e: "เริ่มเขียน..."
+    f: "กำลังรอให้คุณเขียน..."
 _profile:
   name: "ชื่อ"
   username: "ชื่อผู้ใช้"
+  description: "ประวัติ"
+  youCanIncludeHashtags: "คุณยังสามารถใส่แฮชแท็กในประวัติของคุณได้นะ"
+  metadata: "ข้อมูลเพิ่มเติม"
+  metadataEdit: "แก้ไขข้อมูลเพิ่มเติม"
+  metadataDescription: "ใช้สิ่งเหล่านี้ คุณสามารถแสดงฟิลด์ข้อมูลเพิ่มเติมในโปรไฟล์ของคุณ"
+  metadataLabel: "ป้ายชื่อ"
+  metadataContent: "เนื้อหา"
+  changeAvatar: "เปลี่ยนอวาตาร์"
+  changeBanner: "เปลี่ยนแบนเนอร์"
 _exportOrImport:
+  allNotes: "โน้ตทั้งหมด"
   followingList: "กำลังติดตาม"
   muteList: "ปิดเสียง"
   blockingList: "บล็อค"
   userLists: "รายการ"
+  excludeMutingUsers: "ยกเว้นผู้ใช้ที่ปิดเสียง"
+  excludeInactiveUsers: "ยกเว้นผู้ใช้ที่ไม่ได้ใช้งาน"
 _charts:
   federation: "สหพันธ์"
 _timelines:
@@ -1275,6 +1318,12 @@ _timelines:
 _pages:
   blocks:
     image: "รูปภาพ"
+    _post:
+      text: "เนื้อหา"
+    _button:
+      _action:
+        _dialog:
+          content: "เนื้อหา"
   script:
     categories:
       list: "รายการ"
@@ -1311,3 +1360,4 @@ _deck:
     antenna: "เสาอากาศ"
     list: "รายการ"
     mentions: "พูดถึง"
+    direct: "ไดเร็ค"
