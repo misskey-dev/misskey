@@ -173,7 +173,7 @@ startMessaging: "Ξεκινήστε μία συνομιλία"
 nUsersRead: "διαβάστηκε από {n}"
 tos: "Όροι χρήσης"
 start: "Ας αρχίσουμε"
-home: "Σπιτικό"
+home: "Κεντρικό"
 activity: "Δραστηριότητα"
 images: "Εικόνες"
 birthday: "Γενέθλια"
@@ -319,8 +319,8 @@ _widgets:
 _cw:
   show: "Φόρτωσε περισσότερα"
 _visibility:
-  home: "Αρχική"
-  homeDescription: "Δημοσίευση στο σπιτικό χρονολόγιο μόνο"
+  home: "Κεντρικό"
+  homeDescription: "Δημοσίευση στο κεντρικό χρονολόγιο μόνο"
   followers: "Ακολουθούν"
 _profile:
   name: "Όνομα"
@@ -333,7 +333,7 @@ _exportOrImport:
 _charts:
   federation: "Ομοσπονδία"
 _timelines:
-  home: "Σπιτικό"
+  home: "Κεντρικό"
   local: "Τοπικό"
   social: "Κοινωνικό"
   global: "Παγκόσμιο"
