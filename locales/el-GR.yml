@@ -319,7 +319,7 @@ _widgets:
 _cw:
   show: "Φόρτωσε περισσότερα"
 _visibility:
-  home: "Σπιτικό"
+  home: "Αρχική"
   homeDescription: "Δημοσίευση στο σπιτικό χρονολόγιο μόνο"
   followers: "Ακολουθούν"
 _profile:
