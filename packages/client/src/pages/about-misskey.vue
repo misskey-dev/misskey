@@ -12,7 +12,9 @@
 					<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 				</div>
 				<div class="_formBlock" style="text-align: center;">
-					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
+					{{ i18n.ts._aboutMisskey.about }}<br>
+					喵窝使用的是基于原版 Misskey 的修改版本。 <br>
+					<a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
 				</div>
 				<div class="_formBlock" style="text-align: center;">
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
@@ -22,6 +24,11 @@
 						<FormLink to="https://github.com/misskey-dev/misskey" external>
 							<template #icon><i class="fas fa-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
+							<template #suffix>GitHub</template>
+						</FormLink>
+						<FormLink to="https://github.com/nyaone/misskey" external>
+							<template #icon><i class="fas fa-code"></i></template>
+							喵窝の源代码
 							<template #suffix>GitHub</template>
 						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
@@ -34,6 +41,12 @@
 							{{ i18n.ts._aboutMisskey.donate }}
 							<template #suffix>Patreon</template>
 						</FormLink>
+					</div>
+				</FormSection>
+				<FormSection>
+					<template #label><Mfm text="$[tada 🍬]"/> 喵窝的守护者</template>
+					<div class="_formLinks">
+						<FormLink to="https://nya.one/@Candinya">@Candinya</FormLink>
 					</div>
 				</FormSection>
 				<FormSection>
