@@ -83,9 +83,33 @@ export class ApiServerService {
 			});
 		}
 
-		fastify.post('/signup', (request, reply) => this.signupApiServiceService.signup(request, reply));
-		fastify.post('/signin', (request, reply) => this.signinApiServiceService.signin(request, reply));
-		fastify.post('/signup-pending', (request, reply) => this.signupApiServiceService.signupPending(request, reply));
+		fastify.post<{
+			Body: {
+				username: string;
+				password: string;
+				host?: string;
+				invitationCode?: string;
+				emailAddress?: string;
+				'hcaptcha-response'?: string;
+				'g-recaptcha-response'?: string;
+				'turnstile-response'?: string;
+			}
+		}>('/signup', (request, reply) => this.signupApiServiceService.signup(request, reply));
+
+		fastify.post<{
+			Body: {
+				username: string;
+				password: string;
+				token?: string;
+				signature?: string;
+				authenticatorData?: string;
+				clientDataJSON?: string;
+				credentialId?: string;
+				challengeId?: string;
+			};
+		}>('/signin', (request, reply) => this.signinApiServiceService.signin(request, reply));
+
+		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiServiceService.signupPending(request, reply));
 
 		fastify.register(this.discordServerService.create);
 		fastify.register(this.githubServerService.create);
