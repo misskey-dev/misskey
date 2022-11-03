@@ -68,14 +68,14 @@ const ok = async () => {
 				formData.append('folderId', defaultStore.state.uploadFolder);
 			}
 
-			fetch(apiUrl + '/drive/files/create', {
+			window.fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
 				body: formData,
 			})
-			.then(response => response.json())
-			.then(f => {
-				res(f);
-			});
+				.then(response => response.json())
+				.then(f => {
+					res(f);
+				});
 		});
 	});
 
