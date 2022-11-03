@@ -19,6 +19,7 @@ You should also include the user name that made the change.
 ### Improvements
 
 ### Bugfixes
+- Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 
 ## 12.119.0 (2022/09/10)
 
