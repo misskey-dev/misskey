@@ -32,7 +32,7 @@
 import { ref } from 'vue';
 import JSON5 from 'json5';
 import { Endpoints } from 'misskey-js';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkSwitch from '@/components/form/switch.vue';

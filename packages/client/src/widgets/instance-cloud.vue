@@ -2,7 +2,7 @@
 <MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-instance-cloud">
 	<div class="">
 		<MkTagCloud v-if="activeInstances">
-			<li v-for="instance in activeInstances">
+			<li v-for="instance in activeInstances" :key="instance.id">
 				<a @click.prevent="onInstanceClick(instance)">
 					<img style="width: 32px;" :src="instance.iconUrl">
 				</a>
@@ -16,8 +16,8 @@
 import { } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import MkContainer from '@/components/ui/container.vue';
-import MkTagCloud from '@/components/tag-cloud.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
 

@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import FormRange from '@/components/form/range.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
@@ -90,7 +90,7 @@ async function edit(type) {
 		},
 		volume: {
 			type: 'range',
-			mim: 0,
+			min: 0,
 			max: 1,
 			step: 0.05,
 			textConverter: (v) => `${Math.floor(v * 100)}%`,

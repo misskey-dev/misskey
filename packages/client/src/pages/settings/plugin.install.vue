@@ -18,8 +18,8 @@ import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
 import { v4 as uuid } from 'uuid';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormButton from '@/components/ui/button.vue';
-import FormInfo from '@/components/ui/info.vue';
+import FormButton from '@/components/MkButton.vue';
+import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
@@ -79,7 +79,7 @@ async function install() {
 	}
 
 	const token = permissions == null || permissions.length === 0 ? null : await new Promise((res, rej) => {
-		os.popup(defineAsyncComponent(() => import('@/components/token-generate-window.vue')), {
+		os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: name,

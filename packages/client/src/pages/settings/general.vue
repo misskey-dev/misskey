@@ -56,10 +56,10 @@
 
 		<FormRadios v-model="fontSize" class="_formBlock">
 			<template #label>{{ i18n.ts.fontSize }}</template>
-			<option value="small"><span style="font-size: 14px;">Aa</span></option>
-			<option :value="null"><span style="font-size: 16px;">Aa</span></option>
-			<option value="large"><span style="font-size: 18px;">Aa</span></option>
-			<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
+			<option :value="null"><span style="font-size: 14px;">Aa</span></option>
+			<option value="1"><span style="font-size: 15px;">Aa</span></option>
+			<option value="2"><span style="font-size: 16px;">Aa</span></option>
+			<option value="3"><span style="font-size: 17px;">Aa</span></option>
 		</FormRadios>
 	</FormSection>
 
@@ -81,7 +81,7 @@
 		<option value="force">{{ i18n.ts._nsfw.force }}</option>
 	</FormSelect>
 
-	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" class="_formBlock">
+	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing class="_formBlock">
 		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 	</FormRange>
@@ -100,7 +100,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FormRange from '@/components/form/range.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
-import MkLink from '@/components/link.vue';
+import MkLink from '@/components/MkLink.vue';
 import { langs } from '@/config';
 import { defaultStore } from '@/store';
 import * as os from '@/os';

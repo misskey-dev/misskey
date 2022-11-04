@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" class="mkw-activity">
-	<template #header><i class="fas fa-chart-simple"></i>{{ $ts._widgets.activity }}</template>
+	<template #header><i class="fas fa-chart-simple"></i>{{ i18n.ts._widgets.activity }}</template>
 	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
 
 	<div>
@@ -20,8 +20,9 @@ import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
 const name = 'activity';
 

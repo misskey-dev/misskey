@@ -23,6 +23,7 @@
 					<span class="text">{{ instanceName }}</span>
 				</h1>
 				<div class="about">
+					<!-- eslint-disable-next-line vue/no-v-html -->
 					<div class="desc" v-html="meta.description || i18n.ts.headlineMisskey"></div>
 				</div>
 				<div class="action">
@@ -47,13 +48,13 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { toUnicode } from 'punycode/';
-import MarqueeText from 'vue-marquee-text-component';
 import XTimeline from './welcome.timeline.vue';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import MkButton from '@/components/ui/button.vue';
-import XNote from '@/components/note.vue';
-import MkFeaturedPhotos from '@/components/featured-photos.vue';
+import MarqueeText from '@/components/MkMarquee.vue';
+import XSigninDialog from '@/components/MkSigninDialog.vue';
+import XSignupDialog from '@/components/MkSignupDialog.vue';
+import MkButton from '@/components/MkButton.vue';
+import XNote from '@/components/MkNote.vue';
+import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import number from '@/filters/number';

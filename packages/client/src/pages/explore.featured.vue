@@ -1,6 +1,6 @@
 <template>
 <MkSpacer :content-max="800">
-	<MkTab v-model="tab">
+	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
 		<option value="notes">{{ i18n.ts.notes }}</option>
 		<option value="polls">{{ i18n.ts.poll }}</option>
 	</MkTab>
@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import XNotes from '@/components/notes.vue';
-import MkTab from '@/components/tab.vue';
+import XNotes from '@/components/MkNotes.vue';
+import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n';
 
 const paginationForNotes = {

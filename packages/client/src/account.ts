@@ -146,7 +146,7 @@ export async function openAccountMenu(opts: {
 	onChoose?: (account: misskey.entities.UserDetailed) => void;
 }, ev: MouseEvent) {
 	function showSigninDialog() {
-		popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				success();
@@ -155,7 +155,7 @@ export async function openAccountMenu(opts: {
 	}
 
 	function createAccount() {
-		popup(defineAsyncComponent(() => import('@/components/signup-dialog.vue')), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				switchAccountWithToken(res.i);
@@ -206,17 +206,16 @@ export async function openAccountMenu(opts: {
 			to: `/@${ $i.username }`,
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
+			type: 'parent',
 			icon: 'fas fa-plus',
 			text: i18n.ts.addAccount,
-			action: () => {
-				popupMenu([{
-					text: i18n.ts.existingAccount,
-					action: () => { showSigninDialog(); },
-				}, {
-					text: i18n.ts.createAccount,
-					action: () => { createAccount(); },
-				}], ev.currentTarget ?? ev.target);
-			},
+			children: [{
+				text: i18n.ts.existingAccount,
+				action: () => { showSigninDialog(); },
+			}, {
+				text: i18n.ts.createAccount,
+				action: () => { createAccount(); },
+			}],
 		}, {
 			type: 'link',
 			icon: 'fas fa-users',

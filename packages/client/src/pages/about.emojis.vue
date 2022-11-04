@@ -30,14 +30,14 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+import XEmoji from './emojis.emoji.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import MkTab from '@/components/tab.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
 import { emojiCategories, emojiTags } from '@/instance';
-import XEmoji from './emojis.emoji.vue';
 
 export default defineComponent({
 	components: {
@@ -66,7 +66,7 @@ export default defineComponent({
 			handler() {
 				this.search();
 			},
-			deep: true
+			deep: true,
 		},
 	},
 
@@ -90,8 +90,8 @@ export default defineComponent({
 			} else {
 				this.selectedTags.add(tag);
 			}
-		}
-	}
+		},
+	},
 });
 </script>
 

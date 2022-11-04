@@ -9,7 +9,7 @@
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": true,
-		"target": "es2017",
+		"target": "es2021",
 		"module": "es2020",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
@@ -32,7 +32,8 @@
 		],
 		"lib": [
 			"esnext"
-		]
+		],
+		"types": ["jest"]
 	},
 	"compileOnSave": false,
 	"include": [

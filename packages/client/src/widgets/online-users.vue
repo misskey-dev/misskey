@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-onlineUsers" :class="{ _panel: !widgetProps.transparent, pad: !widgetProps.transparent }">
-	<I18n v-if="onlineUsersCount" :src="$ts.onlineUsersCount" text-tag="span" class="text">
+	<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" text-tag="span" class="text">
 		<template #n><b>{{ onlineUsersCount }}</b></template>
 	</I18n>
 </div>
@@ -12,6 +12,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExp
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
 const name = 'onlineUsers';
 

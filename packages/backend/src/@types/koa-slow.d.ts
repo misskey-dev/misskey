@@ -1,5 +1,5 @@
 declare module 'koa-slow' {
-	import { Middleware } from 'koa';
+	import type { Middleware } from 'koa';
 
 	interface ISlowOptions {
 		url?: RegExp;

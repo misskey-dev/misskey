@@ -1,6 +1,8 @@
 import keyCode from './keycode';
 
-type Keymap = Record<string, Function>;
+type Callback = (ev: KeyboardEvent) => void;
+
+type Keymap = Record<string, Callback>;
 
 type Pattern = {
 	which: string[];
@@ -11,14 +13,14 @@ type Pattern = {
 
 type Action = {
 	patterns: Pattern[];
-	callback: Function;
+	callback: Callback;
 	allowRepeat: boolean;
 };
 
 const parseKeymap = (keymap: Keymap) => Object.entries(keymap).map(([patterns, callback]): Action => {
 	const result = {
 		patterns: [],
-		callback: callback,
+		callback,
 		allowRepeat: true
 	} as Action;
 

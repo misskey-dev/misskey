@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import * as misskey from 'misskey-js';
-import MkMiniChart from '@/components/mini-chart.vue';
+import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 import { acct } from '@/filters/user';
 
@@ -19,7 +19,7 @@ const props = defineProps<{
 	user: misskey.entities.User;
 }>();
 
-const chart = $ref(null);
+let chart = $ref(null);
 
 os.apiGet('charts/user/notes', { userId: props.user.id, limit: 16, span: 'day' }).then(res => {
 	chart = res;

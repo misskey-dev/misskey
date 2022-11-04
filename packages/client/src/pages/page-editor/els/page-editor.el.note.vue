@@ -22,8 +22,8 @@ import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
-import XNote from '@/components/note.vue';
-import XNoteDetailed from '@/components/note-detailed.vue';
+import XNote from '@/components/MkNote.vue';
+import XNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os';
 
 const props = withDefaults(defineProps<{

@@ -24,7 +24,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, ctx) {
-
 		const hpml = new Hpml(props.page, {
 			randomSeed: Math.random(),
 			visitor: $i,

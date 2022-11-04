@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i } from '@/account';
 import { i18n } from '@/i18n';
@@ -75,7 +75,7 @@ function removeAccount(account) {
 }
 
 function addExistingAccount() {
-	os.popup(defineAsyncComponent(() => import('@/components/signin-dialog.vue')), {}, {
+	os.popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 		done: res => {
 			addAccounts(res.id, res.i);
 			os.success();
@@ -84,7 +84,7 @@ function addExistingAccount() {
 }
 
 function createAccount() {
-	os.popup(defineAsyncComponent(() => import('@/components/signup-dialog.vue')), {}, {
+	os.popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {}, {
 		done: res => {
 			addAccounts(res.id, res.i);
 			switchAccountWithToken(res.i);

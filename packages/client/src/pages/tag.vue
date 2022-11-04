@@ -1,12 +1,15 @@
 <template>
-<div class="_section">
-	<XNotes class="_content" :pagination="pagination"/>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800">
+		<XNotes class="_content" :pagination="pagination"/>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import XNotes from '@/components/notes.vue';
+import XNotes from '@/components/MkNotes.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{

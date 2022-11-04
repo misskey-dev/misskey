@@ -2,7 +2,7 @@
 <div class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
-			{{ $ts.folder }}
+			{{ i18n.ts.folder }}
 		</p>
 		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ $t('no-image') }}</p>
 		<div ref="slideA" class="slide a"></div>
@@ -17,6 +17,7 @@ import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExp
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
 const name = 'slideshow';
 

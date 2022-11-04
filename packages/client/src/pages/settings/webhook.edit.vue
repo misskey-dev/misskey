@@ -38,13 +38,17 @@ import { } from 'vue';
 import FormInput from '@/components/form/input.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const props = defineProps<{
+	webhookId: string;
+}>();
+
 const webhook = await os.api('i/webhooks/show', {
-	webhookId: new URLSearchParams(window.location.search).get('id'),
+	webhookId: props.webhookId,
 });
 
 let name = $ref(webhook.name);
@@ -74,6 +78,7 @@ async function save(): Promise<void> {
 		name,
 		url,
 		secret,
+		webhookId: props.webhookId,
 		on: events,
 		active,
 	});

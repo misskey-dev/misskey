@@ -24,6 +24,16 @@ self.addEventListener('activate', ev => {
 });
 
 self.addEventListener('fetch', ev => {
+	let isHTMLRequest = false;
+	if (ev.request.headers.get('sec-fetch-dest') === 'document') {
+		isHTMLRequest = true;
+	} else if (ev.request.headers.get('accept')?.includes('/html')) {
+		isHTMLRequest = true;
+	} else if (ev.request.url.endsWith('/')) {
+		isHTMLRequest = true;
+	}
+
+	if (!isHTMLRequest) return;
 	ev.respondWith(
 		fetch(ev.request)
 		.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 }))
@@ -42,8 +52,12 @@ self.addEventListener('push', ev => {
 			// case 'driveFileCreated':
 			case 'notification':
 			case 'unreadMessagingMessage':
+				// 1日以上経過している場合は無視
+				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
+
 				// クライアントがあったらストリームに接続しているということなので通知しない
-				if (clients.length != 0) return;
+				if (clients.length !== 0) break;
+
 				return createNotification(data);
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {

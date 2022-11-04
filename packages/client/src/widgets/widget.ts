@@ -36,8 +36,9 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 
 	const mergeProps = () => {
 		for (const prop of Object.keys(propsDef)) {
-			if (widgetProps.hasOwnProperty(prop)) continue;
-			widgetProps[prop] = propsDef[prop].default;
+			if (typeof widgetProps[prop] === 'undefined') {
+				widgetProps[prop] = propsDef[prop].default;
+			}
 		}
 	};
 	watch(widgetProps, () => {

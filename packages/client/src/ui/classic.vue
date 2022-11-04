@@ -47,7 +47,6 @@ import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
@@ -60,8 +59,8 @@ const DESKTOP_THRESHOLD = 1100;
 let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsShowing = $ref(false);
-const fullView = $ref(false);
+let widgetsShowing = $ref(false);
+let fullView = $ref(false);
 let globalHeaderHeight = $ref(0);
 const wallpaper = localStorage.getItem('wallpaper') != null;
 const showMenuOnTop = $computed(() => defaultStore.state.menuDisplay === 'top');

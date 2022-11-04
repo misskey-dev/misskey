@@ -33,7 +33,7 @@
 				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
 			</div>
 		</div>
-		<span v-else style="opacity: 0.5;">{{ $ts.noJobs }}</span>
+		<span v-else style="opacity: 0.5;">{{ i18n.ts.noJobs }}</span>
 	</div>
 </div>
 </template>
@@ -44,6 +44,7 @@ import XChart from './queue.chart.chart.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { stream } from '@/stream';
+import { i18n } from '@/i18n';
 
 const connection = markRaw(stream.useChannel('queueStats'));
 

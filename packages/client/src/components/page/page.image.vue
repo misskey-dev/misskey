@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { defineComponent, PropType } from 'vue';
-import ImgWithBlurhash from '@/components/img-with-blurhash.vue';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import * as os from '@/os';
 import { ImageBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';

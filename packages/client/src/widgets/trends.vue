@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-trends">
-	<template #header><i class="fas fa-hashtag"></i>{{ $ts._widgets.trends }}</template>
+	<template #header><i class="fas fa-hashtag"></i>{{ i18n.ts._widgets.trends }}</template>
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
@@ -21,10 +21,11 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import MkContainer from '@/components/ui/container.vue';
-import MkMiniChart from '@/components/mini-chart.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
 const name = 'hashtags';
 
