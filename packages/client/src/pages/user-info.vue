@@ -86,6 +86,7 @@
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_formRoot">
 				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
+				<FormSwitch v-if="user.host == null && $i.isAdmin && (admin || !user.isModerator)" v-model="admin" class="_formBlock" @update:modelValue="toggleAdmin">{{ i18n.ts.administrator }}</FormSwitch>
 				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
 				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
@@ -191,6 +192,7 @@ let info = $ref();
 let ips = $ref(null);
 let ap = $ref(null);
 let moderator = $ref(false);
+let admin = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
 let driveCapacityOverrideMb: number | null = $ref(0);
@@ -216,6 +218,7 @@ function createFetcher() {
 			info = _info;
 			ips = _ips;
 			moderator = info.isModerator;
+			admin = info.isAdmin;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
 			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
@@ -285,6 +288,12 @@ async function toggleModerator(v) {
 	await os.api(v ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: user.id });
 	await refreshUser();
 }
+
+async function toggleAdmin(v) {
+	await os.api(v ? 'admin/admin/add' : 'admin/admin/remove', { userId: user.id });
+	await refreshUser();
+}
+
 
 async function deleteAllFiles() {
 	const confirm = await os.confirm({
