@@ -15,7 +15,7 @@
 
 **🌎 **[Misskey](https://misskey-hub.net/)** is an open source, decentralized social media platform that's free forever!
 🚀**
----
+
 ---
 <div class="center">
 <a href="https://misskey-hub.net/instances.html">
@@ -28,8 +28,7 @@
 		<img src="https://custom-icon-badges.herokuapp.com/badge/join_the-community-5865F2?logoColor=5865F2&style=for-the-badge&logo=discord&labelColor=363B40" alt="join the community"/></a>
 <a href="https://www.patreon.com/syuilo">
 		<img src="https://custom-icon-badges.herokuapp.com/badge/become_a-patron-F96854?logoColor=F96854&style=for-the-badge&logo=patreon&labelColor=363B40" alt="become a patron"/></a>
-	
----
+
 ---
 ## ✨ Features
 - **ActivityPub support**\
