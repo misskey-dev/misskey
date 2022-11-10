@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.119.0_rcamod-v2-beta1",
+	"version": "12.119.0_rcamod-v2-beta2",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
