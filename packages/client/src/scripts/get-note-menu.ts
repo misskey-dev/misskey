@@ -8,6 +8,7 @@ import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
+import { notePage } from '@/filters/note';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
@@ -173,6 +174,10 @@ export function getNoteMenu(props: {
 		});
 	}
 
+	function openDetail(): void {
+		window.open(notePage(appearNote), '_blank');
+	}
+
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
@@ -198,8 +203,11 @@ export function getNoteMenu(props: {
 					danger: true,
 					action: unclip,
 				}, null] : []
-			),
-			{
+			), {
+				icon: 'fas fa-external-link-alt',
+				text: i18n.ts.detailed,
+				action: openDetail,
+			}, {
 				icon: 'fas fa-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
@@ -300,6 +308,10 @@ export function getNoteMenu(props: {
 			.filter(x => x !== undefined);
 	} else {
 		menu = [{
+			icon: 'fas fa-external-link-alt',
+			text: i18n.ts.detailed,
+			action: openDetail,
+		}, {
 			icon: 'fas fa-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
