@@ -19,6 +19,7 @@ You should also include the user name that made the change.
 ### Improvements
 
 ### Bugfixes
+- Server: Bug fix for Pinned Users lookup on instance @squidicuzz
 
 ## 12.119.0 (2022/09/10)
 
