@@ -87,6 +87,9 @@
 				<button ref="menuButton" class="button _button" @click="menu()">
 					<i class="fas fa-ellipsis-h"></i>
 				</button>
+				<MkA class="detailed" :to="notePage(note)">
+					<i class="fas fa-external-link-alt"></i>
+				</MkA>
 			</footer>
 		</div>
 	</article>
@@ -129,6 +132,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
+import { notePage } from '@/filters/note';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -162,6 +166,7 @@ const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
+const detailed = ref<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
