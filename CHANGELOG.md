@@ -20,6 +20,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
+- Client: インスタンスティッカーのfaviconを読み込む際に偽サイト警告が出ることがあるのを修正 @syuilo
 
 ## 12.119.0 (2022/09/10)
 
