@@ -173,11 +173,9 @@ export function getNoteMenu(props: {
 			url: `${url}/notes/${appearNote.id}`,
 		});
 	}
-
-	function openDetail(): void {
-		window.open(notePage(appearNote), '_blank');
+	function notedetails(): void {
+		os.pageWindow(`/notes/${appearNote.id}`);
 	}
-
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
@@ -205,8 +203,8 @@ export function getNoteMenu(props: {
 				}, null] : []
 			), {
 				icon: 'fas fa-external-link-alt',
-				text: i18n.ts.detailed,
-				action: openDetail,
+				text: i18n.ts.details,
+				action: notedetails,
 			}, {
 				icon: 'fas fa-copy',
 				text: i18n.ts.copyContent,
