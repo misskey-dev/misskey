@@ -87,9 +87,6 @@
 				<button ref="menuButton" class="button _button" @click="menu()">
 					<i class="fas fa-ellipsis-h"></i>
 				</button>
-				<MkA class="detailed" :to="notePage(note)">
-					<i class="fas fa-external-link-alt"></i>
-				</MkA>
 			</footer>
 		</div>
 	</article>
@@ -132,7 +129,6 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
-import { notePage } from '@/filters/note';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -619,11 +615,6 @@ function readPromo() {
 							margin-right: 18px;
 						}
 					}
-					> .detailed {
-						&:not(:last-child) {
-							margin-right: 18px;
-						}
-					}
 				}
 			}
 		}
@@ -639,11 +630,6 @@ function readPromo() {
 			> .main {
 				> .footer {
 					> .button {
-						&:not(:last-child) {
-							margin-right: 12px;
-						}
-					}
-					> .detailed {
 						&:not(:last-child) {
 							margin-right: 12px;
 						}
