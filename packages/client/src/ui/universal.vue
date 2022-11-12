@@ -329,6 +329,7 @@ stream.on('_disconnected_', async () => {
 		> .post_area {
 			width: 38.2%;
 			padding-right: 16px;
+			margin-bottom: env(safe-area-inset-bottom);
 		
 			> .post_button {
 				width: 38.2%;
@@ -336,7 +337,7 @@ stream.on('_disconnected_', async () => {
 				border-radius: 999px;
 				height: 48px;
 				position: absolute;
-				bottom: 12px;
+				bottom: calc( env(safe-area-inset-bottom) + 12px);
 			}
 		}
 		.fa-pencil-alt {
