@@ -174,7 +174,7 @@ export function getNoteMenu(props: {
 		});
 	}
 	function notedetails(): void {
-		os.pageWindow(`/notes/${appearNote.id}`);
+		window.open(notePage(appearNote), '_blank')
 	}
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
