@@ -19,11 +19,22 @@
 	<button v-if="!isDesktop && !isMobile" class="widgetButton _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
 
 	<div v-if="isMobile" class="buttons">
-		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button home _button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i class="fas fa-home"></i></button>
-		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button>
-		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
+		<div class="tabs_area">
+			<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator navbar"><i class="fas fa-circle"></i></span></button>
+			<button class="button home _button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i class="fas fa-home"></i></button>
+			<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator navbar"><i class="fas fa-circle"></i></span></button>
+			<button class="button messaging _button" @click="mainRouter.push('/my/messaging')"><i class="fas fa-comments"></i><span v-if="$i?.hasUnreadMessagingMessage" class="indicator navbar"><i class="fas fa-circle"></i></span></button>
+			<!-- <button class="button widget _button" @click="widgetsShowing = true"><i class="fas fa-layer-group"></i></button> -->
+			<button class="button reload _button" @click="reloadPage()"><i class="fas fa-redo"></i><span v-if="hasDisconnected" class="indicator navbar"><i class="fas fa-circle"></i></span></button>
+		</div>
+		<div class="post_area">
+			<div class="post_button">
+				<!-- <button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button> -->
+				<button class="button post _button" data-cy-open-post-form @click="os.post">
+					<i class="icon fas fa-pencil-alt fa-fw"></i><span class="text">{{ i18n.ts.note }}</span>
+				</button>
+			</div>
+		</div>
 	</div>
 
 	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
@@ -71,6 +82,7 @@ import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
+import { stream } from '@/stream';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -169,6 +181,17 @@ function top() {
 }
 
 const wallpaper = localStorage.getItem('wallpaper') != null;
+
+function reloadPage() {
+  window.location.reload();
+}
+
+const hasDisconnected = ref(false);
+
+stream.on('_disconnected_', async () => {
+	hasDisconnected.value = true;
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -287,7 +310,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		z-index: 1000;
 		bottom: 0;
 		left: 0;
-		padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px) 16px;
+		padding: 4px 4px calc(env(safe-area-inset-bottom, 0px) + 4px) 4px;
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
@@ -296,12 +319,71 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		background-color: var(--header);
 		border-top: solid 0.5px var(--divider);
 
+		> .tabs_area {
+			width: 61.8%;
+			display: flex;
+			justify-content: space-around;
+			padding-right: 12px;
+		}
+
+		> .post_area {
+			width: 38.2%;
+			padding-right: 16px;
+			margin-bottom: env(safe-area-inset-bottom);
+		
+			> .post_button {
+				width: 38.2%;
+				background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
+				border-radius: 999px;
+				height: 48px;
+				position: absolute;
+				bottom: calc( env(safe-area-inset-bottom) + 12px);
+			}
+		}
+		.fa-pencil-alt {
+			margin-left: 12px;
+			margin-right: 12px;
+		}
+
+		.button.post {
+			height: 100%;
+			color: var(--bg);
+			width: 100%;
+    	text-align: left;
+		}
+
+		.button {
+			&.nav {
+				padding: 12px;
+			}
+			&.home {
+				padding: 12px;
+			}
+			&.notifications {
+				padding: 12px;
+			}
+			&.messaging {
+				padding: 12px;
+			}
+			&.reload {
+				padding: 12px;
+			}
+		}
+
+		.indicator {
+			&.navbar {
+				font-size: 8px;
+				position: relative;
+				bottom: 40%;
+			}
+		}
+
 		> .button {
 			position: relative;
 			flex: 1;
 			padding: 0;
 			margin: auto;
-			height: 64px;
+			height: 48px;
 			border-radius: 8px;
 			background: var(--panel);
 			color: var(--fg);
