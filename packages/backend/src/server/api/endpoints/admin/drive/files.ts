@@ -6,7 +6,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: false,
-	requireModerator: true,
+	requireAdmin: true,
 
 	res: {
 		type: 'array',

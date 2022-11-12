@@ -33,6 +33,7 @@ import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { $i } from '../../account';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -111,22 +112,22 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.jobQueue,
 		to: '/admin/queue',
 		active: currentPage?.route.name === 'queue',
-	}, {
+	}, ...($i?.isAdmin ? [{
 		icon: 'fas fa-cloud',
 		text: i18n.ts.files,
 		to: '/admin/files',
 		active: currentPage?.route.name === 'files',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-broadcast-tower',
 		text: i18n.ts.announcements,
 		to: '/admin/announcements',
 		active: currentPage?.route.name === 'announcements',
-	}, {
+	}] : []),  ...($i?.isAdmin ? [{
 		icon: 'fas fa-audio-description',
 		text: i18n.ts.ads,
 		to: '/admin/ads',
 		active: currentPage?.route.name === 'ads',
-	}, {
+	}] : []), {
 		icon: 'fas fa-exclamation-circle',
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
@@ -134,52 +135,52 @@ const menuDef = $computed(() => [{
 	}],
 }, {
 	title: i18n.ts.settings,
-	items: [{
+	items: [ ...($i?.isAdmin ? [{
 		icon: 'fas fa-cog',
 		text: i18n.ts.general,
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-envelope',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',
 		active: currentPage?.route.name === 'email-settings',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-cloud',
 		text: i18n.ts.objectStorage,
 		to: '/admin/object-storage',
 		active: currentPage?.route.name === 'object-storage',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-lock',
 		text: i18n.ts.security,
 		to: '/admin/security',
 		active: currentPage?.route.name === 'security',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-globe',
 		text: i18n.ts.relays,
 		to: '/admin/relays',
 		active: currentPage?.route.name === 'relays',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/admin/integrations',
 		active: currentPage?.route.name === 'integrations',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-ban',
 		text: i18n.ts.instanceBlocking,
 		to: '/admin/instance-block',
 		active: currentPage?.route.name === 'instance-block',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-ghost',
 		text: i18n.ts.proxyAccount,
 		to: '/admin/proxy-account',
 		active: currentPage?.route.name === 'proxy-account',
-	}, {
+	}] : []), ...($i?.isAdmin ? [{
 		icon: 'fas fa-cogs',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',
 		active: currentPage?.route.name === 'other-settings',
-	}],
+	}] : [])],
 }, {
 	title: i18n.ts.info,
 	items: [{
@@ -189,6 +190,7 @@ const menuDef = $computed(() => [{
 		active: currentPage?.route.name === 'database',
 	}],
 }]);
+
 
 watch(narrow, () => {
 	if (currentPage?.route.name == null && !narrow) {
