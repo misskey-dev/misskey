@@ -105,9 +105,7 @@ export class RelayService {
 		}));
 		if (relays.length === 0) return;
 	
-		// TODO
-		//const copy = structuredClone(activity);
-		const copy = JSON.parse(JSON.stringify(activity));
+		const copy = structuredClone(activity);
 		if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
 	
 		const signed = await this.apRendererService.attachLdSignature(copy, user);
