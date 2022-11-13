@@ -28,8 +28,7 @@ document.documentElement.style.overflowY = 'scroll';
 
 <style lang="scss" scoped>
 .mk-app {
-	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	min-height: calc(var(--vh, 1vh) * 100);
+	min-height: 100dvh;
 	box-sizing: border-box;
 }
 </style>

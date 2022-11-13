@@ -86,9 +86,7 @@ export class ClientServerService {
 	}
 
 	private async manifestHandler(ctx: Koa.Context) {
-		// TODO
-		//const res = structuredClone(manifest);
-		const res = JSON.parse(JSON.stringify(manifest));
+		const res = structuredClone(manifest);
 
 		const instance = await this.metaService.fetch(true);
 
