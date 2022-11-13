@@ -55,9 +55,7 @@ export class DriveFileEntityService {
 
 	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
-			// TODO
-			//const properties = structuredClone(file.properties);
-			const properties = JSON.parse(JSON.stringify(file.properties));
+			const properties = structuredClone(file.properties);
 			if (file.properties.orientation >= 5) {
 				[properties.width, properties.height] = [properties.height, properties.width];
 			}

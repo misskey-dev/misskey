@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Changes
+- Node.js 18.x or later is required
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - ノートのウォッチ機能が削除されました
