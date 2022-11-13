@@ -255,8 +255,7 @@ async function deleteProfile() {
 	--deckDividerThickness: 5px;
 
 	display: flex;
-	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	height: calc(var(--vh, 1vh) * 100);
+	height: 100dvh;
 	box-sizing: border-box;
 	flex: 1;
 
@@ -424,8 +423,7 @@ async function deleteProfile() {
 		top: 0;
 		left: 0;
 		z-index: 1001;
-		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-		height: calc(var(--vh, 1vh) * 100);
+		height: 100dvh;
 		width: 240px;
 		box-sizing: border-box;
 		contain: strict;
