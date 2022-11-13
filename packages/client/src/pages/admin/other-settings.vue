@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<FormButton primary class="_formBlock" @click="mainRouter.push('/admin/old-overview')">old-overview</FormButton>
+			none
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
@@ -17,7 +17,6 @@ import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { mainRouter } from '@/router';
 
 async function init() {
 	await os.api('admin/meta');
