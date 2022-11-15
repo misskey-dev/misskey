@@ -1,5 +1,5 @@
 <template>
-<div>
+<MkSpacer :content-max="700">
 	<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
 		<div v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap afdcfbfb">
 			<div class="header">
@@ -10,7 +10,7 @@
 			<MkNote :key="item.id" :note="item.note"/>
 		</div>
 	</MkPagination>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>

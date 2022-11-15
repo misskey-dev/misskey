@@ -1,12 +1,14 @@
 <template>
-<div class="pages-user-clips">
-	<MkPagination v-slot="{items}" ref="list" :pagination="pagination" class="list">
-		<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
-			<b>{{ item.name }}</b>
-			<div v-if="item.description" class="description">{{ item.description }}</div>
-		</MkA>
-	</MkPagination>
-</div>
+<MkSpacer :content-max="700">
+	<div class="pages-user-clips">
+		<MkPagination v-slot="{items}" ref="list" :pagination="pagination" class="list">
+			<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
+				<b>{{ item.name }}</b>
+				<div v-if="item.description" class="description">{{ item.description }}</div>
+			</MkA>
+		</MkPagination>
+	</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
