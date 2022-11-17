@@ -1618,6 +1618,13 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.4.tgz#bd86a43617df0594787d38b735f55c805becf1bc"
   integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
 
+"@types/vary@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/vary/-/vary-1.1.0.tgz#f2cf83dfcdb6d002785054ba39c28536f59ff211"
+  integrity sha512-LQWqrIa0dvEOOH37lGksMEXbypRLUFqu6Gx0pmX7zIUisD2I/qaVgEX/vJ/PSVSW0Hk6yz1BNkFpqg6dZm3Wug==
+  dependencies:
+    "@types/node" "*"
+
 "@types/web-push@3.3.2":
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/@types/web-push/-/web-push-3.3.2.tgz#8c32434147c0396415862e86405c9edc9c50fc15"
@@ -9321,10 +9328,10 @@ v8-to-istanbul@^9.0.1:
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^1.6.0"
 
-vary@^1.1.2:
+vary@1.1.2, vary@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
-  integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+  integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
 verror@1.10.0:
   version "1.10.0"

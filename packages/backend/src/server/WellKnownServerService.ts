@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull, MoreThan } from 'typeorm';
+import * as vary from 'vary';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -136,7 +137,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 				template: `${this.config.url}/authorize-follow?acct={uri}`,
 			};
 
-			ctx.vary('Accept');
+			vary(reply.raw, 'Accept');
 			reply.header('Cache-Control', 'public, max-age=180');
 
 			if (request.accepts().type([jrd, xrd]) === xrd) {
