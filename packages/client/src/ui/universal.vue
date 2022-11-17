@@ -220,8 +220,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;
 
-	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	min-height: calc(var(--vh, 1vh) * 100);
+	min-height: 100dvh;
 	box-sizing: border-box;
 	display: flex;
 
@@ -273,8 +272,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		top: 0;
 		right: 0;
 		z-index: 1001;
-		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-		height: calc(var(--vh, 1vh) * 100);
+		height: 100dvh;
 		padding: var(--margin);
 		box-sizing: border-box;
 		overflow: auto;
@@ -362,8 +360,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		top: 0;
 		left: 0;
 		z-index: 1001;
-		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-		height: calc(var(--vh, 1vh) * 100);
+		height: 100dvh;
 		width: 240px;
 		box-sizing: border-box;
 		contain: strict;

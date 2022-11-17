@@ -37,11 +37,19 @@ export class QueueProcessorService {
 
 	public start() {
 		function renderError(e: Error): any {
-			return {
-				stack: e.stack,
-				message: e.message,
-				name: e.name,
-			};
+			if (e) { // 何故かeがundefinedで来ることがある
+				return {
+					stack: e.stack,
+					message: e.message,
+					name: e.name,
+				};
+			} else {
+				return {
+					stack: '?',
+					message: '?',
+					name: '?',
+				};
+			}
 		}
 	
 		const systemLogger = this.logger.createSubLogger('system');

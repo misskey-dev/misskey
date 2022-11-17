@@ -82,16 +82,6 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 		else location.reload();
 	});
 
-	//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	// TODO: いつの日にか消したい
-	const vh = window.innerHeight * 0.01;
-	document.documentElement.style.setProperty('--vh', `${vh}px`);
-	window.addEventListener('resize', () => {
-		const vh = window.innerHeight * 0.01;
-		document.documentElement.style.setProperty('--vh', `${vh}px`);
-	});
-	//#endregion
-
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
 		const viewport = document.getElementsByName('viewport').item(0);

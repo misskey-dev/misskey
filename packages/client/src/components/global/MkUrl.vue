@@ -1,6 +1,6 @@
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" class="ieqqeuvs _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
+	:is="self ? 'MkA' : 'a'" ref="el" class="ieqqeuvs _link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel" :target="target"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
@@ -11,7 +11,7 @@
 	<template v-if="pathname === '/' && self">
 		<span class="self">{{ hostname }}</span>
 	</template>
-	<span v-if="pathname != ''" class="pathname">{{ self ? pathname.substr(1) : pathname }}</span>
+	<span v-if="pathname != ''" class="pathname">{{ self ? pathname.substring(1) : pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
 	<i v-if="target === '_blank'" class="fas fa-external-link-square-alt icon"></i>

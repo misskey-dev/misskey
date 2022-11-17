@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 ## 12.x.x (unreleased)
 
 ### Changes
+- Node.js 18.x or later is required
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - ノートのウォッチ機能が削除されました
@@ -20,6 +21,8 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
+- Server: Bug fix for Pinned Users lookup on instance @squidicuzz
+- Client: インスタンスティッカーのfaviconを読み込む際に偽サイト警告が出ることがあるのを修正 @syuilo
 
 ## 12.119.0 (2022/09/10)
 
