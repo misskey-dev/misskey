@@ -330,8 +330,8 @@ export class NoteEntityService implements OnModuleInit {
 		if (packed.user.isCat && packed.text) {
 			const tokens = packed.text ? mfm.parse(packed.text) : [];
 			function nyaizeNode(node: mfm.MfmNode) {
-				if (node.type === "quote") return;
-				if (node.type === "text") {
+				if (node.type === 'quote') return;
+				if (node.type === 'text') {
 					node.props.text = nyaize(node.props.text);
 				}
 				if (node.children) {
