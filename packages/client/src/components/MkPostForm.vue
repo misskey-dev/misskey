@@ -89,6 +89,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
+import { deepClone } from '@/scripts/clone';
 
 const modal = inject('modal');
 
@@ -575,7 +576,7 @@ async function post() {
 	// plugin
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
-			postData = await interruptor.handler(JSON.parse(JSON.stringify(postData)));
+			postData = await interruptor.handler(deepClone(postData));
 		}
 	}
 
