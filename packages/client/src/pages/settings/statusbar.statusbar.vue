@@ -91,13 +91,14 @@ import FormRange from '@/components/form/range.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { deepClone } from '@/scripts/clone';
 
 const props = defineProps<{
 	_id: string;
 	userLists: any[] | null;
 }>();
 
-const statusbar = reactive(JSON.parse(JSON.stringify(defaultStore.state.statusbars.find(x => x.id === props._id))));
+const statusbar = reactive(deepClone(defaultStore.state.statusbars.find(x => x.id === props._id)));
 
 watch(() => statusbar.type, () => {
 	if (statusbar.type === 'rss') {
@@ -128,8 +129,8 @@ watch(statusbar, save);
 
 async function save() {
 	const i = defaultStore.state.statusbars.findIndex(x => x.id === props._id);
-	const statusbars = JSON.parse(JSON.stringify(defaultStore.state.statusbars));
-	statusbars[i] = JSON.parse(JSON.stringify(statusbar));
+	const statusbars = deepClone(defaultStore.state.statusbars);
+	statusbars[i] = deepClone(statusbar);
 	defaultStore.set('statusbars', statusbars);
 }
 

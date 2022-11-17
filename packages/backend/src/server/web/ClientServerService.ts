@@ -26,6 +26,7 @@ import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityServi
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import type { ChannelsRepository, ClipsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import { deepClone } from '@/misc/clone.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -86,7 +87,7 @@ export class ClientServerService {
 	}
 
 	private async manifestHandler(ctx: Koa.Context) {
-		const res = structuredClone(manifest);
+		const res = deepClone(manifest);
 
 		const instance = await this.metaService.fetch(true);
 
