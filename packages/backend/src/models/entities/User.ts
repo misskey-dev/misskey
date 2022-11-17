@@ -205,6 +205,12 @@ export class User {
 	})
 	public followersUri: string | null;
 
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The URI of the new account of the User',
+	})
+	public movedToUri: string | null;
+
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether to show users replying to other users in the timeline.',

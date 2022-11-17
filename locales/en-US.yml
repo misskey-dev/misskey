@@ -148,6 +148,7 @@ autoAcceptFollowed: "Automatically approve follow requests from users you're fol
 addAccount: "Add account"
 loginFailed: "Failed to sign in"
 showOnRemote: "View on remote instance"
+accountMoved: "User has moved to a new account."
 general: "General"
 wallpaper: "Wallpaper"
 setWallpaper: "Set wallpaper"

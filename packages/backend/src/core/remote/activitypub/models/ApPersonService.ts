@@ -176,6 +176,10 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('invalid Actor: wrong id');
 		}
 
+		if (x.movedTo !== undefined && !(typeof x.movedTo === 'string' && x.movedTo.length > 0)) {
+			throw new Error('invalid Actor: wrong movedTo');
+		}
+
 		if (!(typeof x.inbox === 'string' && x.inbox.length > 0)) {
 			throw new Error('invalid Actor: wrong inbox');
 		}
@@ -298,6 +302,7 @@ export class ApPersonService implements OnModuleInit {
 					inbox: person.inbox,
 					sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
 					followersUri: person.followers ? getApId(person.followers) : undefined,
+					movedToUri: person.movedTo,
 					featured: person.featured ? getApId(person.featured) : undefined,
 					uri: person.id,
 					tags,
@@ -458,6 +463,7 @@ export class ApPersonService implements OnModuleInit {
 			featured: person.featured,
 			emojis: emojiNames,
 			name: truncate(person.name, nameLength),
+			movedToUri: person.movedTo,
 			tags,
 			isBot: getApType(object) === 'Service',
 			isCat: (person as any).isCat === true,

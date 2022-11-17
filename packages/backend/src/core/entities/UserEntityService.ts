@@ -19,6 +19,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
+import type { ApPersonService } from '../remote/activitypub/models/ApPersonService.js';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
@@ -50,6 +51,7 @@ export class UserEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private userInstanceCache: Cache<Instance | null>;
+	private apPersonService: ApPersonService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -129,6 +131,7 @@ export class UserEntityService implements OnModuleInit {
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.antennaService = this.moduleRef.get('AntennaService');
+		this.apPersonService = this.moduleRef.get('ApPersonService');
 	}
 
 	//#region Validators
@@ -403,6 +406,8 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				url: profile!.url,
 				uri: user.uri,
+				movedTo: user.movedToUri && this.apPersonService.resolvePerson(user.movedToUri)
+					.then(x => `@${x.username}@${x.host}`),
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
