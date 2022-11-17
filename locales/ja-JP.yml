@@ -149,6 +149,7 @@ autoAcceptFollowed: "フォロー中ユーザーからのフォロリクを自�
 addAccount: "アカウントを追加"
 loginFailed: "ログインに失敗しました"
 showOnRemote: "リモートで表示"
+accountMoved: "このユーザーは新しいアカウントに移行しました"
 general: "全般"
 wallpaper: "壁紙"
 setWallpaper: "壁紙を設定"
