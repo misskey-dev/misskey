@@ -1,8 +1,11 @@
-import define from '../../define.js';
-import { genId } from '@/misc/gen-id.js';
-import { Antennas, UserLists, UserGroupJoinings } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { IdService } from '@/core/IdService.js';
+import type { UserListsRepository, UserGroupJoiningsRepository, AntennasRepository } from '@/models/index.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { publishInternalEvent } from '@/services/stream.js';
 
 export const meta = {
 	tags: ['antennas'],
@@ -61,48 +64,66 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	let userList;
-	let userGroupJoining;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.antennasRepository)
+		private antennasRepository: AntennasRepository,
 
-	if (ps.src === 'list' && ps.userListId) {
-		userList = await UserLists.findOneBy({
-			id: ps.userListId,
-			userId: user.id,
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
+
+		@Inject(DI.userGroupJoiningsRepository)
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+
+		private antennaEntityService: AntennaEntityService,
+		private idService: IdService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			let userList;
+			let userGroupJoining;
+
+			if (ps.src === 'list' && ps.userListId) {
+				userList = await this.userListsRepository.findOneBy({
+					id: ps.userListId,
+					userId: me.id,
+				});
+
+				if (userList == null) {
+					throw new ApiError(meta.errors.noSuchUserList);
+				}
+			} else if (ps.src === 'group' && ps.userGroupId) {
+				userGroupJoining = await this.userGroupJoiningsRepository.findOneBy({
+					userGroupId: ps.userGroupId,
+					userId: me.id,
+				});
+
+				if (userGroupJoining == null) {
+					throw new ApiError(meta.errors.noSuchUserGroup);
+				}
+			}
+
+			const antenna = await this.antennasRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				userId: me.id,
+				name: ps.name,
+				src: ps.src,
+				userListId: userList ? userList.id : null,
+				userGroupJoiningId: userGroupJoining ? userGroupJoining.id : null,
+				keywords: ps.keywords,
+				excludeKeywords: ps.excludeKeywords,
+				users: ps.users,
+				caseSensitive: ps.caseSensitive,
+				withReplies: ps.withReplies,
+				withFile: ps.withFile,
+				notify: ps.notify,
+			}).then(x => this.antennasRepository.findOneByOrFail(x.identifiers[0]));
+
+			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
+
+			return await this.antennaEntityService.pack(antenna);
 		});
-
-		if (userList == null) {
-			throw new ApiError(meta.errors.noSuchUserList);
-		}
-	} else if (ps.src === 'group' && ps.userGroupId) {
-		userGroupJoining = await UserGroupJoinings.findOneBy({
-			userGroupId: ps.userGroupId,
-			userId: user.id,
-		});
-
-		if (userGroupJoining == null) {
-			throw new ApiError(meta.errors.noSuchUserGroup);
-		}
 	}
-
-	const antenna = await Antennas.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-		src: ps.src,
-		userListId: userList ? userList.id : null,
-		userGroupJoiningId: userGroupJoining ? userGroupJoining.id : null,
-		keywords: ps.keywords,
-		excludeKeywords: ps.excludeKeywords,
-		users: ps.users,
-		caseSensitive: ps.caseSensitive,
-		withReplies: ps.withReplies,
-		withFile: ps.withFile,
-		notify: ps.notify,
-	}).then(x => Antennas.findOneByOrFail(x.identifiers[0]));
-
-	publishInternalEvent('antennaCreated', antenna);
-
-	return await Antennas.pack(antenna);
-});
+}

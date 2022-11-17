@@ -1,6 +1,8 @@
-import define from '../../../define.js';
-import { Ads } from '@/models/index.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AdsRepository } from '@/models/index.js';
+import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -20,11 +22,21 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const query = makePaginationQuery(Ads.createQueryBuilder('ad'), ps.sinceId, ps.untilId)
-		.andWhere('ad.expiresAt > :now', { now: new Date() });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.adsRepository)
+		private adsRepository: AdsRepository,
 
-	const ads = await query.take(ps.limit).getMany();
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.adsRepository.createQueryBuilder('ad'), ps.sinceId, ps.untilId)
+				.andWhere('ad.expiresAt > :now', { now: new Date() });
 
-	return ads;
-});
+			const ads = await query.take(ps.limit).getMany();
+
+			return ads;
+		});
+	}
+}

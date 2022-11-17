@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkPagination v-slot="{items}" ref="list" :pagination="type === 'following' ? followingPagination : followersPagination" class="mk-following-or-followers">
-		<div class="users _isolated">
+		<div class="users">
 			<MkUserInfo v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" class="user" :user="user"/>
 		</div>
 	</MkPagination>
@@ -11,8 +11,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as misskey from 'misskey-js';
-import MkUserInfo from '@/components/user-info.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkUserInfo from '@/components/MkUserInfo.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
 	user: misskey.entities.User;

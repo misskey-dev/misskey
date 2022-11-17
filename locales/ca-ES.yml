@@ -111,6 +111,14 @@ reactionSettingDescription2: "Arrossega per reordenar, fes clic per suprimir, pr
 rememberNoteVisibility: "Recorda la configuració de visibilitat de les notes"
 attachCancel: "Eliminar el fitxer adjunt"
 markAsSensitive: "Marcar com a NSFW"
+unmarkAsSensitive: "Deixar de marcar com a sensible"
+enterFileName: "Defineix nom del fitxer"
+mute: "Silencia"
+unmute: "Deixa de silenciar"
+block: "Bloqueja"
+unblock: "Desbloqueja"
+suspend: "Suspèn"
+unsuspend: "Deixa de suspendre"
 instances: "Instàncies"
 remove: "Eliminar"
 nsfw: "NSFW"
@@ -120,6 +128,7 @@ smtpUser: "Nom d'usuari"
 smtpPass: "Contrasenya"
 user: "Usuaris"
 searchByGoogle: "Cercar"
+file: "Fitxers"
 _email:
   _follow:
     title: "t'ha seguit"
@@ -147,6 +156,8 @@ _profile:
   username: "Nom d'usuari"
 _exportOrImport:
   followingList: "Seguint"
+  muteList: "Silencia"
+  blockingList: "Bloqueja"
   userLists: "Llistes"
 _pages:
   script:

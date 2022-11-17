@@ -1,7 +1,10 @@
-import define from '../../../define.js';
-import { Emojis } from '@/models/index.js';
-import { toPuny } from '@/misc/convert-host.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { EmojisRepository } from '@/models/index.js';
+import { QueryService } from '@/core/QueryService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -69,23 +72,35 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
 
-	if (ps.host == null) {
-		q.andWhere(`emoji.host IS NOT NULL`);
-	} else {
-		q.andWhere(`emoji.host = :host`, { host: toPuny(ps.host) });
+		private utilityService: UtilityService,
+		private queryService: QueryService,
+		private emojiEntityService: EmojiEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
+
+			if (ps.host == null) {
+				q.andWhere('emoji.host IS NOT NULL');
+			} else {
+				q.andWhere('emoji.host = :host', { host: this.utilityService.toPuny(ps.host) });
+			}
+
+			if (ps.query) {
+				q.andWhere('emoji.name like :query', { query: '%' + ps.query + '%' });
+			}
+
+			const emojis = await q
+				.orderBy('emoji.id', 'DESC')
+				.take(ps.limit)
+				.getMany();
+
+			return this.emojiEntityService.packMany(emojis);
+		});
 	}
-
-	if (ps.query) {
-		q.andWhere('emoji.name like :query', { query: '%' + ps.query + '%' });
-	}
-
-	const emojis = await q
-		.orderBy('emoji.id', 'DESC')
-		.take(ps.limit)
-		.getMany();
-
-	return Emojis.packMany(emojis);
-});
+}

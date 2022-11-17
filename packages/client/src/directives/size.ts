@@ -27,8 +27,8 @@ function getClassOrder(width: number, queue: Value): ClassOrder {
 			...(queue.min ? queue.min.filter(v => width >= v).map(getMinClass) : []),
 		],
 		remove: [
-			...(queue.max ? queue.max.filter(v => width  > v).map(getMaxClass) : []),
-			...(queue.min ? queue.min.filter(v => width  < v).map(getMinClass) : []),
+			...(queue.max ? queue.max.filter(v => width > v).map(getMaxClass) : []),
+			...(queue.min ? queue.min.filter(v => width < v).map(getMinClass) : []),
 		]
 	};
 }

@@ -1,10 +1,13 @@
-import define from '../../define.js';
-import deleteFollowing from '@/services/following/delete.js';
-import { Users, Followings, Notifications } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { doPostSuspend } from '@/services/suspend-user.js';
-import { publishUserEvent } from '@/services/stream.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository, FollowingsRepository, NotificationsRepository } from '@/models/index.js';
+import type { User } from '@/models/entities/User.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { UserSuspendService } from '@/core/UserSuspendService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -22,64 +25,84 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	if (user == null) {
-		throw new Error('user not found');
-	}
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 
-	if (user.isAdmin) {
-		throw new Error('cannot suspend admin');
-	}
+		@Inject(DI.notificationsRepository)
+		private notificationsRepository: NotificationsRepository,
 
-	if (user.isModerator) {
-		throw new Error('cannot suspend moderator');
-	}
+		private userEntityService: UserEntityService,
+		private userFollowingService: UserFollowingService,
+		private userSuspendService: UserSuspendService,
+		private moderationLogService: ModerationLogService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
-	await Users.update(user.id, {
-		isSuspended: true,
-	});
+			if (user == null) {
+				throw new Error('user not found');
+			}
 
-	insertModerationLog(me, 'suspend', {
-		targetId: user.id,
-	});
+			if (user.isAdmin) {
+				throw new Error('cannot suspend admin');
+			}
 
-	// Terminate streaming
-	if (Users.isLocalUser(user)) {
-		publishUserEvent(user.id, 'terminate', {});
-	}
+			if (user.isModerator) {
+				throw new Error('cannot suspend moderator');
+			}
 
-	(async () => {
-		await doPostSuspend(user).catch(e => {});
-		await unFollowAll(user).catch(e => {});
-		await readAllNotify(user).catch(e => {});
-	})();
-});
+			await this.usersRepository.update(user.id, {
+				isSuspended: true,
+			});
 
-async function unFollowAll(follower: User) {
-	const followings = await Followings.findBy({
-		followerId: follower.id,
-	});
+			this.moderationLogService.insertModerationLog(me, 'suspend', {
+				targetId: user.id,
+			});
 
-	for (const following of followings) {
-		const followee = await Users.findOneBy({
-			id: following.followeeId,
+			// Terminate streaming
+			if (this.userEntityService.isLocalUser(user)) {
+				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
+			}
+
+			(async () => {
+				await this.userSuspendService.doPostSuspend(user).catch(e => {});
+				await this.unFollowAll(user).catch(e => {});
+				await this.readAllNotify(user).catch(e => {});
+			})();
 		});
-
-		if (followee == null) {
-			throw `Cant find followee ${following.followeeId}`;
-		}
-
-		await deleteFollowing(follower, followee, true);
 	}
-}
 
-async function readAllNotify(notifier: User) {
-	await Notifications.update({
-		notifierId: notifier.id,
-		isRead: false,
-	}, {
-		isRead: true,
-	});
+	private async unFollowAll(follower: User) {
+		const followings = await this.followingsRepository.findBy({
+			followerId: follower.id,
+		});
+	
+		for (const following of followings) {
+			const followee = await this.usersRepository.findOneBy({
+				id: following.followeeId,
+			});
+	
+			if (followee == null) {
+				throw `Cant find followee ${following.followeeId}`;
+			}
+	
+			await this.userFollowingService.unfollow(follower, followee, true);
+		}
+	}
+	
+	private async readAllNotify(notifier: User) {
+		await this.notificationsRepository.update({
+			notifierId: notifier.id,
+			isRead: false,
+		}, {
+			isRead: true,
+		});
+	}
 }

@@ -1,6 +1,8 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GalleryPostsRepository, GalleryLikesRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { GalleryPosts, GalleryLikes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -33,23 +35,34 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const post = await GalleryPosts.findOneBy({ id: ps.postId });
-	if (post == null) {
-		throw new ApiError(meta.errors.noSuchPost);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.galleryPostsRepository)
+		private galleryPostsRepository: GalleryPostsRepository,
+
+		@Inject(DI.galleryLikesRepository)
+		private galleryLikesRepository: GalleryLikesRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const post = await this.galleryPostsRepository.findOneBy({ id: ps.postId });
+			if (post == null) {
+				throw new ApiError(meta.errors.noSuchPost);
+			}
+
+			const exist = await this.galleryLikesRepository.findOneBy({
+				postId: post.id,
+				userId: me.id,
+			});
+
+			if (exist == null) {
+				throw new ApiError(meta.errors.notLiked);
+			}
+
+			// Delete like
+			await this.galleryLikesRepository.delete(exist.id);
+
+			this.galleryPostsRepository.decrement({ id: post.id }, 'likedCount', 1);
+		});
 	}
-
-	const exist = await GalleryLikes.findOneBy({
-		postId: post.id,
-		userId: user.id,
-	});
-
-	if (exist == null) {
-		throw new ApiError(meta.errors.notLiked);
-	}
-
-	// Delete like
-	await GalleryLikes.delete(exist.id);
-
-	GalleryPosts.decrement({ id: post.id }, 'likedCount', 1);
-});
+}

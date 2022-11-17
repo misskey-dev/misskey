@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import XNotes from '@/components/notes.vue';
+import XNotes from '@/components/MkNotes.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
@@ -34,6 +34,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => ({
 	title: i18n.t('searchWith', { q: props.query }),
 	icon: 'fas fa-search',
-	bg: 'var(--bg)',
 })));
 </script>

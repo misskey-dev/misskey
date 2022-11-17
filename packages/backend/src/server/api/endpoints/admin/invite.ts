@@ -1,7 +1,9 @@
 import rndstr from 'rndstr';
-import define from '../../define.js';
-import { RegistrationTickets } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { RegistrationTicketsRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -31,19 +33,29 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async () => {
-	const code = rndstr({
-		length: 8,
-		chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.registrationTicketsRepository)
+		private registrationTicketsRepository: RegistrationTicketsRepository,
 
-	await RegistrationTickets.insert({
-		id: genId(),
-		createdAt: new Date(),
-		code,
-	});
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async () => {
+			const code = rndstr({
+				length: 8,
+				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
+			});
 
-	return {
-		code,
-	};
-});
+			await this.registrationTicketsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				code,
+			});
+
+			return {
+				code,
+			};
+		});
+	}
+}

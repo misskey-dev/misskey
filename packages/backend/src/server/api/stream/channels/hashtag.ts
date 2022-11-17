@@ -1,17 +1,23 @@
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
-import Channel from '../channel.js';
-import { Notes } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository } from '@/models/index.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
-import { Packed } from '@/misc/schema.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import type { Packed } from '@/misc/schema.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import Channel from '../channel.js';
 
-export default class extends Channel {
+class HashtagChannel extends Channel {
 	public readonly chName = 'hashtag';
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private q: string[][];
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private noteEntityService: NoteEntityService,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.onNote = this.onNote.bind(this);
 	}
@@ -32,15 +38,15 @@ export default class extends Channel {
 
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await Notes.pack(note.renoteId, this.user, {
+			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
 				detail: true,
 			});
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isMutedUserRelated(note, this.muting)) return;
+		if (isUserRelated(note, this.muting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isBlockerUserRelated(note, this.blocking)) return;
+		if (isUserRelated(note, this.blocking)) return;
 
 		this.connection.cacheNote(note);
 
@@ -50,5 +56,24 @@ export default class extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
+	}
+}
+
+@Injectable()
+export class HashtagChannelService {
+	public readonly shouldShare = HashtagChannel.shouldShare;
+	public readonly requireCredential = HashtagChannel.requireCredential;
+
+	constructor(
+		private noteEntityService: NoteEntityService,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): HashtagChannel {
+		return new HashtagChannel(
+			this.noteEntityService,
+			id,
+			connection,
+		);
 	}
 }

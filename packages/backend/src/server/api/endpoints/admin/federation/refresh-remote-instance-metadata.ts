@@ -1,7 +1,9 @@
-import define from '../../../define.js';
-import { Instances } from '@/models/index.js';
-import { toPuny } from '@/misc/convert-host.js';
-import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { InstancesRepository } from '@/models/index.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -19,12 +21,23 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const instance = await Instances.findOneBy({ host: toPuny(ps.host) });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.instancesRepository)
+		private instancesRepository: InstancesRepository,
 
-	if (instance == null) {
-		throw new Error('instance not found');
+		private utilityService: UtilityService,
+		private fetchInstanceMetadataService: FetchInstanceMetadataService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const instance = await this.instancesRepository.findOneBy({ host: this.utilityService.toPuny(ps.host) });
+
+			if (instance == null) {
+				throw new Error('instance not found');
+			}
+
+			this.fetchInstanceMetadataService.fetchInstanceMetadata(instance, true);
+		});
 	}
-
-	fetchInstanceMetadata(instance, true);
-});
+}

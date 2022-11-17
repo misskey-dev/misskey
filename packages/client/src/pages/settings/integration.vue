@@ -27,7 +27,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { apiUrl } from '@/config';
 import FormSection from '@/components/form/section.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
@@ -95,6 +95,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.integration,
 	icon: 'fas fa-share-alt',
-	bg: 'var(--bg)',
 });
 </script>

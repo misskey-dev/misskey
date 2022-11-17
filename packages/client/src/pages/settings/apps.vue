@@ -39,7 +39,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import FormPagination from '@/components/ui/pagination.vue';
+import FormPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -67,7 +67,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.installedApps,
 	icon: 'fas fa-plug',
-	bg: 'var(--bg)',
 });
 </script>
 

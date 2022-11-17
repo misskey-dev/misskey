@@ -1,9 +1,10 @@
-import define from '../../define.js';
-import { AbuseUserReports, Users } from '@/models/index.js';
-import { getInstanceActor } from '@/services/instance-actor.js';
-import { deliver } from '@/queue/index.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import { renderFlag } from '@/remote/activitypub/renderer/flag.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
+import { InstanceActorService } from '@/core/InstanceActorService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -21,24 +22,41 @@ export const paramDef = {
 	required: ['reportId'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const report = await AbuseUserReports.findOneByOrFail({ id: ps.reportId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	if (report == null) {
-		throw new Error('report not found');
+		@Inject(DI.abuseUserReportsRepository)
+		private abuseUserReportsRepository: AbuseUserReportsRepository,
+
+		private queueService: QueueService,
+		private instanceActorService: InstanceActorService,
+		private apRendererService: ApRendererService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const report = await this.abuseUserReportsRepository.findOneBy({ id: ps.reportId });
+
+			if (report == null) {
+				throw new Error('report not found');
+			}
+
+			if (ps.forward && report.targetUserHost != null) {
+				const actor = await this.instanceActorService.getInstanceActor();
+				const targetUser = await this.usersRepository.findOneByOrFail({ id: report.targetUserId });
+
+				this.queueService.deliver(actor, this.apRendererService.renderActivity(this.apRendererService.renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
+			}
+
+			await this.abuseUserReportsRepository.update(report.id, {
+				resolved: true,
+				assigneeId: me.id,
+				forwarded: ps.forward && report.targetUserHost != null,
+			});
+		});
 	}
-
-	if (ps.forward && report.targetUserHost != null) {
-		const actor = await getInstanceActor();
-		const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
-
-		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
-	}
-
-	await AbuseUserReports.update(report.id, {
-		resolved: true,
-		assigneeId: me.id,
-		forwarded: ps.forward && report.targetUserHost != null,
-	});
-});
+}

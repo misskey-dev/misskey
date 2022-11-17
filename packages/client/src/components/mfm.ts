@@ -1,15 +1,15 @@
 import { VNode, defineComponent, h } from 'vue';
 import * as mfm from 'mfm-js';
-import MkUrl from '@/components/global/url.vue';
-import MkLink from '@/components/link.vue';
-import MkMention from '@/components/mention.vue';
-import MkEmoji from '@/components/global/emoji.vue';
+import MkUrl from '@/components/global/MkUrl.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkMention from '@/components/MkMention.vue';
+import MkEmoji from '@/components/global/MkEmoji.vue';
 import { concat } from '@/scripts/array';
-import MkFormula from '@/components/formula.vue';
-import MkCode from '@/components/code.vue';
-import MkGoogle from '@/components/google.vue';
-import MkSparkle from '@/components/sparkle.vue';
-import MkA from '@/components/global/a.vue';
+import MkFormula from '@/components/MkFormula.vue';
+import MkCode from '@/components/MkCode.vue';
+import MkGoogle from '@/components/MkGoogle.vue';
+import MkSparkle from '@/components/MkSparkle.vue';
+import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
 
@@ -17,37 +17,37 @@ export default defineComponent({
 	props: {
 		text: {
 			type: String,
-			required: true
+			required: true,
 		},
 		plain: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		nowrap: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		author: {
 			type: Object,
-			default: null
+			default: null,
 		},
 		i: {
 			type: Object,
-			default: null
+			default: null,
 		},
 		customEmojis: {
 			required: false,
 		},
 		isNote: {
 			type: Boolean,
-			default: true
+			default: true,
 		},
 	},
 
 	render() {
 		if (this.text == null || this.text === '') return;
 
-		const ast = (this.plain ? mfm.parsePlain : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
+		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
 
 		const validTime = (t: string | null | undefined) => {
 			if (t == null) return null;
@@ -82,7 +82,7 @@ export default defineComponent({
 
 				case 'italic': {
 					return h('i', {
-						style: 'font-style: oblique;'
+						style: 'font-style: oblique;',
 					}, genEl(token.children));
 				}
 
@@ -201,13 +201,13 @@ export default defineComponent({
 
 				case 'small': {
 					return [h('small', {
-						style: 'opacity: 0.7;'
+						style: 'opacity: 0.7;',
 					}, genEl(token.children))];
 				}
 
 				case 'center': {
 					return [h('div', {
-						style: 'text-align:center;'
+						style: 'text-align:center;',
 					}, genEl(token.children))];
 				}
 
@@ -231,7 +231,7 @@ export default defineComponent({
 					return [h(MkMention, {
 						key: Math.random(),
 						host: (token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host) || host,
-						username: token.props.username
+						username: token.props.username,
 					})];
 				}
 
@@ -239,7 +239,7 @@ export default defineComponent({
 					return [h(MkA, {
 						key: Math.random(),
 						to: this.isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/explore/tags/${encodeURIComponent(token.props.hashtag)}`,
-						style: 'color:var(--hashtag);'
+						style: 'color:var(--hashtag);',
 					}, `#${token.props.hashtag}`)];
 				}
 
@@ -255,18 +255,18 @@ export default defineComponent({
 					return [h(MkCode, {
 						key: Math.random(),
 						code: token.props.code,
-						inline: true
+						inline: true,
 					})];
 				}
 
 				case 'quote': {
 					if (!this.nowrap) {
 						return [h('div', {
-							class: 'quote'
+							class: 'quote',
 						}, genEl(token.children))];
 					} else {
 						return [h('span', {
-							class: 'quote'
+							class: 'quote',
 						}, genEl(token.children))];
 					}
 				}
@@ -276,7 +276,7 @@ export default defineComponent({
 						key: Math.random(),
 						emoji: `:${token.props.name}:`,
 						customEmojis: this.customEmojis,
-						normal: this.plain
+						normal: this.plain,
 					})];
 				}
 
@@ -285,7 +285,7 @@ export default defineComponent({
 						key: Math.random(),
 						emoji: token.props.emoji,
 						customEmojis: this.customEmojis,
-						normal: this.plain
+						normal: this.plain,
 					})];
 				}
 
@@ -293,7 +293,7 @@ export default defineComponent({
 					return [h(MkFormula, {
 						key: Math.random(),
 						formula: token.props.formula,
-						block: false
+						block: false,
 					})];
 				}
 
@@ -301,15 +301,19 @@ export default defineComponent({
 					return [h(MkFormula, {
 						key: Math.random(),
 						formula: token.props.formula,
-						block: true
+						block: true,
 					})];
 				}
 
 				case 'search': {
 					return [h(MkGoogle, {
 						key: Math.random(),
-						q: token.props.query
+						q: token.props.query,
 					})];
+				}
+
+				case 'plain': {
+					return [h('span', genEl(token.children))];
 				}
 
 				default: {
@@ -322,5 +326,5 @@ export default defineComponent({
 
 		// Parse ast to DOM
 		return h('span', genEl(ast));
-	}
+	},
 });

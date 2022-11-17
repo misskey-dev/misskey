@@ -36,8 +36,8 @@ import { nextTick, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSection from '@/components/form/section.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
@@ -90,7 +90,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.plugins,
 	icon: 'fas fa-plug',
-	bg: 'var(--bg)',
 });
 </script>
 

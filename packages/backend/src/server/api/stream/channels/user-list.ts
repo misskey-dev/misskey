@@ -1,11 +1,14 @@
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
+import type { User } from '@/models/entities/User.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import type { Packed } from '@/misc/schema.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
-import { Notes, UserListJoinings, UserLists } from '@/models/index.js';
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
-import { User } from '@/models/entities/user.js';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
-import { Packed } from '@/misc/schema.js';
 
-export default class extends Channel {
+class UserListChannel extends Channel {
 	public readonly chName = 'userList';
 	public static shouldShare = false;
 	public static requireCredential = false;
@@ -13,7 +16,14 @@ export default class extends Channel {
 	public listUsers: User['id'][] = [];
 	private listUsersClock: NodeJS.Timer;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private userListsRepository: UserListsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
+		private noteEntityService: NoteEntityService,
+		
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.updateListUsers = this.updateListUsers.bind(this);
 		this.onNote = this.onNote.bind(this);
@@ -23,7 +33,7 @@ export default class extends Channel {
 		this.listId = params.listId as string;
 
 		// Check existence and owner
-		const list = await UserLists.findOneBy({
+		const list = await this.userListsRepository.findOneBy({
 			id: this.listId,
 			userId: this.user!.id,
 		});
@@ -39,7 +49,7 @@ export default class extends Channel {
 	}
 
 	private async updateListUsers() {
-		const users = await UserListJoinings.find({
+		const users = await this.userListJoiningsRepository.find({
 			where: {
 				userListId: this.listId,
 			},
@@ -53,7 +63,7 @@ export default class extends Channel {
 		if (!this.listUsers.includes(note.userId)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await Notes.pack(note.id, this.user, {
+			note = await this.noteEntityService.pack(note.id, this.user, {
 				detail: true,
 			});
 
@@ -63,22 +73,22 @@ export default class extends Channel {
 		} else {
 			// リプライなら再pack
 			if (note.replyId != null) {
-				note.reply = await Notes.pack(note.replyId, this.user, {
+				note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
 					detail: true,
 				});
 			}
 			// Renoteなら再pack
 			if (note.renoteId != null) {
-				note.renote = await Notes.pack(note.renoteId, this.user, {
+				note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
 					detail: true,
 				});
 			}
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isMutedUserRelated(note, this.muting)) return;
+		if (isUserRelated(note, this.muting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isBlockerUserRelated(note, this.blocking)) return;
+		if (isUserRelated(note, this.blocking)) return;
 
 		this.send('note', note);
 	}
@@ -89,5 +99,32 @@ export default class extends Channel {
 		this.subscriber.off('notesStream', this.onNote);
 
 		clearInterval(this.listUsersClock);
+	}
+}
+
+@Injectable()
+export class UserListChannelService {
+	public readonly shouldShare = UserListChannel.shouldShare;
+	public readonly requireCredential = UserListChannel.requireCredential;
+
+	constructor(
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
+
+		@Inject(DI.userListJoiningsRepository)
+		private userListJoiningsRepository: UserListJoiningsRepository,
+
+		private noteEntityService: NoteEntityService,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): UserListChannel {
+		return new UserListChannel(
+			this.userListsRepository,
+			this.userListJoiningsRepository,
+			this.noteEntityService,
+			id,
+			connection,
+		);
 	}
 }

@@ -28,11 +28,11 @@ export class foreignKeyReports1651224615271 {
 
             queryRunner.query(`CREATE INDEX "IDX_315c779174fe8247ab324f036e" ON "drive_file" ("isLink")`),
             queryRunner.query(`CREATE INDEX "IDX_f22169eb10657bded6d875ac8f" ON "note" ("channelId")`),
-            queryRunner.query(`CREATE INDEX "IDX_a9021cc2e1feb5f72d3db6e9f5" ON "abuse_user_report" ("targetUserId")`),
+            //queryRunner.query(`CREATE INDEX "IDX_a9021cc2e1feb5f72d3db6e9f5" ON "abuse_user_report" ("targetUserId")`),
 
-            queryRunner.query(`DELETE FROM "abuse_user_report" WHERE "targetUserId" NOT IN (SELECT "id" FROM "user")`).then(() => {
-                queryRunner.query(`ALTER TABLE "abuse_user_report" ADD CONSTRAINT "FK_a9021cc2e1feb5f72d3db6e9f5f" FOREIGN KEY ("targetUserId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
-            }),
+            //queryRunner.query(`DELETE FROM "abuse_user_report" WHERE "targetUserId" NOT IN (SELECT "id" FROM "user")`).then(() => {
+            //    queryRunner.query(`ALTER TABLE "abuse_user_report" ADD CONSTRAINT "FK_a9021cc2e1feb5f72d3db6e9f5f" FOREIGN KEY ("targetUserId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+            //}),
 
             queryRunner.query(`ALTER TABLE "poll" ADD CONSTRAINT "UQ_da851e06d0dfe2ef397d8b1bf1b" UNIQUE ("noteId")`),
             queryRunner.query(`ALTER TABLE "user_keypair" ADD CONSTRAINT "UQ_f4853eb41ab722fe05f81cedeb6" UNIQUE ("userId")`),

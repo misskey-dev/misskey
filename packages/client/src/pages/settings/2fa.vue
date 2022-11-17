@@ -55,7 +55,7 @@
 			<li>{{ i18n.ts._2fa.step2 }}<br><img :src="twoFactorData.qr"><p>{{ $ts._2fa.step2Url }}<br>{{ twoFactorData.url }}</p></li>
 			<li>
 				{{ i18n.ts._2fa.step3 }}<br>
-				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false"><template #label>{{ i18n.ts.token }}</template></MkInput>
+				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" :spellcheck="false"><template #label>{{ i18n.ts.token }}</template></MkInput>
 				<MkButton primary @click="submit">{{ i18n.ts.done }}</MkButton>
 			</li>
 		</ol>
@@ -68,8 +68,8 @@
 import { ref } from 'vue';
 import { hostname } from '@/config';
 import { byteify, hexify, stringify } from '@/scripts/2fa';
-import MkButton from '@/components/ui/button.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';

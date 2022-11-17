@@ -10,7 +10,7 @@ export type SwMessage = {
 	[x: string]: any;
 };
 
-// Defined also @/services/push-notification.ts#L7-L14
+// Defined also @/core/push-notification.ts#L7-L14
 type pushNotificationDataSourceMap = {
 	notification: Misskey.entities.Notification;
 	unreadMessagingMessage: Misskey.entities.MessagingMessage;
@@ -24,6 +24,7 @@ export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> 
 	type: K;
 	body: pushNotificationDataSourceMap[K];
 	userId: string;
+	dateTime: number;
 };
 
 export type pushNotificationDataMap = {

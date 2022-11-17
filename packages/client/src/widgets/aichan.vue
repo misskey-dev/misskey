@@ -6,8 +6,8 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 
 const name = 'ai';
 
@@ -38,22 +38,23 @@ const touched = () => {
 	//if (this.live2d) this.live2d.changeExpression('gurugurume');
 };
 
-onMounted(() => {
-	const onMousemove = (ev: MouseEvent) => {
-		const iframeRect = live2d.value.getBoundingClientRect();
-		live2d.value.contentWindow.postMessage({
-			type: 'moveCursor',
-			body: {
-				x: ev.clientX - iframeRect.left,
-				y: ev.clientY - iframeRect.top,
-			}
-		}, '*');
-	};
+const onMousemove = (ev: MouseEvent) => {
+	const iframeRect = live2d.value.getBoundingClientRect();
+	live2d.value.contentWindow.postMessage({
+		type: 'moveCursor',
+		body: {
+			x: ev.clientX - iframeRect.left,
+			y: ev.clientY - iframeRect.top,
+		},
+	}, '*');
+};
 
+onMounted(() => {
 	window.addEventListener('mousemove', onMousemove, { passive: true });
-	onUnmounted(() => {
-		window.removeEventListener('mousemove', onMousemove);
-	});
+});
+
+onUnmounted(() => {
+	window.removeEventListener('mousemove', onMousemove);
 });
 
 defineExpose<WidgetComponentExpose>({

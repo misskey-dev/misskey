@@ -31,7 +31,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XForm from './auth.form.vue';
-import MkSignin from '@/components/signin.vue';
+import MkSignin from '@/components/MkSignin.vue';
 import * as os from '@/os';
 import { login } from '@/account';
 

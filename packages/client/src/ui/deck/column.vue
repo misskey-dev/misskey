@@ -1,13 +1,14 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section v-hotkey="keymap" class="dnpfarvg _panel _narrow_"
+<section
+	v-hotkey="keymap" class="dnpfarvg _narrow_"
 	:class="{ paged: isMainColumn, naked, active, isStacked, draghover, dragging, dropready }"
-	:style="{ '--deckColumnHeaderHeight': deckStore.reactiveState.columnHeaderHeight.value + 'px' }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
 >
-	<header :class="{ indicated }"
+	<header
+		:class="{ indicated }"
 		draggable="true"
 		@click="goTop"
 		@dragstart="onDragstart"
@@ -22,7 +23,7 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="func" v-tooltip="func.title" class="menu _button" @click.stop="func.handler"><i :class="func.icon || 'fas fa-cog'"></i></button>
+		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="fas fa-ellipsis"></i></button>
 	</header>
 	<div v-show="active" ref="body">
 		<slot></slot>
@@ -30,32 +31,25 @@
 </section>
 </template>
 
-<script lang="ts">
-export type DeckFunc = {
-	title: string;
-	handler: (payload: MouseEvent) => void;
-	icon?: string;
-};
-</script>
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
+import { onBeforeUnmount, onMounted, provide, Ref, watch } from 'vue';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column , deckStore } from './deck-store';
 import * as os from '@/os';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
-import { deckStore } from './deck-store';
 import { i18n } from '@/i18n';
+import { MenuItem } from '@/types/menu';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
+provide('shouldSpacerMin', true);
 
 const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
-	func?: DeckFunc | null;
 	naked?: boolean;
 	indicated?: boolean;
+	menu?: MenuItem[];
 }>(), {
 	isStacked: false,
-	func: null,
 	naked: false,
 	indicated: false,
 });
@@ -105,80 +99,95 @@ function onOtherDragEnd() {
 function toggleActive() {
 	if (!props.isStacked) return;
 	updateColumn(props.column.id, {
-		active: !props.column.active
+		active: !props.column.active,
 	});
 }
 
 function getMenu() {
-	const items = [{
-		icon: 'fas fa-pencil-alt',
-		text: i18n.ts.edit,
+	let items = [{
+		icon: 'fas fa-cog',
+		text: i18n.ts._deck.configureColumn,
 		action: async () => {
 			const { canceled, result } = await os.form(props.column.name, {
 				name: {
 					type: 'string',
 					label: i18n.ts.name,
-					default: props.column.name
+					default: props.column.name,
 				},
 				width: {
 					type: 'number',
 					label: i18n.ts.width,
-					default: props.column.width
+					default: props.column.width,
 				},
 				flexible: {
 					type: 'boolean',
 					label: i18n.ts.flexible,
-					default: props.column.flexible
-				}
+					default: props.column.flexible,
+				},
 			});
 			if (canceled) return;
 			updateColumn(props.column.id, result);
-		}
-	}, null, {
-		icon: 'fas fa-arrow-left',
-		text: i18n.ts._deck.swapLeft,
-		action: () => {
-			swapLeftColumn(props.column.id);
-		}
+		},
 	}, {
-		icon: 'fas fa-arrow-right',
-		text: i18n.ts._deck.swapRight,
-		action: () => {
-			swapRightColumn(props.column.id);
-		}
-	}, props.isStacked ? {
-		icon: 'fas fa-arrow-up',
-		text: i18n.ts._deck.swapUp,
-		action: () => {
-			swapUpColumn(props.column.id);
-		}
-	} : undefined, props.isStacked ? {
-		icon: 'fas fa-arrow-down',
-		text: i18n.ts._deck.swapDown,
-		action: () => {
-			swapDownColumn(props.column.id);
-		}
-	} : undefined, null, {
+		type: 'parent',
+		text: i18n.ts.move + '...',
+		icon: 'fas fa-arrows-up-down-left-right',
+		children: [{
+			icon: 'fas fa-arrow-left',
+			text: i18n.ts._deck.swapLeft,
+			action: () => {
+				swapLeftColumn(props.column.id);
+			},
+		}, {
+			icon: 'fas fa-arrow-right',
+			text: i18n.ts._deck.swapRight,
+			action: () => {
+				swapRightColumn(props.column.id);
+			},
+		}, props.isStacked ? {
+			icon: 'fas fa-arrow-up',
+			text: i18n.ts._deck.swapUp,
+			action: () => {
+				swapUpColumn(props.column.id);
+			},
+		} : undefined, props.isStacked ? {
+			icon: 'fas fa-arrow-down',
+			text: i18n.ts._deck.swapDown,
+			action: () => {
+				swapDownColumn(props.column.id);
+			},
+		} : undefined],
+	}, {
 		icon: 'fas fa-window-restore',
 		text: i18n.ts._deck.stackLeft,
 		action: () => {
 			stackLeftColumn(props.column.id);
-		}
+		},
 	}, props.isStacked ? {
 		icon: 'fas fa-window-maximize',
 		text: i18n.ts._deck.popRight,
 		action: () => {
 			popRightColumn(props.column.id);
-		}
+		},
 	} : undefined, null, {
 		icon: 'fas fa-trash-alt',
 		text: i18n.ts.remove,
 		danger: true,
 		action: () => {
 			removeColumn(props.column.id);
-		}
+		},
 	}];
+
+	if (props.menu) {
+		items.unshift(null);
+		items = props.menu.concat(items);
+	}
+
 	return items;
+}
+
+function showSettingsMenu(ev: MouseEvent) {
+	os.popupMenu(getMenu(), ev.currentTarget ?? ev.target);
 }
 
 function onContextmenu(ev: MouseEvent) {
@@ -188,7 +197,7 @@ function onContextmenu(ev: MouseEvent) {
 function goTop() {
 	body.scrollTo({
 		top: 0,
-		behavior: 'smooth'
+		behavior: 'smooth',
 	});
 }
 
@@ -239,15 +248,13 @@ function onDrop(ev) {
 <style lang="scss" scoped>
 .dnpfarvg {
 	--root-margin: 10px;
+	--deckColumnHeaderHeight: 42px;
 
 	height: 100%;
 	overflow: hidden;
-	contain: content;
-	box-shadow: 0 0 8px 0 var(--shadow);
+	contain: strict;
 
 	&.draghover {
-		box-shadow: 0 0 0 2px var(--focus);
-
 		&:after {
 			content: "";
 			display: block;
@@ -262,7 +269,18 @@ function onDrop(ev) {
 	}
 
 	&.dragging {
-		box-shadow: 0 0 0 2px var(--focus);
+		&:after {
+			content: "";
+			display: block;
+			position: absolute;
+			z-index: 1000;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: var(--focus);
+			opacity: 0.5;
+		}
 	}
 
 	&.dropready {
@@ -338,7 +356,6 @@ function onDrop(ev) {
 			z-index: 1;
 			width: var(--deckColumnHeaderHeight);
 			line-height: var(--deckColumnHeaderHeight);
-			font-size: 16px;
 			color: var(--faceTextButton);
 
 			&:hover {
