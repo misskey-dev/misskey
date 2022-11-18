@@ -10,6 +10,7 @@ assignees: ''
 <!--
 Thanks for reporting!
 First, in order to avoid duplicate Issues, please search to see if the problem you found has already been reported.
+Also PLEASE DONT REPORT misskey.io SPECIFIC ISSUES TO HERE! Please try with another misskey instances, and if your issue is only reproducible with misskey.io, contact misskey.io's admin first (Discord: https://go.misskey.io/support ).
 -->
 
 ## 💡 Summary
