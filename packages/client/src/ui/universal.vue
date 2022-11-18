@@ -31,7 +31,7 @@
 			<div class="post_button">
 				<!-- <button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button> -->
 				<button class="button post _button" data-cy-open-post-form @click="os.post">
-					<i class="icon fas fa-pencil-alt fa-fw"></i><span class="text">{{ i18n.ts.note }}</span>
+					<i class="icon fas fa-pencil-alt fa-fw"></i>
 				</button>
 			</div>
 		</div>
@@ -320,22 +320,22 @@ stream.on('_disconnected_', async () => {
 		border-top: solid 0.5px var(--divider);
 
 		> .tabs_area {
-			width: 61.8%;
+			width: 85%;
 			display: flex;
 			justify-content: space-around;
 			padding-right: 12px;
 		}
 
 		> .post_area {
-			width: 38.2%;
+			width: 15%;
 			padding-right: 16px;
 			margin-bottom: env(safe-area-inset-bottom);
 		
 			> .post_button {
-				width: 38.2%;
+				width: 64px;
 				background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
 				border-radius: 999px;
-				height: 48px;
+				height: 64px;
 				position: absolute;
 				bottom: calc( env(safe-area-inset-bottom) + 12px);
 			}
@@ -349,24 +349,29 @@ stream.on('_disconnected_', async () => {
 			height: 100%;
 			color: var(--bg);
 			width: 100%;
-    	text-align: left;
+    	text-align: center;
 		}
 
 		.button {
 			&.nav {
 				padding: 12px;
+				font-size: 1.2em;
 			}
 			&.home {
 				padding: 12px;
+				font-size: 1.2em;
 			}
 			&.notifications {
 				padding: 12px;
+				font-size: 1.2em;
 			}
 			&.messaging {
 				padding: 12px;
+				font-size: 1.2em;
 			}
 			&.reload {
 				padding: 12px;
+				font-size: 1.2em;
 			}
 		}
 
