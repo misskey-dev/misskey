@@ -31,6 +31,7 @@
 		"@peertube/http-signature": "1.7.0",
 		"@sinonjs/fake-timers": "10.0.0",
 		"@syuilo/aiscript": "0.11.1",
+		"@tensorflow/tfjs": "4.0.0",
 		"ajv": "8.11.2",
 		"archiver": "5.3.1",
 		"autobind-decorator": "2.4.0",
