@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull, MoreThan } from 'typeorm';
-import * as vary from 'vary';
+import vary from 'vary';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
