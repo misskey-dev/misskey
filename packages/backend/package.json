@@ -50,7 +50,7 @@
 		"date-fns": "2.29.3",
 		"deep-email-validator": "0.1.21",
 		"escape-regexp": "0.0.1",
-		"fastify": "4.9.2",
+		"fastify": "4.10.0",
 		"feed": "4.2.2",
 		"file-type": "18.0.0",
 		"fluent-ffmpeg": "2.1.2",
