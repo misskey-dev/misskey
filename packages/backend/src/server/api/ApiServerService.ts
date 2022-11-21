@@ -69,18 +69,33 @@ export class ApiServerService {
 				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
 			};
 
-			fastify.all<{
-				Params: { endpoint: string; },
-				Body: Record<string, unknown>,
-				Querystring: Record<string, unknown>,
-			}>('/' + endpoint.name.replace(/-/g, '_'), (request, reply) => {
-				if (request.method === 'GET' && !endpoint.meta.allowGet) {
-					reply.code(405);
-					return;
-				}
-	
-				this.apiCallService.handleRequest(ep, request, reply);
-			});
+			if (endpoint.meta.requireFile) {
+				fastify.all<{
+					Params: { endpoint: string; },
+					Body: Record<string, unknown>,
+					Querystring: Record<string, unknown>,
+				}>('/' + endpoint.name.replace(/-/g, '_'), (request, reply) => {
+					if (request.method === 'GET' && !endpoint.meta.allowGet) {
+						reply.code(405);
+						return;
+					}
+		
+					this.apiCallService.handleMultipartRequest(ep, request, reply);
+				});
+			} else {
+				fastify.all<{
+					Params: { endpoint: string; },
+					Body: Record<string, unknown>,
+					Querystring: Record<string, unknown>,
+				}>('/' + endpoint.name.replace(/-/g, '_'), (request, reply) => {
+					if (request.method === 'GET' && !endpoint.meta.allowGet) {
+						reply.code(405);
+						return;
+					}
+		
+					this.apiCallService.handleRequest(ep, request, reply);
+				});
+			}
 		}
 
 		fastify.post<{

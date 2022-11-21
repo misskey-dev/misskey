@@ -1,19 +1,25 @@
 import { performance } from 'perf_hooks';
+import { pipeline } from 'node:stream';
+import * as fs from 'node:fs';
+import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { CacheableLocalUser, User } from '@/models/entities/User.js';
+import type { CacheableLocalUser, ILocalUser, User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
 import type { UserIpsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
+import { createTemp } from '@/misc/create-temp.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
+
+const pump = promisify(pipeline);
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -49,83 +55,127 @@ export class ApiCallService implements OnApplicationShutdown {
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
-		const body = request.isMultipart()
-			? request.body
-			: request.method === 'GET'
-				? request.query
-				: request.body;
-	
-		const send = (x?: any, y?: ApiError) => {
-			if (x == null) {
-				reply.code(204);
-			} else if (typeof x === 'number' && y) {
-				reply.code(x);
-				reply.send({
-					error: {
-						message: y!.message,
-						code: y!.code,
-						id: y!.id,
-						kind: y!.kind,
-						...(y!.info ? { info: y!.info } : {}),
-					},
-				});
-			} else {
-				// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
-				reply.send(typeof x === 'string' ? JSON.stringify(x) : x);
-			}
-		};
-	
+		const body = request.method === 'GET'
+			? request.query
+			: request.body;
+
 		const token = body['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
-			// API invoking
-			this.call(endpoint, user, app, body, request).then((res: any) => {
+			this.call(endpoint, user, app, body, null, request).then((res: any) => {
 				if (request.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
 					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
-				send(res);
+				this.send(reply, res);
 			}).catch((err: ApiError) => {
-				send(err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
+				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
 			});
 
-			// Log IP
 			if (user) {
-				this.metaService.fetch().then(meta => {
-					if (!meta.enableIpLogging) return;
-					const ip = request.ip;
-					const ips = this.userIpHistories.get(user.id);
-					if (ips == null || !ips.has(ip)) {
-						if (ips == null) {
-							this.userIpHistories.set(user.id, new Set([ip]));
-						} else {
-							ips.add(ip);
-						}
-	
-						try {
-							this.userIpsRepository.createQueryBuilder().insert().values({
-								createdAt: new Date(),
-								userId: user.id,
-								ip: ip,
-							}).orIgnore(true).execute();
-						} catch {
-						}
-					}
-				});
+				this.logIp(request, user);
 			}
 		}).catch(err => {
 			if (err instanceof AuthenticationError) {
-				send(403, new ApiError({
+				this.send(reply, 403, new ApiError({
 					message: 'Authentication failed. Please ensure your token is correct.',
 					code: 'AUTHENTICATION_FAILED',
 					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
 				}));
 			} else {
-				send(500, new ApiError());
+				this.send(reply, 500, new ApiError());
 			}
 		});
+	}
+
+	public async handleMultipartRequest(
+		endpoint: IEndpoint & { exec: any },
+		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
+		reply: FastifyReply,
+	) {
+		const multipartData = await request.file();
+		if (multipartData == null) {
+			reply.code(400);
+			return;
+		}
+
+		const [path] = await createTemp();
+		await pump(multipartData.file, fs.createWriteStream(path));
+	
+		const token = multipartData.fields['i'];
+		if (token != null && typeof token !== 'string') {
+			reply.code(400);
+			return;
+		}
+		this.authenticateService.authenticate(token).then(([user, app]) => {
+			this.call(endpoint, user, app, multipartData.fields, {
+				name: multipartData.filename,
+				path: path,
+			}, request).then((res: any) => {
+				this.send(reply, res);
+			}).catch((err: ApiError) => {
+				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
+			});
+
+			if (user) {
+				this.logIp(request, user);
+			}
+		}).catch(err => {
+			if (err instanceof AuthenticationError) {
+				this.send(reply, 403, new ApiError({
+					message: 'Authentication failed. Please ensure your token is correct.',
+					code: 'AUTHENTICATION_FAILED',
+					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
+				}));
+			} else {
+				this.send(reply, 500, new ApiError());
+			}
+		});
+	}
+
+	private send(reply: FastifyReply, x?: any, y?: ApiError) {
+		if (x == null) {
+			reply.code(204);
+		} else if (typeof x === 'number' && y) {
+			reply.code(x);
+			reply.send({
+				error: {
+					message: y!.message,
+					code: y!.code,
+					id: y!.id,
+					kind: y!.kind,
+					...(y!.info ? { info: y!.info } : {}),
+				},
+			});
+		} else {
+			// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
+			reply.send(typeof x === 'string' ? JSON.stringify(x) : x);
+		}
+	}
+
+	private async logIp(request: FastifyRequest, user: ILocalUser) {
+		const meta = await this.metaService.fetch();
+		if (!meta.enableIpLogging) return;
+		const ip = request.ip;
+		const ips = this.userIpHistories.get(user.id);
+		if (ips == null || !ips.has(ip)) {
+			if (ips == null) {
+				this.userIpHistories.set(user.id, new Set([ip]));
+			} else {
+				ips.add(ip);
+			}
+
+			try {
+				this.userIpsRepository.createQueryBuilder().insert().values({
+					createdAt: new Date(),
+					userId: user.id,
+					ip: ip,
+				}).orIgnore(true).execute();
+			} catch {
+			}
+		}
 	}
 
 	private async call(
@@ -133,6 +183,10 @@ export class ApiCallService implements OnApplicationShutdown {
 		user: CacheableLocalUser | null | undefined,
 		token: AccessToken | null | undefined,
 		data: any,
+		file: {
+			name: string;
+			path: string;
+		} | null,
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 	) {
 		const isSecure = user != null && token == null;
@@ -225,7 +279,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		// API invoking
 		const before = performance.now();
-		return await ep.exec(data, user, token, request.file, request.ip, request.headers).catch((err: Error) => {
+		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
 			if (err instanceof ApiError) {
 				throw err;
 			} else {
