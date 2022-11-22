@@ -23,7 +23,7 @@
 	:autofocus="autofocus"
 	:wait="wait"
 	:full="full"
-	@click="subscribe"
+	@click="unsubscribe"
 >
 	{{ i18n.ts.unsubscribePushNotification }}
 </MkButton>
