@@ -33,7 +33,7 @@
 import { $i, getAccounts } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance';
-import { api, apiWithDialog } from '@/os';
+import { api, apiWithDialog, promiseDialog } from '@/os';
 import { i18n } from '@/i18n';
 
 defineProps<{
@@ -62,7 +62,7 @@ function subscribe() {
 	if (!registration || !supported || !instance.swPublickey) return;
 
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
-	return registration.pushManager.subscribe({
+	return promiseDialog(registration.pushManager.subscribe({
 		userVisibleOnly: true,
 		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
 	})
@@ -70,15 +70,13 @@ function subscribe() {
 		pushSubscription = subscription;
 
 		// Register
-		await apiWithDialog('sw/register', {
+		await api('sw/register', {
 			endpoint: subscription.endpoint,
 			auth: encode(subscription.getKey('auth')),
 			publickey: encode(subscription.getKey('p256dh'))
 		});
 
 		alreadySubscribed = true;
-		console.log('pushSubscription = ', subscription);
-		console.log('alreadySubscribed = true');
 	}, async err => { // When subscribe failed
 		// 通知が許可されていなかったとき
 		if (err?.name === 'NotAllowedError') {
@@ -90,8 +88,8 @@ function subscribe() {
 		// 既に存在していることが原因でエラーになった可能性があるので、
 		// そのサブスクリプションを解除しておく
 		// （これは実行されなさそうだけど、おまじない的に古い実装から残してある）
-		unsubscribe();
-	});
+		await unsubscribe();
+	}), null, null);
 }
 
 async function unsubscribe() {
@@ -101,21 +99,18 @@ async function unsubscribe() {
 	const accounts = await getAccounts();
 
 	alreadySubscribed = false;
-	console.log('pushSubscription = false');
 
 	if ($i && accounts.length >= 2) {
 		apiWithDialog('sw/unregister', {
 			i: $i.token,
 			endpoint,
 		});
-		console.log('pushSubscriptionは削除されない');
 	} else {
 		pushSubscription.unsubscribe();
 		apiWithDialog('sw/unregister', {
 			endpoint,
 		});
 		pushSubscription = null;
-		console.log('pushSubscription = null');
 	}
 }
 
@@ -145,14 +140,10 @@ function encode(buffer: ArrayBuffer | null) {
 navigator.serviceWorker.ready.then(async swr => {
 	registration = swr;
 
-	console.log('registration = ', $$(registration).value);
-
 	pushSubscription = await registration.pushManager.getSubscription();
-	console.log('pushSubscription = ', $$(pushSubscription).value);
 
 	if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
 		supported = true;
-		console.log('supported = true');
 
 		if (pushSubscription) {
 			const res = await api('sw/check-exists', {
@@ -162,8 +153,7 @@ navigator.serviceWorker.ready.then(async swr => {
 			if (res) {
 				alreadySubscribed = true;
 			}
-			console.log('alreadySubscribed = ', alreadySubscribed);
 		}
-	} else { console.log('supported = false'); }
+	}
 });
 </script>
