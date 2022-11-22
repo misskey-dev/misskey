@@ -2,17 +2,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { SwSubscriptionsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
 
-	description: 'Check push notification registration exists.',
+	description: 'Update push notification registration.',
 
 	res: {
 		type: 'object',
-		optional: false, nullable: true,
+		optional: false, nullable: false,
 		properties: {
 			sendReadMessage: {
 				type: 'boolean',
@@ -20,12 +21,20 @@ export const meta = {
 			},
 		},
 	},
+	errors: {
+		noSuchRegistration: {
+			message: 'No such registration.',
+			code: 'NO_SUCH_REGISTRATION',
+			id: ' b09d8066-8064-5613-efb6-0e963b21d012',
+		},
+	}
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
 		endpoint: { type: 'string' },
+		sendReadMessage: { type: 'boolean' },
 	},
 	required: ['endpoint'],
 } as const;
@@ -38,19 +47,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// if already subscribed
-			const exist = await this.swSubscriptionsRepository.findOneBy({
+			const swSubscription = await this.swSubscriptionsRepository.findOneBy({
 				userId: me.id,
 				endpoint: ps.endpoint,
 			});
 
-			if (exist != null) {
-				return {
-					sendReadMessage: exist.sendReadMessage,
-				};
+			if (swSubscription === null) {
+				throw new ApiError(meta.errors.noSuchRegistration);
 			}
 
-			return null;
+			if (ps.sendReadMessage !== undefined) {
+				swSubscription.sendReadMessage = ps.sendReadMessage;
+			}
+
+			await this.swSubscriptionsRepository.update(swSubscription.id, {
+				sendReadMessage: swSubscription.sendReadMessage,
+			});
+
+			return {
+				sendReadMessage: swSubscription.sendReadMessage,
+			};
 		});
 	}
 }
