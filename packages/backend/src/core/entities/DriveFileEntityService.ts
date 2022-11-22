@@ -9,6 +9,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
+import { deepClone } from '@/misc/clone.js';
 import { UtilityService } from '../UtilityService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
@@ -55,7 +56,7 @@ export class DriveFileEntityService {
 
 	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
-			const properties = structuredClone(file.properties);
+			const properties = deepClone(file.properties);
 			if (file.properties.orientation >= 5) {
 				[properties.width, properties.height] = [properties.height, properties.width];
 			}

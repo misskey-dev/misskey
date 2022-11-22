@@ -2,6 +2,7 @@ import { reactive, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
 import { Form, GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
+import { deepClone } from '@/scripts/clone';
 
 export type Widget<P extends Record<string, unknown>> = {
 	id: string;
@@ -32,7 +33,7 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 	save: () => void;
 	configure: () => void;
 } => {
-	const widgetProps = reactive(props.widget ? JSON.parse(JSON.stringify(props.widget.data)) : {});
+	const widgetProps = reactive(props.widget ? deepClone(props.widget.data) : {});
 
 	const mergeProps = () => {
 		for (const prop of Object.keys(propsDef)) {
@@ -43,14 +44,14 @@ export const useWidgetPropsManager = <F extends Form & Record<string, { default:
 	};
 	watch(widgetProps, () => {
 		mergeProps();
-	}, { deep: true, immediate: true, });
+	}, { deep: true, immediate: true });
 
 	const save = throttle(3000, () => {
 		emit('updateProps', widgetProps);
 	});
 
 	const configure = async () => {
-		const form = JSON.parse(JSON.stringify(propsDef));
+		const form = deepClone(propsDef);
 		for (const item of Object.keys(form)) {
 			form[item].default = widgetProps[item];
 		}

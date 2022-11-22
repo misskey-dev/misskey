@@ -9,6 +9,7 @@ import { QueueService } from '@/core/QueueService.js';
 import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
+import { deepClone } from '@/misc/clone.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 
@@ -105,7 +106,7 @@ export class RelayService {
 		}));
 		if (relays.length === 0) return;
 	
-		const copy = structuredClone(activity);
+		const copy = deepClone(activity);
 		if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
 	
 		const signed = await this.apRendererService.attachLdSignature(copy, user);
