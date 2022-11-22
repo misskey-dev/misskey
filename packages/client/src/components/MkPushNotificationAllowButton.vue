@@ -104,15 +104,15 @@ function subscribe() {
 async function unsubscribe() {
 	if (!registration) return;
 
-	const subscription = await registration.pushManager.getSubscription();
-
-	if (subscription) {
-		await subscription.unsubscribe();
+	if (pushSubscription) {
+		await pushSubscription.unsubscribe();
+		const endpoint = pushSubscription.endpoint;
+		pushSubscription = null;
 
 		if ($i) {
 			await api('sw/unregister', {
 				i: $i.token,
-				endpoint: subscription.endpoint
+				endpoint,
 			});
 		}
 	}

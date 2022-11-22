@@ -1,6 +1,3 @@
-import { instance } from '@/instance';
-import { $i } from '@/account';
-import { api } from '@/os';
 import { lang } from '@/config';
 
 export async function initializeSw() {
