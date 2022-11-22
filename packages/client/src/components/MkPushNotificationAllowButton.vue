@@ -1,6 +1,6 @@
 <template>
 <MkButton
-	v-if="supported && !pushSubscription"
+	v-if="supported && !alreadySubscribed"
 	type="button"
 	primary
 	:gradate="gradate"
@@ -14,7 +14,7 @@
 	{{ i18n.ts.subscribePushNotification }}
 </MkButton>
 <MkButton
-	v-else-if="supported || pushSubscription"
+	v-else-if="registration && ($i ? alreadySubscribed : pushSubscription)"
 	type="button"
 	:primary="false"
 	:gradate="gradate"
@@ -30,10 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import { $i } from '@/account';
+import { $i, getAccounts } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance';
-import { api } from '@/os';
+import { api, apiWithDialog } from '@/os';
 import { i18n } from '@/i18n';
 
 defineProps<{
@@ -50,49 +50,42 @@ defineProps<{
 	showOnlyIfNotRegistered?: boolean;
 }>();
 
-let supported = $ref(false);
-let pushSubscription = $ref<PushSubscription | null>(null);
+// ServiceWorker registration
 let registration = $ref<ServiceWorkerRegistration | undefined>();
-
-navigator.serviceWorker.ready.then(async _registration => {
-	registration = _registration;
-
-	if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
-		supported = true;
-	}
-
-	pushSubscription = await registration.pushManager.getSubscription();
-});
+// If this browser supports push notification
+let supported = $ref(false);
+// If this browser has already subscribed to push notification
+let pushSubscription = $ref<PushSubscription | null>(null);
+let alreadySubscribed = $ref(false);
 
 function subscribe() {
 	if (!registration || !supported || !instance.swPublickey) return;
 
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
-	registration.pushManager.subscribe({
+	return registration.pushManager.subscribe({
 		userVisibleOnly: true,
 		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
 	})
 	.then(async subscription => {
-		function encode(buffer: ArrayBuffer | null) {
-			return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
-		}
+		pushSubscription = subscription;
 
 		// Register
-		await api('sw/register', {
+		await apiWithDialog('sw/register', {
 			endpoint: subscription.endpoint,
 			auth: encode(subscription.getKey('auth')),
 			publickey: encode(subscription.getKey('p256dh'))
 		});
 
-		pushSubscription = subscription;
-	})
-	// When subscribe failed
-	.catch(async (err: Error) => {
+		alreadySubscribed = true;
+		console.log('pushSubscription = ', subscription);
+		console.log('alreadySubscribed = true');
+	}, async err => { // When subscribe failed
 		// 通知が許可されていなかったとき
-		if (err.name === 'NotAllowedError') {
+		if (err?.name === 'NotAllowedError') {
+			console.info('User denied the notification permission request.');
 			return;
 		}
-		
+
 		// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
 		// 既に存在していることが原因でエラーになった可能性があるので、
 		// そのサブスクリプションを解除しておく
@@ -102,20 +95,32 @@ function subscribe() {
 }
 
 async function unsubscribe() {
-	if (!registration) return;
+	if (!pushSubscription) return;
 
-	if (pushSubscription) {
-		await pushSubscription.unsubscribe();
-		const endpoint = pushSubscription.endpoint;
+	const endpoint = pushSubscription.endpoint;
+	const accounts = await getAccounts();
+
+	alreadySubscribed = false;
+	console.log('pushSubscription = false');
+
+	if ($i && accounts.length >= 2) {
+		apiWithDialog('sw/unregister', {
+			i: $i.token,
+			endpoint,
+		});
+		console.log('pushSubscriptionは削除されない');
+	} else {
+		pushSubscription.unsubscribe();
+		apiWithDialog('sw/unregister', {
+			endpoint,
+		});
 		pushSubscription = null;
-
-		if ($i) {
-			await api('sw/unregister', {
-				i: $i.token,
-				endpoint,
-			});
-		}
+		console.log('pushSubscription = null');
 	}
+}
+
+function encode(buffer: ArrayBuffer | null) {
+	return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
 }
 
 /**
@@ -137,4 +142,28 @@ async function unsubscribe() {
 	return outputArray;
 }
 
+navigator.serviceWorker.ready.then(async swr => {
+	registration = swr;
+
+	console.log('registration = ', $$(registration).value);
+
+	pushSubscription = await registration.pushManager.getSubscription();
+	console.log('pushSubscription = ', $$(pushSubscription).value);
+
+	if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
+		supported = true;
+		console.log('supported = true');
+
+		if (pushSubscription) {
+			const res = await api('sw/check-exists', {
+				endpoint: pushSubscription.endpoint,
+			});
+
+			if (res) {
+				alreadySubscribed = true;
+			}
+			console.log('alreadySubscribed = ', alreadySubscribed);
+		}
+	} else { console.log('supported = false'); }
+});
 </script>
