@@ -14,6 +14,14 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: true,
 		properties: {
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			endpoint: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 			sendReadMessage: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -46,6 +54,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (exist != null) {
 				return {
+					userId: exist.userId,
+					endpoint: exist.endpoint,
 					sendReadMessage: exist.sendReadMessage,
 				};
 			}

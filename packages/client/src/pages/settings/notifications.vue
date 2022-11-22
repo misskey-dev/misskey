@@ -8,7 +8,15 @@
 	</FormSection>
 	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
-		<MkPushNotificationAllowButton />
+		<MkPushNotificationAllowButton ref="allowButton" />
+		<FormSwitch :disabled="!allowButton?.pushRegistrationInServer" :model-value="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
+			<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
+			<template #caption>
+				<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
+					<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
+				</I18n>
+			</template>
+		</FormSwitch>
 	</FormSection>
 </div>
 </template>
@@ -19,11 +27,15 @@ import { notificationTypes } from 'misskey-js';
 import FormButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
+import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
+
+let allowButton = $ref<InstanceType<typeof MkPushNotificationAllowButton>>();
+let sendReadMessage = $computed(() => allowButton?.pushRegistrationInServer?.sendReadMessage || false);
 
 async function readAllUnreadNotes() {
 	await os.api('i/read-all-unread-notes');
@@ -52,6 +64,20 @@ function configure() {
 			});
 		},
 	}, 'closed');
+}
+
+function onChangeSendReadMessage(v: boolean) {
+	if (!allowButton?.pushRegistrationInServer) return;
+
+	os.apiWithDialog('sw/update-registration', {
+		pushRegistration: {
+			endpoint: allowButton.pushRegistrationInServer.endpoint,
+			sendReadMessage: v,
+		},
+	}).then(res => {
+		if (!allowButton)	return;
+		allowButton.pushRegistrationInServer = res;
+	});
 }
 
 const headerActions = $computed(() => []);

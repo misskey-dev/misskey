@@ -1,6 +1,6 @@
 <template>
 <MkButton
-	v-if="supported && !alreadySubscribed"
+	v-if="supported && !pushRegistrationInServer"
 	type="button"
 	primary
 	:gradate="gradate"
@@ -14,7 +14,7 @@
 	{{ i18n.ts.subscribePushNotification }}
 </MkButton>
 <MkButton
-	v-else-if="!showOnlyToRegister && ($i ? alreadySubscribed : pushSubscription)"
+	v-else-if="!showOnlyToRegister && ($i ? pushRegistrationInServer : pushSubscription)"
 	type="button"
 	:primary="false"
 	:gradate="gradate"
@@ -27,7 +27,7 @@
 >
 	{{ i18n.ts.unsubscribePushNotification }}
 </MkButton>
-<MkButton v-else-if="$i && alreadySubscribed" disabled :rounded="rounded" :inline="inline" :wait="wait" :full="full">
+<MkButton v-else-if="$i && pushRegistrationInServer" disabled :rounded="rounded" :inline="inline" :wait="wait" :full="full">
 	{{ i18n.ts.pushNotificationAlreadySubscribed }}
 </MkButton>
 <MkButton v-else-if="!supported" disabled :rounded="rounded" :inline="inline" :wait="wait" :full="full">
@@ -62,7 +62,7 @@ let registration = $ref<ServiceWorkerRegistration | undefined>();
 let supported = $ref(false);
 // If this browser has already subscribed to push notification
 let pushSubscription = $ref<PushSubscription | null>(null);
-let alreadySubscribed = $ref(false);
+let pushRegistrationInServer = $ref<{ state?: string; key?: string; userId: string; endpoint: string; sendReadMessage: boolean; } | undefined>();
 
 function subscribe() {
 	if (!registration || !supported || !instance.swPublickey) return;
@@ -76,13 +76,11 @@ function subscribe() {
 		pushSubscription = subscription;
 
 		// Register
-		await api('sw/register', {
+		pushRegistrationInServer = await api('sw/register', {
 			endpoint: subscription.endpoint,
 			auth: encode(subscription.getKey('auth')),
 			publickey: encode(subscription.getKey('p256dh'))
 		});
-
-		alreadySubscribed = true;
 	}, async err => { // When subscribe failed
 		// 通知が許可されていなかったとき
 		if (err?.name === 'NotAllowedError') {
@@ -104,7 +102,7 @@ async function unsubscribe() {
 	const endpoint = pushSubscription.endpoint;
 	const accounts = await getAccounts();
 
-	alreadySubscribed = false;
+	pushRegistrationInServer = undefined;
 
 	if ($i && accounts.length >= 2) {
 		apiWithDialog('sw/unregister', {
@@ -157,9 +155,13 @@ navigator.serviceWorker.ready.then(async swr => {
 			});
 
 			if (res) {
-				alreadySubscribed = true;
+				pushRegistrationInServer = res;
 			}
 		}
 	}
+});
+
+defineExpose({
+	pushRegistrationInServer,
 });
 </script>

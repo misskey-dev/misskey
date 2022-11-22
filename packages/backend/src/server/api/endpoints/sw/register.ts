@@ -25,6 +25,14 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			endpoint: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 			sendReadMessage: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -69,6 +77,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return {
 					state: 'already-subscribed' as const,
 					key: instance.swPublicKey,
+					userId: me.id,
+					endpoint: exist.endpoint,
 					sendReadMessage: exist.sendReadMessage,
 				};
 			}
@@ -86,6 +96,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			return {
 				state: 'subscribed' as const,
 				key: instance.swPublicKey,
+				userId: me.id,
+				endpoint: ps.endpoint,
 				sendReadMessage: ps.sendReadMessage,
 			};
 		});

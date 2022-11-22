@@ -15,6 +15,14 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: false,
 		properties: {
+			userId: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			endpoint: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 			sendReadMessage: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -65,6 +73,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			return {
+				userId: swSubscription.userId,
+				endpoint: swSubscription.endpoint,
 				sendReadMessage: swSubscription.sendReadMessage,
 			};
 		});
