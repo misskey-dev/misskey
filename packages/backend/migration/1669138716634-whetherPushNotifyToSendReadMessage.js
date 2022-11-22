@@ -1,6 +1,4 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
-
-module.exports = class whetherPushNotifyToSendReadMessage1669138716634 {
+export class whetherPushNotifyToSendReadMessage1669138716634 {
     name = 'whetherPushNotifyToSendReadMessage1669138716634'
 
     async up(queryRunner) {
