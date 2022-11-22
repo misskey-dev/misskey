@@ -9,7 +9,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
 		<MkPushNotificationAllowButton ref="allowButton" />
-		<FormSwitch :disabled="!allowButton?.pushRegistrationInServer" :model-value="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
+		<FormSwitch class="_formBlock" :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
 			<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
 			<template #caption>
 				<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
@@ -35,7 +35,8 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 
 let allowButton = $ref<InstanceType<typeof MkPushNotificationAllowButton>>();
-let sendReadMessage = $computed(() => allowButton?.pushRegistrationInServer?.sendReadMessage || false);
+let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);
+let sendReadMessage = $computed(() => pushRegistrationInServer?.sendReadMessage || false);
 
 async function readAllUnreadNotes() {
 	await os.api('i/read-all-unread-notes');
@@ -67,13 +68,11 @@ function configure() {
 }
 
 function onChangeSendReadMessage(v: boolean) {
-	if (!allowButton?.pushRegistrationInServer) return;
+	if (!pushRegistrationInServer) return;
 
 	os.apiWithDialog('sw/update-registration', {
-		pushRegistration: {
-			endpoint: allowButton.pushRegistrationInServer.endpoint,
-			sendReadMessage: v,
-		},
+		endpoint: pushRegistrationInServer.endpoint,
+		sendReadMessage: v,
 	}).then(res => {
 		if (!allowButton)	return;
 		allowButton.pushRegistrationInServer = res;

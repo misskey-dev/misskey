@@ -162,6 +162,6 @@ navigator.serviceWorker.ready.then(async swr => {
 });
 
 defineExpose({
-	pushRegistrationInServer,
+	pushRegistrationInServer: $$(pushRegistrationInServer),
 });
 </script>
