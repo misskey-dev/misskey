@@ -132,13 +132,11 @@ const tutorial = computed({
 .footer {
 	display: flex;
 	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: right;
 
-	&Item:first-child {
-		margin-left: auto;
-	}
-
-	&Item:not(:first-child) {
-		margin-left: 8px;
+	&Item {
+		margin: 4px;
 	}
 }
 </style>
