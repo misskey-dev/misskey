@@ -34,4 +34,9 @@ export class SwSubscription {
 		length: 128,
 	})
 	public publickey: string;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public sendReadMessage: boolean;
 }
