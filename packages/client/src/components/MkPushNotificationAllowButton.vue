@@ -14,7 +14,7 @@
 	{{ i18n.ts.subscribePushNotification }}
 </MkButton>
 <MkButton
-	v-else-if="registration && ($i ? alreadySubscribed : pushSubscription)"
+	v-else-if="!showOnlyToRegister && ($i ? alreadySubscribed : pushSubscription)"
 	type="button"
 	:primary="false"
 	:gradate="gradate"
@@ -26,6 +26,12 @@
 	@click="unsubscribe"
 >
 	{{ i18n.ts.unsubscribePushNotification }}
+</MkButton>
+<MkButton v-else-if="$i && alreadySubscribed" disabled :rounded="rounded" :inline="inline" :wait="wait" :full="full">
+	{{ i18n.ts.pushNotificationAlreadySubscribed }}
+</MkButton>
+<MkButton v-else-if="!supported" disabled :rounded="rounded" :inline="inline" :wait="wait" :full="full">
+	{{ i18n.ts.pushNotificationNotSupported }}
 </MkButton>
 </template>
 
@@ -47,7 +53,7 @@ defineProps<{
 	wait?: boolean;
 	danger?: boolean;
 	full?: boolean;
-	showOnlyIfNotRegistered?: boolean;
+	showOnlyToRegister?: boolean;
 }>();
 
 // ServiceWorker registration
