@@ -67,6 +67,14 @@ export class PushNotificationService {
 		});
 	
 		for (const subscription of subscriptions) {
+			// Continue if sendReadMessage is false
+			if ([
+				'readNotifications',
+				'readAllNotifications',
+				'readAllMessagingMessages',
+				'readAllMessagingMessagesOfARoom',
+			].includes(type) && !subscription.sendReadMessage) continue;
+
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
 				keys: {
