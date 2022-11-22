@@ -44,7 +44,7 @@
 					</div>
 				</FormSection>
 				<FormSection>
-					<template #label><Mfm text="$[tada 🍬]"/> 喵窝的守护者</template>
+					<template #label><Mfm text="🍬"/> 喵窝的守护者</template>
 					<div class="_formLinks">
 						<FormLink to="https://nya.one/@Candinya" external>@Candinya</FormLink>
 					</div>
