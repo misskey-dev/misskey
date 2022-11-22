@@ -6,6 +6,10 @@
 		<FormLink class="_formBlock" @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
 		<FormLink class="_formBlock" @click="readAllMessagingMessages">{{ i18n.ts.markAsReadAllTalkMessages }}</FormLink>
 	</FormSection>
+	<FormSection>
+		<template #label>{{ i18n.ts.pushNotification }}</template>
+		<MkPushNotificationAllowButton />
+	</FormSection>
 </div>
 </template>
 
@@ -19,6 +23,7 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 
 async function readAllUnreadNotes() {
 	await os.api('i/read-all-unread-notes');

@@ -898,6 +898,9 @@ navbar: "ナビゲーションバー"
 shuffle: "シャッフル"
 account: "アカウント"
 move: "移動"
+pushNotification: "プッシュ通知"
+subscribePushNotification: "プッシュ通知を有効化"
+unsubscribePushNotification: "プッシュ通知を停止する"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
