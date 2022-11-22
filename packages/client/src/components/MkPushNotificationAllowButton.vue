@@ -152,7 +152,7 @@ navigator.serviceWorker.ready.then(async swr => {
 		supported = true;
 
 		if (pushSubscription) {
-			const res = await api('sw/check-exists', {
+			const res = await api('sw/show-registration', {
 				endpoint: pushSubscription.endpoint,
 			});
 
