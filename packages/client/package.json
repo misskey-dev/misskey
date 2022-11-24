@@ -1,19 +1,17 @@
 {
+	"name": "client",
 	"private": true,
 	"scripts": {
 		"watch": "vite build --watch --mode development",
 		"build": "vite build",
 		"lint": "eslint --quiet \"src/**/*.{ts,vue}\""
 	},
-	"resolutions": {
-		"chokidar": "^3.3.1",
-		"lodash": "^4.17.21"
-	},
 	"dependencies": {
 		"@discordapp/twemoji": "14.0.2",
 		"@fortawesome/fontawesome-free": "6.1.2",
 		"@rollup/plugin-alias": "4.0.2",
 		"@rollup/plugin-json": "5.0.1",
+		"@rollup/pluginutils": "5.0.2",
 		"@syuilo/aiscript": "0.11.1",
 		"@vitejs/plugin-vue": "3.2.0",
 		"@vue/compiler-sfc": "3.2.45",
@@ -21,7 +19,7 @@
 		"autosize": "5.0.1",
 		"blurhash": "2.0.4",
 		"broadcast-channel": "4.18.1",
-		"browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.2",
+		"browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
 		"chart.js": "4.0.1",
 		"chartjs-adapter-date-fns": "2.0.1",
 		"chartjs-plugin-gradient": "0.5.1",
@@ -76,6 +74,8 @@
 		"@types/throttle-debounce": "5.0.0",
 		"@types/tinycolor2": "1.4.3",
 		"@types/uuid": "8.3.4",
+		"@types/websocket": "1.0.5",
+		"@types/ws": "8.5.3",
 		"@typescript-eslint/eslint-plugin": "5.43.0",
 		"@typescript-eslint/parser": "5.43.0",
 		"cross-env": "7.0.3",

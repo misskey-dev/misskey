@@ -170,6 +170,8 @@ same as 12.112.0
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0
+- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
+	- You may have to `yarn run clean-all` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
@@ -379,7 +381,7 @@ same as 12.112.0
 ## 12.104.0 (2022/02/09)
 
 ### Note
-ビルドする前に`npm run clean`を実行してください。
+ビルドする前に`yarn clean`を実行してください。
 
 このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
 マイグレーションが終わらない場合は、チャートの情報はリセットされてしまいますが`__chart__`で始まるテーブルの**レコード**を全て削除(テーブル自体は消さないでください)してから再度試す方法もあります。
