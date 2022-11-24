@@ -38,6 +38,7 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { deckStore } from './ui/deck/deck-store';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -72,6 +73,8 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 			*/
 		});
 	}
+
+	await defaultStore.ready;
 
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
@@ -187,6 +190,8 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 	if (splash) splash.addEventListener('transitionend', () => {
 		splash.remove();
 	});
+
+	await deckStore.ready;
 
 	// https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 	// なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
