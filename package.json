@@ -6,32 +6,42 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
+	"packageManager": "yarn@3.2.1",
+	"workspaces": [
+		"packages/client",
+		"packages/backend",
+		"packages/sw"
+	],
 	"private": true,
 	"scripts": {
-		"postinstall": "node ./scripts/install-packages.js",
-		"build": "node ./scripts/build.js",
+		"build": "yarn workspaces foreach run build && yarn run gulp",
 		"start": "cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
-		"init": "npm run migrate",
+		"init": "yarn migrate",
 		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
-		"migrateandstart": "npm run migrate && npm run start",
+		"migrateandstart": "yarn migrate && yarn start",
 		"gulp": "gulp build",
-		"watch": "npm run dev",
+		"watch": "yarn dev",
 		"dev": "node ./scripts/dev.js",
-		"lint": "node ./scripts/lint.js",
+		"lint": "yarn workspaces foreach run lint",
 		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "cypress run",
 		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
 		"jest": "cd packages/backend && cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
 		"jest-and-coverage": "cd packages/backend && cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
-		"test": "npm run jest",
-		"test-and-coverage": "npm run jest-and-coverage",
+		"test": "yarn jest",
+		"test-and-coverage": "yarn jest-and-coverage",
 		"format": "gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "npm run clean-all"
+		"cleanall": "yarn clean-all"
+	},
+	"resolutions": {
+		"chokidar": "^3.3.1",
+		"lodash": "^4.17.21"
 	},
 	"dependencies": {
+		"eslint": "^8.16.0",
 		"execa": "5.1.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
@@ -43,6 +53,7 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
+		"@typescript-eslint/eslint-plugin": "latest",
 		"@typescript-eslint/parser": "5.43.0",
 		"cross-env": "7.0.3",
 		"cypress": "11.1.0",

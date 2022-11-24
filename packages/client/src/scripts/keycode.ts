@@ -18,7 +18,7 @@ export const aliases = {
 };
 
 /*!
-* Programatically add the following
+* Programmatically add the following
 */
 
 // lower case chars
