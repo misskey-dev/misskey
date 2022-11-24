@@ -11,8 +11,7 @@
 		"sourceMap": false,
 		"target": "es2017",
 		"module": "esnext",
-		"moduleResolution": "node",
-		"allowSyntheticDefaultImports": true,
+		"moduleResolution": "node"
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,

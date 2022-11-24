@@ -27,7 +27,6 @@
 		"compare-versions": "5.0.1",
 		"cropperjs": "2.0.0-beta",
 		"date-fns": "2.29.3",
-		"deepcopy": "2.1.0",
 		"escape-regexp": "0.0.1",
 		"eventemitter3": "4.0.7",
 		"idb-keyval": "6.2.0",
