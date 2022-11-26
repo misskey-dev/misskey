@@ -48,8 +48,8 @@ onMounted(() => {
 		});
 		*/
 		adjust({
-			width: root!.offsetWidth,
-			height: root!.offsetHeight,
+			width: root!.clientWidth,
+			height: root!.clientWidth,
 		});
 	});
 	ro.observe(root!);
