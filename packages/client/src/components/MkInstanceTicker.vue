@@ -1,6 +1,6 @@
 <template>
 <div class="hpaizdrt" :style="bg">
-	<img v-if="instance.faviconUrl" class="icon" :src="instance.faviconUrl"/>
+	<img v-if="faviconUrl" class="icon" :src="faviconUrl"/>
 	<span class="name">{{ instance.name }}</span>
 </div>
 </template>
@@ -25,7 +25,7 @@ const instance = props.instance ?? {
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
 };
 
-const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl) : getProxiedImageUrlNullable(Instance.iconUrl) ?? getProxiedImageUrlNullable(Instance.faviconUrl) ?? '/favicon.ico');
+const faviconUrl = $computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(Instance.faviconUrl, 'preview') ?? '/favicon.ico');
 
 const themeColor = instance.themeColor ?? '#777777';
 
