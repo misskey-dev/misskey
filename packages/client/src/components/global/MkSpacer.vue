@@ -60,10 +60,8 @@ onMounted(() => {
 		const pastHeight = heightHistory.pop();
 		heightHistory.unshift(height);
 
-		console.log(pastWidth, widthHistory, pastHeight, heightHistory);
 
 		if (pastWidth === width && pastHeight === height) {
-			console.log('Prevented infinite resizing');
 			return;
 		}
 		//#endregion

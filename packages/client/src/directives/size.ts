@@ -8,6 +8,7 @@ const mountings = new Map<Element, {
 	resize: ResizeObserver;
 	intersection?: IntersectionObserver;
 	previousWidth: number;
+	twoPreviousWidth: number;
 }>();
 
 type ClassOrder = {
@@ -42,9 +43,9 @@ function getOrderName(width: number, queue: Value): string {
 	return `${width}|${queue.max ? queue.max.join(',') : ''}|${queue.min ? queue.min.join(',') : ''}`;
 }
 
-function calc(el: HTMLElement | Element) {
+function calc(el: Element) {
 	const info = mountings.get(el);
-	const width = (el as HTMLElement).offsetWidth ?? el.clientWidth;
+	const width = el.clientWidth;
 
 	if (!info || info.previousWidth === width) return;
 
@@ -64,7 +65,13 @@ function calc(el: HTMLElement | Element) {
 		delete info.intersection;
 	}
 
-	mountings.set(el, Object.assign(info, { previousWidth: width }));
+	mountings.set(el, { ...info, ...{ previousWidth: width, twoPreviousWidth: info.previousWidth }});
+
+	// Prevent infinite resizing
+	// https://github.com/misskey-dev/misskey/issues/9076
+	if (info.twoPreviousWidth === width) {
+		return;
+	}
 
 	const cached = cache.get(getOrderName(width, info.value));
 	if (cached) {
@@ -86,6 +93,7 @@ export default {
 			value: binding.value,
 			resize,
 			previousWidth: 0,
+			twoPreviousWidth: 0,
 		});
 
 		calc(src);
