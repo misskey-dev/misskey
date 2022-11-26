@@ -1,7 +1,7 @@
 <template>
-<div class="hpaizdrt" :style="bg">
-	<img v-if="faviconUrl" class="icon" :src="faviconUrl"/>
-	<span class="name">{{ instance.name }}</span>
+<div :class="$style.root" :style="bg">
+	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
+	<div :class="$style.name">{{ instance.name }}</div>
 </div>
 </template>
 
@@ -34,10 +34,10 @@ const bg = {
 };
 </script>
 
-<style lang="scss" scoped>
-.hpaizdrt {
-	$height: 2ex;
+<style lang="scss" module>
+$height: 2ex;
 
+.root {
 	display: flex;
 	align-items: center;
 	height: $height;
@@ -57,17 +57,16 @@ const bg = {
 		0 -1px 1px #000,
 		.5px -.866px 1px #000,
 		.866px -.5px 1px #000;
+}
 
-	> .icon {
-		height: $height;
-	}
+.icon {
+	height: $height;
+}
 
-	> .name {
-		margin-left: 4px;
-		line-height: 1;
-		font-size: 0.9em;
-		vertical-align: top;
-		font-weight: bold;
-	}
+.name {
+	margin-left: 4px;
+	line-height: 1;
+	font-size: 0.9em;
+	font-weight: bold;
 }
 </style>
