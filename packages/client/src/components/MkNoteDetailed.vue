@@ -438,7 +438,7 @@ if (appearNote.replyId) {
 				> .username {
 					margin-bottom: 2px;
 					line-height: 1.3;
-					word-wrap: wrap;
+					word-wrap: anywhere;
 				}
 			}
 		}
