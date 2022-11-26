@@ -1,7 +1,7 @@
 <template>
-<div class="hpaizdrt" :style="bg">
-	<img v-if="instance.faviconUrl" class="icon" :src="instance.faviconUrl"/>
-	<span class="name">{{ instance.name }}</span>
+<div :class="$style.root" :style="bg">
+	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
+	<div :class="$style.name">{{ instance.name }}</div>
 </div>
 </template>
 
@@ -21,10 +21,11 @@ const props = defineProps<{
 
 // if no instance data is given, this is for the local instance
 const instance = props.instance ?? {
-	faviconUrl: getProxiedImageUrlNullable(Instance.iconUrl) ?? getProxiedImageUrlNullable(Instance.faviconUrl) ?? '/favicon.ico',
 	name: instanceName,
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
 };
+
+const faviconUrl = $computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(Instance.faviconUrl, 'preview') ?? '/favicon.ico');
 
 const themeColor = instance.themeColor ?? '#777777';
 
@@ -33,13 +34,15 @@ const bg = {
 };
 </script>
 
-<style lang="scss" scoped>
-.hpaizdrt {
-	$height: 1.1rem;
+<style lang="scss" module>
+$height: 2ex;
 
+.root {
+	display: flex;
+	align-items: center;
 	height: $height;
 	border-radius: 4px 0 0 4px;
-	overflow: hidden;
+	overflow: clip;
 	color: #fff;
 	text-shadow: /* .866 ≈ sin(60deg) */
 		1px 0 1px #000,
@@ -54,17 +57,16 @@ const bg = {
 		0 -1px 1px #000,
 		.5px -.866px 1px #000,
 		.866px -.5px 1px #000;
+}
 
-	> .icon {
-		height: 100%;
-	}
+.icon {
+	height: $height;
+}
 
-	> .name {
-		margin-left: 4px;
-		line-height: $height;
-		font-size: 0.9em;
-		vertical-align: top;
-		font-weight: bold;
-	}
+.name {
+	margin-left: 4px;
+	line-height: 1;
+	font-size: 0.9em;
+	font-weight: bold;
 }
 </style>
