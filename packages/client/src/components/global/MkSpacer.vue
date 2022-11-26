@@ -24,8 +24,8 @@ let ro: ResizeObserver;
 let root = $ref<HTMLElement>();
 let content = $ref<HTMLElement>();
 let margin = $ref(0);
-let widthHistory = [null, null] as [number | null, number | null];
-let heightHistory = [null, null] as [number | null, number | null];
+const widthHistory = [null, null] as [number | null, number | null];
+const heightHistory = [null, null] as [number | null, number | null];
 const shouldSpacerMin = inject('shouldSpacerMin', false);
 
 const adjust = (rect: { width: number; height: number; }) => {
