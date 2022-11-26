@@ -21,11 +21,12 @@ module.exports = {
 				'allowSingleExtends': true,
 			},
 		],
+		'@typescript-eslint/prefer-nullish-coalescing': [
+			'error',
+		],
 		// window の禁止理由: グローバルスコープと衝突し、予期せぬ結果を招くため
-		// data の禁止理由: 抽象的すぎるため
 		// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
-		'id-denylist': ['error', 'window', 'data', 'e'],
-		'eqeqeq': ['error', 'always', { 'null': 'ignore' }],
+		'id-denylist': ['error', 'window', 'e'],
 		'no-shadow': ['warn'],
 		'vue/attributes-order': ['error', {
 			'alphabetical': false,
@@ -37,7 +38,7 @@ module.exports = {
 		'vue/no-multi-spaces': ['error', {
 			'ignoreProperties': false,
 		}],
-		'vue/no-v-html': 'error',
+		'vue/no-v-html': 'warn',
 		'vue/order-in-components': 'error',
 		'vue/html-indent': ['warn', 'tab', {
 			'attribute': 1,
@@ -70,6 +71,7 @@ module.exports = {
 		// Vue
 		'$$': false,
 		'$ref': false,
+		'$shallowRef': false,
 		'$computed': false,
 
 		// Misskey

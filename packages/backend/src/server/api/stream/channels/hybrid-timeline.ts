@@ -1,24 +1,32 @@
-import { isMutedUserRelated } from '@/misc/is-muted-user-related.js';
-import Channel from '../channel.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Notes } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository } from '@/models/index.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
-import { isBlockerUserRelated } from '@/misc/is-blocker-user-related.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
-import { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/schema.js';
+import { DI } from '@/di-symbols.js';
+import { MetaService } from '@/core/MetaService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import Channel from '../channel.js';
 
-export default class extends Channel {
+class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private metaService: MetaService,
+		private noteEntityService: NoteEntityService,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
 		this.onNote = this.onNote.bind(this);
 	}
 
-	public async init(params: any) {
-		const meta = await fetchMeta();
+	public async init(params: any): Promise<void> {
+		const meta = await this.metaService.fetch();
 		if (meta.disableLocalTimeline && !this.user!.isAdmin && !this.user!.isModerator) return;
 
 		// Subscribe events
@@ -38,7 +46,7 @@ export default class extends Channel {
 		)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await Notes.pack(note.id, this.user!, {
+			note = await this.noteEntityService.pack(note.id, this.user!, {
 				detail: true,
 			});
 
@@ -48,13 +56,13 @@ export default class extends Channel {
 		} else {
 			// リプライなら再pack
 			if (note.replyId != null) {
-				note.reply = await Notes.pack(note.replyId, this.user!, {
+				note.reply = await this.noteEntityService.pack(note.replyId, this.user!, {
 					detail: true,
 				});
 			}
 			// Renoteなら再pack
 			if (note.renoteId != null) {
-				note.renote = await Notes.pack(note.renoteId, this.user!, {
+				note.renote = await this.noteEntityService.pack(note.renoteId, this.user!, {
 					detail: true,
 				});
 			}
@@ -71,9 +79,9 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isMutedUserRelated(note, this.muting)) return;
+		if (isUserRelated(note, this.muting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isBlockerUserRelated(note, this.blocking)) return;
+		if (isUserRelated(note, this.blocking)) return;
 
 		// 流れてきたNoteがミュートすべきNoteだったら無視する
 		// TODO: 将来的には、単にMutedNoteテーブルにレコードがあるかどうかで判定したい(以下の理由により難しそうではある)
@@ -87,8 +95,29 @@ export default class extends Channel {
 		this.send('note', note);
 	}
 
-	public dispose() {
+	public dispose(): void {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
+	}
+}
+
+@Injectable()
+export class HybridTimelineChannelService {
+	public readonly shouldShare = HybridTimelineChannel.shouldShare;
+	public readonly requireCredential = HybridTimelineChannel.requireCredential;
+
+	constructor(
+		private metaService: MetaService,
+		private noteEntityService: NoteEntityService,
+	) {
+	}
+
+	public create(id: string, connection: Channel['connection']): HybridTimelineChannel {
+		return new HybridTimelineChannel(
+			this.metaService,
+			this.noteEntityService,
+			id,
+			connection,
+		);
 	}
 }

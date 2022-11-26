@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import XWidgets from '@/components/widgets.vue';
+import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 

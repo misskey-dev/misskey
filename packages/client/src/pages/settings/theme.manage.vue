@@ -31,7 +31,7 @@ import JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import { Theme, getBuiltinThemesRef } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
@@ -74,6 +74,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts._theme.manage,
 	icon: 'fas fa-folder-open',
-	bg: 'var(--bg)',
 });
 </script>

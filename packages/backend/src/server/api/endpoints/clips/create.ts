@@ -1,6 +1,9 @@
-import define from '../../define.js';
-import { genId } from '@/misc/gen-id.js';
-import { Clips } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { IdService } from '@/core/IdService.js';
+import type { ClipsRepository } from '@/models/index.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['clips'],
@@ -27,15 +30,26 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const clip = await Clips.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-		isPublic: ps.isPublic,
-		description: ps.description,
-	}).then(x => Clips.findOneByOrFail(x.identifiers[0]));
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.clipsRepository)
+		private clipsRepository: ClipsRepository,
 
-	return await Clips.pack(clip);
-});
+		private clipEntityService: ClipEntityService,
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const clip = await this.clipsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				userId: me.id,
+				name: ps.name,
+				isPublic: ps.isPublic,
+				description: ps.description,
+			}).then(x => this.clipsRepository.findOneByOrFail(x.identifiers[0]));
+
+			return await this.clipEntityService.pack(clip);
+		});
+	}
+}

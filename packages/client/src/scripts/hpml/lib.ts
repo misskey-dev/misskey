@@ -125,55 +125,56 @@ export function initAiLib(hpml: Hpml) {
 				}
 			});
 			*/
-		})
+		}),
 	};
 }
 
 export const funcDefs: Record<string, { in: any[]; out: any; category: string; icon: any; }> = {
-	if:              { in: ['boolean', 0, 0],              out: 0,             category: 'flow',       icon: 'fas fa-share-alt', },
-	for:             { in: ['number', 'function'],         out: null,          category: 'flow',       icon: 'fas fa-recycle', },
-	not:             { in: ['boolean'],                    out: 'boolean',     category: 'logical',    icon: 'fas fa-flag', },
-	or:              { in: ['boolean', 'boolean'],         out: 'boolean',     category: 'logical',    icon: 'fas fa-flag', },
-	and:             { in: ['boolean', 'boolean'],         out: 'boolean',     category: 'logical',    icon: 'fas fa-flag', },
-	add:             { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: 'fas fa-plus', },
-	subtract:        { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: 'fas fa-minus', },
-	multiply:        { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: 'fas fa-times', },
-	divide:          { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: 'fas fa-divide', },
-	mod:             { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: 'fas fa-divide', },
-	round:           { in: ['number'],                     out: 'number',      category: 'operation',  icon: 'fas fa-calculator', },
-	eq:              { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: 'fas fa-equals', },
-	notEq:           { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: 'fas fa-not-equal', },
-	gt:              { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: 'fas fa-greater-than', },
-	lt:              { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: 'fas fa-less-than', },
-	gtEq:            { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: 'fas fa-greater-than-equal', },
-	ltEq:            { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: 'fas fa-less-than-equal', },
-	strLen:          { in: ['string'],                     out: 'number',      category: 'text',       icon: 'fas fa-quote-right', },
-	strPick:         { in: ['string', 'number'],           out: 'string',      category: 'text',       icon: 'fas fa-quote-right', },
-	strReplace:      { in: ['string', 'string', 'string'], out: 'string',      category: 'text',       icon: 'fas fa-quote-right', },
-	strReverse:      { in: ['string'],                     out: 'string',      category: 'text',       icon: 'fas fa-quote-right', },
-	join:            { in: ['stringArray', 'string'],      out: 'string',      category: 'text',       icon: 'fas fa-quote-right', },
-	stringToNumber:  { in: ['string'],                     out: 'number',      category: 'convert',    icon: 'fas fa-exchange-alt', },
-	numberToString:  { in: ['number'],                     out: 'string',      category: 'convert',    icon: 'fas fa-exchange-alt', },
-	splitStrByLine:  { in: ['string'],                     out: 'stringArray', category: 'convert',    icon: 'fas fa-exchange-alt', },
-	pick:            { in: [null, 'number'],               out: null,          category: 'list',       icon: 'fas fa-indent', },
-	listLen:         { in: [null],                         out: 'number',      category: 'list',       icon: 'fas fa-indent', },
-	rannum:          { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: 'fas fa-dice', },
-	dailyRannum:     { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: 'fas fa-dice', },
-	seedRannum:      { in: [null, 'number', 'number'],     out: 'number',      category: 'random',     icon: 'fas fa-dice', },
-	random:          { in: ['number'],                     out: 'boolean',     category: 'random',     icon: 'fas fa-dice', },
-	dailyRandom:     { in: ['number'],                     out: 'boolean',     category: 'random',     icon: 'fas fa-dice', },
-	seedRandom:      { in: [null, 'number'],               out: 'boolean',     category: 'random',     icon: 'fas fa-dice', },
-	randomPick:      { in: [0],                            out: 0,             category: 'random',     icon: 'fas fa-dice', },
-	dailyRandomPick: { in: [0],                            out: 0,             category: 'random',     icon: 'fas fa-dice', },
-	seedRandomPick:  { in: [null, 0],                      out: 0,             category: 'random',     icon: 'fas fa-dice', },
-	DRPWPM:      { in: ['stringArray'],                out: 'string',      category: 'random',     icon: 'fas fa-dice', }, // dailyRandomPickWithProbabilityMapping
+	if: { in: ['boolean', 0, 0], out: 0, category: 'flow', icon: 'fas fa-share-alt' },
+	for: { in: ['number', 'function'], out: null, category: 'flow', icon: 'fas fa-recycle' },
+	not: { in: ['boolean'], out: 'boolean', category: 'logical', icon: 'fas fa-flag' },
+	or: { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical', icon: 'fas fa-flag' },
+	and: { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical', icon: 'fas fa-flag' },
+	add: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-plus' },
+	subtract: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-minus' },
+	multiply: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-times' },
+	divide: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-divide' },
+	mod: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-divide' },
+	round: { in: ['number'], out: 'number', category: 'operation', icon: 'fas fa-calculator' },
+	eq: { in: [0, 0], out: 'boolean', category: 'comparison', icon: 'fas fa-equals' },
+	notEq: { in: [0, 0], out: 'boolean', category: 'comparison', icon: 'fas fa-not-equal' },
+	gt: { in: ['number', 'number'], out: 'boolean', category: 'comparison', icon: 'fas fa-greater-than' },
+	lt: { in: ['number', 'number'], out: 'boolean', category: 'comparison', icon: 'fas fa-less-than' },
+	gtEq: { in: ['number', 'number'], out: 'boolean', category: 'comparison', icon: 'fas fa-greater-than-equal' },
+	ltEq: { in: ['number', 'number'], out: 'boolean', category: 'comparison', icon: 'fas fa-less-than-equal' },
+	strLen: { in: ['string'], out: 'number', category: 'text', icon: 'fas fa-quote-right' },
+	strPick: { in: ['string', 'number'], out: 'string', category: 'text', icon: 'fas fa-quote-right' },
+	strReplace: { in: ['string', 'string', 'string'], out: 'string', category: 'text', icon: 'fas fa-quote-right' },
+	strReverse: { in: ['string'], out: 'string', category: 'text', icon: 'fas fa-quote-right' },
+	join: { in: ['stringArray', 'string'], out: 'string', category: 'text', icon: 'fas fa-quote-right' },
+	stringToNumber: { in: ['string'], out: 'number', category: 'convert', icon: 'fas fa-exchange-alt' },
+	numberToString: { in: ['number'], out: 'string', category: 'convert', icon: 'fas fa-exchange-alt' },
+	splitStrByLine: { in: ['string'], out: 'stringArray', category: 'convert', icon: 'fas fa-exchange-alt' },
+	pick: { in: [null, 'number'], out: null, category: 'list', icon: 'fas fa-indent' },
+	listLen: { in: [null], out: 'number', category: 'list', icon: 'fas fa-indent' },
+	rannum: { in: ['number', 'number'], out: 'number', category: 'random', icon: 'fas fa-dice' },
+	dailyRannum: { in: ['number', 'number'], out: 'number', category: 'random', icon: 'fas fa-dice' },
+	seedRannum: { in: [null, 'number', 'number'], out: 'number', category: 'random', icon: 'fas fa-dice' },
+	random: { in: ['number'], out: 'boolean', category: 'random', icon: 'fas fa-dice' },
+	dailyRandom: { in: ['number'], out: 'boolean', category: 'random', icon: 'fas fa-dice' },
+	seedRandom: { in: [null, 'number'], out: 'boolean', category: 'random', icon: 'fas fa-dice' },
+	randomPick: { in: [0], out: 0, category: 'random', icon: 'fas fa-dice' },
+	dailyRandomPick: { in: [0], out: 0, category: 'random', icon: 'fas fa-dice' },
+	seedRandomPick: { in: [null, 0], out: 0, category: 'random', icon: 'fas fa-dice' },
+	DRPWPM: { in: ['stringArray'], out: 'string', category: 'random', icon: 'fas fa-dice' }, // dailyRandomPickWithProbabilityMapping
 };
 
 export function initHpmlLib(expr: Expr, scope: HpmlScope, randomSeed: string, visitor?: any) {
-
 	const date = new Date();
 	const day = `${visitor ? visitor.id : ''} ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 
+	// SHOULD be fine to ignore since it's intended + function shape isn't defined
+	// eslint-disable-next-line @typescript-eslint/ban-types
 	const funcs: Record<string, Function> = {
 		not: (a: boolean) => !a,
 		or: (a: boolean, b: boolean) => a || b,
@@ -189,7 +190,7 @@ export function initHpmlLib(expr: Expr, scope: HpmlScope, randomSeed: string, vi
 			const result: any[] = [];
 			for (let i = 0; i < times; i++) {
 				result.push(fn.exec({
-					[fn.slots[0]]: i + 1
+					[fn.slots[0]]: i + 1,
 				}));
 			}
 			return result;

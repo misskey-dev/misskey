@@ -8,36 +8,24 @@
 </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
-import MkGalleryPostPreview from '@/components/gallery-post-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import * as misskey from 'misskey-js';
+import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkGalleryPostPreview,
-	},
-
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-	},
-
-	data() {
-		return {
-			pagination: {
-				endpoint: 'users/gallery/posts' as const,
-				limit: 6,
-				params: computed(() => ({
-					userId: this.user.id
-				})),
-			},
-		};
-	},
+const props = withDefaults(defineProps<{
+	user: misskey.entities.User;
+}>(), {
 });
+
+const pagination = {
+	endpoint: 'users/gallery/posts' as const,
+	limit: 6,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
 </script>
 
 <style lang="scss" scoped>

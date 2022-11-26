@@ -1,17 +1,21 @@
-import define from '../../define.js';
-import config from '@/config/index.js';
-import { createPerson } from '@/remote/activitypub/models/person.js';
-import { createNote } from '@/remote/activitypub/models/note.js';
-import Resolver from '@/remote/activitypub/resolver.js';
-import { ApiError } from '../../error.js';
-import { extractDbHost } from '@/misc/convert-host.js';
-import { Users, Notes } from '@/models/index.js';
-import { Note } from '@/models/entities/note.js';
-import { User } from '@/models/entities/user.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { isActor, isPost, getApId } from '@/remote/activitypub/type.js';
+import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { SchemaType } from '@/misc/schema.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository, NotesRepository } from '@/models/index.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { CacheableLocalUser, User } from '@/models/entities/User.js';
+import { isActor, isPost, getApId } from '@/core/remote/activitypub/type.js';
+import type { SchemaType } from '@/misc/schema.js';
+import { ApResolverService } from '@/core/remote/activitypub/ApResolverService.js';
+import { ApDbResolverService } from '@/core/remote/activitypub/ApDbResolverService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { ApPersonService } from '@/core/remote/activitypub/models/ApPersonService.js';
+import { ApNoteService } from '@/core/remote/activitypub/models/ApNoteService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -46,8 +50,8 @@ export const meta = {
 						type: 'object',
 						optional: false, nullable: false,
 						ref: 'UserDetailedNotMe',
-					}
-				}
+					},
+				},
 			},
 			{
 				type: 'object',
@@ -61,9 +65,9 @@ export const meta = {
 						type: 'object',
 						optional: false, nullable: false,
 						ref: 'Note',
-					}
-				}
-			}
+					},
+				},
+			},
 		],
 	},
 } as const;
@@ -77,137 +81,88 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const object = await fetchAny(ps.uri);
-	if (object) {
-		return object;
-	} else {
-		throw new ApiError(meta.errors.noSuchObject);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
+		private utilityService: UtilityService,
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
+		private metaService: MetaService,
+		private apResolverService: ApResolverService,
+		private apDbResolverService: ApDbResolverService,
+		private apPersonService: ApPersonService,
+		private apNoteService: ApNoteService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const object = await this.fetchAny(ps.uri, me);
+			if (object) {
+				return object;
+			} else {
+				throw new ApiError(meta.errors.noSuchObject);
+			}
+		});
 	}
-});
 
-/***
- * URIからUserかNoteを解決する
- */
-async function fetchAny(uri: string): Promise<SchemaType<typeof meta['res']> | null> {
-	// URIがこのサーバーを指しているなら、ローカルユーザーIDとしてDBからフェッチ
-	if (uri.startsWith(config.url + '/')) {
-		const parts = uri.split('/');
-		const id = parts.pop();
-		const type = parts.pop();
+	/***
+	 * URIからUserかNoteを解決する
+	 */
+	private async fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+	// ブロックしてたら中断
+		const fetchedMeta = await this.metaService.fetch();
+		if (fetchedMeta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) return null;
 
-		if (type === 'notes') {
-			const note = await Notes.findOneBy({ id });
+		let local = await this.mergePack(me, ...await Promise.all([
+			this.apDbResolverService.getUserFromApId(uri),
+			this.apDbResolverService.getNoteFromApId(uri),
+		]));
+		if (local != null) return local;
 
-			if (note) {
+		// リモートから一旦オブジェクトフェッチ
+		const resolver = this.apResolverService.createResolver();
+		const object = await resolver.resolve(uri) as any;
+
+		// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
+		// これはDBに存在する可能性があるため再度DB検索
+		if (uri !== object.id) {
+			local = await this.mergePack(me, ...await Promise.all([
+				this.apDbResolverService.getUserFromApId(object.id),
+				this.apDbResolverService.getNoteFromApId(object.id),
+			]));
+			if (local != null) return local;
+		}
+
+		return await this.mergePack(
+			me,
+			isActor(object) ? await this.apPersonService.createPerson(getApId(object)) : null,
+			isPost(object) ? await this.apNoteService.createNote(getApId(object), undefined, true) : null,
+		);
+	}
+
+	private async mergePack(me: CacheableLocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
+		if (user != null) {
+			return {
+				type: 'User',
+				object: await this.userEntityService.pack(user, me, { detail: true }),
+			};
+		} else if (note != null) {
+			try {
+				const object = await this.noteEntityService.pack(note, me, { detail: true });
+
 				return {
 					type: 'Note',
-					object: await Notes.pack(note, null, { detail: true }),
+					object,
 				};
-			}
-		} else if (type === 'users') {
-			const user = await Users.findOneBy({ id });
-
-			if (user) {
-				return {
-					type: 'User',
-					object: await Users.pack(user, null, { detail: true }),
-				};
-			}
-		}
-	}
-
-	// ブロックしてたら中断
-	const fetchedMeta = await fetchMeta();
-	if (fetchedMeta.blockedHosts.includes(extractDbHost(uri))) return null;
-
-	// URI(AP Object id)としてDB検索
-	{
-		const [user, note] = await Promise.all([
-			Users.findOneBy({ uri: uri }),
-			Notes.findOneBy({ uri: uri }),
-		]);
-
-		const packed = await mergePack(user, note);
-		if (packed !== null) return packed;
-	}
-
-	// リモートから一旦オブジェクトフェッチ
-	const resolver = new Resolver();
-	const object = await resolver.resolve(uri) as any;
-
-	// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
-	// これはDBに存在する可能性があるため再度DB検索
-	if (uri !== object.id) {
-		if (object.id.startsWith(config.url + '/')) {
-			const parts = object.id.split('/');
-			const id = parts.pop();
-			const type = parts.pop();
-
-			if (type === 'notes') {
-				const note = await Notes.findOneBy({ id });
-
-				if (note) {
-					return {
-						type: 'Note',
-						object: await Notes.pack(note, null, { detail: true }),
-					};
-				}
-			} else if (type === 'users') {
-				const user = await Users.findOneBy({ id });
-
-				if (user) {
-					return {
-						type: 'User',
-						object: await Users.pack(user, null, { detail: true }),
-					};
-				}
+			} catch (e) {
+				return null;
 			}
 		}
 
-		const [user, note] = await Promise.all([
-			Users.findOneBy({ uri: object.id }),
-			Notes.findOneBy({ uri: object.id }),
-		]);
-
-		const packed = await mergePack(user, note);
-		if (packed !== null) return packed;
+		return null;
 	}
-
-	// それでもみつからなければ新規であるため登録
-	if (isActor(object)) {
-		const user = await createPerson(getApId(object));
-		return {
-			type: 'User',
-			object: await Users.pack(user, null, { detail: true }),
-		};
-	}
-
-	if (isPost(object)) {
-		const note = await createNote(getApId(object), undefined, true);
-		return {
-			type: 'Note',
-			object: await Notes.pack(note!, null, { detail: true }),
-		};
-	}
-
-	return null;
-}
-
-async function mergePack(user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
-	if (user != null) {
-		return {
-			type: 'User',
-			object: await Users.pack(user, null, { detail: true }),
-		};
-	}
-
-	if (note != null) {
-		return {
-			type: 'Note',
-			object: await Notes.pack(note, null, { detail: true }),
-		};
-	}
-
-	return null;
 }

@@ -55,8 +55,8 @@ import * as Misskey from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import XList from '@/components/date-separated-list.vue';
-import MkPagination, { Paging } from '@/components/ui/pagination.vue';
+import XList from '@/components/MkDateSeparatedList.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { isBottomVisible, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';
@@ -156,7 +156,22 @@ function onDragover(ev: DragEvent) {
 	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 
 	if (isFile || isDriveFile) {
-		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
+		switch (ev.dataTransfer.effectAllowed) {
+			case 'all':
+			case 'uninitialized':
+			case 'copy': 
+			case 'copyLink': 
+			case 'copyMove': 
+				ev.dataTransfer.dropEffect = 'copy';
+				break;
+			case 'linkMove':
+			case 'move':
+				ev.dataTransfer.dropEffect = 'move';
+				break;
+			default:
+				ev.dataTransfer.dropEffect = 'none';
+				break;
+		}
 	} else {
 		ev.dataTransfer.dropEffect = 'none';
 	}
@@ -294,8 +309,11 @@ definePageMetadata(computed(() => !fetching ? user ? {
 <style lang="scss" scoped>
 .mk-messaging-room {
 	position: relative;
+	overflow: auto;
 
 	> .body {
+		min-height: 80vh;
+
 		.more {
 			display: block;
 			margin: 16px auto;
@@ -337,10 +355,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 		z-index: 2;
 		bottom: 0;
 		padding-top: 8px;
-
-		@media (max-width: 500px) {
-			bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
-		}
+		bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
 
 		> .new-message {
 			width: 100%;

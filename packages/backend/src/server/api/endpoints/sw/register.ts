@@ -1,7 +1,9 @@
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { genId } from '@/misc/gen-id.js';
-import { SwSubscriptions } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { IdService } from '@/core/IdService.js';
+import type { SwSubscriptionsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/core/MetaService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account'],
@@ -38,35 +40,46 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// if already subscribed
-	const exist = await SwSubscriptions.findOneBy({
-		userId: user.id,
-		endpoint: ps.endpoint,
-		auth: ps.auth,
-		publickey: ps.publickey,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.swSubscriptionsRepository)
+		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
-	const instance = await fetchMeta(true);
+		private idService: IdService,
+		private metaService: MetaService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// if already subscribed
+			const exist = await this.swSubscriptionsRepository.findOneBy({
+				userId: me.id,
+				endpoint: ps.endpoint,
+				auth: ps.auth,
+				publickey: ps.publickey,
+			});
 
-	if (exist != null) {
-		return {
-			state: 'already-subscribed' as const,
-			key: instance.swPublicKey,
-		};
+			const instance = await this.metaService.fetch(true);
+
+			if (exist != null) {
+				return {
+					state: 'already-subscribed' as const,
+					key: instance.swPublicKey,
+				};
+			}
+
+			await this.swSubscriptionsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				userId: me.id,
+				endpoint: ps.endpoint,
+				auth: ps.auth,
+				publickey: ps.publickey,
+			});
+
+			return {
+				state: 'subscribed' as const,
+				key: instance.swPublicKey,
+			};
+		});
 	}
-
-	await SwSubscriptions.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		endpoint: ps.endpoint,
-		auth: ps.auth,
-		publickey: ps.publickey,
-	});
-
-	return {
-		state: 'subscribed' as const,
-		key: instance.swPublicKey,
-	};
-});
+}

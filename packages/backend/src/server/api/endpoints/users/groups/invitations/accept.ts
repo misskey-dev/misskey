@@ -1,8 +1,10 @@
-import { UserGroupJoinings, UserGroupInvitations } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import { UserGroupJoining } from '@/models/entities/user-group-joining.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupInvitationsRepository, UserGroupJoiningsRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import type { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../../error.js';
-import define from '../../../../define.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -31,27 +33,40 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch the invitation
-	const invitation = await UserGroupInvitations.findOneBy({
-		id: ps.invitationId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userGroupInvitationsRepository)
+		private userGroupInvitationsRepository: UserGroupInvitationsRepository,
 
-	if (invitation == null) {
-		throw new ApiError(meta.errors.noSuchInvitation);
+		@Inject(DI.userGroupJoiningsRepository)
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the invitation
+			const invitation = await this.userGroupInvitationsRepository.findOneBy({
+				id: ps.invitationId,
+			});
+
+			if (invitation == null) {
+				throw new ApiError(meta.errors.noSuchInvitation);
+			}
+
+			if (invitation.userId !== me.id) {
+				throw new ApiError(meta.errors.noSuchInvitation);
+			}
+
+			// Push the user
+			await this.userGroupJoiningsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				userId: me.id,
+				userGroupId: invitation.userGroupId,
+			} as UserGroupJoining);
+
+			this.userGroupInvitationsRepository.delete(invitation.id);
+		});
 	}
-
-	if (invitation.userId !== user.id) {
-		throw new ApiError(meta.errors.noSuchInvitation);
-	}
-
-	// Push the user
-	await UserGroupJoinings.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		userGroupId: invitation.userGroupId,
-	} as UserGroupJoining);
-
-	UserGroupInvitations.delete(invitation.id);
-});
+}

@@ -38,7 +38,7 @@ export function install(plugin) {
 function createPluginEnv(opts) {
 	const config = new Map();
 	for (const [k, v] of Object.entries(opts.plugin.config || {})) {
-		config.set(k, jsToVal(opts.plugin.configData.hasOwnProperty(k) ? opts.plugin.configData[k] : v.default));
+		config.set(k, jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
 	return {

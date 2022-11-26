@@ -15,7 +15,7 @@
 import { } from 'vue';
 import JSON5 from 'json5';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';
 import { addTheme, getThemes } from '@/theme-store';
@@ -76,6 +76,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts._theme.install,
 	icon: 'fas fa-download',
-	bg: 'var(--bg)',
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div v-if="tab === 'featured'" class="_content grwlizim featured">
 			<MkPagination v-slot="{items}" :pagination="featuredPagination">
@@ -24,9 +24,9 @@
 
 <script lang="ts" setup>
 import { computed, defineComponent, inject } from 'vue';
-import MkChannelPreview from '@/components/channel-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkChannelPreview from '@/components/MkChannelPreview.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
@@ -59,25 +59,21 @@ const headerActions = $computed(() => [{
 }]);
 
 const headerTabs = $computed(() => [{
-	active: tab === 'featured',
+	key: 'featured',
 	title: i18n.ts._channel.featured,
 	icon: 'fas fa-fire-alt',
-	onClick: () => { tab = 'featured'; },
 }, {
-	active: tab === 'following',
+	key: 'following',
 	title: i18n.ts._channel.following,
 	icon: 'fas fa-heart',
-	onClick: () => { tab = 'following'; },
 }, {
-	active: tab === 'owned',
+	key: 'owned',
 	title: i18n.ts._channel.owned,
 	icon: 'fas fa-edit',
-	onClick: () => { tab = 'owned'; },
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.channel,
 	icon: 'fas fa-satellite-dish',
-	bg: 'var(--bg)',
 })));
 </script>

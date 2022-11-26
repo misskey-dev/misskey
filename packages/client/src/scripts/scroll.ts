@@ -2,12 +2,8 @@ type ScrollBehavior = 'auto' | 'smooth' | 'instant';
 
 export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
 	if (el == null || el.tagName === 'HTML') return null;
-	const overflow = window.getComputedStyle(el).getPropertyValue('overflow');
-	if (
-		// xとyを個別に指定している場合、`hidden scroll`みたいな値になる
-		overflow.endsWith('scroll') ||
-		overflow.endsWith('auto')
-	) {
+	const overflow = window.getComputedStyle(el).getPropertyValue('overflow-y');
+	if (overflow === 'scroll' || overflow === 'auto') {
 		return el;
 	} else {
 		return getScrollContainer(el.parentElement);
@@ -27,7 +23,7 @@ export function getScrollPosition(el: HTMLElement | null): number {
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function onScrollTop(el: HTMLElement, cb: Function, tolerance: number = 1, once: boolean = false) {
+export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance: number = 1, once: boolean = false) {
 	// とりあえず評価してみる
 	if (isTopVisible(el)) {
 		cb();
@@ -44,12 +40,12 @@ export function onScrollTop(el: HTMLElement, cb: Function, tolerance: number = 1
 		}
 	};
 
-	function removeListener() { container.removeEventListener('scroll', onScroll) }
+	function removeListener() { container.removeEventListener('scroll', onScroll); }
 	container.addEventListener('scroll', onScroll, { passive: true });
 	return removeListener;
 }
 
-export function onScrollBottom(el: HTMLElement, cb: Function, tolerance: number = 1, once: boolean = false) {
+export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance: number = 1, once: boolean = false) {
 	const container = getScrollContainer(el);
 
 	// とりあえず評価してみる
@@ -67,7 +63,9 @@ export function onScrollBottom(el: HTMLElement, cb: Function, tolerance: number 
 		}
 	};
 
-	function removeListener() { containerOrWindow.removeEventListener('scroll', onScroll) }
+	function removeListener() {
+		containerOrWindow.removeEventListener('scroll', onScroll);
+	}
 	containerOrWindow.addEventListener('scroll', onScroll, { passive: true });
 	return removeListener;
 }

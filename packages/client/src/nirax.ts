@@ -2,13 +2,18 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
+import { pleaseLogin } from '@/scripts/please-login';
+import { safeURIDecode } from '@/scripts/safe-uri-decode';
 
 type RouteDef = {
 	path: string;
 	component: Component;
 	query?: Record<string, string>;
+	loginRequired?: boolean;
 	name?: string;
+	hash?: string;
 	globalCacheKey?: string;
+	children?: RouteDef[];
 };
 
 type ParsedPath = (string | {
@@ -17,6 +22,8 @@ type ParsedPath = (string | {
 	wildcard?: boolean;
 	optional?: boolean;
 })[];
+
+export type Resolved = { route: RouteDef; props: Map<string, string>; child?: Resolved; };
 
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
@@ -35,7 +42,7 @@ function parsePath(path: string): ParsedPath {
 				wildcard,
 				optional,
 			});
-		} else {
+		} else if (part.length !== 0) {
 			res.push(part);
 		}
 	}
@@ -47,8 +54,11 @@ export class Router extends EventEmitter<{
 	change: (ctx: {
 		beforePath: string;
 		path: string;
-		route: RouteDef | null;
-		props: Map<string, string> | null;
+		resolved: Resolved;
+		key: string;
+	}) => void;
+	replace: (ctx: {
+		path: string;
 		key: string;
 	}) => void;
 	push: (ctx: {
@@ -58,26 +68,33 @@ export class Router extends EventEmitter<{
 		props: Map<string, string> | null;
 		key: string;
 	}) => void;
+	same: () => void;
 }> {
 	private routes: RouteDef[];
+	public current: Resolved;
+	public currentRef: ShallowRef<Resolved> = shallowRef();
+	public currentRoute: ShallowRef<RouteDef> = shallowRef();
 	private currentPath: string;
-	private currentComponent: Component | null = null;
-	private currentProps: Map<string, string> | null = null;
 	private currentKey = Date.now().toString();
 
-	public currentRoute: ShallowRef<RouteDef | null> = shallowRef(null);
+	public navHook: ((path: string, flag?: any) => boolean) | null = null;
 
 	constructor(routes: Router['routes'], currentPath: Router['currentPath']) {
 		super();
 
 		this.routes = routes;
 		this.currentPath = currentPath;
-		this.navigate(currentPath, null, true);
+		this.navigate(currentPath, null, false);
 	}
 
-	public resolve(path: string): { route: RouteDef; props: Map<string, string>; } | null {
+	public resolve(path: string): Resolved | null {
 		let queryString: string | null = null;
+		let hash: string | null = null;
 		if (path[0] === '/') path = path.substring(1);
+		if (path.includes('#')) {
+			hash = path.substring(path.indexOf('#') + 1);
+			path = path.substring(0, path.indexOf('#'));
+		}
 		if (path.includes('?')) {
 			queryString = path.substring(path.indexOf('?') + 1);
 			path = path.substring(0, path.indexOf('?'));
@@ -85,68 +102,108 @@ export class Router extends EventEmitter<{
 
 		if (_DEV_) console.log('Routing: ', path, queryString);
 
-		forEachRouteLoop:
-		for (const route of this.routes) {
-			let parts = path.split('/');
-			const props = new Map<string, string>();
+		function check(routes: RouteDef[], _parts: string[]): Resolved | null {
+			forEachRouteLoop:
+			for (const route of routes) {
+				let parts = [ ..._parts ];
+				const props = new Map<string, string>();
 
-			pathMatchLoop:
-			for (const p of parsePath(route.path)) {
-				if (typeof p === 'string') {
-					if (p === parts[0]) {
-						parts.shift();
-					} else {
-						continue forEachRouteLoop;
-					}
-				} else {
-					if (parts[0] == null && !p.optional) {
-						continue forEachRouteLoop;
-					}
-					if (p.wildcard) {
-						if (parts.length !== 0) {
-							props.set(p.name, parts.join('/'));
-							parts = [];
-						}
-						break pathMatchLoop;
-					} else {
-						if (p.startsWith) {
-							if (parts[0] == null || !parts[0].startsWith(p.startsWith)) continue forEachRouteLoop;
-
-							props.set(p.name, parts[0].substring(p.startsWith.length));
+				pathMatchLoop:
+				for (const p of parsePath(route.path)) {
+					if (typeof p === 'string') {
+						if (p === parts[0]) {
 							parts.shift();
 						} else {
-							props.set(p.name, parts[0]);
-							parts.shift();
+							continue forEachRouteLoop;
+						}
+					} else {
+						if (parts[0] == null && !p.optional) {
+							continue forEachRouteLoop;
+						}
+						if (p.wildcard) {
+							if (parts.length !== 0) {
+								props.set(p.name, safeURIDecode(parts.join('/')));
+								parts = [];
+							}
+							break pathMatchLoop;
+						} else {
+							if (p.startsWith) {
+								if (parts[0] == null || !parts[0].startsWith(p.startsWith)) continue forEachRouteLoop;
+
+								props.set(p.name, safeURIDecode(parts[0].substring(p.startsWith.length)));
+								parts.shift();
+							} else {
+								if (parts[0]) {
+									props.set(p.name, safeURIDecode(parts[0]));
+								}
+								parts.shift();
+							}
 						}
 					}
 				}
-			}
 
-			if (parts.length !== 0) continue forEachRouteLoop;
+				if (parts.length === 0) {
+					if (route.children) {
+						const child = check(route.children, []);
+						if (child) {
+							return {
+								route,
+								props,
+								child,
+							};
+						} else {
+							continue forEachRouteLoop;
+						}
+					}
 
-			if (route.query != null && queryString != null) {
-				const queryObject = [...new URLSearchParams(queryString).entries()]
-					.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
-
-				for (const q in route.query) {
-					const as = route.query[q];
-					if (queryObject[q]) {
-						props.set(as, queryObject[q]);
+					if (route.hash != null && hash != null) {
+						props.set(route.hash, safeURIDecode(hash));
+					}
+	
+					if (route.query != null && queryString != null) {
+						const queryObject = [...new URLSearchParams(queryString).entries()]
+							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+	
+						for (const q in route.query) {
+							const as = route.query[q];
+							if (queryObject[q]) {
+								props.set(as, safeURIDecode(queryObject[q]));
+							}
+						}
+					}
+	
+					return {
+						route,
+						props,
+					};
+				} else {
+					if (route.children) {
+						const child = check(route.children, parts);
+						if (child) {
+							return {
+								route,
+								props,
+								child,
+							};
+						} else {
+							continue forEachRouteLoop;
+						}
+					} else {
+						continue forEachRouteLoop;
 					}
 				}
 			}
-			return {
-				route,
-				props,
-			};
+
+			return null;
 		}
 
-		return null;
+		const _parts = path.split('/').filter(part => part.length !== 0);
+
+		return check(this.routes, _parts);
 	}
 
-	private navigate(path: string, key: string | null | undefined, initial = false) {
+	private navigate(path: string, key: string | null | undefined, emitChange = true) {
 		const beforePath = this.currentPath;
-		const beforeRoute = this.currentRoute.value;
 		this.currentPath = path;
 
 		const res = this.resolve(this.currentPath);
@@ -155,30 +212,27 @@ export class Router extends EventEmitter<{
 			throw new Error('no route found for: ' + path);
 		}
 
+		if (res.route.loginRequired) {
+			pleaseLogin('/');
+		}
+
 		const isSamePath = beforePath === path;
 		if (isSamePath && key == null) key = this.currentKey;
-		this.currentComponent = res.route.component;
-		this.currentProps = res.props;
+		this.current = res;
+		this.currentRef.value = res;
 		this.currentRoute.value = res.route;
-		this.currentKey = this.currentRoute.value.globalCacheKey ?? key ?? Date.now().toString();
+		this.currentKey = res.route.globalCacheKey ?? key ?? path;
 
-		if (!initial) {
+		if (emitChange) {
 			this.emit('change', {
 				beforePath,
 				path,
-				route: this.currentRoute.value,
-				props: this.currentProps,
+				resolved: res,
 				key: this.currentKey,
 			});
 		}
-	}
 
-	public getCurrentComponent() {
-		return this.currentComponent;
-	}
-
-	public getCurrentProps() {
-		return this.currentProps;
+		return res;
 	}
 
 	public getCurrentPath() {
@@ -189,19 +243,33 @@ export class Router extends EventEmitter<{
 		return this.currentKey;
 	}
 
-	public push(path: string) {
+	public push(path: string, flag?: any) {
 		const beforePath = this.currentPath;
-		this.navigate(path, null);
+		if (path === beforePath) {
+			this.emit('same');
+			return;
+		}
+		if (this.navHook) {
+			const cancel = this.navHook(path, flag);
+			if (cancel) return;
+		}
+		const res = this.navigate(path, null);
 		this.emit('push', {
 			beforePath,
 			path,
-			route: this.currentRoute.value,
-			props: this.currentProps,
+			route: res.route,
+			props: res.props,
 			key: this.currentKey,
 		});
 	}
 
-	public change(path: string, key?: string | null) {
+	public replace(path: string, key?: string | null, emitEvent = true) {
 		this.navigate(path, key);
+		if (emitEvent) {
+			this.emit('replace', {
+				path,
+				key: this.currentKey,
+			});
+		}
 	}
 }

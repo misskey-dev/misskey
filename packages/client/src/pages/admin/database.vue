@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
@@ -29,6 +29,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.database,
 	icon: 'fas fa-database',
-	bg: 'var(--bg)',
 });
 </script>

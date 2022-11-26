@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import MkTextarea from '../form/textarea.vue';
-import MkButton from '../ui/button.vue';
+import MkButton from '../MkButton.vue';
 import { apiUrl } from '@/config';
 import * as os from '@/os';
 import { PostBlock } from '@/scripts/hpml/block';

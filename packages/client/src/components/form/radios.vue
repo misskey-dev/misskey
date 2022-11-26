@@ -4,11 +4,11 @@ import MkRadio from './radio.vue';
 
 export default defineComponent({
 	components: {
-		MkRadio
+		MkRadio,
 	},
 	props: {
 		modelValue: {
-			required: false
+			required: false,
 		},
 	},
 	data() {
@@ -19,7 +19,7 @@ export default defineComponent({
 	watch: {
 		value() {
 			this.$emit('update:modelValue', this.value);
-		}
+		},
 	},
 	render() {
 		let options = this.$slots.default();
@@ -30,25 +30,25 @@ export default defineComponent({
 		if (options.length === 1 && options[0].props == null) options = options[0].children;
 
 		return h('div', {
-			class: 'novjtcto'
+			class: 'novjtcto',
 		}, [
 			...(label ? [h('div', {
-				class: 'label'
+				class: 'label',
 			}, [label])] : []),
 			h('div', {
-				class: 'body'
+				class: 'body',
 			}, options.map(option => h(MkRadio, {
-					key: option.key,
-					value: option.props.value,
-					modelValue: this.value,
-					'onUpdate:modelValue': value => this.value = value,
-				}, option.children)),
+				key: option.key,
+				value: option.props.value,
+				modelValue: this.value,
+				'onUpdate:modelValue': value => this.value = value,
+			}, option.children)),
 			),
 			...(caption ? [h('div', {
-				class: 'caption'
+				class: 'caption',
 			}, [caption])] : []),
 		]);
-	}
+	},
 });
 </script>
 
@@ -65,9 +65,9 @@ export default defineComponent({
 	}
 
 	> .body {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-		grid-gap: 12px;
+		display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 	}
 
 	> .caption {

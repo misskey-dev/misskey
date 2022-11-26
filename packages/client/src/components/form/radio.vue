@@ -7,7 +7,8 @@
 	:aria-disabled="disabled"
 	@click="toggle"
 >
-	<input type="radio"
+	<input
+		type="radio"
 		:disabled="disabled"
 	>
 	<span class="button">
@@ -17,34 +18,25 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			required: false
-		},
-		value: {
-			required: false
-		},
-		disabled: {
-			type: Boolean,
-			default: false
-		}
-	},
-	computed: {
-		checked(): boolean {
-			return this.modelValue === this.value;
-		}
-	},
-	methods: {
-		toggle() {
-			if (this.disabled) return;
-			this.$emit('update:modelValue', this.value);
-		}
-	}
-});
+const props = defineProps<{
+	modelValue: any;
+	value: any;
+	disabled: boolean;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'update:modelValue', value: any): void;
+}>();
+
+let checked = $computed(() => props.modelValue === props.value);
+
+function toggle(): void {
+	if (props.disabled) return;
+	emit('update:modelValue', props.value);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -53,12 +45,13 @@ export default defineComponent({
 	display: inline-block;
 	text-align: left;
 	cursor: pointer;
-	padding: 10px 12px;
+	padding: 8px 10px;
+	min-width: 60px;
 	background-color: var(--panel);
 	background-clip: padding-box !important;
 	border: solid 1px var(--panel);
 	border-radius: 6px;
-	transition: all 0.3s;
+	transition: all 0.2s;
 
 	> * {
 		user-select: none;

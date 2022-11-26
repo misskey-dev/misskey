@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import MkSample from '@/components/sample.vue';
+import MkSample from '@/components/MkSample.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
@@ -17,7 +17,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata(computed(() => ({
 	title: i18n.ts.preview,
 	icon: 'fas fa-eye',
-	bg: 'var(--bg)',
 })));
 </script>
 

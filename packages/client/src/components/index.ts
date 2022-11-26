@@ -1,22 +1,22 @@
 import { App } from 'vue';
 
-import Mfm from './global/misskey-flavored-markdown.vue';
-import MkA from './global/a.vue';
-import MkAcct from './global/acct.vue';
-import MkAvatar from './global/avatar.vue';
-import MkEmoji from './global/emoji.vue';
-import MkUserName from './global/user-name.vue';
-import MkEllipsis from './global/ellipsis.vue';
-import MkTime from './global/time.vue';
-import MkUrl from './global/url.vue';
+import Mfm from './global/MkMisskeyFlavoredMarkdown.vue';
+import MkA from './global/MkA.vue';
+import MkAcct from './global/MkAcct.vue';
+import MkAvatar from './global/MkAvatar.vue';
+import MkEmoji from './global/MkEmoji.vue';
+import MkUserName from './global/MkUserName.vue';
+import MkEllipsis from './global/MkEllipsis.vue';
+import MkTime from './global/MkTime.vue';
+import MkUrl from './global/MkUrl.vue';
 import I18n from './global/i18n';
-import RouterView from './global/router-view.vue';
-import MkLoading from './global/loading.vue';
-import MkError from './global/error.vue';
-import MkAd from './global/ad.vue';
-import MkPageHeader from './global/page-header.vue';
-import MkSpacer from './global/spacer.vue';
-import MkStickyContainer from './global/sticky-container.vue';
+import RouterView from './global/RouterView.vue';
+import MkLoading from './global/MkLoading.vue';
+import MkError from './global/MkError.vue';
+import MkAd from './global/MkAd.vue';
+import MkPageHeader from './global/MkPageHeader.vue';
+import MkSpacer from './global/MkSpacer.vue';
+import MkStickyContainer from './global/MkStickyContainer.vue';
 
 export default function(app: App) {
 	app.component('I18n', I18n);

@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormInfo from '@/components/ui/info.vue';
+import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
@@ -42,6 +42,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.customCss,
 	icon: 'fas fa-code',
-	bg: 'var(--bg)',
 });
 </script>

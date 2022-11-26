@@ -1,11 +1,11 @@
-import define from '../../define.js';
-import readNote from '@/services/note/read.js';
-import { Antennas, Notes, AntennaNotes } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { NotesRepository, AntennaNotesRepository, AntennasRepository } from '@/models/index.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteReadService } from '@/core/NoteReadService.js';
+import { DI } from '@/di-symbols.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { ApiError } from '../../error.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
 
 export const meta = {
 	tags: ['antennas', 'account', 'notes'],
@@ -47,43 +47,61 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const antenna = await Antennas.findOneBy({
-		id: ps.antennaId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
-	if (antenna == null) {
-		throw new ApiError(meta.errors.noSuchAntenna);
+		@Inject(DI.antennasRepository)
+		private antennasRepository: AntennasRepository,
+
+		@Inject(DI.antennaNotesRepository)
+		private antennaNotesRepository: AntennaNotesRepository,
+
+		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
+		private noteReadService: NoteReadService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const antenna = await this.antennasRepository.findOneBy({
+				id: ps.antennaId,
+				userId: me.id,
+			});
+
+			if (antenna == null) {
+				throw new ApiError(meta.errors.noSuchAntenna);
+			}
+
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.innerJoin(this.antennaNotesRepository.metadata.targetName, 'antennaNote', 'antennaNote.noteId = note.id')
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
+				.andWhere('antennaNote.antennaId = :antennaId', { antennaId: antenna.id });
+
+			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
+
+			const notes = await query
+				.take(ps.limit)
+				.getMany();
+
+			if (notes.length > 0) {
+				this.noteReadService.read(me.id, notes);
+			}
+
+			return await this.noteEntityService.packMany(notes, me);
+		});
 	}
-
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
-			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.innerJoin(AntennaNotes.metadata.targetName, 'antennaNote', 'antennaNote.noteId = note.id')
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.andWhere('antennaNote.antennaId = :antennaId', { antennaId: antenna.id });
-
-	generateVisibilityQuery(query, user);
-	generateMutedUserQuery(query, user);
-	generateBlockedUserQuery(query, user);
-
-	const notes = await query
-		.take(ps.limit)
-		.getMany();
-
-	if (notes.length > 0) {
-		readNote(user.id, notes);
-	}
-
-	return await Notes.packMany(notes, user);
-});
+}

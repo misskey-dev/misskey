@@ -8,12 +8,12 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-
-});
+function focus() {
+	// TODO
+}
 </script>
 
 <style lang="scss" scoped>

@@ -2,7 +2,8 @@
 <div class="adhpbeos">
 	<div class="label" @click="focus"><slot name="label"></slot></div>
 	<div class="input" :class="{ disabled, focused, tall, pre }">
-		<textarea ref="inputEl"
+		<textarea
+			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
 			:class="{ code, _monospace: code }"
@@ -21,14 +22,15 @@
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import MkButton from '@/components/ui/button.vue';
 import { debounce } from 'throttle-debounce';
+import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -37,66 +39,66 @@ export default defineComponent({
 
 	props: {
 		modelValue: {
-			required: true
+			required: true,
 		},
 		type: {
 			type: String,
-			required: false
+			required: false,
 		},
 		required: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		readonly: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		disabled: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		pattern: {
 			type: String,
-			required: false
+			required: false,
 		},
 		placeholder: {
 			type: String,
-			required: false
+			required: false,
 		},
 		autofocus: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		autocomplete: {
-			required: false
+			required: false,
 		},
 		spellcheck: {
-			required: false
+			required: false,
 		},
 		code: {
 			type: Boolean,
-			required: false
+			required: false,
 		},
 		tall: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		pre: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		debounce: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 		manualSave: {
 			type: Boolean,
 			required: false,
-			default: false
+			default: false,
 		},
 	},
 
@@ -166,6 +168,7 @@ export default defineComponent({
 			onInput,
 			onKeydown,
 			updated,
+			i18n,
 		};
 	},
 });

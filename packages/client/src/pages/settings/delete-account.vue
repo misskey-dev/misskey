@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts" setup>
-import FormInfo from '@/components/ui/info.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormInfo from '@/components/MkInfo.vue';
+import FormButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { signout } from '@/account';
 import { i18n } from '@/i18n';
@@ -48,6 +48,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts._accountDelete.accountDelete,
 	icon: 'fas fa-exclamation-triangle',
-	bg: 'var(--bg)',
 });
 </script>

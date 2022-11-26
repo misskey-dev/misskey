@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -78,7 +78,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.relays,
 	icon: 'fas fa-globe',
-	bg: 'var(--bg)',
 });
 </script>
 

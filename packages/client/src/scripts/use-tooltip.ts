@@ -3,6 +3,7 @@ import { Ref, ref, watch, onUnmounted } from 'vue';
 export function useTooltip(
 	elRef: Ref<HTMLElement | { $el: HTMLElement } | null | undefined>,
 	onShow: (showing: Ref<boolean>) => void,
+	delay = 300,
 ): void {
 	let isHovering = false;
 
@@ -40,7 +41,7 @@ export function useTooltip(
 		if (isHovering) return;
 		if (shouldIgnoreMouseover) return;
 		isHovering = true;
-		timeoutId = window.setTimeout(open, 300);
+		timeoutId = window.setTimeout(open, delay);
 	};
 
 	const onMouseleave = () => {
@@ -54,7 +55,7 @@ export function useTooltip(
 		shouldIgnoreMouseover = true;
 		if (isHovering) return;
 		isHovering = true;
-		timeoutId = window.setTimeout(open, 300);
+		timeoutId = window.setTimeout(open, delay);
 	};
 
 	const onTouchend = () => {

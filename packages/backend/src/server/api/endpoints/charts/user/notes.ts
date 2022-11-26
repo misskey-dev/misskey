@@ -1,11 +1,16 @@
-import define from '../../../define.js';
-import { getJsonSchema } from '@/services/chart/core.js';
-import { perUserNotesChart } from '@/services/chart/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { getJsonSchema } from '@/core/chart/core.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
+import { schema } from '@/core/chart/charts/entities/per-user-notes.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'notes'],
 
-	res: getJsonSchema(perUserNotesChart.schema),
+	res: getJsonSchema(schema),
+
+	allowGet: true,
+	cacheSec: 60 * 60,
 } as const;
 
 export const paramDef = {
@@ -20,6 +25,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await perUserNotesChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private perUserNotesChart: PerUserNotesChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.perUserNotesChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
+		});
+	}
+}

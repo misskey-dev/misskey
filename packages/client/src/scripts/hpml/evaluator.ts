@@ -159,7 +159,6 @@ export class Hpml {
 
 	@autobind
 	private evaluate(expr: Expr, scope: HpmlScope): any {
-
 		if (isLiteralValue(expr)) {
 			if (expr.type === null) {
 				return null;

@@ -3,7 +3,8 @@
 	<div class="label" @click="focus"><slot name="label"></slot></div>
 	<div class="input" :class="{ inline, disabled, focused }">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
-		<input ref="inputEl"
+		<input
+			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
 			:type="type"
@@ -28,180 +29,123 @@
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-check"></i> {{ $ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-check"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+<script lang="ts" setup>
+import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
+import MkButton from '@/components/MkButton.vue';
+import { useInterval } from '@/scripts/use-interval';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-	},
+const props = defineProps<{
+	modelValue: string | number;
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search';
+	required?: boolean;
+	readonly?: boolean;
+	disabled?: boolean;
+	pattern?: string;
+	placeholder?: string;
+	autofocus?: boolean;
+	autocomplete?: boolean;
+	spellcheck?: boolean;
+	step?: any;
+	datalist?: string[];
+	inline?: boolean;
+	debounce?: boolean;
+	manualSave?: boolean;
+	small?: boolean;
+	large?: boolean;
+}>();
 
-	props: {
-		modelValue: {
-			required: true
-		},
-		type: {
-			type: String,
-			required: false
-		},
-		required: {
-			type: Boolean,
-			required: false
-		},
-		readonly: {
-			type: Boolean,
-			required: false
-		},
-		disabled: {
-			type: Boolean,
-			required: false
-		},
-		pattern: {
-			type: String,
-			required: false
-		},
-		placeholder: {
-			type: String,
-			required: false
-		},
-		autofocus: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		autocomplete: {
-			required: false
-		},
-		spellcheck: {
-			required: false
-		},
-		step: {
-			required: false
-		},
-		datalist: {
-			type: Array,
-			required: false,
-		},
-		inline: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		debounce: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-		manualSave: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
-	},
+const emit = defineEmits<{
+	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'keydown', _ev: KeyboardEvent): void;
+	(ev: 'enter'): void;
+	(ev: 'update:modelValue', value: string | number): void;
+}>();
 
-	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
+const { modelValue, type, autofocus } = toRefs(props);
+const v = ref(modelValue.value);
+const id = Math.random().toString(); // TODO: uuid?
+const focused = ref(false);
+const changed = ref(false);
+const invalid = ref(false);
+const filled = computed(() => v.value !== '' && v.value != null);
+const inputEl = ref<HTMLElement>();
+const prefixEl = ref<HTMLElement>();
+const suffixEl = ref<HTMLElement>();
+const height =
+	props.small ? 36 :
+	props.large ? 40 :
+	38;
 
-	setup(props, context) {
-		const { modelValue, type, autofocus } = toRefs(props);
-		const v = ref(modelValue.value);
-		const id = Math.random().toString(); // TODO: uuid?
-		const focused = ref(false);
-		const changed = ref(false);
-		const invalid = ref(false);
-		const filled = computed(() => v.value !== '' && v.value != null);
-		const inputEl = ref<HTMLElement>();
-		const prefixEl = ref<HTMLElement>();
-		const suffixEl = ref<HTMLElement>();
+const focus = () => inputEl.value.focus();
+const onInput = (ev: KeyboardEvent) => {
+	changed.value = true;
+	emit('change', ev);
+};
+const onKeydown = (ev: KeyboardEvent) => {
+	emit('keydown', ev);
 
-		const focus = () => inputEl.value.focus();
-		const onInput = (ev) => {
-			changed.value = true;
-			context.emit('change', ev);
-		};
-		const onKeydown = (ev: KeyboardEvent) => {
-			context.emit('keydown', ev);
+	if (ev.code === 'Enter') {
+		emit('enter');
+	}
+};
 
-			if (ev.code === 'Enter') {
-				context.emit('enter');
-			}
-		};
+const updated = () => {
+	changed.value = false;
+	if (type.value === 'number') {
+		emit('update:modelValue', parseFloat(v.value));
+	} else {
+		emit('update:modelValue', v.value);
+	}
+};
 
-		const updated = () => {
-			changed.value = false;
-			if (type?.value === 'number') {
-				context.emit('update:modelValue', parseFloat(v.value));
-			} else {
-				context.emit('update:modelValue', v.value);
-			}
-		};
+const debouncedUpdated = debounce(1000, updated);
 
-		const debouncedUpdated = debounce(1000, updated);
+watch(modelValue, newValue => {
+	v.value = newValue;
+});
 
-		watch(modelValue, newValue => {
-			v.value = newValue;
-		});
+watch(v, newValue => {
+	if (!props.manualSave) {
+		if (props.debounce) {
+			debouncedUpdated();
+		} else {
+			updated();
+		}
+	}
 
-		watch(v, newValue => {
-			if (!props.manualSave) {
-				if (props.debounce) {
-					debouncedUpdated();
-				} else {
-					updated();
-				}
-			}
+	invalid.value = inputEl.value.validity.badInput;
+});
 
-			invalid.value = inputEl.value.validity.badInput;
-		});
+// このコンポーネントが作成された時、非表示状態である場合がある
+// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
+useInterval(() => {
+	if (prefixEl.value) {
+		if (prefixEl.value.offsetWidth) {
+			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+		}
+	}
+	if (suffixEl.value) {
+		if (suffixEl.value.offsetWidth) {
+			inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
+		}
+	}
+}, 100, {
+	immediate: true,
+	afterMounted: true,
+});
 
-		onMounted(() => {
-			nextTick(() => {
-				if (autofocus.value) {
-					focus();
-				}
-
-				// このコンポーネントが作成された時、非表示状態である場合がある
-				// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-				const clock = window.setInterval(() => {
-					if (prefixEl.value) {
-						if (prefixEl.value.offsetWidth) {
-							inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
-						}
-					}
-					if (suffixEl.value) {
-						if (suffixEl.value.offsetWidth) {
-							inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
-						}
-					}
-				}, 100);
-
-				onUnmounted(() => {
-					window.clearInterval(clock);
-				});
-			});
-		});
-
-		return {
-			id,
-			v,
-			focused,
-			invalid,
-			changed,
-			filled,
-			inputEl,
-			prefixEl,
-			suffixEl,
-			focus,
-			onInput,
-			onKeydown,
-			updated,
-		};
-	},
+onMounted(() => {
+	nextTick(() => {
+		if (autofocus.value) {
+			focus();
+		}
+	});
 });
 </script>
 
@@ -228,14 +172,13 @@ export default defineComponent({
 	}
 
 	> .input {
-		$height: 42px;
 		position: relative;
 
 		> input {
 			appearance: none;
 			-webkit-appearance: none;
 			display: block;
-			height: $height;
+			height: v-bind("height + 'px'");
 			width: 100%;
 			margin: 0;
 			padding: 0 12px;
@@ -265,7 +208,7 @@ export default defineComponent({
 			top: 0;
 			padding: 0 12px;
 			font-size: 1em;
-			height: $height;
+			height: v-bind("height + 'px'");
 			pointer-events: none;
 
 			&:empty {
