@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { PollVotesRepository, NotesRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { PollVotesRepository, NotesRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';

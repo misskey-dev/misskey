@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { NotificationsRepository } from '@/models/index.js';
+import type { NotificationsRepository } from '@/models/index.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Notification } from '@/models/entities/Notification.js';

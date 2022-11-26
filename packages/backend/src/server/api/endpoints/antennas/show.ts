@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AntennasRepository } from '@/models/index.js';
+import type { AntennasRepository } from '@/models/index.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';

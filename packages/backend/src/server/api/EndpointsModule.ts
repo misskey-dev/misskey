@@ -313,7 +313,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
-import { GetterService } from './common/GetterService.js';
+import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
 

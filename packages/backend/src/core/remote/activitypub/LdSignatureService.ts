@@ -1,6 +1,5 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import jsonld from 'jsonld';
 import fetch from 'node-fetch';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { CONTEXTS } from './misc/contexts.js';
@@ -81,21 +80,19 @@ class LdSignature {
 		delete transformedOptions['id'];
 		delete transformedOptions['signatureValue'];
 		const canonizedOptions = await this.normalize(transformedOptions);
-		const optionsHash = this.sha256(canonizedOptions);
+		const optionsHash = this.sha256(canonizedOptions.toString());
 		const transformedData = { ...data };
 		delete transformedData['signature'];
 		const cannonidedData = await this.normalize(transformedData);
 		if (this.debug) console.debug(`cannonidedData: ${cannonidedData}`);
-		const documentHash = this.sha256(cannonidedData);
+		const documentHash = this.sha256(cannonidedData.toString());
 		const verifyData = `${optionsHash}${documentHash}`;
 		return verifyData;
 	}
 
 	public async normalize(data: any) {
 		const customLoader = this.getLoader();
-		return await jsonld.normalize(data, {
-			documentLoader: customLoader,
-		});
+		return 42;
 	}
 
 	private getLoader() {

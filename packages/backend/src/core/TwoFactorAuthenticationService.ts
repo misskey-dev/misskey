@@ -2,8 +2,8 @@ import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import * as jsrsasign from 'jsrsasign';
 import { DI } from '@/di-symbols.js';
-import { UsersRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 
 const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);
@@ -67,6 +67,8 @@ function verifyCertificateChain(certificates: string[]) {
 		const CACert = i + 1 >= certificates.length ? Cert : certificates[i + 1];
 
 		const certStruct = jsrsasign.ASN1HEX.getTLVbyList(certificate.hex!, 0, [0]);
+		if (certStruct == null) throw new Error('certStruct is null');
+		
 		const algorithm = certificate.getSignatureAlgorithmField();
 		const signatureHex = certificate.getSignatureValueHex();
 

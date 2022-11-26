@@ -4,11 +4,11 @@ import * as cbor from 'cbor';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
-import { AttestationChallengesRepository, UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
+import type { AttestationChallengesRepository, UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 

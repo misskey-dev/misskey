@@ -9,6 +9,21 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Changes
+- Node.js 18.x or later is required
+- Elasticsearchのサポートが削除されました
+	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
+- ノートのウォッチ機能が削除されました
+
+### Improvements
+
+### Bugfixes
+- Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
+- Server: Bug fix for Pinned Users lookup on instance @squidicuzz
+- Client: インスタンスティッカーのfaviconを読み込む際に偽サイト警告が出ることがあるのを修正 @syuilo
+
 ## 12.119.0 (2022/09/10)
 
 ### Improvements
@@ -155,6 +170,8 @@ same as 12.112.0
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0
+- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
+	- You may have to `yarn run clean-all` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23
@@ -364,7 +381,7 @@ same as 12.112.0
 ## 12.104.0 (2022/02/09)
 
 ### Note
-ビルドする前に`npm run clean`を実行してください。
+ビルドする前に`yarn clean`を実行してください。
 
 このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
 マイグレーションが終わらない場合は、チャートの情報はリセットされてしまいますが`__chart__`で始まるテーブルの**レコード**を全て削除(テーブル自体は消さないでください)してから再度試す方法もあります。

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { WebhooksRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { WebhooksRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { StatusError } from '@/misc/status-error.js';

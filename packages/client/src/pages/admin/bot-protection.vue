@@ -6,6 +6,7 @@
 				<option :value="null">{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</option>
 				<option value="hcaptcha">hCaptcha</option>
 				<option value="recaptcha">reCAPTCHA</option>
+				<option value="turnstile">Turnstile</option>
 			</FormRadios>
 
 			<template v-if="provider === 'hcaptcha'">
@@ -36,6 +37,20 @@
 					<MkCaptcha provider="recaptcha" :sitekey="recaptchaSiteKey"/>
 				</FormSlot>
 			</template>
+			<template v-else-if="provider === 'turnstile'">
+				<FormInput v-model="turnstileSiteKey" class="_formBlock">
+					<template #prefix><i class="fas fa-key"></i></template>
+					<template #label>{{ i18n.ts.turnstileSiteKey }}</template>
+				</FormInput>
+				<FormInput v-model="turnstileSecretKey" class="_formBlock">
+					<template #prefix><i class="fas fa-key"></i></template>
+					<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
+				</FormInput>
+				<FormSlot class="_formBlock">
+					<template #label>{{ i18n.ts.preview }}</template>
+					<MkCaptcha provider="turnstile" :sitekey="turnstileSiteKey || '1x00000000000000000000AA'"/>
+				</FormSlot>
+			</template>
 
 			<FormButton primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 		</div>
@@ -61,6 +76,8 @@ let hcaptchaSiteKey: string | null = $ref(null);
 let hcaptchaSecretKey: string | null = $ref(null);
 let recaptchaSiteKey: string | null = $ref(null);
 let recaptchaSecretKey: string | null = $ref(null);
+let turnstileSiteKey: string | null = $ref(null);
+let turnstileSecretKey: string | null = $ref(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');
@@ -68,8 +85,10 @@ async function init() {
 	hcaptchaSecretKey = meta.hcaptchaSecretKey;
 	recaptchaSiteKey = meta.recaptchaSiteKey;
 	recaptchaSecretKey = meta.recaptchaSecretKey;
+	turnstileSiteKey = meta.turnstileSiteKey;
+	turnstileSecretKey = meta.turnstileSecretKey;
 
-	provider = meta.enableHcaptcha ? 'hcaptcha' : meta.enableRecaptcha ? 'recaptcha' : null;
+	provider = meta.enableHcaptcha ? 'hcaptcha' : meta.enableRecaptcha ? 'recaptcha' : meta.enableTurnstile ? 'turnstile' : null;
 }
 
 function save() {
@@ -80,6 +99,9 @@ function save() {
 		enableRecaptcha: provider === 'recaptcha',
 		recaptchaSiteKey,
 		recaptchaSecretKey,
+		enableTurnstile: provider === 'turnstile',
+		turnstileSiteKey,
+		turnstileSecretKey,
 	}).then(() => {
 		fetchInstance();
 	});

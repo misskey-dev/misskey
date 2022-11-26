@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '../../common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],

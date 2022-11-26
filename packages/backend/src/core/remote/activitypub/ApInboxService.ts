@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ReactionService } from '@/core/ReactionService.js';
@@ -21,6 +21,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { MessagingService } from '@/core/MessagingService.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, MessagingMessagesRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/index.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -294,8 +295,9 @@ export class ApInboxService {
 			let renote;
 			try {
 				renote = await this.apNoteService.resolveNote(targetUri);
+				if (renote == null) throw new Error('announce target is null');
 			} catch (err) {
-			// 対象が4xxならスキップ
+				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
 					if (err.isClientError) {
 						this.logger.warn(`Ignored announce target ${targetUri} - ${err.statusCode}`);
@@ -307,7 +309,10 @@ export class ApInboxService {
 				throw err;
 			}
 
-			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) return 'skip: invalid actor for this activity';
+			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) {
+				this.logger.warn('skip: invalid actor for this activity');
+				return;
+			}
 
 			this.logger.info(`Creating the (Re)Note: ${uri}`);
 

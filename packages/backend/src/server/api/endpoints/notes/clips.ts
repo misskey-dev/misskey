@@ -1,11 +1,11 @@
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
+import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '../../common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['clips', 'notes'],

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -45,6 +46,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.usersRepository.createQueryBuilder('user');

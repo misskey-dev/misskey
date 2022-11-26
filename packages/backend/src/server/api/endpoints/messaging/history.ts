@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
-import { MutingsRepository, UserGroupJoiningsRepository, MessagingMessagesRepository } from '@/models/index.js';
+import type { MutingsRepository, UserGroupJoiningsRepository, MessagingMessagesRepository } from '@/models/index.js';
 import { MessagingMessageEntityService } from '@/core/entities/MessagingMessageEntityService.js';
 import { DI } from '@/di-symbols.js';
 

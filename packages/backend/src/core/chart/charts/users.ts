@@ -4,7 +4,7 @@ import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/users.js';

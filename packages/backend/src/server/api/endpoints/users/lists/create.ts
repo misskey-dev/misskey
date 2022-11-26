@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserListsRepository } from '@/models/index.js';
+import type { UserListsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { UserList } from '@/models/entities/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

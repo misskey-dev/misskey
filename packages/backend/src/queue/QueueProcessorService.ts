@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -37,11 +37,19 @@ export class QueueProcessorService {
 
 	public start() {
 		function renderError(e: Error): any {
-			return {
-				stack: e.stack,
-				message: e.message,
-				name: e.name,
-			};
+			if (e) { // 何故かeがundefinedで来ることがある
+				return {
+					stack: e.stack,
+					message: e.message,
+					name: e.name,
+				};
+			} else {
+				return {
+					stack: '?',
+					message: '?',
+					name: '?',
+				};
+			}
 		}
 	
 		const systemLogger = this.logger.createSubLogger('system');

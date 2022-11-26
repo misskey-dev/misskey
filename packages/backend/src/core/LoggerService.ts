@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as SyslogPro from 'syslog-pro';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 
 @Injectable()

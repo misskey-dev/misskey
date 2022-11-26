@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ApiError } from '../../../error.js';
 

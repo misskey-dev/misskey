@@ -2,7 +2,7 @@
 import pg from 'pg';
 pg.types.setTypeParser(20, Number);
 
-import { DataSource } from 'typeorm';
+import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
@@ -70,11 +70,11 @@ import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 
-import { loadConfig } from '@/config.js';
-import Logger from '@/logger.js';
+import { Config } from '@/config.js';
+import MisskeyLogger from '@/logger.js';
 import { envOption } from './env.js';
 
-export const dbLogger = new Logger('db');
+export const dbLogger = new MisskeyLogger('db');
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
@@ -179,9 +179,7 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
-const config = loadConfig();
-
-export function createPostgreDataSource() {
+export function createPostgreDataSource(config: Config) {
 	return new DataSource({
 		type: 'postgres',
 		host: config.db.host,

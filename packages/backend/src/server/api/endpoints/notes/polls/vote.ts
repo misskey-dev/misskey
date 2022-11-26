@@ -1,10 +1,10 @@
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { PollService } from '@/core/PollService.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';

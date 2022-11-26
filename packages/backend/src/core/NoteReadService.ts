@@ -7,6 +7,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { UsersRepository, NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository, FollowingsRepository, ChannelFollowingsRepository, AntennaNotesRepository } from '@/models/index.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { NotificationService } from './NotificationService.js';
 import { AntennaService } from './AntennaService.js';

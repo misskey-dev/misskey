@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ObjectStorageJobData } from '@/queue/types.js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
 import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
 import type Bull from 'bull';
@@ -17,14 +17,8 @@ export class ObjectStorageQueueProcessorsService {
 	) {
 	}
 
-	public start(q: Bull.Queue) {
-		const jobs = {
-			deleteFile: (job, done) => this.deleteFileProcessorService.process(job, done),
-			cleanRemoteFiles: (job, done) => this.cleanRemoteFilesProcessorService.process(job, done),
-		} as Record<string, Bull.ProcessCallbackFunction<ObjectStorageJobData | Bull.ProcessPromiseFunction<ObjectStorageJobData>>>;
-		
-		for (const [k, v] of Object.entries(jobs)) {
-			q.process(k, 16, v);
-		}
+	public start(q: Bull.Queue): void {
+		q.process('deleteFile', 16, (job) => this.deleteFileProcessorService.process(job));
+		q.process('cleanRemoteFiles', 16, (job, done) => this.cleanRemoteFilesProcessorService.process(job, done));
 	}
 }

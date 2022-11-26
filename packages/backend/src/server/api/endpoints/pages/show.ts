@@ -1,6 +1,6 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository, PagesRepository } from '@/models/index.js';
+import type { UsersRepository, PagesRepository } from '@/models/index.js';
 import type { Page } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';

@@ -1,13 +1,13 @@
 import { IsNull, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
+import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -116,6 +116,14 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			recaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableTurnstile: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			turnstileSiteKey: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -372,6 +380,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
 				enableRecaptcha: instance.enableRecaptcha,
 				recaptchaSiteKey: instance.recaptchaSiteKey,
+				enableTurnstile: instance.enableTurnstile,
+				turnstileSiteKey: instance.turnstileSiteKey,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
@@ -423,6 +433,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					elasticsearch: this.config.elasticsearch ? true : false,
 					hcaptcha: instance.enableHcaptcha,
 					recaptcha: instance.enableRecaptcha,
+					turnstile: instance.enableTurnstile,
 					objectStorage: instance.useObjectStorage,
 					twitter: instance.enableTwitterIntegration,
 					github: instance.enableGithubIntegration,

@@ -78,6 +78,7 @@ async function save(): Promise<void> {
 		name,
 		url,
 		secret,
+		webhookId: props.webhookId,
 		on: events,
 		active,
 	});

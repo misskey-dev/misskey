@@ -1,6 +1,6 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';

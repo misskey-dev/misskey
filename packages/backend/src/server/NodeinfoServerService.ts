@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { NotesRepository, UsersRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { NotesRepository, UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
@@ -118,7 +118,7 @@ export class NodeinfoServerService {
 		router.get(nodeinfo2_0path, async ctx => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
-			delete base.software.repository;
+			delete (base as any).software.repository;
 
 			ctx.body = { version: '2.0', ...base };
 			ctx.set('Cache-Control', 'public, max-age=600');

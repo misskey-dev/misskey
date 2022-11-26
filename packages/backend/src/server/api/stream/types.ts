@@ -13,6 +13,7 @@ import type { Signin } from '@/models/entities/Signin.js';
 import type { Page } from '@/models/entities/Page.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
+import type { Meta } from '@/models/entities/Meta.js';
 import type Emitter from 'strict-event-emitter-types';
 import type { EventEmitter } from 'events';
 
@@ -29,6 +30,7 @@ export interface InternalStreamTypes {
 	antennaCreated: Antenna;
 	antennaDeleted: Antenna;
 	antennaUpdated: Antenna;
+	metaUpdated: Meta,
 }
 
 export interface BroadcastTypes {

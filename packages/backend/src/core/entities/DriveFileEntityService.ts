@@ -2,13 +2,14 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import { NotesRepository, DriveFilesRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
+import { deepClone } from '@/misc/clone.js';
 import { UtilityService } from '../UtilityService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
@@ -55,9 +56,7 @@ export class DriveFileEntityService {
 
 	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
-			// TODO
-			//const properties = structuredClone(file.properties);
-			const properties = JSON.parse(JSON.stringify(file.properties));
+			const properties = deepClone(file.properties);
 			if (file.properties.orientation >= 5) {
 				[properties.width, properties.height] = [properties.height, properties.width];
 			}

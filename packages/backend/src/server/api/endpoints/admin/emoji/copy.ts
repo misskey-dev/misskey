@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { DI } from '@/di-symbols.js';

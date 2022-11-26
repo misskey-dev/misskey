@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserGroupInvitationsRepository } from '@/models/index.js';
+import type { UserGroupInvitationsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UserGroupInvitationEntityService } from '@/core/entities/UserGroupInvitationEntityService.js';
 import { DI } from '@/di-symbols.js';

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import { WebhooksRepository } from '@/models/index.js';
+import type { WebhooksRepository } from '@/models/index.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
@@ -32,7 +32,7 @@ export class WebhookService implements OnApplicationShutdown {
 		return this.webhooks;
 	}
 
-	private async onMessage(_, data) {
+	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {

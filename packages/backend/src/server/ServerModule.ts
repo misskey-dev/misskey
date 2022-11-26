@@ -7,7 +7,7 @@ import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ServerService } from './ServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
-import { GetterService } from './api/common/GetterService.js';
+import { GetterService } from './api/GetterService.js';
 import { DiscordServerService } from './api/integration/DiscordServerService.js';
 import { GithubServerService } from './api/integration/GithubServerService.js';
 import { TwitterServerService } from './api/integration/TwitterServerService.js';

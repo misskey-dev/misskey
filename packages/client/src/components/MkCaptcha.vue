@@ -20,7 +20,7 @@ type Captcha = {
 	getResponse(id: string): string;
 };
 
-type CaptchaProvider = 'hcaptcha' | 'recaptcha';
+type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile';
 
 type CaptchaContainer = {
 	readonly [_ in CaptchaProvider]?: Captcha;
@@ -48,6 +48,7 @@ const variable = computed(() => {
 	switch (props.provider) {
 		case 'hcaptcha': return 'hcaptcha';
 		case 'recaptcha': return 'grecaptcha';
+		case 'turnstile': return 'turnstile';
 	}
 });
 
@@ -57,6 +58,7 @@ const src = computed(() => {
 	switch (props.provider) {
 		case 'hcaptcha': return 'https://js.hcaptcha.com/1/api.js?render=explicit&recaptchacompat=off';
 		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
+		case 'turnstile': return 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 	}
 });
 

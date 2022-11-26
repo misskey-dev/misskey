@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/index.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -40,8 +41,8 @@ export const meta = {
 					optional: false, nullable: true,
 				},
 				host: {
-					type: 'null',
-					optional: false,
+					type: 'string',
+					optional: false, nullable: true,
 					description: 'The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files.',
 				},
 				url: {
@@ -71,6 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		private emojiEntityService: EmojiEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

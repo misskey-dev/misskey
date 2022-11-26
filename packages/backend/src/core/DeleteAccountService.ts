@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';

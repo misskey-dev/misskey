@@ -3,7 +3,7 @@ import * as crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserProfilesRepository, AttestationChallengesRepository } from '@/models/index.js';
+import type { UserProfilesRepository, AttestationChallengesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import { DI } from '@/di-symbols.js';

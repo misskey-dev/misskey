@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { HttpRequestService } from './HttpRequestService.js';
 
 type CaptchaResponse = {
@@ -64,6 +64,17 @@ export class CaptchaService {
 		if (result.success !== true) {
 			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
 			throw `hcaptcha-failed: ${errorCodes}`;
+		}
+	}
+
+	public async verifyTurnstile(secret: string, response: string): Promise<void> {
+		const result = await this.getCaptchaResponse('https://challenges.cloudflare.com/turnstile/v0/siteverify', secret, response).catch(e => {
+			throw `turnstile-request-failed: ${e}`;
+		});
+
+		if (result.success !== true) {
+			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
+			throw `turnstile-failed: ${errorCodes}`;
 		}
 	}
 }

@@ -53,7 +53,7 @@ let view = $ref(null);
 let el = $ref(null);
 let pageProps = $ref({});
 let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
-let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha;
+let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;
 let noEmailServer = !instance.enableEmail;
 let thereIsUnresolvedAbuseReport = $ref(false);
 let currentPage = $computed(() => router.currentRef.value.child);

@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { MutingsRepository } from '@/models/index.js';
+import type { MutingsRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '../../common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['account'],

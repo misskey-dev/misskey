@@ -1,7 +1,7 @@
 import Parser from 'rss-parser';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 

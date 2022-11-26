@@ -59,6 +59,7 @@
 	</MkSwitch>
 	<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
 	<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
+	<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" class="_formBlock captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
 	<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ i18n.ts.start }}</MkButton>
 </form>
 </template>
@@ -92,6 +93,7 @@ const host = toUnicode(config.host);
 
 let hcaptcha = $ref();
 let recaptcha = $ref();
+let turnstile = $ref();
 
 let username: string = $ref('');
 let password: string = $ref('');
@@ -106,12 +108,14 @@ let submitting: boolean = $ref(false);
 let ToSAgreement: boolean = $ref(false);
 let hCaptchaResponse = $ref(null);
 let reCaptchaResponse = $ref(null);
+let turnstileResponse = $ref(null);
 
 const shouldDisableSubmitting = $computed((): boolean => {
 	return submitting ||
 		instance.tosUrl && !ToSAgreement ||
 		instance.enableHcaptcha && !hCaptchaResponse ||
 		instance.enableRecaptcha && !reCaptchaResponse ||
+		instance.enableTurnstile && !turnstileResponse ||
 		passwordRetypeState === 'not-match';
 });
 
@@ -198,6 +202,7 @@ function onSubmit(): void {
 		invitationCode,
 		'hcaptcha-response': hCaptchaResponse,
 		'g-recaptcha-response': reCaptchaResponse,
+		'turnstile-response': turnstileResponse,
 	}).then(() => {
 		if (instance.emailRequiredForSignup) {
 			os.alert({
@@ -222,6 +227,7 @@ function onSubmit(): void {
 		submitting = false;
 		hcaptcha.reset?.();
 		recaptcha.reset?.();
+		turnstile.reset?.();
 
 		os.alert({
 			type: 'error',

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AccessTokensRepository } from '@/models/index.js';
+import type { AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

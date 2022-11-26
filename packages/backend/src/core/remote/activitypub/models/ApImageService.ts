@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { DriveFilesRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { DriveFilesRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { MetaService } from '@/core/MetaService.js';

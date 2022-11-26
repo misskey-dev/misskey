@@ -1,9 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AppsRepository, AuthSessionsRepository } from '@/models/index.js';
+import type { AppsRepository, AuthSessionsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

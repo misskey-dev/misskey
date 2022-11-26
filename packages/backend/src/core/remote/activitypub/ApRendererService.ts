@@ -4,7 +4,7 @@ import { In, IsNull } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import type { IMentionedRemoteUsers, Note } from '@/models/entities/Note.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
@@ -20,9 +20,10 @@ import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IActivity } from './type.js';
+import type { IActivity, IObject } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -242,7 +243,7 @@ export class ApRendererService {
 		};
 	}
 
-	public async renderLike(noteReaction: NoteReaction, note: Note) {
+	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }) {
 		const reaction = noteReaction.reaction;
 
 		const object = {
@@ -275,7 +276,7 @@ export class ApRendererService {
 		};
 	}
 
-	public async renderNote(note: Note, dive = true, isTalk = false): Promise<Record<string, unknown>> {
+	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IObject> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
@@ -398,8 +399,8 @@ export class ApRendererService {
 			id: `${this.config.url}/notes/${note.id}`,
 			type: 'Note',
 			attributedTo,
-			summary,
-			content,
+			summary: summary ?? undefined,
+			content: content ?? undefined,
 			_misskey_content: text,
 			source: {
 				content: text,

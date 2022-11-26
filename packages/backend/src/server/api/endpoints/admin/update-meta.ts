@@ -1,10 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Meta } from '@/models/entities/Meta.js';
+import type { Meta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -50,6 +52,9 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
+		enableTurnstile: { type: 'boolean' },
+		turnstileSiteKey: { type: 'string', nullable: true },
+		turnstileSecretKey: { type: 'string', nullable: true },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		setSensitiveFlagAutomatically: { type: 'boolean' },
@@ -115,6 +120,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -226,6 +232,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.recaptchaSecretKey !== undefined) {
 				set.recaptchaSecretKey = ps.recaptchaSecretKey;
+			}
+
+			if (ps.enableTurnstile !== undefined) {
+				set.enableTurnstile = ps.enableTurnstile;
+			}
+
+			if (ps.turnstileSiteKey !== undefined) {
+				set.turnstileSiteKey = ps.turnstileSiteKey;
+			}
+
+			if (ps.turnstileSecretKey !== undefined) {
+				set.turnstileSecretKey = ps.turnstileSecretKey;
 			}
 
 			if (ps.sensitiveMediaDetection !== undefined) {
@@ -436,22 +454,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
 			}
 
-			await this.db.transaction(async transactionalEntityManager => {
-				const metas = await transactionalEntityManager.find(Meta, {
-					order: {
-						id: 'DESC',
-					},
-				});
-
-				const meta = metas[0];
-
-				if (meta) {
-					await transactionalEntityManager.update(Meta, meta.id, set);
-				} else {
-					await transactionalEntityManager.save(Meta, set);
-				}
-			});
-
+			await this.metaService.update(set);
 			this.moderationLogService.insertModerationLog(me, 'updateMeta');
 		});
 	}

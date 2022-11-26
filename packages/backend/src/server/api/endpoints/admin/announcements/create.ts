@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AnnouncementsRepository } from '@/models/index.js';
+import type { AnnouncementsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 

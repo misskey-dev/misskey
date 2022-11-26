@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NoteFavoritesRepository } from '@/models/index.js';
+import type { NoteFavoritesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 

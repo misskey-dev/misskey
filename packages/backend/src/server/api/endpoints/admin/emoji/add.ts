@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
+import type { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';

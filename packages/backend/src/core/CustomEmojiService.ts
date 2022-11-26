@@ -2,14 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { IdService } from '@/core/IdService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { Cache } from '@/misc/cache.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Note } from '@/models/entities/Note.js';
-import { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/index.js';
 import { UtilityService } from './UtilityService.js';
 import { ReactionService } from './ReactionService.js';
 

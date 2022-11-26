@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { InstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/index.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';

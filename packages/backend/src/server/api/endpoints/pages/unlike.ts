@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PagesRepository, PageLikesRepository } from '@/models/index.js';
+import type { PagesRepository, PageLikesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';

@@ -8,6 +8,7 @@ import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
+import { notePage } from '@/filters/note';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
@@ -56,12 +57,6 @@ export function getNoteMenu(props: {
 
 	function toggleFavorite(favorite: boolean): void {
 		os.apiWithDialog(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
-			noteId: appearNote.id,
-		});
-	}
-
-	function toggleWatch(watch: boolean): void {
-		os.apiWithDialog(watch ? 'notes/watching/create' : 'notes/watching/delete', {
 			noteId: appearNote.id,
 		});
 	}
@@ -178,7 +173,9 @@ export function getNoteMenu(props: {
 			url: `${url}/notes/${appearNote.id}`,
 		});
 	}
-
+	function notedetails(): void {
+		os.pageWindow(`/notes/${appearNote.id}`);
+	}
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
@@ -204,8 +201,11 @@ export function getNoteMenu(props: {
 					danger: true,
 					action: unclip,
 				}, null] : []
-			),
-			{
+			), {
+				icon: 'fas fa-external-link-alt',
+				text: i18n.ts.details,
+				action: notedetails,
+			}, {
 				icon: 'fas fa-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
@@ -245,15 +245,6 @@ export function getNoteMenu(props: {
 				text: i18n.ts.clip,
 				action: () => clip(),
 			},
-			(appearNote.userId !== $i.id) ? statePromise.then(state => state.isWatching ? {
-				icon: 'fas fa-eye-slash',
-				text: i18n.ts.unwatch,
-				action: () => toggleWatch(false),
-			} : {
-				icon: 'fas fa-eye',
-				text: i18n.ts.watch,
-				action: () => toggleWatch(true),
-			}) : undefined,
 			statePromise.then(state => state.isMutedThread ? {
 				icon: 'fas fa-comment-slash',
 				text: i18n.ts.unmuteThread,
@@ -312,9 +303,13 @@ export function getNoteMenu(props: {
 				}]
 			: []
 			)]
-		.filter(x => x !== undefined);
+			.filter(x => x !== undefined);
 	} else {
 		menu = [{
+			icon: 'fas fa-external-link-alt',
+			text: i18n.ts.detailed,
+			action: openDetail,
+		}, {
 			icon: 'fas fa-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
@@ -329,7 +324,7 @@ export function getNoteMenu(props: {
 				window.open(appearNote.url || appearNote.uri, '_blank');
 			},
 		} : undefined]
-		.filter(x => x !== undefined);
+			.filter(x => x !== undefined);
 	}
 
 	if (noteActions.length > 0) {

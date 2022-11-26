@@ -1,9 +1,9 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import { MessagingMessagesRepository, PollsRepository, EmojisRepository } from '@/models/index.js';
+import type { MessagingMessagesRepository, PollsRepository, EmojisRepository } from '@/models/index.js';
 import type { UsersRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';

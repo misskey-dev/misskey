@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PromoReadsRepository } from '@/models/index.js';
+import type { PromoReadsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '../../common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],

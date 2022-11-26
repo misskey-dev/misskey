@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/index.js';
 import { DriveService } from '@/core/DriveService.js';
 import { DI } from '@/di-symbols.js';
 

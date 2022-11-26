@@ -1,12 +1,12 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '../../common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['following', 'users'],

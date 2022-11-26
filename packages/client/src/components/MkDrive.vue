@@ -196,7 +196,22 @@ function onDragover(ev: DragEvent): any {
 	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
 	if (isFile || isDriveFile || isDriveFolder) {
-		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
+		switch (ev.dataTransfer.effectAllowed) {
+			case 'all':
+			case 'uninitialized':
+			case 'copy': 
+			case 'copyLink': 
+			case 'copyMove': 
+				ev.dataTransfer.dropEffect = 'copy';
+				break;
+			case 'linkMove':
+			case 'move':
+				ev.dataTransfer.dropEffect = 'move';
+				break;
+			default:
+				ev.dataTransfer.dropEffect = 'none';
+				break;
+		}
 	} else {
 		ev.dataTransfer.dropEffect = 'none';
 	}

@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UsersRepository, FollowingsRepository, NotificationsRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository, NotificationsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -36,6 +37,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notificationsRepository)
 		private notificationsRepository: NotificationsRepository,
 
+		private userEntityService: UserEntityService,
 		private userFollowingService: UserFollowingService,
 		private userSuspendService: UserSuspendService,
 		private moderationLogService: ModerationLogService,

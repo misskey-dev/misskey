@@ -18,6 +18,7 @@
 		"strict": true,
 		"strictNullChecks": true,
 		"strictPropertyInitialization": false,
+		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"resolveJsonModule": true,

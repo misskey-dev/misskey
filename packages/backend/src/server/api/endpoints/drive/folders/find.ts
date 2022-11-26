@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DriveFoldersRepository } from '@/models/index.js';
+import type { DriveFoldersRepository } from '@/models/index.js';
 import { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
 import { DI } from '@/di-symbols.js';
 

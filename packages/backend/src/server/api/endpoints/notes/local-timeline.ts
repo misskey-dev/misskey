@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
 import type { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';

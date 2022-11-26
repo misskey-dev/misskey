@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -10,7 +10,7 @@ import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { QueueService } from '@/core/QueueService.js';
 import { toArray } from '@/misc/prelude/array.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { MessagingMessagesRepository, MutingsRepository, UserGroupJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { MessagingMessagesRepository, MutingsRepository, UserGroupJoiningsRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from './IdService.js';
 import { GlobalEventService } from './GlobalEventService.js';
 import { UserEntityService } from './entities/UserEntityService.js';

@@ -13,18 +13,20 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { KoaAdapter } from '@bull-board/koa';
 import { In, IsNull } from 'typeorm';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/core/MetaService.js';
-import { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/core/queue/QueueModule.js';
+import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/core/queue/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import type { ChannelsRepository, ClipsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import { deepClone } from '@/misc/clone.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -85,9 +87,7 @@ export class ClientServerService {
 	}
 
 	private async manifestHandler(ctx: Koa.Context) {
-		// TODO
-		//const res = structuredClone(manifest);
-		const res = JSON.parse(JSON.stringify(manifest));
+		const res = deepClone(manifest);
 
 		const instance = await this.metaService.fetch(true);
 

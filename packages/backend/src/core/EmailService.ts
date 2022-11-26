@@ -3,9 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/index.js';
 import { LoggerService } from '@/core/LoggerService.js';
 
 @Injectable()
@@ -159,7 +159,7 @@ export class EmailService {
 			validateTypo: false, // TLDを見ているみたいだけどclubとか弾かれるので
 			validateDisposable: true, // 捨てアドかどうかチェック
 			validateSMTP: false, // 日本だと25ポートが殆どのプロバイダーで塞がれていてタイムアウトになるので
-		}) : { valid: true };
+		}) : { valid: true, reason: null };
 	
 		const available = exist === 0 && validated.valid;
 	

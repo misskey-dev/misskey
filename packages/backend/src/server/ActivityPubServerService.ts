@@ -4,9 +4,9 @@ import json from 'koa-json-body';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
 import * as url from '@/misc/prelude/url.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { ILocalUser, User } from '@/models/entities/User.js';
@@ -73,7 +73,7 @@ export class ActivityPubServerService {
 	 */
 	private async packActivity(note: Note): Promise<any> {
 		if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
-			const renote = await Notes.findOneByOrFail({ id: note.renoteId });
+			const renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
 			return this.apRendererService.renderAnnounce(renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`, note);
 		}
 

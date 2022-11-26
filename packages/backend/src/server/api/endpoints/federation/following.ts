@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { FollowingsRepository } from '@/models/index.js';
+import type { FollowingsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
 import { DI } from '@/di-symbols.js';

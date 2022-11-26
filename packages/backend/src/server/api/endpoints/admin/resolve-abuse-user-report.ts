@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
+import type { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';

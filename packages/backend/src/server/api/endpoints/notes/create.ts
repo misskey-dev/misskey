@@ -2,7 +2,7 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/User.js';
-import { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
+import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Channel } from '@/models/entities/Channel.js';

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/index.js';
+import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/index.js';
 import type { Announcement } from '@/models/entities/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';

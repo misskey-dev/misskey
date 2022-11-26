@@ -7,12 +7,18 @@ import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { DI } from '@/di-symbols.js';
+import logger from '@/logger.js';
+import type { UsersRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import Logger from '@/logger.js';
 import { UserEntityService } from './entities/UserEntityService.js';
 import { WebhookService } from './WebhookService.js';
 import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { LoggerService } from './LoggerService.js';
 
 @Injectable()
 export class UserBlockingService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -39,7 +45,9 @@ export class UserBlockingService {
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
 		private perUserFollowingChart: PerUserFollowingChart,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('user-block');
 	}
 
 	public async block(blocker: User, blockee: User) {
@@ -179,7 +187,7 @@ export class UserBlockingService {
 		});
 	
 		if (blocking == null) {
-			logger.warn('ブロック解除がリクエストされましたがブロックしていませんでした');
+			this.logger.warn('ブロック解除がリクエストされましたがブロックしていませんでした');
 			return;
 		}
 	

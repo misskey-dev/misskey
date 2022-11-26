@@ -4,7 +4,7 @@ import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
-import { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/per-user-notes.js';

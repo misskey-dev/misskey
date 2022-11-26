@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';

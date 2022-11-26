@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { DriveFilesRepository } from '@/models/index.js';
-import { Config } from '@/config.js';
+import type { DriveFilesRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
@@ -63,7 +63,7 @@ export class CleanRemoteFilesProcessorService {
 			job.progress(deletedCount / total);
 		}
 
-		this.logger.succ('All cahced remote files has been deleted.');
+		this.logger.succ('All cached remote files has been deleted.');
 		done();
 	}
 }

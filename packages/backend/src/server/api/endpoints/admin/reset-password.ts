@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UsersRepository, UserProfilesRepository } from '@/models/index.js';
+import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

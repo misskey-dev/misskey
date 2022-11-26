@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { HashtagsRepository } from '@/models/index.js';
+import type { HashtagsRepository } from '@/models/index.js';
 import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { DI } from '@/di-symbols.js';
 

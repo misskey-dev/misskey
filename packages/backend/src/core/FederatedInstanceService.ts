@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { InstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/index.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { Cache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';

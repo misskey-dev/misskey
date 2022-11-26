@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import FFmpeg from 'fluent-ffmpeg';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { createTempDir } from '@/misc/create-temp.js';

@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -27,6 +28,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		private userEntityService: UserEntityService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

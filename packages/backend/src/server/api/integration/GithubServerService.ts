@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import Router from '@koa/router';
 import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
-import { Config } from '@/config.js';
-import { UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
+import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
@@ -22,7 +22,7 @@ export class GithubServerService {
 		private config: Config,
 
 		@Inject(DI.redis)
-		private redisClient: Redis,
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -157,6 +157,7 @@ export class GithubServerService {
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
 					this.redisClient.get(sessid, async (_, state) => {
+						if (state == null) throw new Error('empty state');
 						res(JSON.parse(state));
 					});
 				});
@@ -166,18 +167,18 @@ export class GithubServerService {
 					return;
 				}
 
-				const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2!.getOAuthAccessToken(code, {
-				redirect_uri,
-			}, (err, accessToken, refresh, result) => {
-				if (err) {
-					rej(err);
-				} else if (result.error) {
-					rej(result.error);
-				} else {
-					res({ accessToken });
-				}
-			}));
+				const { accessToken } = await new Promise<{ accessToken: string }>((res, rej) =>
+					oauth2!.getOAuthAccessToken(code, {
+						redirect_uri,
+					}, (err, accessToken, refresh, result) => {
+						if (err) {
+							rej(err);
+						} else if (result.error) {
+							rej(result.error);
+						} else {
+							res({ accessToken });
+						}
+					}));
 
 				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
 					'Authorization': `bearer ${accessToken}`,
@@ -208,6 +209,7 @@ export class GithubServerService {
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
 					this.redisClient.get(userToken, async (_, state) => {
+						if (state == null) throw new Error('empty state');
 						res(JSON.parse(state));
 					});
 				});
@@ -217,19 +219,19 @@ export class GithubServerService {
 					return;
 				}
 
-				const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2!.getOAuthAccessToken(
-				code,
-				{ redirect_uri },
-				(err, accessToken, refresh, result) => {
-					if (err) {
-						rej(err);
-					} else if (result.error) {
-						rej(result.error);
-					} else {
-						res({ accessToken });
-					}
-				}));
+				const { accessToken } = await new Promise<{ accessToken: string }>((res, rej) =>
+					oauth2!.getOAuthAccessToken(
+						code,
+						{ redirect_uri },
+						(err, accessToken, refresh, result) => {
+							if (err) {
+								rej(err);
+							} else if (result.error) {
+								rej(result.error);
+							} else {
+								res({ accessToken });
+							}
+						}));
 
 				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
 					'Authorization': `bearer ${accessToken}`,

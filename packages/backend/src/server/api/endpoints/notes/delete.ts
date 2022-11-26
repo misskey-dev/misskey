@@ -1,11 +1,11 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { GetterService } from '../../common/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],

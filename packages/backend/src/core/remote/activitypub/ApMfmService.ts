@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
-import { Config } from '@/config.js';
+import type { Config } from '@/config.js';
 import { MfmService } from '@/core/MfmService.js';
 import type { Note } from '@/models/entities/Note.js';
 import { extractApHashtagObjects } from './models/tag.js';
