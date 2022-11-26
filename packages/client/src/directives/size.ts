@@ -42,9 +42,9 @@ function getOrderName(width: number, queue: Value): string {
 	return `${width}|${queue.max ? queue.max.join(',') : ''}|${queue.min ? queue.min.join(',') : ''}`;
 }
 
-function calc(el: Element) {
+function calc(el: HTMLElement | Element) {
 	const info = mountings.get(el);
-	const width = el.clientWidth;
+	const width = (el as HTMLElement).offsetWidth ?? el.clientWidth;
 
 	if (!info || info.previousWidth === width) return;
 
