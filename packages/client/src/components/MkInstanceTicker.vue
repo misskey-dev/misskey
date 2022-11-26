@@ -35,7 +35,7 @@ const bg = {
 
 <style lang="scss" scoped>
 .hpaizdrt {
-	$height: 1.1rem;
+	$height: 2ex;
 
 	height: $height;
 	border-radius: 4px 0 0 4px;
