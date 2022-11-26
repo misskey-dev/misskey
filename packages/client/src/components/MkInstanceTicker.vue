@@ -56,7 +56,7 @@ const bg = {
 		.866px -.5px 1px #000;
 
 	> .icon {
-		height: 100%;
+		height: $height;
 	}
 
 	> .name {
