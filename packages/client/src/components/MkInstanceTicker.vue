@@ -21,10 +21,11 @@ const props = defineProps<{
 
 // if no instance data is given, this is for the local instance
 const instance = props.instance ?? {
-	faviconUrl: getProxiedImageUrlNullable(Instance.iconUrl) ?? getProxiedImageUrlNullable(Instance.faviconUrl) ?? '/favicon.ico',
 	name: instanceName,
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
 };
+
+const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl) : getProxiedImageUrlNullable(Instance.iconUrl) ?? getProxiedImageUrlNullable(Instance.faviconUrl) ?? '/favicon.ico');
 
 const themeColor = instance.themeColor ?? '#777777';
 
@@ -37,9 +38,11 @@ const bg = {
 .hpaizdrt {
 	$height: 2ex;
 
+	display: flex;
+	align-items: center;
 	height: $height;
 	border-radius: 4px 0 0 4px;
-	overflow: hidden;
+	overflow: clip;
 	color: #fff;
 	text-shadow: /* .866 ≈ sin(60deg) */
 		1px 0 1px #000,
@@ -61,7 +64,7 @@ const bg = {
 
 	> .name {
 		margin-left: 4px;
-		line-height: $height;
+		line-height: 1;
 		font-size: 0.9em;
 		vertical-align: top;
 		font-weight: bold;
