@@ -41,9 +41,9 @@ export function signin(ctx: Koa.Context, user: ILocalUser, redirect = false): vo
 		const ipGeo = r.city(ctx.ip);
 		let ipLocation = 'Unknown';
 		if (ipGeo.country) {
-			ipLocation = ipGeo.country.names['zh-CN'] || ipGeo.country.names['en'] || ipGeo.country.isoCode;
+			ipLocation = ipGeo.country.names['zh-CN'] || ipGeo.country.names['en'];
 			if (ipGeo.city) {
-				ipLocation += ipGeo.city.names['zh-CN'] || ipGeo.city.names['en'];
+				ipLocation += ' - ' + (ipGeo.city.names['zh-CN'] || ipGeo.city.names['en']);
 			}
 		}
 
