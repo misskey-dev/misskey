@@ -38,7 +38,7 @@ export function signin(ctx: Koa.Context, user: ILocalUser, redirect = false): vo
 
 	(async (): Promise<void> => {
 		// Append signin history
-		const ipGeo = r.city(ctx.ip);
+		const ipGeo = r.city(ctx.ip) || r.country(ctx.ip);
 		let ipLocation = 'Unknown';
 		if (ipGeo.country) {
 			ipLocation = ipGeo.country.names['zh-CN'] || ipGeo.country.names['en'];
