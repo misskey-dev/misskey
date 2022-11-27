@@ -1,15 +1,14 @@
+import { readFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import Koa from 'koa';
 
+import { Reader } from '@maxmind/geoip2-node';
 import config from '@/config/index.js';
 import { ILocalUser } from '@/models/entities/user.js';
 import { Signins } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { publishMainStream } from '@/services/stream.js';
-import { Reader } from '@maxmind/geoip2-node';
-import { readFileSync } from 'fs';
-
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Open maxmind database
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,12 +38,21 @@ export function signin(ctx: Koa.Context, user: ILocalUser, redirect = false): vo
 
 	(async (): Promise<void> => {
 		// Append signin history
+		const ipGeo = r.city(ctx.ip);
+		let ipLocation = 'Unknown';
+		if (ipGeo.country) {
+			ipLocation = ipGeo.country.names['zh-CN'] || ipGeo.country.names['en'] || ipGeo.country.isoCode;
+			if (ipGeo.city) {
+				ipLocation += ipGeo.city.names['zh-CN'] || ipGeo.city.names['en'];
+			}
+		}
+
 		const record = await Signins.insert({
 			id: genId(),
 			createdAt: new Date(),
 			userId: user.id,
 			// ip: ctx.ip, // Hide for security reason
-			ip: r.country(ctx.ip).country?.isoCode || 'Unknown',
+			ip: ipLocation,
 			// headers: ctx.headers,
 			headers: {
 				'hidden': 'for-security-reason',

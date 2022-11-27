@@ -17,6 +17,7 @@ services:
     volumes:
       - ./files:/misskey/files
       - ./.config:/misskey/.config:ro
+      - ./GeoIP2-City.mmdb:/misskey/packages/backend/assets/geoip.mmdb:ro
 
   redis:
     restart: always
