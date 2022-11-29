@@ -205,7 +205,7 @@ router.get('/robots.txt', async ctx => {
 
 // Docs
 router.get('/api-doc', async ctx => {
-	await send(ctx as any, '/redoc.html', {
+	await send(ctx as any, '/swagger.html', {
 		root: staticAssets,
 	});
 });
