@@ -53,7 +53,7 @@ export class Storage<T extends StateDef> {
 		}
 		this.state = state as any;
 		this.reactiveState = reactiveState as any;
-
+	
 		if ($i) {
 			// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
 			window.setTimeout(() => {
