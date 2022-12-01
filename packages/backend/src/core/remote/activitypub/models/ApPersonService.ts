@@ -390,7 +390,7 @@ export class ApPersonService implements OnModuleInit {
 	});
 	//#endregion
 
-	await this.updateFeatured(user!.id).catch(err => this.logger.error(err));
+	await this.updateFeatured(user!.id, resolver).catch(err => this.logger.error(err));
 
 	return user!;
 	}
@@ -503,7 +503,7 @@ export class ApPersonService implements OnModuleInit {
 			followerSharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		});
 
-		await this.updateFeatured(exist.id).catch(err => this.logger.error(err));
+		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
 	}
 
 	/**
@@ -551,14 +551,14 @@ export class ApPersonService implements OnModuleInit {
 		return { fields, services };
 	}
 
-	public async updateFeatured(userId: User['id']) {
+	public async updateFeatured(userId: User['id'], resolver?: Resolver) {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
 
 		this.logger.info(`Updating the featured: ${user.uri}`);
 
-		const resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		// Resolve to (Ordered)Collection Object
 		const collection = await resolver.resolveCollection(user.featured);
