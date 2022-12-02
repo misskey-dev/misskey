@@ -104,7 +104,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		const [path] = await createTemp();
 		await pump(multipartData.file, fs.createWriteStream(path));
 	
-		const token = multipartData.fields['i'];
+		const token = multipartData.fields['i']?.value;
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
