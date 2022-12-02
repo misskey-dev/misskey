@@ -271,11 +271,13 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 	}
 
 	if (visibility === 'specified') {
-		os.api('users/show', {
-			userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply.userId),
-		}).then(users => {
-			users.forEach(pushVisibleUser);
-		});
+		if (props.reply.visibleUserIds) {
+			os.api('users/show', {
+				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply.userId),
+			}).then(users => {
+				users.forEach(pushVisibleUser);
+			});
+		}
 
 		if (props.reply.userId !== $i.id) {
 			os.api('users/show', { userId: props.reply.userId }).then(user => {
