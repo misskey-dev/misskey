@@ -118,7 +118,7 @@ export class Resolver {
 		}
 
 		if (this.history.size > this.recursionLimit) {
-			throw new Error('hit recursion limit');
+			throw new Error(`hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
 		}
 
 		this.history.add(value);
