@@ -76,6 +76,7 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
+		private recursionLimit = 100
 	) {
 		this.history = new Set();
 	}
@@ -114,6 +115,10 @@ export class Resolver {
 
 		if (this.history.has(value)) {
 			throw new Error('cannot resolve already resolved one');
+		}
+
+		if (this.history.size > this.recursionLimit) {
+			throw new Error(`hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
 		}
 
 		this.history.add(value);

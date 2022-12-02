@@ -65,7 +65,7 @@ export class ApQuestionService {
 	 * @param uri URI of AP Question object
 	 * @returns true if updated
 	 */
-	public async updateQuestion(value: any) {
+	public async updateQuestion(value: any, resolver?: Resolver) {
 		const uri = typeof value === 'string' ? value : value.id;
 
 		// URIがこのサーバーを指しているならスキップ
@@ -80,7 +80,7 @@ export class ApQuestionService {
 		//#endregion
 
 		// resolve new Question object
-		const resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = this.apResolverService.createResolver();
 		const question = await resolver.resolve(value) as IQuestion;
 		this.logger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
 
