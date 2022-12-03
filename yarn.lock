@@ -3819,7 +3819,7 @@ __metadata:
     eslint: 8.28.0
     eslint-plugin-import: 2.26.0
     execa: 6.1.0
-    fastify: 4.10.0
+    fastify: 4.10.2
     feed: 4.2.2
     file-type: 18.0.0
     fluent-ffmpeg: 2.1.2
@@ -7463,15 +7463,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:4.10.0":
-  version: 4.10.0
-  resolution: "fastify@npm:4.10.0"
+"fastify@npm:4.10.2":
+  version: 4.10.2
+  resolution: "fastify@npm:4.10.2"
   dependencies:
     "@fastify/ajv-compiler": ^3.3.1
     "@fastify/error": ^3.0.0
     "@fastify/fast-json-stringify-compiler": ^4.1.0
     abstract-logging: ^2.0.1
     avvio: ^8.2.0
+    content-type: ^1.0.4
     find-my-way: ^7.3.0
     light-my-request: ^5.6.1
     pino: ^8.5.0
@@ -7481,7 +7482,7 @@ __metadata:
     secure-json-parse: ^2.5.0
     semver: ^7.3.7
     tiny-lru: ^10.0.0
-  checksum: 68c905a930d1e6d31d70a1e048c39c2d5d3749e00b9653fa7f20156da791d68f7edfa2856e8b3ea898b6e38b0a70b09782555e3f503a77cda49e8fd983a1a0ba
+  checksum: 1050bb361051b5fa5593dc1ea9a1fdff35980444d29e74fb13d94face47b38be6cb047e61d87b6a1f6337e3e0afb4873dbff342a3ae02f0ea7bf60fec51e8f1f
   languageName: node
   linkType: hard
 
