@@ -4,10 +4,7 @@ import { ILocalUser } from '@/models/entities/user.js';
 import { getInstanceActor } from '@/services/instance-actor.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { extractDbHost, isSelfHost } from '@/misc/convert-host.js';
-import { signedGet } from './request.js';
-import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
 import { FollowRequests, Notes, NoteReactions, Polls, Users } from '@/models/index.js';
-import { parseUri } from './db-resolver.js';
 import renderNote from '@/remote/activitypub/renderer/note.js';
 import { renderLike } from '@/remote/activitypub/renderer/like.js';
 import { renderPerson } from '@/remote/activitypub/renderer/person.js';
@@ -15,12 +12,16 @@ import renderQuestion from '@/remote/activitypub/renderer/question.js';
 import renderCreate from '@/remote/activitypub/renderer/create.js';
 import { renderActivity } from '@/remote/activitypub/renderer/index.js';
 import renderFollow from '@/remote/activitypub/renderer/follow.js';
+import { parseUri } from './db-resolver.js';
+import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type.js';
+import { signedGet } from './request.js';
 
 export default class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
+	private recursionLimit?: number;
 
-	constructor() {
+	constructor(recursionLimit = 100) {
 		this.history = new Set();
 	}
 
@@ -58,6 +59,10 @@ export default class Resolver {
 
 		if (this.history.has(value)) {
 			throw new Error('cannot resolve already resolved one');
+		}
+
+		if (this.recursionLimit && this.history.size > this.recursionLimit) {
+			throw new Error('hit recursion limit');
 		}
 
 		this.history.add(value);
@@ -123,7 +128,7 @@ export default class Resolver {
 				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw new Error('resolveLocal: invalid follow URI');
 
 				return Promise.all(
-					[parsed.id, parsed.rest].map(id => Users.findOneByOrFail({ id }))
+					[parsed.id, parsed.rest].map(id => Users.findOneByOrFail({ id })),
 				)
 				.then(([follower, followee]) => renderActivity(renderFollow(follower, followee, url)));
 			default:
