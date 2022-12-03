@@ -271,7 +271,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	});
 	//#endregion
 
-	await updateFeatured(user!.id).catch(err => logger.error(err));
+	await updateFeatured(user!.id, resolver).catch(err => logger.error(err));
 
 	return user!;
 }
@@ -384,7 +384,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		followerSharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 	});
 
-	await updateFeatured(exist.id).catch(err => logger.error(err));
+	await updateFeatured(exist.id, resolver).catch(err => logger.error(err));
 }
 
 /**
@@ -462,14 +462,14 @@ export function analyzeAttachments(attachments: IObject | IObject[] | undefined)
 	return { fields, services };
 }
 
-export async function updateFeatured(userId: User['id']) {
+export async function updateFeatured(userId: User['id'], resolver?: Resolver) {
 	const user = await Users.findOneByOrFail({ id: userId });
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 
 	logger.info(`Updating the featured: ${user.uri}`);
 
-	const resolver = new Resolver();
+	if (resolver == null) resolver = new Resolver();
 
 	// Resolve to (Ordered)Collection Object
 	const collection = await resolver.resolveCollection(user.featured);

@@ -10,7 +10,7 @@ import { updatePerson } from '../../models/person.js';
  */
 export default async (actor: CacheableRemoteUser, activity: IUpdate): Promise<string> => {
 	if ('actor' in activity && actor.uri !== activity.actor) {
-		return `skip: invalid actor`;
+		return 'skip: invalid actor';
 	}
 
 	apLogger.debug('Update');
@@ -24,10 +24,10 @@ export default async (actor: CacheableRemoteUser, activity: IUpdate): Promise<st
 
 	if (isActor(object)) {
 		await updatePerson(actor.uri!, resolver, object);
-		return `ok: Person updated`;
+		return 'ok: Person updated';
 	} else if (getApType(object) === 'Question') {
-		await updateQuestion(object).catch(e => console.log(e));
-		return `ok: Question updated`;
+		await updateQuestion(object, resolver).catch(e => console.log(e));
+		return 'ok: Question updated';
 	} else {
 		return `skip: Unknown type: ${getApType(object)}`;
 	}
