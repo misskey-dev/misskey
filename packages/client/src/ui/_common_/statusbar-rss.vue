@@ -37,7 +37,7 @@ const fetching = ref(true);
 let key = $ref(0);
 
 const tick = () => {
-	fetch(`/api/fetch-rss?url=${props.url}`, {}).then(res => {
+	window.fetch(`/api/fetch-rss?url=${props.url}`, {}).then(res => {
 		res.json().then(feed => {
 			if (props.shuffle) {
 				shuffle(feed.items);

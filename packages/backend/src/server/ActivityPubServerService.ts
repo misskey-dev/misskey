@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Router from '@koa/router';
-import json from 'koa-json-body';
+import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import fastifyAccepts from '@fastify/accepts';
 import httpSignature from '@peertube/http-signature';
 import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
+import accepts from 'accepts';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
 import * as url from '@/misc/prelude/url.js';
@@ -56,14 +57,15 @@ export class ActivityPubServerService {
 		private userKeypairStoreService: UserKeypairStoreService,
 		private queryService: QueryService,
 	) {
+		this.createServer = this.createServer.bind(this);
 	}
 
-	private setResponseType(ctx: Router.RouterContext) {
-		const accept = ctx.accepts(ACTIVITY_JSON, LD_JSON);
+	private setResponseType(request: FastifyRequest, reply: FastifyReply): void {
+		const accept = request.accepts().type([ACTIVITY_JSON, LD_JSON]);
 		if (accept === LD_JSON) {
-			ctx.response.type = LD_JSON;
+			reply.type(LD_JSON);
 		} else {
-			ctx.response.type = ACTIVITY_JSON;
+			reply.type(ACTIVITY_JSON);
 		}
 	}
 
@@ -80,31 +82,34 @@ export class ActivityPubServerService {
 		return this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 	}
 
-	private inbox(ctx: Router.RouterContext) {
+	private inbox(request: FastifyRequest, reply: FastifyReply) {
 		let signature;
 
 		try {
-			signature = httpSignature.parseRequest(ctx.req, { 'headers': [] });
+			signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
 		} catch (e) {
-			ctx.status = 401;
+			reply.code(401);
 			return;
 		}
 
-		this.queueService.inbox(ctx.request.body, signature);
+		this.queueService.inbox(request.body, signature);
 
-		ctx.status = 202;
+		reply.code(202);
 	}
 
-	private async followers(ctx: Router.RouterContext) {
-		const userId = ctx.params.user;
+	private async followers(
+		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
+		reply: FastifyReply,
+	) {
+		const userId = request.params.user;
 
-		const cursor = ctx.request.query.cursor;
+		const cursor = request.query.cursor;
 		if (cursor != null && typeof cursor !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 
-		const page = ctx.request.query.page === 'true';
+		const page = request.query.page === 'true';
 
 		const user = await this.usersRepository.findOneBy({
 			id: userId,
@@ -112,7 +117,7 @@ export class ActivityPubServerService {
 		});
 
 		if (user == null) {
-			ctx.status = 404;
+			reply.code(404);
 			return;
 		}
 
@@ -120,12 +125,12 @@ export class ActivityPubServerService {
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 
 		if (profile.ffVisibility === 'private') {
-			ctx.status = 403;
-			ctx.set('Cache-Control', 'public, max-age=30');
+			reply.code(403);
+			reply.header('Cache-Control', 'public, max-age=30');
 			return;
 		} else if (profile.ffVisibility === 'followers') {
-			ctx.status = 403;
-			ctx.set('Cache-Control', 'public, max-age=30');
+			reply.code(403);
+			reply.header('Cache-Control', 'public, max-age=30');
 			return;
 		}
 		//#endregion
@@ -168,27 +173,30 @@ export class ActivityPubServerService {
 				})}` : undefined,
 			);
 
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		}
 	}
 
-	private async following(ctx: Router.RouterContext) {
-		const userId = ctx.params.user;
+	private async following(
+		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
+		reply: FastifyReply,
+	) {
+		const userId = request.params.user;
 
-		const cursor = ctx.request.query.cursor;
+		const cursor = request.query.cursor;
 		if (cursor != null && typeof cursor !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
-		const page = ctx.request.query.page === 'true';
+		const page = request.query.page === 'true';
 	
 		const user = await this.usersRepository.findOneBy({
 			id: userId,
@@ -196,7 +204,7 @@ export class ActivityPubServerService {
 		});
 	
 		if (user == null) {
-			ctx.status = 404;
+			reply.code(404);
 			return;
 		}
 	
@@ -204,12 +212,12 @@ export class ActivityPubServerService {
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 	
 		if (profile.ffVisibility === 'private') {
-			ctx.status = 403;
-			ctx.set('Cache-Control', 'public, max-age=30');
+			reply.code(403);
+			reply.header('Cache-Control', 'public, max-age=30');
 			return;
 		} else if (profile.ffVisibility === 'followers') {
-			ctx.status = 403;
-			ctx.set('Cache-Control', 'public, max-age=30');
+			reply.code(403);
+			reply.header('Cache-Control', 'public, max-age=30');
 			return;
 		}
 		//#endregion
@@ -252,19 +260,19 @@ export class ActivityPubServerService {
 				})}` : undefined,
 			);
 	
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`);
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		}
 	}
 
-	private async featured(ctx: Router.RouterContext) {
-		const userId = ctx.params.user;
+	private async featured(request: FastifyRequest<{ Params: { user: string; }; }>, reply: FastifyReply) {
+		const userId = request.params.user;
 
 		const user = await this.usersRepository.findOneBy({
 			id: userId,
@@ -272,7 +280,7 @@ export class ActivityPubServerService {
 		});
 
 		if (user == null) {
-			ctx.status = 404;
+			reply.code(404);
 			return;
 		}
 
@@ -291,30 +299,36 @@ export class ActivityPubServerService {
 			renderedNotes.length, undefined, undefined, renderedNotes,
 		);
 
-		ctx.body = this.apRendererService.renderActivity(rendered);
-		ctx.set('Cache-Control', 'public, max-age=180');
-		this.setResponseType(ctx);
+		reply.header('Cache-Control', 'public, max-age=180');
+		this.setResponseType(request, reply);
+		return (this.apRendererService.renderActivity(rendered));
 	}
 
-	private async outbox(ctx: Router.RouterContext) {
-		const userId = ctx.params.user;
+	private async outbox(
+		request: FastifyRequest<{
+			Params: { user: string; };
+			Querystring: { since_id?: string; until_id?: string; page?: string; };
+		}>,
+		reply: FastifyReply,
+	) {
+		const userId = request.params.user;
 
-		const sinceId = ctx.request.query.since_id;
+		const sinceId = request.query.since_id;
 		if (sinceId != null && typeof sinceId !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
-		const untilId = ctx.request.query.until_id;
+		const untilId = request.query.until_id;
 		if (untilId != null && typeof untilId !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
-		const page = ctx.request.query.page === 'true';
+		const page = request.query.page === 'true';
 	
 		if (countIf(x => x != null, [sinceId, untilId]) > 1) {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
@@ -324,7 +338,7 @@ export class ActivityPubServerService {
 		});
 	
 		if (user == null) {
-			ctx.status = 404;
+			reply.code(404);
 			return;
 		}
 	
@@ -362,110 +376,130 @@ export class ActivityPubServerService {
 				})}` : undefined,
 			);
 	
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			this.setResponseType(ctx);
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.notesCount,
 				`${partOf}?page=true`,
 				`${partOf}?page=true&since_id=000000000000000000000000`,
 			);
-			ctx.body = this.apRendererService.renderActivity(rendered);
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(rendered));
 		}
 	}
 
-	private async userInfo(ctx: Router.RouterContext, user: User | null) {
+	private async userInfo(request: FastifyRequest, reply: FastifyReply, user: User | null) {
 		if (user == null) {
-			ctx.status = 404;
+			reply.code(404);
 			return;
 		}
 
-		ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser));
-		ctx.set('Cache-Control', 'public, max-age=180');
-		this.setResponseType(ctx);
+		reply.header('Cache-Control', 'public, max-age=180');
+		this.setResponseType(request, reply);
+		return (this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser)));
 	}
 
-	public createRouter() {
-		// Init router
-		const router = new Router();
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
+		fastify.addConstraintStrategy({
+			name: 'apOrHtml',
+			storage() {
+				const store = {};
+				return {
+					get(key) {
+						return store[key] ?? null;
+					},
+					set(key, value) {
+						store[key] = value;
+					},
+				};
+			},
+			deriveConstraint(request, ctx) {
+				const accepted = accepts(request).type(['html', ACTIVITY_JSON, LD_JSON]);
+				const isAp = typeof accepted === 'string' && !accepted.match(/html/);
+				return isAp ? 'ap' : 'html';
+			},
+		});
+
+		fastify.register(fastifyAccepts);
 
 		//#region Routing
-		function isActivityPubReq(ctx: Router.RouterContext) {
-			ctx.response.vary('Accept');
-			const accepted = ctx.accepts('html', ACTIVITY_JSON, LD_JSON);
-			return typeof accepted === 'string' && !accepted.match(/html/);
-		}
-
 		// inbox
-		router.post('/inbox', json(), ctx => this.inbox(ctx));
-		router.post('/users/:user/inbox', json(), ctx => this.inbox(ctx));
+		fastify.post('/inbox', async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/users/:user/inbox', async (request, reply) => await this.inbox(request, reply));
 
 		// note
-		router.get('/notes/:note', async (ctx, next) => {
-			if (!isActivityPubReq(ctx)) return await next();
-
+		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
-				id: ctx.params.note,
+				id: request.params.note,
 				visibility: In(['public' as const, 'home' as const]),
 				localOnly: false,
 			});
 
 			if (note == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
 			// リモートだったらリダイレクト
 			if (note.userHost != null) {
 				if (note.uri == null || this.utilityService.isSelfHost(note.userHost)) {
-					ctx.status = 500;
+					reply.code(500);
 					return;
 				}
-				ctx.redirect(note.uri);
+				reply.redirect(note.uri);
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderNote(note, false));
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.apRendererService.renderNote(note, false)));
 		});
 
 		// note activity
-		router.get('/notes/:note/activity', async ctx => {
+		fastify.get<{ Params: { note: string; } }>('/notes/:note/activity', async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
-				id: ctx.params.note,
+				id: request.params.note,
 				userHost: IsNull(),
 				visibility: In(['public' as const, 'home' as const]),
 				localOnly: false,
 			});
 
 			if (note == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.packActivity(note));
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.packActivity(note)));
 		});
 
 		// outbox
-		router.get('/users/:user/outbox', (ctx) => this.outbox(ctx));
+		fastify.get<{
+			Params: { user: string; };
+			Querystring: { since_id?: string; until_id?: string; page?: string; };
+		}>('/users/:user/outbox', async (request, reply) => await this.outbox(request, reply));
 
 		// followers
-		router.get('/users/:user/followers', (ctx) => this.followers(ctx));
+		fastify.get<{
+			Params: { user: string; };
+			Querystring: { cursor?: string; page?: string; };
+		}>('/users/:user/followers', async (request, reply) => await this.followers(request, reply));
 
 		// following
-		router.get('/users/:user/following', (ctx) => this.following(ctx));
+		fastify.get<{
+			Params: { user: string; };
+			Querystring: { cursor?: string; page?: string; };
+		}>('/users/:user/following', async (request, reply) => await this.following(request, reply));
 
 		// featured
-		router.get('/users/:user/collections/featured', (ctx) => this.featured(ctx));
+		fastify.get<{ Params: { user: string; }; }>('/users/:user/collections/featured', async (request, reply) => await this.featured(request, reply));
 
 		// publickey
-		router.get('/users/:user/publickey', async ctx => {
-			const userId = ctx.params.user;
+		fastify.get<{ Params: { user: string; } }>('/users/:user/publickey', async (request, reply) => {
+			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
 				id: userId,
@@ -473,25 +507,23 @@ export class ActivityPubServerService {
 			});
 
 			if (user == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
 			const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 
 			if (this.userEntityService.isLocalUser(user)) {
-				ctx.body = this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair));
-				ctx.set('Cache-Control', 'public, max-age=180');
-				this.setResponseType(ctx);
+				reply.header('Cache-Control', 'public, max-age=180');
+				this.setResponseType(request, reply);
+				return (this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair)));
 			} else {
-				ctx.status = 400;
+				reply.code(400);
 			}
 		});
 
-		router.get('/users/:user', async (ctx, next) => {
-			if (!isActivityPubReq(ctx)) return await next();
-
-			const userId = ctx.params.user;
+		fastify.get<{ Params: { user: string; } }>('/users/:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
+			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
 				id: userId,
@@ -499,86 +531,84 @@ export class ActivityPubServerService {
 				isSuspended: false,
 			});
 
-			await this.userInfo(ctx, user);
+			return await this.userInfo(request, reply, user);
 		});
 
-		router.get('/@:user', async (ctx, next) => {
-			if (!isActivityPubReq(ctx)) return await next();
-
+		fastify.get<{ Params: { user: string; } }>('/@:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			const user = await this.usersRepository.findOneBy({
-				usernameLower: ctx.params.user.toLowerCase(),
+				usernameLower: request.params.user.toLowerCase(),
 				host: IsNull(),
 				isSuspended: false,
 			});
 
-			await this.userInfo(ctx, user);
+			return await this.userInfo(request, reply, user);
 		});
 		//#endregion
 
 		// emoji
-		router.get('/emojis/:emoji', async ctx => {
+		fastify.get<{ Params: { emoji: string; } }>('/emojis/:emoji', async (request, reply) => {
 			const emoji = await this.emojisRepository.findOneBy({
 				host: IsNull(),
-				name: ctx.params.emoji,
+				name: request.params.emoji,
 			});
 
 			if (emoji == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderEmoji(emoji));
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.apRendererService.renderEmoji(emoji)));
 		});
 
 		// like
-		router.get('/likes/:like', async ctx => {
-			const reaction = await this.noteReactionsRepository.findOneBy({ id: ctx.params.like });
+		fastify.get<{ Params: { like: string; } }>('/likes/:like', async (request, reply) => {
+			const reaction = await this.noteReactionsRepository.findOneBy({ id: request.params.like });
 
 			if (reaction == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
 			const note = await this.notesRepository.findOneBy({ id: reaction.noteId });
 
 			if (note == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(await this.apRendererService.renderLike(reaction, note));
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(await this.apRendererService.renderLike(reaction, note)));
 		});
 
 		// follow
-		router.get('/follows/:follower/:followee', async ctx => {
+		fastify.get<{ Params: { follower: string; followee: string; } }>('/follows/:follower/:followee', async (request, reply) => {
 			// This may be used before the follow is completed, so we do not
 			// check if the following exists.
 
 			const [follower, followee] = await Promise.all([
 				this.usersRepository.findOneBy({
-					id: ctx.params.follower,
+					id: request.params.follower,
 					host: IsNull(),
 				}),
 				this.usersRepository.findOneBy({
-					id: ctx.params.followee,
+					id: request.params.followee,
 					host: Not(IsNull()),
 				}),
 			]);
 
 			if (follower == null || followee == null) {
-				ctx.status = 404;
+				reply.code(404);
 				return;
 			}
 
-			ctx.body = this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee));
-			ctx.set('Cache-Control', 'public, max-age=180');
-			this.setResponseType(ctx);
+			reply.header('Cache-Control', 'public, max-age=180');
+			this.setResponseType(request, reply);
+			return (this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee)));
 		});
 
-		return router;
+		done();
 	}
 }

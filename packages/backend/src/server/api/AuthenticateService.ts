@@ -34,7 +34,7 @@ export class AuthenticateService {
 		this.appCache = new Cache<App>(Infinity);
 	}
 
-	public async authenticate(token: string | null): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> {
+	public async authenticate(token: string | null | undefined): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> {
 		if (token == null) {
 			return [null, null];
 		}

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import bcrypt from 'bcryptjs';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -11,8 +12,8 @@ import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { ILocalUser } from '@/models/entities/User.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { SigninService } from './SigninService.js';
-import type Koa from 'koa';
 
 @Injectable()
 export class SignupApiService {
@@ -42,8 +43,22 @@ export class SignupApiService {
 	) {
 	}
 
-	public async signup(ctx: Koa.Context) {
-		const body = ctx.request.body;
+	public async signup(
+		request: FastifyRequest<{
+			Body: {
+				username: string;
+				password: string;
+				host?: string;
+				invitationCode?: string;
+				emailAddress?: string;
+				'hcaptcha-response'?: string;
+				'g-recaptcha-response'?: string;
+				'turnstile-response'?: string;
+			}
+		}>,
+		reply: FastifyReply,
+	) {
+		const body = request.body;
 
 		const instance = await this.metaService.fetch(true);
 	
@@ -51,20 +66,20 @@ export class SignupApiService {
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
 			if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
-				await this.captchaService.verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(e => {
-					ctx.throw(400, e);
+				await this.captchaService.verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+					throw new FastifyReplyError(400, err);
 				});
 			}
 	
 			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
-				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(e => {
-					ctx.throw(400, e);
+				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+					throw new FastifyReplyError(400, err);
 				});
 			}
 
 			if (instance.enableTurnstile && instance.turnstileSecretKey) {
-				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(e => {
-					ctx.throw(400, e);
+				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(err => {
+					throw new FastifyReplyError(400, err);
 				});
 			}
 		}
@@ -77,20 +92,20 @@ export class SignupApiService {
 	
 		if (instance.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 	
-			const available = await this.emailService.validateEmailForAccount(emailAddress);
-			if (!available) {
-				ctx.status = 400;
+			const res = await this.emailService.validateEmailForAccount(emailAddress);
+			if (!res.available) {
+				reply.code(400);
 				return;
 			}
 		}
 	
 		if (instance.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 	
@@ -99,7 +114,7 @@ export class SignupApiService {
 			});
 	
 			if (ticket == null) {
-				ctx.status = 400;
+				reply.code(400);
 				return;
 			}
 	
@@ -117,18 +132,18 @@ export class SignupApiService {
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				code,
-				email: emailAddress,
+				email: emailAddress!,
 				username: username,
 				password: hash,
 			});
 	
 			const link = `${this.config.url}/signup-complete/${code}`;
 	
-			this.emailService.sendEmail(emailAddress, 'Signup',
+			this.emailService.sendEmail(emailAddress!, 'Signup',
 				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 				`To complete signup, please click this link: ${link}`);
 	
-			ctx.status = 204;
+			reply.code(204);
 		} else {
 			try {
 				const { account, secret } = await this.signupService.signup({
@@ -140,17 +155,18 @@ export class SignupApiService {
 					includeSecrets: true,
 				});
 	
-				(res as any).token = secret;
-	
-				ctx.body = res;
-			} catch (e) {
-				ctx.throw(400, e);
+				return {
+					...res,
+					token: secret,
+				};
+			} catch (err) {
+				throw new FastifyReplyError(400, err);
 			}
 		}
 	}
 
-	public async signupPending(ctx: Koa.Context) {
-		const body = ctx.request.body;
+	public async signupPending(request: FastifyRequest<{ Body: { code: string; } }>, reply: FastifyReply) {
+		const body = request.body;
 
 		const code = body['code'];
 
@@ -174,9 +190,9 @@ export class SignupApiService {
 				emailVerifyCode: null,
 			});
 
-			this.signinService.signin(ctx, account as ILocalUser);
-		} catch (e) {
-			ctx.throw(400, e);
+			this.signinService.signin(request, reply, account as ILocalUser);
+		} catch (err) {
+			throw new FastifyReplyError(400, err);
 		}
 	}
 }

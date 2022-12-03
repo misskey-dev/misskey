@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import Router from '@koa/router';
 import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
+import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -12,8 +12,8 @@ import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { SigninService } from '../SigninService.js';
-import type Koa from 'koa';
 
 @Injectable()
 export class DiscordServerService {
@@ -36,21 +36,18 @@ export class DiscordServerService {
 		private metaService: MetaService,
 		private signinService: SigninService,
 	) {
+		this.create = this.create.bind(this);
 	}
 
-	public create() {
-		const router = new Router();
-
-		router.get('/disconnect/discord', async ctx => {
-			if (!this.compareOrigin(ctx)) {
-				ctx.throw(400, 'invalid origin');
-				return;
+	public create(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
+		fastify.get('/disconnect/discord', async (request, reply) => {
+			if (!this.compareOrigin(request)) {
+				throw new FastifyReplyError(400, 'invalid origin');
 			}
 
-			const userToken = this.getUserToken(ctx);
+			const userToken = this.getUserToken(request);
 			if (!userToken) {
-				ctx.throw(400, 'signin required');
-				return;
+				throw new FastifyReplyError(400, 'signin required');
 			}
 
 			const user = await this.usersRepository.findOneByOrFail({
@@ -66,13 +63,13 @@ export class DiscordServerService {
 				integrations: profile.integrations,
 			});
 
-			ctx.body = 'Discordの連携を解除しました :v:';
-
 			// Publish i updated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', await this.userEntityService.pack(user, user, {
 				detail: true,
 				includeSecrets: true,
 			}));
+
+			return 'Discordの連携を解除しました :v:';
 		});
 
 		const getOAuth2 = async () => {
@@ -90,16 +87,14 @@ export class DiscordServerService {
 			}
 		};
 
-		router.get('/connect/discord', async ctx => {
-			if (!this.compareOrigin(ctx)) {
-				ctx.throw(400, 'invalid origin');
-				return;
+		fastify.get('/connect/discord', async (request, reply) => {
+			if (!this.compareOrigin(request)) {
+				throw new FastifyReplyError(400, 'invalid origin');
 			}
 
-			const userToken = this.getUserToken(ctx);
+			const userToken = this.getUserToken(request);
 			if (!userToken) {
-				ctx.throw(400, 'signin required');
-				return;
+				throw new FastifyReplyError(400, 'signin required');
 			}
 
 			const params = {
@@ -112,10 +107,10 @@ export class DiscordServerService {
 			this.redisClient.set(userToken, JSON.stringify(params));
 
 			const oauth2 = await getOAuth2();
-			ctx.redirect(oauth2!.getAuthorizeUrl(params));
+			reply.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		router.get('/signin/discord', async ctx => {
+		fastify.get('/signin/discord', async (request, reply) => {
 			const sessid = uuid();
 
 			const params = {
@@ -125,7 +120,7 @@ export class DiscordServerService {
 				response_type: 'code',
 			};
 
-			ctx.cookies.set('signin_with_discord_sid', sessid, {
+			reply.cookies.set('signin_with_discord_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,
@@ -134,27 +129,25 @@ export class DiscordServerService {
 			this.redisClient.set(sessid, JSON.stringify(params));
 
 			const oauth2 = await getOAuth2();
-			ctx.redirect(oauth2!.getAuthorizeUrl(params));
+			reply.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		router.get('/dc/cb', async ctx => {
-			const userToken = this.getUserToken(ctx);
+		fastify.get('/dc/cb', async (request, reply) => {
+			const userToken = this.getUserToken(request);
 
 			const oauth2 = await getOAuth2();
 
 			if (!userToken) {
-				const sessid = ctx.cookies.get('signin_with_discord_sid');
+				const sessid = request.cookies.get('signin_with_discord_sid');
 
 				if (!sessid) {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
-				const code = ctx.query.code;
+				const code = request.query.code;
 
 				if (!code || typeof code !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
@@ -164,9 +157,8 @@ export class DiscordServerService {
 					});
 				});
 
-				if (ctx.query.state !== state) {
-					ctx.throw(400, 'invalid session');
-					return;
+				if (request.query.state !== state) {
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
@@ -192,8 +184,7 @@ export class DiscordServerService {
 				})) as Record<string, unknown>;
 
 				if (typeof id !== 'string' || typeof username !== 'string' || typeof discriminator !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const profile = await this.userProfilesRepository.createQueryBuilder()
@@ -202,8 +193,7 @@ export class DiscordServerService {
 					.getOne();
 
 				if (profile == null) {
-					ctx.throw(404, `@${username}#${discriminator}と連携しているMisskeyアカウントはありませんでした...`);
-					return;
+					throw new FastifyReplyError(404, `@${username}#${discriminator}と連携しているMisskeyアカウントはありませんでした...`);
 				}
 
 				await this.userProfilesRepository.update(profile.userId, {
@@ -220,13 +210,12 @@ export class DiscordServerService {
 					},
 				});
 
-				this.signinService.signin(ctx, await this.usersRepository.findOneBy({ id: profile.userId }) as ILocalUser, true);
+				return this.signinService.signin(request, reply, await this.usersRepository.findOneBy({ id: profile.userId }) as ILocalUser, true);
 			} else {
-				const code = ctx.query.code;
+				const code = request.query.code;
 
 				if (!code || typeof code !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { redirect_uri, state } = await new Promise<any>((res, rej) => {
@@ -236,9 +225,8 @@ export class DiscordServerService {
 					});
 				});
 
-				if (ctx.query.state !== state) {
-					ctx.throw(400, 'invalid session');
-					return;
+				if (request.query.state !== state) {
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
@@ -263,8 +251,7 @@ export class DiscordServerService {
 					'Authorization': `Bearer ${accessToken}`,
 				})) as Record<string, unknown>;
 				if (typeof id !== 'string' || typeof username !== 'string' || typeof discriminator !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const user = await this.usersRepository.findOneByOrFail({
@@ -288,29 +275,29 @@ export class DiscordServerService {
 					},
 				});
 
-				ctx.body = `Discord: @${username}#${discriminator} を、Misskey: @${user.username} に接続しました！`;
-
 				// Publish i updated event
 				this.globalEventService.publishMainStream(user.id, 'meUpdated', await this.userEntityService.pack(user, user, {
 					detail: true,
 					includeSecrets: true,
 				}));
+
+				return `Discord: @${username}#${discriminator} を、Misskey: @${user.username} に接続しました！`;
 			}
 		});
 
-		return router;
+		done();
 	}
 
-	private getUserToken(ctx: Koa.BaseContext): string | null {
-		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
+	private getUserToken(request: FastifyRequest): string | null {
+		return ((request.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
-	private compareOrigin(ctx: Koa.BaseContext): boolean {
+	private compareOrigin(request: FastifyRequest): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
 		}
 	
-		const referer = ctx.headers['referer'];
+		const referer = request.headers['referer'];
 	
 		return (normalizeUrl(referer) === normalizeUrl(this.config.url));
 	}
