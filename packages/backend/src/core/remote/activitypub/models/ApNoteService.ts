@@ -140,7 +140,7 @@ export class ApNoteService {
 			throw new Error('actor has been suspended');
 		}
 	
-		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc);
+		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc, resolver);
 		let visibility = noteAudience.visibility;
 		const visibleUsers = noteAudience.visibleUsers;
 	
@@ -154,7 +154,7 @@ export class ApNoteService {
 	
 		let isMessaging = note._misskey_talk && visibility === 'specified';
 	
-		const apMentions = await this.apMentionService.extractApMentions(note.tag);
+		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const apHashtags = await extractApHashtags(note.tag);
 	
 		// 添付ファイル
