@@ -21,6 +21,11 @@ export class UtilityService {
 		return this.toPuny(this.config.host) === this.toPuny(host);
 	}
 
+	public isBlockedHost(blockedHosts: string[], host: string): boolean {
+		if (host == null) return false;
+		return blockedHosts.some(x => x.endsWith(host));
+	}
+
 	public extractDbHost(uri: string): string {
 		const url = new URL(uri);
 		return this.toPuny(url.hostname);
