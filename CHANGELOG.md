@@ -9,6 +9,10 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.1 (2022/12/03)
+### Bugfixes
+- Server: Mitigate AP reference chain DoS vector @skehmatics
+
 ## 12.119.0 (2022/09/10)
 
 ### Improvements
