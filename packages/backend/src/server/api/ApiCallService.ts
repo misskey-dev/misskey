@@ -65,7 +65,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, body, null, request).then((res: any) => {
+			this.call(endpoint, user, app, body, null, request).then((res) => {
 				if (request.method === 'GET' && endpoint.meta.cacheSec && !body['i'] && !user) {
 					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
@@ -103,17 +103,22 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		const [path] = await createTemp();
 		await pump(multipartData.file, fs.createWriteStream(path));
+
+		const fields = {} as Record<string, string | undefined>;
+		for (const [k, v] of Object.entries(multipartData.fields)) {
+			fields[k] = v.value;
+		}
 	
-		const token = multipartData.fields['i']?.value;
+		const token = fields['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, multipartData.fields, {
+			this.call(endpoint, user, app, fields, {
 				name: multipartData.filename,
 				path: path,
-			}, request).then((res: any) => {
+			}, request).then((res) => {
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
 				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
