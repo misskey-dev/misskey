@@ -4,7 +4,7 @@
 ### Improvements
 
 ### Bugfixes
-- 
+-
 
 You should also include the user name that made the change.
 -->
@@ -25,6 +25,7 @@ You should also include the user name that made the change.
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
 - Client: インスタンスティッカーのfaviconを読み込む際に偽サイト警告が出ることがあるのを修正 @syuilo
+- Server: Mitigate AP reference chain DoS vector @skehmatics
 
 ## 12.119.0 (2022/09/10)
 

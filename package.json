@@ -18,7 +18,7 @@
 		"start": "cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
 		"init": "yarn migrate",
-		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
+		"migrate": "cd packages/backend && yarn run typeorm migration:run -d ormconfig.js",
 		"migrateandstart": "yarn migrate && yarn start",
 		"gulp": "gulp build",
 		"watch": "yarn dev",
