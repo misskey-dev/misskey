@@ -7,7 +7,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { FollowingsRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from './entities/per-user-following.js';
+import { name, schema } from '@/core/entities/per-user-following.js';
 import type { KVs } from '../core.js';
 
 /**

@@ -4,7 +4,7 @@ import type { Instance } from '@/models/entities/Instance.js';
 import { Cache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { UtilityService } from './UtilityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 @Injectable()
 export class FederatedInstanceService {

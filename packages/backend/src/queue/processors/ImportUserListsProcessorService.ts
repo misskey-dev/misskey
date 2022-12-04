@@ -5,7 +5,7 @@ import type { UsersRepository, DriveFilesRepository, UserListJoiningsRepository,
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
-import { ResolveUserService } from '@/core/remote/ResolveUserService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { UserListService } from '@/core/UserListService.js';
 import { IdService } from '@/core/IdService.js';
@@ -37,7 +37,7 @@ export class ImportUserListsProcessorService {
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private userListService: UserListService,
-		private resolveUserService: ResolveUserService,
+		private remoteUserResolveService: RemoteUserResolveService,
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
@@ -95,7 +95,7 @@ export class ImportUserListsProcessorService {
 				});
 
 				if (target == null) {
-					target = await this.resolveUserService.resolveUser(username, host);
+					target = await this.remoteUserResolveService.resolveUser(username, host);
 				}
 
 				if (await this.userListJoiningsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;

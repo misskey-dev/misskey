@@ -6,8 +6,8 @@ import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 @Injectable()
 export class UserSuspendService {

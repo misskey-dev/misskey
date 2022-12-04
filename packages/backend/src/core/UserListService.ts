@@ -7,8 +7,8 @@ import { IdService } from '@/core/IdService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { ProxyAccountService } from './ProxyAccountService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 
 @Injectable()
 export class UserListService {

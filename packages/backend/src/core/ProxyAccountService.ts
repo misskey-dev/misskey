@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository } from '@/models/index.js';
 import type { ILocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
-import { MetaService } from './MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class ProxyAccountService {

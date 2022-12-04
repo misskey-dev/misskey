@@ -8,9 +8,9 @@ import { IdService } from '@/core/IdService.js';
 import type { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { RelayService } from '@/core/RelayService.js';
 import type { Config } from '@/config.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 
 @Injectable()
 export class NotePiningService {

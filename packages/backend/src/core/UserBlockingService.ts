@@ -10,10 +10,10 @@ import { DI } from '@/di-symbols.js';
 import logger from '@/logger.js';
 import type { UsersRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import Logger from '@/logger.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { WebhookService } from './WebhookService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { LoggerService } from './LoggerService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { WebhookService } from '@/core/WebhookService.js';
 
 @Injectable()
 export class UserBlockingService {

@@ -34,12 +34,12 @@ import { WebhookService } from '@/core/WebhookService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { AntennaService } from '@/core/AntennaService.js';
 import { QueueService } from '@/core/QueueService.js';
-import { NoteEntityService } from './entities/NoteEntityService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { NoteReadService } from './NoteReadService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { ResolveUserService } from './remote/ResolveUserService.js';
-import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { NoteReadService } from '@/core/NoteReadService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -179,7 +179,7 @@ export class NoteCreateService {
 		private hashtagService: HashtagService,
 		private antennaService: AntennaService,
 		private webhookService: WebhookService,
-		private resolveUserService: ResolveUserService,
+		private remoteUserResolveService: RemoteUserResolveService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
 		private notesChart: NotesChart,
@@ -726,7 +726,7 @@ export class NoteCreateService {
 
 		const mentions = extractMentions(tokens);
 		let mentionedUsers = (await Promise.all(mentions.map(m =>
-			this.resolveUserService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
+			this.remoteUserResolveService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
 		))).filter(x => x != null) as User[];
 
 		// Drop duplicate users

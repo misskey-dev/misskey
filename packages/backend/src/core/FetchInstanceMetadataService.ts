@@ -9,7 +9,7 @@ import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { HttpRequestService } from './HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {

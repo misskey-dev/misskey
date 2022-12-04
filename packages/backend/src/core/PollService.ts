@@ -8,9 +8,9 @@ import type { CacheableUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 
 @Injectable()
 export class PollService {

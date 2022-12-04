@@ -6,7 +6,7 @@ import { IdService } from '@/core/IdService.js';
 import type { Hashtag } from '@/models/entities/Hashtag.js';
 import HashtagChart from '@/core/chart/charts/hashtag.js';
 import type { HashtagsRepository, UsersRepository } from '@/models/index.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 @Injectable()
 export class HashtagService {

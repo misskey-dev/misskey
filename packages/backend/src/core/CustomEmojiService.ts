@@ -10,8 +10,8 @@ import { Cache } from '@/misc/cache.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { EmojisRepository } from '@/models/index.js';
-import { UtilityService } from './UtilityService.js';
-import { ReactionService } from './ReactionService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { ReactionService } from '@/core/ReactionService.js';
 
 /**
  * 添付用絵文字情報

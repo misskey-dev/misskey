@@ -5,7 +5,7 @@ import type { DriveFilesRepository, InstancesRepository } from '@/models/index.j
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
-import { ApRequestService } from '@/core/remote/activitypub/ApRequestService.js';
+import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { Cache } from '@/misc/cache.js';

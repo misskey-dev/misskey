@@ -28,9 +28,9 @@ import InstanceChart from '@/core/chart/charts/instance.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { S3Service } from '@/core/S3Service.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
-import { DriveFileEntityService } from './entities/DriveFileEntityService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { FileInfoService } from './FileInfoService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {

@@ -11,7 +11,7 @@ import { Cache } from '@/misc/cache.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI } from '@/di-symbols.js';
 import type { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
-import { UtilityService } from './UtilityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()

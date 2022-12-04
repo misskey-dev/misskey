@@ -7,7 +7,7 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from './entities/per-user-reactions.js';
+import { name, schema } from '@/core/entities/per-user-reactions.js';
 import type { KVs } from '../core.js';
 
 /**

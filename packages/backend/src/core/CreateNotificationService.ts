@@ -5,8 +5,8 @@ import type { Notification } from '@/models/entities/Notification.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { NotificationEntityService } from './entities/NotificationEntityService.js';
-import { PushNotificationService } from './PushNotificationService.js';
+import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
+import { PushNotificationService } from '@/core/PushNotificationService.js';
 
 @Injectable()
 export class CreateNotificationService {

@@ -4,7 +4,7 @@ import type { ILocalUser } from '@/models/entities/User.js';
 import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
-import { CreateSystemUserService } from './CreateSystemUserService.js';
+import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 
 const ACTOR_USERNAME = 'instance.actor' as const;
 

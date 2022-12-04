@@ -4,7 +4,7 @@ import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()

@@ -12,7 +12,7 @@ import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import UsersChart from './chart/charts/users.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UtilityService } from './UtilityService.js';
 
 @Injectable()

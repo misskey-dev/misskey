@@ -7,13 +7,13 @@ import type { UsersRepository } from '@/models/index.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { UtilityService } from '../UtilityService.js';
-import { WebfingerService } from './WebfingerService.js';
-import { RemoteLoggerService } from './RemoteLoggerService.js';
-import { ApPersonService } from './activitypub/models/ApPersonService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { WebfingerService } from '@/core/WebfingerService.js';
+import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 
 @Injectable()
-export class ResolveUserService {
+export class RemoteUserResolveService {
 	private logger: Logger;
 
 	constructor(

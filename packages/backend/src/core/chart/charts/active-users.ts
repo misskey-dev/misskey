@@ -5,7 +5,7 @@ import type { User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from './entities/active-users.js';
+import { name, schema } from '@/core/entities/active-users.js';
 import type { KVs } from '../core.js';
 
 const week = 1000 * 60 * 60 * 24 * 7;
