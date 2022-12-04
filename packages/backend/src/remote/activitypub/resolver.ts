@@ -23,6 +23,7 @@ export default class Resolver {
 
 	constructor(recursionLimit = 100) {
 		this.history = new Set();
+		this.recursionLimit = recursionLimit;
 	}
 
 	public getHistory(): string[] {
