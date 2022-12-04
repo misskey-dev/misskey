@@ -5,10 +5,8 @@ import { IObject, isMention, IApMention } from '../type.js';
 import Resolver from '../resolver.js';
 import { resolvePerson } from './person.js';
 
-export async function extractApMentions(tags: IObject | IObject[] | null | undefined) {
+export async function extractApMentions(tags: IObject | IObject[] | null | undefined, resolver: Resolver) {
 	const hrefs = unique(extractApMentionObjects(tags).map(x => x.href as string));
-
-	const resolver = new Resolver();
 
 	const limit = promiseLimit<CacheableUser | null>(2);
 	const mentionedUsers = (await Promise.all(
