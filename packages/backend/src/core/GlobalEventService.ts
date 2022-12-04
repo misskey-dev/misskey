@@ -50,26 +50,32 @@ export class GlobalEventService {
 		}));
 	}
 
+	@bindThis
 	public publishInternalEvent<K extends keyof InternalStreamTypes>(type: K, value?: InternalStreamTypes[K]): void {
 		this.publish('internal', type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishUserEvent<K extends keyof UserStreamTypes>(userId: User['id'], type: K, value?: UserStreamTypes[K]): void {
 		this.publish(`user:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishBroadcastStream<K extends keyof BroadcastTypes>(type: K, value?: BroadcastTypes[K]): void {
 		this.publish('broadcast', type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishMainStream<K extends keyof MainStreamTypes>(userId: User['id'], type: K, value?: MainStreamTypes[K]): void {
 		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishDriveStream<K extends keyof DriveStreamTypes>(userId: User['id'], type: K, value?: DriveStreamTypes[K]): void {
 		this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishNoteStream<K extends keyof NoteStreamTypes>(noteId: Note['id'], type: K, value?: NoteStreamTypes[K]): void {
 		this.publish(`noteStream:${noteId}`, type, {
 			id: noteId,
@@ -77,26 +83,32 @@ export class GlobalEventService {
 		});
 	}
 
+	@bindThis
 	public publishChannelStream<K extends keyof ChannelStreamTypes>(channelId: Channel['id'], type: K, value?: ChannelStreamTypes[K]): void {
 		this.publish(`channelStream:${channelId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishUserListStream<K extends keyof UserListStreamTypes>(listId: UserList['id'], type: K, value?: UserListStreamTypes[K]): void {
 		this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishAntennaStream<K extends keyof AntennaStreamTypes>(antennaId: Antenna['id'], type: K, value?: AntennaStreamTypes[K]): void {
 		this.publish(`antennaStream:${antennaId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishMessagingStream<K extends keyof MessagingStreamTypes>(userId: User['id'], otherpartyId: User['id'], type: K, value?: MessagingStreamTypes[K]): void {
 		this.publish(`messagingStream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishGroupMessagingStream<K extends keyof GroupMessagingStreamTypes>(groupId: UserGroup['id'], type: K, value?: GroupMessagingStreamTypes[K]): void {
 		this.publish(`messagingStream:${groupId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishMessagingIndexStream<K extends keyof MessagingIndexStreamTypes>(userId: User['id'], type: K, value?: MessagingIndexStreamTypes[K]): void {
 		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -106,6 +118,7 @@ export class GlobalEventService {
 		this.publish('notesStream', null, note);
 	}
 
+	@bindThis
 	public publishAdminStream<K extends keyof AdminStreamTypes>(userId: User['id'], type: K, value?: AdminStreamTypes[K]): void {
 		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}

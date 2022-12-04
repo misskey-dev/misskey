@@ -7,6 +7,7 @@ import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
+import { bindThis } from '@/decorators.js';
 import * as TreeAdapter from '../../node_modules/parse5/dist/tree-adapters/default.js';
 import type * as mfm from 'mfm-js';
 
@@ -14,7 +15,6 @@ const treeAdapter = TreeAdapter.defaultTreeAdapter;
 
 const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
 const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class MfmService {

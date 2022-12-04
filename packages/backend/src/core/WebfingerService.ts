@@ -4,6 +4,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { query as urlQuery } from '@/misc/prelude/url.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { bindThis } from '@/decorators.js';
 
 type ILink = {
 	href: string;
@@ -14,7 +15,6 @@ type IWebFinger = {
 	links: ILink[];
 	subject: string;
 };
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class WebfingerService {

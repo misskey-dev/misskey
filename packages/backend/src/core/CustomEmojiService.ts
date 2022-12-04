@@ -12,6 +12,7 @@ import type { Note } from '@/models/entities/Note.js';
 import type { EmojisRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { ReactionService } from '@/core/ReactionService.js';
+import { bindThis } from '@/decorators.js';
 
 /**
  * 添付用絵文字情報
@@ -20,7 +21,6 @@ type PopulatedEmoji = {
 	name: string;
 	url: string;
 };
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CustomEmojiService {

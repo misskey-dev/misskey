@@ -3,12 +3,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import redisLock from 'redis-lock';
 import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 
 /**
  * Retry delay (ms) for lock acquisition
  */
 const retryDelay = 100;
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class AppLockService {

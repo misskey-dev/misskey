@@ -10,6 +10,7 @@ import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { bindThis } from '@/decorators.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
@@ -30,7 +31,6 @@ type NodeInfo = {
 		themeColor?: unknown;
 	};
 };
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class FetchInstanceMetadataService {

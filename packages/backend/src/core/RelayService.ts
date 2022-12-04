@@ -10,9 +10,9 @@ import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
+import { bindThis } from '@/decorators.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class RelayService {

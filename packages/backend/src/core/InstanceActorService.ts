@@ -5,9 +5,9 @@ import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
 import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
+import { bindThis } from '@/decorators.js';
 
 const ACTOR_USERNAME = 'instance.actor' as const;
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class InstanceActorService {

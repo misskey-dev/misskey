@@ -17,6 +17,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { bindThis } from '@/decorators.js';
 import { UtilityService } from './UtilityService.js';
 
 const legacies: Record<string, string> = {
@@ -49,7 +50,6 @@ type DecodedReaction = {
 	 */
 	host?: string | null;
 };
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ReactionService {

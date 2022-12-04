@@ -6,13 +6,13 @@ import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const REQUIRED_CPU_FLAGS = ['avx2', 'fma'];
 let isSupportedCpu: undefined | boolean = undefined;
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class AiService {

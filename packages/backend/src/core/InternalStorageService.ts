@@ -5,12 +5,12 @@ import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const path = Path.resolve(_dirname, '../../../../files');
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class InternalStorageService {

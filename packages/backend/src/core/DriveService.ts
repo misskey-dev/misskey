@@ -31,6 +31,7 @@ import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
+import { bindThis } from '@/decorators.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
@@ -71,7 +72,6 @@ type UploadFromUrlArgs = {
 	requestIp?: string | null;
 	requestHeaders?: Record<string, string> | null;
 };
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DriveService {

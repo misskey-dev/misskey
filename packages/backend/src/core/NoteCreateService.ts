@@ -40,6 +40,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import { bindThis } from '@/decorators.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -132,7 +133,6 @@ type Option = {
 	url?: string | null;
 	app?: App | null;
 };
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteCreateService {

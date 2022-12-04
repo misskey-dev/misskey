@@ -13,9 +13,10 @@ import { WebhookService } from '@/core/WebhookService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { DI } from '@/di-symbols.js';
 import type { BlockingsRepository, FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
-import Logger from '../logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { bindThis } from '@/decorators.js';
+import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
 
@@ -31,7 +32,6 @@ type Remote = IRemoteUser | {
 	inbox: IRemoteUser['inbox'];
 };
 type Both = Local | Remote;
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserFollowingService {
