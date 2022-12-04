@@ -433,7 +433,7 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
-				visibility: In(['public' as const, 'home' as const]),
+				visibility: In(['public', 'home']),
 				localOnly: false,
 			});
 
@@ -462,7 +462,7 @@ export class ActivityPubServerService {
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				userHost: IsNull(),
-				visibility: In(['public' as const, 'home' as const]),
+				visibility: In(['public', 'home']),
 				localOnly: false,
 			});
 
