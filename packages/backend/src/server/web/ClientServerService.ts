@@ -2,6 +2,9 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PathOrFileDescriptor, readFileSync } from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter.js';
+import { FastifyAdapter } from '@bull-board/fastify';
 import ms from 'ms';
 import sharp from 'sharp';
 import pug from 'pug';
@@ -9,6 +12,7 @@ import { In, IsNull } from 'typeorm';
 import { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
+import fastifyCookie from '@fastify/cookie';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
@@ -100,28 +104,28 @@ export class ClientServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		/* TODO
+		fastify.register(fastifyCookie, {});
+
 		//#region Bull Dashboard
 		const bullBoardPath = '/queue';
 
 		// Authenticate
-		app.use(async (request, reply) => {
-			if (ctx.path === bullBoardPath || ctx.path.startsWith(bullBoardPath + '/')) {
-				const token = ctx.cookies.get('token');
+		fastify.addHook('onRequest', async (request, reply) => {
+			if (request.url === bullBoardPath || request.url.startsWith(bullBoardPath + '/')) {
+				const token = request.cookies.token;
 				if (token == null) {
 					reply.code(401);
-					return;
+					throw new Error('login required');
 				}
 				const user = await this.usersRepository.findOneBy({ token });
 				if (user == null || !(user.isAdmin || user.isModerator)) {
 					reply.code(403);
-					return;
+					throw new Error('access denied');
 				}
 			}
-			await next();
 		});
 
-		const serverAdapter = new KoaAdapter();
+		const serverAdapter = new FastifyAdapter();
 
 		createBullBoard({
 			queues: [
@@ -137,9 +141,8 @@ export class ClientServerService {
 		});
 
 		serverAdapter.setBasePath(bullBoardPath);
-		app.use(serverAdapter.registerPlugin());
+		fastify.register(serverAdapter.registerPlugin(), { prefix: bullBoardPath });
 		//#endregion
-		*/
 
 		fastify.register(fastifyView, {
 			root: _dirname + '/views',

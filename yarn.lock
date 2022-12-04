@@ -417,6 +417,55 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bull-board/api@npm:4.6.4, @bull-board/api@npm:^4.6.4":
+  version: 4.6.4
+  resolution: "@bull-board/api@npm:4.6.4"
+  dependencies:
+    redis-info: ^3.0.8
+  checksum: d8dbd574bd6096f214d13697fbbd3d5760a3dcb5a1d63b6eb74e47a338efca3248a71fecfd8d6801081fe670508fcaf3512b9d0e6dcf2e74abcdc38a14eeee27
+  languageName: node
+  linkType: hard
+
+"@bull-board/api@npm:4.7.0":
+  version: 4.7.0
+  resolution: "@bull-board/api@npm:4.7.0"
+  dependencies:
+    redis-info: ^3.0.8
+  checksum: 4de2ffb061f634539ab836c84e0babd3498a395d979afb36e8c8e24c36b9922824d3eab0ae1fc8a209fbe3cbb4d29660884d8cbd04bf912018e5e04d8c773105
+  languageName: node
+  linkType: hard
+
+"@bull-board/fastify@npm:^4.6.4":
+  version: 4.6.4
+  resolution: "@bull-board/fastify@npm:4.6.4"
+  dependencies:
+    "@bull-board/api": 4.6.4
+    "@bull-board/ui": 4.6.4
+    "@fastify/static": ^6.4.0
+    "@fastify/view": ^7.0.0
+    ejs: ^3.1.8
+  checksum: be167a58b863fa4446e555f10bf8ec1aebe319dac068c1a11d8147b05229fe9d3e79333318a2871372e02cc0de2b6f257f208f805f6e2a33c92048fd35c07331
+  languageName: node
+  linkType: hard
+
+"@bull-board/ui@npm:4.6.4":
+  version: 4.6.4
+  resolution: "@bull-board/ui@npm:4.6.4"
+  dependencies:
+    "@bull-board/api": 4.6.4
+  checksum: c7f7134f9272c321426063ac33916d736a33d8331b577fb239ce1bda53f8007ae2b2df5cbc51f1ab7537874dd7b22bd1534a70e3e2bb8451c57a4314f6263df1
+  languageName: node
+  linkType: hard
+
+"@bull-board/ui@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "@bull-board/ui@npm:4.7.0"
+  dependencies:
+    "@bull-board/api": 4.7.0
+  checksum: 6eefc1363c03897dd01f0b3d538ee53e709b5428f9dc6c11baba9a7d8e94614ec223ca46e37245c24f9a58e5821df1eec776216181f4936e2c7be98e054452e8
+  languageName: node
+  linkType: hard
+
 "@chainsafe/is-ip@npm:^2.0.1":
   version: 2.0.1
   resolution: "@chainsafe/is-ip@npm:2.0.1"
@@ -695,6 +744,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/cookie@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "@fastify/cookie@npm:8.3.0"
+  dependencies:
+    cookie: ^0.5.0
+    fastify-plugin: ^4.0.0
+  checksum: d5dfb5c85d4ae02188aad63c8cf055d3b904287bc2750964ee0b8589c5b5ae32850e8fc9456a8830e9f4e9f24d5059e54dac084835d6ef4cbba7fa4b9c4673b3
+  languageName: node
+  linkType: hard
+
 "@fastify/cors@npm:8.2.0":
   version: 8.2.0
   resolution: "@fastify/cors@npm:8.2.0"
@@ -744,7 +803,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/static@npm:6.5.1":
+"@fastify/static@npm:6.5.1, @fastify/static@npm:^6.4.0":
   version: 6.5.1
   resolution: "@fastify/static@npm:6.5.1"
   dependencies:
@@ -759,7 +818,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/view@npm:7.3.0":
+"@fastify/view@npm:7.3.0, @fastify/view@npm:^7.0.0":
   version: 7.3.0
   resolution: "@fastify/view@npm:7.3.0"
   dependencies:
@@ -3731,8 +3790,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
+    "@bull-board/api": ^4.6.4
+    "@bull-board/fastify": ^4.6.4
+    "@bull-board/ui": ^4.7.0
     "@discordapp/twemoji": 14.0.2
     "@fastify/accepts": 4.1.0
+    "@fastify/cookie": ^8.3.0
     "@fastify/cors": 8.2.0
     "@fastify/multipart": 7.3.0
     "@fastify/static": 6.5.1
@@ -4518,7 +4581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
+"chalk@npm:^4.0.0, chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -6117,6 +6180,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ejs@npm:^3.1.8":
+  version: 3.1.8
+  resolution: "ejs@npm:3.1.8"
+  dependencies:
+    jake: ^10.8.5
+  bin:
+    ejs: bin/cli.js
+  checksum: 1d40d198ad52e315ccf37e577bdec06e24eefdc4e3c27aafa47751a03a0c7f0ec4310254c9277a5f14763c3cd4bbacce27497332b2d87c74232b9b1defef8efc
+  languageName: node
+  linkType: hard
+
 "electron-to-chromium@npm:^1.2.7, electron-to-chromium@npm:^1.4.251":
   version: 1.4.284
   resolution: "electron-to-chromium@npm:1.4.284"
@@ -7600,6 +7674,15 @@ __metadata:
     strtok3: ^7.0.0
     token-types: ^5.0.1
   checksum: 67f5a927b8030e35a4faf9dd9dea9e17bcb042fb61b9851b7dd1b1b3bb3ecfdd9f83bc3bc72686316ea2bac70df652c61e10affa9b5957b1a3d731df4925e3cb
+  languageName: node
+  linkType: hard
+
+"filelist@npm:^1.0.1":
+  version: 1.0.4
+  resolution: "filelist@npm:1.0.4"
+  dependencies:
+    minimatch: ^5.0.1
+  checksum: a303573b0821e17f2d5e9783688ab6fbfce5d52aaac842790ae85e704a6f5e4e3538660a63183d6453834dedf1e0f19a9dadcebfa3e926c72397694ea11f5160
   languageName: node
   linkType: hard
 
@@ -9787,6 +9870,20 @@ __metadata:
   version: 1.2.1
   resolution: "iterare@npm:1.2.1"
   checksum: 70bc80038e3718aa9072bc63b3a0135166d7120bde46bfcaf80a88d11005dcef1b2d69cd353849f87a3f58ba8f546a8c6e6983408236ff01fa50b52339ee5223
+  languageName: node
+  linkType: hard
+
+"jake@npm:^10.8.5":
+  version: 10.8.5
+  resolution: "jake@npm:10.8.5"
+  dependencies:
+    async: ^3.2.3
+    chalk: ^4.0.2
+    filelist: ^1.0.1
+    minimatch: ^3.0.4
+  bin:
+    jake: ./bin/cli.js
+  checksum: 56c913ecf5a8d74325d0af9bc17a233bad50977438d44864d925bb6c45c946e0fee8c4c1f5fe2225471ef40df5222e943047982717ebff0d624770564d3c46ba
   languageName: node
   linkType: hard
 
@@ -14032,6 +14129,15 @@ __metadata:
   version: 1.2.0
   resolution: "redis-errors@npm:1.2.0"
   checksum: f28ac2692113f6f9c222670735aa58aeae413464fd58ccf3fce3f700cae7262606300840c802c64f2b53f19f65993da24dc918afc277e9e33ac1ff09edb394f4
+  languageName: node
+  linkType: hard
+
+"redis-info@npm:^3.0.8":
+  version: 3.1.0
+  resolution: "redis-info@npm:3.1.0"
+  dependencies:
+    lodash: ^4.17.11
+  checksum: d72ff0584ebb4a2149cfcfcf9142d9a7f9d0b96ae53fbf431f2738f33f1f42add6505ff73b2d640cab345923a34b217d7c728fa706cc81ad8bd8ad4c48987445
   languageName: node
   linkType: hard
 

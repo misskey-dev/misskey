@@ -21,8 +21,12 @@
 		"@tensorflow/tfjs-node": "4.1.0"
 	},
 	"dependencies": {
+		"@bull-board/api": "^4.6.4",
+		"@bull-board/fastify": "^4.6.4",
+		"@bull-board/ui": "^4.7.0",
 		"@discordapp/twemoji": "14.0.2",
 		"@fastify/accepts": "4.1.0",
+		"@fastify/cookie": "^8.3.0",
 		"@fastify/cors": "8.2.0",
 		"@fastify/multipart": "7.3.0",
 		"@fastify/static": "6.5.1",
