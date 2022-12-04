@@ -18,6 +18,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DeliverProcessorService {
@@ -50,6 +51,7 @@ export class DeliverProcessorService {
 		this.latest = null;
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DeliverJobData>): Promise<string> {
 		const { host } = new URL(job.data.to);
 

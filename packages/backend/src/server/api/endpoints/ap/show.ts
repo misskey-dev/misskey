@@ -15,6 +15,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -112,6 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	/***
 	 * URIからUserかNoteを解決する
 	 */
+	@bindThis
 	private async fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
@@ -144,6 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		);
 	}
 
+	@bindThis
 	private async mergePack(me: CacheableLocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
 		if (user != null) {
 			return {

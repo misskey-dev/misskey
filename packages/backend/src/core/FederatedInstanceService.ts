@@ -5,6 +5,7 @@ import { Cache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class FederatedInstanceService {
@@ -20,6 +21,7 @@ export class FederatedInstanceService {
 		this.cache = new Cache<Instance>(1000 * 60 * 60);
 	}
 
+	@bindThis
 	public async registerOrFetchInstanceDoc(host: string): Promise<Instance> {
 		host = this.utilityService.toPuny(host);
 	

@@ -14,6 +14,7 @@ import { EmailService } from '@/core/EmailService.js';
 import { ILocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { SigninService } from './SigninService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class SignupApiService {
@@ -43,6 +44,7 @@ export class SignupApiService {
 	) {
 	}
 
+	@bindThis
 	public async signup(
 		request: FastifyRequest<{
 			Body: {
@@ -165,6 +167,7 @@ export class SignupApiService {
 		}
 	}
 
+	@bindThis
 	public async signupPending(request: FastifyRequest<{ Body: { code: string; } }>, reply: FastifyReply) {
 		const body = request.body;
 

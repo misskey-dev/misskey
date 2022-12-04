@@ -11,6 +11,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { WebfingerService } from '@/core/WebfingerService.js';
 import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class RemoteUserResolveService {
@@ -31,6 +32,7 @@ export class RemoteUserResolveService {
 		this.logger = this.remoteLoggerService.logger.createSubLogger('resolve-user');
 	}
 
+	@bindThis
 	public async resolveUser(username: string, host: string | null): Promise<User> {
 		const usernameLower = username.toLowerCase();
 	
@@ -116,6 +118,7 @@ export class RemoteUserResolveService {
 		return user;
 	}
 
+	@bindThis
 	private async resolveSelf(acctLower: string) {
 		this.logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 		const finger = await this.webfingerService.webfinger(acctLower).catch(err => {

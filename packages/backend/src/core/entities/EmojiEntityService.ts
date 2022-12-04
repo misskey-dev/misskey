@@ -7,6 +7,7 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class EmojiEntityService {
@@ -18,6 +19,7 @@ export class EmojiEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Emoji['id'] | Emoji,
 	): Promise<Packed<'Emoji'>> {
@@ -34,6 +36,7 @@ export class EmojiEntityService {
 		};
 	}
 
+	@bindThis
 	public packMany(
 		emojis: any[],
 	) {

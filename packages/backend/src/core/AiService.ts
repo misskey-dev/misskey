@@ -12,6 +12,7 @@ const _dirname = dirname(_filename);
 
 const REQUIRED_CPU_FLAGS = ['avx2', 'fma'];
 let isSupportedCpu: undefined | boolean = undefined;
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class AiService {
@@ -23,6 +24,7 @@ export class AiService {
 	) {
 	}
 
+	@bindThis
 	public async detectSensitive(path: string): Promise<nsfw.predictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
@@ -53,6 +55,7 @@ export class AiService {
 		}
 	}
 
+	@bindThis
 	private async getCpuFlags(): Promise<string[]> {
 		const str = await si.cpuFlags();
 		return str.split(/\s+/);

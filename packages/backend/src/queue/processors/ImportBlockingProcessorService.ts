@@ -12,6 +12,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ImportBlockingProcessorService {
@@ -39,6 +40,7 @@ export class ImportBlockingProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('import-blocking');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
 		this.logger.info(`Importing blocking of ${job.data.user.id} ...`);
 

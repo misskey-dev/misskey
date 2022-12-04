@@ -37,6 +37,7 @@ function truncateNotification(notification: Packed<'Notification'>): any {
 
 	return notification;
 }
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class PushNotificationService {

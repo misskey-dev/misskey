@@ -41,6 +41,7 @@ function isRemoteUser<T extends { host: User['host'] }>(user: T): user is T & { 
 function isRemoteUser(user: User | { host: User['host'] }): boolean {
 	return !isLocalUser(user);
 }
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserEntityService implements OnModuleInit {
@@ -143,6 +144,7 @@ export class UserEntityService implements OnModuleInit {
 	public isLocalUser = isLocalUser;
 	public isRemoteUser = isRemoteUser;
 
+	@bindThis
 	public async getRelation(me: User['id'], target: User['id']) {
 		return awaitAll({
 			id: target,
@@ -198,6 +200,7 @@ export class UserEntityService implements OnModuleInit {
 		});
 	}
 
+	@bindThis
 	public async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
 		const mute = await this.mutingsRepository.findBy({
 			muterId: userId,
@@ -227,6 +230,7 @@ export class UserEntityService implements OnModuleInit {
 		return withUser || withGroups.some(x => x);
 	}
 
+	@bindThis
 	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
 		const reads = await this.announcementReadsRepository.findBy({
 			userId: userId,
@@ -239,6 +243,7 @@ export class UserEntityService implements OnModuleInit {
 		return count > 0;
 	}
 
+	@bindThis
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
@@ -250,6 +255,7 @@ export class UserEntityService implements OnModuleInit {
 		return unread != null;
 	}
 
+	@bindThis
 	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
 		const channels = await this.channelFollowingsRepository.findBy({ followerId: userId });
 
@@ -261,6 +267,7 @@ export class UserEntityService implements OnModuleInit {
 		return unread != null;
 	}
 
+	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const mute = await this.mutingsRepository.findBy({
 			muterId: userId,
@@ -279,6 +286,7 @@ export class UserEntityService implements OnModuleInit {
 		return count > 0;
 	}
 
+	@bindThis
 	public async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
 		const count = await this.followRequestsRepository.countBy({
 			followeeId: userId,
@@ -287,6 +295,7 @@ export class UserEntityService implements OnModuleInit {
 		return count > 0;
 	}
 
+	@bindThis
 	public getOnlineStatus(user: User): 'unknown' | 'online' | 'active' | 'offline' {
 		if (user.hideOnlineStatus) return 'unknown';
 		if (user.lastActiveDate == null) return 'unknown';
@@ -298,6 +307,7 @@ export class UserEntityService implements OnModuleInit {
 		);
 	}
 
+	@bindThis
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
 			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
@@ -309,6 +319,7 @@ export class UserEntityService implements OnModuleInit {
 		}
 	}
 
+	@bindThis
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
 			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
@@ -317,6 +328,7 @@ export class UserEntityService implements OnModuleInit {
 		}
 	}
 
+	@bindThis
 	public getIdenticonUrl(userId: User['id']): string {
 		return `${this.config.url}/identicon/${userId}`;
 	}

@@ -10,6 +10,7 @@ import type { User } from '@/models/entities/User.js';
 import * as Acct from '@/misc/acct.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import type { FindOptionsWhere } from 'typeorm';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class WellKnownServerService {
@@ -22,9 +23,10 @@ export class WellKnownServerService {
 
 		private nodeinfoServerService: NodeinfoServerService,
 	) {
-		this.createServer = this.createServer.bind(this);
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		const XRD = (...x: { element: string, value?: string, attributes?: Record<string, string> }[]) =>
 			`<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">${x.map(({ element, value, attributes }) =>

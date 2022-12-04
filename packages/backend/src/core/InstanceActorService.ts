@@ -7,6 +7,7 @@ import { DI } from '@/di-symbols.js';
 import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 
 const ACTOR_USERNAME = 'instance.actor' as const;
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class InstanceActorService {
@@ -21,6 +22,7 @@ export class InstanceActorService {
 		this.cache = new Cache<ILocalUser>(Infinity);
 	}
 
+	@bindThis
 	public async getInstanceActor(): Promise<ILocalUser> {
 		const cached = this.cache.get(null);
 		if (cached) return cached;

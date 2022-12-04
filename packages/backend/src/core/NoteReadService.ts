@@ -11,6 +11,7 @@ import type { UsersRepository, NoteUnreadsRepository, MutingsRepository, NoteThr
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NotificationService } from './NotificationService.js';
 import { AntennaService } from './AntennaService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteReadService {
@@ -44,6 +45,7 @@ export class NoteReadService {
 	) {
 	}
 
+	@bindThis
 	public async insertNoteUnread(userId: User['id'], note: Note, params: {
 		// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
 		isSpecified: boolean;
@@ -94,6 +96,7 @@ export class NoteReadService {
 		}, 2000);
 	}	
 
+	@bindThis
 	public async read(
 		userId: User['id'],
 		notes: (Note | Packed<'Note'>)[],

@@ -23,6 +23,7 @@ import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import type { ChannelsRepository, ClipsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { deepClone } from '@/misc/clone.js';
+import { bindThis } from '@/decorators.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -80,9 +81,10 @@ export class ClientServerService {
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {
-		this.createServer = this.createServer.bind(this);
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	private async manifestHandler(reply: FastifyReply) {
 		const res = deepClone(manifest);
 
@@ -96,6 +98,7 @@ export class ClientServerService {
 		return (res);
 	}
 
+	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		/* TODO
 		//#region Bull Dashboard

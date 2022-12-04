@@ -7,57 +7,12 @@ import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
-
-@Injectable()
-export class ApResolverService {
-	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
-		@Inject(DI.pollsRepository)
-		private pollsRepository: PollsRepository,
-
-		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: NoteReactionsRepository,
-
-		private utilityService: UtilityService,
-		private instanceActorService: InstanceActorService,
-		private metaService: MetaService,
-		private apRequestService: ApRequestService,
-		private httpRequestService: HttpRequestService,
-		private apRendererService: ApRendererService,
-		private apDbResolverService: ApDbResolverService,
-	) {
-	}
-
-	public createResolver(): Resolver {
-		return new Resolver(
-			this.config,
-			this.usersRepository,
-			this.notesRepository,
-			this.pollsRepository,
-			this.noteReactionsRepository,
-			this.utilityService,
-			this.instanceActorService,
-			this.metaService,
-			this.apRequestService,
-			this.httpRequestService,
-			this.apRendererService,
-			this.apDbResolverService,
-		);
-	}
-}
 
 export class Resolver {
 	private history: Set<string>;
@@ -76,15 +31,17 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
-		private recursionLimit = 100
+		private recursionLimit = 100,
 	) {
 		this.history = new Set();
 	}
 
+	@bindThis
 	public getHistory(): string[] {
 		return Array.from(this.history);
 	}
 
+	@bindThis
 	public async resolveCollection(value: string | IObject): Promise<ICollection | IOrderedCollection> {
 		const collection = typeof value === 'string'
 			? await this.resolve(value)
@@ -97,6 +54,7 @@ export class Resolver {
 		}
 	}
 
+	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
 		if (value == null) {
 			throw new Error('resolvee is null (or undefined)');
@@ -152,6 +110,7 @@ export class Resolver {
 		return object;
 	}
 
+	@bindThis
 	private resolveLocal(url: string): Promise<IObject> {
 		const parsed = this.apDbResolverService.parseUri(url);
 		if (!parsed.local) throw new Error('resolveLocal: not local');
@@ -191,5 +150,52 @@ export class Resolver {
 			default:
 				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
 		}
+	}
+}
+
+@Injectable()
+export class ApResolverService {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
+		@Inject(DI.pollsRepository)
+		private pollsRepository: PollsRepository,
+
+		@Inject(DI.noteReactionsRepository)
+		private noteReactionsRepository: NoteReactionsRepository,
+
+		private utilityService: UtilityService,
+		private instanceActorService: InstanceActorService,
+		private metaService: MetaService,
+		private apRequestService: ApRequestService,
+		private httpRequestService: HttpRequestService,
+		private apRendererService: ApRendererService,
+		private apDbResolverService: ApDbResolverService,
+	) {
+	}
+
+	@bindThis
+	public createResolver(): Resolver {
+		return new Resolver(
+			this.config,
+			this.usersRepository,
+			this.notesRepository,
+			this.pollsRepository,
+			this.noteReactionsRepository,
+			this.utilityService,
+			this.instanceActorService,
+			this.metaService,
+			this.apRequestService,
+			this.httpRequestService,
+			this.apRendererService,
+			this.apDbResolverService,
+		);
 	}
 }

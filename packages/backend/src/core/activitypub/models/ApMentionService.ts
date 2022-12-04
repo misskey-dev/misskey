@@ -9,6 +9,7 @@ import { isMention } from '../type.js';
 import { ApResolverService, Resolver } from '../ApResolverService.js';
 import { ApPersonService } from './ApPersonService.js';
 import type { IObject, IApMention } from '../type.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApMentionService {
@@ -21,6 +22,7 @@ export class ApMentionService {
 	) {
 	}
 
+	@bindThis
 	public async extractApMentions(tags: IObject | IObject[] | null | undefined, resolver: Resolver) {
 		const hrefs = unique(this.extractApMentionObjects(tags).map(x => x.href as string));
 
@@ -32,6 +34,7 @@ export class ApMentionService {
 		return mentionedUsers;
 	}
 	
+	@bindThis
 	public extractApMentionObjects(tags: IObject | IObject[] | null | undefined): IApMention[] {
 		if (tags == null) return [];
 		return toArray(tags).filter(isMention);

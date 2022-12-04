@@ -13,6 +13,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ImportUserListsProcessorService {
@@ -44,6 +45,7 @@ export class ImportUserListsProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('import-user-lists');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
 		this.logger.info(`Importing user lists of ${job.data.user.id} ...`);
 

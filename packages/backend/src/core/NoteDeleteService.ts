@@ -15,6 +15,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -112,6 +113,7 @@ export class NoteDeleteService {
 		});
 	}
 
+	@bindThis
 	private async findCascadingNotes(note: Note) {
 		const cascadingNotes: Note[] = [];
 
@@ -134,6 +136,7 @@ export class NoteDeleteService {
 		return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
 	}
 
+	@bindThis
 	private async getMentionedRemoteUsers(note: Note) {
 		const where = [] as any[];
 
@@ -159,6 +162,7 @@ export class NoteDeleteService {
 		}) as IRemoteUser[];
 	}
 
+	@bindThis
 	private async deliverToConcerned(user: { id: ILocalUser['id']; host: null; }, note: Note, content: any) {
 		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);

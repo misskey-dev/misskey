@@ -14,6 +14,7 @@ import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class MediaProxyServerService {
@@ -30,9 +31,10 @@ export class MediaProxyServerService {
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
 
-		this.createServer = this.createServer.bind(this);
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
@@ -47,6 +49,7 @@ export class MediaProxyServerService {
 		done();
 	}
 
+	@bindThis
 	private async handler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {
 		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
 	

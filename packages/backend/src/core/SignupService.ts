@@ -14,6 +14,7 @@ import generateUserToken from '@/misc/generate-native-user-token.js';
 import UsersChart from './chart/charts/users.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UtilityService } from './UtilityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class SignupService {
@@ -37,6 +38,7 @@ export class SignupService {
 	) {
 	}
 
+	@bindThis
 	public async signup(opts: {
 		username: User['username'];
 		password?: string | null;

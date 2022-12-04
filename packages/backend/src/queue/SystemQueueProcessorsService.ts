@@ -7,6 +7,7 @@ import { CleanChartsProcessorService } from './processors/CleanChartsProcessorSe
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import type Bull from 'bull';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class SystemQueueProcessorsService {
@@ -22,6 +23,7 @@ export class SystemQueueProcessorsService {
 	) {
 	}
 
+	@bindThis
 	public start(q: Bull.Queue): void {
 		q.process('tickCharts', (job, done) => this.tickChartsProcessorService.process(job, done));
 		q.process('resyncCharts', (job, done) => this.resyncChartsProcessorService.process(job, done));

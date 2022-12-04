@@ -103,6 +103,7 @@ function PEMString(pemBuffer: Buffer, type = 'CERTIFICATE') {
 		`\n-----END ${type}-----\n`
 	);
 }
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class TwoFactorAuthenticationService {
@@ -115,6 +116,7 @@ export class TwoFactorAuthenticationService {
 	) {
 	}
 
+	@bindThis
 	public hash(data: Buffer) {
 		return crypto
 			.createHash('sha256')
@@ -122,6 +124,7 @@ export class TwoFactorAuthenticationService {
 			.digest();
 	}
 
+	@bindThis
 	public verifySignin({
 		publicKey,
 		authenticatorData,
@@ -159,6 +162,7 @@ export class TwoFactorAuthenticationService {
 			.verify(PEMString(publicKey), signature);
 	}
 
+	@bindThis
 	public getProcedures() {
 		return {
 			none: {

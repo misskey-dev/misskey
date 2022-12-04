@@ -32,6 +32,7 @@ import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApNoteService {
@@ -74,6 +75,7 @@ export class ApNoteService {
 		this.logger = this.apLoggerService.logger;
 	}
 
+	@bindThis
 	public validateNote(object: any, uri: string) {
 		const expectHost = this.utilityService.extractDbHost(uri);
 	
@@ -101,6 +103,7 @@ export class ApNoteService {
 	 *
 	 * Misskeyに対象のNoteが登録されていればそれを返します。
 	 */
+	@bindThis
 	public async fetchNote(object: string | IObject): Promise<Note | null> {
 		return await this.apDbResolverService.getNoteFromApId(object);
 	}
@@ -108,6 +111,7 @@ export class ApNoteService {
 	/**
 	 * Noteを作成します。
 	 */
+	@bindThis
 	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 	
@@ -313,6 +317,7 @@ export class ApNoteService {
 	 * Misskeyに対象のNoteが登録されていればそれを返し、そうでなければ
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
+	@bindThis
 	public async resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error('missing uri');
@@ -345,6 +350,7 @@ export class ApNoteService {
 		}
 	}
 	
+	@bindThis
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<Emoji[]> {
 		host = this.utilityService.toPuny(host);
 	

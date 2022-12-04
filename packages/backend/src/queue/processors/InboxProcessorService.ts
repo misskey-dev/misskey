@@ -24,6 +24,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData, InboxJobData } from '../types.js';
@@ -60,6 +61,7 @@ export class InboxProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('inbox');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
 		const signature = job.data.signature;	// HTTP-signature
 		const activity = job.data.activity;

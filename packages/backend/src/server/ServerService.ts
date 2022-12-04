@@ -23,6 +23,7 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ServerService {
@@ -53,6 +54,7 @@ export class ServerService {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
 	}
 
+	@bindThis
 	public launch() {
 		const fastify = Fastify({
 			trustProxy: true,

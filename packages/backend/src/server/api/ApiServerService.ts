@@ -14,6 +14,7 @@ import { SigninApiService } from './SigninApiService.js';
 import { GithubServerService } from './integration/GithubServerService.js';
 import { DiscordServerService } from './integration/DiscordServerService.js';
 import { TwitterServerService } from './integration/TwitterServerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApiServerService {
@@ -40,9 +41,10 @@ export class ApiServerService {
 		private discordServerService: DiscordServerService,
 		private twitterServerService: TwitterServerService,
 	) {
-		this.createServer = this.createServer.bind(this);
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.register(cors, {
 			origin: '*',

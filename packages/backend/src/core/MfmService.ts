@@ -14,6 +14,7 @@ const treeAdapter = TreeAdapter.defaultTreeAdapter;
 
 const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
 const urlRegexFull = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+$/;
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class MfmService {
@@ -23,6 +24,7 @@ export class MfmService {
 	) {
 	}
 
+	@bindThis
 	public fromHtml(html: string, hashtagNames?: string[]): string {
 		// some AP servers like Pixelfed use br tags as well as newlines
 		html = html.replace(/<br\s?\/?>\r?\n/gi, '\n');
@@ -228,6 +230,7 @@ export class MfmService {
 		}
 	}
 
+	@bindThis
 	public toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
 		if (nodes == null) {
 			return null;

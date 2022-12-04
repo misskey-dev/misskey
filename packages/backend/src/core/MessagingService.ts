@@ -17,6 +17,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { MessagingMessageEntityService } from '@/core/entities/MessagingMessageEntityService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class MessagingService {
@@ -46,6 +47,7 @@ export class MessagingService {
 	) {
 	}
 
+	@bindThis
 	public async createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: CacheableUser | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
 		const message = {
 			id: this.idService.genId(),
@@ -140,11 +142,13 @@ export class MessagingService {
 		return messageObj;
 	}
 
+	@bindThis
 	public async deleteMessage(message: MessagingMessage) {
 		await this.messagingMessagesRepository.delete(message.id);
 		this.postDeleteMessage(message);
 	}
 	
+	@bindThis
 	private async postDeleteMessage(message: MessagingMessage) {
 		if (message.recipientId) {
 			const user = await this.usersRepository.findOneByOrFail({ id: message.userId });
@@ -165,6 +169,7 @@ export class MessagingService {
 	/**
 	 * Mark messages as read
 	 */
+	@bindThis
 	public async readUserMessagingMessage(
 		userId: User['id'],
 		otherpartyId: User['id'],
@@ -220,6 +225,7 @@ export class MessagingService {
 	/**
 	 * Mark messages as read
 	 */
+	@bindThis
 	public async readGroupMessagingMessage(
 		userId: User['id'],
 		groupId: UserGroup['id'],
@@ -284,6 +290,7 @@ export class MessagingService {
 		}
 	}
 
+	@bindThis
 	public async deliverReadActivity(user: { id: User['id']; host: null; }, recipient: IRemoteUser, messages: MessagingMessage | MessagingMessage[]) {
 		messages = toArray(messages).filter(x => x.uri);
 		const contents = messages.map(x => this.apRendererService.renderRead(user, x));

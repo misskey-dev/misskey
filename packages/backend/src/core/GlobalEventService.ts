@@ -25,6 +25,7 @@ import type {
 import type { Packed } from '@/misc/schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class GlobalEventService {
@@ -37,6 +38,7 @@ export class GlobalEventService {
 	) {
 	}
 
+	@bindThis
 	private publish(channel: StreamChannels, type: string | null, value?: any): void {
 		const message = type == null ? value : value == null ?
 			{ type: type, body: null } :
@@ -99,6 +101,7 @@ export class GlobalEventService {
 		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
+	@bindThis
 	public publishNotesStream(note: Packed<'Note'>): void {
 		this.publish('notesStream', null, note);
 	}

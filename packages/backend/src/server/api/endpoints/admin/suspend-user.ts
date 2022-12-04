@@ -8,6 +8,7 @@ import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -79,6 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		});
 	}
 
+	@bindThis
 	private async unFollowAll(follower: User) {
 		const followings = await this.followingsRepository.findBy({
 			followerId: follower.id,
@@ -97,6 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		}
 	}
 	
+	@bindThis
 	private async readAllNotify(notifier: User) {
 		await this.notificationsRepository.update({
 			notifierId: notifier.id,

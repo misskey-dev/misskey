@@ -64,6 +64,7 @@ class NotificationManager {
 		this.queue = [];
 	}
 
+	@bindThis
 	public push(notifiee: ILocalUser['id'], reason: NotificationType) {
 		// 自分自身へは通知しない
 		if (this.notifier.id === notifiee) return;
@@ -83,6 +84,7 @@ class NotificationManager {
 		}
 	}
 
+	@bindThis
 	public async deliver() {
 		for (const x of this.queue) {
 			// ミュート情報を取得
@@ -130,6 +132,7 @@ type Option = {
 	url?: string | null;
 	app?: App | null;
 };
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteCreateService {
@@ -188,6 +191,7 @@ export class NoteCreateService {
 		private instanceChart: InstanceChart,
 	) {}
 
+	@bindThis
 	public async create(user: {
 		id: User['id'];
 		username: User['username'];
@@ -307,6 +311,7 @@ export class NoteCreateService {
 		return note;
 	}
 
+	@bindThis
 	private async insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new Note({
 			id: this.idService.genId(data.createdAt!),
@@ -403,6 +408,7 @@ export class NoteCreateService {
 		}
 	}
 
+	@bindThis
 	private async postNoteCreated(note: Note, user: {
 		id: User['id'];
 		username: User['username'];
@@ -644,6 +650,7 @@ export class NoteCreateService {
 		this.index(note);
 	}
 
+	@bindThis
 	private incRenoteCount(renote: Note) {
 		this.notesRepository.createQueryBuilder().update()
 			.set({
@@ -654,6 +661,7 @@ export class NoteCreateService {
 			.execute();
 	}
 
+	@bindThis
 	private async createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
 			const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
@@ -683,10 +691,12 @@ export class NoteCreateService {
 		}
 	}
 
+	@bindThis
 	private saveReply(reply: Note, note: Note) {
 		this.notesRepository.increment({ id: reply.id }, 'repliesCount', 1);
 	}
 
+	@bindThis
 	private async renderNoteOrRenoteActivity(data: Option, note: Note) {
 		if (data.localOnly) return null;
 
@@ -697,6 +707,7 @@ export class NoteCreateService {
 		return this.apRendererService.renderActivity(content);
 	}
 
+	@bindThis
 	private index(note: Note) {
 		if (note.text == null || this.config.elasticsearch == null) return;
 		/*
@@ -711,6 +722,7 @@ export class NoteCreateService {
 	});*/
 	}
 
+	@bindThis
 	private incNotesCountOfUser(user: { id: User['id']; }) {
 		this.usersRepository.createQueryBuilder().update()
 			.set({
@@ -721,6 +733,7 @@ export class NoteCreateService {
 			.execute();
 	}
 
+	@bindThis
 	private async extractMentionedUsers(user: { host: User['host']; }, tokens: mfm.MfmNode[]): Promise<User[]> {
 		if (tokens == null) return [];
 

@@ -19,6 +19,7 @@ import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -45,9 +46,10 @@ export class FileServerService {
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
 
-		this.createServer = this.createServer.bind(this);
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	public commonReadableHandlerGenerator(reply: FastifyReply) {
 		return (err: Error): void => {
 			this.logger.error(err);
@@ -56,6 +58,7 @@ export class FileServerService {
 		};
 	}
 	
+	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
@@ -80,6 +83,7 @@ export class FileServerService {
 		done();
 	}
 
+	@bindThis
 	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
 		const key = request.params.key;
 

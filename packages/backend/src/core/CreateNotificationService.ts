@@ -7,6 +7,7 @@ import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CreateNotificationService {
@@ -30,6 +31,7 @@ export class CreateNotificationService {
 	) {
 	}
 
+	@bindThis
 	public async createNotification(
 		notifieeId: User['id'],
 		type: Notification['type'],
@@ -90,6 +92,7 @@ export class CreateNotificationService {
 
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
+	@bindThis
 	private async emailNotificationFollow(userId: User['id'], follower: User) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
@@ -101,6 +104,7 @@ export class CreateNotificationService {
 		*/
 	}
 	
+	@bindThis
 	private async emailNotificationReceiveFollowRequest(userId: User['id'], follower: User) {
 		/*
 		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });

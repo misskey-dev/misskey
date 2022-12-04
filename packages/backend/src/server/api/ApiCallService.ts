@@ -12,6 +12,7 @@ import type Logger from '@/logger.js';
 import type { UserIpsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
 import { createTemp } from '@/misc/create-temp.js';
+import { bindThis } from '@/decorators.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -50,6 +51,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}, 1000 * 60 * 60);
 	}
 
+	@bindThis
 	public handleRequest(
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
@@ -90,6 +92,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		});
 	}
 
+	@bindThis
 	public async handleMultipartRequest(
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
@@ -140,6 +143,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		});
 	}
 
+	@bindThis
 	private send(reply: FastifyReply, x?: any, y?: ApiError) {
 		if (x == null) {
 			reply.code(204);
@@ -160,6 +164,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	private async logIp(request: FastifyRequest, user: ILocalUser) {
 		const meta = await this.metaService.fetch();
 		if (!meta.enableIpLogging) return;
@@ -183,6 +188,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	private async call(
 		ep: IEndpoint & { exec: any },
 		user: CacheableLocalUser | null | undefined,
@@ -315,6 +321,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		});
 	}
 
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		clearInterval(this.userIpHistoriesClearIntervalId);
 	}

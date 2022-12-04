@@ -14,6 +14,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { SigninService } from '../SigninService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class GithubServerService {
@@ -36,9 +37,10 @@ export class GithubServerService {
 		private metaService: MetaService,
 		private signinService: SigninService,
 	) {
-		this.create = this.create.bind(this);
+		//this.create = this.create.bind(this);
 	}
 
+	@bindThis
 	public create(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.get('/disconnect/github', async (request, reply) => {
 			if (!this.compareOrigin(request)) {
@@ -260,10 +262,12 @@ export class GithubServerService {
 		done();
 	}
 
+	@bindThis
 	private getUserToken(request: FastifyRequest): string | null {
 		return ((request.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
+	@bindThis
 	private compareOrigin(request: FastifyRequest): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';

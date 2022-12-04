@@ -7,6 +7,7 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Clip } from '@/models/entities/Clip.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ClipEntityService {
@@ -18,6 +19,7 @@ export class ClipEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Clip['id'] | Clip,
 	): Promise<Packed<'Clip'>> {
@@ -34,6 +36,7 @@ export class ClipEntityService {
 		});
 	}
 
+	@bindThis
 	public packMany(
 		clips: Clip[],
 	) {

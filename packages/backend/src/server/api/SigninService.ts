@@ -7,6 +7,7 @@ import { IdService } from '@/core/IdService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class SigninService {
@@ -23,6 +24,7 @@ export class SigninService {
 	) {
 	}
 
+	@bindThis
 	public signin(request: FastifyRequest, reply: FastifyReply, user: ILocalUser, redirect = false) {
 		setImmediate(async () => {
 			// Append signin history
