@@ -8,7 +8,7 @@ import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from '@/core/entities/instance.js';
+import { name, schema } from './entities/instance.js';
 import type { KVs } from '../core.js';
 
 /**

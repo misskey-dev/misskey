@@ -7,7 +7,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UsersRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from '@/core/entities/users.js';
+import { name, schema } from './entities/users.js';
 import type { KVs } from '../core.js';
 
 /**

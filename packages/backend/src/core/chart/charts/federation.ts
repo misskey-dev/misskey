@@ -6,7 +6,7 @@ import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from '@/core/entities/federation.js';
+import { name, schema } from './entities/federation.js';
 import type { KVs } from '../core.js';
 
 /**

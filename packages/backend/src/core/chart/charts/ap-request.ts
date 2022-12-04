@@ -4,7 +4,7 @@ import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from '@/core/entities/ap-request.js';
+import { name, schema } from './entities/ap-request.js';
 import type { KVs } from '../core.js';
 
 /**

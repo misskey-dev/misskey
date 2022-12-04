@@ -6,7 +6,7 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from '@/core/entities/hashtag.js';
+import { name, schema } from './entities/hashtag.js';
 import type { KVs } from '../core.js';
 
 /**

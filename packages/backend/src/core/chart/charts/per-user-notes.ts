@@ -7,7 +7,7 @@ import { DI } from '@/di-symbols.js';
 import type { NotesRepository } from '@/models/index.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from '@/core/entities/per-user-notes.js';
+import { name, schema } from './entities/per-user-notes.js';
 import type { KVs } from '../core.js';
 
 /**
