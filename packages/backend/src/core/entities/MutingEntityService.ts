@@ -7,6 +7,7 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Muting } from '@/models/entities/Muting.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class MutingEntityService {
@@ -18,6 +19,7 @@ export class MutingEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Muting['id'] | Muting,
 		me?: { id: User['id'] } | null | undefined,
@@ -35,6 +37,7 @@ export class MutingEntityService {
 		});
 	}
 
+	@bindThis
 	public packMany(
 		mutings: any[],
 		me: { id: User['id'] },

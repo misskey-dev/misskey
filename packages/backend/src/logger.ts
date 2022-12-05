@@ -2,6 +2,7 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
+import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 
 type Domain = {
@@ -26,12 +27,14 @@ export default class Logger {
 		this.syslogClient = syslogClient;
 	}
 
+	@bindThis
 	public createSubLogger(domain: string, color?: string, store = true): Logger {
 		const logger = new Logger(domain, color, store);
 		logger.parentLogger = this;
 		return logger;
 	}
 
+	@bindThis
 	private log(level: Level, message: string, data?: Record<string, any> | null, important = false, subDomains: Domain[] = [], store = true): void {
 		if (envOption.quiet) return;
 		if (!this.store) store = false;
@@ -80,6 +83,7 @@ export default class Logger {
 		}
 	}
 
+	@bindThis
 	public error(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
 		if (x instanceof Error) {
 			data = data ?? {};
@@ -92,20 +96,24 @@ export default class Logger {
 		}
 	}
 
+	@bindThis
 	public warn(message: string, data?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
 		this.log('warning', message, data, important);
 	}
 
+	@bindThis
 	public succ(message: string, data?: Record<string, any> | null, important = false): void { // 何かに成功した状況で使う
 		this.log('success', message, data, important);
 	}
 
+	@bindThis
 	public debug(message: string, data?: Record<string, any> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
 		if (process.env.NODE_ENV !== 'production' || envOption.verbose) {
 			this.log('debug', message, data, important);
 		}
 	}
 
+	@bindThis
 	public info(message: string, data?: Record<string, any> | null, important = false): void { // それ以外
 		this.log('info', message, data, important);
 	}

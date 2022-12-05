@@ -6,6 +6,7 @@ import { DriveService } from '@/core/DriveService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { ObjectStorageFileJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DeleteFileProcessorService {
@@ -21,6 +22,7 @@ export class DeleteFileProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('delete-file');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<ObjectStorageFileJobData>): Promise<string> {
 		const key: string = job.data.key;
 

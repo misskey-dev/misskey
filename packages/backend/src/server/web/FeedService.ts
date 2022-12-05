@@ -7,6 +7,7 @@ import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class FeedService {
@@ -31,6 +32,7 @@ export class FeedService {
 	) {
 	}
 
+	@bindThis
 	public async packFeed(user: User) {
 		const author = {
 			link: `${this.config.url}/@${user.username}`,

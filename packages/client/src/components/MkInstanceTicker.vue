@@ -57,10 +57,16 @@ $height: 2ex;
 		0 -1px 1px #000,
 		.5px -.866px 1px #000,
 		.866px -.5px 1px #000;
+	mask-image: linear-gradient(90deg,
+		rgb(0,0,0),
+		rgb(0,0,0) calc(100% - 16px),
+		rgba(0,0,0,0) 100%
+	);
 }
 
 .icon {
 	height: $height;
+	flex-shrink: 0;
 }
 
 .name {
@@ -68,5 +74,7 @@ $height: 2ex;
 	line-height: 1;
 	font-size: 0.9em;
 	font-weight: bold;
+	white-space: nowrap;
+	overflow: visible;
 }
 </style>

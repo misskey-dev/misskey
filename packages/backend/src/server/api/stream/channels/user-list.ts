@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
-import type { NotesRepository } from '@/models/index.js';
+import type { UserListJoiningsRepository, UserListsRepository, NotesRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
 class UserListChannel extends Channel {
@@ -25,10 +25,11 @@ class UserListChannel extends Channel {
 		connection: Channel['connection'],
 	) {
 		super(id, connection);
-		this.updateListUsers = this.updateListUsers.bind(this);
-		this.onNote = this.onNote.bind(this);
+		//this.updateListUsers = this.updateListUsers.bind(this);
+		//this.onNote = this.onNote.bind(this);
 	}
 
+	@bindThis
 	public async init(params: any) {
 		this.listId = params.listId as string;
 
@@ -48,6 +49,7 @@ class UserListChannel extends Channel {
 		this.listUsersClock = setInterval(this.updateListUsers, 5000);
 	}
 
+	@bindThis
 	private async updateListUsers() {
 		const users = await this.userListJoiningsRepository.find({
 			where: {
@@ -59,6 +61,7 @@ class UserListChannel extends Channel {
 		this.listUsers = users.map(x => x.userId);
 	}
 
+	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		if (!this.listUsers.includes(note.userId)) return;
 
@@ -93,6 +96,7 @@ class UserListChannel extends Channel {
 		this.send('note', note);
 	}
 
+	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`userListStream:${this.listId}`, this.send);
@@ -118,6 +122,7 @@ export class UserListChannelService {
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): UserListChannel {
 		return new UserListChannel(
 			this.userListsRepository,

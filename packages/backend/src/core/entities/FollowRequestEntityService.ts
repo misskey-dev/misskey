@@ -7,6 +7,7 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { FollowRequest } from '@/models/entities/FollowRequest.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class FollowRequestEntityService {
@@ -18,6 +19,7 @@ export class FollowRequestEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: FollowRequest['id'] | FollowRequest,
 		me?: { id: User['id'] } | null | undefined,

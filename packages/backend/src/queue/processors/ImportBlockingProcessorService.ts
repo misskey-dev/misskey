@@ -5,13 +5,14 @@ import type { UsersRepository, BlockingsRepository, DriveFilesRepository } from 
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
-import { ResolveUserService } from '@/core/remote/ResolveUserService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ImportBlockingProcessorService {
@@ -32,13 +33,14 @@ export class ImportBlockingProcessorService {
 
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
-		private resolveUserService: ResolveUserService,
+		private remoteUserResolveService: RemoteUserResolveService,
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('import-blocking');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
 		this.logger.info(`Importing blocking of ${job.data.user.id} ...`);
 
@@ -78,7 +80,7 @@ export class ImportBlockingProcessorService {
 				if (host == null && target == null) continue;
 
 				if (target == null) {
-					target = await this.resolveUserService.resolveUser(username, host);
+					target = await this.remoteUserResolveService.resolveUser(username, host);
 				}
 
 				if (target == null) {

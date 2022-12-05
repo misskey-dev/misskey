@@ -5,6 +5,7 @@ import { DI } from '@/di-symbols.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class MetaService implements OnApplicationShutdown {
@@ -20,7 +21,7 @@ export class MetaService implements OnApplicationShutdown {
 
 		private globalEventService: GlobalEventService,
 	) {
-		this.onMessage = this.onMessage.bind(this);
+		//this.onMessage = this.onMessage.bind(this);
 
 		if (process.env.NODE_ENV !== 'test') {
 			this.intervalId = setInterval(() => {
@@ -34,6 +35,7 @@ export class MetaService implements OnApplicationShutdown {
 		this.redisSubscriber.on('message', this.onMessage);
 	}
 
+	@bindThis
 	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
@@ -50,6 +52,7 @@ export class MetaService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	public async fetch(noCache = false): Promise<Meta> {
 		if (!noCache && this.cache) return this.cache;
 	
@@ -84,6 +87,7 @@ export class MetaService implements OnApplicationShutdown {
 		});
 	}
 
+	@bindThis
 	public async update(data: Partial<Meta>): Promise<Meta> {
 		const updated = await this.db.transaction(async transactionalEntityManager => {
 			const metas = await transactionalEntityManager.find(Meta, {
@@ -114,6 +118,7 @@ export class MetaService implements OnApplicationShutdown {
 		return updated;
 	}
 
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		clearInterval(this.intervalId);
 		this.redisSubscriber.off('message', this.onMessage);

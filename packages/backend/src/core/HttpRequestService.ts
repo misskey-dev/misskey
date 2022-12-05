@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
+import { bindThis } from '@/decorators.js';
 import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';
 
@@ -84,6 +85,7 @@ export class HttpRequestService {
 	 * @param url URL
 	 * @param bypassProxy Allways bypass proxy
 	 */
+	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false): http.Agent | https.Agent {
 		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
 			return url.protocol === 'http:' ? this.http : this.https;
@@ -92,6 +94,7 @@ export class HttpRequestService {
 		}
 	}
 
+	@bindThis
 	public async getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>): Promise<unknown> {
 		const res = await this.getResponse({
 			url,
@@ -106,6 +109,7 @@ export class HttpRequestService {
 		return await res.json();
 	}
 
+	@bindThis
 	public async getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: Record<string, string>): Promise<string> {
 		const res = await this.getResponse({
 			url,
@@ -120,6 +124,7 @@ export class HttpRequestService {
 		return await res.text();
 	}
 
+	@bindThis
 	public async getResponse(args: {
 		url: string,
 		method: string,

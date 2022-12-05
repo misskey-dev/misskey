@@ -5,6 +5,7 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IEndpointMeta } from './endpoints.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class RateLimiterService {
@@ -19,6 +20,7 @@ export class RateLimiterService {
 		this.logger = this.loggerService.getLogger('limiter');
 	}
 
+	@bindThis
 	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string) {
 		return new Promise<void>((ok, reject) => {
 			if (process.env.NODE_ENV === 'test') ok();

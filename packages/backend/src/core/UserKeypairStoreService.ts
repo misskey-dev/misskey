@@ -4,6 +4,7 @@ import type { UserKeypairsRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserKeypairStoreService {
@@ -16,6 +17,7 @@ export class UserKeypairStoreService {
 		this.cache = new Cache<UserKeypair>(Infinity);
 	}
 
+	@bindThis
 	public async getUserKeypair(userId: User['id']): Promise<UserKeypair> {
 		return await this.cache.fetch(userId, () => this.userKeypairsRepository.findOneByOrFail({ userId: userId }));
 	}

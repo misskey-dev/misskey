@@ -186,7 +186,7 @@ onBeforeUnmount(() => {
 	> header {
 		margin: 0 0 8px 0;
 		font-weight: bold;
-		font-size: 20px;
+		font-size: 1.2em;
 
 		& + .body {
 			margin-top: 8px;

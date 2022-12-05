@@ -3,7 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { QueueService } from '@/core/QueueService.js';
-import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

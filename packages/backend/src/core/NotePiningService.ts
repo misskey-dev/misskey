@@ -8,9 +8,10 @@ import { IdService } from '@/core/IdService.js';
 import type { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { RelayService } from '@/core/RelayService.js';
 import type { Config } from '@/config.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NotePiningService {
@@ -40,6 +41,7 @@ export class NotePiningService {
 	 * @param user
 	 * @param noteId
 	 */
+	@bindThis
 	public async addPinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch pinee
 		const note = await this.notesRepository.findOneBy({
@@ -79,6 +81,7 @@ export class NotePiningService {
 	 * @param user
 	 * @param noteId
 	 */
+	@bindThis
 	public async removePinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch unpinee
 		const note = await this.notesRepository.findOneBy({
@@ -101,6 +104,7 @@ export class NotePiningService {
 		}
 	}
 
+	@bindThis
 	public async deliverPinnedChange(userId: User['id'], noteId: Note['id'], isAddition: boolean) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');

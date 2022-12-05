@@ -29,11 +29,14 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 		if (token !== undefined) (data as any).i = token;
 
 		// Send request
-		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
+		window.fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
 			cache: 'no-cache',
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		}).then(async (res) => {
 			const body = res.status === 204 ? null : await res.json();
 
@@ -63,7 +66,7 @@ export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
 
 	const promise = new Promise((resolve, reject) => {
 		// Send request
-		fetch(`${apiUrl}/${endpoint}?${query}`, {
+		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
 			credentials: 'omit',
 			cache: 'default',

@@ -208,7 +208,7 @@ export const meta = {
 			turnstileSecretKey: {
 				type: 'string',
 				optional: true, nullable: true,
-			}
+			},
 			sensitiveMediaDetection: {
 				type: 'string',
 				optional: true, nullable: false,

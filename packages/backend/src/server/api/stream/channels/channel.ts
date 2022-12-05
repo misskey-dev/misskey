@@ -5,6 +5,7 @@ import type { User } from '@/models/entities/User.js';
 import type { Packed } from '@/misc/schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 import type { StreamMessages } from '../types.js';
 
@@ -24,10 +25,11 @@ class ChannelChannel extends Channel {
 		connection: Channel['connection'],
 	) {
 		super(id, connection);
-		this.onNote = this.onNote.bind(this);
-		this.emitTypers = this.emitTypers.bind(this);
+		//this.onNote = this.onNote.bind(this);
+		//this.emitTypers = this.emitTypers.bind(this);
 	}
 
+	@bindThis
 	public async init(params: any) {
 		this.channelId = params.channelId as string;
 
@@ -37,6 +39,7 @@ class ChannelChannel extends Channel {
 		this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
 	}
 
+	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		if (note.channelId !== this.channelId) return;
 
@@ -63,6 +66,7 @@ class ChannelChannel extends Channel {
 		this.send('note', note);
 	}
 
+	@bindThis
 	private onEvent(data: StreamMessages['channel']['payload']) {
 		if (data.type === 'typing') {
 			const id = data.body;
@@ -74,6 +78,7 @@ class ChannelChannel extends Channel {
 		}
 	}
 
+	@bindThis
 	private async emitTypers() {
 		const now = new Date();
 
@@ -90,6 +95,7 @@ class ChannelChannel extends Channel {
 		});
 	}
 
+	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
@@ -110,6 +116,7 @@ export class ChannelChannelService {
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): ChannelChannel {
 		return new ChannelChannel(
 			this.noteEntityService,

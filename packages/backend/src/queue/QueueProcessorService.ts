@@ -13,6 +13,7 @@ import { EndedPollNotificationProcessorService } from './processors/EndedPollNot
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class QueueProcessorService {
@@ -35,6 +36,7 @@ export class QueueProcessorService {
 		this.logger = this.queueLoggerService.logger;
 	}
 
+	@bindThis
 	public start() {
 		function renderError(e: Error): any {
 			if (e) { // 何故かeがundefinedで来ることがある

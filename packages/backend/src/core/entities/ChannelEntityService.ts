@@ -8,6 +8,7 @@ import type { User } from '@/models/entities/User.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ChannelEntityService {
@@ -29,6 +30,7 @@ export class ChannelEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Channel['id'] | Channel,
 		me?: { id: User['id'] } | null | undefined,

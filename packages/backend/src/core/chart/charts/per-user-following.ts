@@ -5,6 +5,7 @@ import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { FollowingsRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/per-user-following.js';
@@ -55,6 +56,7 @@ export default class PerUserFollowingChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean): Promise<void> {
 		const prefixFollower = this.userEntityService.isLocalUser(follower) ? 'local' : 'remote';
 		const prefixFollowee = this.userEntityService.isLocalUser(followee) ? 'local' : 'remote';

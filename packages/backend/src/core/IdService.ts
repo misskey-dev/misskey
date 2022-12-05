@@ -6,6 +6,7 @@ import { genAid } from '@/misc/id/aid.js';
 import { genMeid } from '@/misc/id/meid.js';
 import { genMeidg } from '@/misc/id/meidg.js';
 import { genObjectId } from '@/misc/id/object-id.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class IdService {
@@ -18,6 +19,7 @@ export class IdService {
 		this.metohd = config.id.toLowerCase();
 	}
 
+	@bindThis
 	public genId(date?: Date): string {
 		if (!date || (date > new Date())) date = new Date();
 	

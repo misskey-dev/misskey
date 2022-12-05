@@ -4,8 +4,9 @@ import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserCacheService implements OnApplicationShutdown {
@@ -23,7 +24,7 @@ export class UserCacheService implements OnApplicationShutdown {
 
 		private userEntityService: UserEntityService,
 	) {
-		this.onMessage = this.onMessage.bind(this);
+		//this.onMessage = this.onMessage.bind(this);
 
 		this.userByIdCache = new Cache<CacheableUser>(Infinity);
 		this.localUserByNativeTokenCache = new Cache<CacheableLocalUser | null>(Infinity);
@@ -33,6 +34,7 @@ export class UserCacheService implements OnApplicationShutdown {
 		this.redisSubscriber.on('message', this.onMessage);
 	}
 
+	@bindThis
 	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
@@ -68,6 +70,7 @@ export class UserCacheService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		this.redisSubscriber.off('message', this.onMessage);
 	}

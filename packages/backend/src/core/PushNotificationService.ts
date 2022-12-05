@@ -5,7 +5,8 @@ import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import type { SwSubscriptionsRepository } from '@/models/index.js';
-import { MetaService } from './MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { bindThis } from '@/decorators.js';
 
 // Defined also packages/sw/types.ts#L14-L21
 type pushNotificationsTypes = {
