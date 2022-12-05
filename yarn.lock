@@ -2706,7 +2706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:5.45.0":
+"@typescript-eslint/parser@npm:5.45.0, @typescript-eslint/parser@npm:^5.45.0":
   version: 5.45.0
   resolution: "@typescript-eslint/parser@npm:5.45.0"
   dependencies:
@@ -4875,6 +4875,7 @@ __metadata:
     vanilla-tilt: 1.7.3
     vite: 3.2.4
     vue: 3.2.45
+    vue-eslint-parser: ^9.1.0
     vue-prism-editor: 2.0.0-alpha.2
     vuedraggable: 4.0.1
   languageName: unknown
@@ -6940,7 +6941,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:2.26.0":
+"eslint-plugin-import@npm:2.26.0, eslint-plugin-import@npm:^2.26.0":
   version: 2.26.0
   resolution: "eslint-plugin-import@npm:2.26.0"
   dependencies:
@@ -15702,8 +15703,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sw@workspace:packages/sw"
   dependencies:
+    "@typescript-eslint/parser": ^5.45.0
     esbuild: ^0.14.42
     eslint: ^8.16.0
+    eslint-plugin-import: ^2.26.0
     idb-keyval: ^6.1.0
     misskey-js: 0.0.14
   languageName: unknown
@@ -16959,7 +16962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-eslint-parser@npm:^9.0.1":
+"vue-eslint-parser@npm:^9.0.1, vue-eslint-parser@npm:^9.1.0":
   version: 9.1.0
   resolution: "vue-eslint-parser@npm:9.1.0"
   dependencies:
