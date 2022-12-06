@@ -13,8 +13,8 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
-import { SigninService } from '../SigninService.js';
 import { bindThis } from '@/decorators.js';
+import { SigninService } from '../SigninService.js';
 
 @Injectable()
 export class GithubServerService {
@@ -120,7 +120,7 @@ export class GithubServerService {
 				state: uuid(),
 			};
 
-			reply.cookies.set('signin_with_github_sid', sessid, {
+			reply.setCookie('signin_with_github_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,
@@ -138,7 +138,7 @@ export class GithubServerService {
 			const oauth2 = await getOath2();
 
 			if (!userToken) {
-				const sessid = request.cookies.get('signin_with_github_sid');
+				const sessid = request.cookies['signin_with_github_sid'];
 
 				if (!sessid) {
 					throw new FastifyReplyError(400, 'invalid session');
@@ -227,7 +227,7 @@ export class GithubServerService {
 					'Authorization': `bearer ${accessToken}`,
 				})) as Record<string, unknown>;
 
-				if (typeof login !== 'string' || typeof id !== 'string') {
+				if (typeof login !== 'string' || typeof id !== 'number') {
 					throw new FastifyReplyError(400, 'invalid session');
 				}
 

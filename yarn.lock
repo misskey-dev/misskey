@@ -3930,7 +3930,7 @@ __metadata:
     strict-event-emitter-types: 2.0.0
     stringz: 2.1.0
     summaly: 2.7.0
-    syslog-pro: 1.0.0
+    syslog-pro: "git+https://github.com/misskey-dev/SyslogPro#0.2.9-misskey.2"
     systeminformation: 5.16.1
     tinycolor2: 1.4.2
     tmp: 0.2.1
@@ -15719,12 +15719,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"syslog-pro@npm:1.0.0":
-  version: 1.0.0
-  resolution: "syslog-pro@npm:1.0.0"
+"syslog-pro@git+https://github.com/misskey-dev/SyslogPro#0.2.9-misskey.2":
+  version: 0.2.9-misskey.2
+  resolution: "syslog-pro@https://github.com/misskey-dev/SyslogPro.git#commit=2772b33fa126784fc6e21377786471a918b22dc7"
   dependencies:
     moment: ^2.22.2
-  checksum: 7d6399e4ca3a9305758f77b3e720469b39c156b5a8219ed4ce27b4ad8f960f8e395aebb0ccc84e4438b50a6b2cda2e20251e278307833ed7ac1045ae9516a33c
+  checksum: a74390c0358c7f9142247c2d4ef29893f98bed2cdfc890224926d5d2232c5e41a2ac07cbd24b908be1dd1b255585b14e617595ef8a0b966799fdc01d32b4e4aa
   languageName: node
   linkType: hard
 

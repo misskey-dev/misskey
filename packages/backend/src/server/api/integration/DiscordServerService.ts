@@ -13,8 +13,8 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
-import { SigninService } from '../SigninService.js';
 import { bindThis } from '@/decorators.js';
+import { SigninService } from '../SigninService.js';
 
 @Injectable()
 export class DiscordServerService {
@@ -122,7 +122,7 @@ export class DiscordServerService {
 				response_type: 'code',
 			};
 
-			reply.cookies.set('signin_with_discord_sid', sessid, {
+			reply.setCookie('signin_with_discord_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,
@@ -140,7 +140,7 @@ export class DiscordServerService {
 			const oauth2 = await getOAuth2();
 
 			if (!userToken) {
-				const sessid = request.cookies.get('signin_with_discord_sid');
+				const sessid = request.cookies['signin_with_discord_sid'];
 
 				if (!sessid) {
 					throw new FastifyReplyError(400, 'invalid session');

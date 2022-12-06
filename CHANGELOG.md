@@ -20,6 +20,8 @@ You should also include the user name that made the change.
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
 ### Improvements
+- Server: improve syslog performance @syuilo
+- Client: Add new gabber kick sounds (thanks for noizenecio)
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468

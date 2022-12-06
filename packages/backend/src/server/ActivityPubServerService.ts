@@ -433,6 +433,8 @@ export class ActivityPubServerService {
 		});
 
 		fastify.register(fastifyAccepts);
+		fastify.addContentTypeParser('application/activity+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
+		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 
 		//#region Routing
 		// inbox
