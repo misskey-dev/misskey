@@ -122,7 +122,7 @@ export class DiscordServerService {
 				response_type: 'code',
 			};
 
-			reply.cookies.set('signin_with_discord_sid', sessid, {
+			reply.setCookie('signin_with_discord_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,

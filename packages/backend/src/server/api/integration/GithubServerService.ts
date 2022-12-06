@@ -120,7 +120,7 @@ export class GithubServerService {
 				state: uuid(),
 			};
 
-			reply.cookies.set('signin_with_github_sid', sessid, {
+			reply.setCookie('signin_with_github_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,

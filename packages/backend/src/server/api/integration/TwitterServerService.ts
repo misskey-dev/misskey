@@ -112,7 +112,7 @@ export class TwitterServerService {
 
 			this.redisClient.set(sessid, JSON.stringify(twCtx));
 
-			reply.cookies.set('signin_with_twitter_sid', sessid, {
+			reply.setCookie('signin_with_twitter_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,
