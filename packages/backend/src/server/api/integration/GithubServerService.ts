@@ -138,7 +138,7 @@ export class GithubServerService {
 			const oauth2 = await getOath2();
 
 			if (!userToken) {
-				const sessid = request.cookies.get('signin_with_github_sid');
+				const sessid = request.cookies['signin_with_github_sid'];
 
 				if (!sessid) {
 					throw new FastifyReplyError(400, 'invalid session');
