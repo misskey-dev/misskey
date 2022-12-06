@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  yarn_install:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -23,10 +23,18 @@ jobs:
     - run: yarn install --immutable
 
   lint:
+    needs: [yarn_install]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         workspace:
         - backend
         - client
         - sw
+    - uses: actions/setup-node@v3.2.0
+      with:
+        node-version: 18.x
+        cache: 'yarn'
+    - run: corepack enable
+    - run: yarn install --immutable
     - run: yarn workspace ${{ matrix.workspace }} run lint
