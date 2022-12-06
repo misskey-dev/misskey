@@ -25,6 +25,7 @@ jobs:
   lint:
     needs: [yarn_install]
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         workspace:
