@@ -52,6 +52,7 @@ export class PushNotificationService {
 	) {
 	}
 
+	@bindThis
 	public async pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
 		const meta = await this.metaService.fetch();
 	
