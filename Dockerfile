@@ -9,7 +9,7 @@ COPY . ./
 RUN apt-get update
 RUN apt-get install -y build-essential
 RUN git submodule update --init
-RUN yarn install
+RUN yarn install --immutable
 RUN yarn build
 RUN rm -rf .git
 
@@ -20,6 +20,7 @@ WORKDIR /misskey
 RUN apt-get update
 RUN apt-get install -y ffmpeg tini
 
+COPY --from=builder /misskey/.yarn/install-state.gz ./.yarn/install-state.gz
 COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
 COPY --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
