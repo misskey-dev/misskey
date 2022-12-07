@@ -30,4 +30,4 @@ COPY . ./
 
 ENV NODE_ENV=production
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["npm", "run", "migrateandstart"]
+CMD ["yarn", "run", "migrateandstart"]
