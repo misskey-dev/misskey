@@ -1,110 +1,132 @@
 <template>
-<MkSpacer :content-max="narrow ? 800 : 1100">
-	<div ref="rootEl" v-size="{ max: [500] }" class="ftskorzw" :class="{ wide: !narrow }">
-		<div class="main">
-			<!-- TODO -->
-			<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
-			<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
+	<MkSpacer :content-max="narrow ? 800 : 1100">
+		<div ref="rootEl" v-size="{ max: [500] }" class="ftskorzw" :class="{ wide: !narrow }">
+			<div class="main">
+				<!-- TODO -->
+				<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
+				<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
-			<div class="profile">
-				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
+				<div class="profile">
+					<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn" />
 
-				<div :key="user.id" class="_block main">
-					<div class="banner-container" :style="style">
-						<div ref="bannerEl" class="banner" :style="style"></div>
-						<div class="fade"></div>
-						<div class="title">
-							<MkUserName class="name" :user="user" :nowrap="true"/>
-							<div class="bottom">
-								<span class="username"><MkAcct :user="user" :detail="true"/></span>
-								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+					<div :key="user.id" class="_block main">
+						<div class="banner-container" :style="style">
+							<div ref="bannerEl" class="banner" :style="style"></div>
+							<div class="fade"></div>
+							<div class="title">
+								<MkUserName class="name" :user="user" :nowrap="true" />
+								<div class="bottom">
+									<span class="username">
+										<MkAcct :user="user" :detail="true" />
+									</span>
+									<!-- <span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
 								<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="fas fa-lock"></i></span>
+								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="fas fa-robot"></i></span> -->
+									<span v-if="user.isModerator" class="moderator">Moderator</span>
+									<span v-if="user.isAdmin" class="administrator">Administrator</span>
+								</div>
+							</div>
+							<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{
+									i18n.ts.followsYou
+							}}</span>
+							<div v-if="$i" class="actions">
+								<button class="menu _button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
+								<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false"
+									:full="true" class="koudoku" />
+							</div>
+						</div>
+						<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true" />
+						<div class="title">
+							<MkUserName :user="user" :nowrap="false" class="name" />
+							<div class="bottom">
+								<span class="username">
+									<MkAcct :user="user" :detail="true" />
+								</span>
+								<!-- <span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+							<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span> -->
+								<span v-if="user.isModerator" class="moderator">Moderator</span>
+								<span v-if="user.isAdmin" class="administrator">Administrator</span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="fas fa-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="fas fa-robot"></i></span>
 							</div>
 						</div>
-						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
-						<div v-if="$i" class="actions">
-							<button class="menu _button" @click="menu"><i class="fas fa-ellipsis-h"></i></button>
-							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+						<div class="description">
+							<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user"
+								:i="$i" :custom-emojis="user.emojis" />
+							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
 						</div>
-					</div>
-					<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
-					<div class="title">
-						<MkUserName :user="user" :nowrap="false" class="name"/>
-						<div class="bottom">
-							<span class="username"><MkAcct :user="user" :detail="true"/></span>
-							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
-							<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
-							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="fas fa-lock"></i></span>
-							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="fas fa-robot"></i></span>
+						<div class="fields system">
+							<dl v-if="user.location" class="field">
+								<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ i18n.ts.location }}</dt>
+								<dd class="value">{{ user.location }}</dd>
+							</dl>
+							<dl v-if="user.birthday" class="field">
+								<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ i18n.ts.birthday }}</dt>
+								<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{
+										$t('yearsOld', { age })
+								}})</dd>
+							</dl>
+							<dl class="field">
+								<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ i18n.ts.registeredDate }}
+								</dt>
+								<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (
+									<MkTime :time="user.createdAt" />)
+								</dd>
+							</dl>
 						</div>
-					</div>
-					<div class="description">
-						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
-						<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
-					</div>
-					<div class="fields system">
-						<dl v-if="user.location" class="field">
-							<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ i18n.ts.location }}</dt>
-							<dd class="value">{{ user.location }}</dd>
-						</dl>
-						<dl v-if="user.birthday" class="field">
-							<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ i18n.ts.birthday }}</dt>
-							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
-						</dl>
-						<dl class="field">
-							<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ i18n.ts.registeredDate }}</dt>
-							<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
-						</dl>
-					</div>
-					<div v-if="user.fields.length > 0" class="fields">
-						<dl v-for="(field, i) in user.fields" :key="i" class="field">
-							<dt class="name">
-								<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
-							</dt>
-							<dd class="value">
-								<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
-							</dd>
-						</dl>
-					</div>
-					<div class="status">
-						<MkA v-click-anime :to="userPage(user)" :class="{ active: page === 'index' }">
-							<b>{{ number(user.notesCount) }}</b>
-							<span>{{ i18n.ts.notes }}</span>
-						</MkA>
-						<MkA v-click-anime :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
-							<b>{{ number(user.followingCount) }}</b>
-							<span>{{ i18n.ts.following }}</span>
-						</MkA>
-						<MkA v-click-anime :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
-							<b>{{ number(user.followersCount) }}</b>
-							<span>{{ i18n.ts.followers }}</span>
-						</MkA>
+						<div v-if="user.fields.length > 0" class="fields">
+							<dl v-for="(field, i) in user.fields" :key="i" class="field">
+								<dt class="name">
+									<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis"
+										:colored="false" />
+								</dt>
+								<dd class="value">
+									<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis"
+										:colored="false" />
+								</dd>
+							</dl>
+						</div>
+						<div class="status">
+							<MkA v-click-anime :to="userPage(user)" :class="{ active: page === 'index' }">
+								<b>{{ number(user.notesCount) }}</b>
+								<span>{{ i18n.ts.notes }}</span>
+							</MkA>
+							<MkA v-click-anime :to="userPage(user, 'following')"
+								:class="{ active: page === 'following' }">
+								<b>{{ number(user.followingCount) }}</b>
+								<span>{{ i18n.ts.following }}</span>
+							</MkA>
+							<MkA v-click-anime :to="userPage(user, 'followers')"
+								:class="{ active: page === 'followers' }">
+								<b>{{ number(user.followersCount) }}</b>
+								<span>{{ i18n.ts.followers }}</span>
+							</MkA>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="contents">
-				<div v-if="user.pinnedNotes.length > 0" class="_gap">
-					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
+				<div class="contents">
+					<div v-if="user.pinnedNotes.length > 0" class="_gap">
+						<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note"
+							:pinned="true" />
+					</div>
+					<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
+					<template v-if="narrow">
+						<XPhotos :key="user.id" :user="user" />
+						<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);" />
+					</template>
 				</div>
-				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
-				<template v-if="narrow">
-					<XPhotos :key="user.id" :user="user"/>
-					<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
-				</template>
+				<div>
+					<XUserTimeline :user="user" />
+				</div>
 			</div>
-			<div>
-				<XUserTimeline :user="user"/>
+			<div v-if="!narrow" class="sub">
+				<XPhotos :key="user.id" :user="user" />
+				<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);" />
 			</div>
 		</div>
-		<div v-if="!narrow" class="sub">
-			<XPhotos :key="user.id" :user="user"/>
-			<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
-		</div>
-	</div>
-</MkSpacer>
+	</MkSpacer>
 </template>
 
 <script lang="ts" setup>
@@ -146,7 +168,7 @@ let bannerEl = $ref<null | HTMLElement>(null);
 const style = $computed(() => {
 	if (props.user.bannerUrl == null) return {};
 	return {
-		backgroundImage: `url(${ props.user.bannerUrl })`,
+		backgroundImage: `url(${props.user.bannerUrl})`,
 	};
 });
 
@@ -191,27 +213,27 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .ftskorzw {
 
-	> .main {
+	>.main {
 
-		> .punished {
+		>.punished {
 			font-size: 0.8em;
 			padding: 16px;
 		}
 
-		> .profile {
+		>.profile {
 
-			> .main {
+			>.main {
 				position: relative;
 				overflow: hidden;
 
-				> .banner-container {
+				>.banner-container {
 					position: relative;
 					height: 250px;
 					overflow: hidden;
 					background-size: cover;
 					background-position: center;
 
-					> .banner {
+					>.banner {
 						height: 100%;
 						background-color: #4c5e6d;
 						background-size: cover;
@@ -220,7 +242,7 @@ onUnmounted(() => {
 						will-change: background-position;
 					}
 
-					> .fade {
+					>.fade {
 						position: absolute;
 						bottom: 0;
 						left: 0;
@@ -229,7 +251,7 @@ onUnmounted(() => {
 						background: linear-gradient(transparent, rgba(#000, 0.7));
 					}
 
-					> .followed {
+					>.followed {
 						position: absolute;
 						top: 12px;
 						left: 12px;
@@ -240,7 +262,7 @@ onUnmounted(() => {
 						border-radius: 6px;
 					}
 
-					> .actions {
+					>.actions {
 						position: absolute;
 						top: 12px;
 						right: 12px;
@@ -250,7 +272,7 @@ onUnmounted(() => {
 						padding: 8px;
 						border-radius: 24px;
 
-						> .menu {
+						>.menu {
 							vertical-align: bottom;
 							height: 31px;
 							width: 31px;
@@ -259,13 +281,13 @@ onUnmounted(() => {
 							font-size: 16px;
 						}
 
-						> .koudoku {
+						>.koudoku {
 							margin-left: 4px;
 							vertical-align: bottom;
 						}
 					}
 
-					> .title {
+					>.title {
 						position: absolute;
 						bottom: 0;
 						left: 0;
@@ -274,7 +296,7 @@ onUnmounted(() => {
 						box-sizing: border-box;
 						color: #fff;
 
-						> .name {
+						>.name {
 							display: block;
 							margin: 0;
 							line-height: 32px;
@@ -283,8 +305,8 @@ onUnmounted(() => {
 							text-shadow: 0 0 8px #000;
 						}
 
-						> .bottom {
-							> * {
+						>.bottom {
+							>* {
 								display: inline-block;
 								margin-right: 16px;
 								line-height: 20px;
@@ -293,20 +315,21 @@ onUnmounted(() => {
 								&.username {
 									font-weight: bold;
 								}
+
 							}
 						}
 					}
 				}
 
-				> .title {
+				>.title {
 					display: none;
 					text-align: center;
 					padding: 50px 8px 16px 8px;
 					font-weight: bold;
 					border-bottom: solid 0.5px var(--divider);
 
-					> .bottom {
-						> * {
+					>.bottom {
+						>* {
 							display: inline-block;
 							margin-right: 8px;
 							opacity: 0.8;
@@ -314,7 +337,7 @@ onUnmounted(() => {
 					}
 				}
 
-				> .avatar {
+				>.avatar {
 					display: block;
 					position: absolute;
 					top: 170px;
@@ -325,22 +348,22 @@ onUnmounted(() => {
 					box-shadow: 1px 1px 3px rgba(#000, 0.2);
 				}
 
-				> .description {
+				>.description {
 					padding: 24px 24px 24px 154px;
 					font-size: 0.95em;
 
-					> .empty {
+					>.empty {
 						margin: 0;
 						opacity: 0.5;
 					}
 				}
 
-				> .fields {
+				>.fields {
 					padding: 24px;
 					font-size: 0.9em;
 					border-top: solid 0.5px var(--divider);
 
-					> .field {
+					>.field {
 						display: flex;
 						padding: 0;
 						margin: 0;
@@ -350,7 +373,7 @@ onUnmounted(() => {
 							margin-bottom: 8px;
 						}
 
-						> .name {
+						>.name {
 							width: 30%;
 							overflow: hidden;
 							white-space: nowrap;
@@ -359,7 +382,7 @@ onUnmounted(() => {
 							text-align: center;
 						}
 
-						> .value {
+						>.value {
 							width: 70%;
 							overflow: hidden;
 							white-space: nowrap;
@@ -368,16 +391,15 @@ onUnmounted(() => {
 						}
 					}
 
-					&.system > .field > .name {
-					}
+					&.system>.field>.name {}
 				}
 
-				> .status {
+				>.status {
 					display: flex;
 					padding: 24px;
 					border-top: solid 0.5px var(--divider);
 
-					> a {
+					>a {
 						flex: 1;
 						text-align: center;
 
@@ -389,12 +411,12 @@ onUnmounted(() => {
 							text-decoration: none;
 						}
 
-						> b {
+						>b {
 							display: block;
 							line-height: 16px;
 						}
 
-						> span {
+						>span {
 							font-size: 70%;
 						}
 					}
@@ -402,33 +424,33 @@ onUnmounted(() => {
 			}
 		}
 
-		> .contents {
-			> .content {
+		>.contents {
+			>.content {
 				margin-bottom: var(--margin);
 			}
 		}
 	}
 
 	&.max-width_500px {
-		> .main {
-			> .profile > .main {
-				> .banner-container {
+		>.main {
+			>.profile>.main {
+				>.banner-container {
 					height: 140px;
 
-					> .fade {
+					>.fade {
 						display: none;
 					}
 
-					> .title {
+					>.title {
 						display: none;
 					}
 				}
 
-				> .title {
+				>.title {
 					display: block;
 				}
 
-				> .avatar {
+				>.avatar {
 					top: 90px;
 					left: 0;
 					right: 0;
@@ -437,22 +459,22 @@ onUnmounted(() => {
 					margin: auto;
 				}
 
-				> .description {
+				>.description {
 					padding: 16px;
 					text-align: center;
 				}
 
-				> .fields {
+				>.fields {
 					padding: 16px;
 				}
 
-				> .status {
+				>.status {
 					padding: 16px;
 				}
 			}
 
-			> .contents {
-				> .nav {
+			>.contents {
+				>.nav {
 					font-size: 80%;
 				}
 			}
@@ -463,16 +485,36 @@ onUnmounted(() => {
 		display: flex;
 		width: 100%;
 
-		> .main {
+		>.main {
 			width: 100%;
 			min-width: 0;
 		}
 
-		> .sub {
+		>.sub {
 			max-width: 350px;
 			min-width: 350px;
 			margin-left: var(--margin);
 		}
 	}
+}
+
+.administrator {
+	display: inline-block;
+	border: solid 1px;
+	border-radius: 6px;
+	padding: 1px 6px;
+	font-size: 85%;
+	color: var(--error);
+	border-color: var(--error);
+}
+
+.moderator {
+	display: inline-block;
+	border: solid 1px;
+	border-radius: 6px;
+	padding: 1px 6px;
+	font-size: 85%;
+	color: var(--success);
+	border-color: var(--success);
 }
 </style>
