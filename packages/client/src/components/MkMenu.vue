@@ -175,6 +175,9 @@ onMounted(() => {
 		});
 	}
 
+	// TODO: アクティブな要素までスクロール
+	//itemsEl.scrollTo();
+
 	document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
 });
 
