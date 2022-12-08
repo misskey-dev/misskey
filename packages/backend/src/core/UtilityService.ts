@@ -27,7 +27,7 @@ export class UtilityService {
 	@bindThis
 	public isBlockedHost(blockedHosts: string[], host: string): boolean {
 		if (host == null) return false;
-		return blockedHosts.some(x => x.endsWith(host));
+		return blockedHosts.some(x => host.endsWith(x));
 	}
 
 	@bindThis
