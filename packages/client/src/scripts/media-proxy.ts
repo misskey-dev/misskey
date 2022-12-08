@@ -4,7 +4,8 @@ import { url } from '@/config';
 export function getProxiedImageUrl(imageUrl: string, type?: 'preview'): string {
 	return `${url}/proxy/image.webp?${query({
 		url: imageUrl,
-		...(type ? { [type]: "1" } : {}),
+		fallback: '1',
+		...(type ? { [type]: '1' } : {}),
 	})}`;
 }
 
