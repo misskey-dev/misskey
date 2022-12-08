@@ -138,6 +138,7 @@ export class DriveService {
 				if (type === 'image/jpeg') ext = '.jpg';
 				if (type === 'image/png') ext = '.png';
 				if (type === 'image/webp') ext = '.webp';
+				if (type === 'image/avif') ext = '.avif';
 				if (type === 'image/apng') ext = '.apng';
 				if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 			}
@@ -262,7 +263,7 @@ export class DriveService {
 			}
 		}
 
-		if (!['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(type)) {
+		if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'].includes(type)) {
 			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
 			return {
 				webpublic: null,
@@ -287,7 +288,7 @@ export class DriveService {
 			}
 
 			satisfyWebpublic = !!(
-				type !== 'image/svg+xml' && type !== 'image/webp' &&
+				type !== 'image/svg+xml' && type !== 'image/webp' && type !== 'image/avif' &&
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -307,7 +308,7 @@ export class DriveService {
 			this.registerLogger.info('creating web image');
 
 			try {
-				if (['image/jpeg', 'image/webp'].includes(type)) {
+				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
 				} else if (['image/png'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
@@ -329,7 +330,7 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(type)) {
+			if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(type)) {
 				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 280);
 			} else {
 				this.registerLogger.debug('thumbnail not created (not an required file)');

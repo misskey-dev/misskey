@@ -114,7 +114,7 @@ export class FileServerService {
 
 					const convertFile = async () => {
 						if (isThumbnail) {
-							if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(mime)) {
+							if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(mime)) {
 								return await this.imageProcessingService.convertToWebp(path, 498, 280);
 							} else if (mime.startsWith('video/')) {
 								return await this.videoProcessingService.generateVideoThumbnail(path);
