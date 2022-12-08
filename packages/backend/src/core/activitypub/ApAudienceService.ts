@@ -4,6 +4,7 @@ import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
 import type { CacheableRemoteUser, CacheableUser } from '@/models/entities/User.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
+import { bindThis } from '@/decorators.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { ApObject } from './type.js';
@@ -24,6 +25,7 @@ export class ApAudienceService {
 	) {
 	}
 
+	@bindThis
 	public async parseAudience(actor: CacheableRemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
 		const toGroups = this.groupingAudience(getApIds(to), actor);
 		const ccGroups = this.groupingAudience(getApIds(cc), actor);
@@ -66,6 +68,7 @@ export class ApAudienceService {
 		};
 	}
 	
+	@bindThis
 	private groupingAudience(ids: string[], actor: CacheableRemoteUser) {
 		const groups = {
 			public: [] as string[],
@@ -88,6 +91,7 @@ export class ApAudienceService {
 		return groups;
 	}
 	
+	@bindThis
 	private isPublic(id: string) {
 		return [
 			'https://www.w3.org/ns/activitystreams#Public',
@@ -96,6 +100,7 @@ export class ApAudienceService {
 		].includes(id);
 	}
 	
+	@bindThis
 	private isFollowers(id: string, actor: CacheableRemoteUser) {
 		return (
 			id === (actor.followersUri ?? `${actor.uri}/followers`)

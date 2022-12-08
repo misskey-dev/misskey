@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { AttestationChallengesRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const interval = 30 * 60 * 1000;
@@ -19,6 +20,7 @@ export class JanitorService implements OnApplicationShutdown {
 	/**
 	 * Clean up database occasionally
 	 */
+	@bindThis
 	public start(): void {
 		const tick = async () => {
 			await this.attestationChallengesRepository.delete({
@@ -31,6 +33,7 @@ export class JanitorService implements OnApplicationShutdown {
 		this.intervalId = setInterval(tick, interval);
 	}
 
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		clearInterval(this.intervalId);
 	}

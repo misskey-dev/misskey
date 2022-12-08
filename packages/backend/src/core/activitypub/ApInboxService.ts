@@ -32,6 +32,7 @@ import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
 import type { Resolver } from './ApResolverService.js';
 import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IRead, IReject, IRemove, IUndo, IUpdate } from './type.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApInboxService {
@@ -85,6 +86,7 @@ export class ApInboxService {
 		this.logger = this.apLoggerService.logger;
 	}
 	
+	@bindThis
 	public async performActivity(actor: CacheableRemoteUser, activity: IObject) {
 		if (isCollectionOrOrderedCollection(activity)) {
 			const resolver = this.apResolverService.createResolver();
@@ -112,6 +114,7 @@ export class ApInboxService {
 		}
 	}
 
+	@bindThis
 	public async performOneActivity(actor: CacheableRemoteUser, activity: IObject): Promise<void> {
 		if (actor.isSuspended) return;
 
@@ -148,6 +151,7 @@ export class ApInboxService {
 		}
 	}
 
+	@bindThis
 	private async follow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 	
@@ -163,6 +167,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
+	@bindThis
 	private async like(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
@@ -180,6 +185,7 @@ export class ApInboxService {
 		}).then(() => 'ok');
 	}
 
+	@bindThis
 	private async read(actor: CacheableRemoteUser, activity: IRead): Promise<string> {
 		const id = await getApId(activity.object);
 
@@ -202,6 +208,7 @@ export class ApInboxService {
 		return `ok: mark as read (${message.userId} => ${message.recipientId} ${message.id})`;
 	}
 
+	@bindThis
 	private async accept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
 		const uri = activity.id ?? activity;
 
@@ -219,6 +226,7 @@ export class ApInboxService {
 		return `skip: Unknown Accept type: ${getApType(object)}`;
 	}
 
+	@bindThis
 	private async acceptFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 
@@ -242,6 +250,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
+	@bindThis
 	private async add(actor: CacheableRemoteUser, activity: IAdd): Promise<void> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
@@ -261,6 +270,7 @@ export class ApInboxService {
 		throw new Error(`unknown target: ${activity.target}`);
 	}
 
+	@bindThis
 	private async announce(actor: CacheableRemoteUser, activity: IAnnounce): Promise<void> {
 		const uri = getApId(activity);
 
@@ -271,6 +281,7 @@ export class ApInboxService {
 		this.announceNote(actor, activity, targetUri);
 	}
 
+	@bindThis
 	private async announceNote(actor: CacheableRemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
 		const uri = getApId(activity);
 
@@ -330,6 +341,7 @@ export class ApInboxService {
 		}
 	}
 
+	@bindThis
 	private async block(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
 		// ※ activity.objectにブロック対象があり、それは存在するローカルユーザーのはず
 
@@ -347,6 +359,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
+	@bindThis
 	private async create(actor: CacheableRemoteUser, activity: ICreate): Promise<void> {
 		const uri = getApId(activity);
 
@@ -382,6 +395,7 @@ export class ApInboxService {
 		}
 	}
 
+	@bindThis
 	private async createNote(resolver: Resolver, actor: CacheableRemoteUser, note: IObject, silent = false, activity?: ICreate): Promise<string> {
 		const uri = getApId(note);
 
@@ -416,6 +430,7 @@ export class ApInboxService {
 		}
 	}
 
+	@bindThis
 	private async delete(actor: CacheableRemoteUser, activity: IDelete): Promise<string> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
@@ -457,6 +472,7 @@ export class ApInboxService {
 		}
 	}
 
+	@bindThis
 	private async deleteActor(actor: CacheableRemoteUser, uri: string): Promise<string> {
 		this.logger.info(`Deleting the Actor: ${uri}`);
 	
@@ -478,6 +494,7 @@ export class ApInboxService {
 		return `ok: queued ${job.name} ${job.id}`;
 	}
 
+	@bindThis
 	private async deleteNote(actor: CacheableRemoteUser, uri: string): Promise<string> {
 		this.logger.info(`Deleting the Note: ${uri}`);
 	
@@ -510,6 +527,7 @@ export class ApInboxService {
 		}
 	}
 
+	@bindThis
 	private async flag(actor: CacheableRemoteUser, activity: IFlag): Promise<string> {
 		// objectは `(User|Note) | (User|Note)[]` だけど、全パターンDBスキーマと対応させられないので
 		// 対象ユーザーは一番最初のユーザー として あとはコメントとして格納する
@@ -534,6 +552,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
+	@bindThis
 	private async reject(actor: CacheableRemoteUser, activity: IReject): Promise<string> {
 		const uri = activity.id ?? activity;
 
@@ -551,6 +570,7 @@ export class ApInboxService {
 		return `skip: Unknown Reject type: ${getApType(object)}`;
 	}
 
+	@bindThis
 	private async rejectFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 	
@@ -574,6 +594,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
+	@bindThis
 	private async remove(actor: CacheableRemoteUser, activity: IRemove): Promise<void> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
@@ -593,6 +614,7 @@ export class ApInboxService {
 		throw new Error(`unknown target: ${activity.target}`);
 	}
 
+	@bindThis
 	private async undo(actor: CacheableRemoteUser, activity: IUndo): Promise<string> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
@@ -618,6 +640,7 @@ export class ApInboxService {
 		return `skip: unknown object type ${getApType(object)}`;
 	}
 
+	@bindThis
 	private async undoAccept(actor: CacheableRemoteUser, activity: IAccept): Promise<string> {
 		const follower = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (follower == null) {
@@ -637,6 +660,7 @@ export class ApInboxService {
 		return 'skip: フォローされていない';
 	}
 
+	@bindThis
 	private async undoAnnounce(actor: CacheableRemoteUser, activity: IAnnounce): Promise<string> {
 		const uri = getApId(activity);
 
@@ -651,6 +675,7 @@ export class ApInboxService {
 		return 'ok: deleted';
 	}
 
+	@bindThis
 	private async undoBlock(actor: CacheableRemoteUser, activity: IBlock): Promise<string> {
 		const blockee = await this.apDbResolverService.getUserFromApId(activity.object);
 
@@ -666,6 +691,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
+	@bindThis
 	private async undoFollow(actor: CacheableRemoteUser, activity: IFollow): Promise<string> {
 		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (followee == null) {
@@ -699,6 +725,7 @@ export class ApInboxService {
 		return 'skip: リクエストもフォローもされていない';
 	}
 
+	@bindThis
 	private async undoLike(actor: CacheableRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
@@ -713,6 +740,7 @@ export class ApInboxService {
 		return 'ok';
 	}
 
+	@bindThis
 	private async update(actor: CacheableRemoteUser, activity: IUpdate): Promise<string> {
 		if ('actor' in activity && actor.uri !== activity.actor) {
 			return 'skip: invalid actor';

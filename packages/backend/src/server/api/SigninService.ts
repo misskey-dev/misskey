@@ -7,6 +7,7 @@ import { IdService } from '@/core/IdService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class SigninService {
@@ -23,6 +24,7 @@ export class SigninService {
 	) {
 	}
 
+	@bindThis
 	public signin(request: FastifyRequest, reply: FastifyReply, user: ILocalUser, redirect = false) {
 		setImmediate(async () => {
 			// Append signin history
@@ -41,7 +43,7 @@ export class SigninService {
 
 		if (redirect) {
 			//#region Cookie
-			reply.cookies.set('igi', user.token!, {
+			reply.setCookie('igi', user.token!, {
 				path: '/',
 				// SEE: https://github.com/koajs/koa/issues/974
 				// When using a SSL proxy it should be configured to add the "X-Forwarded-Proto: https" header

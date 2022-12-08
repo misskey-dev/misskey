@@ -7,13 +7,14 @@ import type { UsersRepository } from '@/models/index.js';
 import type { IRemoteUser, User } from '@/models/entities/User.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { UtilityService } from '../UtilityService.js';
-import { WebfingerService } from './WebfingerService.js';
-import { RemoteLoggerService } from './RemoteLoggerService.js';
-import { ApPersonService } from './activitypub/models/ApPersonService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { WebfingerService } from '@/core/WebfingerService.js';
+import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class ResolveUserService {
+export class RemoteUserResolveService {
 	private logger: Logger;
 
 	constructor(
@@ -31,6 +32,7 @@ export class ResolveUserService {
 		this.logger = this.remoteLoggerService.logger.createSubLogger('resolve-user');
 	}
 
+	@bindThis
 	public async resolveUser(username: string, host: string | null): Promise<User> {
 		const usernameLower = username.toLowerCase();
 	
@@ -116,6 +118,7 @@ export class ResolveUserService {
 		return user;
 	}
 
+	@bindThis
 	private async resolveSelf(acctLower: string) {
 		this.logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 		const finger = await this.webfingerService.webfinger(acctLower).catch(err => {

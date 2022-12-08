@@ -9,6 +9,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UrlPreviewService {
@@ -28,6 +29,7 @@ export class UrlPreviewService {
 		this.logger = this.loggerService.getLogger('url-preview');
 	}
 
+	@bindThis
 	private wrap(url?: string): string | null {
 		return url != null
 			? url.match(/^https?:\/\//)
@@ -39,6 +41,7 @@ export class UrlPreviewService {
 			: null;
 	}
 
+	@bindThis
 	public async handle(
 		request: FastifyRequest<{ Querystring: { url: string; lang: string; } }>,
 		reply: FastifyReply,

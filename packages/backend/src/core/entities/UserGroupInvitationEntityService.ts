@@ -8,6 +8,7 @@ import type { User } from '@/models/entities/User.js';
 import type { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.js';
 import { UserEntityService } from './UserEntityService.js';
 import { UserGroupEntityService } from './UserGroupEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserGroupInvitationEntityService {
@@ -19,6 +20,7 @@ export class UserGroupInvitationEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: UserGroupInvitation['id'] | UserGroupInvitation,
 	) {
@@ -30,6 +32,7 @@ export class UserGroupInvitationEntityService {
 		};
 	}
 
+	@bindThis
 	public packMany(
 		invitations: any[],
 	) {

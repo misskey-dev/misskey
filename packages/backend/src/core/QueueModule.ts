@@ -3,7 +3,7 @@ import Bull from 'bull';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Provider } from '@nestjs/common';
-import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData } from '../../queue/types.js';
+import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData } from '../queue/types.js';
 
 function q<T>(config: Config, name: string, limitPerSec = -1) {
 	return new Bull<T>(name, {

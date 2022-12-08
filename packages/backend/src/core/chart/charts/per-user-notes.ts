@@ -5,6 +5,7 @@ import type { Note } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/per-user-notes.js';
@@ -43,6 +44,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async update(user: { id: User['id'] }, note: Note, isAdditional: boolean): Promise<void> {
 		await this.commit({
 			'total': isAdditional ? 1 : -1,

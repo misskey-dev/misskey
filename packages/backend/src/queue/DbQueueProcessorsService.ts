@@ -16,6 +16,7 @@ import { ImportUserListsProcessorService } from './processors/ImportUserListsPro
 import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
 import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import type Bull from 'bull';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DbQueueProcessorsService {
@@ -39,6 +40,7 @@ export class DbQueueProcessorsService {
 	) {
 	}
 
+	@bindThis
 	public start(q: Bull.Queue): void {
 		q.process('deleteDriveFiles', (job, done) => this.deleteDriveFilesProcessorService.process(job, done));
 		q.process('exportCustomEmojis', (job, done) => this.exportCustomEmojisProcessorService.process(job, done));

@@ -31,6 +31,7 @@ type RemoteFolloweeFollowing = Following & {
 	followeeInbox: string;
 	followeeSharedInbox: string;
 };
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class FollowingEntityService {
@@ -42,22 +43,27 @@ export class FollowingEntityService {
 	) {
 	}
 
+	@bindThis
 	public isLocalFollower(following: Following): following is LocalFollowerFollowing {
 		return following.followerHost == null;
 	}
 
+	@bindThis
 	public isRemoteFollower(following: Following): following is RemoteFollowerFollowing {
 		return following.followerHost != null;
 	}
 
+	@bindThis
 	public isLocalFollowee(following: Following): following is LocalFolloweeFollowing {
 		return following.followeeHost == null;
 	}
 
+	@bindThis
 	public isRemoteFollowee(following: Following): following is RemoteFolloweeFollowing {
 		return following.followeeHost != null;
 	}
 
+	@bindThis
 	public async pack(
 		src: Following['id'] | Following,
 		me?: { id: User['id'] } | null | undefined,
@@ -84,6 +90,7 @@ export class FollowingEntityService {
 		});
 	}
 
+	@bindThis
 	public packMany(
 		followings: any[],
 		me?: { id: User['id'] } | null | undefined,

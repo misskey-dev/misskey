@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import { HttpRequestService } from './HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { bindThis } from '@/decorators.js';
 
 type CaptchaResponse = {
 	success: boolean;
@@ -19,6 +20,7 @@ export class CaptchaService {
 	) {
 	}
 
+	@bindThis
 	private async getCaptchaResponse(url: string, secret: string, response: string): Promise<CaptchaResponse> {
 		const params = new URLSearchParams({
 			secret,
@@ -45,6 +47,7 @@ export class CaptchaService {
 		return await res.json() as CaptchaResponse;
 	}	
 	
+	@bindThis
 	public async verifyRecaptcha(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
 			throw 'recaptcha-failed: no response provided';
@@ -60,6 +63,7 @@ export class CaptchaService {
 		}
 	}
 
+	@bindThis
 	public async verifyHcaptcha(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
 			throw 'hcaptcha-failed: no response provided';
@@ -75,6 +79,7 @@ export class CaptchaService {
 		}
 	}
 
+	@bindThis
 	public async verifyTurnstile(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
 			throw 'turnstile-failed: no response provided';

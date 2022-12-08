@@ -2,6 +2,9 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PathOrFileDescriptor, readFileSync } from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
+import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter.js';
+import { FastifyAdapter } from '@bull-board/fastify';
 import ms from 'ms';
 import sharp from 'sharp';
 import pug from 'pug';
@@ -9,12 +12,13 @@ import { In, IsNull } from 'typeorm';
 import { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
+import fastifyCookie from '@fastify/cookie';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import { MetaService } from '@/core/MetaService.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/core/queue/QueueModule.js';
+import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/core/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
@@ -23,6 +27,7 @@ import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import type { ChannelsRepository, ClipsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { deepClone } from '@/misc/clone.js';
+import { bindThis } from '@/decorators.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -80,9 +85,10 @@ export class ClientServerService {
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {
-		this.createServer = this.createServer.bind(this);
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	private async manifestHandler(reply: FastifyReply) {
 		const res = deepClone(manifest);
 
@@ -96,29 +102,30 @@ export class ClientServerService {
 		return (res);
 	}
 
+	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		/* TODO
+		fastify.register(fastifyCookie, {});
+
 		//#region Bull Dashboard
 		const bullBoardPath = '/queue';
 
 		// Authenticate
-		app.use(async (request, reply) => {
-			if (ctx.path === bullBoardPath || ctx.path.startsWith(bullBoardPath + '/')) {
-				const token = ctx.cookies.get('token');
+		fastify.addHook('onRequest', async (request, reply) => {
+			if (request.url === bullBoardPath || request.url.startsWith(bullBoardPath + '/')) {
+				const token = request.cookies.token;
 				if (token == null) {
 					reply.code(401);
-					return;
+					throw new Error('login required');
 				}
 				const user = await this.usersRepository.findOneBy({ token });
 				if (user == null || !(user.isAdmin || user.isModerator)) {
 					reply.code(403);
-					return;
+					throw new Error('access denied');
 				}
 			}
-			await next();
 		});
 
-		const serverAdapter = new KoaAdapter();
+		const serverAdapter = new FastifyAdapter();
 
 		createBullBoard({
 			queues: [
@@ -134,9 +141,8 @@ export class ClientServerService {
 		});
 
 		serverAdapter.setBasePath(bullBoardPath);
-		app.use(serverAdapter.registerPlugin());
+		fastify.register(serverAdapter.registerPlugin(), { prefix: bullBoardPath });
 		//#endregion
-		*/
 
 		fastify.register(fastifyView, {
 			root: _dirname + '/views',

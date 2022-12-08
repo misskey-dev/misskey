@@ -5,12 +5,13 @@ export class I18n<T extends Record<string, any>> {
 		this.locale = locale;
 
 		//#region BIND
-		this.t = this.t.bind(this);
+		//this.t = this.t.bind(this);
 		//#endregion
 	}
 
 	// string にしているのは、ドット区切りでのパス指定を許可するため
 	// なるべくこのメソッド使うよりもlocale直接参照の方がvueのキャッシュ効いてパフォーマンスが良いかも
+	@bindThis
 	public t(key: string, args?: Record<string, any>): string {
 		try {
 			let str = key.split('.').reduce((o, i) => o[i], this.locale) as string;

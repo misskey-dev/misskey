@@ -6,9 +6,10 @@ import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Instance } from '@/models/entities/Instance.js';
-import { MetaService } from '../MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { UtilityService } from '../UtilityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class InstanceEntityService {
@@ -22,6 +23,7 @@ export class InstanceEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		instance: Instance,
 	): Promise<Packed<'FederationInstance'>> {
@@ -53,6 +55,7 @@ export class InstanceEntityService {
 		};
 	}
 
+	@bindThis
 	public packMany(
 		instances: Instance[],
 	) {

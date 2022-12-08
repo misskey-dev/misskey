@@ -29,7 +29,7 @@ describe('ActivityPub', () => {
 
 		it('Minimum Actor', async () => {
 			const { MockResolver } = await import('../misc/mock-resolver.js');
-			const { createPerson } = await import('../../src/remote/activitypub/models/person.js');
+			const { createPerson } = await import('../../src/activitypub/models/person.js');
 
 			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);
@@ -43,7 +43,7 @@ describe('ActivityPub', () => {
 
 		it('Minimum Note', async () => {
 			const { MockResolver } = await import('../misc/mock-resolver.js');
-			const { createNote } = await import('../../src/remote/activitypub/models/note.js');
+			const { createNote } = await import('../../src/activitypub/models/note.js');
 
 			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);
@@ -76,7 +76,7 @@ describe('ActivityPub', () => {
 
 		it('Actor', async () => {
 			const { MockResolver } = await import('../misc/mock-resolver.js');
-			const { createPerson } = await import('../../src/remote/activitypub/models/person.js');
+			const { createPerson } = await import('../../src/activitypub/models/person.js');
 
 			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);

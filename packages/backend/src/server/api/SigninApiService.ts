@@ -13,6 +13,7 @@ import { IdService } from '@/core/IdService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class SigninApiService {
@@ -42,6 +43,7 @@ export class SigninApiService {
 	) {
 	}
 
+	@bindThis
 	public async signin(
 		request: FastifyRequest<{
 			Body: {

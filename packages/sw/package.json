@@ -4,7 +4,7 @@
 	"scripts": {
 		"watch": "node build.js watch",
 		"build": "node build.js",
-		"lint": "eslint --quiet src/**/*.{ts}"
+		"lint": "eslint --quiet src/**/*.ts"
 	},
 	"dependencies": {
 		"esbuild": "^0.14.42",
@@ -12,6 +12,8 @@
 		"misskey-js": "0.0.14"
 	},
 	"devDependencies": {
-		"eslint": "^8.16.0"
+		"@typescript-eslint/parser": "^5.45.0",
+		"eslint": "^8.16.0",
+		"eslint-plugin-import": "^2.26.0"
 	}
 }

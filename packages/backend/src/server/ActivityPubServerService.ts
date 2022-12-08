@@ -8,7 +8,7 @@ import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
-import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { ILocalUser, User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
@@ -18,6 +18,7 @@ import type { Note } from '@/models/entities/Note.js';
 import { QueryService } from '@/core/QueryService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import type { FindOptionsWhere } from 'typeorm';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
@@ -57,9 +58,10 @@ export class ActivityPubServerService {
 		private userKeypairStoreService: UserKeypairStoreService,
 		private queryService: QueryService,
 	) {
-		this.createServer = this.createServer.bind(this);
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	private setResponseType(request: FastifyRequest, reply: FastifyReply): void {
 		const accept = request.accepts().type([ACTIVITY_JSON, LD_JSON]);
 		if (accept === LD_JSON) {
@@ -73,6 +75,7 @@ export class ActivityPubServerService {
 	 * Pack Create<Note> or Announce Activity
 	 * @param note Note
 	 */
+	@bindThis
 	private async packActivity(note: Note): Promise<any> {
 		if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length === 0)) {
 			const renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
@@ -82,6 +85,7 @@ export class ActivityPubServerService {
 		return this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 	}
 
+	@bindThis
 	private inbox(request: FastifyRequest, reply: FastifyReply) {
 		let signature;
 
@@ -97,6 +101,7 @@ export class ActivityPubServerService {
 		reply.code(202);
 	}
 
+	@bindThis
 	private async followers(
 		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
 		reply: FastifyReply,
@@ -184,6 +189,7 @@ export class ActivityPubServerService {
 		}
 	}
 
+	@bindThis
 	private async following(
 		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
 		reply: FastifyReply,
@@ -271,6 +277,7 @@ export class ActivityPubServerService {
 		}
 	}
 
+	@bindThis
 	private async featured(request: FastifyRequest<{ Params: { user: string; }; }>, reply: FastifyReply) {
 		const userId = request.params.user;
 
@@ -304,6 +311,7 @@ export class ActivityPubServerService {
 		return (this.apRendererService.renderActivity(rendered));
 	}
 
+	@bindThis
 	private async outbox(
 		request: FastifyRequest<{
 			Params: { user: string; };
@@ -390,6 +398,7 @@ export class ActivityPubServerService {
 		}
 	}
 
+	@bindThis
 	private async userInfo(request: FastifyRequest, reply: FastifyReply, user: User | null) {
 		if (user == null) {
 			reply.code(404);
@@ -401,6 +410,7 @@ export class ActivityPubServerService {
 		return (this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser)));
 	}
 
+	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addConstraintStrategy({
 			name: 'apOrHtml',
@@ -423,6 +433,8 @@ export class ActivityPubServerService {
 		});
 
 		fastify.register(fastifyAccepts);
+		fastify.addContentTypeParser('application/activity+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
+		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 
 		//#region Routing
 		// inbox
@@ -433,7 +445,7 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
-				visibility: In(['public' as const, 'home' as const]),
+				visibility: In(['public', 'home']),
 				localOnly: false,
 			});
 
@@ -462,7 +474,7 @@ export class ActivityPubServerService {
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				userHost: IsNull(),
-				visibility: In(['public' as const, 'home' as const]),
+				visibility: In(['public', 'home']),
 				localOnly: false,
 			});
 

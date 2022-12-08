@@ -25,6 +25,7 @@ import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IActivity, IObject } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApRendererService {
@@ -59,6 +60,7 @@ export class ApRendererService {
 	) {
 	}
 
+	@bindThis
 	public renderAccept(object: any, user: { id: User['id']; host: null }) {
 		return {
 			type: 'Accept',
@@ -67,6 +69,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderAdd(user: ILocalUser, target: any, object: any) {
 		return {
 			type: 'Add',
@@ -76,6 +79,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderAnnounce(object: any, note: Note) {
 		const attributedTo = `${this.config.url}/users/${note.userId}`;
 
@@ -108,6 +112,7 @@ export class ApRendererService {
 	 *
 	 * @param block The block to be rendered. The blockee relation must be loaded.
 	 */
+	@bindThis
 	public renderBlock(block: Blocking) {
 		if (block.blockee?.uri == null) {
 			throw new Error('renderBlock: missing blockee uri');
@@ -121,6 +126,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderCreate(object: any, note: Note) {
 		const activity = {
 			id: `${this.config.url}/notes/${note.id}/activity`,
@@ -136,6 +142,7 @@ export class ApRendererService {
 		return activity;
 	}
 
+	@bindThis
 	public renderDelete(object: any, user: { id: User['id']; host: null }) {
 		return {
 			type: 'Delete',
@@ -145,6 +152,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderDocument(file: DriveFile) {
 		return {
 			type: 'Document',
@@ -154,6 +162,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderEmoji(emoji: Emoji) {
 		return {
 			id: `${this.config.url}/emojis/${emoji.name}`,
@@ -170,6 +179,7 @@ export class ApRendererService {
 
 	// to anonymise reporters, the reporting actor must be a system user
 	// object has to be a uri or array of uris
+	@bindThis
 	public renderFlag(user: ILocalUser, object: [string], content: string) {
 		return {
 			type: 'Flag',
@@ -179,6 +189,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderFollowRelay(relay: Relay, relayActor: ILocalUser) {
 		const follow = {
 			id: `${this.config.url}/activities/follow-relay/${relay.id}`,
@@ -194,11 +205,13 @@ export class ApRendererService {
 	 * Convert (local|remote)(Follower|Followee)ID to URL
 	 * @param id Follower|Followee ID
 	 */
+	@bindThis
 	public async renderFollowUser(id: User['id']) {
 		const user = await this.usersRepository.findOneByOrFail({ id: id });
 		return this.userEntityService.isLocalUser(user) ? `${this.config.url}/users/${user.id}` : user.uri;
 	}
 
+	@bindThis
 	public renderFollow(
 		follower: { id: User['id']; host: User['host']; uri: User['host'] },
 		followee: { id: User['id']; host: User['host']; uri: User['host'] },
@@ -214,6 +227,7 @@ export class ApRendererService {
 		return follow;
 	}
 
+	@bindThis
 	public renderHashtag(tag: string) {
 		return {
 			type: 'Hashtag',
@@ -222,6 +236,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderImage(file: DriveFile) {
 		return {
 			type: 'Image',
@@ -231,6 +246,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderKey(user: ILocalUser, key: UserKeypair, postfix?: string) {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
@@ -243,6 +259,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }) {
 		const reaction = noteReaction.reaction;
 
@@ -268,6 +285,7 @@ export class ApRendererService {
 		return object;
 	}
 
+	@bindThis
 	public renderMention(mention: User) {
 		return {
 			type: 'Mention',
@@ -276,6 +294,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IObject> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
@@ -420,6 +439,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public async renderPerson(user: ILocalUser) {
 		const id = `${this.config.url}/users/${user.id}`;
 		const isSystem = !!user.username.match(/\./);
@@ -496,6 +516,7 @@ export class ApRendererService {
 		return person;
 	}
 
+	@bindThis
 	public async renderQuestion(user: { id: User['id'] }, note: Note, poll: Poll) {
 		const question = {
 			type: 'Question',
@@ -515,6 +536,7 @@ export class ApRendererService {
 		return question;
 	}
 
+	@bindThis
 	public renderRead(user: { id: User['id'] }, message: MessagingMessage) {
 		return {
 			type: 'Read',
@@ -523,6 +545,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderReject(object: any, user: { id: User['id'] }) {
 		return {
 			type: 'Reject',
@@ -531,6 +554,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderRemove(user: { id: User['id'] }, target: any, object: any) {
 		return {
 			type: 'Remove',
@@ -540,6 +564,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderTombstone(id: string) {
 		return {
 			id,
@@ -547,6 +572,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderUndo(object: any, user: { id: User['id'] }) {
 		if (object == null) return null;
 		const id = typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
@@ -560,6 +586,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderUpdate(object: any, user: { id: User['id'] }) {
 		const activity = {
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
@@ -573,6 +600,7 @@ export class ApRendererService {
 		return activity;
 	}
 
+	@bindThis
 	public renderVote(user: { id: User['id'] }, vote: PollVote, note: Note, poll: Poll, pollOwner: IRemoteUser) {
 		return {
 			id: `${this.config.url}/users/${user.id}#votes/${vote.id}/activity`,
@@ -591,6 +619,7 @@ export class ApRendererService {
 		};
 	}
 
+	@bindThis
 	public renderActivity(x: any): IActivity | null {
 		if (x == null) return null;
 	
@@ -632,6 +661,7 @@ export class ApRendererService {
 		}, x);
 	}
 	
+	@bindThis
 	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 	
@@ -651,6 +681,7 @@ export class ApRendererService {
 	 * @param prev URL of prev page (optional)
 	 * @param next URL of next page (optional)
 	 */
+	@bindThis
 	public renderOrderedCollectionPage(id: string, totalItems: any, orderedItems: any, partOf: string, prev?: string, next?: string) {
 		const page = {
 			id,
@@ -674,6 +705,7 @@ export class ApRendererService {
 	 * @param last URL of last page (optional)
 	 * @param orderedItems attached objects (optional)
 	 */
+	@bindThis
 	public renderOrderedCollection(id: string | null, totalItems: any, first?: string, last?: string, orderedItems?: IObject[]) {
 		const page: any = {
 			id,
@@ -688,6 +720,7 @@ export class ApRendererService {
 		return page;
 	}
 
+	@bindThis
 	private async getEmojis(names: string[]): Promise<Emoji[]> {
 		if (names == null || names.length === 0) return [];
 

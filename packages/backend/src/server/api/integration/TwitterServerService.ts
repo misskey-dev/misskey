@@ -13,6 +13,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { bindThis } from '@/decorators.js';
 import { SigninService } from '../SigninService.js';
 
 @Injectable()
@@ -36,9 +37,10 @@ export class TwitterServerService {
 		private metaService: MetaService,
 		private signinService: SigninService,
 	) {
-		this.create = this.create.bind(this);
+		//this.create = this.create.bind(this);
 	}
 
+	@bindThis
 	public create(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.get('/disconnect/twitter', async (request, reply) => {
 			if (!this.compareOrigin(request)) {
@@ -110,7 +112,7 @@ export class TwitterServerService {
 
 			this.redisClient.set(sessid, JSON.stringify(twCtx));
 
-			reply.cookies.set('signin_with_twitter_sid', sessid, {
+			reply.setCookie('signin_with_twitter_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,
@@ -125,7 +127,7 @@ export class TwitterServerService {
 			const twAuth = await getTwAuth();
 
 			if (userToken == null) {
-				const sessid = request.cookies.get('signin_with_twitter_sid');
+				const sessid = request.cookies['signin_with_twitter_sid'];
 
 				if (sessid == null) {
 					throw new FastifyReplyError(400, 'invalid session');
@@ -205,10 +207,12 @@ export class TwitterServerService {
 		done();
 	}
 
+	@bindThis
 	private getUserToken(request: FastifyRequest): string | null {
 		return ((request.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
+	@bindThis
 	private compareOrigin(request: FastifyRequest): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
