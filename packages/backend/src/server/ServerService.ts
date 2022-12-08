@@ -150,6 +150,6 @@ export class ServerService {
 			}
 		});
 
-		fastify.listen({ port: this.config.port, host: this.config.host ?? 'localhost' });
+		fastify.listen({ port: this.config.port, host: '0.0.0.0' });
 	}
 }
