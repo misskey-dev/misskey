@@ -2,21 +2,10 @@ import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import fetch from 'node-fetch';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { bindThis } from '@/decorators.js';
 import { CONTEXTS } from './misc/contexts.js';
 
 // RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
-
-@Injectable()
-export class LdSignatureService {
-	constructor(
-		private httpRequestService: HttpRequestService,
-	) {
-	}
-
-	public use(): LdSignature {
-		return new LdSignature(this.httpRequestService);
-	}
-}
 
 class LdSignature {
 	public debug = false;
@@ -28,6 +17,7 @@ class LdSignature {
 	) {
 	}
 
+	@bindThis
 	public async signRsaSignature2017(data: any, privateKey: string, creator: string, domain?: string, created?: Date): Promise<any> {
 		const options = {
 			type: 'RsaSignature2017',
@@ -64,6 +54,7 @@ class LdSignature {
 		};
 	}
 
+	@bindThis
 	public async verifyRsaSignature2017(data: any, publicKey: string): Promise<boolean> {
 		const toBeSigned = await this.createVerifyData(data, data.signature);
 		const verifier = crypto.createVerify('sha256');
@@ -71,6 +62,7 @@ class LdSignature {
 		return verifier.verify(publicKey, data.signature.signatureValue, 'base64');
 	}
 
+	@bindThis
 	public async createVerifyData(data: any, options: any) {
 		const transformedOptions = {
 			...options,
@@ -90,11 +82,13 @@ class LdSignature {
 		return verifyData;
 	}
 
+	@bindThis
 	public async normalize(data: any) {
 		const customLoader = this.getLoader();
 		return 42;
 	}
 
+	@bindThis
 	private getLoader() {
 		return async (url: string): Promise<any> => {
 			if (!url.match('^https?\:\/\/')) throw `Invalid URL ${url}`;
@@ -120,6 +114,7 @@ class LdSignature {
 		};
 	}
 
+	@bindThis
 	private async fetchDocument(url: string) {
 		const json = await fetch(url, {
 			headers: {
@@ -139,9 +134,23 @@ class LdSignature {
 		return json;
 	}
 
+	@bindThis
 	public sha256(data: string): string {
 		const hash = crypto.createHash('sha256');
 		hash.update(data);
 		return hash.digest('hex');
+	}
+}
+
+@Injectable()
+export class LdSignatureService {
+	constructor(
+		private httpRequestService: HttpRequestService,
+	) {
+	}
+
+	@bindThis
+	public use(): LdSignature {
+		return new LdSignature(this.httpRequestService);
 	}
 }

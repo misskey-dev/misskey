@@ -9,6 +9,7 @@ import type { Page } from '@/models/entities/Page.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class PageEntityService {
@@ -27,6 +28,7 @@ export class PageEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Page['id'] | Page,
 		me?: { id: User['id'] } | null | undefined,
@@ -99,6 +101,7 @@ export class PageEntityService {
 		});
 	}
 
+	@bindThis
 	public packMany(
 		pages: Page[],
 		me?: { id: User['id'] } | null | undefined,

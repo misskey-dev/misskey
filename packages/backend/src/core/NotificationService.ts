@@ -5,9 +5,10 @@ import type { NotificationsRepository } from '@/models/index.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Notification } from '@/models/entities/Notification.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from './GlobalEventService.js';
 import { PushNotificationService } from './PushNotificationService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NotificationService {
@@ -21,6 +22,7 @@ export class NotificationService {
 	) {
 	}
 
+	@bindThis
 	public async readNotification(
 		userId: User['id'],
 		notificationIds: Notification['id'][],
@@ -42,6 +44,7 @@ export class NotificationService {
 		else return this.postReadNotifications(userId, notificationIds);
 	}
 
+	@bindThis
 	public async readNotificationByQuery(
 		userId: User['id'],
 		query: Record<string, any>,
@@ -55,11 +58,13 @@ export class NotificationService {
 		return this.readNotification(userId, notificationIds);
 	}
 
+	@bindThis
 	private postReadAllNotifications(userId: User['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
 		return this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
+	@bindThis
 	private postReadNotifications(userId: User['id'], notificationIds: Notification['id'][]) {
 		this.globalEventService.publishMainStream(userId, 'readNotifications', notificationIds);
 		return this.pushNotificationService.pushNotification(userId, 'readNotifications', { notificationIds });

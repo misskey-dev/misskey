@@ -19,6 +19,7 @@ type PackOptions = {
 	self?: boolean,
 	withUser?: boolean,
 };
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DriveFileEntityService {
@@ -44,6 +45,7 @@ export class DriveFileEntityService {
 	) {
 	}
 	
+	@bindThis
 	public validateFileName(name: string): boolean {
 		return (
 			(name.trim().length > 0) &&
@@ -54,6 +56,7 @@ export class DriveFileEntityService {
 		);
 	}
 
+	@bindThis
 	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
 			const properties = deepClone(file.properties);
@@ -67,6 +70,7 @@ export class DriveFileEntityService {
 		return file.properties;
 	}
 
+	@bindThis
 	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && this.config.mediaProxy != null) {
@@ -85,11 +89,12 @@ export class DriveFileEntityService {
 			}
 		}
 
-		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/svg+xml'].includes(file.type);
+		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/avif', 'image/svg+xml'].includes(file.type);
 
 		return thumbnail ? (file.thumbnailUrl ?? (isImage ? (file.webpublicUrl ?? file.url) : null)) : (file.webpublicUrl ?? file.url);
 	}
 
+	@bindThis
 	public async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
@@ -103,6 +108,7 @@ export class DriveFileEntityService {
 		return parseInt(sum, 10) ?? 0;
 	}
 
+	@bindThis
 	public async calcDriveUsageOfHost(host: string): Promise<number> {
 		const { sum } = await this.driveFilesRepository
 			.createQueryBuilder('file')
@@ -114,6 +120,7 @@ export class DriveFileEntityService {
 		return parseInt(sum, 10) ?? 0;
 	}
 
+	@bindThis
 	public async calcDriveUsageOfLocal(): Promise<number> {
 		const { sum } = await this.driveFilesRepository
 			.createQueryBuilder('file')
@@ -125,6 +132,7 @@ export class DriveFileEntityService {
 		return parseInt(sum, 10) ?? 0;
 	}
 
+	@bindThis
 	public async calcDriveUsageOfRemote(): Promise<number> {
 		const { sum } = await this.driveFilesRepository
 			.createQueryBuilder('file')
@@ -136,6 +144,7 @@ export class DriveFileEntityService {
 		return parseInt(sum, 10) ?? 0;
 	}
 
+	@bindThis
 	public async pack(
 		src: DriveFile['id'] | DriveFile,
 		options?: PackOptions,
@@ -169,6 +178,7 @@ export class DriveFileEntityService {
 		});
 	}
 
+	@bindThis
 	public async packNullable(
 		src: DriveFile['id'] | DriveFile,
 		options?: PackOptions,
@@ -203,6 +213,7 @@ export class DriveFileEntityService {
 		});
 	}
 
+	@bindThis
 	public async packMany(
 		files: (DriveFile['id'] | DriveFile)[],
 		options?: PackOptions,

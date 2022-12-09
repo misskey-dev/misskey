@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/test-intersection.js';
 import type { KVs } from '../core.js';
@@ -31,12 +32,14 @@ export default class TestIntersectionChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async addA(key: string): Promise<void> {
 		await this.commit({
 			a: [key],
 		});
 	}
 
+	@bindThis
 	public async addB(key: string): Promise<void> {
 		await this.commit({
 			b: [key],

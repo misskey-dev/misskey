@@ -9,7 +9,8 @@ import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { HttpRequestService } from './HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { bindThis } from '@/decorators.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
@@ -46,6 +47,7 @@ export class FetchInstanceMetadataService {
 		this.logger = this.loggerService.getLogger('metadata', 'cyan');
 	}
 
+	@bindThis
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
 		const unlock = await this.appLockService.getFetchInstanceMetadataLock(instance.host);
 	
@@ -105,6 +107,7 @@ export class FetchInstanceMetadataService {
 		}
 	}
 
+	@bindThis
 	private async fetchNodeinfo(instance: Instance): Promise<NodeInfo> {
 		this.logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 	
@@ -148,6 +151,7 @@ export class FetchInstanceMetadataService {
 		}
 	}
 
+	@bindThis
 	private async fetchDom(instance: Instance): Promise<DOMWindow['document']> {
 		this.logger.info(`Fetching HTML of ${instance.host} ...`);
 	
@@ -161,6 +165,7 @@ export class FetchInstanceMetadataService {
 		return doc;
 	}
 
+	@bindThis
 	private async fetchManifest(instance: Instance): Promise<Record<string, unknown> | null> {
 		const url = 'https://' + instance.host;
 	
@@ -171,6 +176,7 @@ export class FetchInstanceMetadataService {
 		return manifest;
 	}
 
+	@bindThis
 	private async fetchFaviconUrl(instance: Instance, doc: DOMWindow['document'] | null): Promise<string | null> {
 		const url = 'https://' + instance.host;
 	
@@ -198,6 +204,7 @@ export class FetchInstanceMetadataService {
 		return null;
 	}
 
+	@bindThis
 	private async fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
 			const url = 'https://' + instance.host;
@@ -226,6 +233,7 @@ export class FetchInstanceMetadataService {
 		return null;
 	}
 
+	@bindThis
 	private async getThemeColor(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		const themeColor = info?.metadata?.themeColor ?? doc?.querySelector('meta[name="theme-color"]')?.getAttribute('content') ?? manifest?.theme_color;
 	
@@ -237,6 +245,7 @@ export class FetchInstanceMetadataService {
 		return null;
 	}
 
+	@bindThis
 	private async getSiteName(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeName === 'string') {
@@ -261,6 +270,7 @@ export class FetchInstanceMetadataService {
 		return null;
 	}
 
+	@bindThis
 	private async getDescription(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeDescription === 'string') {

@@ -312,7 +312,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 	overflow: auto;
 
 	> .body {
-		min-height: 80vh;
+		min-height: 80%;
 
 		.more {
 			display: block;

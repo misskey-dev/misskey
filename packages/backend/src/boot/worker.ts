@@ -4,13 +4,13 @@ import { envOption } from '@/env.js';
 import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { ServerService } from '@/server/ServerService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
-import { AppModule } from '../AppModule.js';
+import { RootModule } from '../RootModule.js';
 
 /**
  * Init worker process
  */
 export async function workerMain() {
-	const app = await NestFactory.createApplicationContext(AppModule);
+	const app = await NestFactory.createApplicationContext(RootModule);
 	app.enableShutdownHooks();
 
 	// start server

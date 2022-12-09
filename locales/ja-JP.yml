@@ -1790,7 +1790,7 @@ _deck:
   swapRight: "右に移動"
   swapUp: "上に移動"
   swapDown: "下に移動"
-  stackLeft: "左に重ねる"
+  stackLeft: "左にスタック"
   popRight: "右に出す"
   profile: "プロファイル"
   newProfile: "新規プロファイル"

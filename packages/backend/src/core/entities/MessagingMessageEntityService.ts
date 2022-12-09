@@ -9,6 +9,7 @@ import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 import { UserGroupEntityService } from './UserGroupEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class MessagingMessageEntityService {
@@ -22,6 +23,7 @@ export class MessagingMessageEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
 		me?: { id: User['id'] } | null | undefined,

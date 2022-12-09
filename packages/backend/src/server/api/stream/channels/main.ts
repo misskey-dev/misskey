@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository } from '@/models/index.js';
 import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
 class MainChannel extends Channel {
@@ -18,6 +19,7 @@ class MainChannel extends Channel {
 		super(id, connection);
 	}
 
+	@bindThis
 	public async init(params: any) {
 		// Subscribe main stream channel
 		this.subscriber.on(`mainStream:${this.user!.id}`, async data => {
@@ -66,6 +68,7 @@ export class MainChannelService {
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): MainChannel {
 		return new MainChannel(
 			this.noteEntityService,

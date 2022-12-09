@@ -8,6 +8,7 @@ export type IImage = {
 	ext: string | null;
 	type: string;
 };
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ImageProcessingService {
@@ -21,10 +22,12 @@ export class ImageProcessingService {
 	 * Convert to JPEG
 	 *   with resize, remove metadata, resolve orientation, stop animation
 	 */
+	@bindThis
 	public async convertToJpeg(path: string, width: number, height: number): Promise<IImage> {
 		return this.convertSharpToJpeg(await sharp(path), width, height);
 	}
 
+	@bindThis
 	public async convertSharpToJpeg(sharp: sharp.Sharp, width: number, height: number): Promise<IImage> {
 		const data = await sharp
 			.resize(width, height, {
@@ -49,10 +52,12 @@ export class ImageProcessingService {
 	 * Convert to WebP
 	 *   with resize, remove metadata, resolve orientation, stop animation
 	 */
+	@bindThis
 	public async convertToWebp(path: string, width: number, height: number, quality = 85): Promise<IImage> {
 		return this.convertSharpToWebp(await sharp(path), width, height, quality);
 	}
 
+	@bindThis
 	public async convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number, quality = 85): Promise<IImage> {
 		const data = await sharp
 			.resize(width, height, {
@@ -76,10 +81,12 @@ export class ImageProcessingService {
 	 * Convert to PNG
 	 *   with resize, remove metadata, resolve orientation, stop animation
 	 */
+	@bindThis
 	public async convertToPng(path: string, width: number, height: number): Promise<IImage> {
 		return this.convertSharpToPng(await sharp(path), width, height);
 	}
 
+	@bindThis
 	public async convertSharpToPng(sharp: sharp.Sharp, width: number, height: number): Promise<IImage> {
 		const data = await sharp
 			.resize(width, height, {

@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { AppLockService } from '@/core/AppLockService.js';
 import type { User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/active-users.js';
@@ -36,6 +37,7 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async read(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
 		await this.commit({
 			'read': [user.id],
@@ -48,6 +50,7 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 		});
 	}
 
+	@bindThis
 	public async write(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
 		await this.commit({
 			'write': [user.id],

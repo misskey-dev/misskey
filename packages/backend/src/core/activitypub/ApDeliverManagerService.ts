@@ -6,6 +6,7 @@ import type { Config } from '@/config.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 interface IRecipe {
 	type: string;
@@ -48,6 +49,7 @@ export class ApDeliverManagerService {
 	 * @param activity Activity
 	 * @param from Followee
 	 */
+	@bindThis
 	public async deliverToFollowers(actor: { id: ILocalUser['id']; host: null; }, activity: any) {
 		const manager = new DeliverManager(
 			this.userEntityService,
@@ -65,6 +67,7 @@ export class ApDeliverManagerService {
 	 * @param activity Activity
 	 * @param to Target user
 	 */
+	@bindThis
 	public async deliverToUser(actor: { id: ILocalUser['id']; host: null; }, activity: any, to: IRemoteUser) {
 		const manager = new DeliverManager(
 			this.userEntityService,
@@ -77,6 +80,7 @@ export class ApDeliverManagerService {
 		await manager.execute();
 	}
 
+	@bindThis
 	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: any) {
 		return new DeliverManager(
 			this.userEntityService,
@@ -114,6 +118,7 @@ class DeliverManager {
 	/**
 	 * Add recipe for followers deliver
 	 */
+	@bindThis
 	public addFollowersRecipe() {
 		const deliver = {
 			type: 'Followers',
@@ -126,6 +131,7 @@ class DeliverManager {
 	 * Add recipe for direct deliver
 	 * @param to To
 	 */
+	@bindThis
 	public addDirectRecipe(to: IRemoteUser) {
 		const recipe = {
 			type: 'Direct',
@@ -139,6 +145,7 @@ class DeliverManager {
 	 * Add recipe
 	 * @param recipe Recipe
 	 */
+	@bindThis
 	public addRecipe(recipe: IRecipe) {
 		this.recipes.push(recipe);
 	}
@@ -146,6 +153,7 @@ class DeliverManager {
 	/**
 	 * Execute delivers
 	 */
+	@bindThis
 	public async execute() {
 		if (!this.userEntityService.isLocalUser(this.actor)) return;
 

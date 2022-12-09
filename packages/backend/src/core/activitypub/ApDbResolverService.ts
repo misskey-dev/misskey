@@ -9,6 +9,7 @@ import type { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
+import { bindThis } from '@/decorators.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
@@ -57,6 +58,7 @@ export class ApDbResolverService {
 		this.publicKeyByUserIdCache = new Cache<UserPublickey | null>(Infinity);
 	}
 
+	@bindThis
 	public parseUri(value: string | IObject): UriParseResult {
 		const uri = getApId(value);
 	
@@ -82,6 +84,7 @@ export class ApDbResolverService {
 	/**
 	 * AP Note => Misskey Note in DB
 	 */
+	@bindThis
 	public async getNoteFromApId(value: string | IObject): Promise<Note | null> {
 		const parsed = this.parseUri(value);
 
@@ -98,6 +101,7 @@ export class ApDbResolverService {
 		}
 	}
 
+	@bindThis
 	public async getMessageFromApId(value: string | IObject): Promise<MessagingMessage | null> {
 		const parsed = this.parseUri(value);
 
@@ -117,6 +121,7 @@ export class ApDbResolverService {
 	/**
 	 * AP Person => Misskey User in DB
 	 */
+	@bindThis
 	public async getUserFromApId(value: string | IObject): Promise<CacheableUser | null> {
 		const parsed = this.parseUri(value);
 
@@ -136,6 +141,7 @@ export class ApDbResolverService {
 	/**
 	 * AP KeyId => Misskey User and Key
 	 */
+	@bindThis
 	public async getAuthUserFromKeyId(keyId: string): Promise<{
 		user: CacheableRemoteUser;
 		key: UserPublickey;
@@ -161,6 +167,7 @@ export class ApDbResolverService {
 	/**
 	 * AP Actor id => Misskey User and Key
 	 */
+	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
 		user: CacheableRemoteUser;
 		key: UserPublickey | null;

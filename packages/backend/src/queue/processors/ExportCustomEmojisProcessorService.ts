@@ -14,6 +14,7 @@ import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ExportCustomEmojisProcessorService {
@@ -36,6 +37,7 @@ export class ExportCustomEmojisProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-custom-emojis');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job, done: () => void): Promise<void> {
 		this.logger.info('Exporting custom emojis ...');
 

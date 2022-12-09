@@ -5,6 +5,7 @@ import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { MessagingService } from '@/core/MessagingService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 import type { StreamMessages } from '../types.js';
 
@@ -31,11 +32,12 @@ class MessagingChannel extends Channel {
 		connection: Channel['connection'],
 	) {
 		super(id, connection);
-		this.onEvent = this.onEvent.bind(this);
-		this.onMessage = this.onMessage.bind(this);
-		this.emitTypers = this.emitTypers.bind(this);
+		//this.onEvent = this.onEvent.bind(this);
+		//this.onMessage = this.onMessage.bind(this);
+		//this.emitTypers = this.emitTypers.bind(this);
 	}
 
+	@bindThis
 	public async init(params: any) {
 		this.otherpartyId = params.otherparty;
 		this.otherparty = this.otherpartyId ? await this.usersRepository.findOneByOrFail({ id: this.otherpartyId }) : null;
@@ -63,6 +65,7 @@ class MessagingChannel extends Channel {
 		this.subscriber.on(this.subCh, this.onEvent);
 	}
 
+	@bindThis
 	private onEvent(data: StreamMessages['messaging']['payload'] | StreamMessages['groupMessaging']['payload']) {
 		if (data.type === 'typing') {
 			const id = data.body;
@@ -76,6 +79,7 @@ class MessagingChannel extends Channel {
 		}
 	}
 
+	@bindThis
 	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'read':
@@ -95,6 +99,7 @@ class MessagingChannel extends Channel {
 		}
 	}
 
+	@bindThis
 	private async emitTypers() {
 		const now = new Date();
 
@@ -111,6 +116,7 @@ class MessagingChannel extends Channel {
 		});
 	}
 
+	@bindThis
 	public dispose() {
 		this.subscriber.off(this.subCh, this.onEvent);
 
@@ -138,6 +144,7 @@ export class MessagingChannelService {
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): MessagingChannel {
 		return new MessagingChannel(
 			this.usersRepository,

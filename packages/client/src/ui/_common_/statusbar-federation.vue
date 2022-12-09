@@ -4,7 +4,7 @@
 		<transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="instance in instances" :key="instance.id" class="item" :class="{ colored }" :style="{ background: colored ? instance.themeColor : null }">
-					<img v-if="instance.iconUrl" class="icon" :src="instance.iconUrl" alt=""/>
+					<img class="icon" :src="getInstanceIcon(instance)" alt=""/>
 					<MkA :to="`/instance-info/${instance.host}`" class="host _monospace">
 						{{ instance.host }}
 					</MkA>
@@ -27,6 +27,7 @@ import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { notePage } from '@/filters/note';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
 
 const props = defineProps<{
 	display?: 'marquee' | 'oneByOne';
@@ -56,6 +57,10 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 	immediate: true,
 	afterMounted: true,
 });
+
+function getInstanceIcon(instance): string {
+	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
+}
 </script>
 
 <style lang="scss" scoped>

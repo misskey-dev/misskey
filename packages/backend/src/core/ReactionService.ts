@@ -12,11 +12,12 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
-import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
-import { NoteEntityService } from './entities/NoteEntityService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { MetaService } from './MetaService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { bindThis } from '@/decorators.js';
 import { UtilityService } from './UtilityService.js';
 
 const legacies: Record<string, string> = {
@@ -81,6 +82,7 @@ export class ReactionService {
 	) {
 	}
 
+	@bindThis
 	public async create(user: { id: User['id']; host: User['host']; }, note: Note, reaction?: string) {
 		// Check blocking
 		if (note.userId !== user.id) {
@@ -196,6 +198,7 @@ export class ReactionService {
 		//#endregion
 	}
 
+	@bindThis
 	public async delete(user: { id: User['id']; host: User['host']; }, note: Note) {
 		// if already unreacted
 		const exist = await this.noteReactionsRepository.findOneBy({
@@ -244,11 +247,13 @@ export class ReactionService {
 		//#endregion
 	}
 	
+	@bindThis
 	public async getFallbackReaction(): Promise<string> {
 		const meta = await this.metaService.fetch();
 		return meta.useStarForReactionFallback ? '⭐' : '👍';
 	}
 
+	@bindThis
 	public convertLegacyReactions(reactions: Record<string, number>) {
 		const _reactions = {} as Record<string, number>;
 
@@ -279,6 +284,7 @@ export class ReactionService {
 		return _reactions2;
 	}
 
+	@bindThis
 	public async toDbReaction(reaction?: string | null, reacterHost?: string | null): Promise<string> {
 		if (reaction == null) return await this.getFallbackReaction();
 
@@ -311,6 +317,7 @@ export class ReactionService {
 		return await this.getFallbackReaction();
 	}
 
+	@bindThis
 	public decodeReaction(str: string): DecodedReaction {
 		const custom = str.match(/^:([\w+-]+)(?:@([\w.-]+))?:$/);
 
@@ -332,6 +339,7 @@ export class ReactionService {
 		};
 	}
 
+	@bindThis
 	public convertLegacyReaction(reaction: string): string {
 		reaction = this.decodeReaction(reaction).reaction;
 		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];

@@ -51,7 +51,7 @@
 			</div>
 
 			<div class="container env">
-				<div class="title">Enviroment</div>
+				<div class="title">Environment</div>
 				<div class="body">
 					<div class="number _panel">
 						<div class="label">Misskey</div>

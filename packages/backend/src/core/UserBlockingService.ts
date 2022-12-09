@@ -10,10 +10,11 @@ import { DI } from '@/di-symbols.js';
 import logger from '@/logger.js';
 import type { UsersRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import Logger from '@/logger.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { WebhookService } from './WebhookService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { LoggerService } from './LoggerService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { WebhookService } from '@/core/WebhookService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserBlockingService {
@@ -50,6 +51,7 @@ export class UserBlockingService {
 		this.logger = this.loggerService.getLogger('user-block');
 	}
 
+	@bindThis
 	public async block(blocker: User, blockee: User) {
 		await Promise.all([
 			this.cancelRequest(blocker, blockee),
@@ -76,6 +78,7 @@ export class UserBlockingService {
 		}
 	}
 
+	@bindThis
 	private async cancelRequest(follower: User, followee: User) {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
@@ -126,6 +129,7 @@ export class UserBlockingService {
 		}
 	}
 
+	@bindThis
 	private async unFollow(follower: User, followee: User) {
 		const following = await this.followingsRepository.findOneBy({
 			followerId: follower.id,
@@ -167,6 +171,7 @@ export class UserBlockingService {
 		}
 	}
 
+	@bindThis
 	private async removeFromList(listOwner: User, user: User) {
 		const userLists = await this.userListsRepository.findBy({
 			userId: listOwner.id,
@@ -180,6 +185,7 @@ export class UserBlockingService {
 		}
 	}
 
+	@bindThis
 	public async unblock(blocker: CacheableUser, blockee: CacheableUser) {
 		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,

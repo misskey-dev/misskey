@@ -11,8 +11,9 @@ import { Cache } from '@/misc/cache.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI } from '@/di-symbols.js';
 import type { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
-import { UtilityService } from './UtilityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
@@ -56,10 +57,12 @@ export class AntennaService implements OnApplicationShutdown {
 		this.redisSubscriber.on('message', this.onRedisMessage);
 	}
 
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		this.redisSubscriber.off('message', this.onRedisMessage);
 	}
 
+	@bindThis
 	private async onRedisMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
@@ -81,6 +84,7 @@ export class AntennaService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	public async addNoteToAntenna(antenna: Antenna, note: Note, noteUser: { id: User['id']; }): Promise<void> {
 		// 通知しない設定になっているか、自分自身の投稿なら既読にする
 		const read = !antenna.notify || (antenna.userId === noteUser.id);
@@ -133,6 +137,7 @@ export class AntennaService implements OnApplicationShutdown {
 	/**
 	 * noteUserFollowers / antennaUserFollowing はどちらか一方が指定されていればよい
 	 */
+	@bindThis
 	public async checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }, noteUserFollowers?: User['id'][], antennaUserFollowing?: User['id'][]): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 	
@@ -217,6 +222,7 @@ export class AntennaService implements OnApplicationShutdown {
 		return true;
 	}
 
+	@bindThis
 	public async getAntennas() {
 		if (!this.antennasFetched) {
 			this.antennas = await this.antennasRepository.find();

@@ -13,6 +13,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { UserGroupInvitationEntityService } from './UserGroupInvitationEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {
@@ -47,6 +48,7 @@ export class NotificationEntityService implements OnModuleInit {
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 	}
 
+	@bindThis
 	public async pack(
 		src: Notification['id'] | Notification,
 		options: {
@@ -120,6 +122,7 @@ export class NotificationEntityService implements OnModuleInit {
 		});
 	}
 
+	@bindThis
 	public async packMany(
 		notifications: Notification[],
 		meId: User['id'],
