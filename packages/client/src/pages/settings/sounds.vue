@@ -73,8 +73,13 @@ const soundsTypes = [
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
-	'noizenecio/kick_gaba',
+	'noizenecio/kick_gaba1',
 	'noizenecio/kick_gaba2',
+	'noizenecio/kick_gaba3',
+	'noizenecio/kick_gaba4',
+	'noizenecio/kick_gaba5',
+	'noizenecio/kick_gaba6',
+	'noizenecio/kick_gaba7',
 ];
 
 async function edit(type) {

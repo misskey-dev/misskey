@@ -72,6 +72,7 @@ function addService(target: { [x: string]: any }, source: IApPropertyValue) {
 		target[source.name.split(':')[2]] = service(id, username);
 	}
 }
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApPersonService implements OnModuleInit {
@@ -161,6 +162,7 @@ export class ApPersonService implements OnModuleInit {
 	 * @param x Fetched object
 	 * @param uri Fetch target URI
 	 */
+	@bindThis
 	private validateActor(x: IObject, uri: string): IActor {
 		const expectHost = this.utilityService.toPuny(new URL(uri).hostname);
 
@@ -224,6 +226,7 @@ export class ApPersonService implements OnModuleInit {
 	 *
 	 * Misskeyに対象のPersonが登録されていればそれを返します。
 	 */
+	@bindThis
 	public async fetchPerson(uri: string, resolver?: Resolver): Promise<CacheableUser | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
@@ -253,6 +256,7 @@ export class ApPersonService implements OnModuleInit {
 	/**
 	 * Personを作成します。
 	 */
+	@bindThis
 	public async createPerson(uri: string, resolver?: Resolver): Promise<User> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
@@ -390,7 +394,7 @@ export class ApPersonService implements OnModuleInit {
 	});
 	//#endregion
 
-	await this.updateFeatured(user!.id).catch(err => this.logger.error(err));
+	await this.updateFeatured(user!.id, resolver).catch(err => this.logger.error(err));
 
 	return user!;
 	}
@@ -402,6 +406,7 @@ export class ApPersonService implements OnModuleInit {
 	 * @param resolver Resolver
 	 * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
 	 */
+	@bindThis
 	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject): Promise<void> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
@@ -503,7 +508,7 @@ export class ApPersonService implements OnModuleInit {
 			followerSharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		});
 
-		await this.updateFeatured(exist.id).catch(err => this.logger.error(err));
+		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
 	}
 
 	/**
@@ -512,6 +517,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
+	@bindThis
 	public async resolvePerson(uri: string, resolver?: Resolver): Promise<CacheableUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
@@ -528,6 +534,7 @@ export class ApPersonService implements OnModuleInit {
 		return await this.createPerson(uri, resolver);
 	}
 
+	@bindThis
 	public analyzeAttachments(attachments: IObject | IObject[] | undefined) {
 		const fields: {
 		name: string,
@@ -551,14 +558,15 @@ export class ApPersonService implements OnModuleInit {
 		return { fields, services };
 	}
 
-	public async updateFeatured(userId: User['id']) {
+	@bindThis
+	public async updateFeatured(userId: User['id'], resolver?: Resolver) {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
 
 		this.logger.info(`Updating the featured: ${user.uri}`);
 
-		const resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		// Resolve to (Ordered)Collection Object
 		const collection = await resolver.resolveCollection(user.featured);

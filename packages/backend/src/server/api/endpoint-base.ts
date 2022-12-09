@@ -14,23 +14,28 @@ ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
 
 export type Response = Record<string, any> | void;
 
+type File = {
+	name: string | null;
+	path: string;
+};
+
 // TODO: paramsの型をT['params']のスキーマ定義から推論する
 type executor<T extends IEndpointMeta, Ps extends Schema> =
-	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
+	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: File, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
-	public exec: (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any, ip?: string | null, headers?: Record<string, string> | null) => Promise<any>;
+	public exec: (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => Promise<any>;
 
 	constructor(meta: T, paramDef: Ps, cb: executor<T, Ps>) {
 		const validate = ajv.compile(paramDef);
 
-		this.exec = (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: any, ip?: string | null, headers?: Record<string, string> | null) => {
+		this.exec = (params: any, user: T['requireCredential'] extends true ? CacheableLocalUser : CacheableLocalUser | null, token: AccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => {
 			let cleanup: undefined | (() => void) = undefined;
 	
 			if (meta.requireFile) {
 				cleanup = () => {
-					fs.unlink(file.path, () => {});
+					if (file) fs.unlink(file.path, () => {});
 				};
 	
 				if (file == null) return Promise.reject(new ApiError({

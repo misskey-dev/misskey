@@ -47,6 +47,8 @@ function thumbnail(image: misskey.entities.DriveFile): string {
 onMounted(() => {
 	const image = [
 		'image/jpeg',
+		'image/webp',
+		'image/avif',
 		'image/png',
 		'image/gif',
 		'image/apng',

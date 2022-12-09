@@ -68,7 +68,7 @@ let player = $ref({
 let playerEnabled = $ref(false);
 let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
-const embedId = `embed${Math.random().toString().replace(/\D/,'')}`;
+const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 let tweetHeight = $ref(150);
 
 const requestUrl = new URL(props.url);
@@ -86,7 +86,7 @@ const requestLang = (lang || 'ja-JP').replace('ja-KS', 'ja-JP');
 
 requestUrl.hash = '';
 
-fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
+window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
 	res.json().then(info => {
 		if (info.url == null) return;
 		title = info.title;

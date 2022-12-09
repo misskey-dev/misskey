@@ -18,7 +18,7 @@ export function createTempDir(): Promise<[string, () => void]> {
 			(e, path, cleanup) => {
 				if (e) return rej(e);
 				res([path, cleanup]);
-			}
+			},
 		);
 	});
 }

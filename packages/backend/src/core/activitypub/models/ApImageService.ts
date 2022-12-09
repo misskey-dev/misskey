@@ -11,6 +11,7 @@ import { DriveService } from '@/core/DriveService.js';
 import type Logger from '@/logger.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApImageService {
@@ -34,6 +35,7 @@ export class ApImageService {
 	/**
 	 * Imageを作成します。
 	 */
+	@bindThis
 	public async createImage(actor: CacheableRemoteUser, value: any): Promise<DriveFile> {
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
@@ -81,6 +83,7 @@ export class ApImageService {
 	 * Misskeyに対象のImageが登録されていればそれを返し、そうでなければ
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
+	@bindThis
 	public async resolveImage(actor: CacheableRemoteUser, value: any): Promise<DriveFile> {
 		// TODO
 

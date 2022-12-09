@@ -9,6 +9,7 @@ import { ApLoggerService } from '../ApLoggerService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IQuestion } from '../type.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApQuestionService {
@@ -30,6 +31,7 @@ export class ApQuestionService {
 		this.logger = this.apLoggerService.logger;
 	}
 
+	@bindThis
 	public async extractPollFromQuestion(source: string | IObject, resolver?: Resolver): Promise<IPoll> {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
@@ -65,7 +67,8 @@ export class ApQuestionService {
 	 * @param uri URI of AP Question object
 	 * @returns true if updated
 	 */
-	public async updateQuestion(value: any) {
+	@bindThis
+	public async updateQuestion(value: any, resolver?: Resolver) {
 		const uri = typeof value === 'string' ? value : value.id;
 
 		// URIがこのサーバーを指しているならスキップ
@@ -80,7 +83,7 @@ export class ApQuestionService {
 		//#endregion
 
 		// resolve new Question object
-		const resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = this.apResolverService.createResolver();
 		const question = await resolver.resolve(value) as IQuestion;
 		this.logger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
 

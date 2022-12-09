@@ -16,6 +16,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
@@ -68,6 +69,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 	}
 	
+	@bindThis
 	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
@@ -128,6 +130,7 @@ export class NoteEntityService implements OnModuleInit {
 		}
 	}
 
+	@bindThis
 	private async populatePoll(note: Note, meId: User['id'] | null) {
 		const poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 		const choices = poll.choices.map(c => ({
@@ -166,6 +169,7 @@ export class NoteEntityService implements OnModuleInit {
 		};
 	}
 
+	@bindThis
 	private async populateMyReaction(note: Note, meId: User['id'], _hint_?: {
 		myReactions: Map<Note['id'], NoteReaction | null>;
 	}) {
@@ -191,6 +195,7 @@ export class NoteEntityService implements OnModuleInit {
 		return undefined;
 	}
 
+	@bindThis
 	public async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
 		// This code must always be synchronized with the checks in generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
@@ -244,6 +249,7 @@ export class NoteEntityService implements OnModuleInit {
 		return true;
 	}
 
+	@bindThis
 	public async pack(
 		src: Note['id'] | Note,
 		me?: { id: User['id'] } | null | undefined,
@@ -353,6 +359,7 @@ export class NoteEntityService implements OnModuleInit {
 		return packed;
 	}
 
+	@bindThis
 	public async packMany(
 		notes: Note[],
 		me?: { id: User['id'] } | null | undefined,
@@ -388,6 +395,7 @@ export class NoteEntityService implements OnModuleInit {
 		})));
 	}
 
+	@bindThis
 	public async countSameRenotes(userId: string, renoteId: string, excludeNoteId: string | undefined): Promise<number> {
 		// 指定したユーザーの指定したノートのリノートがいくつあるか数える
 		const query = this.notesRepository.createQueryBuilder('note')

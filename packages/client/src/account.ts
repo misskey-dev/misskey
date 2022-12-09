@@ -33,12 +33,15 @@ export async function signout() {
 			const registration = await navigator.serviceWorker.ready;
 			const push = await registration.pushManager.getSubscription();
 			if (push) {
-				await fetch(`${apiUrl}/sw/unregister`, {
+				await window.fetch(`${apiUrl}/sw/unregister`, {
 					method: 'POST',
 					body: JSON.stringify({
 						i: $i.token,
 						endpoint: push.endpoint,
 					}),
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				});
 			}
 		}
@@ -80,32 +83,35 @@ export async function removeAccount(id: Account['id']) {
 function fetchAccount(token: string): Promise<Account> {
 	return new Promise((done, fail) => {
 		// Fetch user
-		fetch(`${apiUrl}/i`, {
+		window.fetch(`${apiUrl}/i`, {
 			method: 'POST',
 			body: JSON.stringify({
 				i: token,
 			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		})
-		.then(res => res.json())
-		.then(res => {
-			if (res.error) {
-				if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
-					showSuspendedDialog().then(() => {
-						signout();
-					});
+			.then(res => res.json())
+			.then(res => {
+				if (res.error) {
+					if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
+						showSuspendedDialog().then(() => {
+							signout();
+						});
+					} else {
+						alert({
+							type: 'error',
+							title: i18n.ts.failedToFetchAccountInformation,
+							text: JSON.stringify(res.error),
+						});
+					}
 				} else {
-					alert({
-						type: 'error',
-						title: i18n.ts.failedToFetchAccountInformation,
-						text: JSON.stringify(res.error),
-					});
+					res.token = token;
+					done(res);
 				}
-			} else {
-				res.token = token;
-				done(res);
-			}
-		})
-		.catch(fail);
+			})
+			.catch(fail);
 	});
 }
 

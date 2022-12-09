@@ -11,6 +11,7 @@ import { EmailService } from '@/core/EmailService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserDeleteJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DeleteAccountProcessorService {
@@ -39,6 +40,7 @@ export class DeleteAccountProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('delete-account');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | void> {
 		this.logger.info(`Deleting account of ${job.data.user.id} ...`);
 

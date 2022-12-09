@@ -25,12 +25,12 @@ export default defineComponent({
 	props: {
 		block: {
 			type: Object as PropType<PostBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -44,8 +44,8 @@ export default defineComponent({
 			handler() {
 				this.text = this.hpml.interpolate(this.block.text);
 			},
-			deep: true
-		}
+			deep: true,
+		},
 	},
 	methods: {
 		upload() {
@@ -59,14 +59,14 @@ export default defineComponent({
 						formData.append('folderId', this.$store.state.uploadFolder);
 					}
 
-					fetch(apiUrl + '/drive/files/create', {
+					window.fetch(apiUrl + '/drive/files/create', {
 						method: 'POST',
 						body: formData,
 					})
-					.then(response => response.json())
-					.then(f => {
-						ok(f);
-					});
+						.then(response => response.json())
+						.then(f => {
+							ok(f);
+						});
 				});
 			});
 			os.promiseDialog(promise);
@@ -81,8 +81,8 @@ export default defineComponent({
 			}).then(() => {
 				this.posted = true;
 			});
-		}
-	}
+		},
+	},
 });
 </script>
 

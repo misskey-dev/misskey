@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/test-unique.js';
 import type { KVs } from '../core.js';
@@ -31,6 +32,7 @@ export default class TestUniqueChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async uniqueIncrement(key: string): Promise<void> {
 		await this.commit({
 			foo: [key],

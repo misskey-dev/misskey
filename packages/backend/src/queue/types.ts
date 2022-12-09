@@ -2,7 +2,7 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
-import type { IActivity } from '@/core/remote/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import type httpSignature from '@peertube/http-signature';
 
 export type DeliverJobData = {

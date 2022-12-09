@@ -10,4 +10,4 @@ import { QueueProcessorModule } from '@/queue/QueueProcessorModule.js';
 		QueueProcessorModule,
 	],
 })
-export class AppModule {}
+export class RootModule {}

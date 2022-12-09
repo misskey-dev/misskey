@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import summaly from 'summaly';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -8,7 +9,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type Koa from 'koa';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UrlPreviewService {
@@ -28,6 +29,7 @@ export class UrlPreviewService {
 		this.logger = this.loggerService.getLogger('url-preview');
 	}
 
+	@bindThis
 	private wrap(url?: string): string | null {
 		return url != null
 			? url.match(/^https?:\/\//)
@@ -39,16 +41,20 @@ export class UrlPreviewService {
 			: null;
 	}
 
-	public async handle(ctx: Koa.Context) {
-		const url = ctx.query.url;
+	@bindThis
+	public async handle(
+		request: FastifyRequest<{ Querystring: { url: string; lang: string; } }>,
+		reply: FastifyReply,
+	) {
+		const url = request.query.url;
 		if (typeof url !== 'string') {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
-		const lang = ctx.query.lang;
+		const lang = request.query.lang;
 		if (Array.isArray(lang)) {
-			ctx.status = 400;
+			reply.code(400);
 			return;
 		}
 	
@@ -73,14 +79,14 @@ export class UrlPreviewService {
 			summary.thumbnail = this.wrap(summary.thumbnail);
 	
 			// Cache 7days
-			ctx.set('Cache-Control', 'max-age=604800, immutable');
+			reply.header('Cache-Control', 'max-age=604800, immutable');
 	
-			ctx.body = summary;
+			return summary;
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);
-			ctx.status = 200;
-			ctx.set('Cache-Control', 'max-age=86400, immutable');
-			ctx.body = '{}';
+			reply.code(200);
+			reply.header('Cache-Control', 'max-age=86400, immutable');
+			return {};
 		}
 	}
 }

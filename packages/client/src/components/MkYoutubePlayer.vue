@@ -39,7 +39,7 @@ const requestLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
 
 const ytFetch = (): void => {
 	fetching = true;
-	fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
+	window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
 		res.json().then(info => {
 			if (info.url == null) return;
 			title = info.title;

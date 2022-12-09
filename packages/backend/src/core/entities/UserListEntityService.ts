@@ -7,6 +7,7 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { UserList } from '@/models/entities/UserList.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserListEntityService {
@@ -21,6 +22,7 @@ export class UserListEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: UserList['id'] | UserList,
 	): Promise<Packed<'UserList'>> {

@@ -9,6 +9,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { WebhookDeliverJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class WebhookDeliverProcessorService {
@@ -27,6 +28,7 @@ export class WebhookDeliverProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('webhook');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<WebhookDeliverJobData>): Promise<string> {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);

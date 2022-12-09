@@ -4,6 +4,7 @@ import type { WebhooksRepository } from '@/models/index.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class WebhookService implements OnApplicationShutdown {
@@ -17,10 +18,11 @@ export class WebhookService implements OnApplicationShutdown {
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
 	) {
-		this.onMessage = this.onMessage.bind(this);
+		//this.onMessage = this.onMessage.bind(this);
 		this.redisSubscriber.on('message', this.onMessage);
 	}
 
+	@bindThis
 	public async getActiveWebhooks() {
 		if (!this.webhooksFetched) {
 			this.webhooks = await this.webhooksRepository.findBy({
@@ -32,6 +34,7 @@ export class WebhookService implements OnApplicationShutdown {
 		return this.webhooks;
 	}
 
+	@bindThis
 	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
@@ -64,6 +67,7 @@ export class WebhookService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		this.redisSubscriber.off('message', this.onMessage);
 	}

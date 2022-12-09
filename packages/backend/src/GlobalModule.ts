@@ -5,7 +5,7 @@ import { createRedisConnection } from '@/redis.js';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
 import { createPostgreDataSource } from './postgre.js';
-import { RepositoryModule } from './RepositoryModule.js';
+import { RepositoryModule } from './models/RepositoryModule.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
 const config = loadConfig();

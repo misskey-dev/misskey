@@ -4,6 +4,7 @@ import { DI } from '@/di-symbols.js';
 import type { User } from '@/models/entities/User.js';
 import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository } from '@/models/index.js';
 import type { SelectQueryBuilder } from 'typeorm';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class QueryService {
@@ -59,6 +60,7 @@ export class QueryService {
 	}	
 	
 	// ここでいうBlockedは被Blockedの意
+	@bindThis
 	public generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')
@@ -81,6 +83,7 @@ export class QueryService {
 		q.setParameters(blockingQuery.getParameters());
 	}
 
+	@bindThis
 	public generateBlockQueryForUsers(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockeeId')
@@ -97,6 +100,7 @@ export class QueryService {
 		q.setParameters(blockedQuery.getParameters());
 	}
 
+	@bindThis
 	public generateChannelQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null): void {
 		if (me == null) {
 			q.andWhere('note.channelId IS NULL');
@@ -118,6 +122,7 @@ export class QueryService {
 		}
 	}
 
+	@bindThis
 	public generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
 		const mutedQuery = this.mutedNotesRepository.createQueryBuilder('muted')
 			.select('muted.noteId')
@@ -128,6 +133,7 @@ export class QueryService {
 		q.setParameters(mutedQuery.getParameters());
 	}
 
+	@bindThis
 	public generateMutedNoteThreadQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
 		const mutedQuery = this.noteThreadMutingsRepository.createQueryBuilder('threadMuted')
 			.select('threadMuted.threadId')
@@ -142,6 +148,7 @@ export class QueryService {
 		q.setParameters(mutedQuery.getParameters());
 	}
 
+	@bindThis
 	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }, exclude?: User): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
@@ -186,6 +193,7 @@ export class QueryService {
 		q.setParameters(mutingInstanceQuery.getParameters());
 	}
 
+	@bindThis
 	public generateMutedUserQueryForUsers(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
@@ -196,6 +204,7 @@ export class QueryService {
 		q.setParameters(mutingQuery.getParameters());
 	}
 
+	@bindThis
 	public generateRepliesQuery(q: SelectQueryBuilder<any>, me?: Pick<User, 'id' | 'showTimelineReplies'> | null): void {
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb
@@ -221,6 +230,7 @@ export class QueryService {
 		}
 	}
 
+	@bindThis
 	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null): void {
 		// This code must always be synchronized with the checks in Notes.isVisibleForMe.
 		if (me == null) {

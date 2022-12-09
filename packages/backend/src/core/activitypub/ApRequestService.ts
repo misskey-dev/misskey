@@ -6,6 +6,7 @@ import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { bindThis } from '@/decorators.js';
 
 type Request = {
 	url: string;
@@ -36,6 +37,7 @@ export class ApRequestService {
 	) {
 	}
 
+	@bindThis
 	private createSignedPost(args: { key: PrivateKey, url: string, body: string, additionalHeaders: Record<string, string> }): Signed {
 		const u = new URL(args.url);
 		const digestHeader = `SHA-256=${crypto.createHash('sha256').update(args.body).digest('base64')}`;
@@ -61,6 +63,7 @@ export class ApRequestService {
 		};
 	}
 
+	@bindThis
 	private createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Signed {
 		const u = new URL(args.url);
 
@@ -84,6 +87,7 @@ export class ApRequestService {
 		};
 	}
 
+	@bindThis
 	private signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Signed {
 		const signingString = this.genSigningString(request, includeHeaders);
 		const signature = crypto.sign('sha256', Buffer.from(signingString), key.privateKeyPem).toString('base64');
@@ -101,6 +105,7 @@ export class ApRequestService {
 		};
 	}
 
+	@bindThis
 	private genSigningString(request: Request, includeHeaders: string[]): string {
 		request.headers = this.lcObjectKey(request.headers);
 
@@ -117,16 +122,19 @@ export class ApRequestService {
 		return results.join('\n');
 	}
 
+	@bindThis
 	private lcObjectKey(src: Record<string, string>): Record<string, string> {
 		const dst: Record<string, string> = {};
 		for (const key of Object.keys(src).filter(x => x !== '__proto__' && typeof src[x] === 'string')) dst[key.toLowerCase()] = src[key];
 		return dst;
 	}
 
+	@bindThis
 	private objectAssignWithLcKey(a: Record<string, string>, b: Record<string, string>): Record<string, string> {
 		return Object.assign(this.lcObjectKey(a), this.lcObjectKey(b));
 	}
 
+	@bindThis
 	public async signedPost(user: { id: User['id'] }, url: string, object: any) {
 		const body = JSON.stringify(object);
 
@@ -157,6 +165,7 @@ export class ApRequestService {
 	 * @param user http-signature user
 	 * @param url URL to fetch
 	 */
+	@bindThis
 	public async signedGet(url: string, user: { id: User['id'] }) {
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
 
