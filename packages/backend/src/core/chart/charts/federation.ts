@@ -61,7 +61,6 @@ export default class FederationChart extends Chart<typeof schema> {
 			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
-				// UtilitiyService.isBlockedHostとは条件が異なるため、結果も異なる可能性がある
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT LIKE ANY({:...blocked})', { blocked: meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
 				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
 				.getRawOne()
