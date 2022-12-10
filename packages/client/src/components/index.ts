@@ -1,61 +1,29 @@
-import { App } from 'vue';
+/*
+  If you edit this file, you should also edit @types/vue.d.ts.
+*/
+/*
+	Global components should be dynamic imported to "conciliate" vite v4.
+  https://github.com/misskey-dev/misskey/issues/9302, https://github.com/misskey-dev/misskey/pull/9303
+*/
 
-import Mfm from './global/MkMisskeyFlavoredMarkdown.vue';
-import MkA from './global/MkA.vue';
-import MkAcct from './global/MkAcct.vue';
-import MkAvatar from './global/MkAvatar.vue';
-import MkEmoji from './global/MkEmoji.vue';
-import MkUserName from './global/MkUserName.vue';
-import MkEllipsis from './global/MkEllipsis.vue';
-import MkTime from './global/MkTime.vue';
-import MkUrl from './global/MkUrl.vue';
-import I18n from './global/i18n';
-import RouterView from './global/RouterView.vue';
-import MkLoading from './global/MkLoading.vue';
-import MkError from './global/MkError.vue';
-import MkAd from './global/MkAd.vue';
-import MkPageHeader from './global/MkPageHeader.vue';
-import MkSpacer from './global/MkSpacer.vue';
-import MkStickyContainer from './global/MkStickyContainer.vue';
+import { App, defineAsyncComponent } from 'vue';
 
 export default function(app: App) {
-	app.component('I18n', I18n);
-	app.component('RouterView', RouterView);
-	app.component('Mfm', Mfm);
-	app.component('MkA', MkA);
-	app.component('MkAcct', MkAcct);
-	app.component('MkAvatar', MkAvatar);
-	app.component('MkEmoji', MkEmoji);
-	app.component('MkUserName', MkUserName);
-	app.component('MkEllipsis', MkEllipsis);
-	app.component('MkTime', MkTime);
-	app.component('MkUrl', MkUrl);
-	app.component('MkLoading', MkLoading);
-	app.component('MkError', MkError);
-	app.component('MkAd', MkAd);
-	app.component('MkPageHeader', MkPageHeader);
-	app.component('MkSpacer', MkSpacer);
-	app.component('MkStickyContainer', MkStickyContainer);
-}
-
-declare module '@vue/runtime-core' {
-	export interface GlobalComponents {
-		I18n: typeof I18n;
-		RouterView: typeof RouterView;
-		Mfm: typeof Mfm;
-		MkA: typeof MkA;
-		MkAcct: typeof MkAcct;
-		MkAvatar: typeof MkAvatar;
-		MkEmoji: typeof MkEmoji;
-		MkUserName: typeof MkUserName;
-		MkEllipsis: typeof MkEllipsis;
-		MkTime: typeof MkTime;
-		MkUrl: typeof MkUrl;
-		MkLoading: typeof MkLoading;
-		MkError: typeof MkError;
-		MkAd: typeof MkAd;
-		MkPageHeader: typeof MkPageHeader;
-		MkSpacer: typeof MkSpacer;
-		MkStickyContainer: typeof MkStickyContainer;
-	}
+	app.component('I18n', defineAsyncComponent(() => import('./global/i18n')));
+	app.component('RouterView', defineAsyncComponent(() => import('./global/RouterView.vue')));
+	app.component('Mfm', defineAsyncComponent(() => import('./global/MkMisskeyFlavoredMarkdown.vue')));
+	app.component('MkA', defineAsyncComponent(() => import('./global/MkA.vue')));
+	app.component('MkAcct', defineAsyncComponent(() => import('./global/MkAcct.vue')));
+	app.component('MkAvatar', defineAsyncComponent(() => import('./global/MkAvatar.vue')));
+	app.component('MkEmoji', defineAsyncComponent(() => import('./global/MkEmoji.vue')));
+	app.component('MkUserName', defineAsyncComponent(() => import('./global/MkUserName.vue')));
+	app.component('MkEllipsis', defineAsyncComponent(() => import('./global/MkEllipsis.vue')));
+	app.component('MkTime', defineAsyncComponent(() => import('./global/MkTime.vue')));
+	app.component('MkUrl', defineAsyncComponent(() => import('./global/MkUrl.vue')));
+	app.component('MkLoading', defineAsyncComponent(() => import('./global/MkLoading.vue')));
+	app.component('MkError', defineAsyncComponent(() => import('./global/MkError.vue')));
+	app.component('MkAd', defineAsyncComponent(() => import('./global/MkAd.vue')));
+	app.component('MkPageHeader', defineAsyncComponent(() => import('./global/MkPageHeader.vue')));
+	app.component('MkSpacer', defineAsyncComponent(() => import('./global/MkSpacer.vue')));
+	app.component('MkStickyContainer', defineAsyncComponent(() => import('./global/MkStickyContainer.vue')));
 }
