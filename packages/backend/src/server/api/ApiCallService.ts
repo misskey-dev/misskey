@@ -147,6 +147,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	private send(reply: FastifyReply, x?: any, y?: ApiError) {
 		if (x == null) {
 			reply.code(204);
+			reply.send();
 		} else if (typeof x === 'number' && y) {
 			reply.code(x);
 			reply.send({
