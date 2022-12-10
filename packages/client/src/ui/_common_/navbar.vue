@@ -139,6 +139,7 @@ function openInstanceMenu(ev: MouseEvent) {
 	}, {
 		type: 'link',
 		text: i18n.ts.aboutMisskey,
+		icon: 'fas fa-info-circle',
 		to: '/about-misskey',
 	}], ev.currentTarget ?? ev.target, {
 		align: 'left',
