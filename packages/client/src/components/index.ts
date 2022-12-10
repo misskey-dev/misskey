@@ -2,7 +2,7 @@
   If you edit this file, you should also edit @types/vue.d.ts.
 */
 /*
-	Global components should be dynamic imported to "conciliate" vite v4.
+	Global components should be dynamic imported because to "conciliate" vite v4.
   https://github.com/misskey-dev/misskey/issues/9302, https://github.com/misskey-dev/misskey/pull/9303
 */
 

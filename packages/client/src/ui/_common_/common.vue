@@ -58,8 +58,6 @@ if ($i) {
 </script>
 
 <style lang="scss">
-@use "../../style.scss";
-
 @keyframes dev-ticker-blink {
 	0% { opacity: 1; }
 	50% { opacity: 0; }
