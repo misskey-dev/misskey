@@ -2,8 +2,6 @@
  * Client entry point
  */
 
-import '@/style.scss';
-
 //#region account indexedDB migration
 import { set } from '@/scripts/idb-proxy';
 
