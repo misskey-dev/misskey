@@ -154,6 +154,9 @@ export class ClientServerService {
 				getClientEntry: () => process.env.NODE_ENV === 'production' ?
 					this.config.clientEntry :
 					JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'],
+				getClientCss: () => process.env.NODE_ENV === 'production' ?
+					this.config.clientCss :
+					JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['style.css'],
 				config: this.config,
 			},
 		});
