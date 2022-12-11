@@ -91,7 +91,6 @@ export type Mixin = {
 	driveUrl: string;
 	userAgent: string;
 	clientEntry: string;
-	clientCss: string;
 };
 
 export type Config = Source & Mixin;
@@ -135,7 +134,6 @@ export function loadConfig() {
 	mixin.driveUrl = `${mixin.scheme}://${mixin.host}/files`;
 	mixin.userAgent = `Misskey/${meta.version} (${config.url})`;
 	mixin.clientEntry = clientManifest['src/init.ts'];
-	mixin.clientCss = clientManifest['style.css'];
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
 

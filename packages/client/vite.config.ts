@@ -62,7 +62,7 @@ export default defineConfig(({ command, mode }) => {
 					},
 				},
 			},
-			cssCodeSplit: false,
+			cssCodeSplit: true,
 			outDir: __dirname + '/../../built/_client_dist_',
 			assetsDir: '.',
 			emptyOutDir: false,

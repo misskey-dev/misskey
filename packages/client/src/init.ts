@@ -1,7 +1,12 @@
 /**
  * Client entry point
  */
-import '@/style.scss';
+/*
+	 style.scss should be dynamic imported because to "conciliate" vite v4.
+   https://github.com/misskey-dev/misskey/issues/9302, https://github.com/misskey-dev/misskey/pull/9303
+ */
+import '@/style.scss'; // For preload, normal import is also written.
+import('@/style.scss');
 
 //#region account indexedDB migration
 import { set } from '@/scripts/idb-proxy';

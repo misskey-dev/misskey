@@ -2,8 +2,6 @@ block vars
 
 block loadClientEntry
 	- const clientEntry = getClientEntry();
-	- const clientCss = getClientCss();
-	- console.log(clientCss)
 
 doctype html
 
@@ -42,9 +40,6 @@ html
 		if Array.isArray(clientEntry.css)
 			each href in clientEntry.css
 				link(rel='preload' href=`/assets/${href}` as='style')
-		
-		if clientCss
-			link(rel='stylesheet' href=`/assets/${clientCss.file}`)
 
 		title
 			block title
