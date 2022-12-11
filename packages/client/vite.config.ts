@@ -62,7 +62,7 @@ export default defineConfig(({ command, mode }) => {
 					},
 				},
 			},
-			cssCodeSplit: false, // https://github.com/misskey-dev/misskey/pull/9303
+			cssCodeSplit: false,
 			outDir: __dirname + '/../../built/_client_dist_',
 			assetsDir: '.',
 			emptyOutDir: false,
