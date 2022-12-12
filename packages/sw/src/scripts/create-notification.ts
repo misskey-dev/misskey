@@ -2,7 +2,7 @@
  * Notification manager for SW
  */
 
-// TODO: remove this declaration when https://github.com/microsoft/TypeScript/issues/11781 merges
+// TODO: remove this declaration when https://github.com/microsoft/TypeScript/issues/11781 closes
 // eslint-disable-next-line no-var
 declare var self: ServiceWorkerGlobalScope;
 
