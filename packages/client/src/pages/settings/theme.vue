@@ -76,7 +76,7 @@ import FormButton from '@/components/MkButton.vue';
 import { getBuiltinThemesRef } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage , defaultStore } from '@/store';
+import { ColdDeviceStorage, defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
@@ -92,7 +92,7 @@ const builtinDarkThemes = computed(() => builtinThemes.value.filter(t => t.base 
 const instanceLightTheme = computed(() => instance.defaultLightTheme ? JSON5.parse(instance.defaultLightTheme) : null);
 const installedLightThemes = computed(() => installedThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const builtinLightThemes = computed(() => builtinThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
-const themes = computed(() => uniqueBy([ instanceDarkTheme.value, instanceLightTheme.value, ...builtinThemes.value, ...installedThemes.value ].filter(x => x != null), theme => theme.id));
+const themes = computed(() => uniqueBy([instanceDarkTheme.value, instanceLightTheme.value, ...builtinThemes.value, ...installedThemes.value].filter(x => x != null), theme => theme.id));
 
 const darkTheme = ColdDeviceStorage.ref('darkTheme');
 const darkThemeId = computed({
