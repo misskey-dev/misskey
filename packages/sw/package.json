@@ -13,6 +13,7 @@
 	},
 	"devDependencies": {
 		"@typescript-eslint/parser": "^5.45.0",
+		"@typescript/lib-webworker": "npm:@types/serviceworker@^0.0.58",
 		"eslint": "^8.16.0",
 		"eslint-plugin-import": "^2.26.0",
 		"typescript": "4.9.4"
