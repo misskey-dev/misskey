@@ -43,7 +43,7 @@ const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
 const selectedThemeId = ref(null);
 
-const themes = computed(() => [ ...installedThemes.value, ...builtinThemes.value ]);
+const themes = computed(() => [...installedThemes.value, ...builtinThemes.value]);
 
 const selectedTheme = computed(() => {
 	if (selectedThemeId.value == null) return null;

@@ -1,3 +1,5 @@
+// TODO: remove this declaration when https://github.com/microsoft/TypeScript/issues/11781 closes
+// eslint-disable-next-line no-var
 declare var self: ServiceWorkerGlobalScope;
 
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
@@ -176,7 +178,6 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 		}
 	
 		notification.close();
-	
 	})());
 });
 
