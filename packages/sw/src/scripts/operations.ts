@@ -2,6 +2,9 @@
  * Operations
  * 各種操作
  */
+
+// TODO: remove this declaration when https://github.com/microsoft/TypeScript/issues/11781 merges
+// eslint-disable-next-line no-var
 declare var self: ServiceWorkerGlobalScope;
 
 import * as Misskey from 'misskey-js';

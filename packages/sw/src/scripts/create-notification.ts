@@ -1,6 +1,9 @@
 /*
  * Notification manager for SW
  */
+
+// TODO: remove this declaration when https://github.com/microsoft/TypeScript/issues/11781 merges
+// eslint-disable-next-line no-var
 declare var self: ServiceWorkerGlobalScope;
 
 import { swLang } from '@/scripts/lang';
@@ -149,7 +152,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						// Unicode絵文字の場合
 						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
-
 
 					if (badge ? await fetch(badge).then(res => res.status !== 200).catch(() => true) : true) {
 						badge = iconUrl('plus');
