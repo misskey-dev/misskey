@@ -178,7 +178,6 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 		}
 	
 		notification.close();
-	
 	})());
 });
 
