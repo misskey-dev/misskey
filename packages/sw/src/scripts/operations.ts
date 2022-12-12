@@ -2,11 +2,6 @@
  * Operations
  * 各種操作
  */
-
-// TODO: remove this declaration when https://github.com/microsoft/TypeScript/issues/11781 closes
-// eslint-disable-next-line no-var
-declare var self: ServiceWorkerGlobalScope;
-
 import * as Misskey from 'misskey-js';
 import { SwMessage, swMessageOrderType } from '@/types';
 import { acct as getAcct } from '@/filters/user';
