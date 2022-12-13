@@ -2220,6 +2220,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/color-convert@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@types/color-convert@npm:2.0.0"
+  dependencies:
+    "@types/color-name": "*"
+  checksum: 027b68665dc2278cc2d83e796ada0a05a08aa5a11297e227c48c7f9f6eac518dec98578ab0072bd211963d3e4b431da70b20ea28d6c3136d0badfd3f9913baee
+  languageName: node
+  linkType: hard
+
+"@types/color-name@npm:*":
+  version: 1.1.1
+  resolution: "@types/color-name@npm:1.1.1"
+  checksum: b71fcad728cc68abcba1d405742134410c8f8eb3c2ef18113b047afca158ad23a4f2c229bcf71a38f4a818dead375c45b20db121d0e69259c2d81e97a740daa6
+  languageName: node
+  linkType: hard
+
+"@types/content-disposition@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@types/content-disposition@npm:0.5.5"
+  checksum: fdf7379db1d509990bcf9a21d85f05aad878596f28b1418f9179f6436cb22513262c670ce88c6055054a7f5804a9303eeacb70aa59a5e11ffdc1434559db9692
+  languageName: node
+  linkType: hard
+
 "@types/disposable-email-domains@npm:^1.0.1":
   version: 1.0.2
   resolution: "@types/disposable-email-domains@npm:1.0.2"
@@ -2311,6 +2334,15 @@ __metadata:
   version: 4.0.1
   resolution: "@types/http-cache-semantics@npm:4.0.1"
   checksum: 1048aacf627829f0d5f00184e16548205cd9f964bf0841c29b36bc504509230c40bc57c39778703a1c965a6f5b416ae2cbf4c1d4589c889d2838dd9dbfccf6e9
+  languageName: node
+  linkType: hard
+
+"@types/ioredis@npm:4.28.10":
+  version: 4.28.10
+  resolution: "@types/ioredis@npm:4.28.10"
+  dependencies:
+    "@types/node": "*"
+  checksum: 0f2788cf25f490d3b345db8c5f8b8ce3f6c92cc99abcf744c8f974f02b9b3875233b3d22098614c462a0d6c41c523bd655509418ea88eb6249db6652290ce7cf
   languageName: node
   linkType: hard
 
@@ -2664,6 +2696,13 @@ __metadata:
   version: 2.0.1
   resolution: "@types/stack-utils@npm:2.0.1"
   checksum: 205fdbe3326b7046d7eaf5e494d8084f2659086a266f3f9cf00bccc549c8e36e407f88168ad4383c8b07099957ad669f75f2532ed4bc70be2b037330f7bae019
+  languageName: node
+  linkType: hard
+
+"@types/syslog-pro@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@types/syslog-pro@npm:1.0.0"
+  checksum: d0dcd87efad8a629bba449f86a617605a3fbffa5c18a8b309c82e7b85036ac21cfd34711fd522f50528dd0f0d07bdb66261a6f9ef20f2a9133e847b2e717c1bc
   languageName: node
   linkType: hard
 
@@ -4045,8 +4084,11 @@ __metadata:
     "@types/bcryptjs": 2.4.2
     "@types/bull": 4.10.0
     "@types/cbor": 6.0.0
+    "@types/color-convert": ^2.0.0
+    "@types/content-disposition": ^0.5.5
     "@types/escape-regexp": 0.0.1
     "@types/fluent-ffmpeg": 2.1.20
+    "@types/ioredis": 4.28.10
     "@types/jest": 29.2.4
     "@types/js-yaml": 4.0.5
     "@types/jsdom": 20.0.1
@@ -4070,6 +4112,7 @@ __metadata:
     "@types/sharp": 0.31.0
     "@types/sinonjs__fake-timers": 8.1.2
     "@types/speakeasy": 2.0.7
+    "@types/syslog-pro": ^1.0.0
     "@types/tinycolor2": 1.4.3
     "@types/tmp": 0.2.3
     "@types/unzipper": 0.10.5
