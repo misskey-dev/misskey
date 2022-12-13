@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import type { SigninsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -8,6 +7,7 @@ import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class SigninService {

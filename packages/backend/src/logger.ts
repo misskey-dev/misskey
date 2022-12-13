@@ -4,10 +4,11 @@ import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
 import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
+import type { KEYWORD } from 'color-convert/conversions';
 
 type Context = {
 	name: string;
-	color?: string;
+	color?: KEYWORD;
 };
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
@@ -18,7 +19,7 @@ export default class Logger {
 	private store: boolean;
 	private syslogClient: any | null = null;
 
-	constructor(context: string, color?: string, store = true, syslogClient = null) {
+	constructor(context: string, color?: KEYWORD, store = true, syslogClient = null) {
 		this.context = {
 			name: context,
 			color: color,
@@ -28,7 +29,7 @@ export default class Logger {
 	}
 
 	@bindThis
-	public createSubLogger(context: string, color?: string, store = true): Logger {
+	public createSubLogger(context: string, color?: KEYWORD, store = true): Logger {
 		const logger = new Logger(context, color, store);
 		logger.parentLogger = this;
 		return logger;

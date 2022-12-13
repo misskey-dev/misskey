@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull, MoreThan } from 'typeorm';
 import vary from 'vary';
 import { DI } from '@/di-symbols.js';
@@ -11,6 +10,7 @@ import * as Acct from '@/misc/acct.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import type { FindOptionsWhere } from 'typeorm';
 import { bindThis } from '@/decorators.js';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class WellKnownServerService {

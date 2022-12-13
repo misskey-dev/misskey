@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import { ModuleRef, repl } from '@nestjs/core';
@@ -15,6 +14,7 @@ import { GithubServerService } from './integration/GithubServerService.js';
 import { DiscordServerService } from './integration/DiscordServerService.js';
 import { TwitterServerService } from './integration/TwitterServerService.js';
 import { bindThis } from '@/decorators.js';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class ApiServerService {

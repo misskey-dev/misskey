@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import summaly from 'summaly';
-import { FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -10,6 +9,7 @@ import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class UrlPreviewService {
