@@ -13,7 +13,7 @@
 		"@rollup/plugin-json": "5.0.2",
 		"@rollup/pluginutils": "5.0.2",
 		"@syuilo/aiscript": "0.11.1",
-		"@vitejs/plugin-vue": "4.0.0",
+		"@vitejs/plugin-vue": "3",
 		"@vue/compiler-sfc": "3.2.45",
 		"autobind-decorator": "2.4.0",
 		"autosize": "5.0.2",
@@ -57,7 +57,6 @@
 		"typescript": "4.9.4",
 		"uuid": "9.0.0",
 		"vanilla-tilt": "1.7.3",
-		"vite": "4.0.0",
 		"vue": "3.2.45",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vuedraggable": "4.0.1"
@@ -85,6 +84,7 @@
 		"eslint-plugin-vue": "9.8.0",
 		"rollup": "3.7.2",
 		"start-server-and-test": "1.15.2",
+		"vite": "3.2.5",
 		"vue-eslint-parser": "^9.1.0"
 	}
 }
