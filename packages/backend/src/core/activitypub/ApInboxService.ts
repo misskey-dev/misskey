@@ -450,8 +450,10 @@ export class ApInboxService {
 			return `skip: delete actor ${actor.uri} !== ${uri}`;
 		}
 	
-		const user = await this.usersRepository.findOneByOrFail({ id: actor.id });
-		if (user.isDeleted) {
+		const user = await this.usersRepository.findOneBy({ id: actor.id });
+		if (user == null) {
+			return 'skip: actor not found';
+		} else if (user.isDeleted) {
 			return 'skip: already deleted';
 		}
 	
