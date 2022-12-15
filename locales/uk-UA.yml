@@ -783,6 +783,7 @@ low: "Низький"
 emailNotConfiguredWarning: "Email адреса не вказана"
 ratio: "Співвідношення"
 previewNoteText: "Показати передогляд"
+customCss: "Власний CSS"
 global: "Глобальна"
 sent: "Відправити"
 received: "Отримано"
@@ -849,11 +850,18 @@ _ffVisibility:
 _ad:
   back: "Назад"
 _gallery:
+  my: "Моя галерея"
   unlike: "Не вподобати"
 _email:
   _follow:
     title: "Новий підписник"
+_preferencesBackups:
+  createdAt: "Створено: {date} {time}"
+  updatedAt: "Оновлено: {date} {time}"
+  cannotLoad: "Не вдалося завантажити"
+  invalidFile: "Невірний формат файлу"
 _registry:
+  scope: "Область дії"
   key: "Ключ"
   keys: "Ключі"
   domain: "Домен"
@@ -912,7 +920,9 @@ _mfm:
   jump: "Анімація (стрибки)"
   jumpDescription: "Показує стрибаючу анімацію"
   bounce: "Анімація (пружина)"
+  bounceDescription: "Надає вмісту стрибаючу анімацію."
   shake: "Анімація (Shake)"
+  shakeDescription: "Надає вмісту тремтливу анімацію."
   twitch: "Анімація (Twitch)"
   spin: "Анімація (Spin)"
   x2: "Великий"
@@ -968,7 +978,10 @@ _theme:
   make: "Створити тему"
   base: "Основа"
   defaultValue: "Значення за замовчуванням"
+  color: "Колір"
+  key: "Ключ"
   func: "Функції"
+  argument: "Аргумент"
   lighten: "Яскравість"
   inputConstantName: "Введіть назву константи"
   importInfo: "Вставляючи сюди код теми, ви можете добавити її до редактору тем"
