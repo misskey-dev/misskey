@@ -1,6 +1,7 @@
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { readAndCompressImage } from 'browser-image-resizer';
+import { getCompressionConfig } from './upload/compress-config';
 import { defaultStore } from '@/store';
 import { apiUrl } from '@/config';
 import { $i } from '@/account';
@@ -15,12 +16,6 @@ type Uploading = {
 	img: string;
 };
 export const uploads = ref<Uploading[]>([]);
-
-const compressTypeMap = {
-	'image/jpeg': { quality: 0.85, mimeType: 'image/jpeg' },
-	'image/webp': { quality: 0.85, mimeType: 'image/jpeg' },
-	'image/svg+xml': { quality: 1, mimeType: 'image/png' },
-} as const;
 
 const mimeTypeMap = {
 	'image/webp': 'webp',
@@ -40,7 +35,7 @@ export function uploadFile(
 		const id = Math.random().toString();
 
 		const reader = new FileReader();
-		reader.onload = async (ev) => {
+		reader.onload = async (): Promise<void> => {
 			const ctx = reactive<Uploading>({
 				id: id,
 				name: name || file.name || 'untitled',
@@ -51,20 +46,12 @@ export function uploadFile(
 
 			uploads.value.push(ctx);
 
+			const config = !keepOriginal ? await getCompressionConfig(file) : undefined;
 			let resizedImage: any;
-			if (!keepOriginal && file.type in compressTypeMap) {
-				const imgConfig = compressTypeMap[file.type];
-
-				const config = {
-					maxWidth: 2048,
-					maxHeight: 2048,
-					debug: true,
-					...imgConfig,
-				};
-
+			if (config) {
 				try {
 					resizedImage = await readAndCompressImage(file, config);
-					ctx.name = file.type !== imgConfig.mimeType ? `${ctx.name}.${mimeTypeMap[compressTypeMap[file.type].mimeType]}` : ctx.name;
+					ctx.name = file.type !== config.mimeType ? `${ctx.name}.${mimeTypeMap[config.mimeType]}` : ctx.name;
 				} catch (err) {
 					console.error('Failed to resize image', err);
 				}
