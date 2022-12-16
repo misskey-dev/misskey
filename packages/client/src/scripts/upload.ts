@@ -79,7 +79,7 @@ export function uploadFile(
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);
-			xhr.onload = (ev) => {
+			xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
 				if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 					// TODO: 消すのではなくて(ネットワーク的なエラーなら)再送できるようにしたい
 					uploads.value = uploads.value.filter(x => x.id !== id);
@@ -122,7 +122,7 @@ export function uploadFile(
 				resolve(driveFile);
 
 				uploads.value = uploads.value.filter(x => x.id !== id);
-			};
+			}) as (ev: ProgressEvent<EventTarget>) => any;
 
 			xhr.upload.onprogress = ev => {
 				if (ev.lengthComputable) {
