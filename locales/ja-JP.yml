@@ -1770,6 +1770,7 @@ _notification:
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "{userName}があなたをグループに招待しました"
   pollEnded: "アンケートの結果が出ました"
+  unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
 
   _types:

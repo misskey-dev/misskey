@@ -134,7 +134,7 @@ export class AntennaService implements OnApplicationShutdown {
 				if (unread) {
 					this.globalEventServie.publishMainStream(antenna.userId, 'unreadAntenna', antenna);
 					this.pushNotificationService.pushNotification(antenna.userId, 'unreadAntennaNote', {
-						antenna: await this.antennaEntityService.pack(antenna),
+						antenna: { id: antenna.id, name: antenna.name },
 						note: await this.noteEntityService.pack(note)
 					});
 				}

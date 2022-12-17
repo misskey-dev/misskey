@@ -252,6 +252,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 				data,
 				renotify: true,
 			}];
+		case 'unreadAntennaNote':
+			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
+				icon: data.body.note.user.avatarUrl,
+				badge: iconUrl('satellite'),
+				tag: `antenna:${data.body.antenna.id}`,
+				data,
+				renotify: true,
+			}];
 		default:
 			return null;
 	}
