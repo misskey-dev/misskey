@@ -12,26 +12,32 @@ import { bindThis } from '@/decorators.js';
 type pushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
 	'unreadMessagingMessage': Packed<'MessagingMessage'>;
+	'unreadAntennaNote': {
+		antenna: Packed<'Antenna'>;
+		note: Packed<'Note'>;
+	};
 	'readNotifications': { notificationIds: string[] };
 	'readAllNotifications': undefined;
 	'readAllMessagingMessages': undefined;
 	'readAllMessagingMessagesOfARoom': { userId: string } | { groupId: string };
+	'readAntenna': { antennaId: string };
+	'readAllAntennas': undefined;
 };
 
 // プッシュメッセージサーバーには文字数制限があるため、内容を削減します
-function truncateNotification(notification: Packed<'Notification'>): any {
+function truncateNotification<T extends 'notification' | 'unreadAntennaNote'>(notification: pushNotificationsTypes[T]): pushNotificationsTypes[T] {
 	if (notification.note) {
 		return {
 			...notification,
 			note: {
 				...notification.note,
 				// textをgetNoteSummaryしたものに置き換える
-				text: getNoteSummary(notification.type === 'renote' ? notification.note.renote as Packed<'Note'> : notification.note),
+				text: getNoteSummary(('type' in notification && notification.type === 'renote') ? notification.note.renote as Packed<'Note'> : notification.note),
 
 				cw: undefined,
 				reply: undefined,
 				renote: undefined,
-				user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる
+				user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる アンテナの場合も不要なのでいらない
 			},
 		};
 	}
@@ -76,10 +82,10 @@ export class PushNotificationService {
 					p256dh: subscription.publickey,
 				},
 			};
-	
+
 			push.sendNotification(pushSubscription, JSON.stringify({
 				type,
-				body: type === 'notification' ? truncateNotification(body as Packed<'Notification'>) : body,
+				body: (type === 'notification' || type === 'unreadAntennaNote') ? truncateNotification(body as any) : body,
 				userId,
 				dateTime: (new Date()).getTime(),
 			}), {

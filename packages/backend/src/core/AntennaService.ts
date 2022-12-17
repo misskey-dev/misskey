@@ -6,6 +6,7 @@ import type { User } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
 import { Cache } from '@/misc/cache.js';
 import type { Packed } from '@/misc/schema.js';
@@ -14,6 +15,8 @@ import type { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNo
 import { UtilityService } from '@/core/UtilityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService';
+import { AntennaEntityService } from '@/core/entities/AntennaEntityService';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
@@ -49,6 +52,9 @@ export class AntennaService implements OnApplicationShutdown {
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private globalEventServie: GlobalEventService,
+		private pushNotificationService: PushNotificationService,
+		private noteEntityService: NoteEntityService,
+		private antennaEntityService: AntennaEntityService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
@@ -127,6 +133,10 @@ export class AntennaService implements OnApplicationShutdown {
 				const unread = await this.antennaNotesRepository.findOneBy({ antennaId: antenna.id, read: false });
 				if (unread) {
 					this.globalEventServie.publishMainStream(antenna.userId, 'unreadAntenna', antenna);
+					this.pushNotificationService.pushNotification(antenna.userId, 'unreadAntennaNote', {
+						antenna: await this.antennaEntityService.pack(antenna),
+						note: await this.noteEntityService.pack(note)
+					});
 				}
 			}, 2000);
 		}
