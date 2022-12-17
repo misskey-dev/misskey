@@ -81,6 +81,8 @@ export class PushNotificationService {
 				'readAllNotifications',
 				'readAllMessagingMessages',
 				'readAllMessagingMessagesOfARoom',
+				'readAntenna',
+				'readAllAntennas',
 			].includes(type) && !subscription.sendReadMessage) continue;
 
 			const pushSubscription = {
