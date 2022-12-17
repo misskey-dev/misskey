@@ -47,10 +47,16 @@ export function uploadFile(
 			uploads.value.push(ctx);
 
 			const config = !keepOriginal ? await getCompressionConfig(file) : undefined;
-			let resizedImage: any;
+			let resizedImage: Blob | undefined;
 			if (config) {
 				try {
-					resizedImage = await readAndCompressImage(file, config);
+					const resized = await readAndCompressImage(file, config);
+					if (resized.size < file.size || file.type === 'image/webp') {
+						// The compression may not always reduce the file size
+						// (and WebP is not browser safe yet)
+						resizedImage = resized;
+					}
+
 					ctx.name = file.type !== config.mimeType ? `${ctx.name}.${mimeTypeMap[config.mimeType]}` : ctx.name;
 				} catch (err) {
 					console.error('Failed to resize image', err);
