@@ -1217,7 +1217,7 @@ _tutorial:
   step7_2: "If you would like to learn more about Misskey, try the {help} section."
   step7_3: "Now then, have fun with Misskey! 🚀"
   step8_1: "Lastly, would you like to enable push notifications?"
-  step8_2: "Enabling these will allow you to be notified of mentions, reactions, follows etc even when Misskey is not opened."
+  step8_2: "Enabling these will allow you to receive notifications for mentions, reactions, follows, etc. even when Misskey is not opened."
   step8_3: "You can always change this setting later."
 _2fa:
   alreadyRegistered: "You have already registered a 2-factor authentication device."
