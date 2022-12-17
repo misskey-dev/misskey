@@ -3,7 +3,7 @@ import type { BrowserImageResizerConfig } from 'browser-image-resizer';
 
 const compressTypeMap = {
 	'image/jpeg': { quality: 0.85, mimeType: 'image/jpeg' },
-	'image/png': { quality: 0.85, mimeType: 'image/jpeg' },
+	'image/png': { quality: 1, mimeType: 'image/png' },
 	'image/webp': { quality: 0.85, mimeType: 'image/jpeg' },
 	'image/svg+xml': { quality: 1, mimeType: 'image/png' },
 } as const;
