@@ -56,6 +56,10 @@ export function uploadFile(
 						// (and WebP is not browser safe yet)
 						resizedImage = resized;
 					}
+					if (_DEV_) {
+						const saved = ((1 - resized.size / file.size) * 100).toFixed(2);
+						console.log(`Image compression: before ${file.size} bytes, after ${resized.size} bytes, saved ${saved}%`);
+					}
 
 					ctx.name = file.type !== config.mimeType ? `${ctx.name}.${mimeTypeMap[config.mimeType]}` : ctx.name;
 				} catch (err) {
