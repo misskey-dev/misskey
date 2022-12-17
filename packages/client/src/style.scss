@@ -162,6 +162,7 @@ hr {
 	font-size: 1em;
 	font-family: inherit;
 	line-height: inherit;
+	max-width: 100%;
 
 	&, * {
 		@extend ._noSelect;

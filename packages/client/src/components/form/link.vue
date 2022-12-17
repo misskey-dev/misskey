@@ -75,10 +75,10 @@ const props = defineProps<{
 		}
 
 		> .text {
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
+			flex-shrink: 1;
+			white-space: normal;
 			padding-right: 12px;
+			text-align: center;
 		}
 
 		> .right {

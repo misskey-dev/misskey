@@ -89,10 +89,9 @@ export default defineComponent({
 				}
 
 				> .text {
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					overflow: hidden;
+					white-space: normal;
 					padding-right: 12px;
+					flex-shrink: 1;
 				}
 
 			}
