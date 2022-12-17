@@ -3,6 +3,8 @@ import Redis from 'ioredis';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -15,8 +17,6 @@ import type { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNo
 import { UtilityService } from '@/core/UtilityService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService';
-import { AntennaEntityService } from '@/core/entities/AntennaEntityService';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
