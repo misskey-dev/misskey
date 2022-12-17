@@ -29,6 +29,8 @@ export function uploadFile(
 	name?: string,
 	keepOriginal: boolean = defaultStore.state.keepOriginalUploading,
 ): Promise<Misskey.entities.DriveFile> {
+	if ($i == null) throw new Error('Not logged in');
+
 	if (folder && typeof folder === 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
