@@ -135,7 +135,7 @@ watch(q, () => {
 		return;
 	}
 
-	const newQ = q.value.replace(/:/g, '');
+	const newQ = q.value.replace(/:/g, '').toLowerCase();
 
 	const searchCustom = () => {
 		const max = 8;
