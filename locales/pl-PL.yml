@@ -1584,6 +1584,7 @@ _notification:
   yourFollowRequestAccepted: "Twoja prośba o możliwość obserwacji została przyjęta"
   youWereInvitedToGroup: "Zaproszony(-a) do grupy"
   pollEnded: "Wyniki ankiety stały się dostępne"
+  unreadAntennaNote: "Antena {name}"
   emptyPushNotificationMessage: "Powiadomienia push zostały zaktualizowane"
   _types:
     all: "Wszystkie"
