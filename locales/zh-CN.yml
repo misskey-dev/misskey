@@ -1713,6 +1713,7 @@ _notification:
   yourFollowRequestAccepted: "您的关注请求已通过"
   youWereInvitedToGroup: "您有新的群组邀请"
   pollEnded: "问卷调查结果已生成。"
+  unreadAntennaNote: "天线 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
   _types:
     all: "全部"
