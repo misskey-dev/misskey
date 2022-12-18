@@ -221,6 +221,7 @@ function onHeaderMousedown(evt: MouseEvent) {
 // 上ハンドル掴み時
 function onTopHandleMousedown(evt) {
 	const main = rootEl;
+	// どういうわけかnullになることがある
 	if (main == null) return;
 
 	const base = evt.clientY;
