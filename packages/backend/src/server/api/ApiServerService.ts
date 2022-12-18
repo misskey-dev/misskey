@@ -140,7 +140,7 @@ export class ApiServerService {
 				select: ['host'],
 				where: {
 					isSuspended: false,
-				}
+				},
 			});
 
 			return instances.map(instance => instance.host);
