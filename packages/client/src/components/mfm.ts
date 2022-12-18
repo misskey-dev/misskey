@@ -54,13 +54,13 @@ export default defineComponent({
 			return t.match(/^[0-9.]+s$/) ? t : null;
 		};
 
-		const genEl = (ast: mfm.MfmNode[]) => concat(ast.map((token): VNode[] => {
+		const genEl = (ast: mfm.MfmNode[]) => ast.map((token): VNode | string | (VNode | string)[] => {
 			switch (token.type) {
 				case 'text': {
 					const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (!this.plain) {
-						const res = [];
+						const res: (VNode | string)[] = [];
 						for (const t of text.split('\n')) {
 							res.push(h('br'));
 							res.push(t);
@@ -317,12 +317,13 @@ export default defineComponent({
 				}
 
 				default: {
-					console.error('unrecognized ast type:', token.type);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					console.error('unrecognized ast type:', (token as any).type);
 
 					return [];
 				}
 			}
-		}));
+		}).flat(Infinity) as (VNode | string)[];
 
 		// Parse ast to DOM
 		return h('span', genEl(ast));
