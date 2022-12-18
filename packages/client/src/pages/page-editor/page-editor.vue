@@ -285,6 +285,7 @@ function getPageBlockList() {
 			{ value: 'textarea', text: i18n.ts._pages.blocks.textarea },
 			{ value: 'note', text: i18n.ts._pages.blocks.note },
 			{ value: 'canvas', text: i18n.ts._pages.blocks.canvas },
+			{ value: 'embed', text: 'i18n.ts._pages.blocks.embed' },
 		],
 	}, {
 		label: i18n.ts._pages.inputBlocks,

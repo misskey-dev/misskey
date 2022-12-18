@@ -64,6 +64,14 @@ export type NoteBlock = BlockBase & {
 	note: string | null;
 };
 
+export type EmbedBlock = BlockBase & {
+	type: 'embed';
+	url?: string;
+	srcdoc?: string;
+	height?: number;
+	backgroundColor?: string;
+}
+
 export type Block =
 	TextBlock | SectionBlock | ImageBlock | ButtonBlock | IfBlock | TextareaBlock | PostBlock | CanvasBlock | NoteBlock | VarBlock;
 

@@ -1495,6 +1495,7 @@ _pages:
     section: "セクション"
     image: "画像"
     button: "ボタン"
+    embed: "Embed"
 
     if: "もし"
     _if:
@@ -1573,6 +1574,12 @@ _pages:
       title: "タイトル"
       values: "改行で区切った選択肢"
       default: "デフォルト値"
+
+    _embed:
+      url: "Embed URL"
+      html: "Custom HTML"
+      height: "Height Override"
+      backgroundColor: "Backround Color Override"
 
   script:
     categories:

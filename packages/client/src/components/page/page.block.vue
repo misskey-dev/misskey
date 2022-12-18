@@ -19,12 +19,13 @@ import XCounter from './page.counter.vue';
 import XRadioButton from './page.radio-button.vue';
 import XCanvas from './page.canvas.vue';
 import XNote from './page.note.vue';
+import XEmbed from './page.embed.vue';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { Block } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
-		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton, XCanvas, XNote
+		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton, XCanvas, XNote, XEmbed
 	},
 	props: {
 		block: {
