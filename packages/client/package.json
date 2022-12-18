@@ -31,6 +31,7 @@
 		"eventemitter3": "5.0.0",
 		"idb-keyval": "6.2.0",
 		"insert-text-at-cursor": "0.3.0",
+		"is-file-animated": "1.0.1",
 		"json5": "2.2.1",
 		"katex": "0.15.6",
 		"matter-js": "0.18.0",

@@ -4975,6 +4975,7 @@ __metadata:
     eventemitter3: 5.0.0
     idb-keyval: 6.2.0
     insert-text-at-cursor: 0.3.0
+    is-file-animated: 1.0.1
     json5: 2.2.1
     katex: 0.15.6
     matter-js: 0.18.0
@@ -9571,6 +9572,13 @@ __metadata:
   version: 2.1.1
   resolution: "is-extglob@npm:2.1.1"
   checksum: df033653d06d0eb567461e58a7a8c9f940bd8c22274b94bf7671ab36df5719791aae15eef6d83bbb5e23283967f2f984b8914559d4449efda578c775c4be6f85
+  languageName: node
+  linkType: hard
+
+"is-file-animated@npm:1.0.1":
+  version: 1.0.1
+  resolution: "is-file-animated@npm:1.0.1"
+  checksum: bcc281e0694e1ba74adfdef75f83f1637ab6470eceecef867d21b4a98e112c32188514b3172348dd137b82cbe8771b6d683de1439d8e1e86011fed77da896c4e
   languageName: node
   linkType: hard
 
