@@ -10,7 +10,7 @@
 		<template #suffix>@{{ host }}</template>
 		<template #caption>
 			<span v-if="usernameState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ i18n.ts.checking }}</span>
-			<span v-else-if="usernameState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ i18n.ts.available }}</span>
+			<span v-else-if="usernameState === 'ok'" style="color: var(--success)"><i class="ti ti-check fa-fw"></i> {{ i18n.ts.available }}</span>
 			<span v-else-if="usernameState === 'unavailable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts.unavailable }}</span>
 			<span v-else-if="usernameState === 'error'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts.error }}</span>
 			<span v-else-if="usernameState === 'invalid-format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts.usernameInvalidFormat }}</span>
@@ -23,7 +23,7 @@
 		<template #prefix><i class="fas fa-envelope"></i></template>
 		<template #caption>
 			<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ i18n.ts.checking }}</span>
-			<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ i18n.ts.available }}</span>
+			<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="ti ti-check fa-fw"></i> {{ i18n.ts.available }}</span>
 			<span v-else-if="emailState === 'unavailable:used'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts._emailUnavailable.used }}</span>
 			<span v-else-if="emailState === 'unavailable:format'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts._emailUnavailable.format }}</span>
 			<span v-else-if="emailState === 'unavailable:disposable'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts._emailUnavailable.disposable }}</span>
@@ -38,15 +38,15 @@
 		<template #prefix><i class="fas fa-lock"></i></template>
 		<template #caption>
 			<span v-if="passwordStrength == 'low'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts.weakPassword }}</span>
-			<span v-if="passwordStrength == 'medium'" style="color: var(--warn)"><i class="fas fa-check fa-fw"></i> {{ i18n.ts.normalPassword }}</span>
-			<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ i18n.ts.strongPassword }}</span>
+			<span v-if="passwordStrength == 'medium'" style="color: var(--warn)"><i class="ti ti-check fa-fw"></i> {{ i18n.ts.normalPassword }}</span>
+			<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="ti ti-check fa-fw"></i> {{ i18n.ts.strongPassword }}</span>
 		</template>
 	</MkInput>
 	<MkInput v-model="retypedPassword" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
 		<template #label>{{ i18n.ts.password }} ({{ i18n.ts.retype }})</template>
 		<template #prefix><i class="fas fa-lock"></i></template>
 		<template #caption>
-			<span v-if="passwordRetypeState == 'match'" style="color: var(--success)"><i class="fas fa-check fa-fw"></i> {{ i18n.ts.passwordMatched }}</span>
+			<span v-if="passwordRetypeState == 'match'" style="color: var(--success)"><i class="ti ti-check fa-fw"></i> {{ i18n.ts.passwordMatched }}</span>
 			<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ i18n.ts.passwordNotMatched }}</span>
 		</template>
 	</MkInput>

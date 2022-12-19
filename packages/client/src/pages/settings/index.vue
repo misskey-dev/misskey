@@ -36,7 +36,7 @@ import * as os from '@/os';
 
 const indexInfo = {
 	title: i18n.ts.settings,
-	icon: 'fas fa-cog',
+	icon: 'ti ti-settings',
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
@@ -73,12 +73,12 @@ const menuDef = computed(() => [{
 		to: '/settings/reaction',
 		active: currentPage?.route.name === 'reaction',
 	}, {
-		icon: 'fas fa-cloud',
+		icon: 'ti ti-cloud',
 		text: i18n.ts.drive,
 		to: '/settings/drive',
 		active: currentPage?.route.name === 'drive',
 	}, {
-		icon: 'fas fa-bell',
+		icon: 'ti ti-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
 		active: currentPage?.route.name === 'notifications',
@@ -88,7 +88,7 @@ const menuDef = computed(() => [{
 		to: '/settings/email',
 		active: currentPage?.route.name === 'email',
 	}, {
-		icon: 'fas fa-share-alt',
+		icon: 'ti ti-share',
 		text: i18n.ts.integration,
 		to: '/settings/integration',
 		active: currentPage?.route.name === 'integration',
@@ -101,7 +101,7 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.clientSettings,
 	items: [{
-		icon: 'fas fa-cogs',
+		icon: 'ti ti-adjustments',
 		text: i18n.ts.general,
 		to: '/settings/general',
 		active: currentPage?.route.name === 'general',
@@ -164,7 +164,7 @@ const menuDef = computed(() => [{
 		to: '/settings/webhook',
 		active: currentPage?.route.name === 'webhook',
 	}, {
-		icon: 'fas fa-ellipsis-h',
+		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',
 		active: currentPage?.route.name === 'other',

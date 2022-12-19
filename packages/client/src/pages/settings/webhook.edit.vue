@@ -28,7 +28,7 @@
 	<FormSwitch v-model="active" class="_formBlock">Active</FormSwitch>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton primary inline @click="save"><i class="fas fa-check"></i> {{ i18n.ts.save }}</FormButton>
+		<FormButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </div>
 </template>

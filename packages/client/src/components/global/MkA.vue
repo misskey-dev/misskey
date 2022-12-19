@@ -53,13 +53,13 @@ function onContextmenu(ev) {
 			router.push(props.to, 'forcePage');
 		},
 	}, null, {
-		icon: 'fas fa-external-link-alt',
+		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(props.to, '_blank');
 		},
 	}, {
-		icon: 'fas fa-link',
+		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(`${url}${props.to}`);

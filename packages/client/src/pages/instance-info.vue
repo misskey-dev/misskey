@@ -195,7 +195,7 @@ fetch();
 
 const headerActions = $computed(() => [{
 	text: `https://${props.host}`,
-	icon: 'fas fa-external-link-alt',
+	icon: 'ti ti-external-link',
 	handler: () => {
 		window.open(`https://${props.host}`, '_blank');
 	},

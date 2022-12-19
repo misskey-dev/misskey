@@ -88,7 +88,7 @@
 
 					<div class="_formRoot">
 						<FormInput v-model="summalyProxy" class="_formBlock">
-							<template #prefix><i class="fas fa-link"></i></template>
+							<template #prefix><i class="ti ti-link"></i></template>
 							<template #label>Summaly Proxy URL</template>
 						</FormInput>
 

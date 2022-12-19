@@ -123,7 +123,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'federation',
 	title: i18n.ts.federation,
-	icon: 'fas fa-globe',
+	icon: 'ti ti-world',
 }, {
 	key: 'charts',
 	title: i18n.ts.charts,

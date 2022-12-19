@@ -5,7 +5,7 @@
 		<div class="buttons">
 			<slot name="func"></slot>
 			<button v-if="removable" class="_button" @click="remove()">
-				<i class="fas fa-trash-alt"></i>
+				<i class="ti ti-trash"></i>
 			</button>
 			<button v-if="draggable" class="drag-handle _button">
 				<i class="fas fa-bars"></i>

@@ -69,7 +69,7 @@ const headerActions = $computed(() => list ? [{
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
-	icon: 'fas fa-cog',
+	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,
 }] : []);

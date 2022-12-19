@@ -23,8 +23,8 @@
 							</div>
 							<div class="other">
 								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="fas fa-pencil-alt fa-fw"></i></button>
-								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
-								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
+								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat fa-fw"></i></button>
+								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share fa-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">

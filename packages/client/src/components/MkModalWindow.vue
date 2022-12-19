@@ -7,7 +7,7 @@
 				<slot name="header"></slot>
 			</span>
 			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
-			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="fas fa-check"></i></button>
+			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="ti ti-check"></i></button>
 		</div>
 		<div class="body">
 			<slot :width="bodyWidth" :height="bodyHeight"></slot>

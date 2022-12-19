@@ -69,7 +69,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => user ? [{
 	key: 'home',
 	title: i18n.ts.overview,
-	icon: 'fas fa-home',
+	icon: 'ti ti-home-2',
 }, ...($i && ($i.id === user.id)) || user.publicReactions ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,
@@ -77,7 +77,7 @@ const headerTabs = $computed(() => user ? [{
 }] : [], {
 	key: 'clips',
 	title: i18n.ts.clips,
-	icon: 'fas fa-paperclip',
+	icon: 'ti ti-paperclip',
 }, {
 	key: 'pages',
 	title: i18n.ts.pages,

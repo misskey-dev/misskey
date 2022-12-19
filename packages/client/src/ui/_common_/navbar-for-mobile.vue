@@ -9,7 +9,7 @@
 		</div>
 		<div class="middle">
 			<MkA v-click-anime class="item index" active-class="active" to="/" exact>
-				<i class="icon fas fa-home fa-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
+				<i class="icon ti ti-home-2 fa-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
 			</MkA>
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>
@@ -27,7 +27,7 @@
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon fas fa-circle"></i></span>
 			</button>
 			<MkA v-click-anime class="item" active-class="active" to="/settings">
-				<i class="icon fas fa-cog fa-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
+				<i class="icon ti ti-settings fa-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
 			</MkA>
 		</div>
 		<div class="bottom">
@@ -85,7 +85,7 @@ function openInstanceMenu(ev: MouseEvent) {
 	}, {
 		type: 'link',
 		text: i18n.ts.federation,
-		icon: 'fas fa-globe',
+		icon: 'ti ti-world',
 		to: '/about#federation',
 	}, null, {
 		type: 'parent',

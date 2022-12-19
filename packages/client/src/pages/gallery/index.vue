@@ -29,7 +29,7 @@
 				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'my'">
-				<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="fas fa-plus"></i> {{ i18n.ts.postToGallery }}</MkA>
+				<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="ti ti-plus"></i> {{ i18n.ts.postToGallery }}</MkA>
 				<MkPagination v-slot="{items}" :pagination="myPostsPagination">
 					<div class="vfpdbgtk">
 						<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
@@ -98,7 +98,7 @@ watch(() => props.tag, () => {
 });
 
 const headerActions = $computed(() => [{
-	icon: 'fas fa-plus',
+	icon: 'ti ti-plus',
 	text: i18n.ts.create,
 	handler: () => {
 		router.push('/gallery/new');

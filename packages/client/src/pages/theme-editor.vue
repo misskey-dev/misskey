@@ -215,7 +215,7 @@ const headerActions = $computed(() => [{
 	handler: showPreview,
 }, {
 	asFullButton: true,
-	icon: 'fas fa-check',
+	icon: 'ti ti-check',
 	text: i18n.ts.saveAs,
 	handler: saveAs,
 }]);

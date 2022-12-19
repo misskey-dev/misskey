@@ -54,7 +54,7 @@
 	<FormSection>
 		<div class="_formLinksGrid">
 			<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
+			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
 			<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
 			<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ i18n.ts._theme.make }}</FormLink>
 		</div>

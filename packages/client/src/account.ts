@@ -213,7 +213,7 @@ export async function openAccountMenu(opts: {
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent',
-			icon: 'fas fa-plus',
+			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,
 			children: [{
 				text: i18n.ts.existingAccount,

@@ -257,7 +257,7 @@ function onContextmenu(ev: MouseEvent) {
 		action: rename,
 	}, null, {
 		text: i18n.ts.delete,
-		icon: 'fas fa-trash-alt',
+		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
 	}], ev);

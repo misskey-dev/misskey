@@ -36,7 +36,7 @@
 			</div>
 
 			<div class="_formBlock">
-				<MkButton danger @click="del"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 		<div v-else-if="tab === 'ip' && info" class="_formRoot">
@@ -114,7 +114,7 @@ async function toggleIsSensitive(v) {
 
 const headerActions = $computed(() => [{
 	text: i18n.ts.openInNewTab,
-	icon: 'fas fa-external-link-alt',
+	icon: 'ti ti-external-link',
 	handler: () => {
 		window.open(file.url, '_blank');
 	},
