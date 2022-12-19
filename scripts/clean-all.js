@@ -12,4 +12,5 @@ const fs = require('fs');
 
 	fs.rmSync(__dirname + '/../built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../node_modules', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../.yarn/cache', { recursive: true, force: true });
 })();

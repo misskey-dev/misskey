@@ -159,8 +159,6 @@ import {
 } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
-import MagicGrid from 'magic-grid';
-import XMetrics from './metrics.vue';
 import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';

@@ -1,7 +1,7 @@
 block vars
 
 block loadClientEntry
-	- const clientEntry = getClientEntry();
+	- const clientEntry = config.clientEntry;
 
 doctype html
 
@@ -35,11 +35,14 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
 		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.css')
-		link(rel='modulepreload' href=`/assets/${clientEntry.file}`)
+		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
+
+		if !config.clientManifestExists
+				script(type="module" src="/vite/@vite/client")
 
 		if Array.isArray(clientEntry.css)
 			each href in clientEntry.css
-				link(rel='stylesheet' href=`/assets/${href}`)
+				link(rel='stylesheet' href=`/vite/${href}`)
 
 		title
 			block title

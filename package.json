@@ -14,7 +14,8 @@
 	],
 	"private": true,
 	"scripts": {
-		"build": "yarn workspaces foreach run build && yarn run gulp",
+		"build-pre": "node ./scripts/build-pre.js",
+		"build": "yarn build-pre && yarn workspaces foreach run build && yarn run gulp",
 		"start": "cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
 		"init": "yarn migrate",

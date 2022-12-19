@@ -917,6 +917,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/http-proxy@npm:^8.4.0":
+  version: 8.4.0
+  resolution: "@fastify/http-proxy@npm:8.4.0"
+  dependencies:
+    "@fastify/reply-from": ^8.0.0
+    ws: ^8.4.2
+  checksum: 4bc4f0acac667c0c2f152e78342d8c7aeb4880d461227971ce31c85fe8d532fba616d2ef5224d6542f598a8a388d61954ed002003e2ce0695c15141e94a1a06b
+  languageName: node
+  linkType: hard
+
 "@fastify/multipart@npm:7.3.0":
   version: 7.3.0
   resolution: "@fastify/multipart@npm:7.3.0"
@@ -930,6 +940,21 @@ __metadata:
     secure-json-parse: ^2.4.0
     stream-wormhole: ^1.1.0
   checksum: 192fc4f0892c34d342a3673c6522e13c0987747c4972b52ea48ca7978ea54b5a892d4594778b643dc35f37f429496b13a4e244d8c7eef60a852fadb52144fcbe
+  languageName: node
+  linkType: hard
+
+"@fastify/reply-from@npm:^8.0.0":
+  version: 8.3.1
+  resolution: "@fastify/reply-from@npm:8.3.1"
+  dependencies:
+    "@fastify/error": ^3.0.0
+    end-of-stream: ^1.4.4
+    fast-querystring: ^1.0.0
+    fastify-plugin: ^4.0.0
+    pump: ^3.0.0
+    tiny-lru: ^10.0.0
+    undici: ^5.5.1
+  checksum: debfc85b69946ecbad21dc2b01b2740b5a562258b5e3f00c452a88691525db650499cdf3bf09d85ae3f20455372925d6d7203265d0f00fa873f380be6e16e4d7
   languageName: node
   linkType: hard
 
@@ -4100,6 +4125,7 @@ __metadata:
     "@fastify/accepts": 4.1.0
     "@fastify/cookie": ^8.3.0
     "@fastify/cors": 8.2.0
+    "@fastify/http-proxy": ^8.4.0
     "@fastify/multipart": 7.3.0
     "@fastify/static": 6.6.0
     "@fastify/view": 7.3.0
@@ -16642,6 +16668,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:^5.5.1":
+  version: 5.14.0
+  resolution: "undici@npm:5.14.0"
+  dependencies:
+    busboy: ^1.6.0
+  checksum: 7a076e44d84b25844b4eb657034437b8b9bb91f17d347de474fdea1d4263ce7ae9406db79cd30de5642519277b4893f43073258bcc8fed420b295da3fdd11b26
+  languageName: node
+  linkType: hard
+
 "union-value@npm:^1.0.0":
   version: 1.0.1
   resolution: "union-value@npm:1.0.1"
@@ -17419,7 +17454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.11.0, ws@npm:^8.11.0":
+"ws@npm:8.11.0, ws@npm:^8.11.0, ws@npm:^8.4.2":
   version: 8.11.0
   resolution: "ws@npm:8.11.0"
   peerDependencies:
