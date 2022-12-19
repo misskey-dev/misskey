@@ -23,8 +23,8 @@
 			</MkKeyValue>
 
 			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
-				<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="fas fa-cog"></i> {{ i18n.ts.settings }}</MkButton>
+				<MkButton inline danger @click="uninstall(plugin)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.uninstall }}</MkButton>
 			</div>
 		</div>
 	</FormSection>

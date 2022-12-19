@@ -14,7 +14,7 @@
 					</FormTextarea>
 
 					<FormInput v-model="tosUrl" class="_formBlock">
-						<template #prefix><i class="ti ti-link"></i></template>
+						<template #prefix><i class="fas fa-link"></i></template>
 						<template #label>{{ i18n.ts.tosUrl }}</template>
 					</FormInput>
 
@@ -54,17 +54,17 @@
 						<template #label>{{ i18n.ts.theme }}</template>
 
 						<FormInput v-model="iconUrl" class="_formBlock">
-							<template #prefix><i class="ti ti-link"></i></template>
+							<template #prefix><i class="fas fa-link"></i></template>
 							<template #label>{{ i18n.ts.iconUrl }}</template>
 						</FormInput>
 
 						<FormInput v-model="bannerUrl" class="_formBlock">
-							<template #prefix><i class="ti ti-link"></i></template>
+							<template #prefix><i class="fas fa-link"></i></template>
 							<template #label>{{ i18n.ts.bannerUrl }}</template>
 						</FormInput>
 
 						<FormInput v-model="backgroundImageUrl" class="_formBlock">
-							<template #prefix><i class="ti ti-link"></i></template>
+							<template #prefix><i class="fas fa-link"></i></template>
 							<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
 						</FormInput>
 
@@ -248,7 +248,7 @@ function save() {
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'ti ti-check',
+	icon: 'fas fa-check',
 	text: i18n.ts.save,
 	handler: save,
 }]);
@@ -257,6 +257,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.general,
-	icon: 'ti ti-settings',
+	icon: 'fas fa-cog',
 });
 </script>

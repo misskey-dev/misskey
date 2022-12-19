@@ -4,7 +4,7 @@
 	<template #header><i class="fas fa-question"></i> {{ $ts._pages.blocks.if }}</template>
 	<template #func>
 		<button class="_button" @click="add()">
-			<i class="ti ti-plus"></i>
+			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 

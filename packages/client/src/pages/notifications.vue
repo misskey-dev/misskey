@@ -66,7 +66,7 @@ const headerActions = $computed(() => [tab === 'all' ? {
 	handler: setFilter,
 } : undefined, tab === 'all' ? {
 	text: i18n.ts.markAllAsRead,
-	icon: 'ti ti-check',
+	icon: 'fas fa-check',
 	handler: () => {
 		os.apiWithDialog('notifications/mark-all-as-read');
 	},
@@ -90,6 +90,6 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.notifications,
-	icon: 'ti ti-bell',
+	icon: 'fas fa-bell',
 })));
 </script>

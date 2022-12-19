@@ -75,7 +75,7 @@ function getMenu() {
 		action: describe,
 	}, null, {
 		text: i18n.ts.copyUrl,
-		icon: 'ti ti-link',
+		icon: 'fas fa-link',
 		action: copyUrl,
 	}, {
 		type: 'a',
@@ -86,7 +86,7 @@ function getMenu() {
 		download: props.file.name,
 	}, null, {
 		text: i18n.ts.delete,
-		icon: 'ti ti-trash',
+		icon: 'fas fa-trash-alt',
 		danger: true,
 		action: deleteFile,
 	}];

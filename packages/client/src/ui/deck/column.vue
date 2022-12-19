@@ -105,7 +105,7 @@ function toggleActive() {
 
 function getMenu() {
 	let items = [{
-		icon: 'ti ti-settings',
+		icon: 'fas fa-cog',
 		text: i18n.ts._deck.configureColumn,
 		action: async () => {
 			const { canceled, result } = await os.form(props.column.name, {
@@ -170,7 +170,7 @@ function getMenu() {
 			popRightColumn(props.column.id);
 		},
 	} : undefined, null, {
-		icon: 'ti ti-trash',
+		icon: 'fas fa-trash-alt',
 		text: i18n.ts.remove,
 		danger: true,
 		action: () => {

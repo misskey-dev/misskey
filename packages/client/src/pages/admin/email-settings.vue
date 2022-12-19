@@ -112,7 +112,7 @@ const headerActions = $computed(() => [{
 	handler: testEmail,
 }, {
 	asFullButton: true,
-	icon: 'ti ti-check',
+	icon: 'fas fa-check',
 	text: i18n.ts.save,
 	handler: save,
 }]);

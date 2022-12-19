@@ -13,7 +13,7 @@
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'" class="_content grwlizim owned">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="ownedPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
@@ -53,7 +53,7 @@ function create() {
 }
 
 const headerActions = $computed(() => [{
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);

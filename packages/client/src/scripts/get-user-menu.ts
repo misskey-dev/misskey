@@ -172,7 +172,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		},
 	}, meId !== user.id ? {
 		type: 'link',
-		icon: 'ti ti-messages',
+		icon: 'fas fa-comments',
 		text: i18n.ts.startMessaging,
 		to: '/my/messaging/' + Acct.toString(user),
 	} : undefined, null, {
@@ -205,7 +205,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		}
 
 		menu = menu.concat([null, {
-			icon: 'ti ti-exclamation-circle',
+			icon: 'fas fa-exclamation-circle',
 			text: i18n.ts.reportAbuse,
 			action: reportAbuse,
 		}]);

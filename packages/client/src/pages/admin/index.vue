@@ -40,7 +40,7 @@ const router = useRouter();
 
 const indexInfo = {
 	title: i18n.ts.controlPanel,
-	icon: 'ti ti-settings',
+	icon: 'fas fa-cog',
 	hideHeader: true,
 };
 
@@ -75,7 +75,7 @@ const menuDef = $computed(() => [{
 	title: i18n.ts.quickAction,
 	items: [{
 		type: 'button',
-		icon: 'ti ti-search',
+		icon: 'fas fa-search',
 		text: i18n.ts.lookup,
 		action: lookup,
 	}, ...(instance.disableRegistration ? [{
@@ -102,7 +102,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/emojis',
 		active: currentPage?.route.name === 'emojis',
 	}, {
-		icon: 'ti ti-world',
+		icon: 'fas fa-globe',
 		text: i18n.ts.federation,
 		to: '/about#federation',
 		active: currentPage?.route.name === 'federation',
@@ -112,7 +112,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/queue',
 		active: currentPage?.route.name === 'queue',
 	}, {
-		icon: 'ti ti-cloud',
+		icon: 'fas fa-cloud',
 		text: i18n.ts.files,
 		to: '/admin/files',
 		active: currentPage?.route.name === 'files',
@@ -127,7 +127,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/ads',
 		active: currentPage?.route.name === 'ads',
 	}, {
-		icon: 'ti ti-exclamation-circle',
+		icon: 'fas fa-exclamation-circle',
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
 		active: currentPage?.route.name === 'abuses',
@@ -135,7 +135,7 @@ const menuDef = $computed(() => [{
 }, {
 	title: i18n.ts.settings,
 	items: [{
-		icon: 'ti ti-settings',
+		icon: 'fas fa-cog',
 		text: i18n.ts.general,
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
@@ -145,7 +145,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/email-settings',
 		active: currentPage?.route.name === 'email-settings',
 	}, {
-		icon: 'ti ti-cloud',
+		icon: 'fas fa-cloud',
 		text: i18n.ts.objectStorage,
 		to: '/admin/object-storage',
 		active: currentPage?.route.name === 'object-storage',
@@ -155,12 +155,12 @@ const menuDef = $computed(() => [{
 		to: '/admin/security',
 		active: currentPage?.route.name === 'security',
 	}, {
-		icon: 'ti ti-world',
+		icon: 'fas fa-globe',
 		text: i18n.ts.relays,
 		to: '/admin/relays',
 		active: currentPage?.route.name === 'relays',
 	}, {
-		icon: 'ti ti-share',
+		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/admin/integrations',
 		active: currentPage?.route.name === 'integrations',
@@ -175,7 +175,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/proxy-account',
 		active: currentPage?.route.name === 'proxy-account',
 	}, {
-		icon: 'ti ti-adjustments',
+		icon: 'fas fa-cogs',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',
 		active: currentPage?.route.name === 'other-settings',
@@ -246,13 +246,13 @@ const lookup = (ev) => {
 		},
 	}, {
 		text: i18n.ts.file,
-		icon: 'ti ti-cloud',
+		icon: 'fas fa-cloud',
 		action: () => {
 			alert('TODO');
 		},
 	}, {
 		text: i18n.ts.instance,
-		icon: 'ti ti-world',
+		icon: 'fas fa-globe',
 		action: () => {
 			alert('TODO');
 		},

@@ -72,18 +72,18 @@ const contextmenu = $computed(() => {
 		text: i18n.ts.showInPage,
 		action: expand,
 	}, {
-		icon: 'ti ti-external-link',
+		icon: 'fas fa-external-link-alt',
 		text: i18n.ts.popout,
 		action: popout,
 	}, null, {
-		icon: 'ti ti-external-link',
+		icon: 'fas fa-external-link-alt',
 		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(pageUrl, '_blank');
 			modal.close();
 		},
 	}, {
-		icon: 'ti ti-link',
+		icon: 'fas fa-link',
 		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(pageUrl);

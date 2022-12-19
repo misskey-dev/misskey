@@ -93,7 +93,7 @@ export function getNoteMenu(props: {
 	async function clip(): Promise<void> {
 		const clips = await os.api('clips/list');
 		os.popupMenu([{
-			icon: 'ti ti-plus',
+			icon: 'fas fa-plus',
 			text: i18n.ts.createNew,
 			action: async () => {
 				const { canceled, result } = await os.form(i18n.ts.createNewClip, {
@@ -202,15 +202,15 @@ export function getNoteMenu(props: {
 					action: unclip,
 				}, null] : []
 			), {
-				icon: 'ti ti-external-link',
+				icon: 'fas fa-external-link-alt',
 				text: i18n.ts.details,
 				action: notedetails,
 			}, {
-				icon: 'ti ti-copy',
+				icon: 'fas fa-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
 			}, {
-				icon: 'ti ti-link',
+				icon: 'fas fa-link',
 				text: i18n.ts.copyLink,
 				action: copyLink,
 			}, (appearNote.url || appearNote.uri) ? {
@@ -221,27 +221,27 @@ export function getNoteMenu(props: {
 				},
 			} : undefined,
 			{
-				icon: 'ti ti-share',
+				icon: 'fas fa-share-alt',
 				text: i18n.ts.share,
 				action: share,
 			},
 			instance.translatorAvailable ? {
-				icon: 'ti ti-language-hiragana',
+				icon: 'fas fa-language',
 				text: i18n.ts.translate,
 				action: translate,
 			} : undefined,
 			null,
 			statePromise.then(state => state.isFavorited ? {
-				icon: 'ti ti-star',
+				icon: 'fas fa-star',
 				text: i18n.ts.unfavorite,
 				action: () => toggleFavorite(false),
 			} : {
-				icon: 'ti ti-star',
+				icon: 'fas fa-star',
 				text: i18n.ts.favorite,
 				action: () => toggleFavorite(true),
 			}),
 			{
-				icon: 'ti ti-paperclip',
+				icon: 'fas fa-paperclip',
 				text: i18n.ts.clip,
 				action: () => clip(),
 			},
@@ -276,7 +276,7 @@ export function getNoteMenu(props: {
 			...(appearNote.userId !== $i.id ? [
 				null,
 				{
-					icon: 'ti ti-exclamation-circle',
+					icon: 'fas fa-exclamation-circle',
 					text: i18n.ts.reportAbuse,
 					action: () => {
 						const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
@@ -296,7 +296,7 @@ export function getNoteMenu(props: {
 					action: delEdit,
 				} : undefined,
 				{
-					icon: 'ti ti-trash',
+					icon: 'fas fa-trash-alt',
 					text: i18n.ts.delete,
 					danger: true,
 					action: del,
@@ -306,15 +306,15 @@ export function getNoteMenu(props: {
 			.filter(x => x !== undefined);
 	} else {
 		menu = [{
-			icon: 'ti ti-external-link',
+			icon: 'fas fa-external-link-alt',
 			text: i18n.ts.detailed,
 			action: openDetail,
 		}, {
-			icon: 'ti ti-copy',
+			icon: 'fas fa-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
 		}, {
-			icon: 'ti ti-link',
+			icon: 'fas fa-link',
 			text: i18n.ts.copyLink,
 			action: copyLink,
 		}, (appearNote.url || appearNote.uri) ? {

@@ -19,14 +19,14 @@
 				<XUserList :pagination="recentlyUpdatedUsers"/>
 			</MkFolder>
 			<MkFolder class="_gap" persist-key="explore-recently-registered-users">
-				<template #header><i class="ti ti-plus fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
+				<template #header><i class="fas fa-plus fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsers"/>
 			</MkFolder>
 		</template>
 	</div>
 	<div v-else>
 		<MkFolder ref="tagsEl" :foldable="true" :expanded="false" class="_gap">
-			<template #header><i class="ti ti-hash fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
+			<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
 				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/explore/tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
@@ -35,7 +35,7 @@
 		</MkFolder>
 
 		<MkFolder v-if="tag != null" :key="`${tag}`" class="_gap">
-			<template #header><i class="ti ti-hash fa-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
+			<template #header><i class="fas fa-hashtag fa-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
 			<XUserList :pagination="tagUsers"/>
 		</MkFolder>
 

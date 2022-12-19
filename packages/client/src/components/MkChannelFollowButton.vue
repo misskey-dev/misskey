@@ -6,10 +6,10 @@
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="fas fa-minus"></i>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full">{{ i18n.ts.follow }}</span><i class="fas fa-plus"></i>
 		</template>
 	</template>
 	<template v-else>

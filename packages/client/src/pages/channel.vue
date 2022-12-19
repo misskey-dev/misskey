@@ -70,7 +70,7 @@ function edit() {
 }
 
 const headerActions = $computed(() => channel && channel.userId ? [{
-	icon: 'ti ti-settings',
+	icon: 'fas fa-cog',
 	text: i18n.ts.edit,
 	handler: edit,
 }] : null);

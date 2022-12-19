@@ -94,6 +94,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.integration,
-	icon: 'ti ti-share',
+	icon: 'fas fa-share-alt',
 });
 </script>

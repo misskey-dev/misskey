@@ -12,7 +12,7 @@
 			<MkSpacer :content-max="1200">
 				<div>
 					<MkInput v-model="searchQuery" :debounce="true" type="search" class="_formBlock">
-						<template #prefix><i class="ti ti-search"></i></template>
+						<template #prefix><i class="fas fa-search"></i></template>
 						<template #label>{{ i18n.ts.searchUser }}</template>
 					</MkInput>
 					<MkRadios v-model="searchOrigin" class="_formBlock">
@@ -82,6 +82,6 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.explore,
-	icon: 'ti ti-hash',
+	icon: 'fas fa-hashtag',
 })));
 </script>

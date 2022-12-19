@@ -114,22 +114,22 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => [{
 	key: 'home',
 	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home-2',
+	icon: 'fas fa-home',
 	iconOnly: true,
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
-	icon: 'ti ti-messages',
+	icon: 'fas fa-comments',
 	iconOnly: true,
 }, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
-	icon: 'ti ti-share',
+	icon: 'fas fa-share-alt',
 	iconOnly: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
-	icon: 'ti ti-world',
+	icon: 'fas fa-globe',
 	iconOnly: true,
 }] : []), {
 	icon: 'fas fa-list-ul',
@@ -150,7 +150,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-messages' : src === 'social' ? 'ti ti-share' : src === 'global' ? 'ti ti-world' : 'ti ti-home-2',
+	icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 })));
 </script>
 

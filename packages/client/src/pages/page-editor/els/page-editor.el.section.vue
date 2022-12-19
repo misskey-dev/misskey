@@ -7,7 +7,7 @@
 			<i class="fas fa-pencil-alt"></i>
 		</button>
 		<button class="_button" @click="add()">
-			<i class="ti ti-plus"></i>
+			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 

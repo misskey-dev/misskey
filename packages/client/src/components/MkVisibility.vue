@@ -1,6 +1,6 @@
 <template>
 <span v-if="note.visibility !== 'public'" :class="$style.visibility" :title="i18n.ts._visibility[note.visibility]">
-	<i v-if="note.visibility === 'home'" class="ti ti-home-2"></i>
+	<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
 	<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 	<i v-else-if="note.visibility === 'specified'" ref="specified" class="fas fa-envelope"></i>
 </span>

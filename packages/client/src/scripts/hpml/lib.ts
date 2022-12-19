@@ -130,13 +130,13 @@ export function initAiLib(hpml: Hpml) {
 }
 
 export const funcDefs: Record<string, { in: any[]; out: any; category: string; icon: any; }> = {
-	if: { in: ['boolean', 0, 0], out: 0, category: 'flow', icon: 'ti ti-share' },
+	if: { in: ['boolean', 0, 0], out: 0, category: 'flow', icon: 'fas fa-share-alt' },
 	for: { in: ['number', 'function'], out: null, category: 'flow', icon: 'fas fa-recycle' },
 	not: { in: ['boolean'], out: 'boolean', category: 'logical', icon: 'fas fa-flag' },
 	or: { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical', icon: 'fas fa-flag' },
 	and: { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical', icon: 'fas fa-flag' },
-	add: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'ti ti-plus' },
-	subtract: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'ti ti-minus' },
+	add: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-plus' },
+	subtract: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-minus' },
 	multiply: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-times' },
 	divide: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-divide' },
 	mod: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-divide' },

@@ -9,7 +9,7 @@
 		</div>
 
 		<div v-else-if="tab === 'my'" class="rknalgpo my">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="myPagesPagination">
 				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
 			</MkPagination>
@@ -55,7 +55,7 @@ function create() {
 }
 
 const headerActions = $computed(() => [{
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);

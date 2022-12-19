@@ -16,7 +16,7 @@
 					<div class="name">{{ file.name }}</div>
 					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
 				</div>
-				<FormButton primary @click="selectFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</FormButton>
+				<FormButton primary @click="selectFile"><i class="fas fa-plus"></i> {{ i18n.ts.attachFile }}</FormButton>
 			</div>
 
 			<FormSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</FormSwitch>
@@ -24,7 +24,7 @@
 			<FormButton v-if="postId" primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 			<FormButton v-else primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.publish }}</FormButton>
 
-			<FormButton v-if="postId" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</FormButton>
+			<FormButton v-if="postId" danger @click="del"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</FormButton>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
