@@ -138,6 +138,9 @@ export class ApiServerService {
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({
 				select: ['host'],
+				where: {
+					isSuspended: false,
+				},
 			});
 
 			return instances.map(instance => instance.host);
