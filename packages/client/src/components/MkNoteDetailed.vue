@@ -83,8 +83,7 @@
 				</div>
 				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
-					<template v-if="appearNote.reply"><i class="ti ti-arrow-back-up-all"></i></template>
-					<template v-else><i class="ti ti-arrow-back-up"></i></template>
+					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
 				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>

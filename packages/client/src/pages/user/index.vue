@@ -81,7 +81,7 @@ const headerTabs = $computed(() => user ? [{
 }, {
 	key: 'pages',
 	title: i18n.ts.pages,
-	icon: 'fas fa-file-alt',
+	icon: 'ti ti-news',
 }, {
 	key: 'gallery',
 	title: i18n.ts.gallery,

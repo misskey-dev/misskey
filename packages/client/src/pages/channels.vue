@@ -61,7 +61,7 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'featured',
 	title: i18n.ts._channel.featured,
-	icon: 'fas fa-fire-alt',
+	icon: 'ti ti-comet',
 }, {
 	key: 'following',
 	title: i18n.ts._channel.following,

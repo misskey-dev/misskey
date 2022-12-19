@@ -50,7 +50,7 @@ const init = async () => {
 function menu(account, ev) {
 	os.popupMenu([{
 		text: i18n.ts.switch,
-		icon: 'fas fa-exchange-alt',
+		icon: 'ti ti-switch-horizontal',
 		action: () => switchAccount(account),
 	}, {
 		text: i18n.ts.remove,

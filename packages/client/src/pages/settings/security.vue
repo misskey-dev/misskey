@@ -30,7 +30,7 @@
 
 	<FormSection>
 		<FormSlot>
-			<FormButton danger @click="regenerateToken"><i class="fas fa-sync-alt"></i> {{ i18n.ts.regenerateLoginToken }}</FormButton>
+			<FormButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> {{ i18n.ts.regenerateLoginToken }}</FormButton>
 			<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
 		</FormSlot>
 	</FormSection>
