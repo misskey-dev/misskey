@@ -895,14 +895,23 @@ _signup:
   almostThere: "Майже готово"
 _accountDelete:
   accountDelete: "Видалити акаунт"
+  inProgress: "Наразі триває видалення"
 _ad:
   back: "Назад"
+  reduceFrequencyOfThisAd: "Показувати цю рекламу менше"
 _gallery:
   my: "Моя галерея"
+  liked: "Вподобане"
+  like: "Вподобати"
   unlike: "Не вподобати"
 _email:
   _follow:
     title: "Новий підписник"
+  _receiveFollowRequest:
+    title: "Отримано запит на підписку"
+_plugin:
+  install: "Встановити плагін"
+  installWarn: "Будь ласка не встановлюйте плагінів яким ви не довіряєте."
 _preferencesBackups:
   createdAt: "Створено: {date} {time}"
   updatedAt: "Оновлено: {date} {time}"
