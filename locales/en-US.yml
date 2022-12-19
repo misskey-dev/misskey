@@ -1510,10 +1510,8 @@ _pages:
       values: "List of choices separated by line breaks"
       default: "Default value"
     _embed:
-      url: "Embed URL"
-      html: "Custom HTML"
-      height: "Height Override"
-      backgroundColor: "Backround Color Override"
+      height: "Height"
+      backgroundColor: "Backround Color"
   script:
     categories:
       flow: "Flow control"

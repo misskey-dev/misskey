@@ -1576,10 +1576,8 @@ _pages:
       default: "デフォルト値"
 
     _embed:
-      url: "Embed URL"
-      html: "Custom HTML"
-      height: "Height Override"
-      backgroundColor: "Backround Color Override"
+      height: "Height"
+      backgroundColor: "Backround Color"
 
   script:
     categories:
