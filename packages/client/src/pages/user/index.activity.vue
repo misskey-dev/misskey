@@ -1,9 +1,9 @@
 <template>
 <MkContainer>
-	<template #header><i class="fas fa-chart-simple" style="margin-right: 0.5em;"></i>{{ $ts.activity }}</template>
+	<template #header><i class="ti ti-chart-line" style="margin-right: 0.5em;"></i>{{ $ts.activity }}</template>
 	<template #func>
 		<button class="_button" @click="showMenu">
-			<i class="fas fa-ellipsis-h"></i>
+			<i class="ti ti-dots"></i>
 		</button>
 	</template>
 

@@ -58,7 +58,7 @@ function onContextmenu(ev: MouseEvent) {
 		type: 'label',
 		text: path,
 	}, {
-		icon: 'fas fa-window-maximize',
+		icon: 'ti ti-window-maximize',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(path);

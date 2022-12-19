@@ -1,16 +1,16 @@
 <template>
 <div ref="thumbnail" class="zdjebgpv">
 	<ImgWithBlurhash v-if="isThumbnailAvailable" :hash="file.blurhash" :src="file.thumbnailUrl" :alt="file.name" :title="file.name" :cover="fit !== 'contain'"/>
-	<i v-else-if="is === 'image'" class="fas fa-file-image icon"></i>
-	<i v-else-if="is === 'video'" class="fas fa-file-video icon"></i>
-	<i v-else-if="is === 'audio' || is === 'midi'" class="fas fa-music icon"></i>
-	<i v-else-if="is === 'csv'" class="fas fa-file-csv icon"></i>
-	<i v-else-if="is === 'pdf'" class="fas fa-file-pdf icon"></i>
-	<i v-else-if="is === 'textfile'" class="fas fa-file-alt icon"></i>
-	<i v-else-if="is === 'archive'" class="fas fa-file-archive icon"></i>
-	<i v-else class="fas fa-file icon"></i>
+	<i v-else-if="is === 'image'" class="ti ti-photo icon"></i>
+	<i v-else-if="is === 'video'" class="ti ti-video icon"></i>
+	<i v-else-if="is === 'audio' || is === 'midi'" class="ti ti-file-music icon"></i>
+	<i v-else-if="is === 'csv'" class="ti ti-file-text icon"></i>
+	<i v-else-if="is === 'pdf'" class="ti ti-file-text icon"></i>
+	<i v-else-if="is === 'textfile'" class="ti ti-file-text icon"></i>
+	<i v-else-if="is === 'archive'" class="ti ti-file-zip icon"></i>
+	<i v-else class="ti ti-file icon"></i>
 
-	<i v-if="isThumbnailAvailable && is === 'video'" class="fas fa-film icon-sub"></i>
+	<i v-if="isThumbnailAvailable && is === 'video'" class="ti ti-video icon-sub"></i>
 </div>
 </template>
 

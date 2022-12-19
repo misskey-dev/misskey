@@ -6,7 +6,7 @@
 				<template #label>{{ i18n.ts.selectWidget }}</template>
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
-			<MkButton inline primary class="mk-widget-add" @click="addWidget"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
+			<MkButton inline primary class="mk-widget-add" @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<XDraggable
@@ -17,8 +17,8 @@
 		>
 			<template #item="{element}">
 				<div class="customize-container">
-					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="fas fa-cog"></i></button>
-					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="fas fa-times"></i></button>
+					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
+					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
 						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
 					</div>
@@ -104,7 +104,7 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 		type: 'label',
 		text: i18n.t(`_widgets.${widget.name}`),
 	}, {
-		icon: 'fas fa-cog',
+		icon: 'ti ti-settings',
 		text: i18n.ts.settings,
 		action: () => {
 			configWidget(widget.id);

@@ -5,7 +5,7 @@
 		<span class="text"><slot></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<i class="fas fa-external-link-alt icon"></i>
+			<i class="ti ti-external-link icon"></i>
 		</span>
 	</a>
 	<MkA v-else class="main _button" :class="{ active }" :to="to" :behavior="behavior">
@@ -13,7 +13,7 @@
 		<span class="text"><slot></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<i class="fas fa-chevron-right icon"></i>
+			<i class="ti ti-chevron-right icon"></i>
 		</span>
 	</MkA>
 </div>

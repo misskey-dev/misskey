@@ -45,12 +45,13 @@ function toggle(): void {
 	display: inline-block;
 	text-align: left;
 	cursor: pointer;
-	padding: 8px 10px;
+	padding: 7px 10px;
 	min-width: 60px;
 	background-color: var(--panel);
 	background-clip: padding-box !important;
 	border: solid 1px var(--panel);
 	border-radius: 6px;
+	font-size: 90%;
 	transition: all 0.2s;
 
 	> * {

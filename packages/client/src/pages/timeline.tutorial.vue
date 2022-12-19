@@ -1,14 +1,14 @@
 <template>
 <div class="_card">
 	<div :class="$style.title" class="_title">
-		<div :class="$style.titleText"><i class="fas fa-info-circle"></i> {{ i18n.ts._tutorial.title }}</div>
+		<div :class="$style.titleText"><i class="ti ti-info-circle"></i> {{ i18n.ts._tutorial.title }}</div>
 		<div :class="$style.step">
 			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === 0" @click="tutorial--">
-				<i class="fas fa-chevron-left"></i>
+				<i class="ti ti-chevron-left"></i>
 			</button>
 			<span :class="$style.stepNumber">{{ tutorial + 1 }} / {{ tutorialsNumber }}</span>
 			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === tutorialsNumber - 1" @click="tutorial++">
-				<i class="fas fa-chevron-right"></i>
+				<i class="ti ti-chevron-right"></i>
 			</button>
 		</div>
 	</div>
@@ -71,7 +71,7 @@
 			<MkButton :class="$style.footerItem" :primary="false" @click="tutorial = -1">{{ i18n.ts.noThankYou }}</MkButton>
 		</template>
 		<template v-else>
-			<MkButton :class="$style.footerItem" primary @click="tutorial++"><i class="fas fa-check"></i> {{ i18n.ts.next }}</MkButton>
+			<MkButton :class="$style.footerItem" primary @click="tutorial++"><i class="ti ti-check"></i> {{ i18n.ts.next }}</MkButton>
 		</template>
 	</div>
 </div>

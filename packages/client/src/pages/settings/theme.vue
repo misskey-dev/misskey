@@ -29,7 +29,7 @@
 	<div class="selects _formBlock">
 		<FormSelect v-model="lightThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForLightMode }}</template>
-			<template #prefix><i class="fas fa-sun"></i></template>
+			<template #prefix><i class="ti ti-sun"></i></template>
 			<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
 			<optgroup v-if="installedLightThemes.length > 0" :label="i18n.ts._theme.installedThemes">
 				<option v-for="x in installedLightThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
@@ -40,7 +40,7 @@
 		</FormSelect>
 		<FormSelect v-model="darkThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
-			<template #prefix><i class="fas fa-moon"></i></template>
+			<template #prefix><i class="ti ti-moon"></i></template>
 			<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
 			<optgroup v-if="installedDarkThemes.length > 0" :label="i18n.ts._theme.installedThemes">
 				<option v-for="x in installedDarkThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
@@ -53,10 +53,10 @@
 
 	<FormSection>
 		<div class="_formLinksGrid">
-			<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
-			<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
-			<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ i18n.ts._theme.make }}</FormLink>
+			<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
+			<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
+			<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
 		</div>
 	</FormSection>
 
@@ -160,7 +160,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.theme,
-	icon: 'fas fa-palette',
+	icon: 'ti ti-palette',
 });
 </script>
 
