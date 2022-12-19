@@ -1,5 +1,6 @@
 <template>
 <button
+	ref="el"
 	v-if="!link" class="bghgjjyj _button"
 	:class="{ inline, primary, gradate, danger, rounded, full }"
 	:type="type"
