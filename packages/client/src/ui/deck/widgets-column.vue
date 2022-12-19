@@ -48,7 +48,7 @@ function func() {
 }
 
 const menu = [{
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 	text: i18n.ts.editWidgets,
 	action: func,
 }];

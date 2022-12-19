@@ -9,7 +9,7 @@
 	</FormInput>
 
 	<FormInput v-model="secret" class="_formBlock">
-		<template #prefix><i class="fas fa-lock"></i></template>
+		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
 	</FormInput>
 
@@ -28,7 +28,7 @@
 	<FormSwitch v-model="active" class="_formBlock">Active</FormSwitch>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton primary inline @click="save"><i class="fas fa-check"></i> {{ i18n.ts.save }}</FormButton>
+		<FormButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </div>
 </template>
@@ -90,6 +90,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: 'Edit webhook',
-	icon: 'fas fa-bolt',
+	icon: 'ti ti-webhook',
 });
 </script>

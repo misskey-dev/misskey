@@ -110,7 +110,7 @@ function onContextmenu(ev: MouseEvent) {
 			fullView = !fullView;
 		},
 	}, {
-		icon: 'fas fa-window-maximize',
+		icon: 'ti ti-window-maximize',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(path);

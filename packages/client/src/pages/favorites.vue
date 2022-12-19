@@ -37,7 +37,7 @@ const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 
 definePageMetadata({
 	title: i18n.ts.favorites,
-	icon: 'fas fa-star',
+	icon: 'ti ti-star',
 });
 </script>
 

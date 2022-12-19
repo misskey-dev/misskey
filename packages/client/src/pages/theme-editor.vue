@@ -42,7 +42,7 @@
 			</FormFolder>
 
 			<FormFolder :default-open="false" class="_formBlock">
-				<template #icon><i class="fas fa-code"></i></template>
+				<template #icon><i class="ti ti-code"></i></template>
 				<template #label>{{ i18n.ts.editCode }}</template>
 
 				<div class="_formRoot">
@@ -210,12 +210,12 @@ watch($$(theme), apply, { deep: true });
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'fas fa-eye',
+	icon: 'ti ti-eye',
 	text: i18n.ts.preview,
 	handler: showPreview,
 }, {
 	asFullButton: true,
-	icon: 'fas fa-check',
+	icon: 'ti ti-check',
 	text: i18n.ts.saveAs,
 	handler: saveAs,
 }]);
@@ -224,7 +224,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.themeEditor,
-	icon: 'fas fa-palette',
+	icon: 'ti ti-palette',
 });
 </script>
 

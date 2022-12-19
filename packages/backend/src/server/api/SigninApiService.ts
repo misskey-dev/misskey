@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { IsNull } from 'typeorm';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { DI } from '@/di-symbols.js';
 import type { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallengesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -14,6 +13,7 @@ import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationSe
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import { bindThis } from '@/decorators.js';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class SigninApiService {

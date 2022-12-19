@@ -5,8 +5,8 @@
 	</FormTextarea>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="fas fa-eye"></i> {{ i18n.ts.preview }}</FormButton>
-		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="fas fa-check"></i> {{ i18n.ts.install }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
+		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</FormButton>
 	</div>
 </div>
 </template>
@@ -75,6 +75,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts._theme.install,
-	icon: 'fas fa-download',
+	icon: 'ti ti-download',
 });
 </script>

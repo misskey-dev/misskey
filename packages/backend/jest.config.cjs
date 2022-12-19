@@ -115,7 +115,7 @@ module.exports = {
 	resolver: './jest-resolver.cjs',
 
 	// Automatically restore mock state between every test
-	// restoreMocks: false,
+	restoreMocks: true,
 
 	// The root directory that Jest should scan for tests and modules within
 	// rootDir: undefined,

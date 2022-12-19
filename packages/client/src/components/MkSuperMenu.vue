@@ -6,15 +6,15 @@
 		<div class="items">
 			<template v-for="(item, i) in group.items">
 				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</a>
 				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
-					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</button>
 				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</MkA>
 			</template>
@@ -89,10 +89,9 @@ export default defineComponent({
 				}
 
 				> .text {
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					overflow: hidden;
+					white-space: normal;
 					padding-right: 12px;
+					flex-shrink: 1;
 				}
 
 			}

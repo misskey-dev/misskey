@@ -1,6 +1,17 @@
 <template>
-<div class="_card tbkwesmv">
-	<div class="_title"><i class="fas fa-info-circle"></i> {{ i18n.ts._tutorial.title }}</div>
+<div class="_card">
+	<div :class="$style.title" class="_title">
+		<div :class="$style.titleText"><i class="ti ti-info-circle"></i> {{ i18n.ts._tutorial.title }}</div>
+		<div :class="$style.step">
+			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === 0" @click="tutorial--">
+				<i class="ti ti-chevron-left"></i>
+			</button>
+			<span :class="$style.stepNumber">{{ tutorial + 1 }} / {{ tutorialsNumber }}</span>
+			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === tutorialsNumber - 1" @click="tutorial++">
+				<i class="ti ti-chevron-right"></i>
+			</button>
+		</div>
+	</div>
 	<div v-if="tutorial === 0" class="_content">
 		<div>{{ i18n.ts._tutorial.step1_1 }}</div>
 		<div>{{ i18n.ts._tutorial.step1_2 }}</div>
@@ -15,7 +26,7 @@
 		<div>{{ i18n.ts._tutorial.step3_1 }}</div>
 		<div>{{ i18n.ts._tutorial.step3_2 }}</div>
 		<div>{{ i18n.ts._tutorial.step3_3 }}</div>
-		<small>{{ i18n.ts._tutorial.step3_4 }}</small>
+		<small :class="$style.small">{{ i18n.ts._tutorial.step3_4 }}</small>
 	</div>
 	<div v-else-if="tutorial === 3" class="_content">
 		<div>{{ i18n.ts._tutorial.step4_1 }}</div>
@@ -32,7 +43,7 @@
 			</template>
 		</I18n>
 		<div>{{ i18n.ts._tutorial.step5_3 }}</div>
-		<small>{{ i18n.ts._tutorial.step5_4 }}</small>
+		<small :class="$style.small">{{ i18n.ts._tutorial.step5_4 }}</small>
 	</div>
 	<div v-else-if="tutorial === 5" class="_content">
 		<div>{{ i18n.ts._tutorial.step6_1 }}</div>
@@ -48,19 +59,20 @@
 		</I18n>
 		<div>{{ i18n.ts._tutorial.step7_3 }}</div>
 	</div>
+	<div v-else-if="tutorial === 7" class="_content">
+		<div>{{ i18n.ts._tutorial.step8_1 }}</div>
+		<div>{{ i18n.ts._tutorial.step8_2 }}</div>
+		<small :class="$style.small">{{ i18n.ts._tutorial.step8_3 }}</small>
+	</div>
 
-	<div class="_footer navigation">
-		<div class="step">
-			<button class="arrow _button" :disabled="tutorial === 0" @click="tutorial--">
-				<i class="fas fa-chevron-left"></i>
-			</button>
-			<span>{{ tutorial + 1 }} / 7</span>
-			<button class="arrow _button" :disabled="tutorial === 6" @click="tutorial++">
-				<i class="fas fa-chevron-right"></i>
-			</button>
-		</div>
-		<MkButton v-if="tutorial === 6" class="ok" primary @click="tutorial = -1"><i class="fas fa-check"></i> {{ i18n.ts.gotIt }}</MkButton>
-		<MkButton v-else class="ok" primary @click="tutorial++"><i class="fas fa-check"></i> {{ i18n.ts.next }}</MkButton>
+	<div class="_footer" :class="$style.footer">
+		<template v-if="tutorial === tutorialsNumber - 1">
+			<MkPushNotificationAllowButton :class="$style.footerItem" primary show-only-to-register @click="tutorial = -1" />
+			<MkButton :class="$style.footerItem" :primary="false" @click="tutorial = -1">{{ i18n.ts.noThankYou }}</MkButton>
+		</template>
+		<template v-else>
+			<MkButton :class="$style.footerItem" primary @click="tutorial++"><i class="ti ti-check"></i> {{ i18n.ts.next }}</MkButton>
+		</template>
 	</div>
 </div>
 </template>
@@ -68,8 +80,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+
+const tutorialsNumber = 8;
 
 const tutorial = computed({
 	get() { return defaultStore.reactiveState.tutorial.value || 0; },
@@ -77,44 +92,51 @@ const tutorial = computed({
 });
 </script>
 
-<style lang="scss" scoped>
-.tbkwesmv {
-	> ._content {
-		> small {
-			opacity: 0.7;
+<style lang="scss" module>
+.small {
+	opacity: 0.7;
+}
+
+.title {
+	display: flex;
+	flex-wrap: wrap;
+
+	&Text {
+		margin: 4px 0;
+		padding-right: 4px;
+	}
+}
+
+.step {
+	margin-left: auto;
+
+	&Arrow {
+		padding: 4px;
+		&:disabled {
+			opacity: 0.5;
+		}
+		&:first-child {
+			padding-right: 8px;
+		}
+		&:last-child {
+			padding-left: 8px;
 		}
 	}
 
-	> .navigation {
-		display: flex;
-		flex-direction: row;
-		align-items: baseline;
+	&Number {
+		font-weight: normal;
+		margin: 4px;
+	}
+}
 
-		> .step {
-			> .arrow {
-				padding: 4px;
+.footer {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: right;
 
-				&:disabled {
-					opacity: 0.5;
-				}
-
-				&:first-child {
-					padding-right: 8px;
-				}
-
-				&:last-child {
-					padding-left: 8px;
-				}
-			}
-
-			> span {
-				margin: 0 4px;
-			}
-		}
-
-		> .ok {
-			margin-left: auto;
-		}
+	&Item {
+		margin: 4px;
 	}
 }
 </style>

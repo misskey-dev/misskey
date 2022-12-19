@@ -2,7 +2,7 @@
 <div class="zbwaqsat">
 	<XPie class="pie" :value="usage"/>
 	<div>
-		<p><i class="fas fa-hdd"></i>Disk</p>
+		<p><i class="ti ti-database"></i>Disk</p>
 		<p>Total: {{ bytes(total, 1) }}</p>
 		<p>Free: {{ bytes(available, 1) }}</p>
 		<p>Used: {{ bytes(used, 1) }}</p>

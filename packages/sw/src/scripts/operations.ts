@@ -2,8 +2,6 @@
  * Operations
  * 各種操作
  */
-declare var self: ServiceWorkerGlobalScope;
-
 import * as Misskey from 'misskey-js';
 import { SwMessage, swMessageOrderType } from '@/types';
 import { acct as getAcct } from '@/filters/user';
@@ -27,6 +25,11 @@ export function openUser(acct: string, loginId: string) {
 // noteIdからノートを開く
 export function openNote(noteId: string, loginId: string) {
 	return openClient('push', `/notes/${noteId}`, loginId, { noteId });
+}
+
+// noteIdからノートを開く
+export function openAntenna(antennaId: string, loginId: string) {
+	return openClient('push', `/timeline/antenna/${antennaId}`, loginId, { antennaId });
 }
 
 export async function openChat(body: any, loginId: string) {

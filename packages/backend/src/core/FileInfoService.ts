@@ -404,7 +404,7 @@ export class FileInfoService {
 					let hash;
 
 					try {
-						hash = encode(new Uint8ClampedArray(buffer), width, height, 7, 7);
+						hash = encode(new Uint8ClampedArray(buffer), width, height, 5, 5);
 					} catch (e) {
 						return reject(e);
 					}

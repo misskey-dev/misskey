@@ -1,9 +1,10 @@
 <template>
-<component :is="self ? 'MkA' : 'a'" ref="el" class="xlcxczvw _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
+<component
+	:is="self ? 'MkA' : 'a'" ref="el" class="xlcxczvw _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
 	:title="url"
 >
 	<slot></slot>
-	<i v-if="target === '_blank'" class="fas fa-external-link-square-alt icon"></i>
+	<i v-if="target === '_blank'" class="ti ti-external-link icon"></i>
 </component>
 </template>
 

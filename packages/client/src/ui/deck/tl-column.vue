@@ -1,16 +1,16 @@
 <template>
 <XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
-		<i v-if="column.tl === 'home'" class="fas fa-home"></i>
-		<i v-else-if="column.tl === 'local'" class="fas fa-comments"></i>
-		<i v-else-if="column.tl === 'social'" class="fas fa-share-alt"></i>
-		<i v-else-if="column.tl === 'global'" class="fas fa-globe"></i>
+		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
+		<i v-else-if="column.tl === 'local'" class="ti ti-messages"></i>
+		<i v-else-if="column.tl === 'social'" class="ti ti-share"></i>
+		<i v-else-if="column.tl === 'global'" class="ti ti-world"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<div v-if="disabled" class="iwaalbte">
 		<p>
-			<i class="fas fa-minus-circle"></i>
+			<i class="ti ti-minus-circle"></i>
 			{{ $t('disabled-timeline.title') }}
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
@@ -98,7 +98,7 @@ function onChangeActiveState(state) {
 }
 
 const menu = [{
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 	text: i18n.ts.timeline,
 	action: setType,
 }];

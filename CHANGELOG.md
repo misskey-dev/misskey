@@ -20,13 +20,18 @@ You should also include the user name that made the change.
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
 ### Improvements
+- Push notification of Antenna note @tamaina
 - Server: improve syslog performance @syuilo
 - Client: Add new gabber kick sounds (thanks for noizenecio)
+- Client: Compress non-animated PNG files @saschanaz
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
+- Server: Fix peers API returning suspended instances @ineffyble
 - Client: インスタンスティッカーのfaviconを読み込む際に偽サイト警告が出ることがあるのを修正 @syuilo
+- Client: case insensitive emoji search @saschanaz
+- Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes

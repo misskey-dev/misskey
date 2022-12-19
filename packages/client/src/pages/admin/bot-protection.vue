@@ -11,11 +11,11 @@
 
 			<template v-if="provider === 'hcaptcha'">
 				<FormInput v-model="hcaptchaSiteKey" class="_formBlock">
-					<template #prefix><i class="fas fa-key"></i></template>
+					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSiteKey }}</template>
 				</FormInput>
 				<FormInput v-model="hcaptchaSecretKey" class="_formBlock">
-					<template #prefix><i class="fas fa-key"></i></template>
+					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
 				</FormInput>
 				<FormSlot class="_formBlock">
@@ -25,11 +25,11 @@
 			</template>
 			<template v-else-if="provider === 'recaptcha'">
 				<FormInput v-model="recaptchaSiteKey" class="_formBlock">
-					<template #prefix><i class="fas fa-key"></i></template>
+					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSiteKey }}</template>
 				</FormInput>
 				<FormInput v-model="recaptchaSecretKey" class="_formBlock">
-					<template #prefix><i class="fas fa-key"></i></template>
+					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSecretKey }}</template>
 				</FormInput>
 				<FormSlot v-if="recaptchaSiteKey" class="_formBlock">
@@ -39,11 +39,11 @@
 			</template>
 			<template v-else-if="provider === 'turnstile'">
 				<FormInput v-model="turnstileSiteKey" class="_formBlock">
-					<template #prefix><i class="fas fa-key"></i></template>
+					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSiteKey }}</template>
 				</FormInput>
 				<FormInput v-model="turnstileSecretKey" class="_formBlock">
-					<template #prefix><i class="fas fa-key"></i></template>
+					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
 				</FormInput>
 				<FormSlot class="_formBlock">
@@ -52,7 +52,7 @@
 				</FormSlot>
 			</template>
 
-			<FormButton primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+			<FormButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 		</div>
 	</FormSuspense>
 </div>

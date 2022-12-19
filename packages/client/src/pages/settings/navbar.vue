@@ -82,6 +82,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.navbar,
-	icon: 'fas fa-list-ul',
+	icon: 'ti ti-list',
 });
 </script>

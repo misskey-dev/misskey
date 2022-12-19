@@ -3,7 +3,6 @@ import Redis from 'ioredis';
 import { OAuth2 } from 'oauth';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
-import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -15,6 +14,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { SigninService } from '../SigninService.js';
+import type { FastifyInstance, FastifyRequest, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class DiscordServerService {
