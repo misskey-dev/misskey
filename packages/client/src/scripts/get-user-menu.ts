@@ -198,7 +198,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 		if (user.isFollowed) {
 			menu = menu.concat([{
-				icon: 'fas fa-unlink',
+				icon: 'ti ti-link-off',
 				text: i18n.ts.breakFollow,
 				action: invalidateFollow,
 			}]);
@@ -212,7 +212,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 		if (iAmModerator) {
 			menu = menu.concat([null, {
-				icon: 'fas fa-microphone-slash',
+				icon: 'ti ti-microphone-2-off',
 				text: user.isSilenced ? i18n.ts.unsilence : i18n.ts.silence,
 				action: toggleSilence,
 			}, {

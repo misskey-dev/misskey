@@ -108,7 +108,7 @@ function openInstanceMenu(ev: MouseEvent) {
 	}, {
 		type: 'link',
 		text: i18n.ts.federation,
-		icon: 'ti ti-world',
+		icon: 'ti ti-whirl',
 		to: '/about#federation',
 	}, null, {
 		type: 'parent',

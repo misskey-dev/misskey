@@ -127,7 +127,7 @@ const headerTabs = $computed(() => [{
 }, iAmModerator ? {
 	key: 'ip',
 	title: 'IP',
-	icon: 'fas fa-bars-staggered',
+	icon: 'ti ti-password',
 } : null, {
 	key: 'raw',
 	title: 'Raw data',

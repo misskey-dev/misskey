@@ -14,7 +14,7 @@
 						<i v-if="webhook.active === false" class="ti ti-player-pause"></i>
 						<i v-else-if="webhook.latestStatus === null" class="far fa-circle"></i>
 						<i v-else-if="[200, 201, 204].includes(webhook.latestStatus)" class="ti ti-check" :style="{ color: 'var(--success)' }"></i>
-						<i v-else class="fas fa-triangle-exclamation" :style="{ color: 'var(--error)' }"></i>
+						<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--error)' }"></i>
 					</template>
 					{{ webhook.name || webhook.url }}
 					<template #suffix>

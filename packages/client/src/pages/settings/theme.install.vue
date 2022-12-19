@@ -75,6 +75,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts._theme.install,
-	icon: 'fas fa-download',
+	icon: 'ti ti-download',
 });
 </script>

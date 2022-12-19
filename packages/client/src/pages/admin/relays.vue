@@ -77,7 +77,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.relays,
-	icon: 'ti ti-world',
+	icon: 'ti ti-planet',
 });
 </script>
 

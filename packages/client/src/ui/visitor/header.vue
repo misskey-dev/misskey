@@ -24,7 +24,7 @@
 	</div>
 	<div v-else-if="narrow === true" class="narrow">
 		<button class="menu _button" @click="$parent.showMenu = true">
-			<i class="fas fa-bars icon"></i>
+			<i class="ti ti-menu-2 icon"></i>
 		</button>
 		<div v-if="info" class="title">
 			<i v-if="info.icon" class="icon" :class="info.icon"></i>
@@ -49,7 +49,7 @@ import { search } from '@/scripts/search';
 export default defineComponent({
 	props: {
 		info: {
-			required: true
+			required: true,
 		},
 	},
 
@@ -67,18 +67,18 @@ export default defineComponent({
 	methods: {
 		signin() {
 			os.popup(XSigninDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
 		},
 
 		signup() {
 			os.popup(XSignupDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
 		},
 
-		search
-	}
+		search,
+	},
 });
 </script>
 

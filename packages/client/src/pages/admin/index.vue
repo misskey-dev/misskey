@@ -102,7 +102,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/emojis',
 		active: currentPage?.route.name === 'emojis',
 	}, {
-		icon: 'ti ti-world',
+		icon: 'ti ti-whirl',
 		text: i18n.ts.federation,
 		to: '/about#federation',
 		active: currentPage?.route.name === 'federation',
@@ -155,7 +155,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/security',
 		active: currentPage?.route.name === 'security',
 	}, {
-		icon: 'ti ti-world',
+		icon: 'ti ti-planet',
 		text: i18n.ts.relays,
 		to: '/admin/relays',
 		active: currentPage?.route.name === 'relays',
@@ -252,7 +252,7 @@ const lookup = (ev) => {
 		},
 	}, {
 		text: i18n.ts.instance,
-		icon: 'ti ti-world',
+		icon: 'ti ti-planet',
 		action: () => {
 			alert('TODO');
 		},

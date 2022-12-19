@@ -8,7 +8,7 @@
 				<i class="ti ti-trash"></i>
 			</button>
 			<button v-if="draggable" class="drag-handle _button">
-				<i class="fas fa-bars"></i>
+				<i class="ti ti-menu-2"></i>
 			</button>
 			<button class="_button" @click="toggleContent(!showBody)">
 				<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
