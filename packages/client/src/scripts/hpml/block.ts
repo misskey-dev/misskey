@@ -66,6 +66,7 @@ export type NoteBlock = BlockBase & {
 
 export type EmbedBlock = BlockBase & {
 	type: 'embed';
+	embedType: 'URL' | 'HTML';
 	url?: string;
 	srcdoc?: string;
 	height?: number;

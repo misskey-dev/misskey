@@ -1,9 +1,9 @@
 <template>
 <div class="rfbysshq" :style="frameStyle">
-	<iframe v-if="isURL" class="wrapped-iframe" allow="fullscreen" name="Page Contents in HTML" :src="src ?? undefined" sandbox="">
+	<iframe v-if="embedType === 'URL'" class="wrapped-iframe" allow="fullscreen" name="Page Contents in HTML" :src="src ?? undefined" sandbox="">
 		😢{{ $ts.pageLoadError }}
 	</iframe>
-	<iframe v-if="!isURL" class="wrapped-iframe" allow="fullscreen" name="Page Contents from a URL" :srcdoc="src ?? undefined" sandbox="">
+	<iframe v-if="embedType === 'HTML'" class="wrapped-iframe" allow="fullscreen" name="Page Contents from a URL" :srcdoc="src ?? undefined" sandbox="">
 		😢{{ $ts.pageLoadError }}
 	</iframe>
 </div>
@@ -29,11 +29,11 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			isURL: !!this.block.url,
-			src: this.hpml.interpolate(this.block.url ? this.block.url : this.block.srcdoc ?? 'NULL'),
+			embedType: this.block.embedType,
+			src: this.hpml.interpolate((this.block.embedType === 'URL' ? this.block.url : this.block.srcdoc) ?? 'NULL'),
 			frameStyle: {
 				height: `${this.block.height ?? window.innerHeight}px`,
-				'background-color': this.block.backgroundColor ?? 'white', // TODO replace 'white' with theme background color
+				'background-color': this.block.backgroundColor,
 			},
 		};
 	},

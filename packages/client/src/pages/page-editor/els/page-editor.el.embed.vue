@@ -4,8 +4,12 @@
 	<template #header><i class="fas fa-code"></i> {{ '$ts._pages.blocks.embed' }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
-		<MkInput v-model="value.url" type="url"><template #prefix><i class="fas fa-link"></i></template><template #label>{{ '$ts._pages.blocks._embed.url' }}</template></MkInput>
-		<section class="udsnsqwy">
+		<MkSelect v-model="value.embedType" style="margin: 0 10px 0 0; flex: 1;" placeholder="$ts.selectType">
+			<option value="URL">URL</option>
+			<option value="HTML">HTML</option>
+		</MkSelect>
+		<MkInput v-show="value.embedType === 'URL'" v-model="value.url" type="url"><template #prefix><i class="fas fa-link"></i></template><template #label>{{ '$ts._pages.blocks._embed.url' }}</template></MkInput>
+		<section class="udsnsqwy" v-show="value.embedType === 'HTML'">
 			<textarea v-model="value.srcdoc"></textarea>
 		</section>
 		<MkInput v-model="value.height" type="number"><template #label>{{ '$ts._pages.blocks._embed.height' }}</template></MkInput>
@@ -19,14 +23,15 @@
 import { } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/form/input.vue';
-import { i18n } from '@/i18n';
+import MkSelect from '@/components/form/select.vue';
 
 withDefaults(defineProps<{
 	value: any
 }>(), {
 	value: {
+		embedType: 'HTML',
 		url: undefined,
-		srcdoc: `<h1>Misskey Pages</h1><a href="https://misskey-hub.net/docs/features/pages.html">${ i18n.ts.help }?</a>`,
+		srcdoc: undefined,
 		height: undefined,
 		backgroundColor: undefined,
 	}
