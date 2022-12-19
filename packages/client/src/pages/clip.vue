@@ -83,7 +83,7 @@ const headerActions = $computed(() => clip && isOwned ? [{
 		});
 	},
 }, {
-	icon: 'fas fa-trash-alt',
+	icon: 'ti ti-trash',
 	text: i18n.ts.delete,
 	danger: true,
 	handler: async (): Promise<void> => {
@@ -101,7 +101,7 @@ const headerActions = $computed(() => clip && isOwned ? [{
 
 definePageMetadata(computed(() => clip ? {
 	title: clip.name,
-	icon: 'fas fa-paperclip',
+	icon: 'ti ti-paperclip',
 } : null));
 </script>
 

@@ -17,7 +17,7 @@
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
 						<header>
-							<i v-if="item.success" class="fas fa-check icon succ"></i>
+							<i v-if="item.success" class="ti ti-check icon succ"></i>
 							<i v-else class="fas fa-times-circle icon fail"></i>
 							<code class="ip _monospace">{{ item.ip }}</code>
 							<MkTime :time="item.createdAt" class="time"/>

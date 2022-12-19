@@ -115,17 +115,17 @@ function show(user) {
 }
 
 const headerActions = $computed(() => [{
-	icon: 'fas fa-search',
+	icon: 'ti ti-search',
 	text: i18n.ts.search,
 	handler: searchUser,
 }, {
 	asFullButton: true,
-	icon: 'fas fa-plus',
+	icon: 'ti ti-plus',
 	text: i18n.ts.addUser,
 	handler: addUser,
 }, {
 	asFullButton: true,
-	icon: 'fas fa-search',
+	icon: 'ti ti-search',
 	text: i18n.ts.lookup,
 	handler: lookupUser,
 }]);

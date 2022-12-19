@@ -5,12 +5,12 @@
 		<MkAvatar v-else-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
-			<i v-if="notification.type === 'follow'" class="fas fa-plus"></i>
+			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
 			<i v-else-if="notification.type === 'receiveFollowRequest'" class="fas fa-clock"></i>
-			<i v-else-if="notification.type === 'followRequestAccepted'" class="fas fa-check"></i>
+			<i v-else-if="notification.type === 'followRequestAccepted'" class="ti ti-check"></i>
 			<i v-else-if="notification.type === 'groupInvited'" class="fas fa-id-card-alt"></i>
-			<i v-else-if="notification.type === 'renote'" class="fas fa-retweet"></i>
-			<i v-else-if="notification.type === 'reply'" class="fas fa-reply"></i>
+			<i v-else-if="notification.type === 'renote'" class="ti ti-repeat"></i>
+			<i v-else-if="notification.type === 'reply'" class="ti ti-arrow-back-up"></i>
 			<i v-else-if="notification.type === 'mention'" class="fas fa-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="fas fa-quote-left"></i>
 			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>

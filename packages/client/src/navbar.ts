@@ -9,21 +9,21 @@ import { unisonReload } from '@/scripts/unison-reload';
 export const navbarItemDef = reactive({
 	notifications: {
 		title: 'notifications',
-		icon: 'fas fa-bell',
+		icon: 'ti ti-bell',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
 		to: '/my/notifications',
 	},
 	messaging: {
 		title: 'messaging',
-		icon: 'fas fa-comments',
+		icon: 'ti ti-messages',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadMessagingMessage),
 		to: '/my/messaging',
 	},
 	drive: {
 		title: 'drive',
-		icon: 'fas fa-cloud',
+		icon: 'ti ti-cloud',
 		show: computed(() => $i != null),
 		to: '/my/drive',
 	},
@@ -36,7 +36,7 @@ export const navbarItemDef = reactive({
 	},
 	explore: {
 		title: 'explore',
-		icon: 'fas fa-hashtag',
+		icon: 'ti ti-hash',
 		to: '/explore',
 	},
 	announcements: {
@@ -47,7 +47,7 @@ export const navbarItemDef = reactive({
 	},
 	search: {
 		title: 'search',
-		icon: 'fas fa-search',
+		icon: 'ti ti-search',
 		action: () => search(),
 	},
 	lists: {
@@ -72,7 +72,7 @@ export const navbarItemDef = reactive({
 	},
 	favorites: {
 		title: 'favorites',
-		icon: 'fas fa-star',
+		icon: 'ti ti-star',
 		show: computed(() => $i != null),
 		to: '/my/favorites',
 	},
@@ -88,7 +88,7 @@ export const navbarItemDef = reactive({
 	},
 	clips: {
 		title: 'clip',
-		icon: 'fas fa-paperclip',
+		icon: 'ti ti-paperclip',
 		show: computed(() => $i != null),
 		to: '/my/clips',
 	},

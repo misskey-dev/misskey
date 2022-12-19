@@ -2,7 +2,7 @@
 <div class="driuhtrh">
 	<div class="query">
 		<MkInput v-model="q" class="" :placeholder="$ts.search">
-			<template #prefix><i class="fas fa-search"></i></template>
+			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 
 		<!-- たくさんあると邪魔

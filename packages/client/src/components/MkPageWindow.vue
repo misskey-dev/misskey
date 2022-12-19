@@ -90,18 +90,18 @@ const contextmenu = $computed(() => ([{
 	text: i18n.ts.showInPage,
 	action: expand,
 }, {
-	icon: 'fas fa-external-link-alt',
+	icon: 'ti ti-external-link',
 	text: i18n.ts.popout,
 	action: popout,
 }, {
-	icon: 'fas fa-external-link-alt',
+	icon: 'ti ti-external-link',
 	text: i18n.ts.openInNewTab,
 	action: () => {
 		window.open(url + router.getCurrentPath(), '_blank');
 		windowEl.close();
 	},
 }, {
-	icon: 'fas fa-link',
+	icon: 'ti ti-link',
 	text: i18n.ts.copyLink,
 	action: () => {
 		copyToClipboard(url + router.getCurrentPath());
