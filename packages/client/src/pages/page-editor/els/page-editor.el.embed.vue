@@ -8,7 +8,7 @@
 			<option value="URL">URL</option>
 			<option value="HTML">HTML</option>
 		</MkSelect>
-		<MkInput v-show="value.embedType === 'URL'" v-model="value.url" type="url"><template #prefix><i class="fas fa-link"></i></template><template #label>{{ '$ts._pages.blocks._embed.url' }}</template></MkInput>
+		<MkInput v-show="value.embedType === 'URL'" v-model="value.url" type="url"><template #prefix><i class="fas fa-link"></i></template></MkInput>
 		<section class="udsnsqwy" v-show="value.embedType === 'HTML'">
 			<textarea v-model="value.srcdoc"></textarea>
 		</section>

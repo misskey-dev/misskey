@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import { EmbedBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
@@ -22,15 +21,11 @@ export default defineComponent({
 			type: Object as PropType<EmbedBlock>,
 			required: true
 		},
-		hpml: {
-			type: Object as PropType<Hpml>,
-			required: true
-		},
 	},
 	data() {
 		return {
 			embedType: this.block.embedType,
-			src: this.hpml.interpolate((this.block.embedType === 'URL' ? this.block.url : this.block.srcdoc) ?? 'NULL'),
+			src: (this.block.embedType === 'URL' ? this.block.url : this.block.srcdoc) ?? 'NULL',
 			frameStyle: {
 				height: `${this.block.height ?? window.innerHeight}px`,
 				'background-color': this.block.backgroundColor,

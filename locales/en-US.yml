@@ -1441,7 +1441,6 @@ _pages:
     section: "Section"
     image: "Images"
     button: "Button"
-    embed: "Embed"
     if: "If"
     _if:
       variable: "Variable"
@@ -1509,9 +1508,6 @@ _pages:
       title: "Title"
       values: "List of choices separated by line breaks"
       default: "Default value"
-    _embed:
-      height: "Height"
-      backgroundColor: "Backround Color"
   script:
     categories:
       flow: "Flow control"
