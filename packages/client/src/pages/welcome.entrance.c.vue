@@ -124,13 +124,13 @@ export default defineComponent({
 		showMenu(ev) {
 			os.popupMenu([{
 				text: this.$t('aboutX', { x: instanceName }),
-				icon: 'fas fa-info-circle',
+				icon: 'ti ti-info-circle',
 				action: () => {
 					os.pageWindow('/about');
 				}
 			}, {
 				text: this.$ts.aboutMisskey,
-				icon: 'fas fa-info-circle',
+				icon: 'ti ti-info-circle',
 				action: () => {
 					os.pageWindow('/about-misskey');
 				}

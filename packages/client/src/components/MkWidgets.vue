@@ -18,7 +18,7 @@
 			<template #item="{element}">
 				<div class="customize-container">
 					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="fas fa-times"></i></button>
+					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
 						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
 					</div>

@@ -1,7 +1,7 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
 	<div>
-		<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
+		<b><i class="ti ti-alert-triangle"></i> {{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>

@@ -107,13 +107,13 @@ function signup() {
 function showMenu(ev) {
 	os.popupMenu([{
 		text: i18n.ts.instanceInfo,
-		icon: 'fas fa-info-circle',
+		icon: 'ti ti-info-circle',
 		action: () => {
 			os.pageWindow('/about');
 		},
 	}, {
 		text: i18n.ts.aboutMisskey,
-		icon: 'fas fa-info-circle',
+		icon: 'ti ti-info-circle',
 		action: () => {
 			os.pageWindow('/about-misskey');
 		},

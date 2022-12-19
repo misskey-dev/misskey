@@ -9,7 +9,7 @@
 	</FormInput>
 
 	<FormInput v-model="secret" class="_formBlock">
-		<template #prefix><i class="fas fa-lock"></i></template>
+		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
 	</FormInput>
 

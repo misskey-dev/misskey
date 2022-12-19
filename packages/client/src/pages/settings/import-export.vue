@@ -23,8 +23,8 @@
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="fas fa-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="fas fa-upload"></i> {{ i18n.ts.import }}</MkButton>
+			<template #icon><i class="ti ti-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
 		</FormFolder>
 	</FormSection>
 	<FormSection>
@@ -36,8 +36,8 @@
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="fas fa-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="fas fa-upload"></i> {{ i18n.ts.import }}</MkButton>
+			<template #icon><i class="ti ti-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
 		</FormFolder>
 	</FormSection>
 	<FormSection>
@@ -49,8 +49,8 @@
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="fas fa-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="fas fa-upload"></i> {{ i18n.ts.import }}</MkButton>
+			<template #icon><i class="ti ti-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
 		</FormFolder>
 	</FormSection>
 	<FormSection>
@@ -62,8 +62,8 @@
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="fas fa-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="fas fa-upload"></i> {{ i18n.ts.import }}</MkButton>
+			<template #icon><i class="ti ti-upload"></i></template>
+			<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
 		</FormFolder>
 	</FormSection>
 </div>

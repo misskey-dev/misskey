@@ -364,7 +364,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
-	icon: 'fas fa-info-circle',
+	icon: 'ti ti-info-circle',
 }, iAmModerator ? {
 	key: 'moderation',
 	title: i18n.ts.moderation,
@@ -381,7 +381,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
-	icon: 'fas fa-info-circle',
+	icon: 'ti ti-info-circle',
 })));
 </script>
 

@@ -14,7 +14,7 @@
 			<div class="">
 				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 					<div class="name">{{ file.name }}</div>
-					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="fas fa-times"></i></button>
+					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 				</div>
 				<FormButton primary @click="selectFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</FormButton>
 			</div>
@@ -115,10 +115,10 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => props.postId ? {
 	title: i18n.ts.edit,
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 } : {
 	title: i18n.ts.postToGallery,
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 }));
 </script>
 

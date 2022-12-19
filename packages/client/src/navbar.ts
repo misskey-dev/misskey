@@ -29,7 +29,7 @@ export const navbarItemDef = reactive({
 	},
 	followRequests: {
 		title: 'followRequests',
-		icon: 'fas fa-user-clock',
+		icon: 'ti ti-user-clock',
 		show: computed(() => $i != null && $i.isLocked),
 		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
@@ -59,7 +59,7 @@ export const navbarItemDef = reactive({
 	/*
 	groups: {
 		title: 'groups',
-		icon: 'fas fa-users',
+		icon: 'ti ti-users',
 		show: computed(() => $i != null),
 		to: '/my/groups',
 	},
@@ -99,7 +99,7 @@ export const navbarItemDef = reactive({
 	},
 	ui: {
 		title: 'switchUi',
-		icon: 'fas fa-columns',
+		icon: 'ti ti-columns',
 		action: (ev) => {
 			os.popupMenu([{
 				text: i18n.ts.default,

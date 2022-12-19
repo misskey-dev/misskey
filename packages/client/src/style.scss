@@ -120,8 +120,13 @@ hr {
 }
 
 .ti {
-	font-size: 125%;
+	font-size: 130%;
 	vertical-align: text-bottom;
+}
+
+.ti-fw {
+	display: inline-block;
+	width: 1em;
 }
 
 ._noSelect {

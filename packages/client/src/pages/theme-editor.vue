@@ -224,7 +224,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.themeEditor,
-	icon: 'fas fa-palette',
+	icon: 'ti ti-palette',
 });
 </script>
 

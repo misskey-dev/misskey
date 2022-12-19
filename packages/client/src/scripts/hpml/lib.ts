@@ -137,7 +137,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	and: { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical', icon: 'fas fa-flag' },
 	add: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'ti ti-plus' },
 	subtract: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'ti ti-minus' },
-	multiply: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-times' },
+	multiply: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'ti ti-x' },
 	divide: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-divide' },
 	mod: { in: ['number', 'number'], out: 'number', category: 'operation', icon: 'fas fa-divide' },
 	round: { in: ['number'], out: 'number', category: 'operation', icon: 'fas fa-calculator' },

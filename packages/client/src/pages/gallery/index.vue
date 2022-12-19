@@ -112,11 +112,11 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'liked',
 	title: i18n.ts._gallery.liked,
-	icon: 'fas fa-heart',
+	icon: 'ti ti-heart',
 }, {
 	key: 'my',
 	title: i18n.ts._gallery.my,
-	icon: 'fas fa-edit',
+	icon: 'ti ti-edit',
 }]);
 
 definePageMetadata({

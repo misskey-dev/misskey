@@ -3,7 +3,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
 		<FormInput v-model="emailAddress" type="email" manual-save>
-			<template #prefix><i class="fas fa-envelope"></i></template>
+			<template #prefix><i class="ti ti-mail"></i></template>
 			<template v-if="$i.email && !$i.emailVerified" #caption>{{ i18n.ts.verificationEmailSent }}</template>
 			<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="ti ti-check" style="color: var(--success);"></i> {{ i18n.ts.emailVerified }}</template>
 		</FormInput>
@@ -106,6 +106,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.email,
-	icon: 'fas fa-envelope',
+	icon: 'ti ti-mail',
 });
 </script>

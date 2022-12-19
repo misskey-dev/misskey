@@ -80,7 +80,7 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			ref: keepOriginal,
 		}, {
 			text: i18n.ts.upload,
-			icon: 'fas fa-upload',
+			icon: 'ti ti-upload',
 			action: chooseFileFromPc,
 		}, {
 			text: i18n.ts.fromDrive,

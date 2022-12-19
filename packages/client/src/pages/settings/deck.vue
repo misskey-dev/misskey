@@ -34,6 +34,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.deck,
-	icon: 'fas fa-columns',
+	icon: 'ti ti-columns',
 });
 </script>

@@ -65,11 +65,11 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'following',
 	title: i18n.ts._channel.following,
-	icon: 'fas fa-heart',
+	icon: 'ti ti-heart',
 }, {
 	key: 'owned',
 	title: i18n.ts._channel.owned,
-	icon: 'fas fa-edit',
+	icon: 'ti ti-edit',
 }]);
 
 definePageMetadata(computed(() => ({

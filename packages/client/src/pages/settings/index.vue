@@ -58,17 +58,17 @@ const ro = new ResizeObserver((entries, observer) => {
 const menuDef = computed(() => [{
 	title: i18n.ts.basicSettings,
 	items: [{
-		icon: 'fas fa-user',
+		icon: 'ti ti-user',
 		text: i18n.ts.profile,
 		to: '/settings/profile',
 		active: currentPage?.route.name === 'profile',
 	}, {
-		icon: 'fas fa-lock-open',
+		icon: 'ti ti-lock-open',
 		text: i18n.ts.privacy,
 		to: '/settings/privacy',
 		active: currentPage?.route.name === 'privacy',
 	}, {
-		icon: 'fas fa-laugh',
+		icon: 'ti ti-mood-happy',
 		text: i18n.ts.reaction,
 		to: '/settings/reaction',
 		active: currentPage?.route.name === 'reaction',
@@ -83,7 +83,7 @@ const menuDef = computed(() => [{
 		to: '/settings/notifications',
 		active: currentPage?.route.name === 'notifications',
 	}, {
-		icon: 'fas fa-envelope',
+		icon: 'ti ti-mail',
 		text: i18n.ts.email,
 		to: '/settings/email',
 		active: currentPage?.route.name === 'email',
@@ -93,7 +93,7 @@ const menuDef = computed(() => [{
 		to: '/settings/integration',
 		active: currentPage?.route.name === 'integration',
 	}, {
-		icon: 'fas fa-lock',
+		icon: 'ti ti-lock',
 		text: i18n.ts.security,
 		to: '/settings/security',
 		active: currentPage?.route.name === 'security',
@@ -106,7 +106,7 @@ const menuDef = computed(() => [{
 		to: '/settings/general',
 		active: currentPage?.route.name === 'general',
 	}, {
-		icon: 'fas fa-palette',
+		icon: 'ti ti-palette',
 		text: i18n.ts.theme,
 		to: '/settings/theme',
 		active: currentPage?.route.name === 'theme',

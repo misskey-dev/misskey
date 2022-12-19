@@ -2,7 +2,7 @@
 <span v-if="note.visibility !== 'public'" :class="$style.visibility" :title="i18n.ts._visibility[note.visibility]">
 	<i v-if="note.visibility === 'home'" class="ti ti-home-2"></i>
 	<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
-	<i v-else-if="note.visibility === 'specified'" ref="specified" class="fas fa-envelope"></i>
+	<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 </span>
 <span v-if="note.localOnly" :class="$style.localOnly" :title="i18n.ts._visibility['localOnly']"><i class="fas fa-biohazard"></i></span>
 </template>

@@ -22,7 +22,7 @@
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
+		<span v-if="full">{{ i18n.ts.processing }}</span><i class="fas fa-spinner fa-pulse ti-fw"></i>
 	</template>
 </button>
 </template>

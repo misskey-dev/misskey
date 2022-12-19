@@ -98,7 +98,7 @@ function onChangeActiveState(state) {
 }
 
 const menu = [{
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 	text: i18n.ts.timeline,
 	action: setType,
 }];

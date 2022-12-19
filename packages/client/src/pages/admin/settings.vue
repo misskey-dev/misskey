@@ -24,7 +24,7 @@
 						</FormInput>
 
 						<FormInput v-model="maintainerEmail" type="email" class="_formBlock">
-							<template #prefix><i class="fas fa-envelope"></i></template>
+							<template #prefix><i class="ti ti-mail"></i></template>
 							<template #label>{{ i18n.ts.maintainerEmail }}</template>
 						</FormInput>
 					</FormSplit>
@@ -69,7 +69,7 @@
 						</FormInput>
 
 						<FormInput v-model="themeColor" class="_formBlock">
-							<template #prefix><i class="fas fa-palette"></i></template>
+							<template #prefix><i class="ti ti-palette"></i></template>
 							<template #label>{{ i18n.ts.themeColor }}</template>
 							<template #caption>#RRGGBB</template>
 						</FormInput>

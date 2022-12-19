@@ -50,7 +50,7 @@ function setFilter(ev) {
 		},
 	}));
 	const items = includeTypes != null ? [{
-		icon: 'fas fa-times',
+		icon: 'ti ti-x',
 		text: i18n.ts.clear,
 		action: () => {
 			includeTypes = null;
@@ -81,11 +81,11 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'mentions',
 	title: i18n.ts.mentions,
-	icon: 'fas fa-at',
+	icon: 'ti ti-at',
 }, {
 	key: 'directNotes',
 	title: i18n.ts.directNotes,
-	icon: 'fas fa-envelope',
+	icon: 'ti ti-mail',
 }]);
 
 definePageMetadata(computed(() => ({

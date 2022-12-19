@@ -53,7 +53,7 @@ watch(() => props.clipId, async () => {
 provide('currentClipPage', $$(clip));
 
 const headerActions = $computed(() => clip && isOwned ? [{
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
 		const { canceled, result } = await os.form(clip.name, {

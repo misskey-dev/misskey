@@ -255,11 +255,11 @@ export function getNoteMenu(props: {
 				action: () => toggleThreadMute(true),
 			}),
 			appearNote.userId === $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
-				icon: 'fas fa-thumbtack',
+				icon: 'ti ti-pin',
 				text: i18n.ts.unpin,
 				action: () => togglePin(false),
 			} : {
-				icon: 'fas fa-thumbtack',
+				icon: 'ti ti-pin',
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
 			} : undefined,
@@ -291,7 +291,7 @@ export function getNoteMenu(props: {
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				null,
 				appearNote.userId === $i.id ? {
-					icon: 'fas fa-edit',
+					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
 					action: delEdit,
 				} : undefined,

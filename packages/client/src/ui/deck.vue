@@ -51,7 +51,7 @@
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button home _button" @click="mainRouter.push('/')"><i class="ti ti-home-2"></i></button>
 		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
+		<button class="button post _button" @click="os.post()"><i class="ti ti-pencil"></i></button>
 	</div>
 
 	<transition :name="$store.state.animation ? 'menu-back' : ''">

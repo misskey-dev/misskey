@@ -11,10 +11,10 @@
 			<i v-else-if="notification.type === 'groupInvited'" class="fas fa-id-card-alt"></i>
 			<i v-else-if="notification.type === 'renote'" class="ti ti-repeat"></i>
 			<i v-else-if="notification.type === 'reply'" class="ti ti-arrow-back-up"></i>
-			<i v-else-if="notification.type === 'mention'" class="fas fa-at"></i>
+			<i v-else-if="notification.type === 'mention'" class="ti ti-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="fas fa-quote-left"></i>
-			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
-			<i v-else-if="notification.type === 'pollEnded'" class="fas fa-poll-h"></i>
+			<i v-else-if="notification.type === 'pollVote'" class="ti ti-chart-arrows"></i>
+			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
 			<XReactionIcon
 				v-else-if="notification.type === 'reaction'"

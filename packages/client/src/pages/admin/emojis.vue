@@ -189,7 +189,7 @@ const menu = (ev: MouseEvent) => {
 			});
 		},
 	}, {
-		icon: 'fas fa-upload',
+		icon: 'ti ti-upload',
 		text: i18n.ts.import,
 		action: async () => {
 			const file = await selectFile(ev.currentTarget ?? ev.target);
@@ -291,7 +291,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
-	icon: 'fas fa-laugh',
+	icon: 'ti ti-mood-happy',
 })));
 </script>
 

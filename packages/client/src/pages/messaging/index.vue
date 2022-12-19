@@ -96,11 +96,11 @@ function onRead(ids) {
 function start(ev) {
 	os.popupMenu([{
 		text: i18n.ts.messagingWithUser,
-		icon: 'fas fa-user',
+		icon: 'ti ti-user',
 		action: () => { startUser(); },
 	}, {
 		text: i18n.ts.messagingWithGroup,
-		icon: 'fas fa-users',
+		icon: 'ti ti-users',
 		action: () => { startGroup(); },
 	}], ev.currentTarget ?? ev.target);
 }

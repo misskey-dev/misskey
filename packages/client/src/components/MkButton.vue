@@ -107,7 +107,7 @@ function onMousedown(evt: MouseEvent): void {
 	padding: 8px 16px;
 	text-align: center;
 	font-weight: normal;
-	font-size: 1em;
+	font-size: 90%;
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);

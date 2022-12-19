@@ -123,7 +123,7 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
-	icon: 'fas fa-info-circle',
+	icon: 'ti ti-info-circle',
 }, iAmModerator ? {
 	key: 'ip',
 	title: 'IP',

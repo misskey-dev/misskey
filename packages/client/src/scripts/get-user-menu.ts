@@ -153,19 +153,19 @@ export function getUserMenu(user, router: Router = mainRouter) {
 	}
 
 	let menu = [{
-		icon: 'fas fa-at',
+		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host || host}`);
 		},
 	}, {
-		icon: 'fas fa-info-circle',
+		icon: 'ti ti-info-circle',
 		text: i18n.ts.info,
 		action: () => {
 			router.push(`/user-info/${user.id}`);
 		},
 	}, {
-		icon: 'fas fa-envelope',
+		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
 			os.post({ specified: user });
@@ -180,7 +180,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		text: i18n.ts.addToList,
 		action: pushList,
 	}, meId !== user.id ? {
-		icon: 'fas fa-users',
+		icon: 'ti ti-users',
 		text: i18n.ts.inviteToGroup,
 		action: inviteGroup,
 	} : undefined] as any;
@@ -225,7 +225,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 	if ($i && meId === user.id) {
 		menu = menu.concat([null, {
-			icon: 'fas fa-pencil-alt',
+			icon: 'ti ti-pencil',
 			text: i18n.ts.editProfile,
 			action: () => {
 				router.push('/settings/profile');

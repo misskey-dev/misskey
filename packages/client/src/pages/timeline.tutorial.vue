@@ -1,7 +1,7 @@
 <template>
 <div class="_card">
 	<div :class="$style.title" class="_title">
-		<div :class="$style.titleText"><i class="fas fa-info-circle"></i> {{ i18n.ts._tutorial.title }}</div>
+		<div :class="$style.titleText"><i class="ti ti-info-circle"></i> {{ i18n.ts._tutorial.title }}</div>
 		<div :class="$style.step">
 			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === 0" @click="tutorial--">
 				<i class="fas fa-chevron-left"></i>

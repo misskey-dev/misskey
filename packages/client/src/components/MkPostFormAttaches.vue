@@ -5,7 +5,7 @@
 			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" class="sensitive">
-					<i class="fas fa-exclamation-triangle icon"></i>
+					<i class="ti ti-alert-triangle icon"></i>
 				</div>
 			</div>
 		</template>
@@ -125,7 +125,7 @@ export default defineComponent({
 				action: () => { this.describe(file); },
 			}, {
 				text: this.$ts.attachCancel,
-				icon: 'fas fa-times-circle',
+				icon: 'ti ti-circle-x',
 				action: () => { this.detachMedia(file.id); },
 			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
 		},

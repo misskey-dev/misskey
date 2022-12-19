@@ -204,7 +204,7 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
-	icon: 'fas fa-info-circle',
+	icon: 'ti ti-info-circle',
 }, {
 	key: 'chart',
 	title: i18n.ts.charts,
@@ -212,7 +212,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'users',
 	title: i18n.ts.users,
-	icon: 'fas fa-users',
+	icon: 'ti ti-users',
 }, {
 	key: 'raw',
 	title: 'Raw',

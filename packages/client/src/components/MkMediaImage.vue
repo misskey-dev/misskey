@@ -3,7 +3,7 @@
 	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
 	<div class="text">
 		<div class="wrapper">
-			<b style="display: block;"><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
+			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ $ts.sensitive }}</b>
 			<span style="display: block;">{{ $ts.clickToShow }}</span>
 		</div>
 	</div>

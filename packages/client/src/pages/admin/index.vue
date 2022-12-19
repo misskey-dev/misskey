@@ -80,7 +80,7 @@ const menuDef = $computed(() => [{
 		action: lookup,
 	}, ...(instance.disableRegistration ? [{
 		type: 'button',
-		icon: 'fas fa-user',
+		icon: 'ti ti-user',
 		text: i18n.ts.invite,
 		action: invite,
 	}] : [])],
@@ -92,12 +92,12 @@ const menuDef = $computed(() => [{
 		to: '/admin/overview',
 		active: currentPage?.route.name === 'overview',
 	}, {
-		icon: 'fas fa-users',
+		icon: 'ti ti-users',
 		text: i18n.ts.users,
 		to: '/admin/users',
 		active: currentPage?.route.name === 'users',
 	}, {
-		icon: 'fas fa-laugh',
+		icon: 'ti ti-mood-happy',
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
 		active: currentPage?.route.name === 'emojis',
@@ -140,7 +140,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
 	}, {
-		icon: 'fas fa-envelope',
+		icon: 'ti ti-mail',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',
 		active: currentPage?.route.name === 'email-settings',
@@ -150,7 +150,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/object-storage',
 		active: currentPage?.route.name === 'object-storage',
 	}, {
-		icon: 'fas fa-lock',
+		icon: 'ti ti-lock',
 		text: i18n.ts.security,
 		to: '/admin/security',
 		active: currentPage?.route.name === 'security',
@@ -234,13 +234,13 @@ const invite = () => {
 const lookup = (ev) => {
 	os.popupMenu([{
 		text: i18n.ts.user,
-		icon: 'fas fa-user',
+		icon: 'ti ti-user',
 		action: () => {
 			lookupUser();
 		},
 	}, {
 		text: i18n.ts.note,
-		icon: 'fas fa-pencil-alt',
+		icon: 'ti ti-pencil',
 		action: () => {
 			alert('TODO');
 		},

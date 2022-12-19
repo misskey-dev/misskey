@@ -437,7 +437,7 @@ definePageMetadata(computed(() => {
 	}
 	return {
 		title: title,
-		icon: 'fas fa-pencil-alt',
+		icon: 'ti ti-pencil',
 		};
 }));
 </script>

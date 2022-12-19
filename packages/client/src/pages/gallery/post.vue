@@ -18,13 +18,13 @@
 						</div>
 						<div class="actions">
 							<div class="like">
-								<MkButton v-if="post.isLiked" v-tooltip="i18n.ts._gallery.unlike" class="button" primary @click="unlike()"><i class="fas fa-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
+								<MkButton v-if="post.isLiked" v-tooltip="i18n.ts._gallery.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
 								<MkButton v-else v-tooltip="i18n.ts._gallery.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
 							</div>
 							<div class="other">
-								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="fas fa-pencil-alt fa-fw"></i></button>
-								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat fa-fw"></i></button>
-								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share fa-fw"></i></button>
+								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
+								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
+								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -139,7 +139,7 @@ function edit() {
 watch(() => props.postId, fetchPost, { immediate: true });
 
 const headerActions = $computed(() => [{
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: edit,
 }]);

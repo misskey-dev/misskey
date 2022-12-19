@@ -5,7 +5,7 @@
 		<div class="name"><i class="fas fa-satellite-dish"></i> {{ channel.name }}</div>
 		<div class="status">
 			<div>
-				<i class="fas fa-users fa-fw"></i>
+				<i class="ti ti-users ti-fw"></i>
 				<I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.usersCount }}</b>
@@ -13,7 +13,7 @@
 				</I18n>
 			</div>
 			<div>
-				<i class="fas fa-pencil-alt fa-fw"></i>
+				<i class="ti ti-pencil ti-fw"></i>
 				<I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.notesCount }}</b>

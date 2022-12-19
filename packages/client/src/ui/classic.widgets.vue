@@ -4,7 +4,7 @@
 	<MkAd class="a" :prefer="['square']"/>
 
 	<button v-if="editMode" class="_textButton edit" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ $ts.editWidgetsExit }}</button>
-	<button v-else class="_textButton edit" style="font-size: 0.9em;" @click="editMode = true"><i class="fas fa-pencil-alt"></i> {{ $ts.editWidgets }}</button>
+	<button v-else class="_textButton edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ $ts.editWidgets }}</button>
 </div>
 </template>
 

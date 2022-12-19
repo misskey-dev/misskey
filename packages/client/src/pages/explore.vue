@@ -73,7 +73,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.featured,
 }, {
 	key: 'users',
-	icon: 'fas fa-users',
+	icon: 'ti ti-users',
 	title: i18n.ts.users,
 }, {
 	key: 'search',

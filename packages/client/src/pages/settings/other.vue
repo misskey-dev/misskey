@@ -12,7 +12,7 @@
 
 	<FormLink to="/registry" class="_formBlock"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
 
-	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="fas fa-exclamation-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
+	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="ti ti-alert-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
 </div>
 </template>
 
