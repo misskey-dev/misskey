@@ -14,7 +14,7 @@
 						<div class="title">{{ post.title }}</div>
 						<div class="description"><Mfm :text="post.description"/></div>
 						<div class="info">
-							<i class="fas fa-clock"></i> <MkTime :time="post.createdAt" mode="detail"/>
+							<i class="ti ti-clock"></i> <MkTime :time="post.createdAt" mode="detail"/>
 						</div>
 						<div class="actions">
 							<div class="like">
@@ -38,7 +38,7 @@
 					</div>
 					<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 					<MkContainer :max-height="300" :foldable="true" class="other">
-						<template #header><i class="fas fa-clock"></i> {{ i18n.ts.recentPosts }}</template>
+						<template #header><i class="ti ti-clock"></i> {{ i18n.ts.recentPosts }}</template>
 						<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
 							<div class="sdrarzaf">
 								<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>

@@ -214,7 +214,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.copyLink,
 				action: copyLink,
 			}, (appearNote.url || appearNote.uri) ? {
-				icon: 'fas fa-external-link-square-alt',
+				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
 					window.open(appearNote.url || appearNote.uri, '_blank');
@@ -318,7 +318,7 @@ export function getNoteMenu(props: {
 			text: i18n.ts.copyLink,
 			action: copyLink,
 		}, (appearNote.url || appearNote.uri) ? {
-			icon: 'fas fa-external-link-square-alt',
+			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url || appearNote.uri, '_blank');

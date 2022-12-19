@@ -36,7 +36,7 @@
 				<span>{{ i18n.ts._visibility.localOnly }}</span>
 				<span>{{ i18n.ts._visibility.localOnlyDescription }}</span>
 			</div>
-			<div><i :class="localOnly ? 'fas fa-toggle-on' : 'fas fa-toggle-off'"></i></div>
+			<div><i :class="localOnly ? 'ti ti-toggle-right' : 'ti ti-toggle-left'"></i></div>
 		</button>
 	</div>
 </MkModal>

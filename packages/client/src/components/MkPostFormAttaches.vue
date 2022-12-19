@@ -113,15 +113,15 @@ export default defineComponent({
 			if (this.menu) return;
 			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,
-				icon: 'fas fa-i-cursor',
+				icon: 'ti ti-cursor-text',
 				action: () => { this.rename(file); },
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: file.isSensitive ? 'ti ti-eye-off' : 'fas fa-eye',
+				icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
 				action: () => { this.toggleSensitive(file); },
 			}, {
 				text: this.$ts.describeFile,
-				icon: 'fas fa-i-cursor',
+				icon: 'ti ti-cursor-text',
 				action: () => { this.describe(file); },
 			}, {
 				text: this.$ts.attachCancel,

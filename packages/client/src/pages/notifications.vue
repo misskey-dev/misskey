@@ -61,7 +61,7 @@ function setFilter(ev) {
 
 const headerActions = $computed(() => [tab === 'all' ? {
 	text: i18n.ts.filter,
-	icon: 'fas fa-filter',
+	icon: 'ti ti-filter',
 	highlighted: includeTypes != null,
 	handler: setFilter,
 } : undefined, tab === 'all' ? {

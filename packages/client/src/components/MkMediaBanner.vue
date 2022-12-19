@@ -6,20 +6,23 @@
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" class="audio">
-		<audio ref="audioEl"
+		<audio
+			ref="audioEl"
 			class="audio"
 			:src="media.url"
 			:title="media.name"
 			controls
 			preload="metadata"
-			@volumechange="volumechange" />
+			@volumechange="volumechange"
+		/>
 	</div>
-	<a v-else class="download"
+	<a
+		v-else class="download"
 		:href="media.url"
 		:title="media.name"
 		:download="media.name"
 	>
-		<span class="icon"><i class="fas fa-download"></i></span>
+		<span class="icon"><i class="ti ti-download"></i></span>
 		<b>{{ media.name }}</b>
 	</a>
 </div>

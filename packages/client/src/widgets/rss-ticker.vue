@@ -1,6 +1,6 @@
 <template>
 <MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-ticker">
-	<template #header><i class="fas fa-rss-square"></i>RSS</template>
+	<template #header><i class="ti ti-rss"></i>RSS</template>
 	<template #func><button class="_button" @click="configure"><i class="ti ti-settings"></i></button></template>
 
 	<div class="ekmkgxbk">

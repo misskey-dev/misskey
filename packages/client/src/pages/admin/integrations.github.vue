@@ -19,7 +19,7 @@
 			</FormInput>
 		</template>
 
-		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+		<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </FormSuspense>
 </template>

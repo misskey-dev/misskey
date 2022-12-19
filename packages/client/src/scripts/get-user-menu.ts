@@ -187,7 +187,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 	if ($i && meId !== user.id) {
 		menu = menu.concat([null, {
-			icon: user.isMuted ? 'fas fa-eye' : 'ti ti-eye-off',
+			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
 		}, {
@@ -216,7 +216,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 				text: user.isSilenced ? i18n.ts.unsilence : i18n.ts.silence,
 				action: toggleSilence,
 			}, {
-				icon: 'fas fa-snowflake',
+				icon: 'ti ti-snowflake',
 				text: user.isSuspended ? i18n.ts.unsuspend : i18n.ts.suspend,
 				action: toggleSuspend,
 			}]);

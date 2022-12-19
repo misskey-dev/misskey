@@ -87,7 +87,7 @@ const menuDef = $computed(() => [{
 }, {
 	title: i18n.ts.administration,
 	items: [{
-		icon: 'fas fa-tachometer-alt',
+		icon: 'ti ti-dashboard',
 		text: i18n.ts.dashboard,
 		to: '/admin/overview',
 		active: currentPage?.route.name === 'overview',
@@ -122,7 +122,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/announcements',
 		active: currentPage?.route.name === 'announcements',
 	}, {
-		icon: 'fas fa-audio-description',
+		icon: 'ti ti-ad',
 		text: i18n.ts.ads,
 		to: '/admin/ads',
 		active: currentPage?.route.name === 'ads',
@@ -183,7 +183,7 @@ const menuDef = $computed(() => [{
 }, {
 	title: i18n.ts.info,
 	items: [{
-		icon: 'fas fa-database',
+		icon: 'ti ti-database',
 		text: i18n.ts.database,
 		to: '/admin/database',
 		active: currentPage?.route.name === 'database',

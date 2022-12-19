@@ -74,7 +74,7 @@
 						</MkKeyValue>
 					</div>
 
-					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ i18n.ts.updateRemoteUser }}</FormButton>
+					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</FormButton>
 
 					<FormFolder class="_formBlock">
 						<template #label>Raw</template>
@@ -368,15 +368,15 @@ const headerTabs = $computed(() => [{
 }, iAmModerator ? {
 	key: 'moderation',
 	title: i18n.ts.moderation,
-	icon: 'fas fa-shield-halved',
+	icon: 'ti ti-user-exclamation',
 } : null, {
 	key: 'chart',
 	title: i18n.ts.charts,
-	icon: 'fas fa-chart-simple',
+	icon: 'ti ti-chart-line',
 }, {
 	key: 'raw',
 	title: 'Raw',
-	icon: 'fas fa-code',
+	icon: 'ti ti-code',
 }].filter(x => x != null));
 
 definePageMetadata(computed(() => ({

@@ -599,7 +599,7 @@ function getMenu() {
 		type: 'label',
 	}, folder.value ? {
 		text: i18n.ts.renameFolder,
-		icon: 'fas fa-i-cursor',
+		icon: 'ti ti-cursor-text',
 		action: () => { renameFolder(folder.value); },
 	} : undefined, folder.value ? {
 		text: i18n.ts.deleteFolder,

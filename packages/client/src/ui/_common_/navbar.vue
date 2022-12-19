@@ -118,17 +118,17 @@ function openInstanceMenu(ev: MouseEvent) {
 			type: 'link',
 			to: '/mfm-cheat-sheet',
 			text: i18n.ts._mfm.cheatSheet,
-			icon: 'fas fa-code',
+			icon: 'ti ti-code',
 		}, {
 			type: 'link',
 			to: '/scratchpad',
 			text: i18n.ts.scratchpad,
-			icon: 'fas fa-terminal',
+			icon: 'ti ti-terminal-2',
 		}, {
 			type: 'link',
 			to: '/api-console',
 			text: 'API Console',
-			icon: 'fas fa-terminal',
+			icon: 'ti ti-terminal-2',
 		}, null, {
 			text: i18n.ts.document,
 			icon: 'ti ti-question-circle',

@@ -112,7 +112,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.scratchpad,
-	icon: 'fas fa-terminal',
+	icon: 'ti ti-terminal-2',
 });
 </script>
 

@@ -171,22 +171,22 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 
 const menu = (ev: MouseEvent) => {
 	os.popupMenu([{
-		icon: 'fas fa-download',
+		icon: 'ti ti-download',
 		text: i18n.ts.export,
 		action: async () => {
 			os.api('export-custom-emojis', {
 			})
-			.then(() => {
-				os.alert({
-					type: 'info',
-					text: i18n.ts.exportRequested,
+				.then(() => {
+					os.alert({
+						type: 'info',
+						text: i18n.ts.exportRequested,
+					});
+				}).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message,
+					});
 				});
-			}).catch((err) => {
-				os.alert({
-					type: 'error',
-					text: err.message,
-				});
-			});
 		},
 	}, {
 		icon: 'ti ti-upload',
@@ -196,17 +196,17 @@ const menu = (ev: MouseEvent) => {
 			os.api('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
-			.then(() => {
-				os.alert({
-					type: 'info',
-					text: i18n.ts.importRequested,
+				.then(() => {
+					os.alert({
+						type: 'info',
+						text: i18n.ts.importRequested,
+					});
+				}).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message,
+					});
 				});
-			}).catch((err) => {
-				os.alert({
-					type: 'error',
-					text: err.message,
-				});
-			});
 		},
 	}], ev.currentTarget ?? ev.target);
 };

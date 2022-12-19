@@ -111,12 +111,12 @@ const menuDef = computed(() => [{
 		to: '/settings/theme',
 		active: currentPage?.route.name === 'theme',
 	}, {
-		icon: 'fas fa-bars',
+		icon: 'ti ti-menu-2',
 		text: i18n.ts.navbar,
 		to: '/settings/navbar',
 		active: currentPage?.route.name === 'navbar',
 	}, {
-		icon: 'fas fa-bars-progress',
+		icon: 'ti ti-equal-double',
 		text: i18n.ts.statusbar,
 		to: '/settings/statusbar',
 		active: currentPage?.route.name === 'statusbar',
@@ -134,7 +134,7 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.otherSettings,
 	items: [{
-		icon: 'fas fa-boxes',
+		icon: 'ti ti-package',
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
@@ -171,13 +171,13 @@ const menuDef = computed(() => [{
 	}],
 }, {
 	items: [{
-		icon: 'fas fa-floppy-disk',
+		icon: 'ti ti-device-floppy',
 		text: i18n.ts.preferencesBackups,
 		to: '/settings/preferences-backups',
 		active: currentPage?.route.name === 'preferences-backups',
 	}, {
 		type: 'button',
-		icon: 'fas fa-trash',
+		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
 		action: () => {
 			localStorage.removeItem('locale');
@@ -186,7 +186,7 @@ const menuDef = computed(() => [{
 		},
 	}, {
 		type: 'button',
-		icon: 'fas fa-sign-in-alt fa-flip-horizontal',
+		icon: 'ti ti-logout',
 		text: i18n.ts.logout,
 		action: async () => {
 			const { canceled } = await os.confirm({

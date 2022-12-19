@@ -37,7 +37,7 @@
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
 				<div class="buttons _formBlock">
-					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
+					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					<MkButton class="button" inline danger @click="remove(ad)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 				</div>
 			</div>
@@ -115,7 +115,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.ads,
-	icon: 'fas fa-audio-description',
+	icon: 'ti ti-ad',
 });
 </script>
 

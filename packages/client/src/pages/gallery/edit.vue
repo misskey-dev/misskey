@@ -21,8 +21,8 @@
 
 			<FormSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</FormSwitch>
 
-			<FormButton v-if="postId" primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
-			<FormButton v-else primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.publish }}</FormButton>
+			<FormButton v-if="postId" primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+			<FormButton v-else primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.publish }}</FormButton>
 
 			<FormButton v-if="postId" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</FormButton>
 		</FormSuspense>

@@ -5,7 +5,7 @@
 		<FormSuspense :p="init">
 			<div class="_formRoot">
 				<FormFolder class="_formBlock">
-					<template #icon><i class="fas fa-shield-alt"></i></template>
+					<template #icon><i class="ti ti-shield"></i></template>
 					<template #label>{{ i18n.ts.botProtection }}</template>
 					<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
 					<template v-else-if="enableRecaptcha" #suffix>reCAPTCHA</template>
@@ -54,7 +54,7 @@
 						</FormSwitch>
 						-->
 
-						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 					</div>
 				</FormFolder>
 
@@ -92,7 +92,7 @@
 							<template #label>Summaly Proxy URL</template>
 						</FormInput>
 
-						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 					</div>
 				</FormFolder>
 			</div>

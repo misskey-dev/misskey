@@ -19,7 +19,7 @@
 				</div>
 			</div>
 			<div class="_formBlock">
-				<MkButton primary @click="save()"><i class="fas fa-save"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
+				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>

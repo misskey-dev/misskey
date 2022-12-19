@@ -46,7 +46,7 @@
 
 	<FormSection>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<FormButton inline @click="preview"><i class="fas fa-eye"></i> {{ i18n.ts.preview }}</FormButton>
+			<FormButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
 			<FormButton inline danger @click="setDefault"><i class="fas fa-undo"></i> {{ i18n.ts.default }}</FormButton>
 		</div>
 	</FormSection>
@@ -129,7 +129,7 @@ definePageMetadata({
 	title: i18n.ts.reaction,
 	icon: 'ti ti-mood-happy',
 	action: {
-		icon: 'fas fa-eye',
+		icon: 'ti ti-eye',
 		handler: preview,
 	},
 });

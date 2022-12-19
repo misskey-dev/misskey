@@ -131,7 +131,7 @@ const headerTabs = $computed(() => [{
 } : null, {
 	key: 'raw',
 	title: 'Raw data',
-	icon: 'fas fa-code',
+	icon: 'ti ti-code',
 }]);
 
 definePageMetadata(computed(() => ({

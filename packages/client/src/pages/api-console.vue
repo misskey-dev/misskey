@@ -84,6 +84,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: 'API console',
-	icon: 'fas fa-terminal',
+	icon: 'ti ti-terminal-2',
 });
 </script>

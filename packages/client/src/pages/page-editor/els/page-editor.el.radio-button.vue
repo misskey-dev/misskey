@@ -1,7 +1,7 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="fas fa-bolt"></i> {{ $ts._pages.blocks.radioButton }}</template>
+	<template #header><i class="ti ti-bolt"></i> {{ $ts._pages.blocks.radioButton }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
 		<MkInput v-model="value.name"><template #prefix><i class="fas fa-magic"></i></template><template #label>{{ $ts._pages.blocks._radioButton.name }}</template></MkInput>

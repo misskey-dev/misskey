@@ -6,7 +6,7 @@
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
-			<i v-else-if="notification.type === 'receiveFollowRequest'" class="fas fa-clock"></i>
+			<i v-else-if="notification.type === 'receiveFollowRequest'" class="ti ti-clock"></i>
 			<i v-else-if="notification.type === 'followRequestAccepted'" class="ti ti-check"></i>
 			<i v-else-if="notification.type === 'groupInvited'" class="fas fa-id-card-alt"></i>
 			<i v-else-if="notification.type === 'renote'" class="ti ti-repeat"></i>

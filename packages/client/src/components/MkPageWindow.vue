@@ -57,7 +57,7 @@ const buttonsLeft = $computed(() => {
 
 	if (history.length > 1) {
 		buttons.push({
-			icon: 'fas fa-arrow-left',
+			icon: 'ti ti-arrow-left',
 			onClick: back,
 		});
 	}
@@ -66,7 +66,7 @@ const buttonsLeft = $computed(() => {
 });
 const buttonsRight = $computed(() => {
 	const buttons = [{
-		icon: 'fas fa-expand-alt',
+		icon: 'ti ti-arrows-maximize',
 		title: i18n.ts.showInPage,
 		onClick: expand,
 	}];
@@ -86,7 +86,7 @@ provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 
 const contextmenu = $computed(() => ([{
-	icon: 'fas fa-expand-alt',
+	icon: 'ti ti-arrows-maximize',
 	text: i18n.ts.showInPage,
 	action: expand,
 }, {

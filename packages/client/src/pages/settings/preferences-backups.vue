@@ -386,15 +386,15 @@ function menu(ev: MouseEvent, profileId: string) {
 		download: `${profiles[profileId].name}.json`,
 	}, null, {
 		text: ts.rename,
-		icon: 'fas fa-i-cursor',
+		icon: 'ti ti-cursor-text',
 		action: () => rename(profileId),
 	}, {
 		text: ts._preferencesBackups.save,
-		icon: 'fas fa-floppy-disk',
+		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
 	}, null, {
 		text: ts._preferencesBackups.delete,
-		icon: 'fas fa-trash-can',
+		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),
 		danger: true,
 	}], ev.currentTarget ?? ev.target);
@@ -416,7 +416,7 @@ onUnmounted(() => {
 
 definePageMetadata(computed(() => ({
 	title: ts.preferencesBackups,
-	icon: 'fas fa-floppy-disk',
+	icon: 'ti ti-device-floppy',
 	bg: 'var(--bg)',
 })));
 </script>

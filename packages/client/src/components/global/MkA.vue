@@ -47,7 +47,7 @@ function onContextmenu(ev) {
 			os.pageWindow(props.to);
 		},
 	}, {
-		icon: 'fas fa-expand-alt',
+		icon: 'ti ti-arrows-maximize',
 		text: i18n.ts.showInPage,
 		action: () => {
 			router.push(props.to, 'forcePage');

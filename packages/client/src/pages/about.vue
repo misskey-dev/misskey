@@ -127,7 +127,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'charts',
 	title: i18n.ts.charts,
-	icon: 'fas fa-chart-simple',
+	icon: 'ti ti-chart-line',
 }]);
 
 definePageMetadata(computed(() => ({

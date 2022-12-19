@@ -208,7 +208,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'chart',
 	title: i18n.ts.charts,
-	icon: 'fas fa-chart-simple',
+	icon: 'ti ti-chart-line',
 }, {
 	key: 'users',
 	title: i18n.ts.users,
@@ -216,7 +216,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'raw',
 	title: 'Raw',
-	icon: 'fas fa-code',
+	icon: 'ti ti-code',
 }]);
 
 definePageMetadata({
