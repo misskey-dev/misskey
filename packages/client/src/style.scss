@@ -119,6 +119,25 @@ hr {
 	background: var(--divider);
 }
 
+.ti {
+	font-size: 130%;
+	vertical-align: text-bottom;
+}
+
+.ti-fw {
+	display: inline-block;
+	width: 1em;
+	text-align: center;
+}
+
+._indicatorCircle {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	border-radius: 100%;
+	background: currentColor;
+}
+
 ._noSelect {
 	user-select: none;
 	-webkit-user-select: none;
@@ -162,6 +181,7 @@ hr {
 	font-size: 1em;
 	font-family: inherit;
 	line-height: inherit;
+	max-width: 100%;
 
 	&, * {
 		@extend ._noSelect;

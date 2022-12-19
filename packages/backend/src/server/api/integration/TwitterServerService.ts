@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import autwh from 'autwh';
@@ -15,6 +14,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { SigninService } from '../SigninService.js';
+import type { FastifyInstance, FastifyRequest, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class TwitterServerService {

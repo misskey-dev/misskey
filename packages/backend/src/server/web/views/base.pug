@@ -34,14 +34,12 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
-		link(rel='stylesheet' href='/assets/fontawesome/css/all.css')
+		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.css')
 		link(rel='modulepreload' href=`/assets/${clientEntry.file}`)
 
-		each href in clientEntry.css
-			link(rel='preload' href=`/assets/${href}` as='style')
-
-		each href in clientEntry.css
-			link(rel='preload' href=`/assets/${href}` as='style')
+		if Array.isArray(clientEntry.css)
+			each href in clientEntry.css
+				link(rel='stylesheet' href=`/assets/${href}`)
 
 		title
 			block title

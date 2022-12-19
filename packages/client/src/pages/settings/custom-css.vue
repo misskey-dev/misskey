@@ -41,6 +41,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.customCss,
-	icon: 'fas fa-code',
+	icon: 'ti ti-code',
 });
 </script>

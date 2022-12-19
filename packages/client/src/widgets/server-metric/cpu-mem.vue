@@ -155,7 +155,7 @@ function onStatsLog(statsLog) {
 		}
 
 		> text {
-			font-size: 5px;
+			font-size: 4.5px;
 			fill: currentColor;
 
 			> tspan {

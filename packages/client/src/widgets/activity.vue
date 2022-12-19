@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" class="mkw-activity">
-	<template #header><i class="fas fa-chart-simple"></i>{{ i18n.ts._widgets.activity }}</template>
-	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
+	<template #header><i class="ti ti-chart-line"></i>{{ i18n.ts._widgets.activity }}</template>
+	<template #func><button class="_button" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
 	<div>
 		<MkLoading v-if="fetching"/>

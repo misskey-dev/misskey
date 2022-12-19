@@ -55,13 +55,13 @@ export function physics(container: HTMLElement) {
 		//wallLeft,
 	]);
 
-	const objEls = Array.from(container.children);
-	const objs = [];
+	const objEls = Array.from(container.children) as HTMLElement[];
+	const objs: Matter.Body[] = [];
 	for (const objEl of objEls) {
 		const left = objEl.dataset.physicsX ? parseInt(objEl.dataset.physicsX) : objEl.offsetLeft;
 		const top = objEl.dataset.physicsY ? parseInt(objEl.dataset.physicsY) : objEl.offsetTop;
 
-		let obj;
+		let obj: Matter.Body;
 		if (objEl.classList.contains('_physics_circle_')) {
 			obj = Matter.Bodies.circle(
 				left + (objEl.offsetWidth / 2),
@@ -84,7 +84,7 @@ export function physics(container: HTMLElement) {
 				}
 			);
 		}
-		objEl.id = obj.id;
+		objEl.id = obj.id.toString();
 		objs.push(obj);
 	}
 
@@ -109,10 +109,10 @@ export function physics(container: HTMLElement) {
 	render.mouse = mouse;
 
 	for (const objEl of objEls) {
-		objEl.style.position = `absolute`;
-		objEl.style.top = 0;
-		objEl.style.left = 0;
-		objEl.style.margin = 0;
+		objEl.style.position = 'absolute';
+		objEl.style.top = '0';
+		objEl.style.left = '0';
+		objEl.style.margin = '0';
 	}
 
 	window.requestAnimationFrame(update);

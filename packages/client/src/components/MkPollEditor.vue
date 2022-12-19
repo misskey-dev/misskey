@@ -1,14 +1,14 @@
 <template>
 <div class="zmdxowus">
 	<p v-if="choices.length < 2" class="caution">
-		<i class="fas fa-exclamation-triangle"></i>{{ i18n.ts._poll.noOnlyOneChoice }}
+		<i class="ti ti-alert-triangle"></i>{{ i18n.ts._poll.noOnlyOneChoice }}
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
 			<MkInput class="input" small :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
-				<i class="fas fa-times"></i>
+				<i class="ti ti-x"></i>
 			</button>
 		</li>
 	</ul>

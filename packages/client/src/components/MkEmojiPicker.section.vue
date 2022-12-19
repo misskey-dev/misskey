@@ -2,7 +2,7 @@
 <!-- このコンポーネントの要素のclassは親から利用されるのでむやみに弄らないこと -->
 <section>
 	<header class="_acrylic" @click="shown = !shown">
-		<i class="toggle fa-fw" :class="shown ? 'fas fa-chevron-down' : 'fas fa-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
+		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
 	</header>
 	<div v-if="shown" class="body">
 		<button

@@ -1,7 +1,7 @@
 <template>
 <div class="_formRoot">
 	<FormSuspense :p="init">
-		<FormButton primary @click="addAccount"><i class="fas fa-plus"></i> {{ i18n.ts.addAccount }}</FormButton>
+		<FormButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</FormButton>
 
 		<div v-for="account in accounts" :key="account.id" class="_panel _button lcjjdxlm" @click="menu(account, $event)">
 			<div class="avatar">
@@ -54,7 +54,7 @@ function menu(account, ev) {
 		action: () => switchAccount(account),
 	}, {
 		text: i18n.ts.remove,
-		icon: 'fas fa-trash-alt',
+		icon: 'ti ti-trash',
 		danger: true,
 		action: () => removeAccount(account),
 	}], ev.currentTarget ?? ev.target);
@@ -108,7 +108,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.accounts,
-	icon: 'fas fa-users',
+	icon: 'ti ti-users',
 });
 </script>
 

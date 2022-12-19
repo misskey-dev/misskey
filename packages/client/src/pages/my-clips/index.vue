@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div class="qtcaoidl">
-			<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
+			<MkButton primary class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="list">
 				<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
@@ -70,9 +70,9 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.clip,
-	icon: 'fas fa-paperclip',
+	icon: 'ti ti-paperclip',
 	action: {
-		icon: 'fas fa-plus',
+		icon: 'ti ti-plus',
 		handler: create,
 	},
 });

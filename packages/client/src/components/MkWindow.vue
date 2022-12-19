@@ -13,7 +13,7 @@
 					<button v-for="button in buttonsRight" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
 					<button v-if="canResize && maximized" class="button _button" @click="unMaximize()"><i class="fas fa-window-restore"></i></button>
 					<button v-else-if="canResize && !maximized" class="button _button" @click="maximize()"><i class="fas fa-window-maximize"></i></button>
-					<button v-if="closeButton" class="button _button" @click="close()"><i class="fas fa-times"></i></button>
+					<button v-if="closeButton" class="button _button" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
 			<div class="body">
@@ -221,6 +221,8 @@ function onHeaderMousedown(evt: MouseEvent) {
 // 上ハンドル掴み時
 function onTopHandleMousedown(evt) {
 	const main = rootEl;
+	// どういうわけかnullになることがある
+	if (main == null) return;
 
 	const base = evt.clientY;
 	const height = parseInt(getComputedStyle(main, '').height, 10);
@@ -247,6 +249,7 @@ function onTopHandleMousedown(evt) {
 // 右ハンドル掴み時
 function onRightHandleMousedown(evt) {
 	const main = rootEl;
+	if (main == null) return;
 
 	const base = evt.clientX;
 	const width = parseInt(getComputedStyle(main, '').width, 10);
@@ -271,6 +274,7 @@ function onRightHandleMousedown(evt) {
 // 下ハンドル掴み時
 function onBottomHandleMousedown(evt) {
 	const main = rootEl;
+	if (main == null) return;
 
 	const base = evt.clientY;
 	const height = parseInt(getComputedStyle(main, '').height, 10);
@@ -295,6 +299,7 @@ function onBottomHandleMousedown(evt) {
 // 左ハンドル掴み時
 function onLeftHandleMousedown(evt) {
 	const main = rootEl;
+	if (main == null) return;
 
 	const base = evt.clientX;
 	const width = parseInt(getComputedStyle(main, '').width, 10);
@@ -366,6 +371,8 @@ function applyTransformLeft(left) {
 
 function onBrowserResize() {
 	const main = rootEl;
+	if (main == null) return;
+
 	const position = main.getBoundingClientRect();
 	const browserWidth = window.innerWidth;
 	const browserHeight = window.innerHeight;

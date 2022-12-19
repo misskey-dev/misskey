@@ -24,7 +24,7 @@ const emit = defineEmits<{
 const label = computed(() => {
 	return concat([
 		props.note.text ? [i18n.t('_cw.chars', { count: length(props.note.text) })] : [],
-		props.note.files && props.note.files.length !== 0 ? [i18n.t('_cw.files', { count: props.note.files.length }) ] : [],
+		props.note.files && props.note.files.length !== 0 ? [i18n.t('_cw.files', { count: props.note.files.length })] : [],
 		props.note.poll != null ? [i18n.ts.poll] : []
 	] as string[][]).join(' / ');
 });

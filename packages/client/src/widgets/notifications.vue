@@ -1,7 +1,7 @@
 <template>
 <MkContainer :style="`height: ${widgetProps.height}px;`" :show-header="widgetProps.showHeader" :scrollable="true" class="mkw-notifications">
-	<template #header><i class="fas fa-bell"></i>{{ i18n.ts.notifications }}</template>
-	<template #func><button class="_button" @click="configureNotification()"><i class="fas fa-cog"></i></button></template>
+	<template #header><i class="ti ti-bell"></i>{{ i18n.ts.notifications }}</template>
+	<template #func><button class="_button" @click="configureNotification()"><i class="ti ti-settings"></i></button></template>
 
 	<div>
 		<XNotifications :include-types="widgetProps.includingTypes"/>

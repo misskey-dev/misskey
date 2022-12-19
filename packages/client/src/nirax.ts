@@ -105,7 +105,7 @@ export class Router extends EventEmitter<{
 		function check(routes: RouteDef[], _parts: string[]): Resolved | null {
 			forEachRouteLoop:
 			for (const route of routes) {
-				let parts = [ ..._parts ];
+				let parts = [..._parts];
 				const props = new Map<string, string>();
 
 				pathMatchLoop:

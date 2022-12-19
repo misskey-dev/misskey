@@ -109,11 +109,11 @@ In addition, it will also automatically start the Misskey server process.
 ### Run test
 Create a config file.
 ```
-cp test/test.yml .config/
+cp .github/misskey/test.yml .config/
 ```
 Prepare DB/Redis for testing.
 ```
-docker-compose -f test/docker-compose.yml up
+docker-compose -f packages/backend/test/docker-compose.yml up
 ```
 Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
 

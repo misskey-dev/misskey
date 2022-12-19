@@ -43,10 +43,3 @@ export const emojiTags = computed(() => {
 	}
 	return Array.from(tags);
 });
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$instance: typeof instance;
-	}
-}

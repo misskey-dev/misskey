@@ -1,6 +1,6 @@
 <template>
 <XColumn :column="column" :is-stacked="isStacked" :menu="menu" @parent-focus="$event => emit('parent-focus', $event)">
-	<template #header><i class="fas fa-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
+	<template #header><i class="ti ti-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotifications :include-types="column.includingTypes"/>
 </XColumn>
@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import XColumn from './column.vue';
-import { updateColumn , Column } from './deck-store';
+import { updateColumn, Column } from './deck-store';
 import XNotifications from '@/components/MkNotifications.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -37,7 +37,7 @@ function func() {
 }
 
 const menu = [{
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 	text: i18n.ts.notificationSetting,
 	action: func,
 }];

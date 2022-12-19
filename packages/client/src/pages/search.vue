@@ -33,6 +33,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.t('searchWith', { q: props.query }),
-	icon: 'fas fa-search',
+	icon: 'ti ti-search',
 })));
 </script>
