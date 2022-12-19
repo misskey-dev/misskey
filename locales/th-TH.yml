@@ -1713,6 +1713,7 @@ _notification:
   yourFollowRequestAccepted: "คำขอติดตามของคุณได้รับการยอมรับแล้วน่ะ"
   youWereInvitedToGroup: "{userName} ได้เชิญคุณเข้ากลุ่ม"
   pollEnded: "โพลสำรวจความคิดเห็นผลลัพธ์มีพร้อมใช้งาน"
+  unreadAntennaNote: "เสาอากาศ {name}"
   emptyPushNotificationMessage: "การแจ้งเตือนแบบพุชได้รับการอัพเดทแล้ว"
   _types:
     all: "ทั้งหมด"
