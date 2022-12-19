@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
 	border-radius: var(--radius);
 
 	> .icon {
-		font-size: 32px;
+		font-size: 24px;
 
 		&.info {
 			color: #55c4dd;

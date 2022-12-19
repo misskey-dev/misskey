@@ -376,12 +376,12 @@ function menu(ev: MouseEvent, profileId: string) {
 
 	return os.popupMenu([{
 		text: ts._preferencesBackups.apply,
-		icon: 'fas fa-circle-down',
+		icon: 'ti ti-check',
 		action: () => applyProfile(profileId),
 	}, {
 		type: 'a',
 		text: ts.download,
-		icon: 'fas fa-download',
+		icon: 'ti ti-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profiles[profileId], null, 2)], { type: 'application/json' })),
 		download: `${profiles[profileId].name}.json`,
 	}, null, {

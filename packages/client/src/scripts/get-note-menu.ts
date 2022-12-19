@@ -196,7 +196,7 @@ export function getNoteMenu(props: {
 		menu = [
 			...(
 				props.currentClipPage?.value.userId === $i.id ? [{
-					icon: 'fas fa-circle-minus',
+					icon: 'ti ti-backspace',
 					text: i18n.ts.unclip,
 					danger: true,
 					action: unclip,

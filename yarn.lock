@@ -973,13 +973,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-free@npm:6.1.2":
-  version: 6.1.2
-  resolution: "@fortawesome/fontawesome-free@npm:6.1.2"
-  checksum: 0d3c9d60ffbb9c1fa4041051eff6542adc1fc29653501399d0235c077a2195a35f286d979da42fe021f73649032f9eeae2c9a0511eaacda2896559155d40a0fc
-  languageName: node
-  linkType: hard
-
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -1983,6 +1976,21 @@ __metadata:
   dependencies:
     defer-to-connect: ^2.0.1
   checksum: fc9cb993e808806692e4a3337c90ece0ec00c89f4b67e3652a356b89730da98bc824273a6d67ca84d5f33cd85f317dcd5ce39d8cc0a2f060145a608a7cb8ce92
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:^1.117.0":
+  version: 1.117.0
+  resolution: "@tabler/icons@npm:1.117.0"
+  peerDependencies:
+    react: ^16.x || 17.x || 18.x
+    react-dom: ^16.x || 17.x || 18.x
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: bdb18d36bd554bef86b50d59bd659f951a7cd7bab7a7b8155d573d2a584e5fba04e44fa7e2e4c998a0869619de6fc0a922424d4486ddc9273bee3c8ae65ccf12
   languageName: node
   linkType: hard
 
@@ -5101,11 +5109,11 @@ __metadata:
   resolution: "client@workspace:packages/client"
   dependencies:
     "@discordapp/twemoji": 14.0.2
-    "@fortawesome/fontawesome-free": 6.1.2
     "@rollup/plugin-alias": 4.0.2
     "@rollup/plugin-json": 6.0.0
     "@rollup/pluginutils": 5.0.2
     "@syuilo/aiscript": 0.11.1
+    "@tabler/icons": ^1.117.0
     "@types/escape-regexp": 0.0.1
     "@types/glob": 8.0.0
     "@types/gulp": 4.0.10

@@ -19,16 +19,16 @@
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+				<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 			</MkA>
 			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button item" @click="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>
 				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+				<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 			</a>
 			<button v-else-if="item.type === 'user'" :tabindex="i" class="_button item" :class="{ active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
-				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+				<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 			<span v-else-if="item.type === 'switch'" :tabindex="i" class="item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
@@ -42,7 +42,7 @@
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 				<span>{{ item.text }}</span>
-				<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+				<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 		</template>
 		<span v-if="items2.length === 0" class="none item">
