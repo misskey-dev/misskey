@@ -10,7 +10,7 @@
 	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button v-if="!playerEnabled && player.url" class="_button" :title="i18n.ts.enablePlayer" @click.prevent="isMobile? playerEnabled = true : openPlayer()"><i class="fas fa-play-circle"></i></button>
+				<button v-if="!playerEnabled && player.url" class="_button" :title="i18n.ts.enablePlayer" @click.prevent="isMobile? playerEnabled = true : openPlayer()"><i class="ti ti-player-play"></i></button>
 			</div>
 			<article>
 				<header>

@@ -154,7 +154,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.importAndExport,
-	icon: 'fas fa-boxes',
+	icon: 'ti ti-package',
 });
 </script>
 

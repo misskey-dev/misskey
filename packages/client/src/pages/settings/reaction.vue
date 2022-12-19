@@ -47,7 +47,7 @@
 	<FormSection>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 			<FormButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
-			<FormButton inline danger @click="setDefault"><i class="fas fa-undo"></i> {{ i18n.ts.default }}</FormButton>
+			<FormButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
 		</div>
 	</FormSection>
 </div>

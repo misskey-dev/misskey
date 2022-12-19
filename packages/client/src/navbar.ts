@@ -78,7 +78,7 @@ export const navbarItemDef = reactive({
 	},
 	pages: {
 		title: 'pages',
-		icon: 'fas fa-file-alt',
+		icon: 'ti ti-news',
 		to: '/pages',
 	},
 	gallery: {
