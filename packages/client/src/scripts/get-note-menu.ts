@@ -246,11 +246,11 @@ export function getNoteMenu(props: {
 				action: () => clip(),
 			},
 			statePromise.then(state => state.isMutedThread ? {
-				icon: 'fas fa-comment-slash',
+				icon: 'ti ti-message-off',
 				text: i18n.ts.unmuteThread,
 				action: () => toggleThreadMute(false),
 			} : {
-				icon: 'fas fa-comment-slash',
+				icon: 'ti ti-message-off',
 				text: i18n.ts.muteThread,
 				action: () => toggleThreadMute(true),
 			}),
@@ -329,7 +329,7 @@ export function getNoteMenu(props: {
 
 	if (noteActions.length > 0) {
 		menu = menu.concat([null, ...noteActions.map(action => ({
-			icon: 'fas fa-plug',
+			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
 				action.handler(appearNote);

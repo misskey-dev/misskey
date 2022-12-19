@@ -116,7 +116,7 @@ export default defineComponent({
 	computed: {
 		icon(): any {
 			if (this.modelValue.type === null) return null;
-			if (this.modelValue.type.startsWith('fn:')) return 'fas fa-plug';
+			if (this.modelValue.type.startsWith('fn:')) return 'ti ti-plug';
 			return blockDefs.find(x => x.type === this.modelValue.type).icon;
 		},
 		typeText(): any {

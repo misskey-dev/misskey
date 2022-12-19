@@ -2,7 +2,7 @@
 <form class="qlvuhzng _formRoot" autocomplete="new-password" @submit.prevent="onSubmit">
 	<MkInput v-if="instance.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" :spellcheck="false" required>
 		<template #label>{{ i18n.ts.invitationCode }}</template>
-		<template #prefix><i class="fas fa-key"></i></template>
+		<template #prefix><i class="ti ti-key"></i></template>
 	</MkInput>
 	<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
 		<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>

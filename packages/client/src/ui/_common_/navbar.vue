@@ -9,7 +9,7 @@
 		</div>
 		<div class="middle">
 			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.timeline" class="item index" active-class="active" to="/" exact>
-				<i class="icon ti ti-home-2 ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
+				<i class="icon ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
 			</MkA>
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>
@@ -113,7 +113,7 @@ function openInstanceMenu(ev: MouseEvent) {
 	}, null, {
 		type: 'parent',
 		text: i18n.ts.help,
-		icon: 'fas fa-question-circle',
+		icon: 'ti ti-question-circle',
 		children: [{
 			type: 'link',
 			to: '/mfm-cheat-sheet',
@@ -131,7 +131,7 @@ function openInstanceMenu(ev: MouseEvent) {
 			icon: 'fas fa-terminal',
 		}, null, {
 			text: i18n.ts.document,
-			icon: 'fas fa-question-circle',
+			icon: 'ti ti-question-circle',
 			action: () => {
 				window.open('https://misskey-hub.net/help.html', '_blank');
 			},

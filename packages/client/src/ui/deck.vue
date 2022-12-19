@@ -34,7 +34,7 @@
 			</div>
 			<div class="sideMenu">
 				<div class="top">
-					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" class="_button button" @click="changeProfile"><i class="fas fa-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" class="_button button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
 					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" class="_button button" @click="deleteProfile"><i class="fas fa-trash-can"></i></button>
 				</div>
 				<div class="middle">
@@ -49,7 +49,7 @@
 
 	<div v-if="isMobile" class="buttons">
 		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
-		<button class="button home _button" @click="mainRouter.push('/')"><i class="ti ti-home-2"></i></button>
+		<button class="button home _button" @click="mainRouter.push('/')"><i class="ti ti-home"></i></button>
 		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
 		<button class="button post _button" @click="os.post()"><i class="ti ti-pencil"></i></button>
 	</div>

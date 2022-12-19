@@ -36,7 +36,7 @@
 			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button item parent" :class="{ childShowing: childShowingItem === item }" @mouseenter="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>
 				<span>{{ item.text }}</span>
-				<span class="caret"><i class="fas fa-caret-right ti-fw"></i></span>
+				<span class="caret"><i class="ti ti-caret-right ti-fw"></i></span>
 			</button>
 			<button v-else :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>

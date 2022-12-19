@@ -16,8 +16,8 @@
 		@contextmenu.prevent.stop="onContextmenu"
 	>
 		<button v-if="isStacked && !isMainColumn" class="toggleActive _button" @click="toggleActive">
-			<template v-if="active"><i class="fas fa-angle-up"></i></template>
-			<template v-else><i class="fas fa-angle-down"></i></template>
+			<template v-if="active"><i class="ti ti-chevron-up"></i></template>
+			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
 		<div class="action">
 			<slot name="action"></slot>
@@ -164,7 +164,7 @@ function getMenu() {
 			stackLeftColumn(props.column.id);
 		},
 	}, props.isStacked ? {
-		icon: 'fas fa-window-maximize',
+		icon: 'ti ti-window-maximize',
 		text: i18n.ts._deck.popRight,
 		action: () => {
 			popRightColumn(props.column.id);

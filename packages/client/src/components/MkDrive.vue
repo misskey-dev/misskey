@@ -11,7 +11,7 @@
 				@removeFolder="removeFolder"
 			/>
 			<template v-for="f in hierarchyFolders">
-				<span class="separator"><i class="fas fa-angle-right"></i></span>
+				<span class="separator"><i class="ti ti-chevron-right"></i></span>
 				<XNavFolder
 					:folder="f"
 					:parent-folder="folder"
@@ -21,7 +21,7 @@
 					@removeFolder="removeFolder"
 				/>
 			</template>
-			<span v-if="folder != null" class="separator"><i class="fas fa-angle-right"></i></span>
+			<span v-if="folder != null" class="separator"><i class="ti ti-chevron-right"></i></span>
 			<span v-if="folder != null" class="folder current">{{ folder.name }}</span>
 		</div>
 		<button class="menu _button" @click="showMenu"><i class="ti ti-dots"></i></button>

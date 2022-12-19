@@ -123,6 +123,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.wordMute,
-	icon: 'fas fa-comment-slash',
+	icon: 'ti ti-message-off',
 });
 </script>

@@ -78,7 +78,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => list ? {
 	title: list.name,
-	icon: 'fas fa-list-ul',
+	icon: 'ti ti-list',
 } : null));
 </script>
 

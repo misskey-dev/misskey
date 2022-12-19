@@ -19,7 +19,7 @@
 			:type="video.type"
 		>
 	</video>
-	<i class="fas fa-eye-slash" @click="hide = true"></i>
+	<i class="ti ti-eye-off" @click="hide = true"></i>
 </div>
 </template>
 

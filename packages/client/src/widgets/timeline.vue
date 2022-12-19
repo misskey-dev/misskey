@@ -2,14 +2,14 @@
 <MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" class="mkw-timeline">
 	<template #header>
 		<button class="_button" @click="choose">
-			<i v-if="widgetProps.src === 'home'" class="ti ti-home-2"></i>
+			<i v-if="widgetProps.src === 'home'" class="ti ti-home"></i>
 			<i v-else-if="widgetProps.src === 'local'" class="ti ti-messages"></i>
 			<i v-else-if="widgetProps.src === 'social'" class="ti ti-share"></i>
 			<i v-else-if="widgetProps.src === 'global'" class="ti ti-world"></i>
-			<i v-else-if="widgetProps.src === 'list'" class="fas fa-list-ul"></i>
-			<i v-else-if="widgetProps.src === 'antenna'" class="fas fa-satellite"></i>
+			<i v-else-if="widgetProps.src === 'list'" class="ti ti-list"></i>
+			<i v-else-if="widgetProps.src === 'antenna'" class="ti ti-antenna"></i>
 			<span style="margin-left: 8px;">{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : $t('_timelines.' + widgetProps.src) }}</span>
-			<i :class="menuOpened ? 'fas fa-angle-up' : 'fas fa-angle-down'" style="margin-left: 8px;"></i>
+			<i :class="menuOpened ? 'ti ti-chevron-up' : 'ti ti-chevron-down'" style="margin-left: 8px;"></i>
 		</button>
 	</template>
 
@@ -86,7 +86,7 @@ const choose = async (ev) => {
 	]);
 	const antennaItems = antennas.map(antenna => ({
 		text: antenna.name,
-		icon: 'fas fa-satellite',
+		icon: 'ti ti-antenna',
 		action: () => {
 			widgetProps.antenna = antenna;
 			setSrc('antenna');
@@ -94,7 +94,7 @@ const choose = async (ev) => {
 	}));
 	const listItems = lists.map(list => ({
 		text: list.name,
-		icon: 'fas fa-list-ul',
+		icon: 'ti ti-list',
 		action: () => {
 			widgetProps.list = list;
 			setSrc('list');
@@ -102,7 +102,7 @@ const choose = async (ev) => {
 	}));
 	os.popupMenu([{
 		text: i18n.ts._timelines.home,
-		icon: 'ti ti-home-2',
+		icon: 'ti ti-home',
 		action: () => { setSrc('home'); }
 	}, {
 		text: i18n.ts._timelines.local,

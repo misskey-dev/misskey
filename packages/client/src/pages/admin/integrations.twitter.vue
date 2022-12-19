@@ -9,12 +9,12 @@
 			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/tw/cb` }}</FormInfo>
 		
 			<FormInput v-model="twitterConsumerKey" class="_formBlock">
-				<template #prefix><i class="fas fa-key"></i></template>
+				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Consumer Key</template>
 			</FormInput>
 
 			<FormInput v-model="twitterConsumerSecret" class="_formBlock">
-				<template #prefix><i class="fas fa-key"></i></template>
+				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Consumer Secret</template>
 			</FormInput>
 		</template>

@@ -3,7 +3,7 @@
 	<div class="body">
 		<div class="left">
 			<MkA v-click-anime v-tooltip="$ts.timeline" class="item index" active-class="active" to="/" exact>
-				<i class="ti ti-home-2 ti-fw"></i>
+				<i class="ti ti-home ti-fw"></i>
 			</MkA>
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>

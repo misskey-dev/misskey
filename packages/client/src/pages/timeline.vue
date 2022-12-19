@@ -114,7 +114,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => [{
 	key: 'home',
 	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home-2',
+	icon: 'ti ti-home',
 	iconOnly: true,
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
@@ -132,17 +132,17 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-world',
 	iconOnly: true,
 }] : []), {
-	icon: 'fas fa-list-ul',
+	icon: 'ti ti-list',
 	title: i18n.ts.lists,
 	iconOnly: true,
 	onClick: chooseList,
 }, {
-	icon: 'fas fa-satellite',
+	icon: 'ti ti-antenna',
 	title: i18n.ts.antennas,
 	iconOnly: true,
 	onClick: chooseAntenna,
 }, {
-	icon: 'fas fa-satellite-dish',
+	icon: 'ti ti-device-tv',
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
@@ -150,7 +150,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-messages' : src === 'social' ? 'ti ti-share' : src === 'global' ? 'ti ti-world' : 'ti ti-home-2',
+	icon: src === 'local' ? 'ti ti-messages' : src === 'social' ? 'ti ti-share' : src === 'global' ? 'ti ti-world' : 'ti ti-home',
 })));
 </script>
 

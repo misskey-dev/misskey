@@ -176,7 +176,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		text: i18n.ts.startMessaging,
 		to: '/my/messaging/' + Acct.toString(user),
 	} : undefined, null, {
-		icon: 'fas fa-list-ul',
+		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
 		action: pushList,
 	}, meId !== user.id ? {
@@ -187,11 +187,11 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 	if ($i && meId !== user.id) {
 		menu = menu.concat([null, {
-			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
+			icon: user.isMuted ? 'fas fa-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
 		}, {
-			icon: 'fas fa-ban',
+			icon: 'ti ti-ban',
 			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
 			action: toggleBlock,
 		}]);
@@ -235,7 +235,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 	if (userActions.length > 0) {
 		menu = menu.concat([null, ...userActions.map(action => ({
-			icon: 'fas fa-plug',
+			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
 				action.handler(user);

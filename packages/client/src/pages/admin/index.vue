@@ -117,7 +117,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/files',
 		active: currentPage?.route.name === 'files',
 	}, {
-		icon: 'fas fa-broadcast-tower',
+		icon: 'ti ti-speakerphone',
 		text: i18n.ts.announcements,
 		to: '/admin/announcements',
 		active: currentPage?.route.name === 'announcements',
@@ -165,7 +165,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/integrations',
 		active: currentPage?.route.name === 'integrations',
 	}, {
-		icon: 'fas fa-ban',
+		icon: 'ti ti-ban',
 		text: i18n.ts.instanceBlocking,
 		to: '/admin/instance-block',
 		active: currentPage?.route.name === 'instance-block',

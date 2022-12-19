@@ -117,7 +117,7 @@ export default defineComponent({
 				action: () => { this.rename(file); },
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
+				icon: file.isSensitive ? 'ti ti-eye-off' : 'fas fa-eye',
 				action: () => { this.toggleSensitive(file); },
 			}, {
 				text: this.$ts.describeFile,

@@ -9,12 +9,12 @@
 			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
 			<FormInput v-model="discordClientId" class="_formBlock">
-				<template #prefix><i class="fas fa-key"></i></template>
+				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client ID</template>
 			</FormInput>
 
 			<FormInput v-model="discordClientSecret" class="_formBlock">
-				<template #prefix><i class="fas fa-key"></i></template>
+				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client Secret</template>
 			</FormInput>
 		</template>

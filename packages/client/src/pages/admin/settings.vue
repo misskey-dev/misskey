@@ -118,12 +118,12 @@
 
 						<template v-if="enableServiceWorker">
 							<FormInput v-model="swPublicKey" class="_formBlock">
-								<template #prefix><i class="fas fa-key"></i></template>
+								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label>Public key</template>
 							</FormInput>
 
 							<FormInput v-model="swPrivateKey" class="_formBlock">
-								<template #prefix><i class="fas fa-key"></i></template>
+								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label>Private key</template>
 							</FormInput>
 						</template>
@@ -133,7 +133,7 @@
 						<template #label>DeepL Translation</template>
 
 						<FormInput v-model="deeplAuthKey" class="_formBlock">
-							<template #prefix><i class="fas fa-key"></i></template>
+							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>DeepL Auth Key</template>
 						</FormInput>
 						<FormSwitch v-model="deeplIsPro" class="_formBlock">

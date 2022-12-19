@@ -67,7 +67,7 @@ function getMenu() {
 		action: rename,
 	}, {
 		text: props.file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: props.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
+		icon: props.file.isSensitive ? 'fas fa-eye' : 'ti ti-eye-off',
 		action: toggleSensitive,
 	}, {
 		text: i18n.ts.describeFile,

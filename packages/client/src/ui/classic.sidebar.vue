@@ -10,7 +10,7 @@
 	</div>
 	<div class="divider"></div>
 	<MkA v-click-anime class="item index" active-class="active" to="/" exact>
-		<i class="ti ti-home-2 ti-fw"></i><span class="text">{{ $ts.timeline }}</span>
+		<i class="ti ti-home ti-fw"></i><span class="text">{{ $ts.timeline }}</span>
 	</MkA>
 	<template v-for="item in menu">
 		<div v-if="item === '-'" class="divider"></div>

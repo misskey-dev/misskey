@@ -9,7 +9,7 @@
 	<p v-if="count > 0" class="count">{{ count }}</p>
 </button>
 <button v-else class="eddddedb _button">
-	<i class="fas fa-ban"></i>
+	<i class="ti ti-ban"></i>
 </button>
 </template>
 
@@ -62,7 +62,7 @@ const renote = (viaKeyboard = false) => {
 		},
 	}, {
 		text: i18n.ts.quote,
-		icon: 'fas fa-quote-right',
+		icon: 'ti ti-quote',
 		action: () => {
 			os.post({
 				renote: props.note,

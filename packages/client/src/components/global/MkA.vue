@@ -41,7 +41,7 @@ function onContextmenu(ev) {
 		type: 'label',
 		text: props.to,
 	}, {
-		icon: 'fas fa-window-maximize',
+		icon: 'ti ti-window-maximize',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);

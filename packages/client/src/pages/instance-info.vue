@@ -28,7 +28,7 @@
 				<template #label>Moderation</template>
 				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
 				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
-				<MkButton @click="refreshMetadata"><i class="fas fa-refresh"></i> Refresh metadata</MkButton>
+				<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 			</FormSection>
 
 			<FormSection>
@@ -221,7 +221,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata({
 	title: props.host,
-	icon: 'fas fa-server',
+	icon: 'ti ti-server',
 });
 </script>
 

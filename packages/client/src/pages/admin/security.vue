@@ -16,7 +16,7 @@
 				</FormFolder>
 
 				<FormFolder class="_formBlock">
-					<template #icon><i class="fas fa-eye-slash"></i></template>
+					<template #icon><i class="ti ti-eye-off"></i></template>
 					<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
 					<template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
 					<template v-else-if="sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>

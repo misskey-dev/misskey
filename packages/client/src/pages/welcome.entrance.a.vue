@@ -119,7 +119,7 @@ function showMenu(ev) {
 		},
 	}, null, {
 		text: i18n.ts.help,
-		icon: 'fas fa-question-circle',
+		icon: 'ti ti-question-circle',
 		action: () => {
 			window.open('https://misskey-hub.net/help.md', '_blank');
 		},

@@ -1,7 +1,7 @@
 <template>
 <XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
-		<i v-if="column.tl === 'home'" class="ti ti-home-2"></i>
+		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-messages"></i>
 		<i v-else-if="column.tl === 'social'" class="ti ti-share"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-world"></i>

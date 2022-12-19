@@ -4,11 +4,11 @@
 		<div :class="$style.titleText"><i class="ti ti-info-circle"></i> {{ i18n.ts._tutorial.title }}</div>
 		<div :class="$style.step">
 			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === 0" @click="tutorial--">
-				<i class="fas fa-chevron-left"></i>
+				<i class="ti ti-chevron-left"></i>
 			</button>
 			<span :class="$style.stepNumber">{{ tutorial + 1 }} / {{ tutorialsNumber }}</span>
 			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === tutorialsNumber - 1" @click="tutorial++">
-				<i class="fas fa-chevron-right"></i>
+				<i class="ti ti-chevron-right"></i>
 			</button>
 		</div>
 	</div>

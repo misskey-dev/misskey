@@ -18,7 +18,7 @@
 		>
 			<slot></slot>
 		</select>
-		<div ref="suffixEl" class="suffix"><i class="fas fa-chevron-down"></i></div>
+		<div ref="suffixEl" class="suffix"><i class="ti ti-chevron-down"></i></div>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 

@@ -9,14 +9,14 @@
 			</div>
 		</button>
 		<button key="home" class="_button" :class="{ active: v === 'home' }" data-index="2" @click="choose('home')">
-			<div><i class="ti ti-home-2"></i></div>
+			<div><i class="ti ti-home"></i></div>
 			<div>
 				<span>{{ i18n.ts._visibility.home }}</span>
 				<span>{{ i18n.ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
 		<button key="followers" class="_button" :class="{ active: v === 'followers' }" data-index="3" @click="choose('followers')">
-			<div><i class="fas fa-unlock"></i></div>
+			<div><i class="ti ti-lock-open"></i></div>
 			<div>
 				<span>{{ i18n.ts._visibility.followers }}</span>
 				<span>{{ i18n.ts._visibility.followersDescription }}</span>
@@ -31,7 +31,7 @@
 		</button>
 		<div class="divider"></div>
 		<button key="localOnly" class="_button localOnly" :class="{ active: localOnly }" data-index="5" @click="localOnly = !localOnly">
-			<div><i class="fas fa-biohazard"></i></div>
+			<div><i class="ti ti-world-off"></i></div>
 			<div>
 				<span>{{ i18n.ts._visibility.localOnly }}</span>
 				<span>{{ i18n.ts._visibility.localOnlyDescription }}</span>

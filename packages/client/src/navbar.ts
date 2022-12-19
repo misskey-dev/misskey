@@ -41,7 +41,7 @@ export const navbarItemDef = reactive({
 	},
 	announcements: {
 		title: 'announcements',
-		icon: 'fas fa-broadcast-tower',
+		icon: 'ti ti-speakerphone',
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
@@ -52,7 +52,7 @@ export const navbarItemDef = reactive({
 	},
 	lists: {
 		title: 'lists',
-		icon: 'fas fa-list-ul',
+		icon: 'ti ti-list',
 		show: computed(() => $i != null),
 		to: '/my/lists',
 	},
@@ -66,7 +66,7 @@ export const navbarItemDef = reactive({
 	*/
 	antennas: {
 		title: 'antennas',
-		icon: 'fas fa-satellite',
+		icon: 'ti ti-antenna',
 		show: computed(() => $i != null),
 		to: '/my/antennas',
 	},
@@ -94,7 +94,7 @@ export const navbarItemDef = reactive({
 	},
 	channels: {
 		title: 'channel',
-		icon: 'fas fa-satellite-dish',
+		icon: 'ti ti-device-tv',
 		to: '/channels',
 	},
 	ui: {
@@ -127,7 +127,7 @@ export const navbarItemDef = reactive({
 	},
 	reload: {
 		title: 'reload',
-		icon: 'fas fa-refresh',
+		icon: 'ti ti-refresh',
 		action: (ev) => {
 			location.reload();
 		},

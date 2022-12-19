@@ -13,7 +13,7 @@
 		<span class="text"><slot></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<i class="fas fa-chevron-right icon"></i>
+			<i class="ti ti-chevron-right icon"></i>
 		</span>
 	</MkA>
 </div>

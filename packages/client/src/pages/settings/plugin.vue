@@ -89,7 +89,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.plugins,
-	icon: 'fas fa-plug',
+	icon: 'ti ti-plug',
 });
 </script>
 

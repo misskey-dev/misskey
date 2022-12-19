@@ -6,7 +6,7 @@
 			<div>{{ relay.inbox }}</div>
 			<div class="status">
 				<i v-if="relay.status === 'accepted'" class="ti ti-check icon accepted"></i>
-				<i v-else-if="relay.status === 'rejected'" class="fas fa-ban icon rejected"></i>
+				<i v-else-if="relay.status === 'rejected'" class="ti ti-ban icon rejected"></i>
 				<i v-else class="fas fa-clock icon requesting"></i>
 				<span>{{ $t(`_relayStatus.${relay.status}`) }}</span>
 			</div>

@@ -116,7 +116,7 @@ export default defineComponent({
 				}
 			}, null, {
 				text: this.$ts.help,
-				icon: 'fas fa-question-circle',
+				icon: 'ti ti-question-circle',
 				action: () => {
 					window.open(`https://misskey-hub.net/help.md`, '_blank');
 				}

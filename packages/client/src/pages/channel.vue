@@ -6,8 +6,8 @@
 			<div class="wpgynlbz _panel _gap" :class="{ hide: !showBanner }">
 				<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 				<button class="_button toggle" @click="() => showBanner = !showBanner">
-					<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
-					<template v-else><i class="fas fa-angle-down"></i></template>
+					<template v-if="showBanner"><i class="ti ti-chevron-up"></i></template>
+					<template v-else><i class="ti ti-chevron-down"></i></template>
 				</button>
 				<div v-if="!showBanner" class="hideOverlay">
 				</div>
@@ -79,7 +79,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => channel ? {
 	title: channel.name,
-	icon: 'fas fa-satellite-dish',
+	icon: 'ti ti-device-tv',
 } : null));
 </script>
 

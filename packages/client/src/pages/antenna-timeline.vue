@@ -85,7 +85,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => antenna ? {
 	title: antenna.name,
-	icon: 'fas fa-satellite',
+	icon: 'ti ti-antenna',
 } : null));
 </script>
 
