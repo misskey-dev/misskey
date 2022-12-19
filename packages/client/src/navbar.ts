@@ -83,7 +83,7 @@ export const navbarItemDef = reactive({
 	},
 	gallery: {
 		title: 'gallery',
-		icon: 'fas fa-icons',
+		icon: 'ti ti-icons',
 		to: '/gallery',
 	},
 	clips: {

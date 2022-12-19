@@ -4,22 +4,22 @@
 		<template #label>{{ i18n.ts._exportOrImport.allNotes }}</template>
 		<FormFolder>
 			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="fas fa-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="fas fa-download"></i> {{ i18n.ts.export }}</MkButton>
+			<template #icon><i class="ti ti-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ i18n.ts._exportOrImport.followingList }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="fas fa-download"></i></template>
+			<template #icon><i class="ti ti-download"></i></template>
 			<FormSwitch v-model="excludeMutingUsers" class="_formBlock">
 				{{ i18n.ts._exportOrImport.excludeMutingUsers }}
 			</FormSwitch>
 			<FormSwitch v-model="excludeInactiveUsers" class="_formBlock">
 				{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
 			</FormSwitch>
-			<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="fas fa-download"></i> {{ i18n.ts.export }}</MkButton>
+			<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
@@ -31,8 +31,8 @@
 		<template #label>{{ i18n.ts._exportOrImport.userLists }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="fas fa-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="fas fa-download"></i> {{ i18n.ts.export }}</MkButton>
+			<template #icon><i class="ti ti-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
@@ -44,8 +44,8 @@
 		<template #label>{{ i18n.ts._exportOrImport.muteList }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="fas fa-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="fas fa-download"></i> {{ i18n.ts.export }}</MkButton>
+			<template #icon><i class="ti ti-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
@@ -57,8 +57,8 @@
 		<template #label>{{ i18n.ts._exportOrImport.blockingList }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="fas fa-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="fas fa-download"></i> {{ i18n.ts.export }}</MkButton>
+			<template #icon><i class="ti ti-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.import }}</template>
@@ -113,7 +113,7 @@ const exportFollowing = () => {
 		excludeMuting: excludeMutingUsers.value,
 		excludeInactive: excludeInactiveUsers.value,
 	})
-	.then(onExportSuccess).catch(onError);
+		.then(onExportSuccess).catch(onError);
 };
 
 const exportBlocking = () => {

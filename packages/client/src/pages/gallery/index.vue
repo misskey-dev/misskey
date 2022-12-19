@@ -108,7 +108,7 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'explore',
 	title: i18n.ts.gallery,
-	icon: 'fas fa-icons',
+	icon: 'ti ti-icons',
 }, {
 	key: 'liked',
 	title: i18n.ts._gallery.liked,
@@ -121,7 +121,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata({
 	title: i18n.ts.gallery,
-	icon: 'fas fa-icons',
+	icon: 'ti ti-icons',
 });
 </script>
 
