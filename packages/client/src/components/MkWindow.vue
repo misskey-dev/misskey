@@ -11,8 +11,8 @@
 				</span>
 				<span class="right">
 					<button v-for="button in buttonsRight" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
-					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="button _button" @click="unMaximize()"><i class="ti ti-app-window"></i></button>
-					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="button _button" @click="maximize()"><i class="ti ti-arrows-maximize"></i></button>
+					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="button _button" @click="unMaximize()"><i class="ti ti-picture-in-picture"></i></button>
+					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="button _button" @click="maximize()"><i class="ti ti-rectangle"></i></button>
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="button _button" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>

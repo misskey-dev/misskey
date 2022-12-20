@@ -386,7 +386,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		download: `${profiles[profileId].name}.json`,
 	}, null, {
 		text: ts.rename,
-		icon: 'ti ti-cursor-text',
+		icon: 'ti ti-forms',
 		action: () => rename(profileId),
 	}, {
 		text: ts._preferencesBackups.save,

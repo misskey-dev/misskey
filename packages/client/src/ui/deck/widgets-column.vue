@@ -1,6 +1,6 @@
 <template>
 <XColumn :menu="menu" :naked="true" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
-	<template #header><i class="ti ti-layout-list" style="margin-right: 8px;"></i>{{ column.name }}</template>
+	<template #header><i class="ti ti-apps" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
 		<div v-if="!(column.widgets && column.widgets.length > 0) && !edit" class="intro">{{ i18n.ts._deck.widgetsIntroduction }}</div>

@@ -116,7 +116,7 @@ export default defineComponent({
 
 			> .items {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
 				grid-gap: 16px;
 				padding: 0 16px;
 
@@ -141,8 +141,8 @@ export default defineComponent({
 						margin-right: 0;
 						margin-bottom: 6px;
 						font-size: 1.5em;
-						width: 32px;
-						height: 32px;
+						width: 54px;
+						height: 54px;
 						aspect-ratio: 1;
 						background: var(--panel);
 						border-radius: 100%;

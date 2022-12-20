@@ -47,7 +47,7 @@ function onContextmenu(ev) {
 			os.pageWindow(props.to);
 		},
 	}, {
-		icon: 'ti ti-corner-right-down-double',
+		icon: 'ti ti-player-eject',
 		text: i18n.ts.showInPage,
 		action: () => {
 			router.push(props.to, 'forcePage');

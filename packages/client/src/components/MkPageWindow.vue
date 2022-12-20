@@ -66,7 +66,7 @@ const buttonsLeft = $computed(() => {
 });
 const buttonsRight = $computed(() => {
 	const buttons = [{
-		icon: 'ti ti-corner-right-down-double',
+		icon: 'ti ti-player-eject',
 		title: i18n.ts.showInPage,
 		onClick: expand,
 	}];
@@ -86,7 +86,7 @@ provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 
 const contextmenu = $computed(() => ([{
-	icon: 'ti ti-corner-right-down-double',
+	icon: 'ti ti-player-eject',
 	text: i18n.ts.showInPage,
 	action: expand,
 }, {
@@ -107,10 +107,6 @@ const contextmenu = $computed(() => ([{
 		copyToClipboard(url + router.getCurrentPath());
 	},
 }]));
-
-function menu(ev) {
-	os.popupMenu(contextmenu, ev.currentTarget ?? ev.target);
-}
 
 function back() {
 	history.pop();

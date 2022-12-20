@@ -113,7 +113,7 @@ export default defineComponent({
 			if (this.menu) return;
 			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,
-				icon: 'ti ti-cursor-text',
+				icon: 'ti ti-forms',
 				action: () => { this.rename(file); },
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
@@ -121,7 +121,7 @@ export default defineComponent({
 				action: () => { this.toggleSensitive(file); },
 			}, {
 				text: this.$ts.describeFile,
-				icon: 'ti ti-cursor-text',
+				icon: 'ti ti-forms',
 				action: () => { this.describe(file); },
 			}, {
 				text: this.$ts.attachCancel,

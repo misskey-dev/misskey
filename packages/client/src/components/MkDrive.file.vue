@@ -63,7 +63,7 @@ const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(pro
 function getMenu() {
 	return [{
 		text: i18n.ts.rename,
-		icon: 'ti ti-cursor-text',
+		icon: 'ti ti-forms',
 		action: rename,
 	}, {
 		text: props.file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
@@ -71,7 +71,7 @@ function getMenu() {
 		action: toggleSensitive,
 	}, {
 		text: i18n.ts.describeFile,
-		icon: 'ti ti-cursor-text',
+		icon: 'ti ti-forms',
 		action: describe,
 	}, null, {
 		text: i18n.ts.copyUrl,

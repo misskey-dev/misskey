@@ -253,7 +253,7 @@ function onContextmenu(ev: MouseEvent) {
 		},
 	}, null, {
 		text: i18n.ts.rename,
-		icon: 'ti ti-cursor-text',
+		icon: 'ti ti-forms',
 		action: rename,
 	}, null, {
 		text: i18n.ts.delete,

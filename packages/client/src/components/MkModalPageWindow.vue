@@ -68,7 +68,7 @@ const contextmenu = $computed(() => {
 		type: 'label',
 		text: path,
 	}, {
-		icon: 'ti ti-corner-right-down-double',
+		icon: 'ti ti-player-eject',
 		text: i18n.ts.showInPage,
 		action: expand,
 	}, {

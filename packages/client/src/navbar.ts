@@ -99,7 +99,7 @@ export const navbarItemDef = reactive({
 	},
 	ui: {
 		title: 'switchUi',
-		icon: 'ti ti-columns',
+		icon: 'ti ti-devices',
 		action: (ev) => {
 			os.popupMenu([{
 				text: i18n.ts.default,
