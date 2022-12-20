@@ -173,7 +173,7 @@ export class ClientServerService {
 			});
 		} else {
 			fastify.register(fastifyProxy, {
-				upstream: 'http://127.0.0.1:5173', // TODO: port configuration
+				upstream: 'http://localhost:5173', // TODO: port configuration
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
