@@ -1,5 +1,5 @@
 <template>
-<MkTooltip ref="tooltip" :target-element="targetElement" :max-width="250" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="250" @closed="emit('closed')">
 	<div class="beaffaef">
 		<div v-for="u in users" :key="u.id" class="user">
 			<MkAvatar class="avatar" :user="u"/>
@@ -14,7 +14,8 @@
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 
-const props = defineProps<{
+defineProps<{
+	showing: boolean;
 	users: any[]; // TODO
 	count: number;
 	targetElement: HTMLElement;
