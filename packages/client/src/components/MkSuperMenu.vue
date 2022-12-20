@@ -116,22 +116,25 @@ export default defineComponent({
 
 			> .items {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-				grid-gap: 8px;
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+				grid-gap: 16px;
 				padding: 0 16px;
 
 				> .item {
 					flex-direction: column;
-					padding: 18px 16px 16px 16px;
-					background: var(--panel);
-					border-radius: 8px;
 					text-align: center;
+					padding: 0;
 
 					> .icon {
-						display: block;
+						display: grid;
+						place-content: center;
 						margin-right: 0;
-						margin-bottom: 12px;
+						margin-bottom: 6px;
 						font-size: 1.5em;
+						padding: 16px;
+						aspect-ratio: 1;
+						background: var(--panel);
+						border-radius: 100%;
 					}
 
 					> .text {
