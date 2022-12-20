@@ -198,6 +198,7 @@ export class NoteCreateService {
 		host: User['host'];
 		isSilenced: User['isSilenced'];
 		createdAt: User['createdAt'];
+		isBot: User['isBot'];
 	}, data: Option, silent = false): Promise<Note> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
@@ -415,6 +416,7 @@ export class NoteCreateService {
 		host: User['host'];
 		isSilenced: User['isSilenced'];
 		createdAt: User['createdAt'];
+		isBot: User['isBot'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		// 統計を更新
 		this.notesChart.update(note, true);
@@ -484,7 +486,7 @@ export class NoteCreateService {
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 		if (data.renote && (await this.noteEntityService.countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
-			this.incRenoteCount(data.renote);
+			if (!user.isBot) this.incRenoteCount(data.renote);
 		}
 
 		if (data.poll && data.poll.expiresAt) {
