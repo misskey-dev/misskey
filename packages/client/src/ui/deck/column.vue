@@ -248,7 +248,7 @@ function onDrop(ev) {
 <style lang="scss" scoped>
 .dnpfarvg {
 	--root-margin: 10px;
-	--deckColumnHeaderHeight: 42px;
+	--deckColumnHeaderHeight: 40px;
 
 	height: 100%;
 	overflow: hidden;
