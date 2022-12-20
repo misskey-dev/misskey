@@ -2,7 +2,7 @@
 	"name": "client",
 	"private": true,
 	"scripts": {
-		"watch": "vite build --watch --mode development",
+		"watch": "vite",
 		"build": "vite build",
 		"lint": "vue-tsc --noEmit && eslint --quiet \"src/**/*.{ts,vue}\""
 	},
