@@ -1,7 +1,7 @@
 <template>
 <button
-	ref="el"
-	v-if="!link" class="bghgjjyj _button"
+	v-if="!link"
+	ref="el" class="bghgjjyj _button"
 	:class="{ inline, primary, gradate, danger, rounded, full }"
 	:type="type"
 	@click="emit('click', $event)"
@@ -105,10 +105,10 @@ function onMousedown(evt: MouseEvent): void {
 	display: block;
 	min-width: 100px;
 	width: max-content;
-	padding: 8px 16px;
+	padding: 7px 14px;
 	text-align: center;
 	font-weight: normal;
-	font-size: 90%;
+	font-size: 95%;
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);
