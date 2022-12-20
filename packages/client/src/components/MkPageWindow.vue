@@ -66,7 +66,7 @@ const buttonsLeft = $computed(() => {
 });
 const buttonsRight = $computed(() => {
 	const buttons = [{
-		icon: 'ti ti-arrows-maximize',
+		icon: 'ti ti-corner-right-down-double',
 		title: i18n.ts.showInPage,
 		onClick: expand,
 	}];
@@ -86,11 +86,11 @@ provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 
 const contextmenu = $computed(() => ([{
-	icon: 'ti ti-arrows-maximize',
+	icon: 'ti ti-corner-right-down-double',
 	text: i18n.ts.showInPage,
 	action: expand,
 }, {
-	icon: 'ti ti-external-link',
+	icon: 'ti ti-window-maximize',
 	text: i18n.ts.popout,
 	action: popout,
 }, {
