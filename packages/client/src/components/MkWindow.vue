@@ -11,9 +11,9 @@
 				</span>
 				<span class="right">
 					<button v-for="button in buttonsRight" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
-					<button v-if="canResize && maximized" class="button _button" @click="unMaximize()"><i class="ti ti-app-window"></i></button>
-					<button v-else-if="canResize && !maximized" class="button _button" @click="maximize()"><i class="ti ti-arrows-maximize"></i></button>
-					<button v-if="closeButton" class="button _button" @click="close()"><i class="ti ti-x"></i></button>
+					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="button _button" @click="unMaximize()"><i class="ti ti-app-window"></i></button>
+					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="button _button" @click="maximize()"><i class="ti ti-arrows-maximize"></i></button>
+					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="button _button" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
 			<div class="body">
@@ -39,6 +39,7 @@ import { onBeforeUnmount, onMounted, provide } from 'vue';
 import contains from '@/scripts/contains';
 import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
+import { i18n } from '@/i18n';
 
 const minHeight = 50;
 const minWidth = 250;
@@ -431,10 +432,10 @@ defineExpose({
 		border-radius: var(--radius);
 
 		> .header {
-			--height: 42px;
+			--height: 39px;
 
 			&.mini {
-				--height: 38px;
+				--height: 32px;
 			}
 
 			display: flex;
