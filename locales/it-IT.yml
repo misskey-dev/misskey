@@ -1713,6 +1713,7 @@ _notification:
   yourFollowRequestAccepted: "La tua richiesta di follow è stata accettata"
   youWereInvitedToGroup: "Invitat@ al gruppo"
   pollEnded: "Risultati del sondaggio."
+  unreadAntennaNote: "Antenna {name}"
   emptyPushNotificationMessage: "Le notifiche push sono state aggiornate."
   _types:
     all: "Tutto"
