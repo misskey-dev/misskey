@@ -107,7 +107,7 @@ const menuDef = $computed(() => [{
 		to: '/about#federation',
 		active: currentPage?.route.name === 'federation',
 	}, {
-		icon: 'fas fa-clipboard-list',
+		icon: 'ti ti-clock-play',
 		text: i18n.ts.jobQueue,
 		to: '/admin/queue',
 		active: currentPage?.route.name === 'queue',
