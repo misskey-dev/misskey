@@ -906,6 +906,8 @@ pushNotificationAlreadySubscribed: "Push-Benachrichtigungen sind bereits aktivie
 pushNotificationNotSupported: "Entweder dein Browser oder deine Instanz unterstützt Push-Benachrichtigungen nicht"
 sendPushNotificationReadMessage: "Push-Benachrichtigungen löschen, sobald die relevanten Benachrichtigungen oder Nachrichten gelesen wurden"
 sendPushNotificationReadMessageCaption: "Eine Push-Benachrichtigungen mit dem Inhalt \"{emptyPushNotificationMessage}\" wird kurz eingeblendet. Dies kann gegebenenfalls den Batterieverbrauch deines Gerätes erhöhen."
+windowMaximize: "Maximieren"
+windowRestore: "Wiederherstellen"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
