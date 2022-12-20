@@ -125,6 +125,16 @@ export default defineComponent({
 					text-align: center;
 					padding: 0;
 
+					&:hover {
+						text-decoration: none;
+						background: none;
+						color: var(--accent);
+
+						> .icon {
+							background: var(--accentedBg);
+						}
+					}
+
 					> .icon {
 						display: grid;
 						place-content: center;
