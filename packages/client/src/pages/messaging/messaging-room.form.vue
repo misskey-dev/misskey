@@ -18,7 +18,7 @@
 			<button class="_button" @click="chooseFile"><i class="ti ti-photo-plus"></i></button>
 			<button class="_button" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 			<button class="send _button" :disabled="!canSend || sending" :title="i18n.ts.send" @click="send">
-				<template v-if="!sending"><i class="ti ti-send"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse ti-fw"></i></template>
+				<template v-if="!sending"><i class="ti ti-send"></i></template><template v-if="sending"><MkLoading :em="true"/></template>
 			</button>
 		</div>
 	</footer>

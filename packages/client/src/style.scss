@@ -120,14 +120,16 @@ hr {
 }
 
 .ti {
-	font-size: 130%;
-	vertical-align: text-bottom;
+	vertical-align: -10%;
 	line-height: 0.9em;
+
+	&:before {
+		font-size: 130%;
+	}
 }
 
 .ti-fw {
 	display: inline-block;
-	width: 1em;
 	text-align: center;
 }
 

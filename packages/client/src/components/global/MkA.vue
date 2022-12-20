@@ -41,13 +41,13 @@ function onContextmenu(ev) {
 		type: 'label',
 		text: props.to,
 	}, {
-		icon: 'ti ti-window-maximize',
+		icon: 'ti ti-app-window',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);
 		},
 	}, {
-		icon: 'ti ti-arrows-maximize',
+		icon: 'ti ti-corner-right-down-double',
 		text: i18n.ts.showInPage,
 		action: () => {
 			router.push(props.to, 'forcePage');

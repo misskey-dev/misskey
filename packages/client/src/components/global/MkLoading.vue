@@ -1,5 +1,5 @@
 <template>
-<div :class="[$style.root, { [$style.inline]: inline, [$style.colored]: colored, [$style.mini]: mini }]">
+<div :class="[$style.root, { [$style.inline]: inline, [$style.colored]: colored, [$style.mini]: mini, [$style.em]: em }]">
 	<div :class="$style.container">
 		<svg :class="[$style.spinner, $style.bg]" viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
 			<g transform="matrix(1.125,0,0,1.125,12,12)">
@@ -22,10 +22,12 @@ const props = withDefaults(defineProps<{
 	inline?: boolean;
 	colored?: boolean;
 	mini?: boolean;
+	em?: boolean;
 }>(), {
 	inline: false,
 	colored: true,
 	mini: false,
+	em: false,
 });
 </script>
 
@@ -59,6 +61,13 @@ const props = withDefaults(defineProps<{
 	&.mini {
 		padding: 16px;
 		--size: 32px;
+	}
+
+	&.em {
+		display: inline-block;
+		vertical-align: middle;
+		padding: 0;
+		--size: 1em;
 	}
 }
 

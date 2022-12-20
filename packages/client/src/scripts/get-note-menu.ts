@@ -232,7 +232,7 @@ export function getNoteMenu(props: {
 			} : undefined,
 			null,
 			statePromise.then(state => state.isFavorited ? {
-				icon: 'ti ti-star',
+				icon: 'ti ti-star-off',
 				text: i18n.ts.unfavorite,
 				action: () => toggleFavorite(false),
 			} : {
@@ -255,7 +255,7 @@ export function getNoteMenu(props: {
 				action: () => toggleThreadMute(true),
 			}),
 			appearNote.userId === $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
-				icon: 'ti ti-pin',
+				icon: 'ti ti-pinned-off',
 				text: i18n.ts.unpin,
 				action: () => togglePin(false),
 			} : {

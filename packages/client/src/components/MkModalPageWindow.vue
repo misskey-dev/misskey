@@ -68,11 +68,11 @@ const contextmenu = $computed(() => {
 		type: 'label',
 		text: path,
 	}, {
-		icon: 'ti ti-arrows-maximize',
+		icon: 'ti ti-corner-right-down-double',
 		text: i18n.ts.showInPage,
 		action: expand,
 	}, {
-		icon: 'ti ti-external-link',
+		icon: 'ti ti-window-maximize',
 		text: i18n.ts.popout,
 		action: popout,
 	}, null, {
