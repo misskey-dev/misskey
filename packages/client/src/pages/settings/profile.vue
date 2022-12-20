@@ -19,12 +19,12 @@
 
 	<FormInput v-model="profile.location" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.location }}</template>
-		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
+		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</FormInput>
 
 	<FormInput v-model="profile.birthday" type="date" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.birthday }}</template>
-		<template #prefix><i class="fas fa-birthday-cake"></i></template>
+		<template #prefix><i class="ti ti-cake"></i></template>
 	</FormInput>
 
 	<FormSelect v-model="profile.lang" class="_formBlock">
@@ -34,7 +34,7 @@
 
 	<FormSlot class="_formBlock">
 		<FormFolder>
-			<template #icon><i class="fas fa-table-list"></i></template>
+			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
 			<div class="_formRoot">

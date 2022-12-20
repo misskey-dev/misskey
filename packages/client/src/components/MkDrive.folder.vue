@@ -244,7 +244,7 @@ function setAsUploadFolder() {
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu([{
 		text: i18n.ts.openInWindow,
-		icon: 'fas fa-window-restore',
+		icon: 'ti ti-app-window',
 		action: () => {
 			os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
 				initialFolder: props.folder,

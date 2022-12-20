@@ -12,7 +12,7 @@
 				<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`" class="_formBlock">
 					<template #icon>
 						<i v-if="webhook.active === false" class="ti ti-player-pause"></i>
-						<i v-else-if="webhook.latestStatus === null" class="far fa-circle"></i>
+						<i v-else-if="webhook.latestStatus === null" class="ti ti-circle"></i>
 						<i v-else-if="[200, 201, 204].includes(webhook.latestStatus)" class="ti ti-check" :style="{ color: 'var(--success)' }"></i>
 						<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--error)' }"></i>
 					</template>

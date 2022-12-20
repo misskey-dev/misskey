@@ -5,7 +5,7 @@
 	</div>
 	<div class="value">
 		<slot name="value"></slot>
-		<button v-if="copy" v-tooltip="i18n.ts.copy" class="_textButton" style="margin-left: 0.5em;" @click="copy_"><i class="far fa-copy"></i></button>
+		<button v-if="copy" v-tooltip="i18n.ts.copy" class="_textButton" style="margin-left: 0.5em;" @click="copy_"><i class="ti ti-copy"></i></button>
 	</div>
 </div>
 </template>

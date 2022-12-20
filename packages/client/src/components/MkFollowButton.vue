@@ -7,7 +7,7 @@
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="fas fa-hourglass-half"></i>
+			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
 			<!-- つまりリモートフォローの場合。 -->

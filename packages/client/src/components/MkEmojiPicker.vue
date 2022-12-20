@@ -46,7 +46,7 @@
 			</section>
 
 			<section>
-				<header class="_acrylic"><i class="far fa-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
+				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
 				<div class="body">
 					<button
 						v-for="emoji in recentlyUsedEmojis"

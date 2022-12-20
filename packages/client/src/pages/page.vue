@@ -18,8 +18,8 @@
 					</div>
 					<div class="actions">
 						<div class="like">
-							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
-							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 						</div>
 						<div class="other">
 							<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
@@ -44,8 +44,8 @@
 					</div>
 				</div>
 				<div class="footer">
-					<div><i class="far fa-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
-					<div v-if="page.createdAt != page.updatedAt"><i class="far fa-clock"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
+					<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
+					<div v-if="page.createdAt != page.updatedAt"><i class="ti ti-clock"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 				</div>
 				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 				<MkContainer :max-height="300" :foldable="true" class="other">

@@ -17,10 +17,10 @@
 							<MkUserName class="name" :user="user" :nowrap="true"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
-								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
-								<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
+								<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
-								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="fas fa-robot"></i></span>
+								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 							</div>
 						</div>
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
@@ -34,10 +34,10 @@
 						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
-							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
-							<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
+							<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
-							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="fas fa-robot"></i></span>
+							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
 					<div class="description">
@@ -46,15 +46,15 @@
 					</div>
 					<div class="fields system">
 						<dl v-if="user.location" class="field">
-							<dt class="name"><i class="fas fa-map-marker ti-fw"></i> {{ i18n.ts.location }}</dt>
+							<dt class="name"><i class="ti ti-map-pin ti-fw"></i> {{ i18n.ts.location }}</dt>
 							<dd class="value">{{ user.location }}</dd>
 						</dl>
 						<dl v-if="user.birthday" class="field">
-							<dt class="name"><i class="fas fa-birthday-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
+							<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
 							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
 						</dl>
 						<dl class="field">
-							<dt class="name"><i class="fas fa-calendar-alt ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
+							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
 							<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
 						</dl>
 					</div>

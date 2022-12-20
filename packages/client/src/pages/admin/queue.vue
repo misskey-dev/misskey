@@ -34,7 +34,7 @@ function clear() {
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'fas fa-up-right-from-square',
+	icon: 'ti ti-external-link',
 	text: i18n.ts.dashboard,
 	handler: () => {
 		window.open(config.url + '/queue', '_blank');
