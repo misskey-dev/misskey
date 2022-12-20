@@ -11,7 +11,7 @@
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
 			<!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
+			<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
 			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
@@ -24,7 +24,7 @@
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
+		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 	</template>
 </button>
 </template>

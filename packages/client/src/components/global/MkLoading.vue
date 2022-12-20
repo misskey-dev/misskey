@@ -64,7 +64,8 @@ const props = withDefaults(defineProps<{
 	}
 
 	&.em {
-		display: inline;
+		display: inline-block;
+		vertical-align: middle;
 		padding: 0;
 		--size: 1em;
 	}
