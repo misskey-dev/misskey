@@ -906,6 +906,8 @@ pushNotificationAlreadySubscribed: "推播通知啟用中"
 pushNotificationNotSupported: "瀏覽器或實例不支援推播通知"
 sendPushNotificationReadMessage: "通知與訊息如果已讀的話，就將推播通知刪除"
 sendPushNotificationReadMessageCaption: "「{emptyPushNotificationMessage}」通知將立刻顯示。可能會增加設備的電池消耗。"
+windowMaximize: "最大化"
+windowRestore: "復原"
 _sensitiveMediaDetection:
   description: "您可以使用機器學習自動檢測敏感媒體並將其用於審核。 伺服器的負荷會稍微增加。"
   sensitivity: "檢測敏感度"
@@ -1713,6 +1715,7 @@ _notification:
   yourFollowRequestAccepted: "您的追隨請求已通過"
   youWereInvitedToGroup: "您有新的群組邀請"
   pollEnded: "問卷調查已產生結果"
+  unreadAntennaNote: "天線 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
   _types:
     all: "全部 "
