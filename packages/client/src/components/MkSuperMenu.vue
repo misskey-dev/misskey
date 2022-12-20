@@ -141,7 +141,8 @@ export default defineComponent({
 						margin-right: 0;
 						margin-bottom: 6px;
 						font-size: 1.5em;
-						padding: 16px;
+						width: 32px;
+						height: 32px;
 						aspect-ratio: 1;
 						background: var(--panel);
 						border-radius: 100%;
