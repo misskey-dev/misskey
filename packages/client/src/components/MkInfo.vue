@@ -16,7 +16,7 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .fpezltsf {
-	padding: 12px;
+	padding: 12px 14px;
 	font-size: 90%;
 	background: var(--infoBg);
 	color: var(--infoFg);
