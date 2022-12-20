@@ -1,5 +1,5 @@
 <!--
-## 12.x.x (unreleased)
+## 13.x.x (unreleased)
 
 ### Improvements
 
@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 13.0.0 (unreleased)
 
 ### Changes
 - Node.js 18.x or later is required
