@@ -10,7 +10,7 @@
 			<i v-else-if="type === 'warning'" class="ti ti-alert-triangle"></i>
 			<i v-else-if="type === 'info'" class="ti ti-info-circle"></i>
 			<i v-else-if="type === 'question'" class="ti ti-question-circle"></i>
-			<i v-else-if="type === 'waiting'" class="fas fa-spinner fa-pulse"></i>
+			<MkLoading v-else-if="type === 'waiting'" :em="true"/>
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
 		<div v-if="text" class="body"><Mfm :text="text"/></div>

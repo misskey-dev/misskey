@@ -9,7 +9,7 @@
 		<template #prefix>@</template>
 		<template #suffix>@{{ host }}</template>
 		<template #caption>
-			<span v-if="usernameState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse ti-fw"></i> {{ i18n.ts.checking }}</span>
+			<span v-if="usernameState === 'wait'" style="color:#999"><MkLoading :em="true"/> {{ i18n.ts.checking }}</span>
 			<span v-else-if="usernameState === 'ok'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.available }}</span>
 			<span v-else-if="usernameState === 'unavailable'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.unavailable }}</span>
 			<span v-else-if="usernameState === 'error'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.error }}</span>
@@ -22,7 +22,7 @@
 		<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="far fa-question-circle"></i></div></template>
 		<template #prefix><i class="ti ti-mail"></i></template>
 		<template #caption>
-			<span v-if="emailState === 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse ti-fw"></i> {{ i18n.ts.checking }}</span>
+			<span v-if="emailState === 'wait'" style="color:#999"><MkLoading :em="true"/> {{ i18n.ts.checking }}</span>
 			<span v-else-if="emailState === 'ok'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.available }}</span>
 			<span v-else-if="emailState === 'unavailable:used'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.used }}</span>
 			<span v-else-if="emailState === 'unavailable:format'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts._emailUnavailable.format }}</span>

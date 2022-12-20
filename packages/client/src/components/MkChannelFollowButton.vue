@@ -1,5 +1,6 @@
 <template>
-<button class="hdcaacmi _button"
+<button
+	class="hdcaacmi _button"
 	:class="{ wait, active: isFollowing, full }"
 	:disabled="wait"
 	@click="onClick"
@@ -13,7 +14,7 @@
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><i class="fas fa-spinner fa-pulse ti-fw"></i>
+		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
 	</template>
 </button>
 </template>
@@ -39,12 +40,12 @@ async function onClick() {
 	try {
 		if (isFollowing.value) {
 			await os.api('channels/unfollow', {
-				channelId: props.channel.id
+				channelId: props.channel.id,
 			});
 			isFollowing.value = false;
 		} else {
 			await os.api('channels/follow', {
-				channelId: props.channel.id
+				channelId: props.channel.id,
 			});
 			isFollowing.value = true;
 		}
