@@ -908,6 +908,7 @@ sendPushNotificationReadMessage: "Push-Benachrichtigungen löschen, sobald die r
 sendPushNotificationReadMessageCaption: "Eine Push-Benachrichtigungen mit dem Inhalt \"{emptyPushNotificationMessage}\" wird kurz eingeblendet. Dies kann gegebenenfalls den Batterieverbrauch deines Gerätes erhöhen."
 windowMaximize: "Maximieren"
 windowRestore: "Wiederherstellen"
+caption: "Beschreibung"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
