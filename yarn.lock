@@ -5193,6 +5193,8 @@ __metadata:
     s-age: 1.1.2
     sass: 1.57.0
     seedrandom: 3.0.5
+    sortablejs: ^1.15.0
+    sortablejs-vue3: ^1.2.3
     start-server-and-test: 1.15.2
     strict-event-emitter-types: 2.0.0
     stringz: 2.1.0
@@ -5212,7 +5214,6 @@ __metadata:
     vue-eslint-parser: ^9.1.0
     vue-prism-editor: 2.0.0-alpha.2
     vue-tsc: ^1.0.14
-    vuedraggable: 4.0.1
   languageName: unknown
   linkType: soft
 
@@ -15315,10 +15316,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sortablejs@npm:1.10.2":
-  version: 1.10.2
-  resolution: "sortablejs@npm:1.10.2"
-  checksum: 37f8d47a9702b93c38077c5e0af90174dcf8e95cf96fe61a722033003eb293bdf3832e4a943f281eaedc433e24cd7d5a48a408706a71a21e75bc11ced0b358da
+"sortablejs-vue3@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "sortablejs-vue3@npm:1.2.3"
+  dependencies:
+    sortablejs: ^1.15.0
+    vue: ^3.2.37
+  peerDependencies:
+    sortablejs: ^1.15.0
+    vue: ^3.2.25
+  checksum: 1cf069db4e950a9b447d98d6f4d233082f84b43ac88735e3aab07f2dcebee99026425ee5fc69b04893fe2bb9040fa8cda088a57205f7c46453043d32764b5b36
+  languageName: node
+  linkType: hard
+
+"sortablejs@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "sortablejs@npm:1.15.0"
+  checksum: bb82223a663484640d317cad510ac987f26b7a443631040407224de1be069afcc6c39048b6d8527f10f269e33595e8128d7de2fac23517c8260470f77f932d55
   languageName: node
   linkType: hard
 
@@ -17163,7 +17177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:3.2.45":
+"vue@npm:3.2.45, vue@npm:^3.2.37":
   version: 3.2.45
   resolution: "vue@npm:3.2.45"
   dependencies:
@@ -17173,17 +17187,6 @@ __metadata:
     "@vue/server-renderer": 3.2.45
     "@vue/shared": 3.2.45
   checksum: df60ca80cb9fdce408eccd0c7a4d44720df9855c62e340448650d8048b1edd25da6f3bd99ed7efc19efbe1f3fdcec4ae8067ab10ae50be5bb363d996ad29251a
-  languageName: node
-  linkType: hard
-
-"vuedraggable@npm:4.0.1":
-  version: 4.0.1
-  resolution: "vuedraggable@npm:4.0.1"
-  dependencies:
-    sortablejs: 1.10.2
-  peerDependencies:
-    vue: ^3.0.1
-  checksum: 039e5d38560144299be3689270728639d041737b487cbb7dfec09b6c372b48804031785f9b40e6e14da0d213315b98ddc005713cc60a749cf98028e0c16fd866
   languageName: node
   linkType: hard
 

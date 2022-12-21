@@ -54,7 +54,7 @@
 
 		<div v-else-if="tab === 'variables'">
 			<div class="qmuvgica">
-				<XDraggable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+				<Sortable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 					<template #item="{element}">
 						<XVariable
 							:model-value="element"
@@ -66,7 +66,7 @@
 							@remove="() => removeVariable(element)"
 						/>
 					</template>
-				</XDraggable>
+				</Sortable>
 
 				<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="ti ti-plus"></i></MkButton>
 			</div>
@@ -107,7 +107,7 @@ import { mainRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i } from '@/account';
-const XDraggable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+const Sortable = defineAsyncComponent(() => import('sortablejs-vue3').then(x => x.default));
 
 const props = defineProps<{
 	initPageId?: string;
@@ -186,24 +186,24 @@ function save() {
 	if (pageId) {
 		options.pageId = pageId;
 		os.api('pages/update', options)
-		.then(page => {
-			currentName = name.trim();
-			os.alert({
-				type: 'success',
-				text: i18n.ts._pages.updated,
-			});
-		}).catch(onError);
+			.then(page => {
+				currentName = name.trim();
+				os.alert({
+					type: 'success',
+					text: i18n.ts._pages.updated,
+				});
+			}).catch(onError);
 	} else {
 		os.api('pages/create', options)
-		.then(created => {
-			pageId = created.id;
-			currentName = name.trim();
-			os.alert({
-				type: 'success',
-				text: i18n.ts._pages.created,
-			});
-			mainRouter.push(`/pages/edit/${pageId}`);
-		}).catch(onError);
+			.then(created => {
+				pageId = created.id;
+				currentName = name.trim();
+				os.alert({
+					type: 'success',
+					text: i18n.ts._pages.created,
+				});
+				mainRouter.push(`/pages/edit/${pageId}`);
+			}).catch(onError);
 	}
 }
 
@@ -438,7 +438,7 @@ definePageMetadata(computed(() => {
 	return {
 		title: title,
 		icon: 'ti ti-pencil',
-		};
+	};
 }));
 </script>
 
