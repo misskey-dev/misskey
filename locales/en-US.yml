@@ -908,6 +908,7 @@ sendPushNotificationReadMessage: "Delete push notifications once the relevant no
 sendPushNotificationReadMessageCaption: "A notification containing the text \"{emptyPushNotificationMessage}\" will be displayed for a short time. This may increase the battery usage of your device, if applicable."
 windowMaximize: "Maximize"
 windowRestore: "Restore"
+caption: "Caption"
 _sensitiveMediaDetection:
   description: "Reduces the effort of server moderation through automatically recognizing NSFW media via Machine Learning. This will slightly increase the load on the server."
   sensitivity: "Detection sensitivity"
