@@ -897,6 +897,7 @@ _ffVisibility:
   private: "Приватне"
 _signup:
   almostThere: "Майже готово"
+  emailAddressInfo: "Будь ласка, введіть вашу email-адресу. Вона не буде оприлюднена."
 _accountDelete:
   accountDelete: "Видалити акаунт"
   inProgress: "Наразі триває видалення"
