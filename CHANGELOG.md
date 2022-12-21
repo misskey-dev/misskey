@@ -26,6 +26,7 @@ You should also include the user name that made the change.
 - Server: improve syslog performance @syuilo
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: delete outdated notifications regularly to improve db performance @syuilo
+- Server: delete outdated hard-mutes regularly to improve db performance @syuilo
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Compress non-animated PNG files @saschanaz
