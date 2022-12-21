@@ -179,14 +179,14 @@ onBeforeUnmount(() => {
 		}
 
 		& + header {
-			margin-top: 16px;
+			margin-top: 8px;
 		}
 	}
 
 	> header {
 		margin: 0 0 8px 0;
 		font-weight: bold;
-		font-size: 1.2em;
+		font-size: 1.1em;
 
 		& + .body {
 			margin-top: 8px;
