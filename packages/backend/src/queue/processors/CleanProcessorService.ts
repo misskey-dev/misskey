@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MutedNotesRepository, NotificationsRepository, UserIpsRepository } from '@/models/index.js';
+import type { AntennaNotesRepository, MutedNotesRepository, NotificationsRepository, UserIpsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
@@ -26,6 +26,9 @@ export class CleanProcessorService {
 		@Inject(DI.mutedNotesRepository)
 		private mutedNotesRepository: MutedNotesRepository,
 
+		@Inject(DI.antennaNotesRepository)
+		private antennaNotesRepository: AntennaNotesRepository,
+
 		private queueLoggerService: QueueLoggerService,
 		private idService: IdService,
 	) {
@@ -47,6 +50,10 @@ export class CleanProcessorService {
 		this.mutedNotesRepository.delete({
 			id: LessThan(this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90)))),
 			reason: 'word',
+		});
+
+		this.antennaNotesRepository.delete({
+			id: LessThan(this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90)))),
 		});
 
 		this.logger.succ('Cleaned.');
