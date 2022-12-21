@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UserIpsRepository } from '@/models/index.js';
+import type { NotificationsRepository, UserIpsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CleanProcessorService {
@@ -19,6 +19,9 @@ export class CleanProcessorService {
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
 
+		@Inject(DI.notificationsRepository)
+		private notificationsRepository: NotificationsRepository,
+
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean');
@@ -29,6 +32,10 @@ export class CleanProcessorService {
 		this.logger.info('Cleaning...');
 
 		this.userIpsRepository.delete({
+			createdAt: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90))),
+		});
+
+		this.notificationsRepository.delete({
 			createdAt: LessThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90))),
 		});
 
