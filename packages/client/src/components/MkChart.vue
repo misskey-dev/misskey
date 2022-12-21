@@ -194,7 +194,7 @@ const render = () => {
 						axis: 'y',
 						colors: {
 							0: alpha(x.color ? x.color : getColor(i), 0),
-							[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.3),
+							[maxes[i]]: alpha(x.color ? x.color : getColor(i), 0.35),
 						},
 					},
 				},
