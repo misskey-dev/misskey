@@ -1,6 +1,6 @@
 <template>
 <div v-show="props.modelValue.length != 0" class="skeikyzd">
-	<Sortable :list="props.modelValue" class="files" item-key="id" :options="{ animation: 150, delay: 100, delayOnTouchOnly: true }" @end="onSorted">
+	<Sortable :model-value="props.modelValue" class="files" item-key="id" :animation="150" :delay="100" :delay-on-touch-only="true" @update:modelValue="v => emit('update:modelValue', v)">
 		<template #item="{element}">
 			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, watch } from 'vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os';
 import { deepClone } from '@/scripts/clone';
 import { i18n } from '@/i18n';
 
-const Sortable = defineAsyncComponent(() => import('sortablejs-vue3').then(x => x.Sortable));
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	modelValue: any[];
@@ -36,13 +36,6 @@ const emit = defineEmits<{
 }>();
 
 let menuShowing = false;
-
-function onSorted(event) {
-	const items = deepClone(props.modelValue);
-	const item = items.splice(event.oldIndex, 1)[0];
-	items.splice(event.newIndex, 0, item);
-	emit('update:modelValue', items);
-}
 
 function detachMedia(id) {
 	if (props.detachMediaFn) {

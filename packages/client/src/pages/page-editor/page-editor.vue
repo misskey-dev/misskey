@@ -107,7 +107,7 @@ import { mainRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i } from '@/account';
-const Sortable = defineAsyncComponent(() => import('sortablejs-vue3').then(x => x.default));
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	initPageId?: string;

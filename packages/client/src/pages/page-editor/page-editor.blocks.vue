@@ -27,7 +27,7 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		Sortable: defineAsyncComponent(() => import('sortablejs-vue3').then(x => x.Sortable)),
+		Sortable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
 		XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas, XNote,
 	},
 

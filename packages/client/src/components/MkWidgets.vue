@@ -10,10 +10,11 @@
 			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<Sortable
-			:list="props.widgets"
+			:model-value="props.widgets"
 			item-key="id"
-			:options="{ handle: '.handle', animation: 150 }"
-			@end="onSorted"
+			handle=".handle"
+			:animation="150"
+			@update:modelValue="v => emit('updateWidgets', v)"
 		>
 			<template #item="{element}">
 				<div class="customize-container">
@@ -40,7 +41,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { deepClone } from '@/scripts/clone';
 
-const Sortable = defineAsyncComponent(() => import('sortablejs-vue3').then(x => x.Sortable));
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 type Widget = {
 	name: string;
@@ -83,13 +84,6 @@ const removeWidget = (widget) => {
 const updateWidget = (id, data) => {
 	emit('updateWidget', { id, data });
 };
-
-function onSorted(event) {
-	const items = deepClone(props.widgets);
-	const item = items.splice(event.oldIndex, 1)[0];
-	items.splice(event.newIndex, 0, item);
-	emit('updateWidgets', items);
-}
 
 function onContextmenu(widget: Widget, ev: MouseEvent) {
 	const isLink = (el: HTMLElement) => {

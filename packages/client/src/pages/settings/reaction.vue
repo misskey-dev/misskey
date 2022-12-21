@@ -3,7 +3,7 @@
 	<FromSlot class="_formBlock">
 		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
 		<div v-panel style="border-radius: 6px;">
-			<Sortable :list="reactions" class="zoaiodol" :item-key="item => item" :options="{ animation: 150, delay: 100, delayOnTouchOnly: true }" @end="onSorted">
+			<Sortable v-model="reactions" class="zoaiodol" :item-key="item => item" :animation="150" :delay="100" :delay-on-touch-only="true">
 				<template #item="{element}">
 					<button class="_button item" @click="remove(element, $event)">
 						<MkEmoji :emoji="element" :normal="true"/>
@@ -13,8 +13,6 @@
 					<button class="_button add" @click="chooseEmoji"><i class="ti ti-plus"></i></button>
 				</template>
 			</Sortable>
-			<!-- TODO: https://github.com/MaxLeiter/sortablejs-vue3/issues/52 が実装されたら消す -->
-			<button class="_button add" @click="chooseEmoji"><i class="ti ti-plus"></i></button>
 		</div>
 		<template #caption>{{ i18n.ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ i18n.ts.preview }}</button></template>
 	</FromSlot>
@@ -57,7 +55,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
-import { Sortable } from 'sortablejs-vue3';
+import Sortable from 'vuedraggable';
 import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
@@ -76,11 +74,6 @@ const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPick
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = $computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = $computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
-
-function onSorted(event) {
-	const item = reactions.splice(event.oldIndex, 1)[0];
-	reactions.splice(event.newIndex, 0, item);
-}
 
 function save() {
 	defaultStore.set('reactions', reactions);
