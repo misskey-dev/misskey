@@ -905,6 +905,7 @@ sendPushNotificationReadMessage: "Odstrániť push notifikácie po ich prečíta
 sendPushNotificationReadMessageCaption: "Na chvíľu sa zobrazí oznámenie \"{emptyPushNotificationMessage}\". Môže to zvýšiť spotrebu batérie zariadenia."
 windowMaximize: "Maximalizovať"
 windowRestore: "Obnoviť"
+caption: "Nadpis"
 _sensitiveMediaDetection:
   description: "Strojové učenie sa použije na automatickú detekciu citlivých médií na účely ich moderovania. Mierne sa zvýši zaťaženie servera."
   sensitivity: "Citlivosť detekcie"
