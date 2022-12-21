@@ -156,7 +156,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animatedMfm: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	loadRawImages: {
 		where: 'device',
