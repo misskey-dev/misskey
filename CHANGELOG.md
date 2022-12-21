@@ -24,6 +24,7 @@ You should also include the user name that made the change.
 - AVIF support @tamaina
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
 - Server: improve syslog performance @syuilo
+- Server: improve note scoring for featured notes @CyberRex0
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Compress non-animated PNG files @saschanaz
