@@ -15,10 +15,10 @@
 	<footer>
 		<div v-if="file" class="file" @click="file = null">{{ file.name }}</div>
 		<div class="buttons">
-			<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>
-			<button class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
+			<button class="_button" @click="chooseFile"><i class="ti ti-photo-plus"></i></button>
+			<button class="_button" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 			<button class="send _button" :disabled="!canSend || sending" :title="i18n.ts.send" @click="send">
-				<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
+				<template v-if="!sending"><i class="ti ti-send"></i></template><template v-if="sending"><MkLoading :em="true"/></template>
 			</button>
 		</div>
 	</footer>
@@ -93,7 +93,22 @@ function onDragover(ev: DragEvent) {
 	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 	if (isFile || isDriveFile) {
 		ev.preventDefault();
-		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
+		switch (ev.dataTransfer.effectAllowed) {
+			case 'all':
+			case 'uninitialized':
+			case 'copy': 
+			case 'copyLink': 
+			case 'copyMove': 
+				ev.dataTransfer.dropEffect = 'copy';
+				break;
+			case 'linkMove':
+			case 'move':
+				ev.dataTransfer.dropEffect = 'move';
+				break;
+			default:
+				ev.dataTransfer.dropEffect = 'none';
+				break;
+		}
 	}
 }
 

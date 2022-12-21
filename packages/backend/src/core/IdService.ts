@@ -6,22 +6,24 @@ import { genAid } from '@/misc/id/aid.js';
 import { genMeid } from '@/misc/id/meid.js';
 import { genMeidg } from '@/misc/id/meidg.js';
 import { genObjectId } from '@/misc/id/object-id.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class IdService {
-	private metohd: string;
+	private method: string;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
 	) {
-		this.metohd = config.id.toLowerCase();
+		this.method = config.id.toLowerCase();
 	}
 
+	@bindThis
 	public genId(date?: Date): string {
 		if (!date || (date > new Date())) date = new Date();
 	
-		switch (this.metohd) {
+		switch (this.method) {
 			case 'aid': return genAid(date);
 			case 'meid': return genMeid(date);
 			case 'meidg': return genMeidg(date);

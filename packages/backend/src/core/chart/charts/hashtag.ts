@@ -4,6 +4,7 @@ import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/hashtag.js';
@@ -34,6 +35,7 @@ export default class HashtagChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }): Promise<void> {
 		await this.commit({
 			'local.users': this.userEntityService.isLocalUser(user) ? [user.id] : [],

@@ -1,7 +1,7 @@
 import * as assert from 'assert';
-import httpSignature from 'http-signature';
+import httpSignature from '@peertube/http-signature';
 import { genRsaKeyPair } from '../../src/misc/gen-key-pair.js';
-import { createSignedPost, createSignedGet } from '../../src/remote/activitypub/ap-request.js';
+import { createSignedPost, createSignedGet } from '../../src/activitypub/ap-request.js';
 
 export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
 	return {

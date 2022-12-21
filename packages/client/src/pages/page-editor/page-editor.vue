@@ -3,10 +3,10 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div class="jqqmcavi">
-			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkButton>
-			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
-			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
-			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ $ts._pages.viewPage }}</MkButton>
+			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ $ts.save }}</MkButton>
+			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="ti ti-copy"></i> {{ $ts.duplicate }}</MkButton>
+			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ti ti-trash"></i> {{ $ts.delete }}</MkButton>
 		</div>
 
 		<div v-if="tab === 'settings'">
@@ -35,10 +35,10 @@
 				<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 				<div class="eyeCatch">
-					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ti ti-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
+						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="ti ti-trash"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
 					</div>
 				</div>
 			</div>
@@ -48,13 +48,13 @@
 			<div>
 				<XBlocks v-model="content" class="content" :hpml="hpml"/>
 
-				<MkButton v-if="!readonly" @click="add()"><i class="fas fa-plus"></i></MkButton>
+				<MkButton v-if="!readonly" @click="add()"><i class="ti ti-plus"></i></MkButton>
 			</div>
 		</div>
 
 		<div v-else-if="tab === 'variables'">
 			<div class="qmuvgica">
-				<XDraggable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+				<Sortable v-show="variables.length > 0" v-model="variables" tag="div" class="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 					<template #item="{element}">
 						<XVariable
 							:model-value="element"
@@ -66,9 +66,9 @@
 							@remove="() => removeVariable(element)"
 						/>
 					</template>
-				</XDraggable>
+				</Sortable>
 
-				<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="fas fa-plus"></i></MkButton>
+				<MkButton v-if="!readonly" class="add" @click="addVariable()"><i class="ti ti-plus"></i></MkButton>
 			</div>
 		</div>
 
@@ -107,7 +107,7 @@ import { mainRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i } from '@/account';
-const XDraggable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	initPageId?: string;
@@ -186,24 +186,24 @@ function save() {
 	if (pageId) {
 		options.pageId = pageId;
 		os.api('pages/update', options)
-		.then(page => {
-			currentName = name.trim();
-			os.alert({
-				type: 'success',
-				text: i18n.ts._pages.updated,
-			});
-		}).catch(onError);
+			.then(page => {
+				currentName = name.trim();
+				os.alert({
+					type: 'success',
+					text: i18n.ts._pages.updated,
+				});
+			}).catch(onError);
 	} else {
 		os.api('pages/create', options)
-		.then(created => {
-			pageId = created.id;
-			currentName = name.trim();
-			os.alert({
-				type: 'success',
-				text: i18n.ts._pages.created,
-			});
-			mainRouter.push(`/pages/edit/${pageId}`);
-		}).catch(onError);
+			.then(created => {
+				pageId = created.id;
+				currentName = name.trim();
+				os.alert({
+					type: 'success',
+					text: i18n.ts._pages.created,
+				});
+				mainRouter.push(`/pages/edit/${pageId}`);
+			}).catch(onError);
 	}
 }
 
@@ -412,7 +412,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => [{
 	key: 'settings',
 	title: i18n.ts._pages.pageSetting,
-	icon: 'fas fa-cog',
+	icon: 'ti ti-settings',
 }, {
 	key: 'contents',
 	title: i18n.ts._pages.contents,
@@ -424,7 +424,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'script',
 	title: i18n.ts.script,
-	icon: 'fas fa-code',
+	icon: 'ti ti-code',
 }]);
 
 definePageMetadata(computed(() => {
@@ -437,8 +437,8 @@ definePageMetadata(computed(() => {
 	}
 	return {
 		title: title,
-		icon: 'fas fa-pencil-alt',
-		};
+		icon: 'ti ti-pencil',
+	};
 }));
 </script>
 

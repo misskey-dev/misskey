@@ -5,17 +5,18 @@
 		<FormSuspense :p="init">
 			<div class="_formRoot">
 				<FormFolder class="_formBlock">
-					<template #icon><i class="fas fa-shield-alt"></i></template>
+					<template #icon><i class="ti ti-shield"></i></template>
 					<template #label>{{ i18n.ts.botProtection }}</template>
 					<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
 					<template v-else-if="enableRecaptcha" #suffix>reCAPTCHA</template>
+					<template v-else-if="enableTurnstile" #suffix>Turnstile</template>
 					<template v-else #suffix>{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</template>
 
 					<XBotProtection/>
 				</FormFolder>
 
 				<FormFolder class="_formBlock">
-					<template #icon><i class="fas fa-eye-slash"></i></template>
+					<template #icon><i class="ti ti-eye-off"></i></template>
 					<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
 					<template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
 					<template v-else-if="sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
@@ -53,7 +54,7 @@
 						</FormSwitch>
 						-->
 
-						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 					</div>
 				</FormFolder>
 
@@ -87,11 +88,11 @@
 
 					<div class="_formRoot">
 						<FormInput v-model="summalyProxy" class="_formBlock">
-							<template #prefix><i class="fas fa-link"></i></template>
+							<template #prefix><i class="ti ti-link"></i></template>
 							<template #label>Summaly Proxy URL</template>
 						</FormInput>
 
-						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
+						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 					</div>
 				</FormFolder>
 			</div>
@@ -120,6 +121,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 let summalyProxy: string = $ref('');
 let enableHcaptcha: boolean = $ref(false);
 let enableRecaptcha: boolean = $ref(false);
+let enableTurnstile: boolean = $ref(false);
 let sensitiveMediaDetection: string = $ref('none');
 let sensitiveMediaDetectionSensitivity: number = $ref(0);
 let setSensitiveFlagAutomatically: boolean = $ref(false);
@@ -132,6 +134,7 @@ async function init() {
 	summalyProxy = meta.summalyProxy;
 	enableHcaptcha = meta.enableHcaptcha;
 	enableRecaptcha = meta.enableRecaptcha;
+	enableTurnstile = meta.enableTurnstile;
 	sensitiveMediaDetection = meta.sensitiveMediaDetection;
 	sensitiveMediaDetectionSensitivity =
 		meta.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0 :
@@ -171,6 +174,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.security,
-	icon: 'fas fa-lock',
+	icon: 'ti ti-lock',
 });
 </script>

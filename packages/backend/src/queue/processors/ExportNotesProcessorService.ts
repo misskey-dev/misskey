@@ -13,6 +13,7 @@ import type { Note } from '@/models/entities/Note.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ExportNotesProcessorService {
@@ -37,6 +38,7 @@ export class ExportNotesProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-notes');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
 		this.logger.info(`Exporting notes of ${job.data.user.id} ...`);
 

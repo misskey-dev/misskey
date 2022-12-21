@@ -4,7 +4,8 @@ import S3 from 'aws-sdk/clients/s3.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Meta } from '@/models/entities/Meta.js';
-import { HttpRequestService } from './HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class S3Service {
@@ -16,6 +17,7 @@ export class S3Service {
 	) {
 	}
 
+	@bindThis
 	public getS3(meta: Meta) {
 		const u = meta.objectStorageEndpoint != null
 			? `${meta.objectStorageUseSSL ? 'https://' : 'http://'}${meta.objectStorageEndpoint}`

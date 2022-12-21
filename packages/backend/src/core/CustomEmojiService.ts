@@ -10,8 +10,9 @@ import { Cache } from '@/misc/cache.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { EmojisRepository } from '@/models/index.js';
-import { UtilityService } from './UtilityService.js';
-import { ReactionService } from './ReactionService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { ReactionService } from '@/core/ReactionService.js';
+import { bindThis } from '@/decorators.js';
 
 /**
  * 添付用絵文字情報
@@ -43,6 +44,7 @@ export class CustomEmojiService {
 		this.cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);
 	}
 
+	@bindThis
 	public async add(data: {
 		driveFile: DriveFile;
 		name: string;
@@ -67,6 +69,7 @@ export class CustomEmojiService {
 		return emoji;
 	}
 	
+	@bindThis
 	private normalizeHost(src: string | undefined, noteUserHost: string | null): string | null {
 	// クエリに使うホスト
 		let host = src === '.' ? null	// .はローカルホスト (ここがマッチするのはリアクションのみ)
@@ -79,6 +82,7 @@ export class CustomEmojiService {
 		return host;
 	}
 
+	@bindThis
 	private parseEmojiStr(emojiName: string, noteUserHost: string | null) {
 		const match = emojiName.match(/^(\w+)(?:@([\w.-]+))?$/);
 		if (!match) return { name: null, host: null };
@@ -97,6 +101,7 @@ export class CustomEmojiService {
  * @param noteUserHost ノートやユーザープロフィールの所有者のホスト
  * @returns 絵文字情報, nullは未マッチを意味する
  */
+	@bindThis
 	public async populateEmoji(emojiName: string, noteUserHost: string | null): Promise<PopulatedEmoji | null> {
 		const { name, host } = this.parseEmojiStr(emojiName, noteUserHost);
 		if (name == null) return null;
@@ -123,11 +128,13 @@ export class CustomEmojiService {
 	/**
  * 複数の添付用絵文字情報を解決する (キャシュ付き, 存在しないものは結果から除外される)
  */
+	@bindThis
 	public async populateEmojis(emojiNames: string[], noteUserHost: string | null): Promise<PopulatedEmoji[]> {
 		const emojis = await Promise.all(emojiNames.map(x => this.populateEmoji(x, noteUserHost)));
 		return emojis.filter((x): x is PopulatedEmoji => x != null);
 	}
 
+	@bindThis
 	public aggregateNoteEmojis(notes: Note[]) {
 		let emojis: { name: string | null; host: string | null; }[] = [];
 		for (const note of notes) {
@@ -154,6 +161,7 @@ export class CustomEmojiService {
 	/**
  * 与えられた絵文字のリストをデータベースから取得し、キャッシュに追加します
  */
+	@bindThis
 	public async prefetchEmojis(emojis: { name: string; host: string | null; }[]): Promise<void> {
 		const notCachedEmojis = emojis.filter(emoji => this.cache.get(`${emoji.name} ${emoji.host}`) == null);
 		const emojisQuery: any[] = [];

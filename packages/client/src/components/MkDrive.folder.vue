@@ -16,8 +16,8 @@
 	@dragend="onDragend"
 >
 	<p class="name">
-		<template v-if="hover"><i class="fas fa-folder-open fa-fw"></i></template>
-		<template v-if="!hover"><i class="fas fa-folder fa-fw"></i></template>
+		<template v-if="hover"><i class="fas fa-folder-open ti-fw"></i></template>
+		<template v-if="!hover"><i class="fas fa-folder ti-fw"></i></template>
 		{{ folder.name }}
 	</p>
 	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">
@@ -90,7 +90,22 @@ function onDragover(ev: DragEvent) {
 	const isDriveFolder = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FOLDER_;
 
 	if (isFile || isDriveFile || isDriveFolder) {
-		ev.dataTransfer.dropEffect = ev.dataTransfer.effectAllowed === 'all' ? 'copy' : 'move';
+		switch (ev.dataTransfer.effectAllowed) {
+			case 'all':
+			case 'uninitialized':
+			case 'copy': 
+			case 'copyLink': 
+			case 'copyMove': 
+				ev.dataTransfer.dropEffect = 'copy';
+				break;
+			case 'linkMove':
+			case 'move':
+				ev.dataTransfer.dropEffect = 'move';
+				break;
+			default:
+				ev.dataTransfer.dropEffect = 'none';
+				break;
+		}
 	} else {
 		ev.dataTransfer.dropEffect = 'none';
 	}
@@ -229,7 +244,7 @@ function setAsUploadFolder() {
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu([{
 		text: i18n.ts.openInWindow,
-		icon: 'fas fa-window-restore',
+		icon: 'ti ti-app-window',
 		action: () => {
 			os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
 				initialFolder: props.folder,
@@ -238,11 +253,11 @@ function onContextmenu(ev: MouseEvent) {
 		},
 	}, null, {
 		text: i18n.ts.rename,
-		icon: 'fas fa-i-cursor',
+		icon: 'ti ti-forms',
 		action: rename,
 	}, null, {
 		text: i18n.ts.delete,
-		icon: 'fas fa-trash-alt',
+		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
 	}], ev);

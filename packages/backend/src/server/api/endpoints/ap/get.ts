@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApResolverService } from '@/core/remote/activitypub/ApResolverService.js';
+import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

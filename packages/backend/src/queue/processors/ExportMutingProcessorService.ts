@@ -12,6 +12,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ExportMutingProcessorService {
@@ -37,6 +38,7 @@ export class ExportMutingProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-muting');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
 		this.logger.info(`Exporting muting of ${job.data.user.id} ...`);
 

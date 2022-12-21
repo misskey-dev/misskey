@@ -20,7 +20,7 @@
 			<template #label>{{ i18n.ts._theme.code }}</template>
 			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
 		</FormTextarea>
-		<FormButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" class="_formBlock" danger @click="uninstall()"><i class="fas fa-trash-alt"></i> {{ i18n.ts.uninstall }}</FormButton>
+		<FormButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" class="_formBlock" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</FormButton>
 	</template>
 </div>
 </template>
@@ -43,7 +43,7 @@ const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
 const selectedThemeId = ref(null);
 
-const themes = computed(() => [ ...installedThemes.value, ...builtinThemes.value ]);
+const themes = computed(() => [...installedThemes.value, ...builtinThemes.value]);
 
 const selectedTheme = computed(() => {
 	if (selectedThemeId.value == null) return null;
@@ -73,6 +73,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts._theme.manage,
-	icon: 'fas fa-folder-open',
+	icon: 'ti ti-tool',
 });
 </script>

@@ -22,7 +22,7 @@
 						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="revoke(token)"><i class="fas fa-trash-alt"></i></button>
+						<button class="_button" @click="revoke(token)"><i class="ti ti-trash"></i></button>
 					</div>
 					<details>
 						<summary>{{ i18n.ts.details }}</summary>
@@ -66,7 +66,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.installedApps,
-	icon: 'fas fa-plug',
+	icon: 'ti ti-plug',
 });
 </script>
 

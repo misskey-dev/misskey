@@ -9,11 +9,11 @@
 		<FormLink v-for="type in Object.keys(sounds)" :key="type" style="margin-bottom: 8px;" @click="edit(type)">
 			{{ $t('_sfx.' + type) }}
 			<template #suffix>{{ sounds[type].type || i18n.ts.none }}</template>
-			<template #suffixIcon><i class="fas fa-chevron-down"></i></template>
+			<template #suffixIcon><i class="ti ti-chevron-down"></i></template>
 		</FormLink>
 	</FormSection>
 
-	<FormButton danger class="_formBlock" @click="reset()"><i class="fas fa-redo"></i> {{ i18n.ts.default }}</FormButton>
+	<FormButton danger class="_formBlock" @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
 </div>
 </template>
 
@@ -73,8 +73,13 @@ const soundsTypes = [
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
-	'noizenecio/kick_gaba',
+	'noizenecio/kick_gaba1',
 	'noizenecio/kick_gaba2',
+	'noizenecio/kick_gaba3',
+	'noizenecio/kick_gaba4',
+	'noizenecio/kick_gaba5',
+	'noizenecio/kick_gaba6',
+	'noizenecio/kick_gaba7',
 ];
 
 async function edit(type) {
@@ -130,6 +135,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.sounds,
-	icon: 'fas fa-music',
+	icon: 'ti ti-music',
 });
 </script>

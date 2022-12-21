@@ -10,14 +10,10 @@ import { MetaService } from '@/core/MetaService.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import type { DataSource } from 'typeorm';
 import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
 
 describe('MetaService', () => {
 	let app: TestingModule;
 	let metaService: MetaService;
-	let metasRepository: MetasRepository;
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -30,40 +26,32 @@ describe('MetaService', () => {
 		app.enableShutdownHooks();
 
 		metaService = app.get<MetaService>(MetaService, { strict: false });
-		metasRepository = app.get<MetasRepository>(DI.metasRepository, { strict: false });
+
+		// Make it cached
+		await metaService.fetch();
 	});
 
 	afterAll(async () => {
 		await app.close();
 	});
 
-	/* なんか動かない
 	it('fetch (cache)', async () => {
 		const db = app.get<DataSource>(DI.db);
-		const originalFunction = db.transaction;
 		const spy = jest.spyOn(db, 'transaction');
-		spy.mockImplementation((...args) => originalFunction(...args));
 
 		const result = await metaService.fetch();
 
 		expect(result.id).toBe('x');
 		expect(spy).toHaveBeenCalledTimes(0);
-
-		spy.mockRestore();
 	});
 
 	it('fetch (force)', async () => {
 		const db = app.get<DataSource>(DI.db);
-		const originalFunction = db.transaction;
 		const spy = jest.spyOn(db, 'transaction');
-		// 何故かここで無限再帰する db.transaction がspyのままになっている？
-		spy.mockImplementation((...args) => originalFunction(...args));
 
 		const result = await metaService.fetch(true);
 
 		expect(result.id).toBe('x');
 		expect(spy).toHaveBeenCalledTimes(1);
-
-		spy.mockRestore();
-	});*/
+	});
 });

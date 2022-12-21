@@ -4,6 +4,7 @@ import * as jsrsasign from 'jsrsasign';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
 
 const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);
@@ -115,6 +116,7 @@ export class TwoFactorAuthenticationService {
 	) {
 	}
 
+	@bindThis
 	public hash(data: Buffer) {
 		return crypto
 			.createHash('sha256')
@@ -122,6 +124,7 @@ export class TwoFactorAuthenticationService {
 			.digest();
 	}
 
+	@bindThis
 	public verifySignin({
 		publicKey,
 		authenticatorData,
@@ -159,6 +162,7 @@ export class TwoFactorAuthenticationService {
 			.verify(PEMString(publicKey), signature);
 	}
 
+	@bindThis
 	public getProcedures() {
 		return {
 			none: {

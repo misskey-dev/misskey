@@ -1,7 +1,7 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="fas fa-paper-plane"></i> {{ $ts._pages.blocks.post }}</template>
+	<template #header><i class="ti ti-send"></i> {{ $ts._pages.blocks.post }}</template>
 
 	<section style="padding: 16px;">
 		<MkTextarea v-model="value.text"><template #label>{{ $ts._pages.blocks._post.text }}</template></MkTextarea>

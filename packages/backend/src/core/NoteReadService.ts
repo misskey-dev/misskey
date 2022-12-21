@@ -8,9 +8,11 @@ import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { UsersRepository, NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository, FollowingsRepository, ChannelFollowingsRepository, AntennaNotesRepository } from '@/models/index.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NotificationService } from './NotificationService.js';
 import { AntennaService } from './AntennaService.js';
+import { bindThis } from '@/decorators.js';
+import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
 export class NoteReadService {
@@ -41,9 +43,11 @@ export class NoteReadService {
 		private globalEventServie: GlobalEventService,
 		private notificationService: NotificationService,
 		private antennaService: AntennaService,
+		private pushNotificationService: PushNotificationService,
 	) {
 	}
 
+	@bindThis
 	public async insertNoteUnread(userId: User['id'], note: Note, params: {
 		// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
 		isSpecified: boolean;
@@ -94,6 +98,7 @@ export class NoteReadService {
 		}, 2000);
 	}	
 
+	@bindThis
 	public async read(
 		userId: User['id'],
 		notes: (Note | Packed<'Note'>)[],
@@ -202,12 +207,14 @@ export class NoteReadService {
 	
 				if (count === 0) {
 					this.globalEventServie.publishMainStream(userId, 'readAntenna', antenna);
+					this.pushNotificationService.pushNotification(userId, 'readAntenna', { antennaId: antenna.id });
 				}
 			}
 	
 			this.userEntityService.getHasUnreadAntenna(userId).then(unread => {
 				if (!unread) {
 					this.globalEventServie.publishMainStream(userId, 'readAllAntennas');
+					this.pushNotificationService.pushNotification(userId, 'readAllAntennas', undefined);
 				}
 			});
 		}

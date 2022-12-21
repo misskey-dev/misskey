@@ -51,7 +51,7 @@
 			</div>
 
 			<div class="container env">
-				<div class="title">Enviroment</div>
+				<div class="title">Environment</div>
 				<div class="body">
 					<div class="number _panel">
 						<div class="label">Misskey</div>
@@ -159,8 +159,6 @@ import {
 } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
-import MagicGrid from 'magic-grid';
-import XMetrics from './metrics.vue';
 import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';
@@ -467,7 +465,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.dashboard,
-	icon: 'fas fa-tachometer-alt',
+	icon: 'ti ti-dashboard',
 });
 </script>
 

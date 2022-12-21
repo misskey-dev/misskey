@@ -1,6 +1,6 @@
 <template>
 <div class="_formRoot">
-	<FormLink to="/settings/plugin/install"><template #icon><i class="fas fa-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
+	<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.manage }}</template>
@@ -23,8 +23,8 @@
 			</MkKeyValue>
 
 			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="fas fa-cog"></i> {{ i18n.ts.settings }}</MkButton>
-				<MkButton inline danger @click="uninstall(plugin)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.uninstall }}</MkButton>
+				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
+				<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 			</div>
 		</div>
 	</FormSection>
@@ -89,7 +89,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.plugins,
-	icon: 'fas fa-plug',
+	icon: 'ti ti-plug',
 });
 </script>
 

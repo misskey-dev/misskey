@@ -13,6 +13,7 @@ import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
 import type { ParsedUrlQuery } from 'querystring';
 import type * as http from 'node:http';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class StreamingApiServerService {
@@ -49,6 +50,7 @@ export class StreamingApiServerService {
 	) {
 	}
 
+	@bindThis
 	public attachStreamingApi(server: http.Server) {
 		// Init websocket server
 		const ws = new websocket.server({

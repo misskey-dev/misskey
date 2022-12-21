@@ -11,6 +11,7 @@ import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import { ModuleRef } from '@nestjs/core';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteReactionEntityService implements OnModuleInit {
@@ -36,6 +37,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 	}
 
+	@bindThis
 	public async pack(
 		src: NoteReaction['id'] | NoteReaction,
 		me?: { id: User['id'] } | null | undefined,

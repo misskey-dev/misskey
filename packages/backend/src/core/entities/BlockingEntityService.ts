@@ -6,6 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class BlockingEntityService {
@@ -17,6 +18,7 @@ export class BlockingEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Blocking['id'] | Blocking,
 		me?: { id: User['id'] } | null | undefined,
@@ -33,6 +35,7 @@ export class BlockingEntityService {
 		});
 	}
 
+	@bindThis
 	public packMany(
 		blockings: any[],
 		me: { id: User['id'] },

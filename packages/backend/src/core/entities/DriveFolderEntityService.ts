@@ -7,6 +7,7 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DriveFolderEntityService {
@@ -19,6 +20,7 @@ export class DriveFolderEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: DriveFolder['id'] | DriveFolder,
 		options?: {

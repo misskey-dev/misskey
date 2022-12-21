@@ -5,17 +5,17 @@
 			<i :class="icon"></i>
 		</div>
 		<div v-else-if="!input && !select" class="icon" :class="type">
-			<i v-if="type === 'success'" class="fas fa-check"></i>
-			<i v-else-if="type === 'error'" class="fas fa-times-circle"></i>
-			<i v-else-if="type === 'warning'" class="fas fa-exclamation-triangle"></i>
-			<i v-else-if="type === 'info'" class="fas fa-info-circle"></i>
-			<i v-else-if="type === 'question'" class="fas fa-question-circle"></i>
-			<i v-else-if="type === 'waiting'" class="fas fa-spinner fa-pulse"></i>
+			<i v-if="type === 'success'" class="ti ti-check"></i>
+			<i v-else-if="type === 'error'" class="ti ti-circle-x"></i>
+			<i v-else-if="type === 'warning'" class="ti ti-alert-triangle"></i>
+			<i v-else-if="type === 'info'" class="ti ti-info-circle"></i>
+			<i v-else-if="type === 'question'" class="ti ti-question-circle"></i>
+			<MkLoading v-else-if="type === 'waiting'" :em="true"/>
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
 		<div v-if="text" class="body"><Mfm :text="text"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
-			<template v-if="input.type === 'password'" #prefix><i class="fas fa-lock"></i></template>
+			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
 	border-radius: var(--radius);
 
 	> .icon {
-		font-size: 32px;
+		font-size: 24px;
 
 		&.info {
 			color: #55c4dd;
@@ -179,14 +179,14 @@ onBeforeUnmount(() => {
 		}
 
 		& + header {
-			margin-top: 16px;
+			margin-top: 8px;
 		}
 	}
 
 	> header {
 		margin: 0 0 8px 0;
 		font-weight: bold;
-		font-size: 20px;
+		font-size: 1.1em;
 
 		& + .body {
 			margin-top: 8px;

@@ -42,7 +42,7 @@
 			}
 		}
 
-		const res = await fetch(`/assets/locales/${lang}.${v}.json`);
+		const res = await window.fetch(`/assets/locales/${lang}.${v}.json`);
 		if (res.status === 200) {
 			localStorage.setItem('lang', lang);
 			localStorage.setItem('locale', await res.text());
@@ -57,7 +57,7 @@
 
 	//#region Script
 	function importAppScript() {
-		import(`/assets/${CLIENT_ENTRY}`)
+		import(`/vite/${CLIENT_ENTRY}`)
 			.catch(async e => {
 				await checkUpdate();
 				console.error(e);
@@ -290,9 +290,13 @@
 	// eslint-disable-next-line no-inner-declarations
 	async function checkUpdate() {
 		try {
-			const res = await fetch('/api/meta', {
+			const res = await window.fetch('/api/meta', {
 				method: 'POST',
-				cache: 'no-cache'
+				cache: 'no-cache',
+				body: '{}',
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			});
 
 			const meta = await res.json();

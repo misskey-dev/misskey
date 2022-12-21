@@ -13,6 +13,7 @@ import { EndedPollNotificationProcessorService } from './processors/EndedPollNot
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class QueueProcessorService {
@@ -35,13 +36,22 @@ export class QueueProcessorService {
 		this.logger = this.queueLoggerService.logger;
 	}
 
+	@bindThis
 	public start() {
 		function renderError(e: Error): any {
-			return {
-				stack: e.stack,
-				message: e.message,
-				name: e.name,
-			};
+			if (e) { // 何故かeがundefinedで来ることがある
+				return {
+					stack: e.stack,
+					message: e.message,
+					name: e.name,
+				};
+			} else {
+				return {
+					stack: '?',
+					message: '?',
+					name: '?',
+				};
+			}
 		}
 	
 		const systemLogger = this.logger.createSubLogger('system');

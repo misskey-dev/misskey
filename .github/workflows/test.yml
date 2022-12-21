@@ -23,6 +23,7 @@ jobs:
         env:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
+          YARN_CHECKSUM_BEHAVIOR: update
       redis:
         image: redis:6
         ports:
@@ -33,15 +34,12 @@ jobs:
       with:
         submodules: true
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v3.2.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        cache-dependency-path: |
-          packages/backend/yarn.lock
-          packages/client/yarn.lock
-    - name: Install dependencies
-      run: yarn install
+    - run: corepack enable
+    - run: yarn install --immutable
     - name: Check yarn.lock
       run: git diff --exit-code yarn.lock
     - name: Copy Configure
@@ -89,17 +87,14 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v3.2.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        cache-dependency-path: |
-          packages/backend/yarn.lock
-          packages/client/yarn.lock
-    - name: Install dependencies
-      run: yarn install
-    - name: Check yarn.lock
-      run: git diff --exit-code yarn.lock
+    - run: corepack enable
+    - run: yarn install --immutable
+      env:
+        YARN_CHECKSUM_BEHAVIOR: update
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config
     - name: Build
@@ -111,7 +106,7 @@ jobs:
       uses: cypress-io/github-action@v4
       with:
         install: false
-        start: npm run start:test
+        start: yarn start:test
         wait-on: 'http://localhost:61812'
         headless: false
         browser: ${{ matrix.browser }}

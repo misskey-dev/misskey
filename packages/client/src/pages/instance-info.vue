@@ -4,7 +4,7 @@
 	<MkSpacer v-if="instance" :content-max="600" :margin-min="16" :margin-max="32">
 		<div v-if="tab === 'overview'" class="_formRoot">
 			<div class="fnfelxur">
-				<img :src="instance.iconUrl || instance.faviconUrl" alt="" class="icon"/>
+				<img :src="faviconUrl" alt="" class="icon"/>
 				<span class="name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
 			</div>
 			<MkKeyValue :copy="host" oneline style="margin: 1em 0;">
@@ -28,7 +28,7 @@
 				<template #label>Moderation</template>
 				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
 				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
-				<MkButton @click="refreshMetadata"><i class="fas fa-refresh"></i> Refresh metadata</MkButton>
+				<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 			</FormSection>
 
 			<FormSection>
@@ -134,6 +134,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
 
 const props = defineProps<{
 	host: string;
@@ -145,6 +146,7 @@ let meta = $ref<misskey.entities.DetailedInstanceMetadata | null>(null);
 let instance = $ref<misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
+let faviconUrl = $ref(null);
 
 const usersPagination = {
 	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
@@ -163,6 +165,7 @@ async function fetch() {
 	});
 	suspended = instance.isSuspended;
 	isBlocked = instance.isBlocked;
+	faviconUrl = getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.iconUrl, 'preview');
 }
 
 async function toggleBlock(ev) {
@@ -192,7 +195,7 @@ fetch();
 
 const headerActions = $computed(() => [{
 	text: `https://${props.host}`,
-	icon: 'fas fa-external-link-alt',
+	icon: 'ti ti-external-link',
 	handler: () => {
 		window.open(`https://${props.host}`, '_blank');
 	},
@@ -201,24 +204,24 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
-	icon: 'fas fa-info-circle',
+	icon: 'ti ti-info-circle',
 }, {
 	key: 'chart',
 	title: i18n.ts.charts,
-	icon: 'fas fa-chart-simple',
+	icon: 'ti ti-chart-line',
 }, {
 	key: 'users',
 	title: i18n.ts.users,
-	icon: 'fas fa-users',
+	icon: 'ti ti-users',
 }, {
 	key: 'raw',
 	title: 'Raw',
-	icon: 'fas fa-code',
+	icon: 'ti ti-code',
 }]);
 
 definePageMetadata({
 	title: props.host,
-	icon: 'fas fa-server',
+	icon: 'ti ti-server',
 });
 </script>
 

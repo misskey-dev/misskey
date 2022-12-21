@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { SigninsRepository } from '@/models/index.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { SigninsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { IdService } from '@/core/IdService.js';
 import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
-import type Koa from 'koa';
+import { bindThis } from '@/decorators.js';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class SigninService {
@@ -24,10 +24,26 @@ export class SigninService {
 	) {
 	}
 
-	public signin(ctx: Koa.Context, user: ILocalUser, redirect = false) {
+	@bindThis
+	public signin(request: FastifyRequest, reply: FastifyReply, user: ILocalUser, redirect = false) {
+		setImmediate(async () => {
+			// Append signin history
+			const record = await this.signinsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				userId: user.id,
+				ip: request.ip,
+				headers: request.headers,
+				success: true,
+			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
+	
+			// Publish signin event
+			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
+		});
+
 		if (redirect) {
 			//#region Cookie
-			ctx.cookies.set('igi', user.token!, {
+			reply.setCookie('igi', user.token!, {
 				path: '/',
 				// SEE: https://github.com/koajs/koa/issues/974
 				// When using a SSL proxy it should be configured to add the "X-Forwarded-Proto: https" header
@@ -36,29 +52,14 @@ export class SigninService {
 			});
 			//#endregion
 	
-			ctx.redirect(this.config.url);
+			reply.redirect(this.config.url);
 		} else {
-			ctx.body = {
+			reply.code(200);
+			return {
 				id: user.id,
 				i: user.token,
 			};
-			ctx.status = 200;
 		}
-	
-		(async () => {
-			// Append signin history
-			const record = await this.signinsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
-				userId: user.id,
-				ip: ctx.ip,
-				headers: ctx.headers,
-				success: true,
-			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
-	
-			// Publish signin event
-			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
-		})();
 	}
 }
 

@@ -72,6 +72,7 @@ import { Channel } from '@/models/entities/Channel.js';
 
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 
 export const dbLogger = new MisskeyLogger('db');
@@ -79,32 +80,39 @@ export const dbLogger = new MisskeyLogger('db');
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
 class MyCustomLogger implements Logger {
+	@bindThis
 	private highlight(sql: string) {
 		return highlight.highlight(sql, {
 			language: 'sql', ignoreIllegals: true,
 		});
 	}
 
+	@bindThis
 	public logQuery(query: string, parameters?: any[]) {
 		sqlLogger.info(this.highlight(query).substring(0, 100));
 	}
 
+	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[]) {
 		sqlLogger.error(this.highlight(query));
 	}
 
+	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[]) {
 		sqlLogger.warn(this.highlight(query));
 	}
 
+	@bindThis
 	public logSchemaBuild(message: string) {
 		sqlLogger.info(message);
 	}
 
+	@bindThis
 	public log(message: string) {
 		sqlLogger.info(message);
 	}
 
+	@bindThis
 	public logMigration(message: string) {
 		sqlLogger.info(message);
 	}

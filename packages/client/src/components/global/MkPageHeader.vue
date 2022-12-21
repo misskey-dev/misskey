@@ -16,7 +16,7 @@
 				</div>
 				<div v-if="narrow && hasTabs" class="subtitle activeTab">
 					{{ tabs.find(tab => tab.key === props.tab)?.title }}
-					<i class="chevron fas fa-chevron-down"></i>
+					<i class="chevron ti ti-chevron-down"></i>
 				</div>
 			</div>
 		</div>
@@ -177,7 +177,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .fdidabkb {
-	--height: 55px;
+	--height: 52px;
 	display: flex;
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
@@ -187,7 +187,7 @@ onUnmounted(() => {
 	height: var(--height);
 
 	&.thin {
-		--height: 45px;
+		--height: 42px;
 
 		> .buttons {
 			> .button {

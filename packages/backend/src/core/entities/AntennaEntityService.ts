@@ -4,6 +4,7 @@ import type { AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepos
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class AntennaEntityService {
@@ -19,6 +20,7 @@ export class AntennaEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Antenna['id'] | Antenna,
 	): Promise<Packed<'Antenna'>> {

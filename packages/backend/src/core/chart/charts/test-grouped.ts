@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/test-grouped.js';
 import type { KVs } from '../core.js';
@@ -35,6 +36,7 @@ export default class TestGroupedChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async increment(group: string): Promise<void> {
 		if (this.total[group] == null) this.total[group] = 0;
 

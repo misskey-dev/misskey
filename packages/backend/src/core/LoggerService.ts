@@ -3,6 +3,8 @@ import * as SyslogPro from 'syslog-pro';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
+import type { KEYWORD } from 'color-convert/conversions';
 
 @Injectable()
 export class LoggerService {
@@ -14,9 +16,9 @@ export class LoggerService {
 	) {
 		if (this.config.syslog) {
 			this.syslogClient = new SyslogPro.RFC5424({
-				applacationName: 'Misskey',
+				applicationName: 'Misskey',
 				timestamp: true,
-				encludeStructuredData: true,
+				includeStructuredData: true,
 				color: true,
 				extendedColor: true,
 				server: {
@@ -27,7 +29,8 @@ export class LoggerService {
 		}
 	}
 
-	public getLogger(domain: string, color?: string | undefined, store?: boolean) {
+	@bindThis
+	public getLogger(domain: string, color?: KEYWORD | undefined, store?: boolean) {
 		return new Logger(domain, color, store, this.syslogClient);
 	}
 }
