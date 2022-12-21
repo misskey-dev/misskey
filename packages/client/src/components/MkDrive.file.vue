@@ -71,7 +71,7 @@ function getMenu() {
 		action: toggleSensitive,
 	}, {
 		text: i18n.ts.describeFile,
-		icon: 'ti ti-forms',
+		icon: 'ti ti-text-caption',
 		action: describe,
 	}, null, {
 		text: i18n.ts.copyUrl,
@@ -134,20 +134,14 @@ function rename() {
 }
 
 function describe() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkMediaCaption.vue')), {
-		title: i18n.ts.describeFile,
-		input: {
-			placeholder: i18n.ts.inputNewDescription,
-			default: props.file.comment != null ? props.file.comment : '',
-		},
-		image: props.file,
+	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+		default: props.file.comment != null ? props.file.comment : '',
+		file: props.file,
 	}, {
-		done: result => {
-			if (!result || result.canceled) return;
-			let comment = result.result;
+		done: caption => {
 			os.api('drive/files/update', {
 				fileId: props.file.id,
-				comment: comment.length === 0 ? null : comment,
+				comment: caption.length === 0 ? null : caption,
 			});
 		},
 	}, 'closed');
