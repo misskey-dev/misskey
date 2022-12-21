@@ -908,6 +908,7 @@ sendPushNotificationReadMessage: "通知與訊息如果已讀的話，就將推�
 sendPushNotificationReadMessageCaption: "「{emptyPushNotificationMessage}」通知將立刻顯示。可能會增加設備的電池消耗。"
 windowMaximize: "最大化"
 windowRestore: "復原"
+caption: "標題"
 _sensitiveMediaDetection:
   description: "您可以使用機器學習自動檢測敏感媒體並將其用於審核。 伺服器的負荷會稍微增加。"
   sensitivity: "檢測敏感度"
