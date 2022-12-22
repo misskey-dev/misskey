@@ -121,7 +121,7 @@ const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value 
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
 const customEmojiCategories = emojiCategories;
 const customEmojis = instance.emojis;
-const q = ref<string | null>(null);
+const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
@@ -129,7 +129,7 @@ const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 watch(q, () => {
 	if (emojis.value) emojis.value.scrollTop = 0;
 
-	if (q.value == null || q.value === '') {
+	if (q.value === '') {
 		searchResultCustom.value = [];
 		searchResultUnicode.value = [];
 		return;
@@ -319,7 +319,7 @@ function paste(event: ClipboardEvent): void {
 	}
 }
 
-function done(query?: any): boolean | void {
+function done(query?: string): boolean | void {
 	if (query == null) query = q.value;
 	if (query == null || typeof query !== 'string') return;
 
