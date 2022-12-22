@@ -6,11 +6,12 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.sounds }}</template>
-		<FormLink v-for="type in Object.keys(sounds)" :key="type" style="margin-bottom: 8px;" @click="edit(type)">
-			{{ $t('_sfx.' + type) }}
-			<template #suffix>{{ sounds[type].type || i18n.ts.none }}</template>
-			<template #suffixIcon><i class="ti ti-chevron-down"></i></template>
-		</FormLink>
+		<FormFolder v-for="type in Object.keys(sounds)" :key="type" style="margin-bottom: 8px;">
+			<template #label>{{ $t('_sfx.' + type) }}</template>
+			<template #suffix>{{ sounds[type].type ?? i18n.ts.none }}</template>
+
+			<XSound :type="sounds[type].type" :volume="sounds[type].volume" @update="(res) => updated(type, res)"/>
+		</FormFolder>
 	</FormSection>
 
 	<FormButton danger class="_formBlock" @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
@@ -19,10 +20,12 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import XSound from './sounds.sound.vue';
 import FormRange from '@/components/form/range.vue';
 import FormButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
+import FormFolder from '@/components/form/folder.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { playFile } from '@/scripts/sound';
@@ -50,71 +53,10 @@ const sounds = ref({
 	channel: ColdDeviceStorage.get('sound_channel'),
 });
 
-const soundsTypes = [
-	null,
-	'syuilo/up',
-	'syuilo/down',
-	'syuilo/pope1',
-	'syuilo/pope2',
-	'syuilo/waon',
-	'syuilo/popo',
-	'syuilo/triple',
-	'syuilo/poi1',
-	'syuilo/poi2',
-	'syuilo/pirori',
-	'syuilo/pirori-wet',
-	'syuilo/pirori-square-wet',
-	'syuilo/square-pico',
-	'syuilo/reverved',
-	'syuilo/ryukyu',
-	'syuilo/kick',
-	'syuilo/snare',
-	'syuilo/queue-jammed',
-	'aisha/1',
-	'aisha/2',
-	'aisha/3',
-	'noizenecio/kick_gaba1',
-	'noizenecio/kick_gaba2',
-	'noizenecio/kick_gaba3',
-	'noizenecio/kick_gaba4',
-	'noizenecio/kick_gaba5',
-	'noizenecio/kick_gaba6',
-	'noizenecio/kick_gaba7',
-];
-
-async function edit(type) {
-	const { canceled, result } = await os.form(i18n.t('_sfx.' + type), {
-		type: {
-			type: 'enum',
-			enum: soundsTypes.map(x => ({
-				value: x,
-				label: x == null ? i18n.ts.none : x,
-			})),
-			label: i18n.ts.sound,
-			default: sounds.value[type].type,
-		},
-		volume: {
-			type: 'range',
-			min: 0,
-			max: 1,
-			step: 0.05,
-			textConverter: (v) => `${Math.floor(v * 100)}%`,
-			label: i18n.ts.volume,
-			default: sounds.value[type].volume,
-		},
-		listen: {
-			type: 'button',
-			content: i18n.ts.listen,
-			action: (_, values) => {
-				playFile(values.type, values.volume);
-			},
-		},
-	});
-	if (canceled) return;
-
+async function updated(type, sound) {
 	const v = {
-		type: result.type,
-		volume: result.volume,
+		type: sound.type,
+		volume: sound.volume,
 	};
 
 	ColdDeviceStorage.set('sound_' + type, v);
