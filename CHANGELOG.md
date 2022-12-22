@@ -41,6 +41,7 @@ You should also include the user name that made the change.
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: update emoji picker immediately on all input @saschanaz
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes
