@@ -7,7 +7,7 @@ const defaultLocaleStringFormats: {[index: string]: string} = {
 	'hour': 'numeric',
 	'minute': 'numeric',
 	'second': 'numeric',
-	'timeZoneName': 'short'
+	'timeZoneName': 'short',
 };
 
 function formatLocaleString(date: Date, format: string): string {

@@ -86,7 +86,7 @@ for (const x of customEmojis) {
 		name: x.name,
 		emoji: `:${x.name}:`,
 		url: x.url,
-		isCustomEmoji: true
+		isCustomEmoji: true,
 	});
 
 	if (x.aliases) {
@@ -96,7 +96,7 @@ for (const x of customEmojis) {
 				aliasOf: x.name,
 				emoji: `:${x.name}:`,
 				url: x.url,
-				isCustomEmoji: true
+				isCustomEmoji: true,
 			});
 		}
 	}
@@ -193,7 +193,7 @@ function exec() {
 			os.api('users/search-by-username-and-host', {
 				username: props.q,
 				limit: 10,
-				detail: false
+				detail: false,
 			}).then(searchedUsers => {
 				users.value = searchedUsers as any[];
 				fetching.value = false;
@@ -215,7 +215,7 @@ function exec() {
 			} else {
 				os.api('hashtags/search', {
 					query: props.q,
-					limit: 30
+					limit: 30,
 				}).then(searchedHashtags => {
 					hashtags.value = searchedHashtags as any[];
 					fetching.value = false;

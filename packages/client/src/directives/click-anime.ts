@@ -27,5 +27,5 @@ export default {
 			el.classList.add('_anime_bounce_standBy');
 		});
 		*/
-	}
+	},
 } as Directive;

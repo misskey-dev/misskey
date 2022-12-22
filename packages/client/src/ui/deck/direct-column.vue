@@ -25,7 +25,7 @@ const pagination = {
 	endpoint: 'notes/mentions' as const,
 	limit: 10,
 	params: {
-		visibility: 'specified'
+		visibility: 'specified',
 	},
 };
 </script>

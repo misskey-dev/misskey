@@ -14,5 +14,5 @@ export default {
 
 			popup(Ripple, { x, y }, {}, 'end');
 		});
-	}
+	},
 };

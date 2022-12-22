@@ -78,17 +78,17 @@ export default defineComponent({
 	props: {
 		getExpectedType: {
 			required: false,
-			default: null
+			default: null,
 		},
 		modelValue: {
-			required: true
+			required: true,
 		},
 		title: {
-			required: false
+			required: false,
 		},
 		removable: {
 			required: false,
-			default: false
+			default: false,
 		},
 		hpml: {
 			required: true,
@@ -101,8 +101,8 @@ export default defineComponent({
 		},
 		draggable: {
 			required: false,
-			default: false
-		}
+			default: false,
+		},
 	},
 
 	data() {
@@ -131,11 +131,11 @@ export default defineComponent({
 			handler() {
 				this.modelValue.value.slots = this.slots.split('\n').map(x => ({
 					name: x,
-					type: null
+					type: null,
 				}));
 			},
-			deep: true
-		}
+			deep: true,
+		},
 	},
 
 	created() {
@@ -150,7 +150,7 @@ export default defineComponent({
 				const id = uuid();
 				this.modelValue.value = {
 					slots: [],
-					expression: { id, type: null }
+					expression: { id, type: null },
 				};
 				return;
 			}
@@ -194,13 +194,13 @@ export default defineComponent({
 			const emptySlotIndex = args.findIndex(x => x.type === null);
 			if (emptySlotIndex !== -1 && emptySlotIndex < args.length) {
 				this.warn = {
-					slot: emptySlotIndex
+					slot: emptySlotIndex,
 				};
 			} else {
 				this.warn = null;
 			}
 		}, {
-			deep: true
+			deep: true,
 		});
 
 		this.$watch(() => this.hpml.variables, () => {
@@ -208,7 +208,7 @@ export default defineComponent({
 				this.error = this.hpml.typeCheck(this.modelValue);
 			}
 		}, {
-			deep: true
+			deep: true,
 		});
 	},
 
@@ -216,7 +216,7 @@ export default defineComponent({
 		async changeType() {
 			const { canceled, result: type } = await os.select({
 				title: this.$ts._pages.selectType,
-				groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
+				groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null),
 			});
 			if (canceled) return;
 			this.modelValue.type = type;
@@ -224,8 +224,8 @@ export default defineComponent({
 
 		_getExpectedType(slot: number) {
 			return this.hpml.getExpectedType(this.modelValue, slot);
-		}
-	}
+		},
+	},
 });
 </script>
 

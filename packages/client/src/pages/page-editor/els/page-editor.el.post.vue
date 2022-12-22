@@ -25,7 +25,7 @@ withDefaults(defineProps<{
 	value: {
 		text: '',
 		attachCanvasImage: false,
-		canvasId: ''
-	}
+		canvasId: '',
+	},
 });
 </script>

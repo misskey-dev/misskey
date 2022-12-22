@@ -31,8 +31,8 @@ const props = withDefaults(defineProps<{
 }>(), {
 	value: {
 		note: null,
-		detailed: false
-	}
+		detailed: false,
+	},
 });
 
 let id: any = $ref(props.value.note);
@@ -47,6 +47,6 @@ watch(id, async () => {
 
 	note = await os.api('notes/show', { noteId: props.value.note });
 }, {
-	immediate: true
+	immediate: true,
 });
 </script>
