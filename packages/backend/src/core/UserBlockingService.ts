@@ -170,9 +170,9 @@ export class UserBlockingService {
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
 
-		// リモートからフォローをされていたらUndoFollow送信
+		// リモートからフォローをされていたらRejectFollow送信
 		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), followee));
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 		}
 	}
