@@ -305,16 +305,16 @@ function chosen(emoji: any, ev?: MouseEvent) {
 	}
 }
 
-function input() {
+function input(): void {
 	// Using custom input event instead of v-model to respond immediately on
 	// Android, where composition happens on all languages
 	// (v-model does not update during composition)
 	q.value = search.value?.value.trim() ?? '';
 }
 
-function paste(event: ClipboardEvent) {
-	const paste = (event.clipboardData || window.clipboardData).getData('text');
-	if (done(paste)) {
+function paste(event: ClipboardEvent): void {
+	const pasted = event.clipboardData?.getData('text') ?? '';
+	if (done(pasted)) {
 		event.preventDefault();
 	}
 }
