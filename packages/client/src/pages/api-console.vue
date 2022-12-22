@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="700">
 		<div class="_formRoot">
 			<div class="_formBlock">
-				<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:modelValue="onEndpointChange()">
+				<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:model-value="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
 				<MkTextarea v-model="body" class="_formBlock" code>

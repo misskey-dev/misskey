@@ -1,6 +1,6 @@
 <template>
 <div class="_formRoot">
-	<FormSwitch v-model="$i.injectFeaturedNote" class="_formBlock" @update:modelValue="onChangeInjectFeaturedNote">
+	<FormSwitch v-model="$i.injectFeaturedNote" class="_formBlock" @update:model-value="onChangeInjectFeaturedNote">
 		{{ i18n.ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
 
