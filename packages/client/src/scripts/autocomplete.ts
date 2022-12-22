@@ -16,10 +16,14 @@ export class Autocomplete {
 	private opening: boolean;
 
 	private get text(): string {
-		return this.textRef.value;
+		// Use raw .value to get the latest value
+		// (Because v-model does not update while composition)
+		return this.textarea.value;
 	}
 
 	private set text(text: string) {
+		// Use ref value to notify other watchers
+		// (Because .value setter never fires input/change events)
 		this.textRef.value = text;
 	}
 
