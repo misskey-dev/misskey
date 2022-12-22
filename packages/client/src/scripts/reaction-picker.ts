@@ -15,7 +15,7 @@ class ReactionPicker {
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
 			asReactionPicker: true,
-			manualShowing: this.manualShowing
+			manualShowing: this.manualShowing,
 		}, {
 			done: reaction => {
 				this.onChosen!(reaction);
@@ -26,7 +26,7 @@ class ReactionPicker {
 			closed: () => {
 				this.src.value = null;
 				this.onClosed!();
-			}
+			},
 		});
 	}
 

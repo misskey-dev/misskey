@@ -15,17 +15,17 @@ import { TextInputVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
-		MkInput
+		MkInput,
 	},
 	props: {
 		block: {
 			type: Object as PropType<TextInputVarBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props, ctx) {
 		const value = computed(() => {
@@ -39,9 +39,9 @@ export default defineComponent({
 
 		return {
 			value,
-			updateValue
+			updateValue,
 		};
-	}
+	},
 });
 </script>
 

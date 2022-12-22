@@ -22,7 +22,7 @@ withDefaults(defineProps<{
 	value: any
 }>(), {
 	value: {
-		name: ''
-	}
+		name: '',
+	},
 });
 </script>

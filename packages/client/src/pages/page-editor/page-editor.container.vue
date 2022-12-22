@@ -31,24 +31,24 @@ export default defineComponent({
 	props: {
 		expanded: {
 			type: Boolean,
-			default: true
+			default: true,
 		},
 		removable: {
 			type: Boolean,
-			default: true
+			default: true,
 		},
 		draggable: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		error: {
 			required: false,
-			default: null
+			default: null,
 		},
 		warn: {
 			required: false,
-			default: null
-		}
+			default: null,
+		},
 	},
 	emits: ['toggle', 'remove'],
 	data() {
@@ -63,8 +63,8 @@ export default defineComponent({
 		},
 		remove() {
 			this.$emit('remove');
-		}
-	}
+		},
+	},
 });
 </script>
 

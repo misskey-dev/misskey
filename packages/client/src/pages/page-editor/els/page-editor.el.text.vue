@@ -18,8 +18,8 @@ withDefaults(defineProps<{
 	value: any
 }>(), {
 	value: {
-		text: ''
-	}
+		text: '',
+	},
 });
 </script>
 

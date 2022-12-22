@@ -11,6 +11,6 @@ export function getStaticImageUrl(baseUrl: string): string {
 	const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
 	return `${instanceUrl}/proxy/${dummy}?${url.query({
 		url: u.href,
-		static: '1'
+		static: '1',
 	})}`;
 }

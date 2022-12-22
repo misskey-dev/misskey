@@ -20,5 +20,5 @@ export default {
 		} else {
 			el.removeEventListener('keydown', el._keyHandler);
 		}
-	}
+	},
 } as Directive;

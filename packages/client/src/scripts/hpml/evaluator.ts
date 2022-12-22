@@ -35,7 +35,7 @@ export class Hpml {
 
 		if (this.opts.enableAiScript) {
 			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
-				storageKey: 'pages:' + this.page.id
+				storageKey: 'pages:' + this.page.id,
 			}), ...initAiLib(this) }, {
 				in: (q) => {
 					return new Promise(ok => {
@@ -75,7 +75,7 @@ export class Hpml {
 			SEED: opts.randomSeed ? opts.randomSeed : '',
 			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
 			AISCRIPT_DISABLED: !this.opts.enableAiScript,
-			NULL: null
+			NULL: null,
 		};
 
 		this.eval();
@@ -198,7 +198,7 @@ export class Hpml {
 					slots: expr.value.slots.map(x => x.name),
 					exec: (slotArg: Record<string, any>) => {
 						return this.evaluate(expr.value.expression, scope.createChildScope(slotArg, expr.id));
-					}
+					},
 				} as Fn;
 			}
 			return;

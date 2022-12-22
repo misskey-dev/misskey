@@ -58,8 +58,8 @@ withDefaults(defineProps<{
 		message: null,
 		primary: false,
 		var: null,
-		fn: null
-	}
+		fn: null,
+	},
 });
 </script>
 

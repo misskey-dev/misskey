@@ -18,7 +18,7 @@ const users = ref([]);
 
 onMounted(async () => {
 	users.value = await os.api('users/show', {
-		userIds: props.userIds
+		userIds: props.userIds,
 	});
 });
 </script>

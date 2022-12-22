@@ -29,7 +29,7 @@ function getClassOrder(width: number, queue: Value): ClassOrder {
 		remove: [
 			...(queue.max ? queue.max.filter(v => width > v).map(getMaxClass) : []),
 			...(queue.min ? queue.min.filter(v => width < v).map(getMinClass) : []),
-		]
+		],
 	};
 }
 
@@ -103,5 +103,5 @@ export default {
 		info.resize.disconnect();
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
-	}
+	},
 } as Directive<Element, Value>;

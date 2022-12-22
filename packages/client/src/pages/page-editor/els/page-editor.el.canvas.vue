@@ -32,7 +32,7 @@ withDefaults(defineProps<{
 	value: {
 		name: '',
 		width: 300,
-		height: 200
-	}
+		height: 200,
+	},
 });
 </script>

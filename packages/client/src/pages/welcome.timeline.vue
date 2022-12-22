@@ -32,7 +32,7 @@ export default defineComponent({
 	components: {
 		XReactionsViewer,
 		XMediaList,
-		XPoll
+		XPoll,
 	},
 
 	data() {
@@ -52,7 +52,7 @@ export default defineComponent({
 		if (this.$refs.scroll.clientHeight > window.innerHeight) {
 			this.isScrolling = true;
 		}
-	}
+	},
 });
 </script>
 

@@ -5,6 +5,6 @@ export function showSuspendedDialog() {
 	return os.alert({
 		type: 'error',
 		title: i18n.ts.yourAccountSuspendedTitle,
-		text: i18n.ts.yourAccountSuspendedDescription
+		text: i18n.ts.yourAccountSuspendedDescription,
 	});
 }

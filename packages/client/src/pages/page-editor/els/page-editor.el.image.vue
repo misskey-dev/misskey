@@ -25,8 +25,8 @@ const props = withDefaults(defineProps<{
 	value: any
 }>(), {
 	value: {
-		fileId: null
-	}
+		fileId: null,
+	},
 });
 
 let file: any = $ref(null);
@@ -43,7 +43,7 @@ onMounted(async () => {
 		await choose();
 	} else {
 		os.api('drive/files/show', {
-			fileId: props.value.fileId
+			fileId: props.value.fileId,
 		}).then(fileResponse => {
 			file = fileResponse;
 		});

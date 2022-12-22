@@ -25,8 +25,8 @@ const props = withDefaults(defineProps<{
 	value: {
 		name: '',
 		title: '',
-		values: []
-	}
+		values: [],
+	},
 });
 
 let values: string = $ref(props.value.values.join('\n'));
@@ -34,6 +34,6 @@ let values: string = $ref(props.value.values.join('\n'));
 watch(values, () => {
 	props.value.values = values.split('\n');
 }, {
-	deep: true
+	deep: true,
 });
 </script>

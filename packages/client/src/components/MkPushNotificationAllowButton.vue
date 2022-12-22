@@ -70,7 +70,7 @@ function subscribe() {
 	// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 	return promiseDialog(registration.pushManager.subscribe({
 		userVisibleOnly: true,
-		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
+		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
 	})
 	.then(async subscription => {
 		pushSubscription = subscription;
@@ -79,7 +79,7 @@ function subscribe() {
 		pushRegistrationInServer = await api('sw/register', {
 			endpoint: subscription.endpoint,
 			auth: encode(subscription.getKey('auth')),
-			publickey: encode(subscription.getKey('p256dh'))
+			publickey: encode(subscription.getKey('p256dh')),
 		});
 	}, async err => { // When subscribe failed
 		// 通知が許可されていなかったとき

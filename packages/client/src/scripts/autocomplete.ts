@@ -171,7 +171,7 @@ export class Autocomplete {
 			}, {
 				done: (res) => {
 					this.complete(res);
-				}
+				},
 			});
 
 			this.suggestion = {
