@@ -10,7 +10,7 @@
 
 	<div class="_monolithic_">
 		<div class="_section">
-			<XSignup :auto-set="autoSet" @signup="onSignup" @signupEmailPending="onSignupEmailPending"/>
+			<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
 		</div>
 	</div>
 </XModalWindow>

@@ -14,20 +14,20 @@
 			item-key="id"
 			handle=".handle"
 			:animation="150"
-			@update:modelValue="v => emit('updateWidgets', v)"
+			@update:model-value="v => emit('updateWidgets', v)"
 		>
 			<template #item="{element}">
 				<div class="customize-container">
 					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
 					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
-						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
+						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @update-props="updateWidget(element.id, $event)"/>
 					</div>
 				</div>
 			</template>
 		</Sortable>
 	</template>
-	<component :is="`mkw-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" class="widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`mkw-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" class="widget" :widget="widget" @update-props="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
 

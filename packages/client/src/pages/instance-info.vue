@@ -26,8 +26,8 @@
 
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
-				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
-				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
+				<FormSwitch v-model="isBlocked" class="_formBlock" @update:model-value="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
 				<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 			</FormSection>
 

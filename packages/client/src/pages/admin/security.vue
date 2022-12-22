@@ -65,7 +65,7 @@
 
 					<div class="_formRoot">
 						<span class="_formBlock">{{ i18n.ts.activeEmailValidationDescription }}</span>
-						<FormSwitch v-model="enableActiveEmailValidation" class="_formBlock" @update:modelValue="save">
+						<FormSwitch v-model="enableActiveEmailValidation" class="_formBlock" @update:model-value="save">
 							<template #label>Enable</template>
 						</FormSwitch>
 					</div>
@@ -77,7 +77,7 @@
 					<template v-else #suffix>Disabled</template>
 
 					<div class="_formRoot">
-						<FormSwitch v-model="enableIpLogging" class="_formBlock" @update:modelValue="save">
+						<FormSwitch v-model="enableIpLogging" class="_formBlock" @update:model-value="save">
 							<template #label>Enable</template>
 						</FormSwitch>
 					</div>

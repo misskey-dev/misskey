@@ -4,7 +4,7 @@
 		<template #label>{{ i18n.ts.invitationCode }}</template>
 		<template #prefix><i class="ti ti-key"></i></template>
 	</MkInput>
-	<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-signup-username @update:modelValue="onChangeUsername">
+	<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-signup-username @update:model-value="onChangeUsername">
 		<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="ti ti-question-circle"></i></div></template>
 		<template #prefix>@</template>
 		<template #suffix>@{{ host }}</template>
@@ -18,7 +18,7 @@
 			<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
 		</template>
 	</MkInput>
-	<MkInput v-if="instance.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+	<MkInput v-if="instance.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:model-value="onChangeEmail">
 		<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ti ti-question-circle"></i></div></template>
 		<template #prefix><i class="ti ti-mail"></i></template>
 		<template #caption>
@@ -33,7 +33,7 @@
 			<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.error }}</span>
 		</template>
 	</MkInput>
-	<MkInput v-model="password" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password @update:modelValue="onChangePassword">
+	<MkInput v-model="password" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password @update:model-value="onChangePassword">
 		<template #label>{{ i18n.ts.password }}</template>
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #caption>
@@ -42,7 +42,7 @@
 			<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.strongPassword }}</span>
 		</template>
 	</MkInput>
-	<MkInput v-model="retypedPassword" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:modelValue="onChangePasswordRetype">
+	<MkInput v-model="retypedPassword" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:model-value="onChangePasswordRetype">
 		<template #label>{{ i18n.ts.password }} ({{ i18n.ts.retype }})</template>
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #caption>
