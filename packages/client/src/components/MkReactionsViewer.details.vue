@@ -3,7 +3,7 @@
 	<div class="bqxuuuey">
 		<div class="reaction">
 			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
-			<div class="name">{{ reaction.replace('@.', '') }}</div>
+			<div class="name">{{ getReactionName(reaction) }}</div>
 		</div>
 		<div class="users">
 			<div v-for="u in users" :key="u.id" class="user">
@@ -20,6 +20,7 @@
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
+import { getEmojiName } from '@/scripts/emojilist';
 
 defineProps<{
 	showing: boolean;
@@ -33,6 +34,14 @@ defineProps<{
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
+
+function getReactionName(reaction: string): string {
+	const trimLocal = reaction.replace('@.', '');
+	if (trimLocal.startsWith(':')) {
+		return trimLocal;
+	}
+	return getEmojiName(reaction) ?? reaction;
+}
 </script>
 
 <style lang="scss" scoped>

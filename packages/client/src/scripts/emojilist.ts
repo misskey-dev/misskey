@@ -11,3 +11,7 @@ export type UnicodeEmojiDef = {
 import _emojilist from '../emojilist.json';
 
 export const emojilist = _emojilist as UnicodeEmojiDef[];
+
+export function getEmojiName(char: string): string | undefined {
+	return emojilist.find(emo => emo.char === char)?.name;
+}
