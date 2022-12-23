@@ -1,11 +1,11 @@
 <template>
 <div :class="$style.root">
 	<MkLoading v-if="fetching"/>
-	<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="users">
+	<div v-else class="users">
 		<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/user-info/${user.id}`" class="user">
 			<MkUserCardMini :user="user"/>
 		</MkA>
-	</transition-group>
+	</div>
 </div>
 </template>
 
