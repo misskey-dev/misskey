@@ -910,6 +910,7 @@ sendPushNotificationReadMessageCaption: "Eine Push-Benachrichtigungen mit dem In
 windowMaximize: "Maximieren"
 windowRestore: "Wiederherstellen"
 caption: "Beschreibung"
+loggedInAsBot: "Momentan als Bot angemeldet"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
