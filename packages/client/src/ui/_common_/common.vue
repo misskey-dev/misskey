@@ -14,6 +14,8 @@
 <div v-if="pendingApiRequestsCount > 0" id="wait"></div>
 
 <div v-if="dev" id="devTicker"><span>DEV BUILD</span></div>
+
+<div v-if="$i && $i.isBot" id="botWarn"><span>{{ i18n.ts.loggedInAsBot }}</span></div>
 </template>
 
 <script lang="ts" setup>
@@ -24,6 +26,7 @@ import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { stream } from '@/stream';
+import { i18n } from '@/i18n';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
@@ -91,6 +94,29 @@ if ($i) {
 		border-left-color: var(--accent);
 		border-radius: 50%;
 		animation: progress-spinner 400ms linear infinite;
+	}
+}
+
+#botWarn {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 100%;
+	height: max-content;
+	text-align: center;
+	z-index: 2147483647;
+	color: #ff0;
+	background: rgba(0, 0, 0, 0.5);
+	padding: 4px 7px;
+	font-size: 14px;
+	pointer-events: none;
+	user-select: none;
+
+	> span {
+		animation: dev-ticker-blink 2s infinite;
 	}
 }
 
