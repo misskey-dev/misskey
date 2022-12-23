@@ -80,6 +80,7 @@
 		"@types/ws": "8.5.3",
 		"@typescript-eslint/eslint-plugin": "5.47.0",
 		"@typescript-eslint/parser": "5.47.0",
+		"@vue/runtime-core": "3.2.45",
 		"cross-env": "7.0.3",
 		"cypress": "12.2.0",
 		"eslint": "8.30.0",
