@@ -5157,6 +5157,7 @@ __metadata:
     "@typescript-eslint/parser": 5.47.0
     "@vitejs/plugin-vue": 4.0.0
     "@vue/compiler-sfc": 3.2.45
+    "@vue/runtime-core": 3.2.45
     autobind-decorator: 2.4.0
     autosize: 5.0.2
     blurhash: 2.0.4
