@@ -8,7 +8,8 @@
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
 	</header>
-	<transition :name="$store.state.animation ? 'folder-toggle' : ''"
+	<transition
+		:name="$store.state.animation ? 'folder-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
@@ -121,6 +122,8 @@ export default defineComponent({
 		backdrop-filter: var(--blur, blur(20px));
 
 		> .title {
+			display: grid;
+			place-content: center;
 			margin: 0;
 			padding: 12px 16px 12px 0;
 

@@ -2,8 +2,13 @@
 <div>
 	<MkLoading v-if="fetching"/>
 	<div v-show="!fetching" :class="$style.root">
-		<div class="chart _panel">
-			<canvas ref="chartEl"></canvas>
+		<div class="charts _panel">
+			<div class="chart">
+				<canvas ref="chartEl2"></canvas>
+			</div>
+			<div class="chart">
+				<canvas ref="chartEl"></canvas>
+			</div>
 		</div>
 	</div>
 </div>
@@ -58,20 +63,14 @@ Chart.register(
 	gradient,
 );
 
-const alpha = (hex, a) => {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
-	const r = parseInt(result[1], 16);
-	const g = parseInt(result[2], 16);
-	const b = parseInt(result[3], 16);
-	return `rgba(${r}, ${g}, ${b}, ${a})`;
-};
-	
 const chartLimit = 50;
 const chartEl = $ref<HTMLCanvasElement>();
+const chartEl2 = $ref<HTMLCanvasElement>();
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
-	
+const { handler: externalTooltipHandler2 } = useChartTooltip();
+
 onMounted(async () => {
 	const now = new Date();
 
@@ -101,8 +100,8 @@ onMounted(async () => {
 
 	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-	const succColor = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--success')).toHexString();
-	const failColor = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--error')).toHexString();
+	const succColor = '#4fd60c';
+	const failColor = '#e8681e';
 
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
@@ -113,27 +112,17 @@ onMounted(async () => {
 	new Chart(chartEl, {
 		type: 'bar',
 		data: {
-			//labels: new Array(props.limit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
 			datasets: [{
 				stack: 'a',
 				parsing: false,
-				label: 'Succ',
+				label: 'Out: Succ',
 				data: format(raw.deliverSucceeded).slice().reverse(),
 				tension: 0.3,
 				pointRadius: 0,
 				borderWidth: 0,
 				borderJoinStyle: 'round',
 				borderRadius: 4,
-				//backgroundColor: alpha(color, 0.1),
-				gradient: {
-					backgroundColor: {
-						axis: 'y',
-						colors: {
-							0: alpha(succColor, 0.3),
-							[succMax]: alpha(succColor, 1),
-						},
-					},
-				},
+				backgroundColor: succColor,
 				barPercentage: 0.9,
 				categoryPercentage: 0.9,
 				fill: true,
@@ -141,23 +130,14 @@ onMounted(async () => {
 			}, {
 				stack: 'a',
 				parsing: false,
-				label: 'Fail',
+				label: 'Out: Fail',
 				data: formatMinus(raw.deliverFailed).slice().reverse(),
 				tension: 0.3,
 				pointRadius: 0,
 				borderWidth: 0,
 				borderJoinStyle: 'round',
 				borderRadius: 4,
-				//backgroundColor: alpha(color, 0.1),
-				gradient: {
-					backgroundColor: {
-						axis: 'y',
-						colors: {
-							0: alpha(failColor, 0.3),
-							[-failMax]: alpha(failColor, 1),
-						},
-					},
-				},
+				backgroundColor: failColor,
 				barPercentage: 0.9,
 				categoryPercentage: 0.9,
 				fill: true,
@@ -244,6 +224,99 @@ onMounted(async () => {
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
+
+	new Chart(chartEl2, {
+		type: 'bar',
+		data: {
+			datasets: [{
+				parsing: false,
+				label: 'In',
+				data: format(raw.inboxReceived).slice().reverse(),
+				tension: 0.3,
+				pointRadius: 0,
+				borderWidth: 0,
+				borderJoinStyle: 'round',
+				borderRadius: 4,
+				backgroundColor: '#0cc2d6',
+				barPercentage: 0.9,
+				categoryPercentage: 0.9,
+				fill: true,
+				clip: 8,
+			}],
+		},
+		options: {
+			aspectRatio: 5,
+			layout: {
+				padding: {
+					left: 0,
+					right: 8,
+					top: 0,
+					bottom: 0,
+				},
+			},
+			scales: {
+				x: {
+					type: 'time',
+					offset: false,
+					time: {
+						stepSize: 1,
+						unit: 'day',
+					},
+					grid: {
+						display: false,
+						color: gridColor,
+						borderColor: 'rgb(0, 0, 0, 0)',
+					},
+					ticks: {
+						display: false,
+						maxRotation: 0,
+						autoSkipPadding: 16,
+					},
+					adapters: {
+						date: {
+							locale: enUS,
+						},
+					},
+					min: getDate(chartLimit).getTime(),
+				},
+				y: {
+					position: 'left',
+					suggestedMax: 10,
+					grid: {
+						display: false,
+						color: gridColor,
+						borderColor: 'rgb(0, 0, 0, 0)',
+					},
+				},
+			},
+			interaction: {
+				intersect: false,
+				mode: 'index',
+			},
+			elements: {
+				point: {
+					hoverRadius: 5,
+					hoverBorderWidth: 2,
+				},
+			},
+			animation: true,
+			plugins: {
+				legend: {
+					display: false,
+				},
+				tooltip: {
+					enabled: false,
+					mode: 'index',
+					animation: {
+						duration: 0,
+					},
+					external: externalTooltipHandler2,
+				},
+				gradient,
+			},
+		},
+		plugins: [chartVLine(vLineColor)],
+	});
 	
 	fetching = false;
 });
@@ -251,11 +324,15 @@ onMounted(async () => {
 
 <style lang="scss" module>
 .root {
-
 	&:global {
-		> .chart {
-			padding: 16px;
-			margin-bottom: 16px;
+		> .charts {
+			> .chart {
+				padding: 16px;
+
+				&:first-child {
+					border-bottom: solid 0.5px var(--divider);
+				}
+			}
 		}
 	}
 }

@@ -81,7 +81,7 @@ onMounted(async () => {
 <style lang="scss" module>
 .root {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	grid-gap: 16px;
 
 	&:global {
