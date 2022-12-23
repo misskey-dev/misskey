@@ -1,11 +1,11 @@
 <template>
 <div class="wbrkwale">
 	<MkLoading v-if="fetching"/>
-	<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="instances">
+	<div v-else class="instances">
 		<MkA v-for="(instance, i) in instances" :key="instance.id" :to="`/instance-info/${instance.host}`" class="instance">
 			<MkInstanceCardMini :instance="instance"/>
 		</MkA>
-	</transition-group>
+	</div>
 </div>
 </template>
 
@@ -36,10 +36,6 @@ useInterval(fetch, 1000 * 60, {
 <style lang="scss" scoped>
 .wbrkwale {
 	> .instances {
-		.chart-move {
-			transition: transform 1s ease;
-		}
-
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 		grid-gap: 12px;
