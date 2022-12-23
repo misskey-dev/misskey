@@ -32,6 +32,7 @@ You should also include the user name that made the change.
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Compress non-animated PNG files @saschanaz
 - Client: Youtube window player @sim1222
+- Client: enhance dashboard of control panel @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
