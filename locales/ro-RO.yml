@@ -693,24 +693,6 @@ _timelines:
 _pages:
   blocks:
     image: "Imagini"
-  script:
-    categories:
-      list: "Liste"
-    blocks:
-      _join:
-        arg1: "Liste"
-      _randomPick:
-        arg1: "Liste"
-      _dailyRandomPick:
-        arg1: "Liste"
-      _seedRandomPick:
-        arg2: "Liste"
-      _pick:
-        arg1: "Liste"
-      _listLen:
-        arg1: "Liste"
-    types:
-      array: "Liste"
 _notification:
   youWereFollowed: "te-a urmărit"
   youWereInvitedToGroup: "Ai fost invitat într-un grup"
