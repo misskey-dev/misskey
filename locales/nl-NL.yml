@@ -468,24 +468,6 @@ _timelines:
 _pages:
   blocks:
     image: "Afbeeldingen"
-  script:
-    categories:
-      list: "Lijsten"
-    blocks:
-      _join:
-        arg1: "Lijsten"
-      _randomPick:
-        arg1: "Lijsten"
-      _dailyRandomPick:
-        arg1: "Lijsten"
-      _seedRandomPick:
-        arg2: "Lijsten"
-      _pick:
-        arg1: "Lijsten"
-      _listLen:
-        arg1: "Lijsten"
-    types:
-      array: "Lijsten"
 _notification:
   youWereFollowed: "volgde jou"
   unreadAntennaNote: "Antenne {name}"
