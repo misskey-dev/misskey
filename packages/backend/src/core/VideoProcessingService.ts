@@ -35,8 +35,7 @@ export class VideoProcessingService {
 						timestamps: ['5%'],
 					});
 			});
-	
-			// JPEGに変換 (Webpでもいいが、MastodonはWebpをサポートせず表示できなくなる)
+
 			return await this.imageProcessingService.convertToJpeg(`${dir}/out.png`, 498, 280);
 		} finally {
 			cleanup();
