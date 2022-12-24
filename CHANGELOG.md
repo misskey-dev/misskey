@@ -18,6 +18,8 @@ You should also include the user name that made the change.
 - ノートのウォッチ機能が削除されました
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- 新たに動的なPagesを作ることはできなくなりました
+	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMiPlay機能の実装を予定しています。
 
 ### Improvements
 - Push notification of Antenna note @tamaina
