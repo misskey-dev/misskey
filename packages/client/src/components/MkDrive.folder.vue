@@ -16,8 +16,8 @@
 	@dragend="onDragend"
 >
 	<p class="name">
-		<template v-if="hover"><i class="fas fa-folder-open ti-fw"></i></template>
-		<template v-if="!hover"><i class="fas fa-folder ti-fw"></i></template>
+		<template v-if="hover"><i class="ti ti-folder ti-fw"></i></template>
+		<template v-if="!hover"><i class="ti ti-folder ti-fw"></i></template>
 		{{ folder.name }}
 	</p>
 	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">

@@ -1,7 +1,7 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="fas fa-sticky-note"></i> {{ $ts._pages.blocks.note }}</template>
+	<template #header><i class="ti ti-note"></i> {{ $ts._pages.blocks.note }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
 		<MkInput v-model="id">
