@@ -41,7 +41,7 @@ export function useChartTooltip() {
 
 		tooltipShowing.value = true;
 		tooltipX.value = rect.left + window.pageXOffset + context.tooltip.caretX;
-		tooltipY.value = rect.top + window.pageYOffset + context.tooltip.caretY;
+		tooltipY.value = rect.top + window.pageYOffset;
 	}
 
 	return {

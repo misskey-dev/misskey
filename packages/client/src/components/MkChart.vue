@@ -38,6 +38,7 @@ import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import { chartVLine } from '@/scripts/chart-vline';
 
 const props = defineProps({
 	src: {
@@ -311,27 +312,7 @@ const render = () => {
 				gradient,
 			},
 		},
-		plugins: [{
-			id: 'vLine',
-			beforeDraw(chart, args, options) {
-				if (chart.tooltip?._active?.length) {
-					const activePoint = chart.tooltip._active[0];
-					const ctx = chart.ctx;
-					const x = activePoint.element.x;
-					const topY = chart.scales.y.top;
-					const bottomY = chart.scales.y.bottom;
-
-					ctx.save();
-					ctx.beginPath();
-					ctx.moveTo(x, bottomY);
-					ctx.lineTo(x, topY);
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = vLineColor;
-					ctx.stroke();
-					ctx.restore();
-				}
-			},
-		}],
+		plugins: [chartVLine(vLineColor)],
 	});
 };
 

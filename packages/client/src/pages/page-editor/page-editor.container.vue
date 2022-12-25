@@ -74,7 +74,7 @@ export default defineComponent({
 	overflow: hidden;
 	background: var(--panel);
 	border: solid 2px var(--X12);
-	border-radius: 6px;
+	border-radius: 8px;
 
 	&:hover {
 		border: solid 2px var(--X13);
@@ -86,10 +86,6 @@ export default defineComponent({
 
 	&.error {
 		border: solid 2px #f00;
-	}
-
-	& + .cpjygsrt {
-		margin-top: 16px;
 	}
 
 	> header {

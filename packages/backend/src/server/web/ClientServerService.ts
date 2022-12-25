@@ -13,6 +13,7 @@ import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
 import fastifyCookie from '@fastify/cookie';
 import fastifyProxy from '@fastify/http-proxy';
+import vary from 'vary';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
@@ -405,6 +406,8 @@ export class ClientServerService {
 
 		// Note
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				visibility: In(['public', 'home']),
