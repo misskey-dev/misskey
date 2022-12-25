@@ -910,6 +910,7 @@ sendPushNotificationReadMessageCaption: "Se possibile, verrà mostrata brevement
 windowMaximize: "Ingrandisci"
 windowRestore: "Ripristina"
 caption: "Didascalia"
+loggedInAsBot: "Connessione come Bot"
 _sensitiveMediaDetection:
   description: "L'apprendimento automatico può essere utilizzato per individuare automaticamente i media sensibili da moderare. Il carico del server aumenta leggermente."
   sensitivity: "Sensibilità di rilevamento"
