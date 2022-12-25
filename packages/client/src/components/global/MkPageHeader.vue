@@ -101,7 +101,7 @@ const showTabsPopup = (ev: MouseEvent) => {
 			onTabClick(tab, ev);
 		},
 	}));
-	popupMenu(menu, ev.currentTarget! as HTMLElement);
+	popupMenu(menu, (ev.currentTarget ?? ev.target) as HTMLElement);
 };
 
 const preventDrag = (ev: TouchEvent) => {
