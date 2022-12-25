@@ -313,4 +313,71 @@ onUnmounted(() => {
 		}
 	}
 }
+
+@container (max-width: 400px) {
+	.mk-url-preview {
+		> .link {
+			font-size: 12px;
+
+			> .thumbnail {
+				height: 80px;
+			}
+
+			> article {
+				padding: 12px;
+			}
+		}
+	}
+}
+
+@container (max-width: 350px) {
+	.mk-url-preview {
+		> .link {
+			font-size: 10px;
+
+			> .thumbnail {
+				height: 70px;
+			}
+
+			> article {
+				padding: 8px;
+
+				> header {
+					margin-bottom: 4px;
+				}
+
+				> footer {
+					margin-top: 4px;
+
+					> img {
+						width: 12px;
+						height: 12px;
+					}
+				}
+			}
+
+			&.compact {
+				> .thumbnail {
+					position: absolute;
+					width: 56px;
+					height: 100%;
+				}
+
+				> article {
+					left: 56px;
+					width: calc(100% - 56px);
+					padding: 4px;
+
+					> header {
+						margin-bottom: 2px;
+					}
+
+					> footer {
+						margin-top: 2px;
+					}
+				}
+			}
+		}
+	}
+}
 </style>

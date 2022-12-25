@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
-			<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
+			<div v-if="page" :key="page.id" class="xcukqgmh">
 				<div class="_block main">
 					<!--
 				<div class="header">

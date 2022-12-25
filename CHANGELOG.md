@@ -42,6 +42,7 @@ You should also include the user name that made the change.
 - Client: Implement the button to subscribe push notification @tamaina
 - Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
+- Client: improve overall performance of client @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468

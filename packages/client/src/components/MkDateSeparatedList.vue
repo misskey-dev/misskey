@@ -108,6 +108,8 @@ export default defineComponent({
 
 <style lang="scss">
 .sqadhkmv {
+	container-type: inline-size;
+
 	> *:empty {
 		display: none;
 	}

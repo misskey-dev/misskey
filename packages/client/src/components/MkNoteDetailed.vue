@@ -444,6 +444,8 @@ if (appearNote.replyId) {
 
 		> .main {
 			> .body {
+				container-type: inline-size;
+
 				> .cw {
 					cursor: default;
 					display: block;
@@ -578,6 +580,72 @@ if (appearNote.replyId) {
 	}
 
 	&.max-width_300px {
+		font-size: 0.825em;
+
+		> .article {
+			> .header {
+				> .avatar {
+					width: 50px;
+					height: 50px;
+				}
+			}
+
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 12px;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@container (max-width: 500px) {
+	.lxwezrsl {
+		font-size: 0.9em;
+	}
+}
+
+@container (max-width: 450px) {
+	.lxwezrsl {
+		> .renote {
+			padding: 8px 16px 0 16px;
+		}
+
+		> .article {
+			padding: 16px;
+
+			> .header {
+				> .avatar {
+					width: 50px;
+					height: 50px;
+				}
+			}
+		}
+	}
+}
+
+@container (max-width: 350px) {
+	.lxwezrsl {
+		> .article {
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 18px;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@container (max-width: 300px) {
+	.lxwezrsl {
 		font-size: 0.825em;
 
 		> .article {

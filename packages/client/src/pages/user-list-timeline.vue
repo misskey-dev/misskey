@@ -111,4 +111,11 @@ definePageMetadata(computed(() => list ? {
 		margin: 0 auto;
 	}
 }
+
+@container (min-width: 800px) {
+	.eqqrhokj {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+}
 </style>
