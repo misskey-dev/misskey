@@ -41,6 +41,7 @@ You should also include the user name that made the change.
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
 - Server: Fix peers API returning suspended instances @ineffyble
+- Server: trim long text of note from ap @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
