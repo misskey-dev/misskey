@@ -36,6 +36,10 @@ You should also include the user name that made the change.
 - Client: Compress non-animated PNG files @saschanaz
 - Client: Youtube window player @sim1222
 - Client: enhance dashboard of control panel @syuilo
+- Client: Vite is upgraded to v4 @syuilo, @tamaina
+- Client: HMR is available while yarn dev @tamaina
+- Client: Implement the button to subscribe push notification @tamaina
+- Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
