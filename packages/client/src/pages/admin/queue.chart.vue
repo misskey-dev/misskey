@@ -1,87 +1,115 @@
 <template>
-<div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><slot name="title"></slot></div>
-	<div class="_debobigegoPanel pumxzjhg">
-		<div class="_table status">
-			<div class="_row">
-				<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
-				<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
-				<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
-				<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
+<div class="pumxzjhg">
+	<div class="_table status">
+		<div class="_row">
+			<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
+			<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
+			<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
+			<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
+		</div>
+	</div>
+	<div class="charts">
+		<div class="chart">
+			<div class="title">Process</div>
+			<XChart ref="chartProcess" type="process"/>
+		</div>
+		<div class="chart">
+			<div class="title">Active</div>
+			<XChart ref="chartActive" type="active"/>
+		</div>
+		<div class="chart">
+			<div class="title">Delayed</div>
+			<XChart ref="chartDelayed" type="delayed"/>
+		</div>
+		<div class="chart">
+			<div class="title">Waiting</div>
+			<XChart ref="chartWaiting" type="waiting"/>
+		</div>
+	</div>
+	<div class="jobs">
+		<div v-if="jobs.length > 0">
+			<div v-for="job in jobs" :key="job[0]">
+				<span>{{ job[0] }}</span>
+				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
 			</div>
 		</div>
-		<div class="">
-			<MkQueueChart :domain="domain" :connection="connection"/>
-		</div>
-		<div class="jobs">
-			<div v-if="jobs.length > 0">
-				<div v-for="job in jobs" :key="job[0]">
-					<span>{{ job[0] }}</span>
-					<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
-				</div>
-			</div>
-			<span v-else style="opacity: 0.5;">{{ $ts.noJobs }}</span>
-		</div>
+		<span v-else style="opacity: 0.5;">{{ i18n.ts.noJobs }}</span>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, markRaw, onMounted, onUnmounted, ref } from 'vue';
+<script lang="ts" setup>
+import { markRaw, onMounted, onUnmounted, ref } from 'vue';
+import XChart from './queue.chart.chart.vue';
 import number from '@/filters/number';
-import MkQueueChart from '@/components/queue-chart.vue';
 import * as os from '@/os';
+import { stream } from '@/stream';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkQueueChart
-	},
+const connection = markRaw(stream.useChannel('queueStats'));
 
-	props: {
-		domain: {
-			type: String,
-			required: true,
-		},
-		connection: {
-			required: true,
-		},
-	},
+const activeSincePrevTick = ref(0);
+const active = ref(0);
+const delayed = ref(0);
+const waiting = ref(0);
+const jobs = ref([]);
+let chartProcess = $ref<InstanceType<typeof XChart>>();
+let chartActive = $ref<InstanceType<typeof XChart>>();
+let chartDelayed = $ref<InstanceType<typeof XChart>>();
+let chartWaiting = $ref<InstanceType<typeof XChart>>();
 
-	setup(props) {
-		const activeSincePrevTick = ref(0);
-		const active = ref(0);
-		const waiting = ref(0);
-		const delayed = ref(0);
-		const jobs = ref([]);
+const props = defineProps<{
+	domain: string;
+}>();
 
-		onMounted(() => {
-			os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(result => {
-				jobs.value = result;
-			});
+const onStats = (stats) => {
+	activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
+	active.value = stats[props.domain].active;
+	delayed.value = stats[props.domain].delayed;
+	waiting.value = stats[props.domain].waiting;
 
-			const onStats = (stats) => {
-				activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
-				active.value = stats[props.domain].active;
-				waiting.value = stats[props.domain].waiting;
-				delayed.value = stats[props.domain].delayed;
-			};
+	chartProcess.pushData(stats[props.domain].activeSincePrevTick);
+	chartActive.pushData(stats[props.domain].active);
+	chartDelayed.pushData(stats[props.domain].delayed);
+	chartWaiting.pushData(stats[props.domain].waiting);
+};
 
-			props.connection.on('stats', onStats);
+const onStatsLog = (statsLog) => {
+	const dataProcess = [];
+	const dataActive = [];
+	const dataDelayed = [];
+	const dataWaiting = [];
 
-			onUnmounted(() => {
-				props.connection.off('stats', onStats);
-			});
-		});
+	for (const stats of [...statsLog].reverse()) {
+		dataProcess.push(stats[props.domain].activeSincePrevTick);
+		dataActive.push(stats[props.domain].active);
+		dataDelayed.push(stats[props.domain].delayed);
+		dataWaiting.push(stats[props.domain].waiting);
+	}
 
-		return {
-			jobs,
-			activeSincePrevTick,
-			active,
-			waiting,
-			delayed,
-			number,
-		};
-	},
+	chartProcess.setData(dataProcess);
+	chartActive.setData(dataActive);
+	chartDelayed.setData(dataDelayed);
+	chartWaiting.setData(dataWaiting);
+};
+
+onMounted(() => {
+	os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(result => {
+		jobs.value = result;
+	});
+
+	connection.on('stats', onStats);
+	connection.on('statsLog', onStatsLog);
+	connection.send('requestLog', {
+		id: Math.random().toString().substr(2, 8),
+		length: 200,
+	});
+});
+
+onUnmounted(() => {
+	connection.off('stats', onStats);
+	connection.off('statsLog', onStatsLog);
+	connection.dispose();
 });
 </script>
 
@@ -89,14 +117,33 @@ export default defineComponent({
 .pumxzjhg {
 	> .status {
 		padding: 16px;
-		border-bottom: solid 0.5px var(--divider);
+	}
+
+	> .charts {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 16px;
+
+		> .chart {
+			min-width: 0;
+			padding: 16px;
+			background: var(--panel);
+			border-radius: var(--radius);
+
+			> .title {
+				margin-bottom: 8px;
+			}
+		}
 	}
 
 	> .jobs {
+		margin-top: 16px;
 		padding: 16px;
-		border-top: solid 0.5px var(--divider);
 		max-height: 180px;
 		overflow: auto;
+		background: var(--panel);
+		border-radius: var(--radius);
 	}
+
 }
 </style>

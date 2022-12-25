@@ -1,11 +1,10 @@
-import define from '../../define.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { Brackets } from 'typeorm';
-import { Notes } from '@/models/index.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -35,37 +34,49 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(new Brackets(qb => { qb
-			.where(`note.replyId = :noteId`, { noteId: ps.noteId })
-			.orWhere(new Brackets(qb => { qb
-				.where(`note.renoteId = :noteId`, { noteId: ps.noteId })
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
+		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.andWhere(new Brackets(qb => { qb
-					.where(`note.text IS NOT NULL`)
-					.orWhere(`note.fileIds != '{}'`)
-					.orWhere(`note.hasPoll = TRUE`);
-				}));
-			}));
-		}))
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+					.where('note.replyId = :noteId', { noteId: ps.noteId })
+					.orWhere(new Brackets(qb => { qb
+						.where('note.renoteId = :noteId', { noteId: ps.noteId })
+						.andWhere(new Brackets(qb => { qb
+							.where('note.text IS NOT NULL')
+							.orWhere('note.fileIds != \'{}\'')
+							.orWhere('note.hasPoll = TRUE');
+						}));
+					}));
+				}))
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	generateVisibilityQuery(query, user);
-	if (user) generateMutedUserQuery(query, user);
-	if (user) generateBlockedUserQuery(query, user);
-	if (user) generateMutedInstanceQuery(query, user);
+			this.queryService.generateVisibilityQuery(query, me);
+			if (me) {
+				this.queryService.generateMutedUserQuery(query, me);
+				this.queryService.generateBlockedUserQuery(query, me);
+			}
 
-	const notes = await query.take(ps.limit).getMany();
+			const notes = await query.take(ps.limit).getMany();
 
-	return await Notes.packMany(notes, user);
-});
+			return await this.noteEntityService.packMany(notes, me);
+		});
+	}
+}

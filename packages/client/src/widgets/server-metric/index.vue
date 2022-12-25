@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent">
-	<template #header><i class="fas fa-server"></i>{{ $ts._widgets.serverMetric }}</template>
-	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
+	<template #header><i class="ti ti-server"></i>{{ i18n.ts._widgets.serverMetric }}</template>
+	<template #func><button class="_button" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
 	<div v-if="meta" class="mkw-serverMetric">
 		<XCpuMemory v-if="widgetProps.view === 0" :connection="connection" :meta="meta"/>
@@ -15,16 +15,17 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from '../widget';
-import MkContainer from '@/components/ui/container.vue';
 import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
 import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
+import MkContainer from '@/components/MkContainer.vue';
+import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { stream } from '@/stream';
+import { i18n } from '@/i18n';
 
 const name = 'serverMetric';
 
@@ -50,7 +51,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -65,7 +66,7 @@ os.api('server-info', {}).then(res => {
 });
 
 const toggleView = () => {
-	if (widgetProps.view == 4) {
+	if (widgetProps.view === 4) {
 		widgetProps.view = 0;
 	} else {
 		widgetProps.view++;

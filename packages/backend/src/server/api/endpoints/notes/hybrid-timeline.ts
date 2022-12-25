@@ -1,17 +1,13 @@
-import define from '../../define.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { ApiError } from '../../error.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { Followings, Notes, Users } from '@/models/index.js';
 import { Brackets } from 'typeorm';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
-import { activeUsersChart } from '@/services/chart/index.js';
-import { generateRepliesQuery } from '../../common/generate-replies-query.js';
-import { generateMutedNoteQuery } from '../../common/generate-muted-note-query.js';
-import { generateChannelQuery } from '../../common/generate-channel-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository, FollowingsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import { MetaService } from '@/core/MetaService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -58,86 +54,99 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const m = await fetchMeta();
-	if (m.disableLocalTimeline && (!user.isAdmin && !user.isModerator)) {
-		throw new ApiError(meta.errors.stlDisabled);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
+
+		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
+		private metaService: MetaService,
+		private activeUsersChart: ActiveUsersChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const m = await this.metaService.fetch();
+			if (m.disableLocalTimeline && (!me.isAdmin && !me.isModerator)) {
+				throw new ApiError(meta.errors.stlDisabled);
+			}
+
+			//#region Construct query
+			const followingQuery = this.followingsRepository.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: me.id });
+
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere(new Brackets(qb => {
+					qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id })
+						.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+				}))
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
+				.setParameters(followingQuery.getParameters());
+
+			this.queryService.generateChannelQuery(query, me);
+			this.queryService.generateRepliesQuery(query, me);
+			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateMutedNoteQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
+
+			if (ps.includeMyRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.userId != :meId', { meId: me.id });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.includeRenotedMyNotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteUserId != :meId', { meId: me.id });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.includeLocalRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteUserHost IS NOT NULL');
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.withFiles) {
+				query.andWhere('note.fileIds != \'{}\'');
+			}
+			//#endregion
+
+			const timeline = await query.take(ps.limit).getMany();
+
+			process.nextTick(() => {
+				this.activeUsersChart.read(me);
+			});
+
+			return await this.noteEntityService.packMany(timeline, me);
+		});
 	}
-
-	//#region Construct query
-	const followingQuery = Followings.createQueryBuilder('following')
-		.select('following.followeeId')
-		.where('following.followerId = :followerId', { followerId: user.id });
-
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
-			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere(new Brackets(qb => {
-			qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id })
-				.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
-		}))
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.setParameters(followingQuery.getParameters());
-
-	generateChannelQuery(query, user);
-	generateRepliesQuery(query, user);
-	generateVisibilityQuery(query, user);
-	generateMutedUserQuery(query, user);
-	generateMutedInstanceQuery(query, user);
-	generateMutedNoteQuery(query, user);
-	generateBlockedUserQuery(query, user);
-
-	if (ps.includeMyRenotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.userId != :meId', { meId: user.id });
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.includeRenotedMyNotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.includeLocalRenotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.renoteUserHost IS NOT NULL');
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.withFiles) {
-		query.andWhere('note.fileIds != \'{}\'');
-	}
-	//#endregion
-
-	const timeline = await query.take(ps.limit).getMany();
-
-	process.nextTick(() => {
-		if (user) {
-			activeUsersChart.read(user);
-		}
-	});
-
-	return await Notes.packMany(timeline, user);
-});
+}

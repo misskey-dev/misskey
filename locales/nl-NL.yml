@@ -303,6 +303,9 @@ muteThread: "Discussies dempen "
 unmuteThread: "Dempen van discussie ongedaan maken"
 hide: "Verbergen"
 searchByGoogle: "Zoeken"
+cropImage: "Afbeelding bijsnijden"
+cropImageAsk: "Bijsnijdengevraagd"
+file: "Bestanden"
 _email:
   _follow:
     title: "volgde jou"
@@ -371,6 +374,9 @@ _notification:
     renote: "Herdelen"
     quote: "Quote"
     reaction: "Reacties"
+  _actions:
+    reply: "Antwoord"
+    renote: "Herdelen"
 _deck:
   _columns:
     notifications: "Meldingen"

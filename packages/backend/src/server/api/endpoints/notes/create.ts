@@ -1,15 +1,18 @@
 import ms from 'ms';
-import create from '@/services/note/create.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { User } from '@/models/entities/user.js';
-import { Users, DriveFiles, Notes, Channels, Blockings } from '@/models/index.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { Note } from '@/models/entities/note.js';
-import { noteVisibilities } from '../../../../types.js';
-import { Channel } from '@/models/entities/channel.js';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import type { User } from '@/models/entities/User.js';
+import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { Channel } from '@/models/entities/Channel.js';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { DI } from '@/di-symbols.js';
+import { noteVisibilities } from '../../../../types.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -83,7 +86,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: "public" },
+		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: 'public' },
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
@@ -134,7 +137,7 @@ export const paramDef = {
 		{
 			// (re)note with text, files and poll are optional
 			properties: {
-				text: { type: 'string', maxLength: MAX_NOTE_TEXT_LENGTH, nullable: false },
+				text: { type: 'string', minLength: 1, maxLength: MAX_NOTE_TEXT_LENGTH, nullable: false },
 			},
 			required: ['text'],
 		},
@@ -149,7 +152,7 @@ export const paramDef = {
 		{
 			// (re)note with poll, text and files are optional
 			properties: {
-				poll: { type: 'object', nullable: false, },
+				poll: { type: 'object', nullable: false },
 			},
 			required: ['poll'],
 		},
@@ -161,111 +164,138 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	let visibleUsers: User[] = [];
-	if (ps.visibleUserIds) {
-		visibleUsers = await Users.findBy({
-			id: In(ps.visibleUserIds),
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
+		@Inject(DI.blockingsRepository)
+		private blockingsRepository: BlockingsRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
+		@Inject(DI.channelsRepository)
+		private channelsRepository: ChannelsRepository,
+
+		private noteEntityService: NoteEntityService,
+		private noteCreateService: NoteCreateService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			let visibleUsers: User[] = [];
+			if (ps.visibleUserIds) {
+				visibleUsers = await this.usersRepository.findBy({
+					id: In(ps.visibleUserIds),
+				});
+			}
+
+			let files: DriveFile[] = [];
+			const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
+			if (fileIds != null) {
+				files = await this.driveFilesRepository.createQueryBuilder('file')
+					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
+						userId: me.id,
+						fileIds,
+					})
+					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
+					.setParameters({ fileIds })
+					.getMany();
+			}
+
+			let renote: Note | null = null;
+			if (ps.renoteId != null) {
+				// Fetch renote to note
+				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
+
+				if (renote == null) {
+					throw new ApiError(meta.errors.noSuchRenoteTarget);
+				} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.hasPoll) {
+					throw new ApiError(meta.errors.cannotReRenote);
+				}
+
+				// Check blocking
+				if (renote.userId !== me.id) {
+					const block = await this.blockingsRepository.findOneBy({
+						blockerId: renote.userId,
+						blockeeId: me.id,
+					});
+					if (block) {
+						throw new ApiError(meta.errors.youHaveBeenBlocked);
+					}
+				}
+			}
+
+			let reply: Note | null = null;
+			if (ps.replyId != null) {
+				// Fetch reply
+				reply = await this.notesRepository.findOneBy({ id: ps.replyId });
+
+				if (reply == null) {
+					throw new ApiError(meta.errors.noSuchReplyTarget);
+				} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
+					throw new ApiError(meta.errors.cannotReplyToPureRenote);
+				}
+
+				// Check blocking
+				if (reply.userId !== me.id) {
+					const block = await this.blockingsRepository.findOneBy({
+						blockerId: reply.userId,
+						blockeeId: me.id,
+					});
+					if (block) {
+						throw new ApiError(meta.errors.youHaveBeenBlocked);
+					}
+				}
+			}
+
+			if (ps.poll) {
+				if (typeof ps.poll.expiresAt === 'number') {
+					if (ps.poll.expiresAt < Date.now()) {
+						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
+					}
+				} else if (typeof ps.poll.expiredAfter === 'number') {
+					ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
+				}
+			}
+
+			let channel: Channel | null = null;
+			if (ps.channelId != null) {
+				channel = await this.channelsRepository.findOneBy({ id: ps.channelId });
+
+				if (channel == null) {
+					throw new ApiError(meta.errors.noSuchChannel);
+				}
+			}
+
+			// 投稿を作成
+			const note = await this.noteCreateService.create(me, {
+				createdAt: new Date(),
+				files: files,
+				poll: ps.poll ? {
+					choices: ps.poll.choices,
+					multiple: ps.poll.multiple || false,
+					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+				} : undefined,
+				text: ps.text ?? undefined,
+				reply,
+				renote,
+				cw: ps.cw,
+				localOnly: ps.localOnly,
+				visibility: ps.visibility,
+				visibleUsers,
+				channel,
+				apMentions: ps.noExtractMentions ? [] : undefined,
+				apHashtags: ps.noExtractHashtags ? [] : undefined,
+				apEmojis: ps.noExtractEmojis ? [] : undefined,
+			});
+
+			return {
+				createdNote: await this.noteEntityService.pack(note, me),
+			};
 		});
 	}
-
-	let files: DriveFile[] = [];
-	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
-	if (fileIds != null) {
-		files = await DriveFiles.findBy({
-			userId: user.id,
-			id: In(fileIds),
-		});
-	}
-
-	let renote: Note | null;
-	if (ps.renoteId != null) {
-		// Fetch renote to note
-		renote = await Notes.findOneBy({ id: ps.renoteId });
-
-		if (renote == null) {
-			throw new ApiError(meta.errors.noSuchRenoteTarget);
-		} else if (renote.renoteId && !renote.text && !renote.fileIds && !renote.poll) {
-			throw new ApiError(meta.errors.cannotReRenote);
-		}
-
-		// Check blocking
-		if (renote.userId !== user.id) {
-			const block = await Blockings.findOneBy({
-				blockerId: renote.userId,
-				blockeeId: user.id,
-			});
-			if (block) {
-				throw new ApiError(meta.errors.youHaveBeenBlocked);
-			}
-		}
-	}
-
-	let reply: Note | null;
-	if (ps.replyId != null) {
-		// Fetch reply
-		reply = await Notes.findOneBy({ id: ps.replyId });
-
-		if (reply == null) {
-			throw new ApiError(meta.errors.noSuchReplyTarget);
-		} else if (reply.renoteId && !reply.text && !reply.fileIds && !renote.poll) {
-			throw new ApiError(meta.errors.cannotReplyToPureRenote);
-		}
-
-		// Check blocking
-		if (reply.userId !== user.id) {
-			const block = await Blockings.findOneBy({
-				blockerId: reply.userId,
-				blockeeId: user.id,
-			});
-			if (block) {
-				throw new ApiError(meta.errors.youHaveBeenBlocked);
-			}
-		}
-	}
-
-	if (ps.poll) {
-		if (typeof ps.poll.expiresAt === 'number') {
-			if (ps.poll.expiresAt < Date.now()) {
-				throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
-			}
-		} else if (typeof ps.poll.expiredAfter === 'number') {
-			ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
-		}
-	}
-
-	let channel: Channel | undefined;
-	if (ps.channelId != null) {
-		channel = await Channels.findOneBy({ id: ps.channelId });
-
-		if (channel == null) {
-			throw new ApiError(meta.errors.noSuchChannel);
-		}
-	}
-
-	// 投稿を作成
-	const note = await create(user, {
-		createdAt: new Date(),
-		files: files,
-		poll: ps.poll ? {
-			choices: ps.poll.choices,
-			multiple: ps.poll.multiple || false,
-			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-		} : undefined,
-		text: ps.text || undefined,
-		reply,
-		renote,
-		cw: ps.cw,
-		localOnly: ps.localOnly,
-		visibility: ps.visibility,
-		visibleUsers,
-		channel,
-		apMentions: ps.noExtractMentions ? [] : undefined,
-		apHashtags: ps.noExtractHashtags ? [] : undefined,
-		apEmojis: ps.noExtractEmojis ? [] : undefined,
-	});
-
-	return {
-		createdNote: await Notes.pack(note, user),
-	};
-});
+}

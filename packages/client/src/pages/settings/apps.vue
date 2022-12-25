@@ -4,28 +4,28 @@
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $ts.nothing }}</div>
+				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</template>
-		<template v-slot="{items}">
+		<template #default="{items}">
 			<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
 				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>
 					<div class="_keyValue">
-						<div>{{ $ts.installedDate }}:</div>
+						<div>{{ i18n.ts.installedDate }}:</div>
 						<div><MkTime :time="token.createdAt"/></div>
 					</div>
 					<div class="_keyValue">
-						<div>{{ $ts.lastUsedDate }}:</div>
+						<div>{{ i18n.ts.lastUsedDate }}:</div>
 						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="revoke(token)"><i class="fas fa-trash-alt"></i></button>
+						<button class="_button" @click="revoke(token)"><i class="ti ti-trash"></i></button>
 					</div>
 					<details>
-						<summary>{{ $ts.details }}</summary>
+						<summary>{{ i18n.ts.details }}</summary>
 						<ul>
 							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 						</ul>
@@ -37,43 +37,36 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import FormPagination from '@/components/ui/pagination.vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
+import FormPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		FormPagination,
+const list = ref<any>(null);
+
+const pagination = {
+	endpoint: 'i/apps' as const,
+	limit: 100,
+	params: {
+		sort: '+lastUsedAt',
 	},
+};
 
-	emits: ['info'],
+function revoke(token) {
+	os.api('i/revoke-token', { tokenId: token.id }).then(() => {
+		list.value.reload();
+	});
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.installedApps,
-				icon: 'fas fa-plug',
-				bg: 'var(--bg)',
-			},
-			pagination: {
-				endpoint: 'i/apps' as const,
-				limit: 100,
-				params: {
-					sort: '+lastUsedAt'
-				}
-			},
-		};
-	},
+const headerActions = $computed(() => []);
 
-	methods: {
-		revoke(token) {
-			os.api('i/revoke-token', { tokenId: token.id }).then(() => {
-				this.$refs.list.reload();
-			});
-		}
-	}
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.installedApps,
+	icon: 'ti ti-plug',
 });
 </script>
 

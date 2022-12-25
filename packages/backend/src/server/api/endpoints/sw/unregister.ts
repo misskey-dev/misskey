@@ -1,10 +1,14 @@
-import define from '../../define.js';
-import { SwSubscriptions } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { SwSubscriptionsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account'],
 
-	requireCredential: true,
+	requireCredential: false,
+
+	description: 'Unregister from receiving push notifications.',
 } as const;
 
 export const paramDef = {
@@ -16,9 +20,17 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	await SwSubscriptions.delete({
-		userId: user.id,
-		endpoint: ps.endpoint,
-	});
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.swSubscriptionsRepository)
+		private swSubscriptionsRepository: SwSubscriptionsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			await this.swSubscriptionsRepository.delete({
+				...(me ? { userId: me.id } : {}),
+				endpoint: ps.endpoint,
+			});
+		});
+	}
+}

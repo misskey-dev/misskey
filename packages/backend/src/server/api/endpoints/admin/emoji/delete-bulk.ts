@@ -1,9 +1,9 @@
-import define from '../../../define.js';
-import { Emojis } from '@/models/index.js';
-import { In } from 'typeorm';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { ApiError } from '../../../error.js';
-import { db } from '@/db/postgre.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource, In } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { EmojisRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -22,19 +22,34 @@ export const paramDef = {
 	required: ['ids'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const emojis = await Emojis.findBy({
-		id: In(ps.ids),
-	});
+// TODO: ロジックをサービスに切り出す
 
-	for (const emoji of emojis) {
-		await Emojis.delete(emoji.id);
+// eslint-disable-next-line import/no-default-export
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
+
+		private moderationLogService: ModerationLogService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const emojis = await this.emojisRepository.findBy({
+				id: In(ps.ids),
+			});
+
+			for (const emoji of emojis) {
+				await this.emojisRepository.delete(emoji.id);
 	
-		await db.queryResultCache!.remove(['meta_emojis']);
+				await this.db.queryResultCache!.remove(['meta_emojis']);
 	
-		insertModerationLog(me, 'deleteEmoji', {
-			emoji: emoji,
+				this.moderationLogService.insertModerationLog(me, 'deleteEmoji', {
+					emoji: emoji,
+				});
+			}
 		});
 	}
-});
+}

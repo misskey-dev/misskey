@@ -5,30 +5,30 @@
 	</button>
 	<div class="post" data-cy-open-post-form @click="post">
 		<MkButton class="button" gradate full rounded>
-			<i class="fas fa-pencil-alt fa-fw"></i><span v-if="!iconOnly" class="text">{{ $ts.note }}</span>
+			<i class="ti ti-pencil ti-fw"></i><span v-if="!iconOnly" class="text">{{ $ts.note }}</span>
 		</MkButton>
 	</div>
 	<div class="divider"></div>
 	<MkA v-click-anime class="item index" active-class="active" to="/" exact>
-		<i class="fas fa-home fa-fw"></i><span class="text">{{ $ts.timeline }}</span>
+		<i class="ti ti-home ti-fw"></i><span class="text">{{ $ts.timeline }}</span>
 	</MkA>
 	<template v-for="item in menu">
 		<div v-if="item === '-'" class="divider"></div>
-		<component :is="menuDef[item].to ? 'MkA' : 'button'" v-else-if="menuDef[item] && (menuDef[item].show !== false)" v-click-anime class="item _button" :class="item" active-class="active" :to="menuDef[item].to" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}">
-			<i class="fa-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
-			<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
+		<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="item" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
+			<i class="ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ $ts[navbarItemDef[item].title] }}</span>
+			<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="_indicatorCircle"></i></span>
 		</component>
 	</template>
 	<div class="divider"></div>
 	<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
-		<i class="fas fa-door-open fa-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
+		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
 	</MkA>
 	<button v-click-anime class="item _button" @click="more">
-		<i class="fas fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
-		<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
+		<i class="ti ti-dots ti-fw"></i><span class="text">{{ $ts.more }}</span>
+		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
 	</button>
 	<MkA v-click-anime class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
-		<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
+		<i class="ti ti-settings ti-fw"></i><span class="text">{{ $ts.settings }}</span>
 	</MkA>
 	<div class="divider"></div>
 	<div class="about">
@@ -41,13 +41,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
-import { menuDef } from '@/menu';
+import { navbarItemDef } from '@/navbar';
 import { openAccountMenu } from '@/account';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 //import MisskeyLogo from '@assets/client/misskey.svg';
 
@@ -62,7 +62,7 @@ export default defineComponent({
 			host: host,
 			accounts: [],
 			connection: null,
-			menuDef: menuDef,
+			navbarItemDef: navbarItemDef,
 			iconOnly: false,
 			settingsWindowed: false,
 		};
@@ -74,9 +74,9 @@ export default defineComponent({
 		},
 
 		otherNavItemIndicated(): boolean {
-			for (const def in this.menuDef) {
+			for (const def in this.navbarItemDef) {
 				if (this.menu.includes(def)) continue;
-				if (this.menuDef[def].indicated) return true;
+				if (this.navbarItemDef[def].indicated) return true;
 			}
 			return false;
 		},
@@ -121,17 +121,17 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			os.popup(import('@/components/launch-pad.vue'), {
+			os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
 				src: ev.currentTarget ?? ev.target,
 			}, {}, 'closed');
 		},
 
-		openAccountMenu:(ev) => {
+		openAccountMenu: (ev) => {
 			openAccountMenu({
 				withExtraOperation: true,
 			}, ev);
 		},
-	}
+	},
 });
 </script>
 

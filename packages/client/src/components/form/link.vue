@@ -5,7 +5,7 @@
 		<span class="text"><slot></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<i class="fas fa-external-link-alt icon"></i>
+			<i class="ti ti-external-link icon"></i>
 		</span>
 	</a>
 	<MkA v-else class="main _button" :class="{ active }" :to="to" :behavior="behavior">
@@ -13,39 +13,22 @@
 		<span class="text"><slot></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<i class="fas fa-chevron-right icon"></i>
+			<i class="ti ti-chevron-right icon"></i>
 		</span>
 	</MkA>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		to: {
-			type: String,
-			required: true
-		},
-		active: {
-			type: Boolean,
-			required: false
-		},
-		external: {
-			type: Boolean,
-			required: false
-		},
-		behavior: {
-			type: String,
-			required: false,
-		},
-		inline: {
-			type: Boolean,
-			required: false
-		},
-	},
-});
+const props = defineProps<{
+	to: string;
+	active?: boolean;
+	external?: boolean;
+	behavior?: null | 'window' | 'browser' | 'modalWindow';
+	inline?: boolean;
+}>();
 </script>
 
 <style lang="scss" scoped>
@@ -61,7 +44,7 @@ export default defineComponent({
 		align-items: center;
 		width: 100%;
 		box-sizing: border-box;
-		padding: 12px 14px 12px 14px;
+		padding: 10px 14px;
 		background: var(--buttonBg);
 		border-radius: 6px;
 		font-size: 0.9em;
@@ -92,10 +75,10 @@ export default defineComponent({
 		}
 
 		> .text {
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
+			flex-shrink: 1;
+			white-space: normal;
 			padding-right: 12px;
+			text-align: center;
 		}
 
 		> .right {

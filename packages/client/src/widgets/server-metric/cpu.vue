@@ -2,45 +2,34 @@
 <div class="vrvdvrys">
 	<XPie class="pie" :value="usage"/>
 	<div>
-		<p><i class="fas fa-microchip"></i>CPU</p>
+		<p><i class="ti ti-cpu"></i>CPU</p>
 		<p>{{ meta.cpu.cores }} Logical cores</p>
 		<p>{{ meta.cpu.model }}</p>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { onMounted, onBeforeUnmount } from 'vue';
 import XPie from './pie.vue';
 
-export default defineComponent({
-	components: {
-		XPie
-	},
-	props: {
-		connection: {
-			required: true,
-		},
-		meta: {
-			required: true,
-		}
-	},
-	data() {
-		return {
-			usage: 0,
-		};
-	},
-	mounted() {
-		this.connection.on('stats', this.onStats);
-	},
-	beforeUnmount() {
-		this.connection.off('stats', this.onStats);
-	},
-	methods: {
-		onStats(stats) {
-			this.usage = stats.cpu;
-		}
-	}
+const props = defineProps<{
+	connection: any,
+	meta: any
+}>();
+
+let usage: number = $ref(0);
+
+function onStats(stats) {
+	usage = stats.cpu;
+}
+
+onMounted(() => {
+	props.connection.on('stats', onStats);
+});
+
+onBeforeUnmount(() => {
+	props.connection.off('stats', onStats);
 });
 </script>
 

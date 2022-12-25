@@ -1,12 +1,12 @@
-import define from '../../define.js';
-import read from '@/services/note/read.js';
-import { Notes, Followings } from '@/models/index.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { Brackets } from 'typeorm';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
-import { generateMutedNoteThreadQuery } from '../../common/generate-muted-note-thread-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository, FollowingsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { NoteReadService } from '@/core/NoteReadService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -37,45 +37,60 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const followingQuery = Followings.createQueryBuilder('following')
-		.select('following.followeeId')
-		.where('following.followerId = :followerId', { followerId: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(new Brackets(qb => { qb
-			.where(`'{"${user.id}"}' <@ note.mentions`)
-			.orWhere(`'{"${user.id}"}' <@ note.visibleUserIds`);
-		}))
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 
-	generateVisibilityQuery(query, user);
-	generateMutedUserQuery(query, user);
-	generateMutedNoteThreadQuery(query, user);
-	generateBlockedUserQuery(query, user);
+		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
+		private noteReadService: NoteReadService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const followingQuery = this.followingsRepository.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: me.id });
 
-	if (ps.visibility) {
-		query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+				.andWhere(new Brackets(qb => { qb
+					.where(`'{"${me.id}"}' <@ note.mentions`)
+					.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
+				}))
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+
+			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateMutedNoteThreadQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
+
+			if (ps.visibility) {
+				query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
+			}
+
+			if (ps.following) {
+				query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id });
+				query.setParameters(followingQuery.getParameters());
+			}
+
+			const mentions = await query.take(ps.limit).getMany();
+
+			this.noteReadService.read(me.id, mentions);
+
+			return await this.noteEntityService.packMany(mentions, me);
+		});
 	}
-
-	if (ps.following) {
-		query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id });
-		query.setParameters(followingQuery.getParameters());
-	}
-
-	const mentions = await query.take(ps.limit).getMany();
-
-	read(user.id, mentions);
-
-	return await Notes.packMany(mentions, user);
-});
+}

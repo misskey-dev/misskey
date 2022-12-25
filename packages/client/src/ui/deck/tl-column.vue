@@ -1,16 +1,16 @@
 <template>
-<XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
-		<i v-if="column.tl === 'home'" class="fas fa-home"></i>
-		<i v-else-if="column.tl === 'local'" class="fas fa-comments"></i>
-		<i v-else-if="column.tl === 'social'" class="fas fa-share-alt"></i>
-		<i v-else-if="column.tl === 'global'" class="fas fa-globe"></i>
+		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
+		<i v-else-if="column.tl === 'local'" class="ti ti-messages"></i>
+		<i v-else-if="column.tl === 'social'" class="ti ti-share"></i>
+		<i v-else-if="column.tl === 'global'" class="ti ti-world"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<div v-if="disabled" class="iwaalbte">
 		<p>
-			<i class="fas fa-minus-circle"></i>
+			<i class="ti ti-minus-circle"></i>
 			{{ $t('disabled-timeline.title') }}
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
@@ -22,9 +22,9 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
-import XTimeline from '@/components/timeline.vue';
-import * as os from '@/os';
 import { removeColumn, updateColumn, Column } from './deck-store';
+import XTimeline from '@/components/MkTimeline.vue';
+import * as os from '@/os';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
@@ -35,8 +35,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'loaded'): void;
-	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+	(ev: 'loaded'): void;
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 let disabled = $ref(false);
@@ -57,13 +57,13 @@ async function setType() {
 	const { canceled, result: src } = await os.select({
 		title: i18n.ts.timeline,
 		items: [{
-			value: 'home' as const, text: i18n.ts._timelines.home
+			value: 'home' as const, text: i18n.ts._timelines.home,
 		}, {
-			value: 'local' as const, text: i18n.ts._timelines.local
+			value: 'local' as const, text: i18n.ts._timelines.local,
 		}, {
-			value: 'social' as const, text: i18n.ts._timelines.social
+			value: 'social' as const, text: i18n.ts._timelines.social,
 		}, {
-			value: 'global' as const, text: i18n.ts._timelines.global
+			value: 'global' as const, text: i18n.ts._timelines.global,
 		}],
 	});
 	if (canceled) {
@@ -73,7 +73,7 @@ async function setType() {
 		return;
 	}
 	updateColumn(props.column.id, {
-		tl: src
+		tl: src,
 	});
 }
 
@@ -97,21 +97,11 @@ function onChangeActiveState(state) {
 	}
 }
 
-/*
-export default defineComponent({
-	watch: {
-		mediaOnly() {
-			(this.$refs.timeline as any).reload();
-		}
-	},
-
-	methods: {
-		focus() {
-			(this.$refs.timeline as any).focus();
-		}
-	}
-});
-*/
+const menu = [{
+	icon: 'ti ti-pencil',
+	text: i18n.ts.timeline,
+	action: setType,
+}];
 </script>
 
 <style lang="scss" scoped>

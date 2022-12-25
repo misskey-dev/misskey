@@ -11,15 +11,14 @@ const fallbackName = (key: string) => `idbfallback::${key}`;
 let idbAvailable = typeof window !== 'undefined' ? !!window.indexedDB : true;
 
 if (idbAvailable) {
-	try {
-		await iset('idb-test', 'test');
-	} catch (e) {
-		console.error('idb error', e);
+	iset('idb-test', 'test').catch(err => {
+		console.error('idb error', err);
+		console.error('indexedDB is unavailable. It will use localStorage.');
 		idbAvailable = false;
-	}
+	});
+} else {
+	console.error('indexedDB is unavailable. It will use localStorage.');
 }
-
-if (!idbAvailable) console.error('indexedDB is unavailable. It will use localStorage.');
 
 export async function get(key: string) {
 	if (idbAvailable) return iget(key);

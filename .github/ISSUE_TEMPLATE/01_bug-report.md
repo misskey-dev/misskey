@@ -22,7 +22,10 @@ First, in order to avoid duplicate Issues, please search to see if the problem y
 
 ## 🤬 Actual Behavior
 
-<!--- Tell us what happens instead of the expected behavior -->
+<!--
+Tell us what happens instead of the expected behavior.
+Please include errors from the developer console and/or server log files if you have access to them.
+-->
 
 ## 📝 Steps to Reproduce
 

@@ -1,44 +1,35 @@
 <template>
-<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
-	<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
-		<MkKeyValue v-for="table in database" :key="table[0]" oneline style="margin: 1em 0;">
-			<template #key>{{ table[0] }}</template>
-			<template #value>{{ bytes(table[1].size) }} ({{ number(table[1].count) }} recs)</template>
-		</MkKeyValue>
-	</FormSuspense>
-</MkSpacer>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+		<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
+			<MkKeyValue v-for="table in database" :key="table[0]" oneline style="margin: 1em 0;">
+				<template #key>{{ table[0] }}</template>
+				<template #value>{{ bytes(table[1].size) }} ({{ number(table[1].count) }} recs)</template>
+			</MkKeyValue>
+		</FormSuspense>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import MkKeyValue from '@/components/key-value.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		FormSuspense,
-		MkKeyValue,
-	},
+const databasePromiseFactory = () => os.api('admin/get-table-stats').then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size));
 
-	emits: ['info'],
+const headerActions = $computed(() => []);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.database,
-				icon: 'fas fa-database',
-				bg: 'var(--bg)',
-			},
-			databasePromiseFactory: () => os.api('admin/get-table-stats', {}).then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size)),
-		}
-	},
+const headerTabs = $computed(() => []);
 
-	methods: {
-		bytes, number,
-	}
+definePageMetadata({
+	title: i18n.ts.database,
+	icon: 'ti ti-database',
 });
 </script>

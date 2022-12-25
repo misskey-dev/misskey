@@ -4,9 +4,9 @@
 		<li v-for="ctx in uploads" :key="ctx.id">
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
 			<div class="top">
-				<p class="name"><i class="fas fa-spinner fa-pulse"></i>{{ ctx.name }}</p>
+				<p class="name"><MkLoading :em="true"/>{{ ctx.name }}</p>
 				<p class="status">
-					<span v-if="ctx.progressValue === undefined" class="initing">{{ $ts.waiting }}<MkEllipsis/></span>
+					<span v-if="ctx.progressValue === undefined" class="initing">{{ i18n.ts.waiting }}<MkEllipsis/></span>
 					<span v-if="ctx.progressValue !== undefined" class="kb">{{ String(Math.floor(ctx.progressValue / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progressMax / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
 					<span v-if="ctx.progressValue !== undefined" class="percentage">{{ Math.floor((ctx.progressValue / ctx.progressMax) * 100) }}</span>
 				</p>
@@ -20,8 +20,9 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os';
+import { uploads } from '@/scripts/upload';
+import { i18n } from '@/i18n';
 
-const uploads = os.uploads;
 const zIndex = os.claimZIndex('high');
 </script>
 

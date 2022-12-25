@@ -25,22 +25,21 @@ function calc(src: Element) {
 		return;
 	}
 	if (info.intersection) {
-		info.intersection.disconnect()
+		info.intersection.disconnect();
 		delete info.intersection;
-	};
+	}
 
 	info.fn(width, height);
-};
+}
 
 export default {
 	mounted(src, binding, vn) {
-
 		const resize = new ResizeObserver((entries, observer) => {
 			calc(src);
 		});
 		resize.observe(src);
 
-		mountings.set(src, { resize, fn: binding.value, });
+		mountings.set(src, { resize, fn: binding.value });
 		calc(src);
 	},
 
@@ -51,5 +50,5 @@ export default {
 		info.resize.disconnect();
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
-	}
+	},
 } as Directive<Element, (w: number, h: number) => void>;

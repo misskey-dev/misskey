@@ -1,34 +1,31 @@
-import { del, get, set } from '@/scripts/idb-proxy';
-import { reactive } from 'vue';
+import { defineAsyncComponent, reactive } from 'vue';
 import * as misskey from 'misskey-js';
+import { showSuspendedDialog } from './scripts/show-suspended-dialog';
+import { i18n } from './i18n';
+import { del, get, set } from '@/scripts/idb-proxy';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
-import { showSuspendedDialog } from './scripts/show-suspended-dialog';
-import { i18n } from './i18n';
 
 // TODO: 他のタブと永続化されたstateを同期
 
 type Account = misskey.entities.MeDetailed;
 
-const data = localStorage.getItem('account');
+const accountData = localStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
-export const $i = data ? reactive(JSON.parse(data) as Account) : null;
+export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
+export const iAmAdmin = $i != null && $i.isAdmin;
 
 export async function signout() {
 	waiting();
 	localStorage.removeItem('account');
 
-	//#region Remove account
-	const accounts = await getAccounts();
-	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1);
+	await removeAccount($i.id);
 
-	if (accounts.length > 0) await set('accounts', accounts);
-	else await del('accounts');
-	//#endregion
+	const accounts = await getAccounts();
 
 	//#region Remove service worker registration
 	try {
@@ -36,12 +33,15 @@ export async function signout() {
 			const registration = await navigator.serviceWorker.ready;
 			const push = await registration.pushManager.getSubscription();
 			if (push) {
-				await fetch(`${apiUrl}/sw/unregister`, {
+				await window.fetch(`${apiUrl}/sw/unregister`, {
 					method: 'POST',
 					body: JSON.stringify({
 						i: $i.token,
 						endpoint: push.endpoint,
 					}),
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				});
 			}
 		}
@@ -52,10 +52,10 @@ export async function signout() {
 					return Promise.all(registrations.map(registration => registration.unregister()));
 				});
 		}
-	} catch (e) {}
+	} catch (err) {}
 	//#endregion
 
-	document.cookie = `igi=; path=/`;
+	document.cookie = 'igi=; path=/';
 
 	if (accounts.length > 0) login(accounts[0].token);
 	else unisonReload('/');
@@ -72,40 +72,51 @@ export async function addAccount(id: Account['id'], token: Account['token']) {
 	}
 }
 
+export async function removeAccount(id: Account['id']) {
+	const accounts = await getAccounts();
+	accounts.splice(accounts.findIndex(x => x.id === id), 1);
+
+	if (accounts.length > 0) await set('accounts', accounts);
+	else await del('accounts');
+}
+
 function fetchAccount(token: string): Promise<Account> {
 	return new Promise((done, fail) => {
 		// Fetch user
-		fetch(`${apiUrl}/i`, {
+		window.fetch(`${apiUrl}/i`, {
 			method: 'POST',
 			body: JSON.stringify({
-				i: token
-			})
+				i: token,
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		})
-		.then(res => res.json())
-		.then(res => {
-			if (res.error) {
-				if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
-					showSuspendedDialog().then(() => {
-						signout();
-					});
+			.then(res => res.json())
+			.then(res => {
+				if (res.error) {
+					if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
+						showSuspendedDialog().then(() => {
+							signout();
+						});
+					} else {
+						alert({
+							type: 'error',
+							title: i18n.ts.failedToFetchAccountInformation,
+							text: JSON.stringify(res.error),
+						});
+					}
 				} else {
-					alert({
-						type: 'error',
-						title: i18n.ts.failedToFetchAccountInformation,
-						text: JSON.stringify(res.error),
-					});
+					res.token = token;
+					done(res);
 				}
-			} else {
-				res.token = token;
-				done(res);
-			}
-		})
-		.catch(fail);
+			})
+			.catch(fail);
 	});
 }
 
-export function updateAccount(data) {
-	for (const [key, value] of Object.entries(data)) {
+export function updateAccount(accountData) {
+	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
 	localStorage.setItem('account', JSON.stringify($i));
@@ -141,7 +152,7 @@ export async function openAccountMenu(opts: {
 	onChoose?: (account: misskey.entities.UserDetailed) => void;
 }, ev: MouseEvent) {
 	function showSigninDialog() {
-		popup(import('@/components/signin-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				success();
@@ -150,7 +161,7 @@ export async function openAccountMenu(opts: {
 	}
 
 	function createAccount() {
-		popup(import('@/components/signup-dialog.vue'), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {}, {
 			done: res => {
 				addAccount(res.id, res.i);
 				switchAccountWithToken(res.i);
@@ -201,28 +212,27 @@ export async function openAccountMenu(opts: {
 			to: `/@${ $i.username }`,
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
-			icon: 'fas fa-plus',
+			type: 'parent',
+			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,
-			action: () => {
-				popupMenu([{
-					text: i18n.ts.existingAccount,
-					action: () => { showSigninDialog(); },
-				}, {
-					text: i18n.ts.createAccount,
-					action: () => { createAccount(); },
-				}], ev.currentTarget ?? ev.target);
-			},
+			children: [{
+				text: i18n.ts.existingAccount,
+				action: () => { showSigninDialog(); },
+			}, {
+				text: i18n.ts.createAccount,
+				action: () => { createAccount(); },
+			}],
 		}, {
 			type: 'link',
-			icon: 'fas fa-users',
+			icon: 'ti ti-users',
 			text: i18n.ts.manageAccounts,
-			to: `/settings/accounts`,
+			to: '/settings/accounts',
 		}]], ev.currentTarget ?? ev.target, {
-			align: 'left'
+			align: 'left',
 		});
 	} else {
 		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget ?? ev.target, {
-			align: 'left'
+			align: 'left',
 		});
 	}
 }

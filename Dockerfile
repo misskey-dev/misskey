@@ -1,29 +1,38 @@
-FROM node:16.14.0-alpine3.15 AS base
+FROM node:18.12.1-bullseye AS builder
 
-ENV NODE_ENV=production
+ARG NODE_ENV=production
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+	build-essential
 
 WORKDIR /misskey
 
-ENV BUILD_DEPS autoconf automake file g++ gcc libc-dev libtool make nasm pkgconfig python3 zlib-dev git
+COPY [".yarnrc.yml", "package.json", "yarn.lock", "./"]
+COPY [".yarn", "./.yarn"]
+COPY ["scripts", "./scripts"]
+COPY ["packages/backend/package.json", "./packages/backend/"]
+COPY ["packages/client/package.json", "./packages/client/"]
+COPY ["packages/sw/package.json", "./packages/sw/"]
 
-FROM base AS builder
+RUN yarn install --immutable
 
 COPY . ./
 
-RUN apk add --no-cache $BUILD_DEPS && \
-    git submodule update --init && \
-    yarn install && \
-    yarn build && \
-    rm -rf .git
+RUN git submodule update --init
+RUN yarn build
 
-FROM base AS runner
+FROM node:18.12.1-bullseye-slim AS runner
 
-RUN apk add --no-cache \
-    ffmpeg \
-    tini
+WORKDIR /misskey
 
-ENTRYPOINT ["/sbin/tini", "--"]
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+	ffmpeg tini \
+	&& apt-get -y clean \
+	&& rm -rf /var/lib/apt/lists/*
 
+COPY --from=builder /misskey/.yarn/install-state.gz ./.yarn/install-state.gz
 COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
 COPY --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
@@ -31,5 +40,6 @@ COPY --from=builder /misskey/packages/backend/built ./packages/backend/built
 COPY --from=builder /misskey/packages/client/node_modules ./packages/client/node_modules
 COPY . ./
 
-CMD ["npm", "run", "migrateandstart"]
-
+ENV NODE_ENV=production
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["yarn", "run", "migrateandstart"]

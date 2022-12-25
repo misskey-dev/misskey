@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "misskey.fullname" . }}
+  labels:
+		{{- include "misskey.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+			{{- include "misskey.selectorLabels" . | nindent 6 }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+				{{- include "misskey.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: misskey
+          image: {{ .Values.image }}
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.environment }}
+          volumeMounts:
+            - name: {{ include "misskey.fullname" . }}-configuration
+              mountPath: /misskey/.config
+              readOnly: true
+          ports:
+            - containerPort: 3000
+        - name: postgres
+          image: postgres:14-alpine
+          env:
+            - name: POSTGRES_USER
+              value: "example-misskey-user"
+            - name: POSTGRES_PASSWORD
+              value: "example-misskey-pass"
+            - name: POSTGRES_DB
+              value: "misskey"
+          ports:
+            - containerPort: 5432
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort: 6379
+      volumes:
+        - name: {{ include "misskey.fullname" . }}-configuration
+          configMap:
+            name: {{ include "misskey.fullname" . }}-configuration

@@ -1,4 +1,4 @@
-import Ripple from '@/components/ripple.vue';
+import Ripple from '@/components/MkRipple.vue';
 import { popup } from '@/os';
 
 export default {
@@ -14,5 +14,5 @@ export default {
 
 			popup(Ripple, { x, y }, {}, 'end');
 		});
-	}
+	},
 };

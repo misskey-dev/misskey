@@ -1,58 +1,51 @@
 <template>
-<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
-	<FormSuspense :p="init">
-		<FormTextarea v-model="blockedHosts" class="_formBlock">
-			<span>{{ $ts.blockedInstances }}</span>
-			<template #caption>{{ $ts.blockedInstancesDescription }}</template>
-		</FormTextarea>
+<MkStickyContainer>
+	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+		<FormSuspense :p="init">
+			<FormTextarea v-model="blockedHosts" class="_formBlock">
+				<span>{{ i18n.ts.blockedInstances }}</span>
+				<template #caption>{{ i18n.ts.blockedInstancesDescription }}</template>
+			</FormTextarea>
 
-		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
-	</FormSuspense>
-</MkSpacer>
+			<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+		</FormSuspense>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import FormButton from '@/components/ui/button.vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import XHeader from './_header_.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		FormButton,
-		FormTextarea,
-		FormSuspense,
-	},
+let blockedHosts: string = $ref('');
 
-	emits: ['info'],
+async function init() {
+	const meta = await os.api('admin/meta');
+	blockedHosts = meta.blockedHosts.join('\n');
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.instanceBlocking,
-				icon: 'fas fa-ban',
-				bg: 'var(--bg)',
-			},
-			blockedHosts: '',
-		}
-	},
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		blockedHosts: blockedHosts.split('\n') || [],
+	}).then(() => {
+		fetchInstance();
+	});
+}
 
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.blockedHosts = meta.blockedHosts.join('\n');
-		},
+const headerActions = $computed(() => []);
 
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				blockedHosts: this.blockedHosts.split('\n') || [],
-			}).then(() => {
-				fetchInstance();
-			});
-		}
-	}
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.instanceBlocking,
+	icon: 'ti ti-ban',
 });
 </script>

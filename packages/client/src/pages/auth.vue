@@ -15,7 +15,7 @@
 		<h1>{{ $ts._auth.denied }}</h1>
 	</div>
 	<div v-if="state == 'accepted'" class="accepted">
-		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$ts.allowed }}</h1>
+		<h1>{{ session.app.isAuthorized ? $t('already-authorized') : $ts.allowed }}</h1>
 		<p v-if="session.app.callbackUrl">{{ $ts._auth.callback }}<MkEllipsis/></p>
 		<p v-if="!session.app.callbackUrl">{{ $ts._auth.pleaseGoBack }}</p>
 	</div>
@@ -31,7 +31,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XForm from './auth.form.vue';
-import MkSignin from '@/components/signin.vue';
+import MkSignin from '@/components/MkSignin.vue';
 import * as os from '@/os';
 import { login } from '@/account';
 
@@ -40,24 +40,20 @@ export default defineComponent({
 		XForm,
 		MkSignin,
 	},
+	props: ['token'],
 	data() {
 		return {
 			state: null,
 			session: null,
-			fetching: true
+			fetching: true,
 		};
-	},
-	computed: {
-		token(): string {
-			return this.$route.params.token;
-		}
 	},
 	mounted() {
 		if (!this.$i) return;
 
 		// Fetch session
 		os.api('auth/session/show', {
-			token: this.token
+			token: this.token,
 		}).then(session => {
 			this.session = session;
 			this.fetching = false;
@@ -65,7 +61,7 @@ export default defineComponent({
 			// 既に連携していた場合
 			if (this.session.app.isAuthorized) {
 				os.api('auth/accept', {
-					token: this.session.token
+					token: this.session.token,
 				}).then(() => {
 					this.accepted();
 				});
@@ -85,8 +81,8 @@ export default defineComponent({
 			}
 		}, onLogin(res) {
 			login(res.i);
-		}
-	}
+		},
+	},
 });
 </script>
 

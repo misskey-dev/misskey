@@ -1,12 +1,12 @@
 <template>
-<XPostForm class="_panel" :fixed="true" :autofocus="false"/>
+<XPostForm class="_panel mkw-postForm" :fixed="true" :autofocus="false"/>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import { GetFormResultType } from '@/scripts/form';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import XPostForm from '@/components/post-form.vue';
+import XPostForm from '@/components/MkPostForm.vue';
 
 const name = 'postForm';
 
@@ -19,7 +19,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

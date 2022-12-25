@@ -9,7 +9,7 @@ export default {
 			} else {
 				return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
 			}
-		}
+		};
 	
 		const parentBg = getBgColor(src.parentElement);
 

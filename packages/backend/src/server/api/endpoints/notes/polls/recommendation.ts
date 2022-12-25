@@ -1,6 +1,9 @@
-import define from '../../../define.js';
-import { Polls, Mutings, Notes, PollVotes } from '@/models/index.js';
 import { Brackets, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository, MutingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -28,47 +31,75 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = Polls.createQueryBuilder('poll')
-		.where('poll.userHost IS NULL')
-		.andWhere(`poll.userId != :meId`, { meId: user.id })
-		.andWhere(`poll.noteVisibility = 'public'`)
-		.andWhere(new Brackets(qb => { qb
-			.where('poll.expiresAt IS NULL')
-			.orWhere('poll.expiresAt > :now', { now: new Date() });
-		}));
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
-	//#region exclude arleady voted polls
-	const votedQuery = PollVotes.createQueryBuilder('vote')
-		.select('vote.noteId')
-		.where('vote.userId = :meId', { meId: user.id });
+		@Inject(DI.pollsRepository)
+		private pollsRepository: PollsRepository,
 
-	query
-		.andWhere(`poll.noteId NOT IN (${ votedQuery.getQuery() })`);
+		@Inject(DI.pollVotesRepository)
+		private pollVotesRepository: PollVotesRepository,
 
-	query.setParameters(votedQuery.getParameters());
-	//#endregion
+		@Inject(DI.mutingsRepository)
+		private mutingsRepository: MutingsRepository,
 
-	//#region mute
-	const mutingQuery = Mutings.createQueryBuilder('muting')
-		.select('muting.muteeId')
-		.where('muting.muterId = :muterId', { muterId: user.id });
+		private noteEntityService: NoteEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.pollsRepository.createQueryBuilder('poll')
+				.where('poll.userHost IS NULL')
+				.andWhere('poll.userId != :meId', { meId: me.id })
+				.andWhere('poll.noteVisibility = \'public\'')
+				.andWhere(new Brackets(qb => { qb
+					.where('poll.expiresAt IS NULL')
+					.orWhere('poll.expiresAt > :now', { now: new Date() });
+				}));
 
-	query
-		.andWhere(`poll.userId NOT IN (${ mutingQuery.getQuery() })`);
+			//#region exclude arleady voted polls
+			const votedQuery = this.pollVotesRepository.createQueryBuilder('vote')
+				.select('vote.noteId')
+				.where('vote.userId = :meId', { meId: me.id });
 
-	query.setParameters(mutingQuery.getParameters());
-	//#endregion
+			query
+				.andWhere(`poll.noteId NOT IN (${ votedQuery.getQuery() })`);
 
-	const polls = await query.take(ps.limit).skip(ps.offset).getMany();
+			query.setParameters(votedQuery.getParameters());
+			//#endregion
 
-	if (polls.length === 0) return [];
+			//#region mute
+			const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
+				.select('muting.muteeId')
+				.where('muting.muterId = :muterId', { muterId: me.id });
 
-	const notes = await Notes.findBy({
-		id: In(polls.map(poll => poll.noteId)),
-	});
+			query
+				.andWhere(`poll.userId NOT IN (${ mutingQuery.getQuery() })`);
 
-	return await Notes.packMany(notes, user, {
-		detail: true,
-	});
-});
+			query.setParameters(mutingQuery.getParameters());
+			//#endregion
+
+			const polls = await query
+				.orderBy('poll.noteId', 'DESC')
+				.take(ps.limit)
+				.skip(ps.offset)
+				.getMany();
+
+			if (polls.length === 0) return [];
+
+			const notes = await this.notesRepository.find({
+				where: {
+					id: In(polls.map(poll => poll.noteId)),
+				},
+				order: {
+					createdAt: 'DESC',
+				},
+			});
+
+			return await this.noteEntityService.packMany(notes, me, {
+				detail: true,
+			});
+		});
+	}
+}

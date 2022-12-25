@@ -2,79 +2,59 @@
 <FormSuspense :p="init">
 	<div class="_formRoot">
 		<FormSwitch v-model="enableDiscordIntegration" class="_formBlock">
-			<template #label>{{ $ts.enable }}</template>
+			<template #label>{{ i18n.ts.enable }}</template>
 		</FormSwitch>
 
 		<template v-if="enableDiscordIntegration">
 			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
 			<FormInput v-model="discordClientId" class="_formBlock">
-				<template #prefix><i class="fas fa-key"></i></template>
+				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client ID</template>
 			</FormInput>
 
 			<FormInput v-model="discordClientSecret" class="_formBlock">
-				<template #prefix><i class="fas fa-key"></i></template>
+				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client Secret</template>
 			</FormInput>
 		</template>
 
-		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+		<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </FormSuspense>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/ui/button.vue';
-import FormInfo from '@/components/ui/info.vue';
+import FormButton from '@/components/MkButton.vue';
+import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { fetchInstance } from '@/instance';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		FormSwitch,
-		FormInput,
-		FormInfo,
-		FormButton,
-		FormSuspense,
-	},
+let uri: string = $ref('');
+let enableDiscordIntegration: boolean = $ref(false);
+let discordClientId: string | null = $ref(null);
+let discordClientSecret: string | null = $ref(null);
 
-	emits: ['info'],
+async function init() {
+	const meta = await os.api('admin/meta');
+	uri = meta.uri;
+	enableDiscordIntegration = meta.enableDiscordIntegration;
+	discordClientId = meta.discordClientId;
+	discordClientSecret = meta.discordClientSecret;
+}
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: 'Discord',
-				icon: 'fab fa-discord'
-			},
-			enableDiscordIntegration: false,
-			discordClientId: null,
-			discordClientSecret: null,
-		}
-	},
-
-	methods: {
-		async init() {
-			const meta = await os.api('admin/meta');
-			this.uri = meta.uri;
-			this.enableDiscordIntegration = meta.enableDiscordIntegration;
-			this.discordClientId = meta.discordClientId;
-			this.discordClientSecret = meta.discordClientSecret;
-		},
-		save() {
-			os.apiWithDialog('admin/update-meta', {
-				enableDiscordIntegration: this.enableDiscordIntegration,
-				discordClientId: this.discordClientId,
-				discordClientSecret: this.discordClientSecret,
-			}).then(() => {
-				fetchInstance();
-			});
-		}
-	}
-});
+function save() {
+	os.apiWithDialog('admin/update-meta', {
+		enableDiscordIntegration,
+		discordClientId,
+		discordClientSecret,
+	}).then(() => {
+		fetchInstance();
+	});
+}
 </script>

@@ -1,8 +1,10 @@
-import { deleteFile } from '@/services/drive/delete-file.js';
-import { publishDriveStream } from '@/services/stream.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DriveFilesRepository } from '@/models/index.js';
+import { DriveService } from '@/core/DriveService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { DriveFiles, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -10,6 +12,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:drive',
+
+	description: 'Delete an existing drive file.',
 
 	errors: {
 		noSuchFile: {
@@ -35,20 +39,31 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const file = await DriveFiles.findOneBy({ id: ps.fileId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
+		private driveService: DriveService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
+			}
+
+			if ((!me.isAdmin && !me.isModerator) && (file.userId !== me.id)) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			// Delete
+			await this.driveService.deleteFile(file);
+
+			// Publish fileDeleted event
+			this.globalEventService.publishDriveStream(me.id, 'fileDeleted', file.id);
+		});
 	}
-
-	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
-
-	// Delete
-	await deleteFile(file);
-
-	// Publish fileDeleted event
-	publishDriveStream(user.id, 'fileDeleted', file.id);
-});
+}

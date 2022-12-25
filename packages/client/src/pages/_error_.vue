@@ -3,7 +3,7 @@
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div v-show="loaded" class="mjndxjch">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-		<p><b><i class="fas fa-exclamation-triangle"></i> {{ i18n.ts.pageLoadError }}</b></p>
+		<p><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></p>
 		<p v-if="meta && (version === meta.version)">{{ i18n.ts.pageLoadErrorDescription }}</p>
 		<p v-else-if="serverIsDead">{{ i18n.ts.serverIsDead }}</p>
 		<template v-else>
@@ -20,12 +20,12 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
-import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
+import MkButton from '@/components/MkButton.vue';
 import { version } from '@/config';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = withDefaults(defineProps<{
 	error?: Error;
@@ -52,11 +52,13 @@ function reload() {
 	unisonReload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.error,
-		icon: 'fas fa-exclamation-triangle',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.error,
+	icon: 'ti ti-alert-triangle',
 });
 </script>
 

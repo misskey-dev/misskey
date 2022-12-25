@@ -8,13 +8,13 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import * as os from '@/os';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { $i } from '@/account';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const name = 'button';
 
@@ -40,7 +40,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -67,13 +67,13 @@ const run = async () => {
 		},
 		log: (type, params) => {
 			// nop
-		}
+		},
 	});
 
 	let ast;
 	try {
 		ast = parse(widgetProps.script);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
 			text: 'Syntax error :(',
@@ -82,10 +82,10 @@ const run = async () => {
 	}
 	try {
 		await aiscript.exec(ast);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: e,
+			text: err,
 		});
 	}
 };

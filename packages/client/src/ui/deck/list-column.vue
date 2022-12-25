@@ -1,7 +1,7 @@
 <template>
-<XColumn :func="{ handler: setList, title: $ts.selectList }" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
-		<i class="fas fa-list-ul"></i><span style="margin-left: 8px;">{{ column.name }}</span>
+		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<XTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => emit('loaded')"/>
@@ -9,11 +9,11 @@
 </template>
 
 <script lang="ts" setup>
-import {  } from 'vue';
+import { } from 'vue';
 import XColumn from './column.vue';
-import XTimeline from '@/components/timeline.vue';
-import * as os from '@/os';
 import { updateColumn, Column } from './deck-store';
+import XTimeline from '@/components/MkTimeline.vue';
+import * as os from '@/os';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -22,8 +22,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'loaded'): void;
-	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+	(ev: 'loaded'): void;
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 let timeline = $ref<InstanceType<typeof XTimeline>>();
@@ -37,29 +37,21 @@ async function setList() {
 	const { canceled, result: list } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({
-			value: x, text: x.name
+			value: x, text: x.name,
 		})),
-		default: props.column.listId
+		default: props.column.listId,
 	});
 	if (canceled) return;
 	updateColumn(props.column.id, {
-		listId: list.id
+		listId: list.id,
 	});
 }
 
-/*
-function focus() {
-	timeline.focus();
-}
-
-export default defineComponent({
-	watch: {
-		mediaOnly() {
-			(this.$refs.timeline as any).reload();
-		}
-	}
-});
-*/
+const menu = [{
+	icon: 'ti ti-pencil',
+	text: i18n.ts.selectList,
+	action: setList,
+}];
 </script>
 
 <style lang="scss" scoped>

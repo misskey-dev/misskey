@@ -29,16 +29,6 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
-
-/*
-export default defineComponent({
-	methods: {
-		focus() {
-			this.$children[0].focus();
-		}
-	}
-});
-*/
 </script>

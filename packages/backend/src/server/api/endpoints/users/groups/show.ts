@@ -1,6 +1,9 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupsRepository, UserGroupJoiningsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserGroupEntityService } from '@/core/entities/UserGroupEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'account'],
@@ -8,6 +11,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'read:user-groups',
+
+	description: 'Show the properties of a group.',
 
 	res: {
 		type: 'object',
@@ -33,24 +38,37 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Fetch the group
-	const userGroup = await UserGroups.findOneBy({
-		id: ps.groupId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userGroupsRepository)
+		private userGroupsRepository: UserGroupsRepository,
 
-	if (userGroup == null) {
-		throw new ApiError(meta.errors.noSuchGroup);
+		@Inject(DI.userGroupJoiningsRepository)
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+
+		private userGroupEntityService: UserGroupEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the group
+			const userGroup = await this.userGroupsRepository.findOneBy({
+				id: ps.groupId,
+			});
+
+			if (userGroup == null) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			const joining = await this.userGroupJoiningsRepository.findOneBy({
+				userId: me.id,
+				userGroupId: userGroup.id,
+			});
+
+			if (joining == null && userGroup.userId !== me.id) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			return await this.userGroupEntityService.pack(userGroup);
+		});
 	}
-
-	const joining = await UserGroupJoinings.findOneBy({
-		userId: me.id,
-		userGroupId: userGroup.id,
-	});
-
-	if (joining == null && userGroup.userId !== me.id) {
-		throw new ApiError(meta.errors.noSuchGroup);
-	}
-
-	return await UserGroups.pack(userGroup);
-});
+}

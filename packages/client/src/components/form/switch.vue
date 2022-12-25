@@ -1,6 +1,6 @@
 <template>
 <div
-	class="ziffeoms"
+	class="ziffeomt"
 	:class="{ disabled, checked }"
 >
 	<input
@@ -9,8 +9,8 @@
 		:disabled="disabled"
 		@keydown.enter="toggle"
 	>
-	<span ref="button" v-adaptive-border v-tooltip="checked ? $ts.itsOn : $ts.itsOff" class="button" @click.prevent="toggle">
-		<i class="check fas fa-check"></i>
+	<span ref="button" v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff" class="button" @click.prevent="toggle">
+		<div class="knob"></div>
 	</span>
 	<span class="label">
 		<!-- TODO: 無名slotの方は廃止 -->
@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { toRefs, Ref } from 'vue';
 import * as os from '@/os';
-import Ripple from '@/components/ripple.vue';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;
@@ -31,7 +31,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'update:modelValue', v: boolean): void;
+	(ev: 'update:modelValue', v: boolean): void;
 }>();
 
 let button = $ref<HTMLElement>();
@@ -41,16 +41,13 @@ const toggle = () => {
 	emit('update:modelValue', !checked.value);
 
 	if (!checked.value) {
-		const rect = button.getBoundingClientRect();
-		const x = rect.left + (button.offsetWidth / 2);
-		const y = rect.top + (button.offsetHeight / 2);
-		os.popup(Ripple, { x, y, particle: false }, {}, 'end');
+
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-.ziffeoms {
+.ziffeomt {
 	position: relative;
 	display: flex;
 	transition: all 0.2s ease;
@@ -73,21 +70,25 @@ const toggle = () => {
 		flex-shrink: 0;
 		margin: 0;
 		box-sizing: border-box;
-		width: 23px;
+		width: 32px;
 		height: 23px;
 		outline: none;
-		background: var(--panel);
-		border: solid 1px var(--panel);
-		border-radius: 4px;
+		background: var(--swutchOffBg);
+		background-clip: content-box;
+		border: solid 1px var(--swutchOffBg);
+		border-radius: 999px;
 		cursor: pointer;
 		transition: inherit;
+		user-select: none;
 
-		> .check {
-			margin: auto;
-			opacity: 0;
-			color: var(--fgOnAccent);
-			font-size: 13px;
-			transform: scale(0.5);
+		> .knob {
+			position: absolute;
+			top: 3px;
+			left: 3px;
+			width: 15px;
+			height: 15px;
+			background: var(--swutchOffFg);
+			border-radius: 999px;
 			transition: all 0.2s ease;
 		}
 	}
@@ -130,12 +131,12 @@ const toggle = () => {
 
 	&.checked {
 		> .button {
-			background-color: var(--accent) !important;
-			border-color: var(--accent) !important;
+			background-color: var(--swutchOnBg) !important;
+			border-color: var(--swutchOnBg) !important;
 
-			> .check {
-				opacity: 1;
-				transform: scale(1);
+			> .knob {
+				left: 12px;
+				background: var(--swutchOnFg);
 			}
 		}
 	}

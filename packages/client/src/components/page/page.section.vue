@@ -16,20 +16,20 @@ import { Hpml } from '@/scripts/hpml/evaluator';
 
 export default defineComponent({
 	components: {
-		XBlock: defineAsyncComponent(() => import('./page.block.vue'))
+		XBlock: defineAsyncComponent(() => import('./page.block.vue')),
 	},
 	props: {
 		block: {
 			type: Object as PropType<SectionBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
+			required: true,
 		},
 		h: {
-			required: true
-		}
+			required: true,
+		},
 	},
 });
 </script>

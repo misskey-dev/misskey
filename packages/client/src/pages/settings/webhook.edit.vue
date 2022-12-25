@@ -9,7 +9,7 @@
 	</FormInput>
 
 	<FormInput v-model="secret" class="_formBlock">
-		<template #prefix><i class="fas fa-lock"></i></template>
+		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
 	</FormInput>
 
@@ -28,7 +28,7 @@
 	<FormSwitch v-model="active" class="_formBlock">Active</FormSwitch>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton primary inline @click="save"><i class="fas fa-check"></i> {{ i18n.ts.save }}</FormButton>
+		<FormButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </div>
 </template>
@@ -38,13 +38,17 @@ import { } from 'vue';
 import FormInput from '@/components/form/input.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+
+const props = defineProps<{
+	webhookId: string;
+}>();
 
 const webhook = await os.api('i/webhooks/show', {
-	webhookId: new URLSearchParams(window.location.search).get('id')
+	webhookId: props.webhookId,
 });
 
 let name = $ref(webhook.name);
@@ -74,16 +78,18 @@ async function save(): Promise<void> {
 		name,
 		url,
 		secret,
+		webhookId: props.webhookId,
 		on: events,
 		active,
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'Edit webhook',
-		icon: 'fas fa-bolt',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: 'Edit webhook',
+	icon: 'ti ti-webhook',
 });
 </script>

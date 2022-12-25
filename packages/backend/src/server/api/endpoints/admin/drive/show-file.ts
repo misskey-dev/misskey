@@ -1,6 +1,8 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFilesRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -74,23 +76,6 @@ export const meta = {
 			properties: {
 				type: 'object',
 				optional: false, nullable: false,
-				properties: {
-					width: {
-						type: 'number',
-						optional: false, nullable: false,
-						example: 1280,
-					},
-					height: {
-						type: 'number',
-						optional: false, nullable: false,
-						example: 720,
-					},
-					avgColor: {
-						type: 'string',
-						optional: true, nullable: false,
-						example: 'rgb(40,65,87)',
-					},
-				},
 			},
 			storedInternal: {
 				type: 'boolean',
@@ -114,15 +99,15 @@ export const meta = {
 			},
 			accessKey: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			thumbnailAccessKey: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			webpublicAccessKey: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			uri: {
 				type: 'string',
@@ -169,20 +154,57 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const file = ps.fileId ? await DriveFiles.findOneBy({ id: ps.fileId }) : await DriveFiles.findOne({
-		where: [{
-			url: ps.url,
-		}, {
-			thumbnailUrl: ps.url,
-		}, {
-			webpublicUrl: ps.url,
-		}],
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const file = ps.fileId ? await this.driveFilesRepository.findOneBy({ id: ps.fileId }) : await this.driveFilesRepository.findOne({
+				where: [{
+					url: ps.url,
+				}, {
+					thumbnailUrl: ps.url,
+				}, {
+					webpublicUrl: ps.url,
+				}],
+			});
 
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
+			}
+
+			return {
+				id: file.id,
+				userId: file.userId,
+				userHost: file.userHost,
+				isLink: file.isLink,
+				maybePorn: file.maybePorn,
+				maybeSensitive: file.maybeSensitive,
+				isSensitive: file.isSensitive,
+				folderId: file.folderId,
+				src: file.src,
+				uri: file.uri,
+				webpublicAccessKey: file.webpublicAccessKey,
+				thumbnailAccessKey: file.thumbnailAccessKey,
+				accessKey: file.accessKey,
+				webpublicType: file.webpublicType,
+				webpublicUrl: file.webpublicUrl,
+				thumbnailUrl: file.thumbnailUrl,
+				url: file.url,
+				storedInternal: file.storedInternal,
+				properties: file.properties,
+				blurhash: file.blurhash,
+				comment: file.comment,
+				size: file.size,
+				type: file.type,
+				name: file.name,
+				md5: file.md5,
+				createdAt: file.createdAt.toISOString(),
+				requestIp: me.isAdmin ? file.requestIp : null,
+				requestHeaders: me.isAdmin ? file.requestHeaders : null,
+			};
+		});
 	}
-
-	return file;
-});
+}

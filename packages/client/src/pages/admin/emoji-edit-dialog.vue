@@ -1,5 +1,6 @@
 <template>
-<XModalWindow ref="dialog"
+<XModalWindow
+	ref="dialog"
 	:width="370"
 	:with-ok-button="true"
 	@close="$refs.dialog.close()"
@@ -12,100 +13,86 @@
 		<div class="yigymqpb _section">
 			<img :src="emoji.url" class="img"/>
 			<MkInput v-model="name" class="_formBlock">
-				<template #label>{{ $ts.name }}</template>
+				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 			<MkInput v-model="category" class="_formBlock" :datalist="categories">
-				<template #label>{{ $ts.category }}</template>
+				<template #label>{{ i18n.ts.category }}</template>
 			</MkInput>
 			<MkInput v-model="aliases" class="_formBlock">
-				<template #label>{{ $ts.tags }}</template>
-				<template #caption>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
+				<template #label>{{ i18n.ts.tags }}</template>
+				<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 			</MkInput>
-			<MkButton danger @click="del()"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+			<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</div>
 </XModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import MkButton from '@/components/ui/button.vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
 import { unique } from '@/scripts/array';
+import { i18n } from '@/i18n';
+import { emojiCategories } from '@/instance';
 
-export default defineComponent({
-	components: {
-		XModalWindow,
-		MkButton,
-		MkInput,
-	},
+const props = defineProps<{
+	emoji: any,
+}>();
 
-	props: {
-		emoji: {
-			required: true,
-		}
-	},
+let dialog = $ref(null);
+let name: string = $ref(props.emoji.name);
+let category: string = $ref(props.emoji.category);
+let aliases: string = $ref(props.emoji.aliases.join(' '));
+let categories: string[] = $ref(emojiCategories);
 
-	emits: ['done', 'closed'],
+const emit = defineEmits<{
+	(ev: 'done', v: { deleted?: boolean, updated?: any }): void,
+	(ev: 'closed'): void
+}>();
 
-	data() {
-		return {
-			name: this.emoji.name,
-			category: this.emoji.category,
-			aliases: this.emoji.aliases?.join(' '),
-			categories: [],
-		}
-	},
+function ok() {
+	update();
+}
 
-	created() {
-		os.api('meta', { detail: false }).then(({ emojis }) => {
-			this.categories = unique(emojis.map((x: any) => x.category || '').filter((x: string) => x !== ''));
+async function update() {
+	await os.apiWithDialog('admin/emoji/update', {
+		id: props.emoji.id,
+		name,
+		category,
+		aliases: aliases.split(' '),
+	});
+
+	emit('done', {
+		updated: {
+			id: props.emoji.id,
+			name,
+			category,
+			aliases: aliases.split(' '),
+		},
+	});
+
+	dialog.close();
+}
+
+async function del() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: name }),
+	});
+	if (canceled) return;
+
+	os.api('admin/emoji/delete', {
+		id: props.emoji.id,
+	}).then(() => {
+		emit('done', {
+			deleted: true,
 		});
-	},
-
-	methods: {
-		ok() {
-			this.update();
-		},
-
-		async update() {
-			await os.apiWithDialog('admin/emoji/update', {
-				id: this.emoji.id,
-				name: this.name,
-				category: this.category,
-				aliases: this.aliases.split(' '),
-			});
-
-			this.$emit('done', {
-				updated: {
-					name: this.name,
-					category: this.category,
-					aliases: this.aliases.split(' '),
-				}
-			});
-			this.$refs.dialog.close();
-		},
-
-		async del() {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.emoji.name }),
-			});
-			if (canceled) return;
-
-			os.api('admin/emoji/delete', {
-				id: this.emoji.id
-			}).then(() => {
-				this.$emit('done', {
-					deleted: true
-				});
-				this.$refs.dialog.close();
-			});
-		},
-	}
-});
+		dialog.close();
+	});
+}
 </script>
 
 <style lang="scss" scoped>

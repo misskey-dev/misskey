@@ -1,13 +1,20 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { NoteReactions } from '@/models/index.js';
 import { DeepPartial } from 'typeorm';
-import { NoteReaction } from '@/models/entities/note-reaction.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NoteReactionsRepository } from '@/models/index.js';
+import type { NoteReaction } from '@/models/entities/NoteReaction.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error.js';
+import type { FindOptionsWhere } from 'typeorm';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
 
 	requireCredential: false,
+
+	allowGet: true,
+	cacheSec: 60,
 
 	res: {
 		type: 'array',
@@ -42,28 +49,38 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = {
-		noteId: ps.noteId,
-	} as DeepPartial<NoteReaction>;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.noteReactionsRepository)
+		private noteReactionsRepository: NoteReactionsRepository,
 
-	if (ps.type) {
-		// ローカルリアクションはホスト名が . とされているが
-		// DB 上ではそうではないので、必要に応じて変換
-		const suffix = '@.:';
-		const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
-		query.reaction = type;
+		private noteReactionEntityService: NoteReactionEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = {
+				noteId: ps.noteId,
+			} as FindOptionsWhere<NoteReaction>;
+
+			if (ps.type) {
+				// ローカルリアクションはホスト名が . とされているが
+				// DB 上ではそうではないので、必要に応じて変換
+				const suffix = '@.:';
+				const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
+				query.reaction = type;
+			}
+
+			const reactions = await this.noteReactionsRepository.find({
+				where: query,
+				take: ps.limit,
+				skip: ps.offset,
+				order: {
+					id: -1,
+				},
+				relations: ['user', 'user.avatar', 'user.banner', 'note'],
+			});
+
+			return await Promise.all(reactions.map(reaction => this.noteReactionEntityService.pack(reaction, me)));
+		});
 	}
-
-	const reactions = await NoteReactions.find({
-		where: query,
-		take: ps.limit,
-		skip: ps.offset,
-		order: {
-			id: -1,
-		},
-		relations: ['user', 'user.avatar', 'user.banner', 'note'],
-	});
-
-	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
-});
+}

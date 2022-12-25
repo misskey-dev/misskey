@@ -7,8 +7,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
-import XNote from '@/components/note.vue';
-import XNoteDetailed from '@/components/note-detailed.vue';
+import XNote from '@/components/MkNote.vue';
+import XNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os';
 import { NoteBlock } from '@/scripts/hpml/block';
 
@@ -20,8 +20,8 @@ export default defineComponent({
 	props: {
 		block: {
 			type: Object as PropType<NoteBlock>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props, ctx) {
 		const note: Ref<Record<string, any> | null> = ref(null);
@@ -34,9 +34,9 @@ export default defineComponent({
 		});
 
 		return {
-			note
+			note,
 		};
-	}
+	},
 });
 </script>
 

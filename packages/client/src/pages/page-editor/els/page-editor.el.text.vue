@@ -4,36 +4,31 @@
 	<template #header><i class="fas fa-align-left"></i> {{ $ts._pages.blocks.text }}</template>
 
 	<section class="vckmsadr">
-		<textarea v-model="value.text"></textarea>
+		<textarea v-model="text"></textarea>
 	</section>
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer
-	},
+const props = defineProps<{
+	modelValue: any
+}>();
 
-	props: {
-		value: {
-			required: true
-		},
-	},
+const emit = defineEmits<{
+	(ev: 'update:modelValue', value: any): void;
+}>();
 
-	data() {
-		return {
-		};
-	},
+const text = $ref(props.modelValue.text ?? '');
 
-	created() {
-		if (this.value.text == null) this.value.text = '';
-	},
+watch($$(text), () => {
+	emit('update:modelValue', {
+		...props.modelValue,
+		text,
+	});
 });
 </script>
 

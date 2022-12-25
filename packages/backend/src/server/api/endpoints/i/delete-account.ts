@@ -1,9 +1,9 @@
 import bcrypt from 'bcryptjs';
-import define from '../../define.js';
-import { UserProfiles, Users } from '@/models/index.js';
-import { doPostSuspend } from '@/services/suspend-user.js';
-import { publishUserEvent } from '@/services/stream.js';
-import { createDeleteAccountJob } from '@/queue/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DeleteAccountService } from '@/core/DeleteAccountService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -20,31 +20,32 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
-	const userDetailed = await Users.findOneByOrFail({ id: user.id });
-	if (userDetailed.isDeleted) {
-		return;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+
+		private deleteAccountService: DeleteAccountService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
+			const userDetailed = await this.usersRepository.findOneByOrFail({ id: me.id });
+			if (userDetailed.isDeleted) {
+				return;
+			}
+
+			// Compare password
+			const same = await bcrypt.compare(ps.password, profile.password!);
+
+			if (!same) {
+				throw new Error('incorrect password');
+			}
+
+			await this.deleteAccountService.deleteAccount(me);
+		});
 	}
-
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
-
-	if (!same) {
-		throw new Error('incorrect password');
-	}
-
-	// 物理削除する前にDelete activityを送信する
-	await doPostSuspend(user).catch(e => {});
-
-	createDeleteAccountJob(user, {
-		soft: false,
-	});
-
-	await Users.update(user.id, {
-		isDeleted: true,
-	});
-
-	// Terminate streaming
-	publishUserEvent(user.id, 'terminate', {});
-});
+}

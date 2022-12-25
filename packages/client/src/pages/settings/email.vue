@@ -1,127 +1,111 @@
 <template>
 <div class="_formRoot">
 	<FormSection>
-		<template #label>{{ $ts.emailAddress }}</template>
+		<template #label>{{ i18n.ts.emailAddress }}</template>
 		<FormInput v-model="emailAddress" type="email" manual-save>
-			<template #prefix><i class="fas fa-envelope"></i></template>
-			<template v-if="$i.email && !$i.emailVerified" #caption>{{ $ts.verificationEmailSent }}</template>
-			<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="fas fa-check" style="color: var(--success);"></i> {{ $ts.emailVerified }}</template>
+			<template #prefix><i class="ti ti-mail"></i></template>
+			<template v-if="$i.email && !$i.emailVerified" #caption>{{ i18n.ts.verificationEmailSent }}</template>
+			<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="ti ti-check" style="color: var(--success);"></i> {{ i18n.ts.emailVerified }}</template>
 		</FormInput>
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch :value="$i.receiveAnnouncementEmail" @update:modelValue="onChangeReceiveAnnouncementEmail">
-			{{ $ts.receiveAnnouncementFromInstance }}
+		<FormSwitch :model-value="$i.receiveAnnouncementEmail" @update:model-value="onChangeReceiveAnnouncementEmail">
+			{{ i18n.ts.receiveAnnouncementFromInstance }}
 		</FormSwitch>
 	</FormSection>
 
 	<FormSection>
-		<template #label>{{ $ts.emailNotification }}</template>
+		<template #label>{{ i18n.ts.emailNotification }}</template>
 		<FormSwitch v-model="emailNotification_mention" class="_formBlock">
-			{{ $ts._notification._types.mention }}
+			{{ i18n.ts._notification._types.mention }}
 		</FormSwitch>
 		<FormSwitch v-model="emailNotification_reply" class="_formBlock">
-			{{ $ts._notification._types.reply }}
+			{{ i18n.ts._notification._types.reply }}
 		</FormSwitch>
 		<FormSwitch v-model="emailNotification_quote" class="_formBlock">
-			{{ $ts._notification._types.quote }}
+			{{ i18n.ts._notification._types.quote }}
 		</FormSwitch>
 		<FormSwitch v-model="emailNotification_follow" class="_formBlock">
-			{{ $ts._notification._types.follow }}
+			{{ i18n.ts._notification._types.follow }}
 		</FormSwitch>
 		<FormSwitch v-model="emailNotification_receiveFollowRequest" class="_formBlock">
-			{{ $ts._notification._types.receiveFollowRequest }}
+			{{ i18n.ts._notification._types.receiveFollowRequest }}
 		</FormSwitch>
 		<FormSwitch v-model="emailNotification_groupInvited" class="_formBlock">
-			{{ $ts._notification._types.groupInvited }}
+			{{ i18n.ts._notification._types.groupInvited }}
 		</FormSwitch>
 	</FormSection>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue';
+<script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		FormSection,
-		FormSwitch,
-		FormInput,
-	},
+const emailAddress = ref($i!.email);
 
-	emits: ['info'],
+const onChangeReceiveAnnouncementEmail = (v) => {
+	os.api('i/update', {
+		receiveAnnouncementEmail: v,
+	});
+};
 
-	setup(props, context) {
-		const emailAddress = ref($i.email);
-
-		const INFO = {
-			title: i18n.ts.email,
-			icon: 'fas fa-envelope',
-			bg: 'var(--bg)',
-		};
-
-		const onChangeReceiveAnnouncementEmail = (v) => {
-			os.api('i/update', {
-				receiveAnnouncementEmail: v
-			});
-		};
-
-		const saveEmailAddress = () => {
-			os.inputText({
-				title: i18n.ts.password,
-				type: 'password'
-			}).then(({ canceled, result: password }) => {
-				if (canceled) return;
-				os.apiWithDialog('i/update-email', {
-					password: password,
-					email: emailAddress.value,
-				});
-			});
-		};
-
-		const emailNotification_mention = ref($i.emailNotificationTypes.includes('mention'));
-		const emailNotification_reply = ref($i.emailNotificationTypes.includes('reply'));
-		const emailNotification_quote = ref($i.emailNotificationTypes.includes('quote'));
-		const emailNotification_follow = ref($i.emailNotificationTypes.includes('follow'));
-		const emailNotification_receiveFollowRequest = ref($i.emailNotificationTypes.includes('receiveFollowRequest'));
-		const emailNotification_groupInvited = ref($i.emailNotificationTypes.includes('groupInvited'));
-
-		const saveNotificationSettings = () => {
-			os.api('i/update', {
-				emailNotificationTypes: [
-					...[emailNotification_mention.value ? 'mention' : null],
-					...[emailNotification_reply.value ? 'reply' : null],
-					...[emailNotification_quote.value ? 'quote' : null],
-					...[emailNotification_follow.value ? 'follow' : null],
-					...[emailNotification_receiveFollowRequest.value ? 'receiveFollowRequest' : null],
-					...[emailNotification_groupInvited.value ? 'groupInvited' : null],
-				].filter(x => x != null)
-			});
-		};
-
-		watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest, emailNotification_groupInvited], () => {
-			saveNotificationSettings();
+const saveEmailAddress = () => {
+	os.inputText({
+		title: i18n.ts.password,
+		type: 'password',
+	}).then(({ canceled, result: password }) => {
+		if (canceled) return;
+		os.apiWithDialog('i/update-email', {
+			password: password,
+			email: emailAddress.value,
 		});
+	});
+};
 
-		onMounted(() => {
-			watch(emailAddress, () => {
-				saveEmailAddress();
-			});
-		});
+const emailNotification_mention = ref($i!.emailNotificationTypes.includes('mention'));
+const emailNotification_reply = ref($i!.emailNotificationTypes.includes('reply'));
+const emailNotification_quote = ref($i!.emailNotificationTypes.includes('quote'));
+const emailNotification_follow = ref($i!.emailNotificationTypes.includes('follow'));
+const emailNotification_receiveFollowRequest = ref($i!.emailNotificationTypes.includes('receiveFollowRequest'));
+const emailNotification_groupInvited = ref($i!.emailNotificationTypes.includes('groupInvited'));
 
-		return {
-			[symbols.PAGE_INFO]: INFO,
-			emailAddress,
-			onChangeReceiveAnnouncementEmail,
-			emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest, emailNotification_groupInvited,
-		};
-	},
+const saveNotificationSettings = () => {
+	os.api('i/update', {
+		emailNotificationTypes: [
+			...[emailNotification_mention.value ? 'mention' : null],
+			...[emailNotification_reply.value ? 'reply' : null],
+			...[emailNotification_quote.value ? 'quote' : null],
+			...[emailNotification_follow.value ? 'follow' : null],
+			...[emailNotification_receiveFollowRequest.value ? 'receiveFollowRequest' : null],
+			...[emailNotification_groupInvited.value ? 'groupInvited' : null],
+		].filter(x => x != null),
+	});
+};
+
+watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest, emailNotification_groupInvited], () => {
+	saveNotificationSettings();
+});
+
+onMounted(() => {
+	watch(emailAddress, () => {
+		saveEmailAddress();
+	});
+});
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.email,
+	icon: 'ti ti-mail',
 });
 </script>

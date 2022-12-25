@@ -1,7 +1,11 @@
-import define from '../../../define.js';
-import { Users } from '@/models/index.js';
-import { signup } from '../../../common/signup.js';
+import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository } from '@/models/index.js';
+import { SignupService } from '@/core/SignupService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { localUsernameSchema, passwordSchema } from '@/models/entities/User.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -22,31 +26,42 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		username: Users.localUsernameSchema,
-		password: Users.passwordSchema,
+		username: localUsernameSchema,
+		password: passwordSchema,
 	},
 	required: ['username', 'password'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, _me) => {
-	const me = _me ? await Users.findOneByOrFail({ id: _me.id }) : null;
-	const noUsers = (await Users.countBy({
-		host: IsNull(),
-	})) === 0;
-	if (!noUsers && !me?.isAdmin) throw new Error('access denied');
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	const { account, secret } = await signup({
-		username: ps.username,
-		password: ps.password,
-	});
+		private userEntityService: UserEntityService,
+		private signupService: SignupService,
+	) {
+		super(meta, paramDef, async (ps, _me) => {
+			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
+			const noUsers = (await this.usersRepository.countBy({
+				host: IsNull(),
+			})) === 0;
+			if (!noUsers && !me?.isAdmin) throw new Error('access denied');
 
-	const res = await Users.pack(account, account, {
-		detail: true,
-		includeSecrets: true,
-	});
+			const { account, secret } = await this.signupService.signup({
+				username: ps.username,
+				password: ps.password,
+			});
 
-	(res as any).token = secret;
+			const res = await this.userEntityService.pack(account, account, {
+				detail: true,
+				includeSecrets: true,
+			});
 
-	return res;
-});
+			(res as any).token = secret;
+
+			return res;
+		});
+	}
+}

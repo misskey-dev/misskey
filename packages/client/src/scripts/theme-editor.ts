@@ -1,4 +1,4 @@
-import { v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import { themeProps, Theme } from './theme';
 
@@ -54,27 +54,27 @@ export const toThemeString = (value: Color | Func | RefProp | RefConst | Css) =>
 
 export const convertToMisskeyTheme = (vm: ThemeViewModel, name: string, desc: string, author: string, base: 'dark' | 'light'): Theme => {
 	const props = { } as { [key: string]: string };
-	for (const [ key, value ] of vm) {
+	for (const [key, value] of vm) {
 		if (value === null) continue;
 		props[key] = toThemeString(value);
 	}
 
 	return {
 		id: uuid(),
-		name, desc, author, props, base
+		name, desc, author, props, base,
 	};
 };
 
 export const convertToViewModel = (theme: Theme): ThemeViewModel => {
 	const vm: ThemeViewModel = [];
 	// プロパティの登録
-	vm.push(...themeProps.map(key => [ key, fromThemeString(theme.props[key])] as [ string, ThemeValue ]));
+	vm.push(...themeProps.map(key => [key, fromThemeString(theme.props[key])] as [ string, ThemeValue ]));
 
 	// 定数の登録
 	const consts = Object
 		.keys(theme.props)
 		.filter(k => k.startsWith('$'))
-		.map(k => [ k, fromThemeString(theme.props[k]) ] as [ string, ThemeValue ]);
+		.map(k => [k, fromThemeString(theme.props[k])] as [ string, ThemeValue ]);
 
 		vm.push(...consts);
 	return vm;

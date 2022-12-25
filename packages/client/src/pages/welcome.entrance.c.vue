@@ -21,6 +21,7 @@
 						<img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
 					</h1>
 					<div class="about">
+						<!-- eslint-disable-next-line vue/no-v-html -->
 						<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 					</div>
 					<div class="action">
@@ -40,7 +41,7 @@
 							<template #n><b>{{ onlineUsersCount }}</b></template>
 						</I18n>
 					</div>
-					<button class="_button _acrylic menu" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
+					<button class="_button _acrylic menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 				</div>
 			</div>
 			<nav class="nav">
@@ -57,11 +58,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode/';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import MkButton from '@/components/ui/button.vue';
-import XNote from '@/components/note.vue';
-import MkFeaturedPhotos from '@/components/featured-photos.vue';
+import XSigninDialog from '@/components/MkSigninDialog.vue';
+import XSignupDialog from '@/components/MkSignupDialog.vue';
+import MkButton from '@/components/MkButton.vue';
+import XNote from '@/components/MkNote.vue';
+import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import XTimeline from './welcome.timeline.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
@@ -101,7 +102,7 @@ export default defineComponent({
 
 		os.api('hashtags/list', {
 			sort: '+mentionedLocalUsers',
-			limit: 8
+			limit: 8,
 		}).then(tags => {
 			this.tags = tags;
 		});
@@ -110,40 +111,40 @@ export default defineComponent({
 	methods: {
 		signin() {
 			os.popup(XSigninDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
 		},
 
 		signup() {
 			os.popup(XSignupDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
 		},
 
 		showMenu(ev) {
 			os.popupMenu([{
 				text: this.$t('aboutX', { x: instanceName }),
-				icon: 'fas fa-info-circle',
+				icon: 'ti ti-info-circle',
 				action: () => {
 					os.pageWindow('/about');
-				}
+				},
 			}, {
 				text: this.$ts.aboutMisskey,
-				icon: 'fas fa-info-circle',
+				icon: 'ti ti-info-circle',
 				action: () => {
 					os.pageWindow('/about-misskey');
-				}
+				},
 			}, null, {
 				text: this.$ts.help,
-				icon: 'fas fa-question-circle',
+				icon: 'ti ti-question-circle',
 				action: () => {
 					window.open(`https://misskey-hub.net/help.md`, '_blank');
-				}
+				},
 			}], ev.currentTarget ?? ev.target);
 		},
 
-		number
-	}
+		number,
+	},
 });
 </script>
 

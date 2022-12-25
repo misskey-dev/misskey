@@ -2,8 +2,8 @@
 <div class="ngbfujlo">
 	<MkTextarea :model-value="text" readonly style="margin: 0;"></MkTextarea>
 	<MkButton class="button" primary :disabled="posting || posted" @click="post()">
-		<i v-if="posted" class="fas fa-check"></i>
-		<i v-else class="fas fa-paper-plane"></i>
+		<i v-if="posted" class="ti ti-check"></i>
+		<i v-else class="ti ti-send"></i>
 	</MkButton>
 </div>
 </template>
@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import MkTextarea from '../form/textarea.vue';
-import MkButton from '../ui/button.vue';
+import MkButton from '../MkButton.vue';
 import { apiUrl } from '@/config';
 import * as os from '@/os';
 import { PostBlock } from '@/scripts/hpml/block';
@@ -25,12 +25,12 @@ export default defineComponent({
 	props: {
 		block: {
 			type: Object as PropType<PostBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -44,29 +44,29 @@ export default defineComponent({
 			handler() {
 				this.text = this.hpml.interpolate(this.block.text);
 			},
-			deep: true
-		}
+			deep: true,
+		},
 	},
 	methods: {
 		upload() {
 			const promise = new Promise((ok) => {
 				const canvas = this.hpml.canvases[this.block.canvasId];
 				canvas.toBlob(blob => {
-					const data = new FormData();
-					data.append('file', blob);
-					data.append('i', this.$i.token);
+					const formData = new FormData();
+					formData.append('file', blob);
+					formData.append('i', this.$i.token);
 					if (this.$store.state.uploadFolder) {
-						data.append('folderId', this.$store.state.uploadFolder);
+						formData.append('folderId', this.$store.state.uploadFolder);
 					}
 
-					fetch(apiUrl + '/drive/files/create', {
+					window.fetch(apiUrl + '/drive/files/create', {
 						method: 'POST',
-						body: data
+						body: formData,
 					})
-					.then(response => response.json())
-					.then(f => {
-						ok(f);
-					})
+						.then(response => response.json())
+						.then(f => {
+							ok(f);
+						});
 				});
 			});
 			os.promiseDialog(promise);
@@ -81,8 +81,8 @@ export default defineComponent({
 			}).then(() => {
 				this.posted = true;
 			});
-		}
-	}
+		},
+	},
 });
 </script>
 

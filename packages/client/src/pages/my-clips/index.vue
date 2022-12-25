@@ -1,25 +1,28 @@
 <template>
-<MkSpacer :content-max="700">
-	<div class="qtcaoidl">
-		<MkButton primary class="add" @click="create"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="700">
+		<div class="qtcaoidl">
+			<MkButton primary class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
-		<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="list">
-			<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
-				<b>{{ item.name }}</b>
-				<div v-if="item.description" class="description">{{ item.description }}</div>
-			</MkA>
-		</MkPagination>
-	</div>
-</MkSpacer>
+			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="list">
+				<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
+					<b>{{ item.name }}</b>
+					<div v-if="item.description" class="description">{{ item.description }}</div>
+				</MkA>
+			</MkPagination>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -61,15 +64,16 @@ function onClipDeleted() {
 	pagingComponent.reload();
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.clip,
-		icon: 'fas fa-paperclip',
-		bg: 'var(--bg)',
-		action: {
-			icon: 'fas fa-plus',
-			handler: create
-		},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.clip,
+	icon: 'ti ti-paperclip',
+	action: {
+		icon: 'ti ti-plus',
+		handler: create,
 	},
 });
 </script>

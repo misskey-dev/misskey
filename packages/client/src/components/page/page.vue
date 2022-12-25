@@ -15,21 +15,20 @@ import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
-		XBlock
+		XBlock,
 	},
 	props: {
 		page: {
 			type: Object as PropType<Record<string, any>>,
-			required: true
+			required: true,
 		},
 	},
 	setup(props, ctx) {
-
 		const hpml = new Hpml(props.page, {
 			randomSeed: Math.random(),
 			visitor: $i,
 			url: url,
-			enableAiScript: !defaultStore.state.disablePagesScript
+			enableAiScript: !defaultStore.state.disablePagesScript,
 		});
 
 		onMounted(() => {
@@ -38,8 +37,8 @@ export default defineComponent({
 					let ast;
 					try {
 						ast = parse(props.page.script);
-					} catch (e) {
-						console.error(e);
+					} catch (err) {
+						console.error(err);
 						/*os.alert({
 							type: 'error',
 							text: 'Syntax error :('
@@ -48,11 +47,11 @@ export default defineComponent({
 					}
 					hpml.aiscript.exec(ast).then(() => {
 						hpml.eval();
-					}).catch(e => {
-						console.error(e);
+					}).catch(err => {
+						console.error(err);
 						/*os.alert({
 							type: 'error',
-							text: e
+							text: err
 						});*/
 					});
 				} else {

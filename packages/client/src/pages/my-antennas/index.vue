@@ -1,7 +1,8 @@
-<template>
-<MkSpacer :content-max="700">
+<template><MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :content-max="700">
 	<div class="ieepwinx">
-		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 		<div class="">
 			<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
@@ -11,38 +12,28 @@
 			</MkPagination>
 		</div>
 	</div>
-</MkSpacer>
+</MkSpacer></MkStickyContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import * as symbols from '@/symbols';
+<script lang="ts" setup>
+import { } from 'vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		MkPagination,
-		MkButton,
-	},
+const pagination = {
+	endpoint: 'antennas/list' as const,
+	limit: 10,
+};
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.manageAntennas,
-				icon: 'fas fa-satellite',
-				bg: 'var(--bg)',
-				action: {
-					icon: 'fas fa-plus',
-					handler: this.create
-				}
-			},
-			pagination: {
-				endpoint: 'antennas/list' as const,
-				limit: 10,
-			},
-		};
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.manageAntennas,
+	icon: 'ti ti-antenna',
 });
 </script>
 

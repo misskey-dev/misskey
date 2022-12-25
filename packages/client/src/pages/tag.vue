@@ -1,13 +1,16 @@
 <template>
-<div class="_section">
-	<XNotes class="_content" :pagination="pagination"/>
-</div>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="800">
+		<XNotes class="_content" :pagination="pagination"/>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import XNotes from '@/components/notes.vue';
-import * as symbols from '@/symbols';
+import XNotes from '@/components/MkNotes.vue';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	tag: string;
@@ -21,11 +24,12 @@ const pagination = {
 	})),
 };
 
-defineExpose({
-	[symbols.PAGE_INFO]: computed(() => ({
-		title: props.tag,
-		icon: 'fas fa-hashtag',
-		bg: 'var(--bg)',
-	})),
-});
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => ({
+	title: props.tag,
+	icon: 'ti ti-hash',
+})));
 </script>

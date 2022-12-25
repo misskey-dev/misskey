@@ -1,16 +1,17 @@
 // TODO: useTooltip関数使うようにしたい
 // ただディレクティブ内でonUnmountedなどのcomposition api使えるのか不明
 
-import { Directive, ref } from 'vue';
+import { defineAsyncComponent, Directive, ref } from 'vue';
 import { isTouchUsing } from '@/scripts/touch';
 import { popup, alert } from '@/os';
 
 const start = isTouchUsing ? 'touchstart' : 'mouseover';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
-const delay = 100;
 
 export default {
 	mounted(el: HTMLElement, binding, vn) {
+		const delay = binding.modifiers.noDelay ? 0 : 100;
+
 		const self = (el as any)._tooltipDirective_ = {} as any;
 
 		self.text = binding.value as string;
@@ -45,9 +46,11 @@ export default {
 			if (self.text == null) return;
 
 			const showing = ref(true);
-			popup(import('@/components/ui/tooltip.vue'), {
+			popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 				showing,
 				text: self.text,
+				asMfm: binding.modifiers.mfm,
+				direction: binding.modifiers.left ? 'left' : binding.modifiers.right ? 'right' : binding.modifiers.top ? 'top' : binding.modifiers.bottom ? 'bottom' : 'top',
 				targetElement: el,
 			}, {}, 'closed');
 

@@ -11,8 +11,8 @@ export function useNoteCapture(props: {
 	const note = props.note;
 	const connection = $i ? stream : null;
 
-	function onStreamNoteUpdated(data): void {
-		const { type, id, body } = data;
+	function onStreamNoteUpdated(noteData): void {
+		const { type, id, body } = noteData;
 
 		if (id !== note.value.id) return;
 
@@ -60,8 +60,8 @@ export function useNoteCapture(props: {
 					...choices[choice],
 					votes: choices[choice].votes + 1,
 					...($i && (body.userId === $i.id) ? {
-						isVoted: true
-					} : {})
+						isVoted: true,
+					} : {}),
 				};
 
 				note.value.poll.choices = choices;

@@ -9,7 +9,7 @@
 	</FormInput>
 
 	<FormInput v-model="secret" class="_formBlock">
-		<template #prefix><i class="fas fa-lock"></i></template>
+		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
 	</FormInput>
 
@@ -26,7 +26,7 @@
 	</FormSection>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton primary inline @click="create"><i class="fas fa-check"></i> {{ i18n.ts.create }}</FormButton>
+		<FormButton primary inline @click="create"><i class="ti ti-check"></i> {{ i18n.ts.create }}</FormButton>
 	</div>
 </div>
 </template>
@@ -36,10 +36,10 @@ import { } from 'vue';
 import FormInput from '@/components/form/input.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import * as os from '@/os';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 let name = $ref('');
 let url = $ref('');
@@ -71,11 +71,12 @@ async function create(): Promise<void> {
 	});
 }
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: 'Create new webhook',
-		icon: 'fas fa-bolt',
-		bg: 'var(--bg)',
-	},
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: 'Create new webhook',
+	icon: 'ti ti-webhook',
 });
 </script>

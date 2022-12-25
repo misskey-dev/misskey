@@ -8,8 +8,8 @@
 	</div>
 	<div v-else>
 		<div class="wszdbhzo">
-			<div><i class="fas fa-exclamation-triangle"></i> {{ $ts.somethingHappened }}</div>
-			<MkButton inline class="retry" @click="retry"><i class="fas fa-redo-alt"></i> {{ $ts.retry }}</MkButton>
+			<div><i class="ti ti-alert-triangle"></i> {{ $ts.somethingHappened }}</div>
+			<MkButton inline class="retry" @click="retry"><i class="ti ti-reload"></i> {{ $ts.retry }}</MkButton>
 		</div>
 	</div>
 </transition>
@@ -17,18 +17,18 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@/components/MkButton.vue';
 
 export default defineComponent({
 	components: {
-		MkButton
+		MkButton,
 	},
 
 	props: {
 		p: {
 			type: Function as PropType<() => Promise<any>>,
 			required: true,
-		}
+		},
 	},
 
 	setup(props, context) {
@@ -59,7 +59,7 @@ export default defineComponent({
 		watch(() => props.p, () => {
 			process();
 		}, {
-			immediate: true
+			immediate: true,
 		});
 
 		const retry = () => {
@@ -73,7 +73,7 @@ export default defineComponent({
 			result,
 			retry,
 		};
-	}
+	},
 });
 </script>
 

@@ -1,0 +1,12 @@
+'⚙️Server':
+- packages/backend/**/*
+
+'🖥️Client':
+- packages/client/**/*
+
+'🧪Test':
+- cypress/**/*
+- packages/backend/test/**/*
+
+'‼️ wrong locales':
+- any: ['locales/*.yml', '!locales/ja-JP.yml']

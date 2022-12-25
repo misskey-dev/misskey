@@ -19,18 +19,18 @@ export async function lookupUser() {
 		if (_notFound) {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.noSuchUser
+				text: i18n.ts.noSuchUser,
 			});
 		} else {
 			_notFound = true;
 		}
 	};
-	usernamePromise.then(show).catch(e => {
-		if (e.code === 'NO_SUCH_USER') {
+	usernamePromise.then(show).catch(err => {
+		if (err.code === 'NO_SUCH_USER') {
 			notFound();
 		}
 	});
-	idPromise.then(show).catch(e => {
+	idPromise.then(show).catch(err => {
 		notFound();
 	});
 }

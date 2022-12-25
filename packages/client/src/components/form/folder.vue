@@ -5,17 +5,17 @@
 		<span class="text"><slot name="label"></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<i v-if="opened" class="fas fa-angle-up icon"></i>
-			<i v-else class="fas fa-angle-down icon"></i>
+			<i v-if="opened" class="ti ti-chevron-up icon"></i>
+			<i v-else class="ti ti-chevron-down icon"></i>
 		</span>
 	</div>
-	<keep-alive>
+	<KeepAlive>
 		<div v-if="openedAtLeastOnce" v-show="opened" class="body">
 			<MkSpacer :margin-min="14" :margin-max="22">
 				<slot></slot>
 			</MkSpacer>
 		</div>
-	</keep-alive>
+	</KeepAlive>
 </div>
 </template>
 
@@ -23,8 +23,8 @@
 const props = withDefaults(defineProps<{
 	defaultOpen: boolean;
 }>(), {
-  defaultOpen: false,
-})
+	defaultOpen: false,
+});
 
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);
@@ -46,7 +46,7 @@ const toggle = () => {
 		align-items: center;
 		width: 100%;
 		box-sizing: border-box;
-		padding: 12px 14px 12px 14px;
+		padding: 10px 14px 10px 14px;
 		background: var(--buttonBg);
 		border-radius: 6px;
 

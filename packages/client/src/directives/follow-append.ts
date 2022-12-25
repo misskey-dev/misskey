@@ -31,5 +31,5 @@ export default {
 
 	unmounted(src, binding, vn) {
 		if (src._ro_) src._ro_.unobserve(src);
-	}
+	},
 } as Directive;

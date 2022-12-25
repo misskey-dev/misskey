@@ -1,6 +1,6 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader">
-	<template #header><i class="fas fa-terminal"></i>{{ $ts._widgets.aiscript }}</template>
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-aiscript">
+	<template #header><i class="ti ti-terminal-2"></i>{{ i18n.ts._widgets.aiscript }}</template>
 
 	<div class="uylguesu _monospace">
 		<textarea v-model="widgetProps.script" placeholder="(1 + 1)"></textarea>
@@ -14,13 +14,14 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
+import MkContainer from '@/components/MkContainer.vue';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { $i } from '@/account';
+import { i18n } from '@/i18n';
 
 const name = 'aiscript';
 
@@ -43,7 +44,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (e: 'updateProps', props: WidgetProps); }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -88,13 +89,13 @@ const run = async () => {
 				}); break;
 				default: break;
 			}
-		}
+		},
 	});
 
 	let ast;
 	try {
 		ast = parse(widgetProps.script);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
 			text: 'Syntax error :(',
@@ -103,10 +104,10 @@ const run = async () => {
 	}
 	try {
 		await aiscript.exec(ast);
-	} catch (e) {
+	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: e,
+			text: err,
 		});
 	}
 };

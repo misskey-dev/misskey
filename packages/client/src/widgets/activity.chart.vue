@@ -24,76 +24,61 @@
 </svg>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import * as os from '@/os';
+<script lang="ts" setup>
+const props = defineProps<{
+	activity: any[]
+}>();
+
+let viewBoxX: number = $ref(147);
+let viewBoxY: number = $ref(60);
+let zoom: number = $ref(1);
+let pos: number = $ref(0);
+let pointsNote: any = $ref(null);
+let pointsReply: any = $ref(null);
+let pointsRenote: any = $ref(null);
+let pointsTotal: any = $ref(null);
 
 function dragListen(fn) {
-	window.addEventListener('mousemove',  fn);
+	window.addEventListener('mousemove', fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup',    dragClear.bind(null, fn));
+	window.addEventListener('mouseup', dragClear.bind(null, fn));
 }
 
 function dragClear(fn) {
-	window.removeEventListener('mousemove',  fn);
+	window.removeEventListener('mousemove', fn);
 	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup',    dragClear);
+	window.removeEventListener('mouseup', dragClear);
 }
 
-export default defineComponent({
-	props: ['data'],
-	data() {
-		return {
-			viewBoxX: 147,
-			viewBoxY: 60,
-			zoom: 1,
-			pos: 0,
-			pointsNote: null,
-			pointsReply: null,
-			pointsRenote: null,
-			pointsTotal: null
-		};
-	},
-	created() {
-		for (const d of this.data) {
-			d.total = d.notes + d.replies + d.renotes;
-		}
+function onMousedown(ev) {
+	const clickX = ev.clientX;
+	const clickY = ev.clientY;
+	const baseZoom = zoom;
+	const basePos = pos;
 
-		this.render();
-	},
-	methods: {
-		render() {
-			const peak = Math.max.apply(null, this.data.map(d => d.total));
-			if (peak != 0) {
-				const data = this.data.slice().reverse();
-				this.pointsNote = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.notes / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsReply = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsRenote = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsTotal = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
-			}
-		},
-		onMousedown(e) {
-			const clickX = e.clientX;
-			const clickY = e.clientY;
-			const baseZoom = this.zoom;
-			const basePos = this.pos;
+	// 動かした時
+	dragListen(me => {
+		let moveLeft = me.clientX - clickX;
+		let moveTop = me.clientY - clickY;
 
-			// 動かした時
-			dragListen(me => {
-				let moveLeft = me.clientX - clickX;
-				let moveTop = me.clientY - clickY;
+		zoom = Math.max(1, baseZoom + (-moveTop / 20));
+		pos = Math.min(0, basePos + moveLeft);
+		if (pos < -(((props.activity.length - 1) * zoom) - viewBoxX)) pos = -(((props.activity.length - 1) * zoom) - viewBoxX);
 
-				this.zoom = baseZoom + (-moveTop / 20);
-				this.pos = basePos + moveLeft;
-				if (this.zoom < 1) this.zoom = 1;
-				if (this.pos > 0) this.pos = 0;
-				if (this.pos < -(((this.data.length - 1) * this.zoom) - this.viewBoxX)) this.pos = -(((this.data.length - 1) * this.zoom) - this.viewBoxX);
+		render();
+	});
+}
 
-				this.render();
-			});
-		}
+function render() {
+	const peak = Math.max(...props.activity.map(d => d.total));
+	if (peak !== 0) {
+		const activity = props.activity.slice().reverse();
+		pointsNote = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.notes / peak)) * viewBoxY}`).join(' ');
+		pointsReply = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.replies / peak)) * viewBoxY}`).join(' ');
+		pointsRenote = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.renotes / peak)) * viewBoxY}`).join(' ');
+		pointsTotal = activity.map((d, i) => `${(i * zoom) + pos},${(1 - (d.total / peak)) * viewBoxY}`).join(' ');
 	}
-});
+}
 </script>
 
 <style lang="scss" scoped>

@@ -56,6 +56,8 @@ emailNotification: "Ilɣa imayl"
 selectAccount: "Fren amiḍan"
 accounts: "Imiḍan"
 searchByGoogle: "Nadi"
+file: "Ifuyla"
+account: "Imiḍan"
 _email:
   _follow:
     title: "Yeṭṭafaṛ-ik·em-id"
@@ -116,6 +118,8 @@ _notification:
   _types:
     follow: "Ig ṭṭafaṛ"
     mention: "Bder"
+  _actions:
+    reply: "Err"
 _deck:
   _columns:
     notifications: "Ilɣuyen"

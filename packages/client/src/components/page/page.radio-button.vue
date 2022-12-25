@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div>{{ hpml.interpolate(block.title) }}</div>
-	<MkRadio v-for="item in block.values" :key="item" :modelValue="value" :value="item" @update:modelValue="updateValue($event)">{{ item }}</MkRadio>
+	<MkRadio v-for="item in block.values" :key="item" :modelValue="value" :value="item" @update:model-value="updateValue($event)">{{ item }}</MkRadio>
 </div>
 </template>
 
@@ -14,17 +14,17 @@ import { RadioButtonVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
-		MkRadio
+		MkRadio,
 	},
 	props: {
 		block: {
 			type: Object as PropType<RadioButtonVarBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props, ctx) {
 		const value = computed(() => {
@@ -38,8 +38,8 @@ export default defineComponent({
 
 		return {
 			value,
-			updateValue
+			updateValue,
 		};
-	}
+	},
 });
 </script>

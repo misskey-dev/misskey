@@ -1,5 +1,5 @@
-import { nextTick, Ref, ref } from 'vue';
-import * as getCaretCoordinates from 'textarea-caret';
+import { nextTick, Ref, ref, defineAsyncComponent } from 'vue';
+import getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode/';
 import { popup } from '@/os';
 
@@ -8,7 +8,7 @@ export class Autocomplete {
 		x: Ref<number>;
 		y: Ref<number>;
 		q: Ref<string | null>;
-		close: Function;
+		close: () => void;
 	} | null;
 	private textarea: HTMLInputElement | HTMLTextAreaElement;
 	private currentType: string;
@@ -16,10 +16,14 @@ export class Autocomplete {
 	private opening: boolean;
 
 	private get text(): string {
-		return this.textRef.value;
+		// Use raw .value to get the latest value
+		// (Because v-model does not update while composition)
+		return this.textarea.value;
 	}
 
 	private set text(text: string) {
+		// Use ref value to notify other watchers
+		// (Because .value setter never fires input/change events)
 		this.textRef.value = text;
 	}
 
@@ -74,21 +78,21 @@ export class Autocomplete {
 			emojiIndex,
 			mfmTagIndex);
 
-		if (max == -1) {
+		if (max === -1) {
 			this.close();
 			return;
 		}
 
-		const isMention = mentionIndex != -1;
-		const isHashtag = hashtagIndex != -1;
-		const isMfmTag = mfmTagIndex != -1;
-		const isEmoji = emojiIndex != -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
+		const isMention = mentionIndex !== -1;
+		const isHashtag = hashtagIndex !== -1;
+		const isMfmTag = mfmTagIndex !== -1;
+		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 
 		let opened = false;
 
 		if (isMention) {
 			const username = text.substr(mentionIndex + 1);
-			if (username != '' && username.match(/^[a-zA-Z0-9_]+$/)) {
+			if (username !== '' && username.match(/^[a-zA-Z0-9_]+$/)) {
 				this.open('user', username);
 				opened = true;
 			} else if (username === '') {
@@ -130,7 +134,7 @@ export class Autocomplete {
 	 * サジェストを提示します。
 	 */
 	private async open(type: string, q: string | null) {
-		if (type != this.currentType) {
+		if (type !== this.currentType) {
 			this.close();
 		}
 		if (this.opening) return;
@@ -157,7 +161,7 @@ export class Autocomplete {
 			const _y = ref(y);
 			const _q = ref(q);
 
-			const { dispose } = await popup(import('@/components/autocomplete.vue'), {
+			const { dispose } = await popup(defineAsyncComponent(() => import('@/components/MkAutocomplete.vue')), {
 				textarea: this.textarea,
 				close: this.close,
 				type: type,
@@ -167,7 +171,7 @@ export class Autocomplete {
 			}, {
 				done: (res) => {
 					this.complete(res);
-				}
+				},
 			});
 
 			this.suggestion = {
@@ -201,7 +205,7 @@ export class Autocomplete {
 
 		const caret = this.textarea.selectionStart;
 
-		if (type == 'user') {
+		if (type === 'user') {
 			const source = this.text;
 
 			const before = source.substr(0, caret);
@@ -219,7 +223,7 @@ export class Autocomplete {
 				const pos = trimmedBefore.length + (acct.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type == 'hashtag') {
+		} else if (type === 'hashtag') {
 			const source = this.text;
 
 			const before = source.substr(0, caret);
@@ -235,7 +239,7 @@ export class Autocomplete {
 				const pos = trimmedBefore.length + (value.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type == 'emoji') {
+		} else if (type === 'emoji') {
 			const source = this.text;
 
 			const before = source.substr(0, caret);
@@ -251,7 +255,7 @@ export class Autocomplete {
 				const pos = trimmedBefore.length + value.length;
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type == 'mfmTag') {
+		} else if (type === 'mfmTag') {
 			const source = this.text;
 
 			const before = source.substr(0, caret);

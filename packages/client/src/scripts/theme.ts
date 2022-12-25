@@ -1,5 +1,6 @@
+import { ref } from 'vue';
+import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events';
-import * as tinycolor from 'tinycolor2';
 
 export type Theme = {
 	id: string;
@@ -10,30 +11,41 @@ export type Theme = {
 	props: Record<string, string>;
 };
 
-export const lightTheme: Theme = require('@/themes/_light.json5');
-export const darkTheme: Theme = require('@/themes/_dark.json5');
+import lightTheme from '@/themes/_light.json5';
+import darkTheme from '@/themes/_dark.json5';
+import { deepClone } from './clone';
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
-export const builtinThemes = [
-	require('@/themes/l-light.json5'),
-	require('@/themes/l-coffee.json5'),
-	require('@/themes/l-apricot.json5'),
-	require('@/themes/l-rainy.json5'),
-	require('@/themes/l-vivid.json5'),
-	require('@/themes/l-cherry.json5'),
-	require('@/themes/l-sushi.json5'),
+export const getBuiltinThemes = () => Promise.all(
+	[
+		'l-light',
+		'l-coffee',
+		'l-apricot',
+		'l-rainy',
+		'l-vivid',
+		'l-cherry',
+		'l-sushi',
+		'l-u0',
 
-	require('@/themes/d-dark.json5'),
-	require('@/themes/d-persimmon.json5'),
-	require('@/themes/d-astro.json5'),
-	require('@/themes/d-future.json5'),
-	require('@/themes/d-botanical.json5'),
-	require('@/themes/d-cherry.json5'),
-	require('@/themes/d-ice.json5'),
-	require('@/themes/d-pumpkin.json5'),
-	require('@/themes/d-black.json5'),
-] as Theme[];
+		'd-dark',
+		'd-persimmon',
+		'd-astro',
+		'd-future',
+		'd-botanical',
+		'd-green-lime',
+		'd-green-orange',
+		'd-cherry',
+		'd-ice',
+		'd-u0',
+	].map(name => import(`../themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
+);
+
+export const getBuiltinThemesRef = () => {
+	const builtinThemes = ref<Theme[]>([]);
+	getBuiltinThemes().then(themes => builtinThemes.value = themes);
+	return builtinThemes;
+};
 
 let timeout = null;
 
@@ -46,8 +58,10 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
 
+	const colorSchema = theme.base === 'dark' ? 'dark' : 'light';
+
 	// Deep copy
-	const _theme = JSON.parse(JSON.stringify(theme));
+	const _theme = deepClone(theme);
 
 	if (_theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === _theme.base);
@@ -67,8 +81,11 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}
 
+	document.documentElement.style.setProperty('color-schema', colorSchema);
+
 	if (persist) {
 		localStorage.setItem('theme', JSON.stringify(props));
+		localStorage.setItem('colorSchema', colorSchema);
 	}
 
 	// 色計算など再度行えるようにクライアント全体に通知

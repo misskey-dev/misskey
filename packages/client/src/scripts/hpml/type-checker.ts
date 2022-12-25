@@ -1,7 +1,9 @@
 import autobind from 'autobind-decorator';
-import { Type, envVarsDef, PageVar } from '.';
-import { Expr, isLiteralValue, Variable } from './expr';
+import { isLiteralValue } from './expr';
 import { funcDefs } from './lib';
+import { envVarsDef } from '.';
+import type { Type, PageVar } from '.';
+import type { Expr, Variable } from './expr';
 
 type TypeError = {
 	arg: number;
@@ -44,14 +46,14 @@ export class HpmlTypeChecker {
 					return {
 						arg: i,
 						expect: generic[arg],
-						actual: type
+						actual: type,
 					};
 				}
 			} else if (type !== arg) {
 				return {
 					arg: i,
 					expect: arg,
-					actual: type
+					actual: type,
 				};
 			}
 		}
@@ -81,7 +83,7 @@ export class HpmlTypeChecker {
 		}
 
 		if (typeof def.in[slot] === 'number') {
-			return generic[def.in[slot]] || null;
+			return generic[def.in[slot]] ?? null;
 		} else {
 			return def.in[slot];
 		}

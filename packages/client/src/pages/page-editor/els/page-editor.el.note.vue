@@ -1,67 +1,57 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="fas fa-sticky-note"></i> {{ $ts._pages.blocks.note }}</template>
+	<template #header><i class="ti ti-note"></i> {{ $ts._pages.blocks.note }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
 		<MkInput v-model="id">
 			<template #label>{{ $ts._pages.blocks._note.id }}</template>
 			<template #caption>{{ $ts._pages.blocks._note.idDescription }}</template>
 		</MkInput>
-		<MkSwitch v-model="value.detailed"><span>{{ $ts._pages.blocks._note.detailed }}</span></MkSwitch>
+		<MkSwitch v-model="props.modelValue.detailed"><span>{{ $ts._pages.blocks._note.detailed }}</span></MkSwitch>
 
-		<XNote v-if="note && !value.detailed" :key="note.id + ':normal'" v-model:note="note" style="margin-bottom: 16px;"/>
-		<XNoteDetailed v-if="note && value.detailed" :key="note.id + ':detail'" v-model:note="note" style="margin-bottom: 16px;"/>
+		<XNote v-if="note && !props.modelValue.detailed" :key="note.id + ':normal'" v-model:note="note" style="margin-bottom: 16px;"/>
+		<XNoteDetailed v-if="note && props.modelValue.detailed" :key="note.id + ':detail'" v-model:note="note" style="margin-bottom: 16px;"/>
 	</section>
 </XContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineComponent } from 'vue';
+import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
-import XNote from '@/components/note.vue';
-import XNoteDetailed from '@/components/note-detailed.vue';
+import XNote from '@/components/MkNote.vue';
+import XNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os';
 
-export default defineComponent({
-	components: {
-		XContainer, MkInput, MkSwitch, XNote, XNoteDetailed,
-	},
+const props = defineProps<{
+	modelValue: any
+}>();
 
-	props: {
-		value: {
-			required: true
-		},
-	},
+const emit = defineEmits<{
+	(ev: 'update:modelValue', value: any): void;
+}>();
 
-	data() {
-		return {
-			id: this.value.note,
-			note: null,
-		};
-	},
+let id: any = $ref(props.modelValue.note);
+let note: any = $ref(null);
 
-	watch: {
-		id: {
-			async handler() {
-				if (this.id && (this.id.startsWith('http://') || this.id.startsWith('https://'))) {
-					this.value.note = this.id.endsWith('/') ? this.id.substr(0, this.id.length - 1).split('/').pop() : this.id.split('/').pop();
-				} else {
-					this.value.note = this.id;
-				}
+watch(id, async () => {
+	if (id && (id.startsWith('http://') || id.startsWith('https://'))) {
+		emit('update:modelValue', {
+			...props.modelValue,
+			note: (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop(),
+		});
+	} else {
+		emit('update:modelValue', {
+			...props.modelValue,
+			note: id,
+		});
+	}
 
-				this.note = await os.api('notes/show', { noteId: this.value.note });
-			},
-			immediate: true
-		},
-	},
-
-	created() {
-		if (this.value.note == null) this.value.note = null;
-		if (this.value.detailed == null) this.value.detailed = false;
-	},
+	note = await os.api('notes/show', { noteId: props.modelValue.note });
+}, {
+	immediate: true,
 });
 </script>

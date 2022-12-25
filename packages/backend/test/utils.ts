@@ -1,90 +1,161 @@
 import * as fs from 'node:fs';
-import * as WebSocket from 'ws';
-import * as misskey from 'misskey-js';
-import fetch from 'node-fetch';
-import FormData from 'form-data';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import * as childProcess from 'child_process';
 import * as http from 'node:http';
-import loadConfig from '../src/config/load.js';
 import { SIGKILL } from 'constants';
-import { entities } from '../src/db/postgre.js';
+import WebSocket from 'ws';
+import fetch from 'node-fetch';
+import FormData from 'form-data';
+import { DataSource } from 'typeorm';
+import got, { RequestError } from 'got';
+import loadConfig from '../src/config/load.js';
+import { entities } from '../src/postgre.js';
+import type * as misskey from 'misskey-js';
+
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
 
 const config = loadConfig();
 export const port = config.port;
 
-export const async = (fn: Function) => (done: Function) => {
-	fn().then(() => {
-		done();
-	}, (err: Error) => {
-		done(err);
-	});
-};
+export const api = async (endpoint: string, params: any, me?: any) => {
+	endpoint = endpoint.replace(/^\//, '');
 
-export const request = async (endpoint: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
 	const auth = me ? {
-		i: me.token
+		i: me.token,
 	} : {};
 
-	const res = await fetch(`http://localhost:${port}/api${endpoint}`, {
+	try {
+		const res = await got<string>(`http://localhost:${port}/api/${endpoint}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(Object.assign(auth, params)),
+			retry: {
+				limit: 0,
+			},
+		});
+
+		const status = res.statusCode;
+		const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
+
+		return {
+			status,
+			body,
+		};
+	} catch (err: unknown) {
+		if (err instanceof RequestError && err.response) {
+			const status = err.response.statusCode;
+			const body = await JSON.parse(err.response.body as string);
+
+			return {
+				status,
+				body,
+			};
+		} else {
+			throw err;
+		}
+	}
+};
+
+export const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
+	const auth = me ? {
+		i: me.token,
+	} : {};
+
+	const res = await fetch(`http://localhost:${port}/${path}`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify(Object.assign(auth, params))
+		body: JSON.stringify(Object.assign(auth, params)),
 	});
 
 	const status = res.status;
-	const body = res.status !== 204 ? await res.json().catch() : null;
+	const body = res.status === 200 ? await res.json().catch() : null;
 
 	return {
-		body, status
+		body, status,
 	};
 };
 
 export const signup = async (params?: any): Promise<any> => {
 	const q = Object.assign({
 		username: 'test',
-		password: 'test'
+		password: 'test',
 	}, params);
 
-	const res = await request('/signup', q);
+	const res = await api('signup', q);
 
 	return res.body;
 };
 
 export const post = async (user: any, params?: misskey.Endpoints['notes/create']['req']): Promise<misskey.entities.Note> => {
 	const q = Object.assign({
-		text: 'test'
+		text: 'test',
 	}, params);
 
-	const res = await request('/notes/create', q, user);
+	const res = await api('notes/create', q, user);
 
 	return res.body ? res.body.createdNote : null;
 };
 
 export const react = async (user: any, note: any, reaction: string): Promise<any> => {
-	await request('/notes/reactions/create', {
+	await api('notes/reactions/create', {
 		noteId: note.id,
-		reaction: reaction
+		reaction: reaction,
 	}, user);
 };
 
-export const uploadFile = (user: any, path?: string): Promise<any> => {
-		const formData = new FormData();
-		formData.append('i', user.token);
-		formData.append('file', fs.createReadStream(path || __dirname + '/resources/Lenna.png'));
+/**
+ * Upload file
+ * @param user User
+ * @param _path Optional, absolute path or relative from ./resources/
+ */
+export const uploadFile = async (user: any, _path?: string): Promise<any> => {
+	const absPath = _path == null ? `${_dirname}/resources/Lenna.jpg` : path.isAbsolute(_path) ? _path : `${_dirname}/resources/${_path}`;
 
-		return fetch(`http://localhost:${port}/api/drive/files/create`, {
-			method: 'post',
-			body: formData,
-			timeout: 30 * 1000,
-		}).then(res => {
-			if (!res.ok) {
-				throw `${res.status} ${res.statusText}`;
-			} else {
-				return res.json();
-			}
-		});
+	const formData = new FormData() as any;
+	formData.append('i', user.token);
+	formData.append('file', fs.createReadStream(absPath));
+	formData.append('force', 'true');
+
+	const res = await got<string>(`http://localhost:${port}/api/drive/files/create`, {
+		method: 'POST',
+		body: formData,
+		retry: {
+			limit: 0,
+		},
+	});
+
+	const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
+
+	return body;
+};
+
+export const uploadUrl = async (user: any, url: string) => {
+	let file: any;
+	const marker = Math.random().toString();
+
+	const ws = await connectStream(user, 'main', (msg) => {
+		if (msg.type === 'urlUploadFinished' && msg.body.marker === marker) {
+			file = msg.body.file;
+		}
+	});
+
+	await api('drive/files/upload-from-url', {
+		url,
+		marker,
+		force: true,
+	}, user);
+
+	await sleep(7000);
+	ws.close();
+
+	return file;
 };
 
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
@@ -94,9 +165,9 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 		ws.on('open', () => {
 			ws.on('message', data => {
 				const msg = JSON.parse(data.toString());
-				if (msg.type == 'channel' && msg.body.id == 'a') {
+				if (msg.type === 'channel' && msg.body.id === 'a') {
 					listener(msg.body);
-				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+				} else if (msg.type === 'connected' && msg.body.id === 'a') {
 					res(ws);
 				}
 			});
@@ -107,20 +178,54 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 					channel: channel,
 					id: 'a',
 					pong: true,
-					params: params
-				}
+					params: params,
+				},
 			}));
 		});
 	});
 }
+
+export const waitFire = async (user: any, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: any) => {
+	return new Promise<boolean>(async (res, rej) => {
+		let timer: NodeJS.Timeout;
+
+		let ws: WebSocket;
+		try {
+			ws = await connectStream(user, channel, msg => {
+				if (cond(msg)) {
+					ws.close();
+					if (timer) clearTimeout(timer);
+					res(true);
+				}
+			}, params);
+		} catch (e) {
+			rej(e);
+		}
+
+		if (!ws!) return;
+
+		timer = setTimeout(() => {
+			ws.close();
+			res(false);
+		}, 3000);
+
+		try {
+			await trgr();
+		} catch (e) {
+			ws.close();
+			if (timer) clearTimeout(timer);
+			rej(e);
+		}
+	});
+};
 
 export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?: number, type?: string, location?: string }> => {
 	// node-fetchだと3xxを取れない
 	return await new Promise((resolve, reject) => {
 		const req = http.request(`http://localhost:${port}${path}`, {
 			headers: {
-				Accept: accept
-			}
+				Accept: accept,
+			},
 		}, res => {
 			if (res.statusCode! >= 400) {
 				reject(res);
@@ -139,9 +244,9 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?
 
 export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProcess) => void, moreProcess: () => Promise<void> = async () => {}) {
 	return (done: (err?: Error) => any) => {
-		const p = childProcess.spawn('node', [__dirname + '/../index.js'], {
+		const p = childProcess.spawn('node', [_dirname + '/../index.js'], {
 			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
+			env: { NODE_ENV: 'test', PATH: process.env.PATH },
 		});
 		callbackSpawnedProcess(p);
 		p.on('message', message => {
@@ -153,12 +258,7 @@ export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProce
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
-	try {
-		const conn = await getConnection();
-		await conn.close();
-	} catch (e) {}
-
-	return await createConnection({
+	const db = new DataSource({
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,
@@ -167,20 +267,24 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		database: config.db.db,
 		synchronize: true && !justBorrow,
 		dropSchema: true && !justBorrow,
-		entities: initEntities || entities
+		entities: initEntities ?? entities,
 	});
+
+	await db.initialize();
+
+	return db;
 }
 
-export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProcess> {
+export function startServer(timeout = 60 * 1000): Promise<childProcess.ChildProcess> {
 	return new Promise((res, rej) => {
 		const t = setTimeout(() => {
 			p.kill(SIGKILL);
 			rej('timeout to start');
 		}, timeout);
 
-		const p = childProcess.spawn('node', [__dirname + '/../built/index.js'], {
+		const p = childProcess.spawn('node', [_dirname + '/../built/index.js'], {
 			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
+			env: { NODE_ENV: 'test', PATH: process.env.PATH },
 		});
 
 		p.on('error', e => rej(e));
@@ -194,7 +298,8 @@ export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProc
 	});
 }
 
-export function shutdownServer(p: childProcess.ChildProcess, timeout = 20 * 1000) {
+export function shutdownServer(p: childProcess.ChildProcess | undefined, timeout = 20 * 1000) {
+	if (p == null) return Promise.resolve('nop');
 	return new Promise((res, rej) => {
 		const t = setTimeout(() => {
 			p.kill(SIGKILL);
@@ -207,5 +312,13 @@ export function shutdownServer(p: childProcess.ChildProcess, timeout = 20 * 1000
 		});
 
 		p.kill();
+	});
+}
+
+export function sleep(msec: number) {
+	return new Promise<void>(res => {
+		setTimeout(() => {
+			res();
+		}, msec);
 	});
 }

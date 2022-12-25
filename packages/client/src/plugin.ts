@@ -12,7 +12,7 @@ export function install(plugin) {
 
 	const aiscript = new AiScript(createPluginEnv({
 		plugin: plugin,
-		storageKey: 'plugins:' + plugin.id
+		storageKey: 'plugins:' + plugin.id,
 	}), {
 		in: (q) => {
 			return new Promise(ok => {
@@ -38,7 +38,7 @@ export function install(plugin) {
 function createPluginEnv(opts) {
 	const config = new Map();
 	for (const [k, v] of Object.entries(opts.plugin.config || {})) {
-		config.set(k, jsToVal(opts.plugin.configData.hasOwnProperty(k) ? opts.plugin.configData[k] : v.default));
+		config.set(k, jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
 	return {
@@ -86,7 +86,7 @@ function registerPostFormAction({ pluginId, title, handler }) {
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
 				update(key.value, value.value);
 			})]);
-		}
+		},
 	});
 }
 
@@ -94,7 +94,7 @@ function registerUserAction({ pluginId, title, handler }) {
 	userActions.push({
 		title, handler: (user) => {
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
-		}
+		},
 	});
 }
 
@@ -102,7 +102,7 @@ function registerNoteAction({ pluginId, title, handler }) {
 	noteActions.push({
 		title, handler: (note) => {
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
-		}
+		},
 	});
 }
 
@@ -110,7 +110,7 @@ function registerNoteViewInterruptor({ pluginId, handler }) {
 	noteViewInterruptors.push({
 		handler: async (note) => {
 			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
-		}
+		},
 	});
 }
 
@@ -118,6 +118,6 @@ function registerNotePostInterruptor({ pluginId, handler }) {
 	notePostInterruptors.push({
 		handler: async (note) => {
 			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
-		}
+		},
 	});
 }

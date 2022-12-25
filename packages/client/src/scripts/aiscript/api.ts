@@ -27,7 +27,7 @@ export function createAiScriptEnv(opts) {
 			if (token) utils.assertString(token);
 			apiRequests++;
 			if (apiRequests > 16) return values.NULL;
-			const res = await os.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token || null));
+			const res = await os.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token ?? null));
 			return utils.jsToVal(res);
 		}),
 		'Mk:save': values.FN_NATIVE(([key, value]) => {

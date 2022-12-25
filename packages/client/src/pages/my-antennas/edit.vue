@@ -4,50 +4,37 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import MkButton from '@/components/ui/button.vue';
+<script lang="ts" setup>
+import { inject, watch } from 'vue';
 import XAntenna from './editor.vue';
-import * as symbols from '@/symbols';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { useRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		XAntenna,
-	},
+const router = useRouter();
 
-	props: {
-		antennaId: {
-			type: String,
-			required: true,
-		}
-	},
+let antenna: any = $ref(null);
 
-	data() {
-		return {
-			[symbols.PAGE_INFO]: {
-				title: this.$ts.manageAntennas,
-				icon: 'fas fa-satellite',
-			},
-			antenna: null,
-		};
-	},
+const props = defineProps<{
+	antennaId: string
+}>();
 
-	watch: {
-		antennaId: {
-			async handler() {
-				this.antenna = await os.api('antennas/show', { antennaId: this.antennaId });
-			},
-			immediate: true,
-		}
-	},
+function onAntennaUpdated() {
+	router.push('/my/antennas');
+}
 
-	methods: {
-		onAntennaUpdated() {
-			this.$router.push('/my/antennas');
-		},
-	}
+os.api('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
+	antenna = antennaResponse;
+});
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.manageAntennas,
+	icon: 'ti ti-antenna',
 });
 </script>
 

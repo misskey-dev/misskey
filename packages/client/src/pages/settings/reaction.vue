@@ -1,30 +1,30 @@
 <template>
 <div class="_formRoot">
 	<FromSlot class="_formBlock">
-		<template #label>{{ $ts.reactionSettingDescription }}</template>
+		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
 		<div v-panel style="border-radius: 6px;">
-			<XDraggable v-model="reactions" class="zoaiodol" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
+			<Sortable v-model="reactions" class="zoaiodol" :item-key="item => item" :animation="150" :delay="100" :delay-on-touch-only="true">
 				<template #item="{element}">
 					<button class="_button item" @click="remove(element, $event)">
 						<MkEmoji :emoji="element" :normal="true"/>
 					</button>
 				</template>
 				<template #footer>
-					<button class="_button add" @click="chooseEmoji"><i class="fas fa-plus"></i></button>
+					<button class="_button add" @click="chooseEmoji"><i class="ti ti-plus"></i></button>
 				</template>
-			</XDraggable>
+			</Sortable>
 		</div>
-		<template #caption>{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></template>
+		<template #caption>{{ i18n.ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ i18n.ts.preview }}</button></template>
 	</FromSlot>
 
 	<FormRadios v-model="reactionPickerSize" class="_formBlock">
-		<template #label>{{ $ts.size }}</template>
-		<option :value="1">{{ $ts.small }}</option>
-		<option :value="2">{{ $ts.medium }}</option>
-		<option :value="3">{{ $ts.large }}</option>
+		<template #label>{{ i18n.ts.size }}</template>
+		<option :value="1">{{ i18n.ts.small }}</option>
+		<option :value="2">{{ i18n.ts.medium }}</option>
+		<option :value="3">{{ i18n.ts.large }}</option>
 	</FormRadios>
 	<FormRadios v-model="reactionPickerWidth" class="_formBlock">
-		<template #label>{{ $ts.numberOfColumn }}</template>
+		<template #label>{{ i18n.ts.numberOfColumn }}</template>
 		<option :value="1">5</option>
 		<option :value="2">6</option>
 		<option :value="3">7</option>
@@ -32,42 +32,43 @@
 		<option :value="5">9</option>
 	</FormRadios>
 	<FormRadios v-model="reactionPickerHeight" class="_formBlock">
-		<template #label>{{ $ts.height }}</template>
-		<option :value="1">{{ $ts.small }}</option>
-		<option :value="2">{{ $ts.medium }}</option>
-		<option :value="3">{{ $ts.large }}</option>
-		<option :value="4">{{ $ts.large }}+</option>
+		<template #label>{{ i18n.ts.height }}</template>
+		<option :value="1">{{ i18n.ts.small }}</option>
+		<option :value="2">{{ i18n.ts.medium }}</option>
+		<option :value="3">{{ i18n.ts.large }}</option>
+		<option :value="4">{{ i18n.ts.large }}+</option>
 	</FormRadios>
 
 	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">
-		{{ $ts.useDrawerReactionPickerForMobile }}
-		<template #caption>{{ $ts.needReloadToApply }}</template>
+		{{ i18n.ts.useDrawerReactionPickerForMobile }}
+		<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 	</FormSwitch>
 
 	<FormSection>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<FormButton inline @click="preview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
-			<FormButton inline danger @click="setDefault"><i class="fas fa-undo"></i> {{ $ts.default }}</FormButton>
+			<FormButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
+			<FormButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
 		</div>
 	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
-import XDraggable from 'vuedraggable';
+import { defineAsyncComponent, watch } from 'vue';
+import Sortable from 'vuedraggable';
 import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
-import FormButton from '@/components/ui/button.vue';
+import FormButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import * as symbols from '@/symbols';
 import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { deepClone } from '@/scripts/clone';
 
-let reactions = $ref(JSON.parse(JSON.stringify(defaultStore.state.reactions)));
+let reactions = $ref(deepClone(defaultStore.state.reactions));
 
 const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
@@ -83,12 +84,12 @@ function remove(reaction, ev: MouseEvent) {
 		text: i18n.ts.remove,
 		action: () => {
 			reactions = reactions.filter(x => x !== reaction);
-		}
+		},
 	}], ev.currentTarget ?? ev.target);
 }
 
 function preview(ev: MouseEvent) {
-	os.popup(import('@/components/emoji-picker-dialog.vue'), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 		asReactionPicker: true,
 		src: ev.currentTarget ?? ev.target,
 	}, {}, 'closed');
@@ -101,12 +102,12 @@ async function setDefault() {
 	});
 	if (canceled) return;
 
-	reactions = JSON.parse(JSON.stringify(defaultStore.def.reactions.default));
+	reactions = deepClone(defaultStore.def.reactions.default);
 }
 
 function chooseEmoji(ev: MouseEvent) {
 	os.pickEmoji(ev.currentTarget ?? ev.target, {
-		showPinned: false
+		showPinned: false,
 	}).then(emoji => {
 		if (!reactions.includes(emoji)) {
 			reactions.push(emoji);
@@ -120,15 +121,16 @@ watch($$(reactions), () => {
 	deep: true,
 });
 
-defineExpose({
-	[symbols.PAGE_INFO]: {
-		title: i18n.ts.reaction,
-		icon: 'fas fa-laugh',
-		action: {
-			icon: 'fas fa-eye',
-			handler: preview,
-		},
-		bg: 'var(--bg)',
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.reaction,
+	icon: 'ti ti-mood-happy',
+	action: {
+		icon: 'ti ti-eye',
+		handler: preview,
 	},
 });
 </script>
