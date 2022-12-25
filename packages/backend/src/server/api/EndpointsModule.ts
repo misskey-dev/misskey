@@ -272,6 +272,8 @@ import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
 import * as ep___serverInfo from './endpoints/server-info.js';
 import * as ep___stats from './endpoints/stats.js';
+import * as ep___sw_show_registration from './endpoints/sw/show-registration.js';
+import * as ep___sw_update_registration from './endpoints/sw/update-registration.js';
 import * as ep___sw_register from './endpoints/sw/register.js';
 import * as ep___sw_unregister from './endpoints/sw/unregister.js';
 import * as ep___test from './endpoints/test.js';
@@ -313,6 +315,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
+import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -588,6 +591,8 @@ const $resetDb: Provider = { provide: 'ep:reset-db', useClass: ep___resetDb.defa
 const $resetPassword: Provider = { provide: 'ep:reset-password', useClass: ep___resetPassword.default };
 const $serverInfo: Provider = { provide: 'ep:server-info', useClass: ep___serverInfo.default };
 const $stats: Provider = { provide: 'ep:stats', useClass: ep___stats.default };
+const $sw_show_registration: Provider = { provide: 'ep:sw/show-registration', useClass: ep___sw_show_registration.default };
+const $sw_update_registration: Provider = { provide: 'ep:sw/update-registration', useClass: ep___sw_update_registration.default };
 const $sw_register: Provider = { provide: 'ep:sw/register', useClass: ep___sw_register.default };
 const $sw_unregister: Provider = { provide: 'ep:sw/unregister', useClass: ep___sw_unregister.default };
 const $test: Provider = { provide: 'ep:test', useClass: ep___test.default };
@@ -629,6 +634,7 @@ const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_s
 const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
 const $admin_driveCapOverride: Provider = { provide: 'ep:admin/drive-capacity-override', useClass: ep___admin_driveCapOverride.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
+const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
 @Module({
 	imports: [
@@ -908,6 +914,8 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$resetPassword,
 		$serverInfo,
 		$stats,
+		$sw_show_registration,
+		$sw_update_registration,
 		$sw_register,
 		$sw_unregister,
 		$test,
@@ -949,6 +957,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$users_stats,
 		$admin_driveCapOverride,
 		$fetchRss,
+		$retention,
 	],
 	exports: [
 		$admin_meta,
@@ -1263,6 +1272,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$users_stats,
 		$admin_driveCapOverride,
 		$fetchRss,
+		$retention,
 	],
 })
 export class EndpointsModule {}

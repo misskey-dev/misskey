@@ -41,25 +41,25 @@ function onContextmenu(ev) {
 		type: 'label',
 		text: props.to,
 	}, {
-		icon: 'fas fa-window-maximize',
+		icon: 'ti ti-app-window',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);
 		},
 	}, {
-		icon: 'fas fa-expand-alt',
+		icon: 'ti ti-player-eject',
 		text: i18n.ts.showInPage,
 		action: () => {
 			router.push(props.to, 'forcePage');
 		},
 	}, null, {
-		icon: 'fas fa-external-link-alt',
+		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(props.to, '_blank');
 		},
 	}, {
-		icon: 'fas fa-link',
+		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
 		action: () => {
 			copyToClipboard(`${url}${props.to}`);

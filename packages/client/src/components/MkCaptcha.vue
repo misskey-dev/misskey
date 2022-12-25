@@ -62,14 +62,16 @@ const src = computed(() => {
 	}
 });
 
+const scriptId = computed(() => `script-${props.provider}`)
+
 const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
 
 if (loaded) {
 	available.value = true;
 } else {
-	(document.getElementById(props.provider) || document.head.appendChild(Object.assign(document.createElement('script'), {
+	(document.getElementById(scriptId.value) || document.head.appendChild(Object.assign(document.createElement('script'), {
 		async: true,
-		id: props.provider,
+		id: scriptId.value,
 		src: src.value,
 	})))
 		.addEventListener('load', () => available.value = true);

@@ -16,8 +16,8 @@
 	@dragend="onDragend"
 >
 	<p class="name">
-		<template v-if="hover"><i class="fas fa-folder-open fa-fw"></i></template>
-		<template v-if="!hover"><i class="fas fa-folder fa-fw"></i></template>
+		<template v-if="hover"><i class="ti ti-folder ti-fw"></i></template>
+		<template v-if="!hover"><i class="ti ti-folder ti-fw"></i></template>
 		{{ folder.name }}
 	</p>
 	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">
@@ -244,7 +244,7 @@ function setAsUploadFolder() {
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu([{
 		text: i18n.ts.openInWindow,
-		icon: 'fas fa-window-restore',
+		icon: 'ti ti-app-window',
 		action: () => {
 			os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
 				initialFolder: props.folder,
@@ -253,11 +253,11 @@ function onContextmenu(ev: MouseEvent) {
 		},
 	}, null, {
 		text: i18n.ts.rename,
-		icon: 'fas fa-i-cursor',
+		icon: 'ti ti-forms',
 		action: rename,
 	}, null, {
 		text: i18n.ts.delete,
-		icon: 'fas fa-trash-alt',
+		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
 	}], ev);

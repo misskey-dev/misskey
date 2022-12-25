@@ -25,6 +25,7 @@ import number from '@/filters/number';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import { chartVLine } from '@/scripts/chart-vline';
 
 Chart.register(
 	ArcElement,
@@ -105,6 +106,8 @@ const color =
 	'?' as never;
 
 onMounted(() => {
+	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+
 	chartInstance = new Chart(chartEl.value, {
 		type: 'line',
 		data: {
@@ -116,7 +119,8 @@ onMounted(() => {
 				borderWidth: 2,
 				borderJoinStyle: 'round',
 				borderColor: color,
-				backgroundColor: alpha(color, 0.1),
+				backgroundColor: alpha(color, 0.2),
+				fill: true,
 				data: [],
 			}],
 		},
@@ -167,6 +171,7 @@ onMounted(() => {
 				},
 			},
 		},
+		plugins: [chartVLine(vLineColor)],
 	});
 });
 

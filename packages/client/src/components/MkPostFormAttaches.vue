@@ -1,136 +1,112 @@
 <template>
-<div v-show="files.length != 0" class="skeikyzd">
-	<XDraggable v-model="_files" class="files" item-key="id" animation="150" delay="100" delay-on-touch-only="true">
+<div v-show="props.modelValue.length != 0" class="skeikyzd">
+	<Sortable :model-value="props.modelValue" class="files" item-key="id" :animation="150" :delay="100" :delay-on-touch-only="true" @update:model-value="v => emit('update:modelValue', v)">
 		<template #item="{element}">
 			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" class="sensitive">
-					<i class="fas fa-exclamation-triangle icon"></i>
+					<i class="ti ti-alert-triangle icon"></i>
 				</div>
 			</div>
 		</template>
-	</XDraggable>
-	<p class="remain">{{ 16 - files.length }}/16</p>
+	</Sortable>
+	<p class="remain">{{ 16 - props.modelValue.length }}/16</p>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent, watch } from 'vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os';
+import { deepClone } from '@/scripts/clone';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
-		MkDriveFileThumbnail,
-	},
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-	props: {
-		files: {
-			type: Array,
-			required: true,
-		},
-		detachMediaFn: {
-			type: Function,
-			required: false,
-		},
-	},
+const props = defineProps<{
+	modelValue: any[];
+	detachMediaFn: () => void;
+}>();
 
-	emits: ['updated', 'detach', 'changeSensitive', 'changeName'],
+const emit = defineEmits<{
+	(ev: 'update:modelValue', value: any[]): void;
+	(ev: 'detach'): void;
+	(ev: 'changeSensitive'): void;
+	(ev: 'changeName'): void;
+}>();
 
-	data() {
-		return {
-			menu: null as Promise<null> | null,
-		};
-	},
+let menuShowing = false;
 
-	computed: {
-		_files: {
-			get() {
-				return this.files;
-			},
-			set(value) {
-				this.$emit('updated', value);
-			},
-		},
-	},
+function detachMedia(id) {
+	if (props.detachMediaFn) {
+		props.detachMediaFn(id);
+	} else {
+		emit('detach', id);
+	}
+}
 
-	methods: {
-		detachMedia(id) {
-			if (this.detachMediaFn) {
-				this.detachMediaFn(id);
-			} else {
-				this.$emit('detach', id);
-			}
-		},
-		toggleSensitive(file) {
+function toggleSensitive(file) {
+	os.api('drive/files/update', {
+		fileId: file.id,
+		isSensitive: !file.isSensitive,
+	}).then(() => {
+		emit('changeSensitive', file, !file.isSensitive);
+	});
+}
+async function rename(file) {
+	const { canceled, result } = await os.inputText({
+		title: i18n.ts.enterFileName,
+		default: file.name,
+		allowEmpty: false,
+	});
+	if (canceled) return;
+	os.api('drive/files/update', {
+		fileId: file.id,
+		name: result,
+	}).then(() => {
+		emit('changeName', file, result);
+		file.name = result;
+	});
+}
+
+async function describe(file) {
+	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+		default: file.comment !== null ? file.comment : '',
+		file: file,
+	}, {
+		done: caption => {
+			let comment = caption.length === 0 ? null : caption;
 			os.api('drive/files/update', {
 				fileId: file.id,
-				isSensitive: !file.isSensitive,
+				comment: comment,
 			}).then(() => {
-				this.$emit('changeSensitive', file, !file.isSensitive);
+				file.comment = comment;
 			});
 		},
-		async rename(file) {
-			const { canceled, result } = await os.inputText({
-				title: this.$ts.enterFileName,
-				default: file.name,
-				allowEmpty: false,
-			});
-			if (canceled) return;
-			os.api('drive/files/update', {
-				fileId: file.id,
-				name: result,
-			}).then(() => {
-				this.$emit('changeName', file, result);
-				file.name = result;
-			});
-		},
+	}, 'closed');
+}
 
-		async describe(file) {
-			os.popup(defineAsyncComponent(() => import('@/components/MkMediaCaption.vue')), {
-				title: this.$ts.describeFile,
-				input: {
-					placeholder: this.$ts.inputNewDescription,
-					default: file.comment !== null ? file.comment : '',
-				},
-				image: file,
-			}, {
-				done: result => {
-					if (!result || result.canceled) return;
-					let comment = result.result.length === 0 ? null : result.result;
-					os.api('drive/files/update', {
-						fileId: file.id,
-						comment: comment,
-					}).then(() => {
-						file.comment = comment;
-					});
-				},
-			}, 'closed');
-		},
-
-		showFileMenu(file, ev: MouseEvent) {
-			if (this.menu) return;
-			this.menu = os.popupMenu([{
-				text: this.$ts.renameFile,
-				icon: 'fas fa-i-cursor',
-				action: () => { this.rename(file); },
-			}, {
-				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
-				action: () => { this.toggleSensitive(file); },
-			}, {
-				text: this.$ts.describeFile,
-				icon: 'fas fa-i-cursor',
-				action: () => { this.describe(file); },
-			}, {
-				text: this.$ts.attachCancel,
-				icon: 'fas fa-times-circle',
-				action: () => { this.detachMedia(file.id); },
-			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
-		},
-	},
-});
+function showFileMenu(file, ev: MouseEvent) {
+	if (menuShowing) return;
+	os.popupMenu([{
+		text: i18n.ts.renameFile,
+		icon: 'ti ti-forms',
+		action: () => { rename(file); },
+	}, {
+		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+		icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
+		action: () => { toggleSensitive(file); },
+	}, {
+		text: i18n.ts.describeFile,
+		icon: 'ti ti-text-caption',
+		action: () => { describe(file); },
+	}, {
+		text: i18n.ts.attachCancel,
+		icon: 'ti ti-circle-x',
+		action: () => { detachMedia(file.id); },
+	}], ev.currentTarget ?? ev.target).then(() => menuShowing = false);
+	menuShowing = true;
+}
 </script>
 
 <style lang="scss" scoped>

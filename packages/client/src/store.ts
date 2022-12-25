@@ -2,11 +2,34 @@ import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
 import { Theme } from './scripts/theme';
 
-export const postFormActions = [];
-export const userActions = [];
-export const noteActions = [];
-export const noteViewInterruptors = [];
-export const notePostInterruptors = [];
+interface PostFormAction {
+	title: string,
+	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
+}
+
+interface UserAction {
+	title: string,
+	handler: (user: UserDetailed) => void;
+}
+
+interface NoteAction {
+	title: string,
+	handler: (note: Note) => void;
+}
+
+interface NoteViewInterruptor {
+	handler: (note: Note) => unknown;
+}
+
+interface NotePostInterruptor {
+	handler: (note: FIXME) => unknown;
+}
+
+export const postFormActions: PostFormAction[] = [];
+export const userActions: UserAction[] = [];
+export const noteActions: NoteAction[] = [];
+export const noteViewInterruptors: NoteViewInterruptor[] = [];
+export const notePostInterruptors: NotePostInterruptor[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -133,7 +156,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animatedMfm: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	loadRawImages: {
 		where: 'device',
@@ -266,11 +289,17 @@ type Plugin = {
 	ast: any[];
 };
 
+interface Watcher {
+	key: string;
+	callback: (value: unknown) => void;
+}
+
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
+import { Note, UserDetailed } from 'misskey-js/built/entities';
 
 export class ColdDeviceStorage {
 	public static default = {
@@ -289,7 +318,7 @@ export class ColdDeviceStorage {
 		sound_channel: { type: 'syuilo/square-pico', volume: 1 },
 	};
 
-	public static watchers = [];
+	public static watchers: Watcher[] = [];
 
 	public static get<T extends keyof typeof ColdDeviceStorage.default>(key: T): typeof ColdDeviceStorage.default[T] {
 		// TODO: indexedDBにする
@@ -350,12 +379,5 @@ export class ColdDeviceStorage {
 				ColdDeviceStorage.set(key, val);
 			},
 		};
-	}
-}
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$store: typeof defaultStore;
 	}
 }

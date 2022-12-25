@@ -376,25 +376,25 @@ function menu(ev: MouseEvent, profileId: string) {
 
 	return os.popupMenu([{
 		text: ts._preferencesBackups.apply,
-		icon: 'fas fa-circle-down',
+		icon: 'ti ti-check',
 		action: () => applyProfile(profileId),
 	}, {
 		type: 'a',
 		text: ts.download,
-		icon: 'fas fa-download',
+		icon: 'ti ti-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profiles[profileId], null, 2)], { type: 'application/json' })),
 		download: `${profiles[profileId].name}.json`,
 	}, null, {
 		text: ts.rename,
-		icon: 'fas fa-i-cursor',
+		icon: 'ti ti-forms',
 		action: () => rename(profileId),
 	}, {
 		text: ts._preferencesBackups.save,
-		icon: 'fas fa-floppy-disk',
+		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
 	}, null, {
 		text: ts._preferencesBackups.delete,
-		icon: 'fas fa-trash-can',
+		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),
 		danger: true,
 	}], ev.currentTarget ?? ev.target);
@@ -416,7 +416,7 @@ onUnmounted(() => {
 
 definePageMetadata(computed(() => ({
 	title: ts.preferencesBackups,
-	icon: 'fas fa-floppy-disk',
+	icon: 'ti ti-device-floppy',
 	bg: 'var(--bg)',
 })));
 </script>

@@ -14,7 +14,7 @@ export const instance: Misskey.entities.InstanceMetadata = reactive(instanceData
 
 export async function fetchInstance() {
 	const meta = await api('meta', {
-		detail: false
+		detail: false,
 	});
 
 	for (const [k, v] of Object.entries(meta)) {
@@ -43,10 +43,3 @@ export const emojiTags = computed(() => {
 	}
 	return Array.from(tags);
 });
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$instance: typeof instance;
-	}
-}

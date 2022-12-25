@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkInput class="kudkigyw" :model-value="value" type="number" @update:modelValue="updateValue($event)">
+	<MkInput class="kudkigyw" :model-value="value" type="number" @update:model-value="updateValue($event)">
 		<template #label>{{ hpml.interpolate(block.text) }}</template>
 	</MkInput>
 </div>
@@ -15,17 +15,17 @@ import { NumberInputVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
-		MkInput
+		MkInput,
 	},
 	props: {
 		block: {
 			type: Object as PropType<NumberInputVarBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props, ctx) {
 		const value = computed(() => {
@@ -39,9 +39,9 @@ export default defineComponent({
 
 		return {
 			value,
-			updateValue
+			updateValue,
 		};
-	}
+	},
 });
 </script>
 

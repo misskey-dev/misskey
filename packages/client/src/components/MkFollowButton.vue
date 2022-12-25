@@ -1,28 +1,30 @@
 <template>
-<button class="kpoogebi _button"
+<button
+	class="kpoogebi _button"
 	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
 	:disabled="wait"
 	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="fas fa-hourglass-half"></i>
+			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
 		</template>
-		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked"> <!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ i18n.ts.processing }}</span><i class="fas fa-spinner fa-pulse"></i>
+		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
+			<!-- つまりリモートフォローの場合。 -->
+			<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="fas fa-minus"></i>
+			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full">{{ i18n.ts.followRequest }}</span><i class="fas fa-plus"></i>
+			<span v-if="full">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full">{{ i18n.ts.follow }}</span><i class="fas fa-plus"></i>
+			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
+		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 	</template>
 </button>
 </template>
@@ -50,9 +52,9 @@ const connection = stream.useChannel('main');
 
 if (props.user.isFollowing == null) {
 	os.api('users/show', {
-		userId: props.user.id
+		userId: props.user.id,
 	})
-	.then(onFollowChange);
+		.then(onFollowChange);
 }
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
@@ -75,17 +77,17 @@ async function onClick() {
 			if (canceled) return;
 
 			await os.api('following/delete', {
-				userId: props.user.id
+				userId: props.user.id,
 			});
 		} else {
 			if (hasPendingFollowRequestFromYou) {
 				await os.api('following/requests/cancel', {
-					userId: props.user.id
+					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou = false;
 			} else {
 				await os.api('following/create', {
-					userId: props.user.id
+					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou = true;
 			}

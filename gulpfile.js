@@ -19,8 +19,8 @@ gulp.task('copy:client:fonts', () =>
 	gulp.src('./packages/client/node_modules/three/examples/fonts/**/*').pipe(gulp.dest('./built/_client_dist_/fonts/'))
 );
 
-gulp.task('copy:client:fontawesome', () =>
-	gulp.src('./packages/client/node_modules/@fortawesome/fontawesome-free/**/*').pipe(gulp.dest('./built/_client_dist_/fontawesome/'))
+gulp.task('copy:client:tabler-icons', () =>
+	gulp.src('./packages/client/node_modules/@tabler/icons/iconfont/**/*').pipe(gulp.dest('./built/_client_dist_/tabler-icons/'))
 );
 
 gulp.task('copy:client:locales', cb => {
@@ -53,7 +53,7 @@ gulp.task('build:backend:style', () => {
 });
 
 gulp.task('build', gulp.parallel(
-	'copy:client:locales', 'copy:backend:views', 'build:backend:script', 'build:backend:style', 'copy:client:fonts', 'copy:client:fontawesome'
+	'copy:client:locales', 'copy:backend:views', 'build:backend:script', 'build:backend:style', 'copy:client:fonts', 'copy:client:tabler-icons'
 ));
 
 gulp.task('default', gulp.task('build'));

@@ -271,6 +271,8 @@ import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
 import * as ep___serverInfo from './endpoints/server-info.js';
 import * as ep___stats from './endpoints/stats.js';
+import * as ep___sw_show_registration from './endpoints/sw/show-registration.js';
+import * as ep___sw_update_registration from './endpoints/sw/update-registration.js';
 import * as ep___sw_register from './endpoints/sw/register.js';
 import * as ep___sw_unregister from './endpoints/sw/unregister.js';
 import * as ep___test from './endpoints/test.js';
@@ -312,6 +314,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
+import * as ep___retention from './endpoints/retention.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -585,6 +588,8 @@ const eps = [
 	['reset-password', ep___resetPassword],
 	['server-info', ep___serverInfo],
 	['stats', ep___stats],
+	['sw/show-registration', ep___sw_show_registration],
+	['sw/update-registration', ep___sw_update_registration],
 	['sw/register', ep___sw_register],
 	['sw/unregister', ep___sw_unregister],
 	['test', ep___test],
@@ -626,6 +631,7 @@ const eps = [
 	['users/stats', ep___users_stats],
 	['admin/drive-capacity-override', ep___admin_driveCapOverride],
 	['fetch-rss', ep___fetchRss],
+	['retention', ep___retention],
 ];
 
 export interface IEndpointMeta {

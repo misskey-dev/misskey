@@ -19,7 +19,7 @@ export async function lookupUser() {
 		if (_notFound) {
 			os.alert({
 				type: 'error',
-				text: i18n.ts.noSuchUser
+				text: i18n.ts.noSuchUser,
 			});
 		} else {
 			_notFound = true;

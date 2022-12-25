@@ -5,14 +5,14 @@
 		<div class="buttons">
 			<slot name="func"></slot>
 			<button v-if="removable" class="_button" @click="remove()">
-				<i class="fas fa-trash-alt"></i>
+				<i class="ti ti-trash"></i>
 			</button>
 			<button v-if="draggable" class="drag-handle _button">
-				<i class="fas fa-bars"></i>
+				<i class="ti ti-menu-2"></i>
 			</button>
 			<button class="_button" @click="toggleContent(!showBody)">
-				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
-				<template v-else><i class="fas fa-angle-down"></i></template>
+				<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
+				<template v-else><i class="ti ti-chevron-down"></i></template>
 			</button>
 		</div>
 	</header>
@@ -31,24 +31,24 @@ export default defineComponent({
 	props: {
 		expanded: {
 			type: Boolean,
-			default: true
+			default: true,
 		},
 		removable: {
 			type: Boolean,
-			default: true
+			default: true,
 		},
 		draggable: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		error: {
 			required: false,
-			default: null
+			default: null,
 		},
 		warn: {
 			required: false,
-			default: null
-		}
+			default: null,
+		},
 	},
 	emits: ['toggle', 'remove'],
 	data() {
@@ -63,8 +63,8 @@ export default defineComponent({
 		},
 		remove() {
 			this.$emit('remove');
-		}
-	}
+		},
+	},
 });
 </script>
 
@@ -74,7 +74,7 @@ export default defineComponent({
 	overflow: hidden;
 	background: var(--panel);
 	border: solid 2px var(--X12);
-	border-radius: 6px;
+	border-radius: 8px;
 
 	&:hover {
 		border: solid 2px var(--X13);
@@ -86,10 +86,6 @@ export default defineComponent({
 
 	&.error {
 		border: solid 2px #f00;
-	}
-
-	& + .cpjygsrt {
-		margin-top: 16px;
 	}
 
 	> header {

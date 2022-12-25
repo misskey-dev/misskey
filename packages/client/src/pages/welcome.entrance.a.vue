@@ -15,7 +15,7 @@
 		</div>
 		<div class="main">
 			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
-			<button class="_button _acrylic menu" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
+			<button class="_button _acrylic menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<div class="fg">
 				<h1>
 					<!-- 背景色によってはロゴが見えなくなるのでとりあえず無効に -->
@@ -107,19 +107,19 @@ function signup() {
 function showMenu(ev) {
 	os.popupMenu([{
 		text: i18n.ts.instanceInfo,
-		icon: 'fas fa-info-circle',
+		icon: 'ti ti-info-circle',
 		action: () => {
 			os.pageWindow('/about');
 		},
 	}, {
 		text: i18n.ts.aboutMisskey,
-		icon: 'fas fa-info-circle',
+		icon: 'ti ti-info-circle',
 		action: () => {
 			os.pageWindow('/about-misskey');
 		},
 	}, null, {
 		text: i18n.ts.help,
-		icon: 'fas fa-question-circle',
+		icon: 'ti ti-question-circle',
 		action: () => {
 			window.open('https://misskey-hub.net/help.md', '_blank');
 		},

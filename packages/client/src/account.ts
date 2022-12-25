@@ -213,7 +213,7 @@ export async function openAccountMenu(opts: {
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent',
-			icon: 'fas fa-plus',
+			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,
 			children: [{
 				text: i18n.ts.existingAccount,
@@ -224,7 +224,7 @@ export async function openAccountMenu(opts: {
 			}],
 		}, {
 			type: 'link',
-			icon: 'fas fa-users',
+			icon: 'ti ti-users',
 			text: i18n.ts.manageAccounts,
 			to: '/settings/accounts',
 		}]], ev.currentTarget ?? ev.target, {

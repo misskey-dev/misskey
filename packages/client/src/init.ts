@@ -1,6 +1,8 @@
 /**
  * Client entry point
  */
+// https://vitejs.dev/config/build-options.html#build-modulepreload
+import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 
@@ -38,7 +40,6 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
-import rootComponent from '@/root.vue';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -127,7 +128,7 @@ import rootComponent from '@/root.vue';
 		}
 
 		// 連携ログインの場合用にCookieを参照する
-		const i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
+		const i = (document.cookie.match(/igi=(\w+)/) ?? [null, null])[1];
 
 		if (i != null && i !== 'null') {
 			if (_DEV_) {
@@ -159,7 +160,13 @@ import rootComponent from '@/root.vue';
 		initializeSw();
 	});
 
-	const app = createApp(rootComponent);
+	const app = createApp(
+		window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+		defineAsyncComponent(() => import('@/ui/universal.vue')),
+	);
 
 	if (_DEV_) {
 		app.config.performance = true;

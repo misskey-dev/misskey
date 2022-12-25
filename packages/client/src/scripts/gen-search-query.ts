@@ -25,6 +25,6 @@ export async function genSearchQuery(v: any, q: string) {
 	return {
 		query: q.split(' ').filter(x => !x.startsWith('/') && !x.startsWith('@')).join(' '),
 		host: host,
-		userId: userId
+		userId: userId,
 	};
 }

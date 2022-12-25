@@ -14,22 +14,22 @@ export type Fn = {
 export type Type = 'string' | 'number' | 'boolean' | 'stringArray' | null;
 
 export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {
-	text: { out: 'string', category: 'value', icon: 'fas fa-quote-right', },
-	multiLineText: { out: 'string', category: 'value', icon: 'fas fa-align-left', },
-	textList: { out: 'stringArray', category: 'value', icon: 'fas fa-list', },
-	number: { out: 'number', category: 'value', icon: 'fas fa-sort-numeric-up', },
-	ref: { out: null, category: 'value', icon: 'fas fa-magic', },
-	aiScriptVar: { out: null, category: 'value', icon: 'fas fa-magic', },
-	fn: { out: 'function', category: 'value', icon: 'fas fa-square-root-alt', },
+	text: { out: 'string', category: 'value', icon: 'ti ti-quote' },
+	multiLineText: { out: 'string', category: 'value', icon: 'fas fa-align-left' },
+	textList: { out: 'stringArray', category: 'value', icon: 'fas fa-list' },
+	number: { out: 'number', category: 'value', icon: 'fas fa-sort-numeric-up' },
+	ref: { out: null, category: 'value', icon: 'fas fa-magic' },
+	aiScriptVar: { out: null, category: 'value', icon: 'fas fa-magic' },
+	fn: { out: 'function', category: 'value', icon: 'fas fa-square-root-alt' },
 };
 
 export const blockDefs = [
 	...Object.entries(literalDefs).map(([k, v]) => ({
-		type: k, out: v.out, category: v.category, icon: v.icon
+		type: k, out: v.out, category: v.category, icon: v.icon,
 	})),
 	...Object.entries(funcDefs).map(([k, v]) => ({
-		type: k, out: v.out, category: v.category, icon: v.icon
-	}))
+		type: k, out: v.out, category: v.category, icon: v.icon,
+	})),
 ];
 
 export type PageVar = { name: string; value: any; type: Type; };
@@ -82,7 +82,7 @@ export class HpmlScope {
 
 		throw new HpmlError(
 			`No such variable '${name}' in scope '${this.name}'`, {
-				scope: this.layerdStates
+				scope: this.layerdStates,
 			});
 	}
 }

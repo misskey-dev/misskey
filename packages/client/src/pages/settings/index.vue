@@ -36,7 +36,7 @@ import * as os from '@/os';
 
 const indexInfo = {
 	title: i18n.ts.settings,
-	icon: 'fas fa-cog',
+	icon: 'ti ti-settings',
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
@@ -58,42 +58,42 @@ const ro = new ResizeObserver((entries, observer) => {
 const menuDef = computed(() => [{
 	title: i18n.ts.basicSettings,
 	items: [{
-		icon: 'fas fa-user',
+		icon: 'ti ti-user',
 		text: i18n.ts.profile,
 		to: '/settings/profile',
 		active: currentPage?.route.name === 'profile',
 	}, {
-		icon: 'fas fa-lock-open',
+		icon: 'ti ti-lock-open',
 		text: i18n.ts.privacy,
 		to: '/settings/privacy',
 		active: currentPage?.route.name === 'privacy',
 	}, {
-		icon: 'fas fa-laugh',
+		icon: 'ti ti-mood-happy',
 		text: i18n.ts.reaction,
 		to: '/settings/reaction',
 		active: currentPage?.route.name === 'reaction',
 	}, {
-		icon: 'fas fa-cloud',
+		icon: 'ti ti-cloud',
 		text: i18n.ts.drive,
 		to: '/settings/drive',
 		active: currentPage?.route.name === 'drive',
 	}, {
-		icon: 'fas fa-bell',
+		icon: 'ti ti-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
 		active: currentPage?.route.name === 'notifications',
 	}, {
-		icon: 'fas fa-envelope',
+		icon: 'ti ti-mail',
 		text: i18n.ts.email,
 		to: '/settings/email',
 		active: currentPage?.route.name === 'email',
 	}, {
-		icon: 'fas fa-share-alt',
+		icon: 'ti ti-share',
 		text: i18n.ts.integration,
 		to: '/settings/integration',
 		active: currentPage?.route.name === 'integration',
 	}, {
-		icon: 'fas fa-lock',
+		icon: 'ti ti-lock',
 		text: i18n.ts.security,
 		to: '/settings/security',
 		active: currentPage?.route.name === 'security',
@@ -101,32 +101,32 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.clientSettings,
 	items: [{
-		icon: 'fas fa-cogs',
+		icon: 'ti ti-adjustments',
 		text: i18n.ts.general,
 		to: '/settings/general',
 		active: currentPage?.route.name === 'general',
 	}, {
-		icon: 'fas fa-palette',
+		icon: 'ti ti-palette',
 		text: i18n.ts.theme,
 		to: '/settings/theme',
 		active: currentPage?.route.name === 'theme',
 	}, {
-		icon: 'fas fa-bars',
+		icon: 'ti ti-menu-2',
 		text: i18n.ts.navbar,
 		to: '/settings/navbar',
 		active: currentPage?.route.name === 'navbar',
 	}, {
-		icon: 'fas fa-bars-progress',
+		icon: 'ti ti-equal-double',
 		text: i18n.ts.statusbar,
 		to: '/settings/statusbar',
 		active: currentPage?.route.name === 'statusbar',
 	}, {
-		icon: 'fas fa-music',
+		icon: 'ti ti-music',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
 		active: currentPage?.route.name === 'sounds',
 	}, {
-		icon: 'fas fa-plug',
+		icon: 'ti ti-plug',
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
 		active: currentPage?.route.name === 'plugin',
@@ -134,50 +134,50 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.otherSettings,
 	items: [{
-		icon: 'fas fa-boxes',
+		icon: 'ti ti-package',
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
 	}, {
-		icon: 'fas fa-volume-mute',
+		icon: 'ti ti-planet-off',
 		text: i18n.ts.instanceMute,
 		to: '/settings/instance-mute',
 		active: currentPage?.route.name === 'instance-mute',
 	}, {
-		icon: 'fas fa-ban',
+		icon: 'ti ti-ban',
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
 		active: currentPage?.route.name === 'mute-block',
 	}, {
-		icon: 'fas fa-comment-slash',
+		icon: 'ti ti-message-off',
 		text: i18n.ts.wordMute,
 		to: '/settings/word-mute',
 		active: currentPage?.route.name === 'word-mute',
 	}, {
-		icon: 'fas fa-key',
+		icon: 'ti ti-api',
 		text: 'API',
 		to: '/settings/api',
 		active: currentPage?.route.name === 'api',
 	}, {
-		icon: 'fas fa-bolt',
+		icon: 'ti ti-webhook',
 		text: 'Webhook',
 		to: '/settings/webhook',
 		active: currentPage?.route.name === 'webhook',
 	}, {
-		icon: 'fas fa-ellipsis-h',
+		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',
 		active: currentPage?.route.name === 'other',
 	}],
 }, {
 	items: [{
-		icon: 'fas fa-floppy-disk',
+		icon: 'ti ti-device-floppy',
 		text: i18n.ts.preferencesBackups,
 		to: '/settings/preferences-backups',
 		active: currentPage?.route.name === 'preferences-backups',
 	}, {
 		type: 'button',
-		icon: 'fas fa-trash',
+		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
 		action: () => {
 			localStorage.removeItem('locale');
@@ -186,7 +186,7 @@ const menuDef = computed(() => [{
 		},
 	}, {
 		type: 'button',
-		icon: 'fas fa-sign-in-alt fa-flip-horizontal',
+		icon: 'ti ti-power',
 		text: i18n.ts.logout,
 		action: async () => {
 			const { canceled } = await os.confirm({

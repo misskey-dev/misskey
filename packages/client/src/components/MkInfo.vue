@@ -1,7 +1,7 @@
 <template>
 <div class="fpezltsf" :class="{ warn }">
-	<i v-if="warn" class="fas fa-exclamation-triangle"></i>
-	<i v-else class="fas fa-info-circle"></i>
+	<i v-if="warn" class="ti ti-alert-triangle"></i>
+	<i v-else class="ti ti-info-circle"></i>
 	<slot></slot>
 </div>
 </template>
@@ -16,7 +16,7 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .fpezltsf {
-	padding: 16px;
+	padding: 12px 14px;
 	font-size: 90%;
 	background: var(--infoBg);
 	color: var(--infoFg);

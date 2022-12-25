@@ -60,8 +60,8 @@ export function useNoteCapture(props: {
 					...choices[choice],
 					votes: choices[choice].votes + 1,
 					...($i && (body.userId === $i.id) ? {
-						isVoted: true
-					} : {})
+						isVoted: true,
+					} : {}),
 				};
 
 				note.value.poll.choices = choices;

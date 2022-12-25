@@ -6,12 +6,12 @@
 				<button v-if="item.action" v-click-anime class="_button" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
 				<MkA v-else v-click-anime :to="item.to" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
+					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</MkA>
 			</template>
 		</div>

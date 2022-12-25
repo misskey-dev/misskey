@@ -3,16 +3,16 @@
 	<FromSlot class="_formBlock">
 		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
 		<div v-panel style="border-radius: 6px;">
-			<XDraggable v-model="reactions" class="zoaiodol" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
+			<Sortable v-model="reactions" class="zoaiodol" :item-key="item => item" :animation="150" :delay="100" :delay-on-touch-only="true">
 				<template #item="{element}">
 					<button class="_button item" @click="remove(element, $event)">
 						<MkEmoji :emoji="element" :normal="true"/>
 					</button>
 				</template>
 				<template #footer>
-					<button class="_button add" @click="chooseEmoji"><i class="fas fa-plus"></i></button>
+					<button class="_button add" @click="chooseEmoji"><i class="ti ti-plus"></i></button>
 				</template>
-			</XDraggable>
+			</Sortable>
 		</div>
 		<template #caption>{{ i18n.ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ i18n.ts.preview }}</button></template>
 	</FromSlot>
@@ -46,8 +46,8 @@
 
 	<FormSection>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<FormButton inline @click="preview"><i class="fas fa-eye"></i> {{ i18n.ts.preview }}</FormButton>
-			<FormButton inline danger @click="setDefault"><i class="fas fa-undo"></i> {{ i18n.ts.default }}</FormButton>
+			<FormButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
+			<FormButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
 		</div>
 	</FormSection>
 </div>
@@ -55,7 +55,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
-import XDraggable from 'vuedraggable';
+import Sortable from 'vuedraggable';
 import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
@@ -127,9 +127,9 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.reaction,
-	icon: 'fas fa-laugh',
+	icon: 'ti ti-mood-happy',
 	action: {
-		icon: 'fas fa-eye',
+		icon: 'ti ti-eye',
 		handler: preview,
 	},
 });

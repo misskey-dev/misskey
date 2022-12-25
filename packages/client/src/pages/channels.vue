@@ -13,7 +13,7 @@
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'" class="_content grwlizim owned">
-			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
+			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="ownedPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
@@ -53,7 +53,7 @@ function create() {
 }
 
 const headerActions = $computed(() => [{
-	icon: 'fas fa-plus',
+	icon: 'ti ti-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);
@@ -61,19 +61,19 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'featured',
 	title: i18n.ts._channel.featured,
-	icon: 'fas fa-fire-alt',
+	icon: 'ti ti-comet',
 }, {
 	key: 'following',
 	title: i18n.ts._channel.following,
-	icon: 'fas fa-heart',
+	icon: 'ti ti-heart',
 }, {
 	key: 'owned',
 	title: i18n.ts._channel.owned,
-	icon: 'fas fa-edit',
+	icon: 'ti ti-edit',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.channel,
-	icon: 'fas fa-satellite-dish',
+	icon: 'ti ti-device-tv',
 })));
 </script>

@@ -39,7 +39,7 @@ export default {
 		});
 		resize.observe(src);
 
-		mountings.set(src, { resize, fn: binding.value, });
+		mountings.set(src, { resize, fn: binding.value });
 		calc(src);
 	},
 
@@ -50,5 +50,5 @@ export default {
 		info.resize.disconnect();
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
-	}
+	},
 } as Directive<Element, (w: number, h: number) => void>;

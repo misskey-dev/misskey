@@ -13,7 +13,7 @@
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
-		<i class="fas fa-retweet"></i>
+		<i class="ti ti-repeat"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
 				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
@@ -23,7 +23,7 @@
 		</I18n>
 		<div class="info">
 			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
+				<i v-if="isMyRenote" class="ti ti-dots dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<MkVisibility :note="note"/>
@@ -55,7 +55,7 @@
 				<div v-show="appearNote.cw == null || showContent" class="content">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
+						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
 						<div v-if="translating || translation" class="translation">
@@ -73,7 +73,7 @@
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" class="url-preview"/>
 					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer class="footer">
 				<div class="info">
@@ -83,19 +83,18 @@
 				</div>
 				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
-					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
-					<template v-else><i class="fas fa-reply"></i></template>
+					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
 				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
-					<i class="fas fa-plus"></i>
+					<i class="ti ti-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
-					<i class="fas fa-minus"></i>
+					<i class="ti ti-minus"></i>
 				</button>
 				<button ref="menuButton" class="button _button" @click="menu()">
-					<i class="fas fa-ellipsis-h"></i>
+					<i class="ti ti-dots"></i>
 				</button>
 			</footer>
 		</div>
@@ -259,7 +258,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
-		icon: 'fas fa-trash-alt',
+		icon: 'ti ti-trash',
 		danger: true,
 		action: () => {
 			os.api('notes/delete', {

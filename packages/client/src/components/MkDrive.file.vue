@@ -63,30 +63,30 @@ const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(pro
 function getMenu() {
 	return [{
 		text: i18n.ts.rename,
-		icon: 'fas fa-i-cursor',
+		icon: 'ti ti-forms',
 		action: rename,
 	}, {
 		text: props.file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: props.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
+		icon: props.file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-off',
 		action: toggleSensitive,
 	}, {
 		text: i18n.ts.describeFile,
-		icon: 'fas fa-i-cursor',
+		icon: 'ti ti-text-caption',
 		action: describe,
 	}, null, {
 		text: i18n.ts.copyUrl,
-		icon: 'fas fa-link',
+		icon: 'ti ti-link',
 		action: copyUrl,
 	}, {
 		type: 'a',
 		href: props.file.url,
 		target: '_blank',
 		text: i18n.ts.download,
-		icon: 'fas fa-download',
+		icon: 'ti ti-download',
 		download: props.file.name,
 	}, null, {
 		text: i18n.ts.delete,
-		icon: 'fas fa-trash-alt',
+		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFile,
 	}];
@@ -134,20 +134,14 @@ function rename() {
 }
 
 function describe() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkMediaCaption.vue')), {
-		title: i18n.ts.describeFile,
-		input: {
-			placeholder: i18n.ts.inputNewDescription,
-			default: props.file.comment != null ? props.file.comment : '',
-		},
-		image: props.file,
+	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+		default: props.file.comment != null ? props.file.comment : '',
+		file: props.file,
 	}, {
-		done: result => {
-			if (!result || result.canceled) return;
-			let comment = result.result;
+		done: caption => {
 			os.api('drive/files/update', {
 				fileId: props.file.id,
-				comment: comment.length === 0 ? null : comment,
+				comment: caption.length === 0 ? null : caption,
 			});
 		},
 	}, 'closed');

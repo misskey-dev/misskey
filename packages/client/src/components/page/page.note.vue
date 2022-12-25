@@ -20,8 +20,8 @@ export default defineComponent({
 	props: {
 		block: {
 			type: Object as PropType<NoteBlock>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props, ctx) {
 		const note: Ref<Record<string, any> | null> = ref(null);
@@ -34,9 +34,9 @@ export default defineComponent({
 		});
 
 		return {
-			note
+			note,
 		};
-	}
+	},
 });
 </script>
 

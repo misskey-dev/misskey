@@ -1,6 +1,6 @@
 <template>
 <MkContainer :max-height="300" :foldable="true">
-	<template #header><i class="fas fa-image" style="margin-right: 0.5em;"></i>{{ $ts.images }}</template>
+	<template #header><i class="ti ti-photo" style="margin-right: 0.5em;"></i>{{ $ts.images }}</template>
 	<div class="ujigsodd">
 		<MkLoading v-if="fetching"/>
 		<div v-if="!fetching && images.length > 0" class="stream">

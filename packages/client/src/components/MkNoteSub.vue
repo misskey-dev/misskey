@@ -19,7 +19,7 @@
 		<MkNoteSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :depth="depth + 1"/>
 	</template>
 	<div v-else class="more">
-		<MkA class="text _link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="fas fa-angle-double-right"></i></MkA>
+		<MkA class="text _link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
 	</div>
 </div>
 </template>

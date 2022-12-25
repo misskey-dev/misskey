@@ -6,15 +6,15 @@
 		<div class="items">
 			<template v-for="(item, i) in group.items">
 				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</a>
 				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
-					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</button>
 				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</MkA>
 			</template>
@@ -89,10 +89,9 @@ export default defineComponent({
 				}
 
 				> .text {
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					overflow: hidden;
+					white-space: normal;
 					padding-right: 12px;
+					flex-shrink: 1;
 				}
 
 			}
@@ -117,22 +116,36 @@ export default defineComponent({
 
 			> .items {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-				grid-gap: 8px;
+				grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+				grid-gap: 16px;
 				padding: 0 16px;
 
 				> .item {
 					flex-direction: column;
-					padding: 18px 16px 16px 16px;
-					background: var(--panel);
-					border-radius: 8px;
 					text-align: center;
+					padding: 0;
+
+					&:hover {
+						text-decoration: none;
+						background: none;
+						color: var(--accent);
+
+						> .icon {
+							background: var(--accentedBg);
+						}
+					}
 
 					> .icon {
-						display: block;
+						display: grid;
+						place-content: center;
 						margin-right: 0;
-						margin-bottom: 12px;
+						margin-bottom: 6px;
 						font-size: 1.5em;
+						width: 54px;
+						height: 54px;
+						aspect-ratio: 1;
+						background: var(--panel);
+						border-radius: 100%;
 					}
 
 					> .text {

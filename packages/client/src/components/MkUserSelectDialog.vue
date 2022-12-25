@@ -12,11 +12,11 @@
 	<div class="tbhwbxda">
 		<div class="form">
 			<FormSplit :min-width="170">
-				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
+				<MkInput v-model="username" :autofocus="true" @update:model-value="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" @update:modelValue="search">
+				<MkInput v-model="host" @update:model-value="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
