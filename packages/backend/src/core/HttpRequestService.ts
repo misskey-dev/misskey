@@ -104,6 +104,7 @@ export class HttpRequestService {
 				Accept: accept,
 			}, headers ?? {}),
 			timeout,
+			size: 1024 * 256,
 		});
 
 		return await res.json();
