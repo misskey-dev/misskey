@@ -28,7 +28,7 @@ function menu(ev) {
 		action: () => {
 			copyToClipboard(`:${props.emoji.name}:`);
 			os.success();
-		}
+		},
 	}], ev.currentTarget ?? ev.target);
 }
 </script>

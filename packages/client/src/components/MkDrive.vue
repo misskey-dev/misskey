@@ -7,8 +7,8 @@
 				:parent-folder="folder"
 				@move="move"
 				@upload="upload"
-				@removeFile="removeFile"
-				@removeFolder="removeFolder"
+				@remove-file="removeFile"
+				@remove-folder="removeFolder"
 			/>
 			<template v-for="f in hierarchyFolders">
 				<span class="separator"><i class="ti ti-chevron-right"></i></span>
@@ -17,8 +17,8 @@
 					:parent-folder="folder"
 					@move="move"
 					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@remove-file="removeFile"
+					@remove-folder="removeFolder"
 				/>
 			</template>
 			<span v-if="folder != null" class="separator"><i class="ti ti-chevron-right"></i></span>
@@ -48,8 +48,8 @@
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@remove-file="removeFile"
+					@remove-folder="removeFolder"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
 				/>

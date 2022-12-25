@@ -14,12 +14,12 @@ export default defineComponent({
 	props: {
 		block: {
 			type: Object as PropType<CanvasBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props, ctx) {
 		const canvas: Ref<any> = ref(null);
@@ -29,9 +29,9 @@ export default defineComponent({
 		});
 
 		return {
-			canvas
+			canvas,
 		};
-	}
+	},
 });
 </script>
 

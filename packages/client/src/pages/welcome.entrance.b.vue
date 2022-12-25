@@ -82,7 +82,7 @@ export default defineComponent({
 
 		os.api('hashtags/list', {
 			sort: '+mentionedLocalUsers',
-			limit: 8
+			limit: 8,
 		}).then(tags => {
 			this.tags = tags;
 		});
@@ -91,13 +91,13 @@ export default defineComponent({
 	methods: {
 		signin() {
 			os.popup(XSigninDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
 		},
 
 		signup() {
 			os.popup(XSignupDialog, {
-				autoSet: true
+				autoSet: true,
 			}, {}, 'closed');
 		},
 
@@ -107,24 +107,24 @@ export default defineComponent({
 				icon: 'ti ti-info-circle',
 				action: () => {
 					os.pageWindow('/about');
-				}
+				},
 			}, {
 				text: this.$ts.aboutMisskey,
 				icon: 'ti ti-info-circle',
 				action: () => {
 					os.pageWindow('/about-misskey');
-				}
+				},
 			}, null, {
 				text: this.$ts.help,
 				icon: 'ti ti-question-circle',
 				action: () => {
 					window.open(`https://misskey-hub.net/help.md`, '_blank');
-				}
+				},
 			}], ev.currentTarget ?? ev.target);
 		},
 
-		number
-	}
+		number,
+	},
 });
 </script>
 

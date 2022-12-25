@@ -9,7 +9,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
 		<MkPushNotificationAllowButton ref="allowButton" />
-		<FormSwitch class="_formBlock" :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
+		<FormSwitch class="_formBlock" :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
 			<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
 			<template #caption>
 				<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">

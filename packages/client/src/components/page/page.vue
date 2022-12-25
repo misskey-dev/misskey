@@ -15,12 +15,12 @@ import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
-		XBlock
+		XBlock,
 	},
 	props: {
 		page: {
 			type: Object as PropType<Record<string, any>>,
-			required: true
+			required: true,
 		},
 	},
 	setup(props, ctx) {
@@ -28,7 +28,7 @@ export default defineComponent({
 			randomSeed: Math.random(),
 			visitor: $i,
 			url: url,
-			enableAiScript: !defaultStore.state.disablePagesScript
+			enableAiScript: !defaultStore.state.disablePagesScript,
 		});
 
 		onMounted(() => {

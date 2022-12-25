@@ -65,7 +65,7 @@ import {
   Legend,
   Title,
   Tooltip,
-  SubTitle
+  SubTitle,
 } from 'chart.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -89,7 +89,7 @@ Chart.register(
   Legend,
   Title,
   Tooltip,
-  SubTitle
+  SubTitle,
 );
 
 const alpha = (hex, a) => {
@@ -155,13 +155,13 @@ export default defineComponent({
 			this.connection.on('statsLog', this.onStatsLog);
 			this.connection.send('requestLog', {
 				id: Math.random().toString().substr(2, 8),
-				length: 150
+				length: 150,
 			});
 
 			this.$nextTick(() => {
 				this.queueConnection.send('requestLog', {
 					id: Math.random().toString().substr(2, 8),
-					length: 200
+					length: 200,
 				});
 			});
 		});
@@ -190,7 +190,7 @@ export default defineComponent({
 						borderWidth: 2,
 						borderColor: '#86b300',
 						backgroundColor: alpha('#86b300', 0.1),
-						data: []
+						data: [],
 					}, {
 						label: 'MEM (active)',
 						pointRadius: 0,
@@ -198,7 +198,7 @@ export default defineComponent({
 						borderWidth: 2,
 						borderColor: '#935dbf',
 						backgroundColor: alpha('#935dbf', 0.02),
-						data: []
+						data: [],
 					}, {
 						label: 'MEM (used)',
 						pointRadius: 0,
@@ -207,8 +207,8 @@ export default defineComponent({
 						borderColor: '#935dbf',
 						borderDash: [5, 5],
 						fill: false,
-						data: []
-					}]
+						data: [],
+					}],
 				},
 				options: {
 					aspectRatio: 3,
@@ -217,14 +217,14 @@ export default defineComponent({
 							left: 16,
 							right: 16,
 							top: 16,
-							bottom: 0
-						}
+							bottom: 0,
+						},
 					},
 					legend: {
 						position: 'bottom',
 						labels: {
 							boxWidth: 16,
-						}
+						},
 					},
 					scales: {
 						x: {
@@ -235,7 +235,7 @@ export default defineComponent({
 							},
 							ticks: {
 								display: false,
-							}
+							},
 						},
 						y: {
 							position: 'right',
@@ -246,15 +246,15 @@ export default defineComponent({
 							},
 							ticks: {
 								display: false,
-								max: 100
-							}
-						}
+								max: 100,
+							},
+						},
 					},
 					tooltips: {
 						intersect: false,
 						mode: 'index',
-					}
-				}
+					},
+				},
 			}));
 		},
 
@@ -271,7 +271,7 @@ export default defineComponent({
 						borderWidth: 2,
 						borderColor: '#94a029',
 						backgroundColor: alpha('#94a029', 0.1),
-						data: []
+						data: [],
 					}, {
 						label: 'Out',
 						pointRadius: 0,
@@ -279,8 +279,8 @@ export default defineComponent({
 						borderWidth: 2,
 						borderColor: '#ff9156',
 						backgroundColor: alpha('#ff9156', 0.1),
-						data: []
-					}]
+						data: [],
+					}],
 				},
 				options: {
 					aspectRatio: 3,
@@ -289,14 +289,14 @@ export default defineComponent({
 							left: 16,
 							right: 16,
 							top: 16,
-							bottom: 0
-						}
+							bottom: 0,
+						},
 					},
 					legend: {
 						position: 'bottom',
 						labels: {
 							boxWidth: 16,
-						}
+						},
 					},
 					scales: {
 						x: {
@@ -306,8 +306,8 @@ export default defineComponent({
 								zeroLineColor: this.gridColor,
 							},
 							ticks: {
-								display: false
-							}
+								display: false,
+							},
 						},
 						y: {
 							position: 'right',
@@ -318,14 +318,14 @@ export default defineComponent({
 							},
 							ticks: {
 								display: false,
-							}
-						}
+							},
+						},
 					},
 					tooltips: {
 						intersect: false,
 						mode: 'index',
-					}
-				}
+					},
+				},
 			}));
 		},
 
@@ -342,7 +342,7 @@ export default defineComponent({
 						borderWidth: 2,
 						borderColor: '#94a029',
 						backgroundColor: alpha('#94a029', 0.1),
-						data: []
+						data: [],
 					}, {
 						label: 'Write',
 						pointRadius: 0,
@@ -350,8 +350,8 @@ export default defineComponent({
 						borderWidth: 2,
 						borderColor: '#ff9156',
 						backgroundColor: alpha('#ff9156', 0.1),
-						data: []
-					}]
+						data: [],
+					}],
 				},
 				options: {
 					aspectRatio: 3,
@@ -360,14 +360,14 @@ export default defineComponent({
 							left: 16,
 							right: 16,
 							top: 16,
-							bottom: 0
-						}
+							bottom: 0,
+						},
 					},
 					legend: {
 						position: 'bottom',
 						labels: {
 							boxWidth: 16,
-						}
+						},
 					},
 					scales: {
 						x: {
@@ -377,8 +377,8 @@ export default defineComponent({
 								zeroLineColor: this.gridColor,
 							},
 							ticks: {
-								display: false
-							}
+								display: false,
+							},
 						},
 						y: {
 							position: 'right',
@@ -389,14 +389,14 @@ export default defineComponent({
 							},
 							ticks: {
 								display: false,
-							}
-						}
+							},
+						},
 					},
 					tooltips: {
 						intersect: false,
 						mode: 'index',
-					}
-				}
+					},
+				},
 			}));
 		},
 
@@ -458,7 +458,7 @@ export default defineComponent({
 		resume() {
 			this.paused = false;
 		},
-	}
+	},
 });
 </script>
 

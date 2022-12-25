@@ -76,7 +76,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.pages,
-	icon: 'fas fa-sticky-note',
+	icon: 'ti ti-note',
 })));
 </script>
 

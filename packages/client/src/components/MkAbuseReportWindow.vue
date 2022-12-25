@@ -50,7 +50,7 @@ function send() {
 	}, undefined).then(res => {
 		os.alert({
 			type: 'success',
-			text: i18n.ts.abuseReported
+			text: i18n.ts.abuseReported,
 		});
 		uiWindow.value?.close();
 		emit('closed');

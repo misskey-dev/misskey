@@ -19,12 +19,12 @@ export default defineComponent({
 	props: {
 		block: {
 			type: Object as PropType<TextBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -38,15 +38,15 @@ export default defineComponent({
 			} else {
 				return [];
 			}
-		}
+		},
 	},
 	watch: {
 		'hpml.vars': {
 			handler() {
 				this.text = this.hpml.interpolate(this.block.text);
 			},
-			deep: true
-		}
+			deep: true,
+		},
 	},
 });
 </script>

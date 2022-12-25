@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div v-if="!narrow || hideTitle" class="tabs">
-			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = el" v-tooltip.noDelay="tab.title" class="tab _button" :class="{ active: tab.key != null && tab.key === props.tab }" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
+			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="tab _button" :class="{ active: tab.key != null && tab.key === props.tab }" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
 				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
 			</button>
@@ -37,34 +37,36 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, inject, watch, shallowReactive, nextTick, reactive } from 'vue';
+import { onMounted, onUnmounted, ref, inject, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { scrollToTop } from '@/scripts/scroll';
-import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
 import { $i } from '@/account';
 
 type Tab = {
-	key?: string | null;
+	key: string;
 	title: string;
 	icon?: string;
 	iconOnly?: boolean;
 	onClick?: (ev: MouseEvent) => void;
 };
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;
 	actions?: {
 		text: string;
 		icon: string;
+		highlighted?: boolean;
 		handler: (ev: MouseEvent) => void;
 	}[];
 	thin?: boolean;
 	displayMyAvatar?: boolean;
-}>();
+}>(), {
+	tabs: () => ([] as Tab[])
+});
 
 const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
@@ -75,13 +77,12 @@ const metadata = injectPageMetadata();
 const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = $ref<HTMLElement | null>(null);
-const tabRefs = {};
+const el = $ref<HTMLElement | undefined>(undefined);
+const tabRefs: Record<string, HTMLElement | null> = {};
 const tabHighlightEl = $ref<HTMLElement | null>(null);
-const bg = ref(null);
+const bg = ref<string | undefined>(undefined);
 let narrow = $ref(false);
-const height = ref(0);
-const hasTabs = $computed(() => props.tabs && props.tabs.length > 0);
+const hasTabs = $computed(() => props.tabs.length > 0);
 const hasActions = $computed(() => props.actions && props.actions.length > 0);
 const show = $computed(() => {
 	return !hideTitle || hasTabs || hasActions;
@@ -100,7 +101,7 @@ const showTabsPopup = (ev: MouseEvent) => {
 			onTabClick(tab, ev);
 		},
 	}));
-	popupMenu(menu, ev.currentTarget ?? ev.target);
+	popupMenu(menu, (ev.currentTarget ?? ev.target) as HTMLElement);
 };
 
 const preventDrag = (ev: TouchEvent) => {
@@ -108,7 +109,9 @@ const preventDrag = (ev: TouchEvent) => {
 };
 
 const onClick = () => {
-	scrollToTop(el, { behavior: 'smooth' });
+	if (el) {
+		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
+	}
 };
 
 function onTabMousedown(tab: Tab, ev: MouseEvent): void {
@@ -144,8 +147,8 @@ onMounted(() => {
 
 	watch(() => [props.tab, props.tabs], () => {
 		nextTick(() => {
-			const tabEl = tabRefs[props.tab];
-			if (tabEl && tabHighlightEl) {
+			const tabEl = props.tab ? tabRefs[props.tab] : undefined;
+			if (tabEl && tabHighlightEl && tabEl.parentElement) {
 				// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 				// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
 				const parentRect = tabEl.parentElement.getBoundingClientRect();
@@ -161,11 +164,11 @@ onMounted(() => {
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
 		ro = new ResizeObserver((entries, observer) => {
-			if (el.parentElement && document.body.contains(el)) {
+			if (el.parentElement && document.body.contains(el as HTMLElement)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
-		ro.observe(el.parentElement);
+		ro.observe(el.parentElement as HTMLElement);
 	}
 });
 

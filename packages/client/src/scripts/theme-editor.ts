@@ -61,7 +61,7 @@ export const convertToMisskeyTheme = (vm: ThemeViewModel, name: string, desc: st
 
 	return {
 		id: uuid(),
-		name, desc, author, props, base
+		name, desc, author, props, base,
 	};
 };
 

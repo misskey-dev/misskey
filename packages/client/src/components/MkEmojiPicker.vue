@@ -1,6 +1,6 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="search" v-model.trim="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @paste.stop="paste" @keyup.enter="done()">
+	<input ref="search" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
 	<div ref="emojis" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
@@ -121,7 +121,7 @@ const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value 
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
 const customEmojiCategories = emojiCategories;
 const customEmojis = instance.emojis;
-const q = ref<string | null>(null);
+const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
@@ -129,7 +129,7 @@ const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 watch(q, () => {
 	if (emojis.value) emojis.value.scrollTop = 0;
 
-	if (q.value == null || q.value === '') {
+	if (q.value === '') {
 		searchResultCustom.value = [];
 		searchResultUnicode.value = [];
 		return;
@@ -281,7 +281,7 @@ function reset() {
 }
 
 function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef): string {
-	return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
+	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
 }
 
 function chosen(emoji: any, ev?: MouseEvent) {
@@ -305,14 +305,21 @@ function chosen(emoji: any, ev?: MouseEvent) {
 	}
 }
 
-function paste(event: ClipboardEvent) {
-	const paste = (event.clipboardData || window.clipboardData).getData('text');
-	if (done(paste)) {
+function input(): void {
+	// Using custom input event instead of v-model to respond immediately on
+	// Android, where composition happens on all languages
+	// (v-model does not update during composition)
+	q.value = search.value?.value.trim() ?? '';
+}
+
+function paste(event: ClipboardEvent): void {
+	const pasted = event.clipboardData?.getData('text') ?? '';
+	if (done(pasted)) {
 		event.preventDefault();
 	}
 }
 
-function done(query?: any): boolean | void {
+function done(query?: string): boolean | void {
 	if (query == null) query = q.value;
 	if (query == null || typeof query !== 'string') return;
 
