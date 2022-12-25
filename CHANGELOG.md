@@ -50,6 +50,7 @@ You should also include the user name that made the change.
 - Server: Fix peers API returning suspended instances @ineffyble
 - Server: trim long text of note from ap @syuilo
 - Server: Ap inboxの最大ペイロードサイズを64kbに制限 @syuilo
+- Server: アンテナの作成数上限を追加 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
