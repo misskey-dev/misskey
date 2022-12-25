@@ -109,7 +109,7 @@ onUnmounted(() => {
 		> .charts {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			gap: 16px;
+			gap: 12px;
 
 			> .chart {
 				min-width: 0;
