@@ -19,7 +19,7 @@ You should also include the user name that made the change.
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - 新たに動的なPagesを作ることはできなくなりました
-	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMiPlay機能の実装を予定しています。
+	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
 
 ### Improvements
 - Push notification of Antenna note @tamaina
@@ -36,6 +36,10 @@ You should also include the user name that made the change.
 - Client: Compress non-animated PNG files @saschanaz
 - Client: Youtube window player @sim1222
 - Client: enhance dashboard of control panel @syuilo
+- Client: Vite is upgraded to v4 @syuilo, @tamaina
+- Client: HMR is available while yarn dev @tamaina
+- Client: Implement the button to subscribe push notification @tamaina
+- Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
