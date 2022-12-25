@@ -96,9 +96,9 @@ onMounted(async () => {
 	&:global {
 		> .pies {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-			grid-gap: 16px;
-			margin-bottom: 16px;
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+			grid-gap: 12px;
+			margin-bottom: 12px;
 
 			> .pie {
 				position: relative;
@@ -126,8 +126,8 @@ onMounted(async () => {
 
 		> .items {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-			grid-gap: 16px;
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+			grid-gap: 12px;
 
 			> .item {
 				display: flex;
@@ -160,10 +160,10 @@ onMounted(async () => {
 				}
 
 				> .body {
-					padding: 4px 0;
+					padding: 2px 0;
 
 					> .value {
-						font-size: 1.3em;
+						font-size: 1.25em;
 						font-weight: bold;
 
 						> .diff {
