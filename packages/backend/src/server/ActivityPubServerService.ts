@@ -88,7 +88,6 @@ export class ActivityPubServerService {
 
 	@bindThis
 	private inbox(request: FastifyRequest, reply: FastifyReply) {
-		let signature;
 
 		try {
 			signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
@@ -438,9 +437,9 @@ export class ActivityPubServerService {
 		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 
 		//#region Routing
-		// inbox
-		fastify.post('/inbox', async (request, reply) => await this.inbox(request, reply));
-		fastify.post('/users/:user/inbox', async (request, reply) => await this.inbox(request, reply));
+		// inbox (limit: 256kb)
+		fastify.post('/inbox', { bodyLimit: 1024 * 256 }, async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/users/:user/inbox', { bodyLimit: 1024 * 256 }, async (request, reply) => await this.inbox(request, reply));
 
 		// note
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
