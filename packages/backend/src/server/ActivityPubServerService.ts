@@ -88,6 +88,7 @@ export class ActivityPubServerService {
 
 	@bindThis
 	private inbox(request: FastifyRequest, reply: FastifyReply) {
+		let signature;
 
 		try {
 			signature = httpSignature.parseRequest(request.raw, { 'headers': [] });
