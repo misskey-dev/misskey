@@ -16,7 +16,7 @@
 			:animation="150"
 			:group="{ name: 'SortableMkWidgets' }"
 			@update:model-value="v => emit('updateWidgets', v)"
-			class="mk-widget-editing"
+			:class="$style['edit-editing']"
 		>
 			<template #item="{element}">
 				<div :class="[$style.widget, $style['customize-container']]">
@@ -132,6 +132,10 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 			width: 100%;
 			padding: 4px;
 		}
+	}
+
+	&-editing {
+		min-height: 100px;
 	}
 }
 
