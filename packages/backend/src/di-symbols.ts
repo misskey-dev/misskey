@@ -68,5 +68,6 @@ export const DI = {
 	webhooksRepository: Symbol('webhooksRepository'),
 	adsRepository: Symbol('adsRepository'),
 	passwordResetRequestsRepository: Symbol('passwordResetRequestsRepository'),
+	retentionAggregationsRepository: Symbol('retentionAggregationsRepository'),
 	//#endregion
 };

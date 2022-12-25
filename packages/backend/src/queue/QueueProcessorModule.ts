@@ -29,6 +29,7 @@ import { ImportMutingProcessorService } from './processors/ImportMutingProcessor
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
+import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 
 @Module({
 	imports: [
@@ -63,6 +64,7 @@ import { TickChartsProcessorService } from './processors/TickChartsProcessorServ
 		EndedPollNotificationProcessorService,
 		DeliverProcessorService,
 		InboxProcessorService,
+		AggregateRetentionProcessorService,
 		QueueProcessorService,
 	],
 	exports: [

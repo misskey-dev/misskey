@@ -25,6 +25,7 @@ You should also include the user name that made the change.
 - Push notification of Antenna note @tamaina
 - AVIF support @tamaina
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- Introduce retention-rate aggregation @syuilo
 - Server: improve syslog performance @syuilo
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: delete outdated notifications regularly to improve db performance @syuilo
