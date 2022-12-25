@@ -81,7 +81,7 @@ onMounted(async () => {
 <style lang="scss" module>
 .root {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 	grid-gap: 16px;
 
 	&:global {
@@ -130,10 +130,10 @@ onMounted(async () => {
 			}
 
 			> .body {
-				padding: 4px 0;
+				padding: 2px 0;
 
 				> .value {
-					font-size: 1.3em;
+					font-size: 1.25em;
 					font-weight: bold;
 
 					> .diff {
