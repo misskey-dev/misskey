@@ -1,6 +1,6 @@
 <template>
 <img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
-<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" decoding="async" @pointerenter="computeTitle"/>
+<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" decoding="async" @pointerenter="computeTitle"/>
 <span v-else-if="char && useOsNativeEmojis" :alt="alt" @pointerenter="computeTitle">{{ char }}</span>
 <span v-else>{{ emoji }}</span>
 </template>
@@ -39,6 +39,7 @@ const url = computed(() => {
 });
 const alt = computed(() => customEmoji.value ? `:${customEmoji.value.name}:` : char.value);
 
+// Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
 function computeTitle(event: PointerEvent): void {
 	const title = customEmoji.value
 		? `:${customEmoji.value.name}:`
