@@ -1223,6 +1223,8 @@ _widgets:
   serverMetric: "Statistik peladen"
   aiscript: "Konsol AiScript"
   aichan: "Ai"
+  _userList:
+    chooseList: "Pilih daftar"
 _cw:
   hide: "Sembunyikan"
   show: "Lihat konten"
