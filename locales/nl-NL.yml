@@ -446,6 +446,8 @@ _widgets:
   activity: "Activiteit"
   federation: "Federatie"
   jobQueue: "Job Queue"
+  _userList:
+    chooseList: "Kies een lijst."
 _cw:
   show: "Laad meer"
 _visibility:
