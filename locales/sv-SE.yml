@@ -270,6 +270,8 @@ _widgets:
   timeline: "Tidslinje"
   federation: "Federation"
   jobQueue: "Jobbkö"
+  _userList:
+    chooseList: "Välj lista"
 _cw:
   show: "Ladda mer"
 _visibility:
