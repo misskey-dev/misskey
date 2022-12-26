@@ -1132,6 +1132,8 @@ _widgets:
   onlineUsers: "المتّصلون"
   jobQueue: "قائمة الانتظار"
   serverMetric: "إحصائيات الخادم"
+  _userList:
+    chooseList: "اختر قائمة"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
