@@ -4262,7 +4262,7 @@ __metadata:
     strict-event-emitter-types: 2.0.0
     stringz: 2.1.0
     summaly: 2.7.0
-    syslog-pro: "git+https://github.com/misskey-dev/SyslogPro#0.2.9-misskey.2"
+    syslog-pro: "https://github.com/misskey-dev/SyslogPro/archive/0.2.9-misskey.2.tar.gz"
     systeminformation: 5.16.8
     tinycolor2: 1.5.1
     tmp: 0.2.1
@@ -4496,10 +4496,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-image-resizer@git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3":
+"browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer/archive/v2.2.1-misskey.3.tar.gz":
   version: 2.2.1-misskey.3
-  resolution: "browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer.git#commit=0227e860621e55cbed0aabe6dc601096a7748c4a"
-  checksum: 2c5b3bbea6c7b30153c8aa339eaff14c4c17f7a3992525e7c103d5b6674ad5015ba6d822cd8e9a1835d642743bcd1ff7fb47f9322065971db9e5da5f43d3bd72
+  resolution: "browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer/archive/v2.2.1-misskey.3.tar.gz"
+  checksum: 373336a3b209f931e0c63257434c44c14455dfa2d668a6e4b852f32492307a866dc98378ce9ee1c72868f58a4b836b58fe47367ec794cfffbd23040a7825d328
   languageName: node
   linkType: hard
 
@@ -5162,7 +5162,7 @@ __metadata:
     autosize: 5.0.2
     blurhash: 2.0.4
     broadcast-channel: 4.18.1
-    browser-image-resizer: "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3"
+    browser-image-resizer: "https://github.com/misskey-dev/browser-image-resizer/archive/v2.2.1-misskey.3.tar.gz"
     chart.js: 4.1.1
     chartjs-adapter-date-fns: 3.0.0
     chartjs-plugin-gradient: 0.6.1
@@ -15952,12 +15952,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"syslog-pro@git+https://github.com/misskey-dev/SyslogPro#0.2.9-misskey.2":
+"syslog-pro@https://github.com/misskey-dev/SyslogPro/archive/0.2.9-misskey.2.tar.gz":
   version: 0.2.9-misskey.2
-  resolution: "syslog-pro@https://github.com/misskey-dev/SyslogPro.git#commit=2772b33fa126784fc6e21377786471a918b22dc7"
+  resolution: "syslog-pro@https://github.com/misskey-dev/SyslogPro/archive/0.2.9-misskey.2.tar.gz"
   dependencies:
     moment: ^2.22.2
-  checksum: a74390c0358c7f9142247c2d4ef29893f98bed2cdfc890224926d5d2232c5e41a2ac07cbd24b908be1dd1b255585b14e617595ef8a0b966799fdc01d32b4e4aa
+  checksum: d210bbc3af523954925e5645a186bea796c8c5d0d6b69ff58ca2774de9207c54dea4133df65ff0c17a5b7f2472e20a6d1e47b98ce05a29239e5c6b7643ece90c
   languageName: node
   linkType: hard
 
