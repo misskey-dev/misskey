@@ -494,6 +494,8 @@ _widgets:
   activity: "atividade"
   federation: "União"
   jobQueue: "Fila de trabalhos"
+  _userList:
+    chooseList: "Escolhe uma lista"
 _cw:
   show: "Carregar mais"
 _visibility:
