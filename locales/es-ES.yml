@@ -1296,6 +1296,8 @@ _widgets:
   serverMetric: "Estadísticas del servidor"
   aiscript: "Consola de AiScript"
   aichan: "indigo"
+  _userList:
+    chooseList: "Seleccione una lista"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
