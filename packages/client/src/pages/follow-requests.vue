@@ -67,7 +67,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.followRequests,
-	icon: 'ti ti-user-clock',
+	icon: 'ti ti-user-plus',
 })));
 </script>
 
