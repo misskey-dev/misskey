@@ -1307,6 +1307,8 @@ _widgets:
   serverMetric: "Metriky servera"
   aiscript: "Konzola AiScript"
   aichan: "Ai"
+  _userList:
+    chooseList: "Vyberte zoznam"
 _cw:
   hide: "Skryť"
   show: "Zobraziť viac"
