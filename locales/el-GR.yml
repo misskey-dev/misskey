@@ -355,6 +355,8 @@ _widgets:
   postForm: "Φόρμα δημοσίευσης"
   button: "Κουμπί"
   onlineUsers: "Συνδεδεμένα μέλη"
+  _userList:
+    chooseList: "Επιλέξτε μία λίστα"
 _cw:
   show: "Δείτε περισσότερα"
 _visibility:
