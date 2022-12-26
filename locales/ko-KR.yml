@@ -1296,6 +1296,8 @@ _widgets:
   serverMetric: "서버 통계"
   aiscript: "AiScript 콘솔"
   aichan: "아이"
+  _userList:
+    chooseList: "리스트 선택"
 _cw:
   hide: "숨기기"
   show: "더 보기"
