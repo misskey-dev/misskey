@@ -711,6 +711,8 @@ _widgets:
   jobQueue: "Fronta úloh"
   aiscript: "AiScript conzole"
   aichan: "Ai"
+  _userList:
+    chooseList: "Vybrat seznam"
 _cw:
   hide: "Skrýt"
   show: "Zobrazit více"
