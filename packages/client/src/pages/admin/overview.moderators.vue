@@ -1,8 +1,8 @@
 <template>
 <div>
 	<MkLoading v-if="fetching"/>
-	<div v-else :class="$style.root">
-		<MkA v-for="user in moderators" :key="user.id" v-user-preview="user.id" class="user" :to="`/user-info/${user.id}`">
+	<div v-else :class="$style.root" class="_panel">
+		<MkA v-for="user in moderators" :key="user.id" class="user" :to="`/user-info/${user.id}`">
 			<MkAvatar :user="user" class="avatar" :show-indicator="true" :disable-link="true"/>
 		</MkA>
 	</div>
@@ -35,6 +35,7 @@ onMounted(async () => {
 	grid-template-columns: repeat(auto-fill, minmax(30px, 40px));
 	grid-gap: 12px;
 	place-content: center;
+	padding: 12px;
 
 	&:global {
 		> .user {
