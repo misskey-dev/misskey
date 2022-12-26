@@ -1232,6 +1232,8 @@ _widgets:
   serverMetric: "Показатели сервера"
   aiscript: "Консоль AiScript"
   aichan: "Ай"
+  _userList:
+    chooseList: "Выберите список"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
