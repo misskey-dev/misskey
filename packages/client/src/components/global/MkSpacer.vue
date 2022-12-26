@@ -72,5 +72,6 @@ onUnmounted(() => {
 
 .content {
 	margin: 0 auto;
+	container-type: inline-size;
 }
 </style>

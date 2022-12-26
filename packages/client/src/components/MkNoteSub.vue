@@ -127,4 +127,14 @@ if (props.detail) {
 		padding: 10px 0 0 16px;
 	}
 }
+
+@container (max-width: 450px) {
+	.wrpstxzv {
+		padding: 14px 16px;
+
+		&.children {
+			padding: 10px 0 0 8px;
+		}
+	}
+}
 </style>

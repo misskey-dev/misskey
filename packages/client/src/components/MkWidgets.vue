@@ -115,6 +115,10 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 </script>
 
 <style lang="scss" module>
+.root {
+	container-type: inline-size;
+}
+
 .widget {
 	contain: content;
 	margin: var(--margin) 0;

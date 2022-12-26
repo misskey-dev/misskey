@@ -246,6 +246,17 @@ export default defineComponent({
 	}
 }
 
+@container (max-width: 380px) {
+	.ukygtjoj {
+		> header {
+			> .title {
+				padding: 8px 10px;
+				font-size: 0.9em;
+			}
+		}
+	}
+}
+
 ._forceContainerFull_ .ukygtjoj {
 	> header {
 		> .title {

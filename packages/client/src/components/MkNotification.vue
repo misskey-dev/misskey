@@ -306,4 +306,18 @@ useTooltip(reactionRef, (showing) => {
 		}
 	}
 }
+
+@container (max-width: 600px) {
+	.qglefbjs {
+		padding: 16px;
+		font-size: 0.9em;
+	}
+}
+
+@container (max-width: 500px) {
+	.qglefbjs {
+		padding: 12px;
+		font-size: 0.85em;
+	}
+}
 </style>

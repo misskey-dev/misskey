@@ -475,4 +475,56 @@ onUnmounted(() => {
 		}
 	}
 }
+
+@container (max-width: 500px) {
+	.ftskorzw {
+		> .main {
+			> .profile > .main {
+				> .banner-container {
+					height: 140px;
+
+					> .fade {
+						display: none;
+					}
+
+					> .title {
+						display: none;
+					}
+				}
+
+				> .title {
+					display: block;
+				}
+
+				> .avatar {
+					top: 90px;
+					left: 0;
+					right: 0;
+					width: 92px;
+					height: 92px;
+					margin: auto;
+				}
+
+				> .description {
+					padding: 16px;
+					text-align: center;
+				}
+
+				> .fields {
+					padding: 16px;
+				}
+
+				> .status {
+					padding: 16px;
+				}
+			}
+
+			> .contents {
+				> .nav {
+					font-size: 80%;
+				}
+			}
+		}
+	}
+}
 </style>
