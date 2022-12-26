@@ -673,6 +673,8 @@ _widgets:
   activity: "Activitate"
   federation: "Federație"
   jobQueue: "coada de job-uri"
+  _userList:
+    chooseList: "Selectează o listă"
 _cw:
   show: "Incarcă mai mult"
 _visibility:
