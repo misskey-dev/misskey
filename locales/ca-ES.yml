@@ -405,6 +405,8 @@ _widgets:
   activity: "Activitat"
   federation: "Federació"
   jobQueue: "Cua de tasques"
+  _userList:
+    chooseList: "Tria una llista"
 _cw:
   show: "Carregar més"
 _visibility:
