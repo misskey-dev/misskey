@@ -1,6 +1,6 @@
 <template>
 <MkSpacer :content-max="1000">
-	<div ref="rootEl" v-size="{ max: [740] }" class="edbbcaef">
+	<div ref="rootEl" class="edbbcaef">
 		<MkFolder class="item">
 			<template #header>Stats</template>
 			<XStats/>
@@ -8,6 +8,10 @@
 		<MkFolder class="item">
 			<template #header>Active users</template>
 			<XActiveUsers/>
+		</MkFolder>
+		<MkFolder class="item">
+			<template #header>Moderators</template>
+			<XModerators/>
 		</MkFolder>
 		<MkFolder class="item">
 			<template #header>Federation</template>
@@ -46,6 +50,7 @@ import XApRequests from './overview.ap-requests.vue';
 import XUsers from './overview.users.vue';
 import XActiveUsers from './overview.active-users.vue';
 import XStats from './overview.stats.vue';
+import XModerators from './overview.moderators.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
 import { version, url } from '@/config';
 import * as os from '@/os';
