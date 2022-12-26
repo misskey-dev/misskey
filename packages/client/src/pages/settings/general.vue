@@ -48,10 +48,16 @@
 		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
 		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ i18n.ts.squareAvatars }}</FormSwitch>
 		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ i18n.ts.useSystemFont }}</FormSwitch>
-		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">
-			{{ i18n.ts.useOsNativeEmojis }}
-			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
-		</FormSwitch>
+		<div class="_formBlock">
+			<FormRadios v-model="emojiStyle">
+				<template #label>{{ i18n.ts.emojiStyle }}</template>
+				<option value="native">{{ i18n.ts.native }}</option>
+				<option value="fluentEmoji">Fluent Emoji</option>
+				<option value="twemoji">Twemoji</option>
+			</FormRadios>
+			<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
+		</div>
+
 		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ i18n.ts.disableDrawer }}</FormSwitch>
 
 		<FormRadios v-model="fontSize" class="_formBlock">
@@ -129,7 +135,7 @@ const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEff
 const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
 const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
 const disableAnimatedMfm = computed(defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v));
-const useOsNativeEmojis = computed(defaultStore.makeGetterSetter('useOsNativeEmojis'));
+const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
 const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));

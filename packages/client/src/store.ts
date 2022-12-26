@@ -174,9 +174,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	useOsNativeEmojis: {
+	emojiStyle: {
 		where: 'device',
-		default: false,
+		default: 'twemoji', // twemoji / fluentEmoji / native
 	},
 	disableDrawer: {
 		where: 'device',
