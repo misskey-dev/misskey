@@ -1219,6 +1219,8 @@ _widgets:
   serverMetric: "Metryka serwera"
   aiscript: "Konsola AiScript"
   aichan: "Ai"
+  _userList:
+    chooseList: "Wybierz listę"
 _cw:
   hide: "Ukryj"
   show: "Załaduj więcej"
