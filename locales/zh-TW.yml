@@ -1311,6 +1311,8 @@ _widgets:
   serverMetric: "服務器指標 "
   aiscript: "AiScript控制台"
   aichan: "小藍"
+  _userList:
+    chooseList: "選擇清單"
 _cw:
   hide: "隱藏"
   show: "瀏覽更多"
