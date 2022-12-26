@@ -456,7 +456,6 @@ language: "Sprache"
 uiLanguage: "Sprache der Benutzeroberfläche"
 groupInvited: "Du wurdest in eine Gruppe eingeladen"
 aboutX: "Über {x}"
-useOsNativeEmojis: "Eingebaute Emojis des Betriebssystems benutzen"
 disableDrawer: "Keine ausfahrbaren Menüs verwenden"
 youHaveNoGroups: "Keine Gruppen vorhanden"
 joinOrCreateGroup: "Lass dich zu einer Gruppe einladen oder erstelle deine eigene."
@@ -502,13 +501,14 @@ objectStorageRegionDesc: "Gib eine Region wie z.B. „xx-east-1“ an. Falls dei
 objectStorageUseSSL: "SSL verwenden"
 objectStorageUseSSLDesc: "Deaktiviere dies, falls du für API-Verbindungen kein HTTPS verwenden wirst"
 objectStorageUseProxy: "Über Proxy verbinden"
-objectStorageUseProxyDesc: "Deaktiviere dies, falls du keinen Proxy für den Objektspeicher verwenden wirst"
+objectStorageUseProxyDesc: "Deaktiviere dies, falls du für Verbindungen zur API keinen Proxy verwenden wirst"
 objectStorageSetPublicRead: "Bei Upload auf \"public-read\" stellen"
 serverLogs: "Serverprotokolle"
 deleteAll: "Alle löschen"
 showFixedPostForm: "Bereich zum Schreiben neuer Notizen am Anfang der Chronik anzeigen"
 newNoteRecived: "Es gibt neue Notizen"
 sounds: "Töne"
+sound: "Töne"
 listen: "Anhören"
 none: "Nichts"
 showInPage: "In einer Seite anzeigen"
@@ -906,6 +906,10 @@ pushNotificationAlreadySubscribed: "Push-Benachrichtigungen sind bereits aktivie
 pushNotificationNotSupported: "Entweder dein Browser oder deine Instanz unterstützt Push-Benachrichtigungen nicht"
 sendPushNotificationReadMessage: "Push-Benachrichtigungen löschen, sobald die relevanten Benachrichtigungen oder Nachrichten gelesen wurden"
 sendPushNotificationReadMessageCaption: "Eine Push-Benachrichtigungen mit dem Inhalt \"{emptyPushNotificationMessage}\" wird kurz eingeblendet. Dies kann gegebenenfalls den Batterieverbrauch deines Gerätes erhöhen."
+windowMaximize: "Maximieren"
+windowRestore: "Wiederherstellen"
+caption: "Beschreibung"
+loggedInAsBot: "Momentan als Bot angemeldet"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
@@ -1306,6 +1310,8 @@ _widgets:
   serverMetric: "Servermetriken"
   aiscript: "AiScript-Konsole"
   aichan: "Ai"
+  _userList:
+    chooseList: "Liste auswählen"
 _cw:
   hide: "Inhalt verbergen"
   show: "Inhalt anzeigen"
@@ -1441,8 +1447,6 @@ _pages:
   eyeCatchingImageRemove: "Vorschaubild entfernen"
   chooseBlock: "Block hinzufügen"
   selectType: "Typ auswählen"
-  enterVariableName: "Gib einen Variablennamen ein"
-  variableNameIsAlreadyUsed: "Dieser Name wird bereits von einer anderen Variable verwendet"
   contentBlocks: "Inhalt"
   inputBlocks: "Eingabe"
   specialBlocks: "Spezial"
@@ -1452,249 +1456,11 @@ _pages:
     section: "Abschnitt"
     image: "Bild"
     button: "Knopf"
-    if: "Falls"
-    _if:
-      variable: "Variable"
-    post: "Notizfenster"
-    _post:
-      text: "Inhalt"
-      attachCanvasImage: "Leinwandbild anfügen"
-      canvasId: "Leinwand-ID"
-    textInput: "Texteingabe"
-    _textInput:
-      name: "Variablenname"
-      text: "Titel"
-      default: "Standardwert"
-    textareaInput: "Mehrzeiliges Texteingabefeld"
-    _textareaInput:
-      name: "Variablenname"
-      text: "Titel"
-      default: "Standardwert"
-    numberInput: "Zahleneingabe"
-    _numberInput:
-      name: "Variablenname"
-      text: "Titel"
-      default: "Standardwert"
-    canvas: "Leinwand"
-    _canvas:
-      id: "Leinwand-ID"
-      width: "Breite"
-      height: "Höhe"
     note: "Eingebettete Notiz"
     _note:
       id: "Notiz-ID"
       idDescription: "Du kannst alternativ auch die Notiz-URL angeben."
       detailed: "Detailierte Ansicht"
-    switch: "Fallunterscheidung"
-    _switch:
-      name: "Variablenname"
-      text: "Titel"
-      default: "Standardwert"
-    counter: "Zähler"
-    _counter:
-      name: "Variablenname"
-      text: "Titel"
-      inc: "Schrittgröße"
-    _button:
-      text: "Titel"
-      colored: "Farbig"
-      action: "Aktion, die bei Knopfdruck ausgeführt wird"
-      _action:
-        dialog: "Dialogfenster anzeigen"
-        _dialog:
-          content: "Inhalt"
-        resetRandom: "Zufallswert zurücksetzen"
-        pushEvent: "Ein Event senden"
-        _pushEvent:
-          event: "Eventname"
-          message: "Nachricht, die bei Auslösung des Events angezeigt werden soll"
-          variable: "Variable, die gesendet werden soll"
-          no-variable: "Keine"
-        callAiScript: "AiScript ausführen"
-        _callAiScript:
-          functionName: "Funktionsname"
-    radioButton: "Optionsfeld"
-    _radioButton:
-      name: "Variablenname"
-      title: "Titel"
-      values: "Durch Zeilenümbrüche getrennte Auswahlmöglichkeiten"
-      default: "Standardwert"
-  script:
-    categories:
-      flow: "Steuerung"
-      logical: "Logische Operationen"
-      operation: "Berechnungen"
-      comparison: "Vergleiche"
-      random: "Zufällig"
-      value: "Werte"
-      fn: "Funktionen"
-      text: "Textoperationen"
-      convert: "Konvertierungen"
-      list: "Listen"
-    blocks:
-      text: "Text"
-      multiLineText: "Text (Mehrzeilig)"
-      textList: "Textliste"
-      _textList:
-        info: "Trenne jeden Eintrag mit einem Zeilenumbruch"
-      strLen: "Textlänge"
-      _strLen:
-        arg1: "Text"
-      strPick: "Text extrahieren"
-      _strPick:
-        arg1: "Text"
-        arg2: "Textposition"
-      strReplace: "Textersetzung"
-      _strReplace:
-        arg1: "Text"
-        arg2: "Zu ersetzender Text"
-        arg3: "Ersetzen mit"
-      strReverse: "Text umkehren"
-      _strReverse:
-        arg1: "Text"
-      join: "Text zusammenfügen"
-      _join:
-        arg1: "Liste"
-        arg2: "Trennzeichen"
-      add: "Addieren"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "Subtrahieren"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "Multiplizieren"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "Teilen"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "Rest"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "Rundung von Dezimalstellen"
-      _round:
-        arg1: "Nummer"
-      eq: "A und B sind gleich"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A und B sind nicht gleich"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A UND B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A ODER B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A ist kleiner als B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A ist größer als B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A ist kleiner als oder gleich B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A ist größer als oder gleich B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Kondition"
-      _if:
-        arg1: "Falls"
-        arg2: "Wenn wahr"
-        arg3: "Sonst"
-      not: "NICHT"
-      _not:
-        arg1: "NICHT"
-      random: "Zufällig"
-      _random:
-        arg1: "Warscheinlichkeit"
-      rannum: "Zufallsnummer"
-      _rannum:
-        arg1: "Minimum"
-        arg2: "Maximum"
-      randomPick: "Zufallswahl aus Liste"
-      _randomPick:
-        arg1: "Liste"
-      dailyRandom: "Zufällig (Pro Nutzer jeden Tag verschieden)"
-      _dailyRandom:
-        arg1: "Warscheinlichkeit"
-      dailyRannum: "Zufallsnummer (Pro Nutzer jeden Tag verschieden)"
-      _dailyRannum:
-        arg1: "Minimum"
-        arg2: "Maximum"
-      dailyRandomPick: "Zufallsauswahl aus einer Liste (Pro Nutzer jeden Tag verschieden)"
-      _dailyRandomPick:
-        arg1: "Liste"
-      seedRandom: "Zufällig (mit Startwert / Seed)"
-      _seedRandom:
-        arg1: "Startwert / Seed"
-        arg2: "Warscheinlichkeit"
-      seedRannum: "Zufallsnummer (mit Startwert / Seed)"
-      _seedRannum:
-        arg1: "Startwert / Seed"
-        arg2: "Minimum"
-        arg3: "Maximum"
-      seedRandomPick: "Zufallsauswahl aus Liste (mit Startwert / Seed)"
-      _seedRandomPick:
-        arg1: "Startwert / Seed"
-        arg2: "Liste"
-      DRPWPM: "Zufallsauswahl aus gewichteter Liste (Pro Nutzer jeden Tag verschieden)"
-      _DRPWPM:
-        arg1: "Textliste"
-      pick: "Aus einer Liste wählen"
-      _pick:
-        arg1: "Liste"
-        arg2: "Position"
-      listLen: "Listenlänge abrufen"
-      _listLen:
-        arg1: "Liste"
-      number: "Nummer"
-      stringToNumber: "Text zu Nummer"
-      _stringToNumber:
-        arg1: "Text"
-      numberToString: "Nummer zu Text"
-      _numberToString:
-        arg1: "Nummer"
-      splitStrByLine: "Text nach Zeilenumbrüchen aufteilen"
-      _splitStrByLine:
-        arg1: "Text"
-      ref: "Variable"
-      aiScriptVar: "AiScript Variable"
-      fn: "Funktion"
-      _fn:
-        slots: "Slots"
-        slots-info: "Trenne jeden Slot mit einem Zeilenumbruch"
-        arg1: "Ausgabe"
-      for: "for-Schleife"
-      _for:
-        arg1: "Anzahl der Schleifendurchläufe"
-        arg2: "Aktion"
-    typeError: "Slot {slot} akzeptiert Werte vom Typ „{expect}“, aber es wurde ein „{actual}“ Wert angegeben!"
-    thereIsEmptySlot: "Slot {slot} ist leer!"
-    types:
-      string: "Text"
-      number: "Nummer"
-      boolean: "Wahrheitswert"
-      array: "Liste"
-      stringArray: "Textliste"
-    emptySlot: "Leerer Slot"
-    enviromentVariables: "Umgebungsvariable"
-    pageVariables: "Seitenelemente"
-    argVariables: "Eingabeslots"
 _relayStatus:
   requesting: "Ausstehend"
   accepted: "Akzeptiert"
@@ -1713,6 +1479,7 @@ _notification:
   yourFollowRequestAccepted: "Deine Follow-Anfrage wurde akzeptiert"
   youWereInvitedToGroup: "{userName} hat dich in eine Gruppe eingeladen"
   pollEnded: "Umfrageergebnisse sind verfügbar"
+  unreadAntennaNote: "Antenne {name}"
   emptyPushNotificationMessage: "Push-Benachrichtigungen wurden aktualisiert"
   _types:
     all: "Alle"
