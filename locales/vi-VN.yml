@@ -1293,6 +1293,8 @@ _widgets:
   serverMetric: "Thống kê máy chủ"
   aiscript: "AiScript console"
   aichan: "Ai"
+  _userList:
+    chooseList: "Chọn danh sách"
 _cw:
   hide: "Ẩn"
   show: "Tải thêm"
