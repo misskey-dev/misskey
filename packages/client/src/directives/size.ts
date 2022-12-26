@@ -8,6 +8,7 @@ const mountings = new Map<Element, {
 	resize: ResizeObserver;
 	intersection?: IntersectionObserver;
 	previousWidth: number;
+	twoPreviousWidth: number;
 }>();
 
 type ClassOrder = {
@@ -66,7 +67,13 @@ function calc(el: Element) {
 		delete info.intersection;
 	}
 
-	mountings.set(el, Object.assign(info, { previousWidth: width }));
+	mountings.set(el, { ...info, ...{ previousWidth: width, twoPreviousWidth: info.previousWidth }});
+
+	// Prevent infinite resizing
+	// https://github.com/misskey-dev/misskey/issues/9076
+	if (info.twoPreviousWidth === width) {
+		return;
+	}
 
 	const cached = cache.get(getOrderName(width, info.value));
 	if (cached) {
@@ -90,6 +97,7 @@ export default {
 			value: binding.value,
 			resize,
 			previousWidth: 0,
+			twoPreviousWidth: 0,
 		});
 
 		calc(src);
