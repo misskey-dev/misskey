@@ -64,7 +64,7 @@ const alpha = (hex, a) => {
 const chartEl = $ref<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
-const chartLimit = 50;
+const chartLimit = 7;
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
@@ -97,37 +97,38 @@ async function renderChart() {
 	// フォントカラー
 	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
-	const color = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent')).toHexString();
+	const colorRead = '#3498db';
+	const colorWrite = '#2ecc71';
 
 	const max = Math.max(...raw.read);
 
 	chartInstance = new Chart(chartEl, {
-		type: 'line',
+		type: 'bar',
 		data: {
-			//labels: new Array(props.limit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
 			datasets: [{
 				parsing: false,
-				label: 'active',
+				label: 'Read',
 				data: format(raw.read).slice().reverse(),
-				tension: 0.3,
 				pointRadius: 0,
-				borderWidth: 2,
-				borderColor: color,
+				borderWidth: 0,
 				borderJoinStyle: 'round',
-				//backgroundColor: alpha(color, 0.1),
-				gradient: {
-					backgroundColor: {
-						axis: 'y',
-						colors: {
-							0: alpha(color, 0),
-							[max]: alpha(color, 0.35),
-						},
-					},
-				},
-				barPercentage: 0.9,
-				categoryPercentage: 0.9,
+				borderRadius: 4,
+				backgroundColor: colorRead,
+				barPercentage: 0.7,
+				categoryPercentage: 0.5,
 				fill: true,
-				clip: 8,
+			}, {
+				parsing: false,
+				label: 'Write',
+				data: format(raw.write).slice().reverse(),
+				pointRadius: 0,
+				borderWidth: 0,
+				borderJoinStyle: 'round',
+				borderRadius: 4,
+				backgroundColor: colorWrite,
+				barPercentage: 0.7,
+				categoryPercentage: 0.5,
+				fill: true,
 			}],
 		},
 		options: {
@@ -143,7 +144,7 @@ async function renderChart() {
 			scales: {
 				x: {
 					type: 'time',
-					offset: false,
+					offset: true,
 					time: {
 						stepSize: 1,
 						unit: 'day',
@@ -156,20 +157,19 @@ async function renderChart() {
 					ticks: {
 						display: true,
 						maxRotation: 0,
-						autoSkipPadding: 16,
+						autoSkipPadding: 8,
 					},
 					adapters: {
 						date: {
 							locale: enUS,
 						},
 					},
-					min: getDate(chartLimit).getTime(),
 				},
 				y: {
 					position: 'left',
 					suggestedMax: 10,
 					grid: {
-						display: false,
+						display: true,
 						color: gridColor,
 						borderColor: 'rgb(0, 0, 0, 0)',
 					},
@@ -183,13 +183,7 @@ async function renderChart() {
 				intersect: false,
 				mode: 'index',
 			},
-			elements: {
-				point: {
-					hoverRadius: 5,
-					hoverBorderWidth: 2,
-				},
-			},
-			animation: true,
+			animation: false,
 			plugins: {
 				legend: {
 					display: false,

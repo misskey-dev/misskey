@@ -63,6 +63,14 @@ Chart.register(
 	gradient,
 );
 
+const alpha = (hex, a) => {
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
+	const r = parseInt(result[1], 16);
+	const g = parseInt(result[2], 16);
+	const b = parseInt(result[3], 16);
+	return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
 const chartLimit = 50;
 const chartEl = $ref<HTMLCanvasElement>();
 const chartEl2 = $ref<HTMLCanvasElement>();
@@ -100,8 +108,8 @@ onMounted(async () => {
 
 	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-	const succColor = '#4fd60c';
-	const failColor = '#e8681e';
+	const succColor = '#87e000';
+	const failColor = '#ff4400';
 
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
@@ -110,7 +118,7 @@ onMounted(async () => {
 	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 	new Chart(chartEl, {
-		type: 'bar',
+		type: 'line',
 		data: {
 			datasets: [{
 				stack: 'a',
@@ -119,12 +127,11 @@ onMounted(async () => {
 				data: format(raw.deliverSucceeded).slice().reverse(),
 				tension: 0.3,
 				pointRadius: 0,
-				borderWidth: 0,
+				borderWidth: 2,
+				borderColor: succColor,
 				borderJoinStyle: 'round',
 				borderRadius: 4,
-				backgroundColor: succColor,
-				barPercentage: 0.9,
-				categoryPercentage: 0.9,
+				backgroundColor: alpha(succColor, 0.35),
 				fill: true,
 				clip: 8,
 			}, {
@@ -134,12 +141,11 @@ onMounted(async () => {
 				data: formatMinus(raw.deliverFailed).slice().reverse(),
 				tension: 0.3,
 				pointRadius: 0,
-				borderWidth: 0,
+				borderWidth: 2,
+				borderColor: failColor,
 				borderJoinStyle: 'round',
 				borderRadius: 4,
-				backgroundColor: failColor,
-				barPercentage: 0.9,
-				categoryPercentage: 0.9,
+				backgroundColor: alpha(failColor, 0.35),
 				fill: true,
 				clip: 8,
 			}],
@@ -164,7 +170,7 @@ onMounted(async () => {
 						unit: 'day',
 					},
 					grid: {
-						display: false,
+						display: true,
 						color: gridColor,
 						borderColor: 'rgb(0, 0, 0, 0)',
 					},
@@ -185,7 +191,7 @@ onMounted(async () => {
 					position: 'left',
 					suggestedMax: 10,
 					grid: {
-						display: false,
+						display: true,
 						color: gridColor,
 						borderColor: 'rgb(0, 0, 0, 0)',
 					},
@@ -206,7 +212,7 @@ onMounted(async () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: true,
+			animation: false,
 			plugins: {
 				legend: {
 					display: false,
@@ -238,7 +244,7 @@ onMounted(async () => {
 				borderJoinStyle: 'round',
 				borderRadius: 4,
 				backgroundColor: '#0cc2d6',
-				barPercentage: 0.9,
+				barPercentage: 0.8,
 				categoryPercentage: 0.9,
 				fill: true,
 				clip: 8,
@@ -283,7 +289,7 @@ onMounted(async () => {
 					position: 'left',
 					suggestedMax: 10,
 					grid: {
-						display: false,
+						display: true,
 						color: gridColor,
 						borderColor: 'rgb(0, 0, 0, 0)',
 					},
@@ -299,7 +305,7 @@ onMounted(async () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: true,
+			animation: false,
 			plugins: {
 				legend: {
 					display: false,
