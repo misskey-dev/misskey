@@ -74,6 +74,8 @@ _permissions:
   "write:account": "Ẓreg talɣut n umiḍan-ik·im"
 _widgets:
   notifications: "Ilɣuyen"
+  _userList:
+    chooseList: "Fren tabdart"
 _cw:
   show: "Wali ugar"
 _visibility:
