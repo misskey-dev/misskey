@@ -1233,6 +1233,8 @@ _widgets:
   jobQueue: "Черга завдань"
   serverMetric: "Показники сервера "
   aiscript: "Консоль AiScript"
+  _userList:
+    chooseList: "Виберіть список"
 _cw:
   hide: "Сховати"
   show: "Показати більше"
