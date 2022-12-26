@@ -1219,6 +1219,8 @@ _widgets:
   serverMetric: "সার্ভার মেট্রিক্স"
   aiscript: "AiScript কনসোল"
   aichan: "আই চান"
+  _userList:
+    chooseList: "লিস্ট নির্বাচন করুন"
 _cw:
   hide: "লুকান"
   show: "আরও দেখুন"
