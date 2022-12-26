@@ -1311,6 +1311,8 @@ _widgets:
   serverMetric: "服务器指标"
   aiscript: "AiScript控制台"
   aichan: "小蓝"
+  _userList:
+    chooseList: "选择列表"
 _cw:
   hide: "隐藏"
   show: "查看更多"
