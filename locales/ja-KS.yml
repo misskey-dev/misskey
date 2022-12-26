@@ -1311,6 +1311,8 @@ _widgets:
   serverMetric: "サーバーメトリクス"
   aiscript: "AiScriptコンソール"
   aichan: "藍"
+  _userList:
+    chooseList: "リストを選ぶ"
 _cw:
   hide: "隠す"
   show: "続き見して！"
