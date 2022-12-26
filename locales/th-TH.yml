@@ -1311,6 +1311,8 @@ _widgets:
   serverMetric: "ตัวชี้วัดเซิร์ฟเวอร์"
   aiscript: "AiScript คอนโซล"
   aichan: "เอไอ"
+  _userList:
+    chooseList: "เลือกรายการ"
 _cw:
   hide: "ซ่อน"
   show: "โหลดเพิ่มเติม"
