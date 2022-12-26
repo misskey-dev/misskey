@@ -456,7 +456,6 @@ language: "Lingua"
 uiLanguage: "Lingua di visualizzazione dell'interfaccia"
 groupInvited: "Invitat@ al gruppo"
 aboutX: "Informazioni su {x}"
-useOsNativeEmojis: "Usare le emoji native del sistema operativo"
 disableDrawer: "Non mostrare il menù sul drawer"
 youHaveNoGroups: "Nessun gruppo"
 joinOrCreateGroup: "Puoi creare il tuo gruppo o essere invitat@ a gruppi che già esistono."
@@ -509,6 +508,7 @@ deleteAll: "Cancella cronologia"
 showFixedPostForm: "Visualizzare la finestra di pubblicazione in cima alla timeline"
 newNoteRecived: "Vedi le nuove note"
 sounds: "Impostazioni suoni"
+sound: "Impostazioni suoni"
 listen: "Ascolta"
 none: "Niente"
 showInPage: "Visualizza in pagina"
@@ -906,6 +906,10 @@ pushNotificationAlreadySubscribed: "Le notifiche push sono già attivate"
 pushNotificationNotSupported: "Il client o il server non supporta le notifiche push"
 sendPushNotificationReadMessage: "Elimina le notifiche push dopo la relativa lettura"
 sendPushNotificationReadMessageCaption: "Se possibile, verrà mostrata brevemente una notifica con il testo \"{emptyPushNotificationMessage}\". Potrebbe influire negativamente sulla durata della batteria."
+windowMaximize: "Ingrandisci"
+windowRestore: "Ripristina"
+caption: "Didascalia"
+loggedInAsBot: "Connessione come Bot"
 _sensitiveMediaDetection:
   description: "L'apprendimento automatico può essere utilizzato per individuare automaticamente i media sensibili da moderare. Il carico del server aumenta leggermente."
   sensitivity: "Sensibilità di rilevamento"
@@ -1306,6 +1310,8 @@ _widgets:
   serverMetric: "Statistiche server"
   aiscript: "Console AiScript"
   aichan: "indaco (tintura)"
+  _userList:
+    chooseList: "Seleziona una lista"
 _cw:
   hide: "Nascondere"
   show: "Mostra di più"
@@ -1441,8 +1447,6 @@ _pages:
   eyeCatchingImageRemove: "Elimina l'anteprima immagine"
   chooseBlock: "Aggiungi blocco"
   selectType: "Seleziona tipo"
-  enterVariableName: "Digita un nome di variabile"
-  variableNameIsAlreadyUsed: "Esiste già una variabile con lo stesso nome"
   contentBlocks: "Contenuto"
   inputBlocks: "Blocchi di input"
   specialBlocks: "Speciale"
@@ -1452,249 +1456,11 @@ _pages:
     section: "Sezione"
     image: "Immagini"
     button: "Pulsante"
-    if: "Se"
-    _if:
-      variable: "Variabili"
-    post: "Finestra di pubblicazione"
-    _post:
-      text: "Contenuto"
-      attachCanvasImage: "Allegare un'immagine della tela."
-      canvasId: "ID tela"
-    textInput: "Immissione testo"
-    _textInput:
-      name: "Nome della variabile"
-      text: "Titolo"
-      default: "Valore predefinito"
-    textareaInput: "Immissione testo a più righe"
-    _textareaInput:
-      name: "Nome della variabile"
-      text: "Titolo"
-      default: "Valore predefinito"
-    numberInput: "Immissione numerica"
-    _numberInput:
-      name: "Nome della variabile"
-      text: "Titolo"
-      default: "Valore predefinito"
-    canvas: "tela"
-    _canvas:
-      id: "ID tela"
-      width: "Larghezza"
-      height: "Altezza"
     note: "Nota integrata"
     _note:
       id: "ID nota"
       idDescription: "Qui puoi anche incollare l'URL della nota che vuoi impostare."
       detailed: "Visualizzazione dettagliata"
-    switch: "Interruttore"
-    _switch:
-      name: "Nome della variabile"
-      text: "Titolo"
-      default: "Valore predefinito"
-    counter: "Contatore"
-    _counter:
-      name: "Nome della variabile"
-      text: "Titolo"
-      inc: "Valore da aggiungere"
-    _button:
-      text: "Titolo"
-      colored: "Colorato"
-      action: "Operazione da eseguire quando viene premuto il pulsante"
-      _action:
-        dialog: "Visualizzare una finestra di dialogo"
-        _dialog:
-          content: "Contenuto"
-        resetRandom: "Ripristinare un numero aleatorio"
-        pushEvent: "Inviare evento"
-        _pushEvent:
-          event: "Nome evento"
-          message: "Messaggio da visualizzare quando abilitato"
-          variable: "Variabile da inviare"
-          no-variable: "Nessun contenuto"
-        callAiScript: "Chiamare AiScript"
-        _callAiScript:
-          functionName: "Nome della funzione"
-    radioButton: "Opzioni"
-    _radioButton:
-      name: "Nome della variabile"
-      title: "Titolo"
-      values: "Opzioni separate da una nuova riga"
-      default: "Valore predefinito"
-  script:
-    categories:
-      flow: "controllo"
-      logical: "funzionamento logico"
-      operation: "calcolo"
-      comparison: "Metodo comparativo"
-      random: "Aleatorietà"
-      value: "Valore"
-      fn: "Funzione"
-      text: "manipolazione del testo"
-      convert: "trasformazione"
-      list: "Liste"
-    blocks:
-      text: "Testo"
-      multiLineText: "Testo (a più righe)"
-      textList: "Lista di testo"
-      _textList:
-        info: "Separare ciascuno di essi con una nuova riga"
-      strLen: "Lunghezza del testo"
-      _strLen:
-        arg1: "Testo"
-      strPick: "estrazione dei caratteri"
-      _strPick:
-        arg1: "Testo"
-        arg2: "posizione del carattere"
-      strReplace: "sostituzione del testo"
-      _strReplace:
-        arg1: "Testo"
-        arg2: "Prima della sostituzione"
-        arg3: "dopo la sostituzione"
-      strReverse: "Invertire il testo."
-      _strReverse:
-        arg1: "Testo"
-      join: "Concatenazione del testo."
-      _join:
-        arg1: "Liste"
-        arg2: "punteggiatura"
-      add: "aggiungere (qualcosa)"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "attirare (attenzione, ecc.)"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "impostare (un quadrante, una sveglia, ecc.)"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "smash"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "i residui di una divisione"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "arrotondare una frazione"
-      _round:
-        arg1: "valore numerico"
-      eq: "A e B sono uguali"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A e B sono differenti"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A e B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A o B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A è più piccolo di B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A è maggiore di B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A è uguale o inferiore a B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A è uguale o maggiore di B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "divergenza (ad esempio in una strada)"
-      _if:
-        arg1: "Se"
-        arg2: "Se"
-        arg3: "se non così"
-      not: "negazione"
-      _not:
-        arg1: "negazione"
-      random: "Aleatorietà"
-      _random:
-        arg1: "probabilità"
-      rannum: "numero casuale"
-      _rannum:
-        arg1: "più piccolo"
-        arg2: "massimo"
-      randomPick: "Selezionato a caso da un elenco."
-      _randomPick:
-        arg1: "Liste"
-      dailyRandom: "Casuale (cambia ogni giorno per utente)"
-      _dailyRandom:
-        arg1: "probabilità"
-      dailyRannum: "Numeri casuali (ogni giorno per utente)"
-      _dailyRannum:
-        arg1: "più piccolo"
-        arg2: "massimo"
-      dailyRandomPick: "Selezionato a caso da un elenco (cambia ogni giorno per utente)"
-      _dailyRandomPick:
-        arg1: "Liste"
-      seedRandom: "Casuale (seed)"
-      _seedRandom:
-        arg1: "seed"
-        arg2: "Probabilità"
-      seedRannum: "Numero casuale (seed)"
-      _seedRannum:
-        arg1: "seed"
-        arg2: "più piccolo"
-        arg3: "massimo"
-      seedRandomPick: "Selezionato a caso da un elenco (seed)"
-      _seedRandomPick:
-        arg1: "seed"
-        arg2: "Liste"
-      DRPWPM: "Selezionati a caso da un elenco con probabilità (giornalmente per utente)"
-      _DRPWPM:
-        arg1: "Lista di testo"
-      pick: "Selezionare dall'elenco"
-      _pick:
-        arg1: "Liste"
-        arg2: "posizione"
-      listLen: "Ottenere la lunghezza dell'elenco"
-      _listLen:
-        arg1: "Liste"
-      number: "valore numerico"
-      stringToNumber: "Da testo a numeri."
-      _stringToNumber:
-        arg1: "Testo"
-      numberToString: "Valori numerici in testo."
-      _numberToString:
-        arg1: "valore numerico"
-      splitStrByLine: "Dividere il testo per riga"
-      _splitStrByLine:
-        arg1: "Testo"
-      ref: "Variabili"
-      aiScriptVar: "Variabili AiScript"
-      fn: "Funzione"
-      _fn:
-        slots: "slot"
-        slots-info: "Separare ogni slot con una nuova riga"
-        arg1: "uscita "
-      for: "ripetizione"
-      _for:
-        arg1: "frequenza"
-        arg2: "elaborazione"
-    typeError: "Lo slot {slot} accetta \"{expect}\" ma contiene \"{actual}\"!"
-    thereIsEmptySlot: "Lo slot {slot} è vuoto!"
-    types:
-      string: "Testo"
-      number: "valore numerico"
-      boolean: "Segnala"
-      array: "Liste"
-      stringArray: "Lista di testo"
-    emptySlot: "slot vuoto"
-    enviromentVariables: "variabile d'ambiente"
-    pageVariables: "elemento pagina"
-    argVariables: "slot di ingresso"
 _relayStatus:
   requesting: "In attesa di approvazione"
   accepted: "Approvato"
@@ -1713,6 +1479,7 @@ _notification:
   yourFollowRequestAccepted: "La tua richiesta di follow è stata accettata"
   youWereInvitedToGroup: "Invitat@ al gruppo"
   pollEnded: "Risultati del sondaggio."
+  unreadAntennaNote: "Antenna {name}"
   emptyPushNotificationMessage: "Le notifiche push sono state aggiornate."
   _types:
     all: "Tutto"

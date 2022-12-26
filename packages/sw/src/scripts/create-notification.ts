@@ -137,7 +137,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								u.searchParams.set('badge', '1');
 								badge = u.href;
 							} else {
-								const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
+								// 拡張子がないとキャッシュしてくれないCDNがあるので
+								const dummy = `${encodeURIComponent(`${u.host}${u.pathname}`)}.png`;
 								badge = `${origin}/proxy/${dummy}?${url.query({
 									url: u.href,
 									badge: '1'

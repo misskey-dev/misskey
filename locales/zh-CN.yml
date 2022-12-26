@@ -16,7 +16,7 @@ cancel: "取消"
 noThankYou: "不用"
 enterUsername: "输入用户名"
 renotedBy: "由 {user} 转贴"
-noNotes: "没有帖文"
+noNotes: "没有帖子"
 noNotifications: "无通知"
 instance: "实例"
 settings: "设置"
@@ -456,7 +456,6 @@ language: "语言"
 uiLanguage: "显示语言"
 groupInvited: "您有新的群组邀请"
 aboutX: "关于 {x}"
-useOsNativeEmojis: "使用系统的原生表情符号"
 disableDrawer: "不显示抽屉菜单"
 youHaveNoGroups: "没有群组"
 joinOrCreateGroup: "请加入一个现有的群组，或者创建新群组。"
@@ -509,6 +508,7 @@ deleteAll: "全部删除"
 showFixedPostForm: "在时间线顶部显示发帖框"
 newNoteRecived: "有新的帖子"
 sounds: "提示音"
+sound: "提示音"
 listen: "试听"
 none: "无"
 showInPage: "在页面中显示"
@@ -605,7 +605,7 @@ wordMute: "文字屏蔽"
 regexpError: "正则表达式错误"
 regexpErrorDescription: "{tab} 屏蔽文字的第 {line} 行的正则表达式有错误："
 instanceMute: "实例的屏蔽"
-userSaysSomething: "{name}说了什么"
+userSaysSomething: "{name}说了什么,但是被您屏蔽了"
 makeActive: "启用"
 display: "显示"
 copy: "复制"
@@ -906,6 +906,10 @@ pushNotificationAlreadySubscribed: "推送通知消息已启用"
 pushNotificationNotSupported: "浏览器或实例不支持推送通知消息"
 sendPushNotificationReadMessage: "删除已读推送通知消息"
 sendPushNotificationReadMessageCaption: "“{emptyPushNotificationMessage}”的通知消息将会显示。您终端设备的电池消耗可能会增加。"
+windowMaximize: "最大化"
+windowRestore: "还原"
+caption: "标题"
+loggedInAsBot: "已登录的Bot"
 _sensitiveMediaDetection:
   description: "可以使用机器学习技术自动检测敏感媒体，以便进行审核。服务器负载将略微增加。"
   sensitivity: "检测敏感度"
@@ -1306,6 +1310,8 @@ _widgets:
   serverMetric: "服务器指标"
   aiscript: "AiScript控制台"
   aichan: "小蓝"
+  _userList:
+    chooseList: "选择列表"
 _cw:
   hide: "隐藏"
   show: "查看更多"
@@ -1441,8 +1447,6 @@ _pages:
   eyeCatchingImageRemove: "删除封面图片"
   chooseBlock: "添加块"
   selectType: "选择类型"
-  enterVariableName: "请输入变量名"
-  variableNameIsAlreadyUsed: "变量名已使用"
   contentBlocks: "内容"
   inputBlocks: "输入"
   specialBlocks: "特殊"
@@ -1452,249 +1456,11 @@ _pages:
     section: "章节"
     image: "图片"
     button: "按钮"
-    if: "如果"
-    _if:
-      variable: "变量"
-    post: "投稿窗口"
-    _post:
-      text: "内容"
-      attachCanvasImage: "附加画布图像"
-      canvasId: "画布ID"
-    textInput: "文本输入"
-    _textInput:
-      name: "变量名"
-      text: "标题"
-      default: "默认值"
-    textareaInput: "多行文本输入"
-    _textareaInput:
-      name: "变量名"
-      text: "标题"
-      default: "默认值"
-    numberInput: "输入数值"
-    _numberInput:
-      name: "变量名"
-      text: "标题"
-      default: "默认值"
-    canvas: "画布"
-    _canvas:
-      id: "画布ID"
-      width: "宽度"
-      height: "高度"
     note: "嵌入的帖子"
     _note:
       id: "帖子ID"
       idDescription: "您也可以通过粘贴帖子的URL来进行设置。"
       detailed: "显示详细信息"
-    switch: "开关"
-    _switch:
-      name: "变量名"
-      text: "标题"
-      default: "默认值"
-    counter: "计数器"
-    _counter:
-      name: "变量名"
-      text: "标题"
-      inc: "增加值"
-    _button:
-      text: "标题"
-      colored: "彩色"
-      action: "按下按钮时的行为"
-      _action:
-        dialog: "显示对话框"
-        _dialog:
-          content: "内容"
-        resetRandom: "重置随机值"
-        pushEvent: "发送事件"
-        _pushEvent:
-          event: "事件名称"
-          message: "按下时显示的消息"
-          variable: "发送的变量"
-          no-variable: "空"
-        callAiScript: "调用AiScript"
-        _callAiScript:
-          functionName: "函数名"
-    radioButton: "选择项"
-    _radioButton:
-      name: "变量名"
-      title: "标题"
-      values: "使用换行区分的选择项"
-      default: "默认值"
-  script:
-    categories:
-      flow: "控制"
-      logical: "逻辑运算"
-      operation: "计算"
-      comparison: "比较"
-      random: "随机"
-      value: "值"
-      fn: "函数"
-      text: "文本操作"
-      convert: "转换"
-      list: "列表"
-    blocks:
-      text: "文本"
-      multiLineText: "文本 (多行)"
-      textList: "文本列表"
-      _textList:
-        info: "请使用换行符分隔每行"
-      strLen: "文本长度"
-      _strLen:
-        arg1: "文本"
-      strPick: "提取字符"
-      _strPick:
-        arg1: "文本"
-        arg2: "字符位置"
-      strReplace: "替换文本"
-      _strReplace:
-        arg1: "文本"
-        arg2: "替换之前"
-        arg3: "替换之后"
-      strReverse: "文本反向"
-      _strReverse:
-        arg1: "文本"
-      join: "合并文本"
-      _join:
-        arg1: "列表"
-        arg2: "分隔符"
-      add: "加"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "减"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "乘"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "除"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "取模(MOD)"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "四舍五入"
-      _round:
-        arg1: "数值"
-      eq: "A和B相等"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A和B不等"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A和B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A或B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A小于B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A大于B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A小于等于B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A大于等于B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "分支"
-      _if:
-        arg1: "如果"
-        arg2: "如果"
-        arg3: "否则"
-      not: "否"
-      _not:
-        arg1: "否"
-      random: "随机"
-      _random:
-        arg1: "概率"
-      rannum: "随机数"
-      _rannum:
-        arg1: "最小值"
-        arg2: "最大值"
-      randomPick: "从列表中随机选择"
-      _randomPick:
-        arg1: "列表"
-      dailyRandom: "随机(每个用户每日)"
-      _dailyRandom:
-        arg1: "概率"
-      dailyRannum: "随机数(每个用户每日)"
-      _dailyRannum:
-        arg1: "最小值"
-        arg2: "最大值"
-      dailyRandomPick: "从列表中随机选择(每个用户每日)"
-      _dailyRandomPick:
-        arg1: "列表"
-      seedRandom: "随机 (种子)"
-      _seedRandom:
-        arg1: "种子"
-        arg2: "概率"
-      seedRannum: "随机数(种子)"
-      _seedRannum:
-        arg1: "种子"
-        arg2: "最小值"
-        arg3: "最大值"
-      seedRandomPick: "从列表中随机选择 (种子)"
-      _seedRandomPick:
-        arg1: "种子"
-        arg2: "列表"
-      DRPWPM: "从概率列表中随机选择(每用户每天)"
-      _DRPWPM:
-        arg1: "文本列表"
-      pick: "从列表中选择"
-      _pick:
-        arg1: "列表"
-        arg2: "位置"
-      listLen: "获取列表长度"
-      _listLen:
-        arg1: "列表"
-      number: "数值"
-      stringToNumber: "文本到数字"
-      _stringToNumber:
-        arg1: "文本"
-      numberToString: "数字到文本"
-      _numberToString:
-        arg1: "数值"
-      splitStrByLine: "将文本按行拆分"
-      _splitStrByLine:
-        arg1: "文本"
-      ref: "变量"
-      aiScriptVar: "AiScript变量"
-      fn: "函数"
-      _fn:
-        slots: "槽函数"
-        slots-info: "请使用换行符分隔每个槽函数"
-        arg1: "输出"
-      for: "重复"
-      _for:
-        arg1: "次数"
-        arg2: "处理"
-    typeError: "槽函数{slot}需要传入“{expect}”，但是实际传入为“{actual}”！"
-    thereIsEmptySlot: "槽函数{slot}为空！"
-    types:
-      string: "文字"
-      number: "数值"
-      boolean: "Flag"
-      array: "列表"
-      stringArray: "文本列表"
-    emptySlot: "空白槽函数"
-    enviromentVariables: "环境变量"
-    pageVariables: "页面元素"
-    argVariables: "输入变量"
 _relayStatus:
   requesting: "待批准"
   accepted: "已批准"
@@ -1713,6 +1479,7 @@ _notification:
   yourFollowRequestAccepted: "您的关注请求已通过"
   youWereInvitedToGroup: "您有新的群组邀请"
   pollEnded: "问卷调查结果已生成。"
+  unreadAntennaNote: "天线 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
   _types:
     all: "全部"

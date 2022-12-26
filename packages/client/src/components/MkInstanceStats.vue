@@ -103,8 +103,12 @@ const chartSrc = $ref('active-users');
 let subDoughnutEl = $ref<HTMLCanvasElement>();
 let pubDoughnutEl = $ref<HTMLCanvasElement>();
 
-const { handler: externalTooltipHandler1 } = useChartTooltip();
-const { handler: externalTooltipHandler2 } = useChartTooltip();
+const { handler: externalTooltipHandler1 } = useChartTooltip({
+	position: 'middle',
+});
+const { handler: externalTooltipHandler2 } = useChartTooltip({
+	position: 'middle',
+});
 
 function createDoughnut(chartEl, tooltip, data) {
 	const chartInstance = new Chart(chartEl, {

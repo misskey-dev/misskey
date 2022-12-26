@@ -9,7 +9,7 @@
 import { computed } from 'vue';
 import { CustomEmoji } from 'misskey-js/built/entities';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { char2filePath } from '@/scripts/twemoji-base';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { defaultStore } from '@/store';
 import { instance } from '@/instance';
 import { getEmojiName } from '@/scripts/emojilist';
@@ -22,14 +22,16 @@ const props = defineProps<{
 	isReaction?: boolean;
 }>();
 
+const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
+
 const isCustom = computed(() => props.emoji.startsWith(':'));
 const char = computed(() => isCustom.value ? undefined : props.emoji);
-const useOsNativeEmojis = computed(() => defaultStore.state.useOsNativeEmojis && !props.isReaction);
+const useOsNativeEmojis = computed(() => defaultStore.state.emojiStyle === 'native' && !props.isReaction);
 const ce = computed(() => props.customEmojis ?? instance.emojis ?? []);
 const customEmoji = computed(() => isCustom.value ? ce.value.find(x => x.name === props.emoji.substr(1, props.emoji.length - 2)) : undefined);
 const url = computed(() => {
 	if (char.value) {
-		return char2filePath(char.value);
+		return char2path(char.value);
 	} else {
 		const rawUrl = (customEmoji.value as CustomEmoji).url;
 		return defaultStore.state.disableShowingAnimatedImages

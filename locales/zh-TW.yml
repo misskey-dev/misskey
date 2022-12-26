@@ -456,7 +456,6 @@ language: "語言"
 uiLanguage: "介面語言"
 groupInvited: "您有新的群組邀請"
 aboutX: "關於{x}"
-useOsNativeEmojis: "使用OS原生表情符號"
 disableDrawer: "不顯示下拉式選單"
 youHaveNoGroups: "找不到群組"
 joinOrCreateGroup: "請加入現有群組，或創建新群組。"
@@ -509,6 +508,7 @@ deleteAll: "刪除所有記錄"
 showFixedPostForm: "於時間軸頁頂顯示「發送貼文」方框"
 newNoteRecived: "發現新的貼文"
 sounds: "音效"
+sound: "音效"
 listen: "聆聽"
 none: "無"
 showInPage: "在頁面中顯示"
@@ -906,6 +906,10 @@ pushNotificationAlreadySubscribed: "推播通知啟用中"
 pushNotificationNotSupported: "瀏覽器或實例不支援推播通知"
 sendPushNotificationReadMessage: "通知與訊息如果已讀的話，就將推播通知刪除"
 sendPushNotificationReadMessageCaption: "「{emptyPushNotificationMessage}」通知將立刻顯示。可能會增加設備的電池消耗。"
+windowMaximize: "最大化"
+windowRestore: "復原"
+caption: "標題"
+loggedInAsBot: "以機器人帳號登入中"
 _sensitiveMediaDetection:
   description: "您可以使用機器學習自動檢測敏感媒體並將其用於審核。 伺服器的負荷會稍微增加。"
   sensitivity: "檢測敏感度"
@@ -1306,6 +1310,8 @@ _widgets:
   serverMetric: "服務器指標 "
   aiscript: "AiScript控制台"
   aichan: "小藍"
+  _userList:
+    chooseList: "選擇清單"
 _cw:
   hide: "隱藏"
   show: "瀏覽更多"
@@ -1441,8 +1447,6 @@ _pages:
   eyeCatchingImageRemove: "刪除封面影像"
   chooseBlock: "新增方塊"
   selectType: "選擇類型"
-  enterVariableName: "請輸入變數名稱"
-  variableNameIsAlreadyUsed: "變數名稱已被佔用"
   contentBlocks: "內容"
   inputBlocks: "輸入"
   specialBlocks: "特殊"
@@ -1452,249 +1456,11 @@ _pages:
     section: "區段"
     image: "圖片"
     button: "按鈕"
-    if: "如果"
-    _if:
-      variable: "變數"
-    post: "發佈窗口"
-    _post:
-      text: "内容"
-      attachCanvasImage: "附加相簿圖像 "
-      canvasId: "畫布ID"
-    textInput: "插入字串"
-    _textInput:
-      name: "變數名稱"
-      text: "標題"
-      default: "預設值"
-    textareaInput: "多行文字输入"
-    _textareaInput:
-      name: "變數名稱"
-      text: "標題"
-      default: "預設值"
-    numberInput: "輸入數值"
-    _numberInput:
-      name: "變數名稱"
-      text: "標題"
-      default: "預設值"
-    canvas: "畫布"
-    _canvas:
-      id: "畫布ID"
-      width: "寬度"
-      height: "高度"
     note: "嵌式貼文"
     _note:
       id: "貼文ID"
       idDescription: "您也可以粘貼筆記 URL 並進行設置。 "
       detailed: "顯示詳細內容"
-    switch: "開關"
-    _switch:
-      name: "變數名稱"
-      text: "標題"
-      default: "預設值"
-    counter: "計數器"
-    _counter:
-      name: "變數名稱"
-      text: "標題"
-      inc: "増加値"
-    _button:
-      text: "標題"
-      colored: "彩色"
-      action: "按下按鈕後發生的行為"
-      _action:
-        dialog: "顯示對話框 "
-        _dialog:
-          content: "内容"
-        resetRandom: "重設亂數"
-        pushEvent: "發送事件"
-        _pushEvent:
-          event: "事件名稱"
-          message: "按下時顯示的消息 "
-          variable: "要發送的變數"
-          no-variable: "沒有"
-        callAiScript: "調用AiScript"
-        _callAiScript:
-          functionName: "函數名稱"
-    radioButton: "選項"
-    _radioButton:
-      name: "變數名稱"
-      title: "標題"
-      values: "由換行符分隔的選項"
-      default: "預設值"
-  script:
-    categories:
-      flow: "控制"
-      logical: "邏輯運算"
-      operation: "計算"
-      comparison: "對比"
-      random: "隨機"
-      value: "數值 "
-      fn: "函数"
-      text: "文本操作"
-      convert: "轉換"
-      list: "清單"
-    blocks:
-      text: "字串"
-      multiLineText: "字串(多行)"
-      textList: "字串串列"
-      _textList:
-        info: "請分開每個換行符 "
-      strLen: "字串長度"
-      _strLen:
-        arg1: "字串"
-      strPick: "提取字元"
-      _strPick:
-        arg1: "字串"
-        arg2: "字元位置"
-      strReplace: "替換字串"
-      _strReplace:
-        arg1: "字串"
-        arg2: "替換前"
-        arg3: "替換後"
-      strReverse: "倒轉字串"
-      _strReverse:
-        arg1: "字串"
-      join: "合併字串"
-      _join:
-        arg1: "清單"
-        arg2: "分隔字元"
-      add: "加"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "减去"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "乘"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "除"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "餘數"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "四舍五入"
-      _round:
-        arg1: "數值"
-      eq: "A和B相等"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A和B不等"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A和B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A或B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A小於B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A大於B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A小於或等於B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A大於或等於B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "分支"
-      _if:
-        arg1: "如果"
-        arg2: "如果"
-        arg3: "除此以外 "
-      not: "否"
-      _not:
-        arg1: "否"
-      random: "隨機"
-      _random:
-        arg1: "機率"
-      rannum: "亂數"
-      _rannum:
-        arg1: "下限"
-        arg2: "上限"
-      randomPick: "從列表中隨機選擇 "
-      _randomPick:
-        arg1: "清單"
-      dailyRandom: "隨機(使用者每日變化 )"
-      _dailyRandom:
-        arg1: "機率"
-      dailyRannum: "亂數(使用者每日變化)"
-      _dailyRannum:
-        arg1: "下限"
-        arg2: "上限"
-      dailyRandomPick: "從列表中隨機選擇（使用者每日變化 ） "
-      _dailyRandomPick:
-        arg1: "清單"
-      seedRandom: "隨機抽選種子碼"
-      _seedRandom:
-        arg1: "種子"
-        arg2: "機率"
-      seedRannum: "亂數 (種子)"
-      _seedRannum:
-        arg1: "種子"
-        arg2: "最小值"
-        arg3: "最大值"
-      seedRandomPick: "從列表中隨機選擇 (種子)"
-      _seedRandomPick:
-        arg1: "種子"
-        arg2: "清單"
-      DRPWPM: "从機率列表中隨機選擇（每個用户每天）"
-      _DRPWPM:
-        arg1: "字串串列"
-      pick: "從清單中選取"
-      _pick:
-        arg1: "清單"
-        arg2: "位置"
-      listLen: "取得清單長度"
-      _listLen:
-        arg1: "清單"
-      number: "數值"
-      stringToNumber: "將字串轉換至數値"
-      _stringToNumber:
-        arg1: "字串"
-      numberToString: "將數値轉換至字串"
-      _numberToString:
-        arg1: "數值"
-      splitStrByLine: "於換行時分割字串"
-      _splitStrByLine:
-        arg1: "字串"
-      ref: "變數"
-      aiScriptVar: "AiScript的變數"
-      fn: "函数"
-      _fn:
-        slots: "欄位"
-        slots-info: "用換行符分隔每個欄位"
-        arg1: "輸出"
-      for: "重複 "
-      _for:
-        arg1: "重複次數"
-        arg2: "處理"
-    typeError: "槽參數{slot}需要傳入“{expect}”，但是實際傳入為“{actual}”！"
-    thereIsEmptySlot: "參數{slot}是空的！"
-    types:
-      string: "字串"
-      number: "数值"
-      boolean: "標記"
-      array: "清單"
-      stringArray: "字串列表"
-    emptySlot: "空欄位"
-    enviromentVariables: "環境變數"
-    pageVariables: "頁面元素"
-    argVariables: "輸入欄位"
 _relayStatus:
   requesting: "等待核准"
   accepted: "已通過核准"
@@ -1713,6 +1479,7 @@ _notification:
   yourFollowRequestAccepted: "您的追隨請求已通過"
   youWereInvitedToGroup: "您有新的群組邀請"
   pollEnded: "問卷調查已產生結果"
+  unreadAntennaNote: "天線 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
   _types:
     all: "全部 "

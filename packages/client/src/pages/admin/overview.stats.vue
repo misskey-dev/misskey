@@ -1,46 +1,48 @@
 <template>
 <div>
-	<MkLoading v-if="fetching"/>
-	<div v-else :class="$style.root">
-		<div class="item _panel users">
-			<div class="icon"><i class="ti ti-users"></i></div>
-			<div class="body">
-				<div class="value">
-					{{ number(stats.originalUsersCount) }}
-					<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"></MkNumberDiff>
+	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+		<MkLoading v-if="fetching"/>
+		<div v-else :class="$style.root">
+			<div class="item _panel users">
+				<div class="icon"><i class="ti ti-users"></i></div>
+				<div class="body">
+					<div class="value">
+						{{ number(stats.originalUsersCount) }}
+						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"></MkNumberDiff>
+					</div>
+					<div class="label">Users</div>
 				</div>
-				<div class="label">Users</div>
+			</div>
+			<div class="item _panel notes">
+				<div class="icon"><i class="ti ti-pencil"></i></div>
+				<div class="body">
+					<div class="value">
+						{{ number(stats.originalNotesCount) }}
+						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"></MkNumberDiff>
+					</div>
+					<div class="label">Notes</div>
+				</div>
+			</div>
+			<div class="item _panel instances">
+				<div class="icon"><i class="ti ti-planet"></i></div>
+				<div class="body">
+					<div class="value">
+						{{ number(stats.instances) }}
+					</div>
+					<div class="label">Instances</div>
+				</div>
+			</div>
+			<div class="item _panel online">
+				<div class="icon"><i class="ti ti-access-point"></i></div>
+				<div class="body">
+					<div class="value">
+						{{ number(onlineUsersCount) }}
+					</div>
+					<div class="label">Online</div>
+				</div>
 			</div>
 		</div>
-		<div class="item _panel notes">
-			<div class="icon"><i class="ti ti-pencil"></i></div>
-			<div class="body">
-				<div class="value">
-					{{ number(stats.originalNotesCount) }}
-					<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"></MkNumberDiff>
-				</div>
-				<div class="label">Notes</div>
-			</div>
-		</div>
-		<div class="item _panel instances">
-			<div class="icon"><i class="ti ti-planet"></i></div>
-			<div class="body">
-				<div class="value">
-					{{ number(stats.instances) }}
-				</div>
-				<div class="label">Instances</div>
-			</div>
-		</div>
-		<div class="item _panel online">
-			<div class="icon"><i class="ti ti-access-point"></i></div>
-			<div class="body">
-				<div class="value">
-					{{ number(onlineUsersCount) }}
-				</div>
-				<div class="label">Online</div>
-			</div>
-		</div>
-	</div>
+	</transition>
 </div>
 </template>
 

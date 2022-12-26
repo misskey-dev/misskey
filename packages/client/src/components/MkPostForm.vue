@@ -990,4 +990,61 @@ onMounted(() => {
 		}
 	}
 }
+
+@container (max-width: 500px) {
+	.gafaadew {
+		> header {
+			height: 50px;
+
+			> .cancel {
+				width: 50px;
+				line-height: 50px;
+			}
+
+			> .right {
+				> .text-count {
+					line-height: 50px;
+				}
+
+				> .submit {
+					margin: 8px;
+				}
+			}
+		}
+
+		> .form {
+			> .to-specified {
+				padding: 6px 16px;
+			}
+
+			> .cw,
+			> .hashtags,
+			> .text {
+				padding: 0 16px;
+			}
+
+			> .text {
+				min-height: 80px;
+			}
+
+			> footer {
+				padding: 0 8px 8px 8px;
+			}
+		}
+	}
+}
+
+@container (max-width: 310px) {
+	.gafaadew {
+		> .form {
+			> footer {
+				> button {
+					font-size: 14px;
+					width: 44px;
+					height: 44px;
+				}
+			}
+		}
+	}
+}
 </style>

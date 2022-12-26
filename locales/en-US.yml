@@ -456,7 +456,6 @@ language: "Language"
 uiLanguage: "User interface language"
 groupInvited: "You've been invited to a group"
 aboutX: "About {x}"
-useOsNativeEmojis: "Use OS native Emoji"
 disableDrawer: "Don't use drawer-style menus"
 youHaveNoGroups: "You have no groups"
 joinOrCreateGroup: "Get invited to a group or create your own."
@@ -509,6 +508,7 @@ deleteAll: "Delete all"
 showFixedPostForm: "Display the posting form at the top of the timeline"
 newNoteRecived: "There are new notes"
 sounds: "Sounds"
+sound: "Sounds"
 listen: "Listen"
 none: "None"
 showInPage: "Show in page"
@@ -906,6 +906,10 @@ pushNotificationAlreadySubscribed: "Push notifications are already enabled"
 pushNotificationNotSupported: "Your browser or instance does not support push notifications"
 sendPushNotificationReadMessage: "Delete push notifications once the relevant notifications or messages have been read"
 sendPushNotificationReadMessageCaption: "A notification containing the text \"{emptyPushNotificationMessage}\" will be displayed for a short time. This may increase the battery usage of your device, if applicable."
+windowMaximize: "Maximize"
+windowRestore: "Restore"
+caption: "Caption"
+loggedInAsBot: "Currently logged in as bot"
 _sensitiveMediaDetection:
   description: "Reduces the effort of server moderation through automatically recognizing NSFW media via Machine Learning. This will slightly increase the load on the server."
   sensitivity: "Detection sensitivity"
@@ -1306,6 +1310,8 @@ _widgets:
   serverMetric: "Server metrics"
   aiscript: "AiScript console"
   aichan: "Ai"
+  _userList:
+    chooseList: "Select a list"
 _cw:
   hide: "Hide"
   show: "Show content"
@@ -1441,8 +1447,6 @@ _pages:
   eyeCatchingImageRemove: "Delete thumbnail"
   chooseBlock: "Add a block"
   selectType: "Select a type"
-  enterVariableName: "Enter a variable name"
-  variableNameIsAlreadyUsed: "This variable name is already in use"
   contentBlocks: "Content"
   inputBlocks: "Input"
   specialBlocks: "Special"
@@ -1452,249 +1456,11 @@ _pages:
     section: "Section"
     image: "Images"
     button: "Button"
-    if: "If"
-    _if:
-      variable: "Variable"
-    post: "Posting form"
-    _post:
-      text: "Content"
-      attachCanvasImage: "Attach canvas image"
-      canvasId: "Canvas ID"
-    textInput: "Text input"
-    _textInput:
-      name: "Variable name"
-      text: "Title"
-      default: "Default value"
-    textareaInput: "Multiline text input"
-    _textareaInput:
-      name: "Variable name"
-      text: "Title"
-      default: "Default value"
-    numberInput: "Numeric input"
-    _numberInput:
-      name: "Variable name"
-      text: "Title"
-      default: "Default value"
-    canvas: "Canvas"
-    _canvas:
-      id: "Canvas ID"
-      width: "Width"
-      height: "Height"
     note: "Embedded note"
     _note:
       id: "Note ID"
       idDescription: "You can alternatively paste the note URL here."
       detailed: "Detailed view"
-    switch: "Switch"
-    _switch:
-      name: "Variable name"
-      text: "Title"
-      default: "Default value"
-    counter: "Counter"
-    _counter:
-      name: "Variable name"
-      text: "Title"
-      inc: "Step"
-    _button:
-      text: "Title"
-      colored: "Colored"
-      action: "Behavior when the button is pressed"
-      _action:
-        dialog: "Show a dialog"
-        _dialog:
-          content: "Content"
-        resetRandom: "Reset the random seed"
-        pushEvent: "Send an event"
-        _pushEvent:
-          event: "Event name"
-          message: "Message to display when activated"
-          variable: "Variable to send"
-          no-variable: "None"
-        callAiScript: "Invoke AiScript"
-        _callAiScript:
-          functionName: "Function name"
-    radioButton: "Choice"
-    _radioButton:
-      name: "Variable name"
-      title: "Title"
-      values: "List of choices separated by line breaks"
-      default: "Default value"
-  script:
-    categories:
-      flow: "Flow control"
-      logical: "Logical operation"
-      operation: "Computation"
-      comparison: "Comparison"
-      random: "Random"
-      value: "Values"
-      fn: "Functions"
-      text: "Text operations"
-      convert: "Transformations"
-      list: "Lists"
-    blocks:
-      text: "Text"
-      multiLineText: "Text (multiline)"
-      textList: "Text list"
-      _textList:
-        info: "Separate each entry with a line break"
-      strLen: "Text length"
-      _strLen:
-        arg1: "Text"
-      strPick: "Extract string"
-      _strPick:
-        arg1: "Text"
-        arg2: "String location"
-      strReplace: "Replacement string"
-      _strReplace:
-        arg1: "Text"
-        arg2: "Text to be replaced"
-        arg3: "Replace with"
-      strReverse: "Flip text"
-      _strReverse:
-        arg1: "Text"
-      join: "Text concatenation"
-      _join:
-        arg1: "Lists"
-        arg2: "Separator"
-      add: "Add"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "Subtract"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "Multiply"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "Divide"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "Remainder"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "Decimal rounding"
-      _round:
-        arg1: "Number"
-      eq: "A and B are equal"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A and B are different"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A AND B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A OR B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A is less than B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A is larger than B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A is less than or equal to B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A is greater than or equal to B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Branch"
-      _if:
-        arg1: "If"
-        arg2: "Then"
-        arg3: "Else"
-      not: "NOT"
-      _not:
-        arg1: "NOT"
-      random: "Random"
-      _random:
-        arg1: "Probability"
-      rannum: "Random number"
-      _rannum:
-        arg1: "Minimum value"
-        arg2: "Maximum value"
-      randomPick: "Randomly choose from list"
-      _randomPick:
-        arg1: "List"
-      dailyRandom: "Random (Changes once a day for each user)"
-      _dailyRandom:
-        arg1: "Probability"
-      dailyRannum: "Random number (Changes once a day for each user)"
-      _dailyRannum:
-        arg1: "Minimum value"
-        arg2: "Maximum value"
-      dailyRandomPick: "Randomly choose from a list (Changes once a day for each user)"
-      _dailyRandomPick:
-        arg1: "List"
-      seedRandom: "Random (with seed)"
-      _seedRandom:
-        arg1: "Seed"
-        arg2: "Probability"
-      seedRannum: "Random number (with seed)"
-      _seedRannum:
-        arg1: "Seed"
-        arg2: "Minimum value"
-        arg3: "Maximum value"
-      seedRandomPick: "Randomly choose from list (with seed)"
-      _seedRandomPick:
-        arg1: "Seed"
-        arg2: "List"
-      DRPWPM: "Randomly choose from weighted list (Changes once a day for each user)"
-      _DRPWPM:
-        arg1: "Text list"
-      pick: "Select from list"
-      _pick:
-        arg1: "List"
-        arg2: "Position"
-      listLen: "Get length of list"
-      _listLen:
-        arg1: "List"
-      number: "Number"
-      stringToNumber: "Text to number"
-      _stringToNumber:
-        arg1: "Text"
-      numberToString: "Number to text"
-      _numberToString:
-        arg1: "Number"
-      splitStrByLine: "Split text by line breaks"
-      _splitStrByLine:
-        arg1: "Text"
-      ref: "Variable"
-      aiScriptVar: "AiScript Variable"
-      fn: "Function"
-      _fn:
-        slots: "Slots"
-        slots-info: "Separate each slot with a line break"
-        arg1: "Output"
-      for: "for-Loop"
-      _for:
-        arg1: "Number of times to repeat"
-        arg2: "Action"
-    typeError: "Slot {slot} accepts values of type \"{expect}\", but the provided value is of type \"{actual}\"!"
-    thereIsEmptySlot: "Slot {slot} is empty!"
-    types:
-      string: "Text"
-      number: "Number"
-      boolean: "Flag"
-      array: "List"
-      stringArray: "Text list"
-    emptySlot: "Empty slot"
-    enviromentVariables: "Environment variables"
-    pageVariables: "Page variables"
-    argVariables: "Input slots"
 _relayStatus:
   requesting: "Pending"
   accepted: "Accepted"
@@ -1713,6 +1479,7 @@ _notification:
   yourFollowRequestAccepted: "Your follow request was accepted"
   youWereInvitedToGroup: "{userName} invited you to a group"
   pollEnded: "Poll results have become available"
+  unreadAntennaNote: "Antenna {name}"
   emptyPushNotificationMessage: "Push notifications have been updated"
   _types:
     all: "All"

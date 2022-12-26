@@ -453,7 +453,6 @@ language: "Langue"
 uiLanguage: "Langue d’affichage de l’interface"
 groupInvited: "Invité au groupe"
 aboutX: "À propos de {x}"
-useOsNativeEmojis: "Utiliser les émojis natifs du système"
 disableDrawer: "Les menus ne s'affichent pas dans le tiroir"
 youHaveNoGroups: "Vous n’avez aucun groupe"
 joinOrCreateGroup: "Vous pouvez être invité·e à rejoindre des groupes existants ou créer votre propre nouveau groupe."
@@ -506,6 +505,7 @@ deleteAll: "Supprimer tout"
 showFixedPostForm: "Afficher le formulaire de publication en haut du fil d'actualité"
 newNoteRecived: "Voir les nouvelles notes"
 sounds: "Sons"
+sound: "Sons"
 listen: "Écouter"
 none: "Rien"
 showInPage: "Afficher dans la page"
@@ -1287,6 +1287,8 @@ _widgets:
   serverMetric: "Statistiques du serveur"
   aiscript: "Console AiScript"
   aichan: "Ai"
+  _userList:
+    chooseList: "Sélectionner une liste"
 _cw:
   hide: "Masquer"
   show: "Afficher plus …"
@@ -1422,8 +1424,6 @@ _pages:
   eyeCatchingImageRemove: "Supprimer l'image attractive"
   chooseBlock: "Ajouter un bloc"
   selectType: "Choisir un type"
-  enterVariableName: "Veuillez entrer un nom pour votre variable"
-  variableNameIsAlreadyUsed: "Ce nom de variable est déjà utilisé"
   contentBlocks: "Contenu"
   inputBlocks: "Blocs d'entrée"
   specialBlocks: "Spécial"
@@ -1433,249 +1433,11 @@ _pages:
     section: "Section"
     image: "Images"
     button: "Bouton"
-    if: "Si"
-    _if:
-      variable: "Variables"
-    post: "Formulaire de publication"
-    _post:
-      text: "Contenu"
-      attachCanvasImage: "Publier avec Toile comme image"
-      canvasId: "Toile ID"
-    textInput: "Entrée textuelle"
-    _textInput:
-      name: "Nom de la variable"
-      text: "Titre"
-      default: "Valeur par défaut"
-    textareaInput: "Entrée textuelle multi-ligne"
-    _textareaInput:
-      name: "Nom de la variable"
-      text: "Titre"
-      default: "Valeur par défaut"
-    numberInput: "Entrée numérique"
-    _numberInput:
-      name: "Nom de la variable"
-      text: "Titre"
-      default: "Valeur par défaut"
-    canvas: "Toile"
-    _canvas:
-      id: "Toile ID"
-      width: "Largeur"
-      height: "Hauteur"
     note: "Note intégrée"
     _note:
       id: "Identifiant de la note"
       idDescription: "Pour configurer la note, vous pouvez aussi coller ici l'URL correspondante."
       detailed: "Afficher les détails"
-    switch: "Interrupteur"
-    _switch:
-      name: "Nom de la variable"
-      text: "Titre"
-      default: "Valeur par défaut"
-    counter: "Compteur"
-    _counter:
-      name: "Nom de la variable"
-      text: "Titre"
-      inc: "Augmenter de"
-    _button:
-      text: "Titre"
-      colored: "Coloré"
-      action: "Opération à effectuer lorsque le bouton est pressé"
-      _action:
-        dialog: "Afficher une fenêtre de dialogue"
-        _dialog:
-          content: "Contenu"
-        resetRandom: "Réinitialiser un nombre aléatoire"
-        pushEvent: "Envoyer un évènement"
-        _pushEvent:
-          event: "Nom de l’évènement"
-          message: "Message à afficher lorsqu’il est activé"
-          variable: "Variable à envoyer"
-          no-variable: "Rien"
-        callAiScript: "Appeler AiScript"
-        _callAiScript:
-          functionName: "Nom de la fonction"
-    radioButton: "Choix"
-    _radioButton:
-      name: "Nom de la variable"
-      title: "Titre"
-      values: "Liste des choix (un par ligne)"
-      default: "Valeur par défaut"
-  script:
-    categories:
-      flow: "Contrôle"
-      logical: "Opération logique"
-      operation: "Calculer"
-      comparison: "Comparer"
-      random: "Aléatoire"
-      value: "Valeur"
-      fn: "Fonction"
-      text: "Manipulation de texte"
-      convert: "Convertir"
-      list: "Listes"
-    blocks:
-      text: "Texte"
-      multiLineText: "Texte (multi-ligne)"
-      textList: "Liste de texte"
-      _textList:
-        info: "Veuillez séparer chaque entrée avec un saut de ligne"
-      strLen: "Longueur du texte"
-      _strLen:
-        arg1: "Texte"
-      strPick: "Extraire un caractère"
-      _strPick:
-        arg1: "Texte"
-        arg2: "Position du joueur"
-      strReplace: "Remplacement de texte"
-      _strReplace:
-        arg1: "Texte"
-        arg2: "Avant le remplacement"
-        arg3: "Après le remplacement"
-      strReverse: "Inverser le texte"
-      _strReverse:
-        arg1: "Texte"
-      join: "Concaténer du texte"
-      _join:
-        arg1: "Listes"
-        arg2: "Séparateur"
-      add: "Ajouter"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "Soustraire"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "Multiplier par"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "Diviser par"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "Reste"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "Arrondir les décimales"
-      _round:
-        arg1: "Numérique"
-      eq: "A et B sont égaux"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A et B sont différents"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A et B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A ou B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "A est inférieur à B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "A est supérieur à B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "A est inférieur ou égal à B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: "A est supérieur ou égal à B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Branche"
-      _if:
-        arg1: "Si"
-        arg2: "Si"
-        arg3: "Sinon"
-      not: "Nier"
-      _not:
-        arg1: "Nier"
-      random: "Aléatoire"
-      _random:
-        arg1: "Probabilité"
-      rannum: "Nombre aléatoire"
-      _rannum:
-        arg1: "Minimum"
-        arg2: "Maximum"
-      randomPick: "Sélectionner au hasard dans la liste"
-      _randomPick:
-        arg1: "Listes"
-      dailyRandom: "Aléatoire (Quotidien pour chaque utilisateur)"
-      _dailyRandom:
-        arg1: "Probabilité"
-      dailyRannum: "Numéros aléatoires (Quotidien pour chaque utilisateur)"
-      _dailyRannum:
-        arg1: "Minimum"
-        arg2: "Maximum"
-      dailyRandomPick: "Sélectionné au hasard dans la liste (Quotidien pour chaque utilisateur)"
-      _dailyRandomPick:
-        arg1: "Listes"
-      seedRandom: "Aléatoire (graine)"
-      _seedRandom:
-        arg1: "Graine"
-        arg2: "Probabilité"
-      seedRannum: "Nombre aléatoire (Graine)"
-      _seedRannum:
-        arg1: "Graine"
-        arg2: "Minimum"
-        arg3: "Maximum"
-      seedRandomPick: "Sélectionné au hasard dans la liste (graine)"
-      _seedRandomPick:
-        arg1: "Graine"
-        arg2: "Listes"
-      DRPWPM: "Sélectionné au hasard dans une liste de probabilités (Quotidien pour chaque utilisateur)"
-      _DRPWPM:
-        arg1: "Liste de texte"
-      pick: "Sélectionner dans la liste"
-      _pick:
-        arg1: "Listes"
-        arg2: "Position"
-      listLen: "Longueur de la liste"
-      _listLen:
-        arg1: "Listes"
-      number: "Numérique"
-      stringToNumber: "Convertir du texte en numérique"
-      _stringToNumber:
-        arg1: "Texte"
-      numberToString: "Convertir du numérique en texte"
-      _numberToString:
-        arg1: "Numérique"
-      splitStrByLine: "Séparer le texte par des sauts de lignes"
-      _splitStrByLine:
-        arg1: "Texte"
-      ref: "Variables"
-      aiScriptVar: "Variable d'AiScript"
-      fn: "Fonction"
-      _fn:
-        slots: "Slots"
-        slots-info: "Veuillez insérer un seul slot par ligne"
-        arg1: "Sortie"
-      for: "Répéter"
-      _for:
-        arg1: "Compter"
-        arg2: "Action"
-    typeError: "Le slot {slot} accepte \"{expect}\" mais a \"{actual}\" !"
-    thereIsEmptySlot: "Slot {slot} est vide !"
-    types:
-      string: "Texte"
-      number: "Numérique"
-      boolean: "Marqueur"
-      array: "Listes"
-      stringArray: "Liste de texte"
-    emptySlot: "Slot vide"
-    enviromentVariables: "Variables d'environnement"
-    pageVariables: "Élément de page"
-    argVariables: "Entrée slot"
 _relayStatus:
   requesting: "En attente"
   accepted: "Accepté"

@@ -111,6 +111,8 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 
 <style lang="scss" scoped>
 .vjoppmmu {
+	container-type: inline-size;
+
 	> header {
 		margin: 16px 0;
 
