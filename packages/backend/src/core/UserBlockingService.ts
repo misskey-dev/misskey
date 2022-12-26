@@ -169,6 +169,12 @@ export class UserBlockingService {
 			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
+
+		// リモートからフォローをされていたらRejectFollow送信
+		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
+			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
+			this.queueService.deliver(followee, content, follower.inbox);
+		}
 	}
 
 	@bindThis
@@ -191,23 +197,23 @@ export class UserBlockingService {
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
 		});
-	
+
 		if (blocking == null) {
 			this.logger.warn('ブロック解除がリクエストされましたがブロックしていませんでした');
 			return;
 		}
-	
+
 		// Since we already have the blocker and blockee, we do not need to fetch
 		// them in the query above and can just manually insert them here.
 		blocking.blocker = blocker;
 		blocking.blockee = blockee;
-	
+
 		await this.blockingsRepository.delete(blocking.id);
-	
+
 		// deliver if remote bloking
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
 			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderBlock(blocking), blocker));
 			this.queueService.deliver(blocker, content, blockee.inbox);
 		}
-	}	
+	}
 }
