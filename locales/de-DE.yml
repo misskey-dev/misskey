@@ -1311,6 +1311,8 @@ _widgets:
   serverMetric: "Servermetriken"
   aiscript: "AiScript-Konsole"
   aichan: "Ai"
+  _userList:
+    chooseList: "Liste auswählen"
 _cw:
   hide: "Inhalt verbergen"
   show: "Inhalt anzeigen"
