@@ -456,6 +456,8 @@ language: "Sprache"
 uiLanguage: "Sprache der Benutzeroberfläche"
 groupInvited: "Du wurdest in eine Gruppe eingeladen"
 aboutX: "Über {x}"
+emojiStyle: "Emoji-Stil"
+native: "Nativ"
 disableDrawer: "Keine ausfahrbaren Menüs verwenden"
 youHaveNoGroups: "Keine Gruppen vorhanden"
 joinOrCreateGroup: "Lass dich zu einer Gruppe einladen oder erstelle deine eigene."
@@ -1310,6 +1312,7 @@ _widgets:
   serverMetric: "Servermetriken"
   aiscript: "AiScript-Konsole"
   aichan: "Ai"
+  userList: "Benutzerliste"
   _userList:
     chooseList: "Liste auswählen"
 _cw:
