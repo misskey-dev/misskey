@@ -30,7 +30,7 @@ jobs:
       matrix:
         workspace:
         - backend
-        - client
+        - frontend
         - sw
     steps:
     - uses: actions/checkout@v2

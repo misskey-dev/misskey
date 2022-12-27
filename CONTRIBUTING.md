@@ -99,9 +99,17 @@ If your language is not listed in Crowdin, please open an issue.
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Development
-During development, it is useful to use the `yarn dev` command.
-This command monitors the server-side and client-side source files and automatically builds them if they are modified.
-In addition, it will also automatically start the Misskey server process.
+During development, it is useful to use the 
+
+```
+yarn dev
+```
+
+command.
+
+- Server-side source files and automatically builds them if they are modified. Automatically start the server process(es).
+- Vite HMR (just the `vite` command) is available. The behavior may be different from production.
+- Service Worker is watched by esbuild.
 
 ## Testing
 - Test codes are located in [`/test`](/test).

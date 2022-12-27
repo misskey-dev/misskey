@@ -91,6 +91,7 @@ export type Mixin = {
 	driveUrl: string;
 	userAgent: string;
 	clientEntry: string;
+	clientManifestExists: boolean;
 };
 
 export type Config = Source & Mixin;
@@ -112,7 +113,10 @@ const path = process.env.NODE_ENV === 'test'
 
 export function loadConfig() {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
-	const clientManifest = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_client_dist_/manifest.json`, 'utf-8'));
+	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json')
+	const clientManifest = clientManifestExists ?
+		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
+		: { 'src/init.ts': { file: 'src/init.ts' } };
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const mixin = {} as Mixin;
@@ -134,6 +138,7 @@ export function loadConfig() {
 	mixin.driveUrl = `${mixin.scheme}://${mixin.host}/files`;
 	mixin.userAgent = `Misskey/${meta.version} (${config.url})`;
 	mixin.clientEntry = clientManifest['src/init.ts'];
+	mixin.clientManifestExists = clientManifestExists;
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
 
