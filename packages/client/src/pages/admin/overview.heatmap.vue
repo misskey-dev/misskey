@@ -64,7 +64,8 @@ const alpha = (hex, a) => {
 const chartEl = $ref<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
-const chartLimit = 7 * 20;
+const weeks = 25;
+const chartLimit = 7 * weeks;
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
@@ -119,7 +120,7 @@ async function renderChart() {
 				pointRadius: 0,
 				borderWidth: 0,
 				borderJoinStyle: 'round',
-				borderRadius: 4,
+				borderRadius: 3,
 				backgroundColor(c) {
 					const value = c.dataset.data[c.dataIndex].v;
 					const a = value / max;
@@ -129,7 +130,7 @@ async function renderChart() {
 				width(c) {
 					const a = c.chart.chartArea ?? {};
 					// 20週間
-					return (a.right - a.left) / 20 - marginEachCell;
+					return (a.right - a.left) / weeks - marginEachCell;
 				},
 				height(c) {
 					const a = c.chart.chartArea ?? {};
@@ -139,7 +140,7 @@ async function renderChart() {
 			}],
 		},
 		options: {
-			aspectRatio: 2.8,
+			aspectRatio: 3.2,
 			layout: {
 				padding: {
 					left: 8,
