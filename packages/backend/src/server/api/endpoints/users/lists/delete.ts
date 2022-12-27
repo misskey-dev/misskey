@@ -1,6 +1,8 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserListsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { UserLists } from '@/models/index.js';
 
 export const meta = {
 	tags: ['lists'],
@@ -8,6 +10,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
+
+	description: 'Delete an existing list of users.',
 
 	errors: {
 		noSuchList: {
@@ -27,15 +31,23 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const userList = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const userList = await this.userListsRepository.findOneBy({
+				id: ps.listId,
+				userId: me.id,
+			});
 
-	if (userList == null) {
-		throw new ApiError(meta.errors.noSuchList);
+			if (userList == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			await this.userListsRepository.delete(userList.id);
+		});
 	}
-
-	await UserLists.delete(userList.id);
-});
+}

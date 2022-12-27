@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
-import define from '../../../define.js';
-import { UserProfiles } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UserProfilesRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -17,18 +19,26 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
+			// Compare password
+			const same = await bcrypt.compare(ps.password, profile.password!);
 
-	if (!same) {
-		throw new Error('incorrect password');
+			if (!same) {
+				throw new Error('incorrect password');
+			}
+
+			await this.userProfilesRepository.update(me.id, {
+				twoFactorSecret: null,
+				twoFactorEnabled: false,
+			});
+		});
 	}
-
-	await UserProfiles.update(user.id, {
-		twoFactorSecret: null,
-		twoFactorEnabled: false,
-	});
-});
+}

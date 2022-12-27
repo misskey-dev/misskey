@@ -1,14 +1,290 @@
 <!--
-## 12.x.x (unreleased)
+## 13.x.x (unreleased)
 
 ### Improvements
-- 
 
 ### Bugfixes
-- 
+-
 
 You should also include the user name that made the change.
 -->
+
+## 13.0.0 (unreleased)
+
+### Changes
+- Node.js 18.x or later is required
+- Elasticsearchのサポートが削除されました
+	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
+- ノートのウォッチ機能が削除されました
+- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
+	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- 新たに動的なPagesを作ることはできなくなりました
+	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
+- signToActivityPubGet is set to true by default @syuilo
+
+### Improvements
+- Push notification of Antenna note @tamaina
+- AVIF support @tamaina
+- Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- Introduce retention-rate aggregation @syuilo
+- Server: improve syslog performance @syuilo
+- Server: improve note scoring for featured notes @CyberRex0
+- Server: delete outdated notifications regularly to improve db performance @syuilo
+- Server: delete outdated hard-mutes regularly to improve db performance @syuilo
+- Server: delete outdated notes of antenna regularly to improve db performance @syuilo
+- Client: use tabler-icons instead of fontawesome to better design @syuilo
+- Client: Add new gabber kick sounds (thanks for noizenecio)
+- Client: Add link to user RSS feed in profile menu @ssmucny
+- Client: Compress non-animated PNG files @saschanaz
+- Client: Youtube window player @sim1222
+- Client: enhance dashboard of control panel @syuilo
+- Client: Vite is upgraded to v4 @syuilo, @tamaina
+- Client: HMR is available while yarn dev @tamaina
+- Client: Implement the button to subscribe push notification @tamaina
+- Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
+- Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
+- Client: add user list widget @syuilo
+- Client: add heatmap of daily active users to about page @syuilo
+- Client: introduce fluent emoji @syuilo
+- Client: improve overall performance of client @syuilo
+- Client: ui tweaks @syuilo
+
+### Bugfixes
+- Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
+- Server: Bug fix for Pinned Users lookup on instance @squidicuzz
+- Server: Fix peers API returning suspended instances @ineffyble
+- Server: trim long text of note from ap @syuilo
+- Server: Ap inboxの最大ペイロードサイズを64kbに制限 @syuilo
+- Server: アンテナの作成数上限を追加 @syuilo
+- Client: case insensitive emoji search @saschanaz
+- Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
+- Client: use proxied image for instance icon @syuilo
+- Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: update emoji picker immediately on all input @saschanaz
+
+## 12.119.1 (2022/12/03)
+### Bugfixes
+- Server: Mitigate AP reference chain DoS vector @skehmatics
+
+## 12.119.0 (2022/09/10)
+
+### Improvements
+- Client: Add following badge to user preview popup @nvisser
+- Client: mobile twitter url can be used as widget @caipira113
+- Client: Improve clock widget @syuilo
+
+### Bugfixes
+- マイグレーションに失敗する問題を修正
+- Server: 他人の通知を既読にできる可能性があるのを修正 @syuilo
+- Client: アクセストークン管理画面、アカウント管理画面表示できないのを修正 @futchitwo
+
+## 12.118.1 (2022/08/08)
+
+### Bugfixes
+- Client: can not show some setting pages @syuilo
+
+## 12.118.0 (2022/08/07)
+
+### Improvements
+- Client: 設定のバックアップ/リストア機能
+- Client: Add vi-VN language support
+- Client: Add unix time widget @syuilo
+
+### Bugfixes
+- Server: リモートユーザーを正しくブロックできるように修正する @xianonn
+- Client: 一度作ったwebhookの設定画面を開こうとするとページがフリーズする @syuilo
+- Client: MiAuth認証ページが機能していない @syuilo
+- Client: 一部のアプリからファイルを投稿フォームへドロップできない場合がある問題を修正 @m-hayabusa
+
+## 12.117.1 (2022/07/19)
+
+### Improvements
+- Client: UIのブラッシュアップ @syuilo
+
+### Bugfixes
+- Server: ファイルのアップロードに失敗することがある問題を修正 @acid-chicken
+- Client: リアクションピッカーがアプリ内ウィンドウの後ろに表示されてしまう問題を修正 @syuilo
+- Client: ユーザー情報の取得の再試行を修正 @xianonn
+- Client: MFMチートシートの挙動を修正 @syuilo
+- Client: 「インスタンスからのお知らせを受け取る」の設定を変更できない問題を修正 @syuilo
+
+## 12.117.0 (2022/07/18)
+
+### Improvements
+- Client: ウィンドウを最大化できるように @syuilo
+- Client: Shiftキーを押した状態でリンクをクリックするとアプリ内ウィンドウで開くように @syuilo
+- Client: デッキを使用している際、Ctrlキーを押した状態でリンクをクリックするとページ遷移を強制できるように @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+## 12.116.1 (2022/07/17)
+
+### Bugfixes
+- Client: デッキUI時に ページで表示 ボタンが機能しない問題を修正 @syuilo
+- Error During Migration Run to 12.111.x
+
+## 12.116.0 (2022/07/16)
+
+### Improvements
+- Client: registry editor @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+### Bugfixes
+- Error During Migration Run to 12.111.x
+- Server: TypeError: Cannot convert undefined or null to object @syuilo
+
+## 12.115.0 (2022/07/16)
+
+### Improvements
+- Client: Deckのプロファイル切り替えを簡単に @syuilo
+- Client: UIのブラッシュアップ @syuilo
+
+## 12.114.0 (2022/07/15)
+
+### Improvements
+- RSSティッカーで表示順序をシャッフルできるように @syuilo
+
+### Bugfixes
+- クライアントが起動しなくなることがある問題を修正 @syuilo
+
+## 12.113.0 (2022/07/13)
+
+### Improvements
+- Support <plain> syntax for MFM
+
+### Bugfixes
+- Server: Fix crash at startup if TensorFlow is not supported @mei23
+- Client: URLエンコードされたルーティングを修正
+
+## 12.112.3 (2022/07/09)
+
+### Improvements
+- Make active email validation configurable
+
+### Bugfixes
+- Server: Fix Attempts to update all notifications @mei23
+
+## 12.112.2 (2022/07/08)
+
+### Bugfixes
+- Fix Docker doesn't work @mei23  
+  Still not working on arm64 environment. (See 12.112.0)
+
+## 12.112.1 (2022/07/07)
+same as 12.112.0
+
+## 12.112.0 (2022/07/07)
+
+### Known issues
+- 現在arm64環境ではインストールに失敗します。これは次のバージョンで修正される予定です。
+
+### Changes
+- ハイライトがみつけるに統合されました
+- カスタム絵文字ページはインスタンス情報ページに統合されました
+- 連合ページはインスタンス情報ページに統合されました
+- メンション一覧ページは通知一覧ページに統合されました
+- ダイレクト投稿一覧ページは通知一覧ページに統合されました
+- メニューからアンテナタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
+- メニューからリストタイムラインを表示する方法は廃止され、タイムライン上部のアイコンからアクセスするようになりました
+
+### Improvements
+- Server: Allow GET method for some endpoints @syuilo
+- Server: Auto NSFW detection @syuilo
+- Server: Add rate limit to i/notifications @tamaina
+- Client: Improve control panel @syuilo
+- Client: Show warning in control panel when there is an unresolved abuse report @syuilo
+- Client: Statusbars @syuilo
+- Client: Add instance-cloud widget @syuilo
+- Client: Add rss-ticker widget @syuilo
+- Client: Removing entries from a clip @futchitwo
+- Client: Poll highlights in explore page @syuilo
+- Client: Improve deck UI @syuilo
+- Client: Word mute also checks content warnings @Johann150
+- Client: メニューからページをリロードできるように @syuilo
+- Client: Improve emoji picker performance @syuilo
+- Client: For notes with specified visibility, show recipients when hovering over visibility symbol. @Johann150
+- Client: Make widgets available again on a tablet @syuilo
+- ユーザーにモデレーションメモを残せる機能 @syuilo
+- Make possible to delete an account by admin @syuilo
+- Improve player detection in URL preview @mei23
+- Add Badge Image to Push Notification #8012 @tamaina
+- Server: Improve performance
+- Server: Supports IPv6 on Redis transport. @mei23  
+  IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
+- Server: Add possibility to log IP addresses of users @syuilo
+- Add additional drive capacity change support @CyberRex0
+
+### Bugfixes
+- Server: Fix GenerateVideoThumbnail failed @mei23
+- Server: Ensure temp directory cleanup @Johann150
+- favicons of federated instances not showing @syuilo
+- Admin: The checkbox for blocking an instance works again @Johann150
+- Client: Prevent access to user pages when not logged in @pixeldesu @Johann150
+- Client: Disable some hotkeys (e.g. for creating a post) for not logged in users @pixeldesu
+- Client: Ask users that are not logged in to log in when trying to vote in a poll @Johann150
+- Instance mutes also apply in antennas etc. @Johann150
+
+## 12.111.1 (2022/06/13)
+
+### Bugfixes
+- some fixes of multiple notification read @tamaina
+- some GenerateVideoThumbnail failed @Johann150
+- Client: デッキでウィジェットの情報が保存されない問題を修正 @syuilo
+- Client: ギャラリーの投稿を開こうとすると編集画面が表示される @futchitwo
+
+## 12.111.0 (2022/06/11)
+### Note
+- Node.js 16.15.0 or later is required
+
+### Improvements
+- Supports Unicode Emoji 14.0 @mei23
+- プッシュ通知を複数アカウント対応に #7667 @tamaina
+- プッシュ通知にクリックやactionを設定 #7667 @tamaina
+- ドライブに画像ファイルをアップロードするときオリジナル画像を破棄してwebpublicのみ保持するオプション @tamaina
+- Server: always remove completed tasks of job queue @Johann150
+- Client: アバターの設定で画像をクロップできるように @syuilo
+- Client: make emoji stand out more on reaction button @Johann150
+- Client: display URL of QR code for TOTP registration @tamaina
+- Client: render quote renote CWs as MFM @pixeldesu
+- API: notifications/readは配列でも受け付けるように #7667 @tamaina
+- API: ユーザー検索で、クエリがusernameの条件を満たす場合はusernameもLIKE検索するように @tamaina
+- MFM: Allow speed changes in all animated MFMs @Johann150
+- The theme color is now better validated. @Johann150
+  Your own theme color may be unset if it was in an invalid format.
+  Admins should check their instance settings if in doubt.
+- Perform port diagnosis at startup only when Listen fails @mei23
+- Rate limiting is now also usable for non-authenticated users. @Johann150 @mei23
+  Admins should make sure the reverse proxy sets the `X-Forwarded-For` header to the original address.
+
+### Bugfixes
+- Server: keep file order of note attachement @Johann150
+- Server: fix missing foreign key for reports leading to reports page being unusable @Johann150
+- Server: fix internal in-memory caching @Johann150
+- Server: prevent crash when processing certain PNGs @syuilo
+- Server: Fix unable to generate video thumbnails @mei23
+- Server: Fix `Cannot find module` issue @mei23
+- Federation: Add rel attribute to host-meta @mei23
+- Federation: add id for activitypub follows @Johann150
+- Federation: use `source` instead of `_misskey_content` @Johann150
+- Federation: ensure resolver does not fetch local resources via HTTP(S) @Johann150
+- Federation: correctly render empty note text @Johann150
+- Federation: Fix quote renotes containing no text being federated correctly @Johann150
+- Federation: remove duplicate br tag/newline @Johann150
+- Federation: add missing authorization checks @Johann150
+- Client: fix profile picture height in mentions @tamaina
+- Client: fix abuse reports page to be able to show all reports @Johann150
+- Client: fix settings page @tamaina
+- Client: fix profile tabs @futchitwo
+- Client: fix popout URL @futchitwo
+- Client: correctly handle MiAuth URLs with query string @sn0w
+- Client: ノート詳細ページの新しいノートを表示する機能の動作が正しくなるように修正する @xianonn
+- MFM: more animated functions support `speed` parameter @futchitwo
+- MFM: limit large MFM @Johann150
+
+## 12.110.1 (2022/04/23)
+
+### Bugfixes
+- Fix GOP rendering @syuilo
+- Improve performance of antenna, clip, and list @xianonn
 
 ## 12.110.0 (2022/04/11)
 
@@ -145,7 +421,7 @@ You should also include the user name that made the change.
 ## 12.104.0 (2022/02/09)
 
 ### Note
-ビルドする前に`npm run clean`を実行してください。
+ビルドする前に`yarn clean`を実行してください。
 
 このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
 マイグレーションが終わらない場合は、チャートの情報はリセットされてしまいますが`__chart__`で始まるテーブルの**レコード**を全て削除(テーブル自体は消さないでください)してから再度試す方法もあります。

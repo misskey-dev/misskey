@@ -1,0 +1,95 @@
+# Run secret-dependent integration tests only after /deploy approval
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  repository_dispatch:
+    types: [deploy-command]
+
+name: Deploy preview environment
+
+jobs:
+  # Repo owner has commented /deploy on a (fork-based) pull request
+  deploy-preview-environment:
+    runs-on: ubuntu-latest
+    if:
+      github.event_name == 'repository_dispatch' &&
+      github.event.client_payload.slash_command.sha != '' &&
+      contains(github.event.client_payload.pull_request.head.sha, github.event.client_payload.slash_command.sha)
+    steps:
+    - uses: actions/github-script@v5
+      id: check-id
+      env:
+        number: ${{ github.event.client_payload.pull_request.number }}
+        job: ${{ github.job }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        result-encoding: string
+        script: |
+          const { data: pull } = await github.rest.pulls.get({
+            ...context.repo,
+            pull_number: process.env.number
+          });
+          const ref = pull.head.sha;
+
+          const { data: checks } = await github.rest.checks.listForRef({
+            ...context.repo,
+            ref
+          });
+
+          const check = checks.check_runs.filter(c => c.name === process.env.job);
+
+          return check[0].id;
+
+    - uses: actions/github-script@v5
+      env:
+        check_id: ${{ steps.check-id.outputs.result }}
+        details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.run_id }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          await github.rest.checks.update({
+            ...context.repo,
+            check_run_id: process.env.check_id,
+            status: 'in_progress',
+            details_url: process.env.details_url
+          });
+
+    # Check out merge commit
+    - name: Fork based /deploy checkout
+      uses: actions/checkout@v2
+      with:
+        ref: 'refs/pull/${{ github.event.client_payload.pull_request.number }}/merge'
+
+    # <insert integration tests needing secrets>
+    - name: Context
+      uses: okteto/context@latest
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+
+    - name: Deploy preview environment
+      uses: ikuradon/deploy-preview@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: pr-${{ github.event.client_payload.pull_request.number }}-syuilo
+        timeout: 15m
+
+    # Update check run called "integration-fork"
+    - uses: actions/github-script@v5
+      id: update-check-run
+      if: ${{ always() }}
+      env:
+        # Conveniently, job.status maps to https://developer.github.com/v3/checks/runs/#update-a-check-run
+        conclusion: ${{ job.status }}
+        check_id: ${{ steps.check-id.outputs.result }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { data: result } = await github.rest.checks.update({
+            ...context.repo,
+            check_run_id: process.env.check_id,
+            status: 'completed',
+            conclusion: process.env.conclusion
+          });
+
+          return result;

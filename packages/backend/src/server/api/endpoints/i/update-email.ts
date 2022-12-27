@@ -1,13 +1,15 @@
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
-import config from '@/config/index.js';
 import ms from 'ms';
 import bcrypt from 'bcryptjs';
-import { Users, UserProfiles } from '@/models/index.js';
-import { sendEmail } from '@/services/send-email.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { EmailService } from '@/core/EmailService.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApiError } from '../../error.js';
-import { validateEmailForAccount } from '@/services/validate-email-for-account.js';
 
 export const meta = {
 	requireCredential: true,
@@ -44,50 +46,68 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
 
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	if (!same) {
-		throw new ApiError(meta.errors.incorrectPassword);
-	}
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
-	if (ps.email != null) {
-		const available = await validateEmailForAccount(ps.email);
-		if (!available) {
-			throw new ApiError(meta.errors.unavailable);
-		}
-	}
+		private userEntityService: UserEntityService,
+		private emailService: EmailService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
-	await UserProfiles.update(user.id, {
-		email: ps.email,
-		emailVerified: false,
-		emailVerifyCode: null,
-	});
+			// Compare password
+			const same = await bcrypt.compare(ps.password, profile.password!);
 
-	const iObj = await Users.pack(user.id, user, {
-		detail: true,
-		includeSecrets: true,
-	});
+			if (!same) {
+				throw new ApiError(meta.errors.incorrectPassword);
+			}
 
-	// Publish meUpdated event
-	publishMainStream(user.id, 'meUpdated', iObj);
+			if (ps.email != null) {
+				const available = await this.emailService.validateEmailForAccount(ps.email);
+				if (!available) {
+					throw new ApiError(meta.errors.unavailable);
+				}
+			}
 
-	if (ps.email != null) {
-		const code = rndstr('a-z0-9', 16);
+			await this.userProfilesRepository.update(me.id, {
+				email: ps.email,
+				emailVerified: false,
+				emailVerifyCode: null,
+			});
 
-		await UserProfiles.update(user.id, {
-			emailVerifyCode: code,
+			const iObj = await this.userEntityService.pack(me.id, me, {
+				detail: true,
+				includeSecrets: true,
+			});
+
+			// Publish meUpdated event
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', iObj);
+
+			if (ps.email != null) {
+				const code = rndstr('a-z0-9', 16);
+
+				await this.userProfilesRepository.update(me.id, {
+					emailVerifyCode: code,
+				});
+
+				const link = `${this.config.url}/verify-email/${code}`;
+
+				this.emailService.sendEmail(ps.email, 'Email verification',
+					`To verify email, please click this link:<br><a href="${link}">${link}</a>`,
+					`To verify email, please click this link: ${link}`);
+			}
+
+			return iObj;
 		});
-
-		const link = `${config.url}/verify-email/${code}`;
-
-		sendEmail(ps.email, 'Email verification',
-			`To verify email, please click this link:<br><a href="${link}">${link}</a>`,
-			`To verify email, please click this link: ${link}`);
 	}
-
-	return iObj;
-});
+}

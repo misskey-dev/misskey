@@ -1,8 +1,10 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NoteFavoritesRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { getNote } from '../../../common/getters.js';
-import { NoteFavorites } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
 
 export const meta = {
 	tags: ['notes', 'favorites'],
@@ -35,28 +37,39 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Get favoritee
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.noteFavoritesRepository)
+		private noteFavoritesRepository: NoteFavoritesRepository,
 
-	// if already favorited
-	const exist = await NoteFavorites.findOneBy({
-		noteId: note.id,
-		userId: user.id,
-	});
+		private idService: IdService,
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Get favoritee
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
+			});
 
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyFavorited);
+			// if already favorited
+			const exist = await this.noteFavoritesRepository.findOneBy({
+				noteId: note.id,
+				userId: me.id,
+			});
+
+			if (exist != null) {
+				throw new ApiError(meta.errors.alreadyFavorited);
+			}
+
+			// Create favorite
+			await this.noteFavoritesRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				noteId: note.id,
+				userId: me.id,
+			});
+		});
 	}
-
-	// Create favorite
-	await NoteFavorites.insert({
-		id: genId(),
-		createdAt: new Date(),
-		noteId: note.id,
-		userId: user.id,
-	});
-});
+}

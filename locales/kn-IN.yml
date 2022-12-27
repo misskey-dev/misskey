@@ -60,6 +60,7 @@ smtpUser: "ಬಳಕೆಹೆಸರು"
 smtpPass: "ಗುಪ್ತಪದ"
 user: "ಬಳಕೆದಾರ"
 searchByGoogle: "ಹುಡುಕು"
+file: "ಕಡತಗಳು"
 _email:
   _follow:
     title: "ಹಿಂಬಾಲಿಸಿದರು"
@@ -76,6 +77,8 @@ _profile:
   username: "ಬಳಕೆಹೆಸರು"
 _notification:
   youWereFollowed: "ಹಿಂಬಾಲಿಸಿದರು"
+  _actions:
+    reply: "ಉತ್ತರಿಸು"
 _deck:
   _columns:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"

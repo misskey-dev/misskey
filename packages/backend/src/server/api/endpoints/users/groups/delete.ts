@@ -1,6 +1,8 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { UserGroups } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups'],
@@ -8,6 +10,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Delete an existing group.',
 
 	errors: {
 		noSuchGroup: {
@@ -27,15 +31,23 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const userGroup = await UserGroups.findOneBy({
-		id: ps.groupId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userGroupsRepository)
+		private userGroupsRepository: UserGroupsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const userGroup = await this.userGroupsRepository.findOneBy({
+				id: ps.groupId,
+				userId: me.id,
+			});
 
-	if (userGroup == null) {
-		throw new ApiError(meta.errors.noSuchGroup);
+			if (userGroup == null) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			await this.userGroupsRepository.delete(userGroup.id);
+		});
 	}
-
-	await UserGroups.delete(userGroup.id);
-});
+}

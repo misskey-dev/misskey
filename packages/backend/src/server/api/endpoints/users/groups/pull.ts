@@ -1,7 +1,9 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupsRepository, UserGroupJoiningsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -9,6 +11,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Removes a specified user from a group. The owner can not be removed.',
 
 	errors: {
 		noSuchGroup: {
@@ -41,27 +45,40 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Fetch the group
-	const userGroup = await UserGroups.findOneBy({
-		id: ps.groupId,
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userGroupsRepository)
+		private userGroupsRepository: UserGroupsRepository,
 
-	if (userGroup == null) {
-		throw new ApiError(meta.errors.noSuchGroup);
+		@Inject(DI.userGroupJoiningsRepository)
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the group
+			const userGroup = await this.userGroupsRepository.findOneBy({
+				id: ps.groupId,
+				userId: me.id,
+			});
+
+			if (userGroup == null) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			// Fetch the user
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
+
+			if (user.id === userGroup.userId) {
+				throw new ApiError(meta.errors.isOwner);
+			}
+
+			// Pull the user
+			await this.userGroupJoiningsRepository.delete({ userGroupId: userGroup.id, userId: user.id });
+		});
 	}
-
-	// Fetch the user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	if (user.id === userGroup.userId) {
-		throw new ApiError(meta.errors.isOwner);
-	}
-
-	// Pull the user
-	await UserGroupJoinings.delete({ userGroupId: userGroup.id, userId: user.id });
-});
+}

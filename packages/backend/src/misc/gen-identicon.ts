@@ -3,32 +3,35 @@
  * https://en.wikipedia.org/wiki/Identicon
  */
 
-import { WriteStream } from 'node:fs';
 import * as p from 'pureimage';
 import gen from 'random-seed';
+import type { WriteStream } from 'node:fs';
 
-const size = 256; // px
+const size = 128; // px
 const n = 5; // resolution
-const margin = (size / n);
+const margin = (size / 4);
 const colors = [
-	'#e57373',
-	'#F06292',
-	'#BA68C8',
-	'#9575CD',
-	'#7986CB',
-	'#64B5F6',
-	'#4FC3F7',
-	'#4DD0E1',
-	'#4DB6AC',
-	'#81C784',
-	'#8BC34A',
-	'#AFB42B',
-	'#F57F17',
-	'#FF5722',
-	'#795548',
-	'#455A64',
+	['#FF512F', '#DD2476'],
+	['#FF61D2', '#FE9090'],
+	['#72FFB6', '#10D164'],
+	['#FD8451', '#FFBD6F'],
+	['#305170', '#6DFC6B'],
+	['#00C0FF', '#4218B8'],
+	['#009245', '#FCEE21'],
+	['#0100EC', '#FB36F4'],
+	['#FDABDD', '#374A5A'],
+	['#38A2D7', '#561139'],
+	['#121C84', '#8278DA'],
+	['#5761B2', '#1FC5A8'],
+	['#FFDB01', '#0E197D'],
+	['#FF3E9D', '#0E1F40'],
+	['#766eff', '#00d4ff'],
+	['#9bff6e', '#00d4ff'],
+	['#ff6e94', '#00d4ff'],
+	['#ffa96e', '#00d4ff'],
+	['#ffa96e', '#ff009d'],
+	['#ffdd6e', '#ff009d'],
 ];
-const bg = '#e9e9e9';
 
 const actualSize = size - (margin * 2);
 const cellSize = actualSize / n;
@@ -42,11 +45,17 @@ export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 	const canvas = p.make(size, size, undefined);
 	const ctx = canvas.getContext('2d');
 
+	const bgColors = colors[rand(colors.length)];
+
+	const bg = ctx.createLinearGradient(0, 0, size, size);
+	bg.addColorStop(0, bgColors[0]);
+	bg.addColorStop(1, bgColors[1]);
+
 	ctx.fillStyle = bg;
 	ctx.beginPath();
 	ctx.fillRect(0, 0, size, size);
 
-	ctx.fillStyle = colors[rand(colors.length)];
+	ctx.fillStyle = '#ffffff';
 
 	// side bitmap (filled by false)
 	const side: boolean[][] = new Array(sideN);

@@ -1,6 +1,9 @@
-import define from '../../define.js';
-import { Pages } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { PagesRepository } from '@/models/index.js';
+import { QueryService } from '@/core/QueryService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account', 'pages'],
@@ -31,13 +34,24 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Pages.createQueryBuilder('page'), ps.sinceId, ps.untilId)
-		.andWhere(`page.userId = :meId`, { meId: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.pagesRepository)
+		private pagesRepository: PagesRepository,
 
-	const pages = await query
-		.take(ps.limit)
-		.getMany();
+		private pageEntityService: PageEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.pagesRepository.createQueryBuilder('page'), ps.sinceId, ps.untilId)
+				.andWhere('page.userId = :meId', { meId: me.id });
 
-	return await Pages.packMany(pages);
-});
+			const pages = await query
+				.take(ps.limit)
+				.getMany();
+
+			return await this.pageEntityService.packMany(pages);
+		});
+	}
+}

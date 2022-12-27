@@ -1,8 +1,10 @@
-import define from '../../../define.js';
-import { genId } from '@/misc/gen-id.js';
-import { Webhooks } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
-import { webhookEventTypes } from '@/models/entities/webhook.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { IdService } from '@/core/IdService.js';
+import type { WebhooksRepository } from '@/models/index.js';
+import { webhookEventTypes } from '@/models/entities/Webhook.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['webhooks'],
@@ -25,19 +27,32 @@ export const paramDef = {
 	required: ['name', 'url', 'secret', 'on'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const webhook = await Webhooks.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-		url: ps.url,
-		secret: ps.secret,
-		on: ps.on,
-	}).then(x => Webhooks.findOneByOrFail(x.identifiers[0]));
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.webhooksRepository)
+		private webhooksRepository: WebhooksRepository,
 
-	publishInternalEvent('webhookCreated', webhook);
+		private idService: IdService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const webhook = await this.webhooksRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				userId: me.id,
+				name: ps.name,
+				url: ps.url,
+				secret: ps.secret,
+				on: ps.on,
+			}).then(x => this.webhooksRepository.findOneByOrFail(x.identifiers[0]));
 
-	return webhook;
-});
+			this.globalEventService.publishInternalEvent('webhookCreated', webhook);
+
+			return webhook;
+		});
+	}
+}

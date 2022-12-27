@@ -1,9 +1,11 @@
-import deleteNote from '@/services/note/delete.js';
-import define from '../../define.js';
 import ms from 'ms';
-import { getNote } from '../../common/getters.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UsersRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteDeleteService } from '@/core/NoteDeleteService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { Users } from '@/models/index.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -42,16 +44,27 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	if ((!user.isAdmin && !user.isModerator) && (note.userId !== user.id)) {
-		throw new ApiError(meta.errors.accessDenied);
+		private getterService: GetterService,
+		private noteDeleteService: NoteDeleteService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
+			});
+
+			if ((!me.isAdmin && !me.isModerator) && (note.userId !== me.id)) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
+			await this.noteDeleteService.delete(await this.usersRepository.findOneByOrFail({ id: note.userId }), note);
+		});
 	}
-
-	// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
-	await deleteNote(await Users.findOneByOrFail({ id: note.userId }), note);
-});
+}

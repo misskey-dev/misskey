@@ -1,6 +1,8 @@
-import define from '../define.js';
-import { Announcements, AnnouncementReads } from '@/models/index.js';
-import { makePaginationQuery } from '../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/index.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -63,24 +65,37 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
 
-	const announcements = await query.take(ps.limit).getMany();
+		@Inject(DI.announcementReadsRepository)
+		private announcementReadsRepository: AnnouncementReadsRepository,
 
-	if (user) {
-		const reads = (await AnnouncementReads.findBy({
-			userId: user.id,
-		})).map(x => x.announcementId);
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
-		for (const announcement of announcements) {
-			(announcement as any).isRead = reads.includes(announcement.id);
-		}
+			const announcements = await query.take(ps.limit).getMany();
+
+			if (me) {
+				const reads = (await this.announcementReadsRepository.findBy({
+					userId: me.id,
+				})).map(x => x.announcementId);
+
+				for (const announcement of announcements) {
+					(announcement as any).isRead = reads.includes(announcement.id);
+				}
+			}
+
+			return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
+				...a,
+				createdAt: a.createdAt.toISOString(),
+				updatedAt: a.updatedAt?.toISOString() ?? null,
+			}));
+		});
 	}
-
-	return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
-		...a,
-		createdAt: a.createdAt.toISOString(),
-		updatedAt: a.updatedAt?.toISOString() ?? null,
-	}));
-});
+}
