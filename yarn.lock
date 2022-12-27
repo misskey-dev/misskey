@@ -4956,6 +4956,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chartjs-chart-matrix@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "chartjs-chart-matrix@npm:1.3.0"
+  peerDependencies:
+    chart.js: ">=3.0.0"
+  checksum: d29a08f3ffd888a1b6c45be2cbeb8987c145a74b07a713c84001860669b200931517746c475537dd0893c57a739115fa96a68d3a113013aff28f3bee4494d5cc
+  languageName: node
+  linkType: hard
+
 "chartjs-plugin-gradient@npm:0.6.1":
   version: 0.6.1
   resolution: "chartjs-plugin-gradient@npm:0.6.1"
@@ -5165,6 +5174,7 @@ __metadata:
     browser-image-resizer: "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3"
     chart.js: 4.1.1
     chartjs-adapter-date-fns: 3.0.0
+    chartjs-chart-matrix: ^1.3.0
     chartjs-plugin-gradient: 0.6.1
     chartjs-plugin-zoom: 2.0.0
     compare-versions: 5.0.1

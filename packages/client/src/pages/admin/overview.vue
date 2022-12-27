@@ -5,34 +5,47 @@
 			<template #header>Stats</template>
 			<XStats/>
 		</MkFolder>
+
 		<MkFolder class="item">
 			<template #header>Active users</template>
 			<XActiveUsers/>
 		</MkFolder>
+
+		<MkFolder class="item">
+			<template #header>Heatmap</template>
+			<XHeatmap/>
+		</MkFolder>
+
 		<MkFolder class="item">
 			<template #header>Moderators</template>
 			<XModerators/>
 		</MkFolder>
+
 		<MkFolder class="item">
 			<template #header>Federation</template>
 			<XFederation/>
 		</MkFolder>
+		
 		<MkFolder class="item">
 			<template #header>Instances</template>
 			<XInstances/>
 		</MkFolder>
+
 		<MkFolder class="item">
 			<template #header>Ap requests</template>
 			<XApRequests/>
 		</MkFolder>
+
 		<MkFolder class="item">
 			<template #header>New users</template>
 			<XUsers/>
 		</MkFolder>
+
 		<MkFolder class="item">
 			<template #header>Deliver queue</template>
 			<XQueue domain="deliver"/>
 		</MkFolder>
+
 		<MkFolder class="item">
 			<template #header>Inbox queue</template>
 			<XQueue domain="inbox"/>
@@ -51,6 +64,7 @@ import XUsers from './overview.users.vue';
 import XActiveUsers from './overview.active-users.vue';
 import XStats from './overview.stats.vue';
 import XModerators from './overview.moderators.vue';
+import XHeatmap from './overview.heatmap.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
 import { version, url } from '@/config';
 import * as os from '@/os';
