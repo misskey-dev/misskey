@@ -1,8 +1,9 @@
 <template>
-<div class="zbcjwnqg">
-	<div class="main">
-		<div class="body">
-			<div class="selects" style="display: flex;">
+<div :class="$style.root">
+	<MkFolder class="item">
+		<template #header>Chart</template>
+		<div :class="$style.chart">
+			<div class="selects">
 				<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
 					<optgroup :label="i18n.ts.federation">
 						<option value="federation">{{ i18n.ts._charts.federation }}</option>
@@ -29,24 +30,34 @@
 					<option value="day">{{ i18n.ts.perDay }}</option>
 				</MkSelect>
 			</div>
-			<div class="chart">
+			<div class="chart _panel">
 				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="detailed"></MkChart>
 			</div>
 		</div>
-	</div>
-	<div class="heatmap _panel">
-		<MkActiveUsersHeatmap/>
-	</div>
-	<div class="subpub">
-		<div class="sub">
-			<div class="title">Sub</div>
-			<canvas ref="subDoughnutEl"></canvas>
+	</MkFolder>
+
+	<MkFolder class="item">
+		<template #header>Active users heatmap</template>
+		<div class="_panel" :class="$style.heatmap">
+			<MkActiveUsersHeatmap/>
 		</div>
-		<div class="pub">
-			<div class="title">Pub</div>
-			<canvas ref="pubDoughnutEl"></canvas>
+	</MkFolder>
+
+	<MkFolder class="item">
+		<template #header>Federation</template>
+		<div :class="$style.federation">
+			<div class="pies">
+				<div class="sub">
+					<div class="title">Sub</div>
+					<canvas ref="subDoughnutEl"></canvas>
+				</div>
+				<div class="pub">
+					<div class="title">Pub</div>
+					<canvas ref="pubDoughnutEl"></canvas>
+				</div>
+			</div>
 		</div>
-	</div>
+	</MkFolder>
 </div>
 </template>
 
@@ -76,6 +87,7 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkActiveUsersHeatmap from '@/components/MkActiveUsersHeatmap.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 Chart.register(
 	ArcElement,
@@ -185,48 +197,58 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.zbcjwnqg {
-	> .main {
-		background: var(--panel);
-		border-radius: var(--radius);
-		padding: 24px;
-		margin-bottom: 16px;
-
-		> .body {
-			> .chart {
-				padding: 8px 0 0 0;
-			}
+<style lang="scss" module>
+.root {
+	&:global {
+		> .item {
+			margin-bottom: 16px;
 		}
 	}
+}
 
-	> .heatmap {
-		padding: 16px;
-		margin-bottom: 16px;
-	}
-
-	> .subpub {
-		display: flex;
-		gap: 16px;
-
-		> .sub, > .pub {
-			flex: 1;
-			min-width: 0;
-			position: relative;
-			background: var(--panel);
-			border-radius: var(--radius);
-			padding: 24px;
-			max-height: 300px;
-
-			> .title {
-				position: absolute;
-				top: 24px;
-				left: 24px;
-			}
+.chart {
+	&:global {
+		> .selects {
+			display: flex;
+			margin-bottom: 12px;
 		}
 
-		@media (max-width: 600px) {
-			flex-direction: column;
+		> .chart {
+			padding: 16px;
+		}
+	}
+}
+
+.heatmap {
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.federation {
+	&:global {
+		> .pies {
+			display: flex;
+			gap: 16px;
+
+			> .sub, > .pub {
+				flex: 1;
+				min-width: 0;
+				position: relative;
+				background: var(--panel);
+				border-radius: var(--radius);
+				padding: 24px;
+				max-height: 300px;
+
+				> .title {
+					position: absolute;
+					top: 24px;
+					left: 24px;
+				}
+			}
+
+			@media (max-width: 600px) {
+				flex-direction: column;
+			}
 		}
 	}
 }
