@@ -295,7 +295,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ogwlenmc {
 	> .local {
 		.empty {

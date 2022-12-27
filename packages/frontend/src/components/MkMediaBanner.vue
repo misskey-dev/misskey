@@ -50,7 +50,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-media-banner {
 	width: 100%;
 	border-radius: 4px;

@@ -91,7 +91,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mkw-unixClock {
 	padding: 16px 0;
 	text-align: center;

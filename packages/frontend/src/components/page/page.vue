@@ -70,7 +70,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .iroscrza {
 	&.serif {
 		> div {

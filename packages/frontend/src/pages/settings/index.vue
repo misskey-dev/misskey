@@ -244,7 +244,7 @@ definePageMetadata(INFO);
 // h 700
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .vvcocwet {
 	> .body {
 		> .nav {

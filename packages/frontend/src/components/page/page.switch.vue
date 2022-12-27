@@ -43,7 +43,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .hkcxmtwj {
 	display: inline-block;
 	margin: 16px auto;

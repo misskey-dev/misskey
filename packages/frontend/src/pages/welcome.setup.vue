@@ -54,7 +54,7 @@ function submit() {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-setup {
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);

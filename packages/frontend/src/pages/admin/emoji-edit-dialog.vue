@@ -95,7 +95,7 @@ async function del() {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .yigymqpb {
 	> .img {
 		display: block;

@@ -55,7 +55,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .qkcjvfiv {
 	> .add {
 		margin: 0 auto var(--margin) auto;

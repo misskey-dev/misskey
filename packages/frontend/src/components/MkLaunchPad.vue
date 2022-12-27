@@ -62,7 +62,7 @@ function close() {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .szkkfdyq {
 	max-height: 100%;
 	width: min(460px, 100vw);

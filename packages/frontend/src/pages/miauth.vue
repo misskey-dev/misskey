@@ -85,6 +85,6 @@ function onLogin(res): void {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 </style>

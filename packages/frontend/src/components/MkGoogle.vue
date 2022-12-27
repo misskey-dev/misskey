@@ -19,7 +19,7 @@ const search = () => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-google {
 	display: flex;
 	margin: 8px 0;

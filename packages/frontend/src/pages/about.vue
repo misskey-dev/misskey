@@ -136,7 +136,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .fwhjspax {
 	text-align: center;
 	border-radius: 10px;

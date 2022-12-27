@@ -14,7 +14,7 @@ const props = defineProps<{
 }>();
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .fpezltsf {
 	padding: 12px 14px;
 	font-size: 90%;

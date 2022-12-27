@@ -59,7 +59,7 @@ function del(): void {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .thvuemwp {
 	$me-balloon-color: var(--accent);
 

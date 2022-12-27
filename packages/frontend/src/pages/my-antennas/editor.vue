@@ -141,7 +141,7 @@ function addUser() {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .shaynizk {
 	> .form {
 		padding: 32px;

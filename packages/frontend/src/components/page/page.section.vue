@@ -34,7 +34,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .sdgxphyu {
 	margin: 1.5em 0;
 

@@ -86,9 +86,7 @@ export default defineComponent({
 .fade-leave-to {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss">
 .wszdbhzo {
 	padding: 16px;
 	text-align: center;

@@ -307,9 +307,7 @@ defineExpose({
 .fade-leave-to {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss">
 .cxiknjgy {
 	> .button {
 		margin-left: auto;

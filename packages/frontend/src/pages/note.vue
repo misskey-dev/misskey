@@ -146,9 +146,7 @@ definePageMetadata(computed(() => note ? {
 .fade-leave-to {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss">
 .fcuexfpr {
 	background: var(--bg);
 

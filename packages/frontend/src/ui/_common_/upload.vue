@@ -26,7 +26,7 @@ import { i18n } from '@/i18n';
 const zIndex = os.claimZIndex('high');
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-uploader {
 	position: fixed;
 	right: 16px;

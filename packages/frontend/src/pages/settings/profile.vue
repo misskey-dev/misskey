@@ -189,7 +189,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .llvierxe {
 	position: relative;
 	background-size: cover;

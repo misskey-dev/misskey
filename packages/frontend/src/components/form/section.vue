@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .vrtktovh {
 	border-top: solid 0.5px var(--divider);
 	border-bottom: solid 0.5px var(--divider);

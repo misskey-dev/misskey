@@ -34,7 +34,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .nsbbhtug {
 	position: fixed;
 	z-index: 16385;

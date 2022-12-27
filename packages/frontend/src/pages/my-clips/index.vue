@@ -78,7 +78,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .qtcaoidl {
 	> .add {
 		margin: 0 auto 16px auto;
