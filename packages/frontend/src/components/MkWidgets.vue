@@ -1,7 +1,7 @@
 <template>
-<div class="vjoppmmu">
+<div :class="$style.root">
 	<template v-if="edit">
-		<header>
+		<header :class="$style['edit-header']">
 			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" class="mk-widget-select">
 				<template #label>{{ i18n.ts.selectWidget }}</template>
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
@@ -14,23 +14,34 @@
 			item-key="id"
 			handle=".handle"
 			:animation="150"
+			:group="{ name: 'SortableMkWidgets' }"
 			@update:model-value="v => emit('updateWidgets', v)"
+			:class="$style['edit-editing']"
 		>
 			<template #item="{element}">
-				<div class="customize-container">
-					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
+				<div :class="[$style.widget, $style['customize-container']]">
+					<button :class="$style['customize-container-config']" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
+					<button :class="$style['customize-container-remove']" class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
-						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @update-props="updateWidget(element.id, $event)"/>
+						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style['customize-container-handle-widget']" :widget="element" @update-props="updateWidget(element.id, $event)"/>
 					</div>
 				</div>
 			</template>
 		</Sortable>
 	</template>
-	<component :is="`mkw-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" class="widget" :widget="widget" @update-props="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`mkw-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @update-props="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
-
+<script lang="ts">
+export type Widget = {
+	name: string;
+	id: string;
+	data: Record<string, any>;
+};
+export type DefaultStoredWidget = {
+	place: string | null;
+} & Widget;
+</script>
 <script lang="ts" setup>
 import { defineAsyncComponent, reactive, ref, computed } from 'vue';
 import { v4 as uuid } from 'uuid';
@@ -42,12 +53,6 @@ import { i18n } from '@/i18n';
 import { deepClone } from '@/scripts/clone';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
-type Widget = {
-	name: string;
-	id: string;
-	data: Record<string, any>;
-};
 
 const props = defineProps<{
 	widgets: Widget[];
@@ -109,11 +114,22 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
-.vjoppmmu {
+<style lang="scss" module>
+.root {
 	container-type: inline-size;
+}
 
-	> header {
+.widget {
+	contain: content;
+	margin: var(--margin) 0;
+
+	&:first-of-type {
+		margin-top: 0;
+	}
+}
+
+.edit {
+	&-header {
 		margin: 16px 0;
 
 		> * {
@@ -122,44 +138,42 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 		}
 	}
 
-	> .widget, .customize-container {
-		contain: content;
-		margin: var(--margin) 0;
-
-		&:first-of-type {
-			margin-top: 0;
-		}
-	}
-
-	.customize-container {
-		position: relative;
-		cursor: move;
-
-		> .config,
-		> .remove {
-			position: absolute;
-			z-index: 10000;
-			top: 8px;
-			width: 32px;
-			height: 32px;
-			color: #fff;
-			background: rgba(#000, 0.7);
-			border-radius: 4px;
-		}
-
-		> .config {
-			right: 8px + 8px + 32px;
-		}
-
-		> .remove {
-			right: 8px;
-		}
-
-		> .handle {
-			> .widget {
-				pointer-events: none;
-			}
-		}
+	&-editing {
+		min-height: 100px;
 	}
 }
+
+.customize-container {
+	position: relative;
+	cursor: move;
+
+	&-config,
+	&-remove {
+		position: absolute;
+		z-index: 10000;
+		top: 8px;
+		width: 32px;
+		height: 32px;
+		color: #fff;
+		background: rgba(#000, 0.7);
+		border-radius: 4px;
+	}
+
+	&-config {
+		right: 8px + 8px + 32px;
+	}
+
+	&-remove {
+		right: 8px;
+	}
+
+	&-handle {
+
+		&-widget {
+			pointer-events: none;
+		} 
+	}
+
+}
+
 </style>
