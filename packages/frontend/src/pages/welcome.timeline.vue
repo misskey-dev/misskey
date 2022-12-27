@@ -5,7 +5,7 @@
 			<div class="content _panel">
 				<div class="body">
 					<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
+					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i"/>
 					<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 				</div>
 				<div v-if="note.files.length > 0" class="richcontent">

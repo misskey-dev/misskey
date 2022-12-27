@@ -26,7 +26,7 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { ChannelsRepository, ClipsRepository, EmojisRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import manifest from './manifest.json' assert { type: 'json' };
@@ -69,6 +69,9 @@ export class ClientServerService {
 
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
+
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -215,6 +218,33 @@ export class ClientServerService {
 
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
 			return reply.sendFile('/apple-touch-icon.png', staticAssets);
+		});
+
+		fastify.get<{ Params: { path: string } }>('/emoji/:path(.*)', async (request, reply) => {
+			const path = request.params.path;
+
+			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
+				reply.code(404);
+				return;
+			}
+
+			const name = path.split('@')[0].replace('.webp', '');
+			const host = path.split('@')[1]?.replace('.webp', '');
+
+			const emoji = await this.emojisRepository.findOneBy({
+				host: host == null ? IsNull() : host,
+				name: name,
+			});
+
+			if (emoji == null) {
+				reply.code(404);
+				return;
+			}
+
+			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+
+			// ?? emoji.originalUrl してるのは後方互換性のため
+			return await reply.redirect(301, emoji.publicUrl ?? emoji.originalUrl);
 		});
 
 		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
