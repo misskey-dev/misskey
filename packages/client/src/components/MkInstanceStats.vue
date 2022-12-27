@@ -34,6 +34,9 @@
 			</div>
 		</div>
 	</div>
+	<div class="heatmap _panel">
+		<MkActiveUsersHeatmap/>
+	</div>
 	<div class="subpub">
 		<div class="sub">
 			<div class="title">Sub</div>
@@ -72,6 +75,7 @@ import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import MkActiveUsersHeatmap from '@/components/MkActiveUsersHeatmap.vue';
 
 Chart.register(
 	ArcElement,
@@ -194,6 +198,11 @@ onMounted(() => {
 				padding: 8px 0 0 0;
 			}
 		}
+	}
+
+	> .heatmap {
+		padding: 16px;
+		margin-bottom: 16px;
 	}
 
 	> .subpub {
