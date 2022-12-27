@@ -57,5 +57,5 @@ definePageMetadata(computed(() => user ? {
 } : null));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 </style>

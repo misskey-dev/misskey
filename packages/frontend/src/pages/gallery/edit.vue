@@ -122,7 +122,7 @@ definePageMetadata(computed(() => props.postId ? {
 }));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .wqugxsfx {
 	height: 200px;
 	background-size: contain;

@@ -137,7 +137,7 @@ function onStatsLog(statsLog) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .lcfyofjk {
 	display: flex;
 

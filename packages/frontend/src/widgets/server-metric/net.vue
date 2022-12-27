@@ -110,7 +110,7 @@ function onStatsLog(statsLog) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .oxxrhrto {
 	display: flex;
 

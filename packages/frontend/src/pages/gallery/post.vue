@@ -161,9 +161,7 @@ definePageMetadata(computed(() => post ? {
 .fade-leave-to {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss">
 .rkxwuolj {
 	> .files {
 		> .file {

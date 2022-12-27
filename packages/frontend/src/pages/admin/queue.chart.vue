@@ -113,7 +113,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .pumxzjhg {
 	> .status {
 		padding: 16px;

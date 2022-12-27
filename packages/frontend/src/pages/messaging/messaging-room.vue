@@ -401,4 +401,13 @@ definePageMetadata(computed(() => !fetching ? user ? {
 		}
 	}
 }
+
+.fade-enter-active, .fade-leave-active {
+	transition: opacity 0.1s;
+}
+
+.fade-enter-from, .fade-leave-to {
+	transition: opacity 0.5s;
+	opacity: 0;
+}
 </style>

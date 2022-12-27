@@ -44,7 +44,7 @@ function getReactionName(reaction: string): string {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .bqxuuuey {
 	display: flex;
 

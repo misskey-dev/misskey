@@ -112,7 +112,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .lcjjdxlm {
 	display: flex;
 	padding: 16px;

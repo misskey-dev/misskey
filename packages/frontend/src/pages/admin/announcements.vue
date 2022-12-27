@@ -105,7 +105,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ztgjmzrw {
 	margin: var(--margin);
 }

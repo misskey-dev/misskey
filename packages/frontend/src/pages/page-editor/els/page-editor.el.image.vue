@@ -54,7 +54,7 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .oyyftmcf {
 	> .preview {
 		height: 150px;

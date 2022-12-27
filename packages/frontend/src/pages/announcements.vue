@@ -50,7 +50,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ruryvtyk {
 	> .announcement {
 		&:not(:last-child) {

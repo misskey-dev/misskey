@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-dialog {
 	position: relative;
 	padding: 32px;

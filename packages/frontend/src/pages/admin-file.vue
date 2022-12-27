@@ -140,7 +140,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .cxqhhsmd {
 	> .thumbnail {
 		display: block;

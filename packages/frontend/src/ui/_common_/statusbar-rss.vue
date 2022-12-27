@@ -69,9 +69,7 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
   opacity: 0;
 	transform: translateY(100%);
 }
-</style>
 
-<style lang="scss">
 .xbhtxfms {
 	display: inline-block;
 	position: relative;

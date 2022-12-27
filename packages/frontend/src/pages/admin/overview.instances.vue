@@ -35,7 +35,7 @@ useInterval(fetch, 1000 * 60, {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .wbrkwale {
 	> .instances {
 		display: grid;

@@ -109,7 +109,7 @@ function showFileMenu(file, ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .skeikyzd {
 	padding: 8px 16px;
 	position: relative;

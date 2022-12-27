@@ -31,7 +31,7 @@ const emit = defineEmits<{
 const modal = $ref<InstanceType<typeof MkModal>>();
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .xubzgfga {
 	display: flex;
 	flex-direction: column;

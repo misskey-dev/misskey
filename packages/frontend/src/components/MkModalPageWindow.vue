@@ -115,7 +115,7 @@ function onContextmenu(ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .hrmcaedk {
 	overflow: hidden;
 	display: flex;

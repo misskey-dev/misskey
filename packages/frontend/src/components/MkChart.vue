@@ -838,7 +838,7 @@ onMounted(() => {
 /* eslint-enable id-denylist */
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .cbbedffa {
 	position: relative;
 

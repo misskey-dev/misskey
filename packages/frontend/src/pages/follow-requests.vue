@@ -71,7 +71,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-follow-requests {
 	> .user {
 		display: flex;

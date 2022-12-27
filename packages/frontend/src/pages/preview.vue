@@ -20,7 +20,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .graojtoi {
 	padding: var(--margin);
 }

@@ -245,7 +245,7 @@ function onDrop(ev) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .dnpfarvg {
 	--root-margin: 10px;
 	--deckColumnHeaderHeight: 40px;

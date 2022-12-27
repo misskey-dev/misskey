@@ -117,6 +117,6 @@ definePageMetadata(computed(() => props.channelId ? {
 }));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 </style>

@@ -25,7 +25,7 @@ const used = $computed(() => props.meta.fs.used);
 const available = $computed(() => props.meta.fs.total - props.meta.fs.used);
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .zbwaqsat {
 	display: flex;
 	padding: 16px;

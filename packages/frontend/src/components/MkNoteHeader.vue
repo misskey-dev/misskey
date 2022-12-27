@@ -27,7 +27,7 @@ defineProps<{
 }>();
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .kkwtjztg {
 	display: flex;
 	align-items: baseline;

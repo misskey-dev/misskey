@@ -13,7 +13,7 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mjndxjcg {
 	padding: 32px;
 	text-align: center;

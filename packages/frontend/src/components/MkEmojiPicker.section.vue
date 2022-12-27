@@ -32,5 +32,5 @@ const emit = defineEmits<{
 const shown = ref(!!props.initialShown);
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 </style>

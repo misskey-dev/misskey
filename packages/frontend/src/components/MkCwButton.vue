@@ -34,7 +34,7 @@ const toggle = () => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .nrvgflfu {
 	display: inline-block;
 	padding: 4px 8px;

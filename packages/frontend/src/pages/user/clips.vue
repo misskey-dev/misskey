@@ -29,7 +29,7 @@ const pagination = {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .pages-user-clips {
 	> .list {
 		> .item {

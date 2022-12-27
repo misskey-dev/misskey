@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 const minWidth = props.minWidth + 'px';
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .terlnhxf {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(v-bind('minWidth'), 1fr));

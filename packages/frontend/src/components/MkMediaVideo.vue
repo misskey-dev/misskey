@@ -35,7 +35,7 @@ const props = defineProps<{
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .kkjnbbplepmiyuadieoenjgutgcmtsvu {
 	position: relative;
 

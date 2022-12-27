@@ -385,7 +385,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .aeakzknw {
 	display: flex;
 	align-items: center;

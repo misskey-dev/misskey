@@ -62,7 +62,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mjndxjch {
 	padding: 32px;
 	text-align: center;

@@ -26,7 +26,7 @@ const XFederation = defineAsyncComponent(() => import('./statusbar-federation.vu
 const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue'));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .dlrsnxqu {
 	font-size: 15px;
 	background: var(--panel);

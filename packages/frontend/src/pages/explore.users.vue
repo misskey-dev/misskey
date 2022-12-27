@@ -135,7 +135,7 @@ os.api('hashtags/list', {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .vxjfqztj {
 	> * {
 		margin-right: 16px;

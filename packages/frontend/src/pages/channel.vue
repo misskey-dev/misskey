@@ -83,7 +83,7 @@ definePageMetadata(computed(() => channel ? {
 } : null));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .wpgynlbz {
 	position: relative;
 

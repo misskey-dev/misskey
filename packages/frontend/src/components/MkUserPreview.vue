@@ -89,9 +89,7 @@ onMounted(() => {
 	opacity: 0;
 	transform: scale(0.9);
 }
-</style>
 
-<style lang="scss">
 .fxxzrfni {
 	position: absolute;
 	width: 300px;

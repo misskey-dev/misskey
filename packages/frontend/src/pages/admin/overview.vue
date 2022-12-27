@@ -181,7 +181,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .edbbcaef {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));

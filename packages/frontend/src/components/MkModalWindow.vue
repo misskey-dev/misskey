@@ -83,7 +83,7 @@ defineExpose({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ebkgoccj {
 	overflow: hidden;
 	display: flex;

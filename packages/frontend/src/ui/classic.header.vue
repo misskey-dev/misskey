@@ -117,7 +117,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .azykntjl {
 	$height: 60px;
 	$avatar-size: 32px;

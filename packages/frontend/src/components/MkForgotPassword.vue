@@ -1,6 +1,5 @@
 <template>
-<XModalWindow
-	ref="dialog"
+<XModalWindow ref="dialog"
 	:width="370"
 	:height="400"
 	@close="dialog.close()"
@@ -63,7 +62,7 @@ async function onSubmit() {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .bafeceda {
 	> .main {
 		padding: 24px;

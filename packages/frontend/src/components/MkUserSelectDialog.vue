@@ -115,7 +115,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .tbhwbxda {
 	> .form {
 		padding: 0 var(--root-margin);

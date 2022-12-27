@@ -142,7 +142,7 @@ watch([choices, multiple, expiration, atDate, atTime, after, unit], () => emit('
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .zmdxowus {
 	padding: 8px 16px;
 
