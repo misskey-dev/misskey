@@ -40,6 +40,7 @@ You should also include the user name that made the change.
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
+- Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: Implement the button to subscribe push notification @tamaina
 - Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
