@@ -157,7 +157,7 @@ export default defineComponent({
 	}
 }
 
-@container (max-width: 580px) {
+@container (max-width: 500px) {
 	.ssazuxis {
 		> header {
 			> .title {
