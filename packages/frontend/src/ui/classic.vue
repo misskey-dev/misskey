@@ -7,23 +7,31 @@
 			<XSidebar/>
 		</div>
 		<div v-else ref="widgetsLeft" class="widgets left">
-			<XWidgets :place="'left'" @mounted="attachSticky(widgetsLeft)"/>
+			<XWidgets place="left" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
-		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
+		<main class="main" :style="{ background: pageInfo?.bg }" @contextmenu.stop="onContextmenu">
 			<div class="content">
-				<RouterView/>
+				<MkStickyContainer>
+					<template #header><MkHeader v-if="pageInfo && !pageInfo.hideHeader" :info="pageInfo"/></template>
+					<router-view v-slot="{ Component }">
+						<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+							<keep-alive :include="['MkTimelinePage']">
+								<component :is="Component" :ref="changePage"/>
+							</keep-alive>
+						</transition>
+					</router-view>
+				</MkStickyContainer>
 			</div>
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="null" @mounted="attachSticky(widgetsRight)"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 
 	<transition :name="$store.state.animation ? 'tray-back' : ''">
-		<div
-			v-if="widgetsShowing"
+		<div v-if="widgetsShowing"
 			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
@@ -40,133 +48,163 @@
 </div>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent, markRaw, ComputedRef, ref, onMounted, provide } from 'vue';
-import XSidebar from './classic.sidebar.vue';
-import XCommon from './_common_/common.vue';
+<script lang="ts">
+import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
+import XSidebar from './classic.sidebar.vue';
+import XCommon from './_common_/common.vue';
 import * as os from '@/os';
+import { menuDef } from '@/menu';
+import * as symbols from '@/symbols';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
-const XWidgets = defineAsyncComponent(() => import('./classic.widgets.vue'));
+const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 
-let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
+export default defineComponent({
+	components: {
+		XCommon,
+		XSidebar,
+		XHeaderMenu: defineAsyncComponent(() => import('./classic.header.vue')),
+		XWidgets: defineAsyncComponent(() => import('./classic.widgets.vue')),
+	},
 
-let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-let widgetsShowing = $ref(false);
-let fullView = $ref(false);
-let globalHeaderHeight = $ref(0);
-const wallpaper = localStorage.getItem('wallpaper') != null;
-const showMenuOnTop = $computed(() => defaultStore.state.menuDisplay === 'top');
-let live2d = $ref<HTMLIFrameElement>();
-let widgetsLeft = $ref();
-let widgetsRight = $ref();
+	provide() {
+		return {
+			shouldHeaderThin: this.showMenuOnTop,
+			shouldSpacerMin: true,
+		};
+	},
 
-provide('router', mainRouter);
-provideMetadataReceiver((info) => {
-	pageMetadata = info;
-	if (pageMetadata.value) {
-		document.title = `${pageMetadata.value.title} | ${instanceName}`;
-	}
-});
-provide('shouldHeaderThin', showMenuOnTop);
-provide('shouldSpacerMin', true);
+	data() {
+		return {
+			pageInfo: null,
+			menuDef: menuDef,
+			globalHeaderHeight: 0,
+			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
+			widgetsShowing: false,
+			fullView: false,
+			wallpaper: localStorage.getItem('wallpaper') != null,
+		};
+	},
 
-function attachSticky(el) {
-	const sticky = new StickySidebar(el, defaultStore.state.menuDisplay === 'top' ? 0 : 16, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
-	window.addEventListener('scroll', () => {
-		sticky.calc(window.scrollY);
-	}, { passive: true });
-}
-
-function top() {
-	window.scroll({ top: 0, behavior: 'smooth' });
-}
-
-function onContextmenu(ev: MouseEvent) {
-	const isLink = (el: HTMLElement) => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
+	computed: {
+		showMenuOnTop(): boolean {
+			return this.$store.state.menuDisplay === 'top';
 		}
-	};
-	if (isLink(ev.target)) return;
-	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
-	if (window.getSelection().toString() !== '') return;
-	const path = mainRouter.getCurrentPath();
-	os.contextMenu([{
-		type: 'label',
-		text: path,
-	}, {
-		icon: fullView ? 'fas fa-compress' : 'fas fa-expand',
-		text: fullView ? i18n.ts.quitFullView : i18n.ts.fullView,
-		action: () => {
-			fullView = !fullView;
-		},
-	}, {
-		icon: 'ti ti-window-maximize',
-		text: i18n.ts.openInWindow,
-		action: () => {
-			os.pageWindow(path);
-		},
-	}], ev);
-}
+	},
 
-function onAiClick(ev) {
-	//if (this.live2d) this.live2d.click(ev);
-}
+	created() {
+		if (window.innerWidth < 1024) {
+			localStorage.setItem('ui', 'default');
+			location.reload();
+		}
 
-if (window.innerWidth < 1024) {
-	localStorage.setItem('ui', 'default');
-	location.reload();
-}
+		document.documentElement.style.overflowY = 'scroll';
 
-document.documentElement.style.overflowY = 'scroll';
+		if (this.$store.state.widgets.length === 0) {
+			this.$store.set('widgets', [{
+				name: 'calendar',
+				id: 'a', place: null, data: {}
+			}, {
+				name: 'notifications',
+				id: 'b', place: null, data: {}
+			}, {
+				name: 'trends',
+				id: 'c', place: null, data: {}
+			}]);
+		}
+	},
 
-if (defaultStore.state.widgets.length === 0) {
-	defaultStore.set('widgets', [{
-		name: 'calendar',
-		id: 'a', place: null, data: {},
-	}, {
-		name: 'notifications',
-		id: 'b', place: null, data: {},
-	}, {
-		name: 'trends',
-		id: 'c', place: null, data: {},
-	}]);
-}
-
-onMounted(() => {
-	window.addEventListener('resize', () => {
-		isDesktop = (window.innerWidth >= DESKTOP_THRESHOLD);
-	}, { passive: true });
-
-	if (defaultStore.state.aiChanMode) {
-		const iframeRect = live2d.getBoundingClientRect();
-		window.addEventListener('mousemove', ev => {
-			live2d.contentWindow.postMessage({
-				type: 'moveCursor',
-				body: {
-					x: ev.clientX - iframeRect.left,
-					y: ev.clientY - iframeRect.top,
-				},
-			}, '*');
+	mounted() {
+		window.addEventListener('resize', () => {
+			this.isDesktop = (window.innerWidth >= DESKTOP_THRESHOLD);
 		}, { passive: true });
-		window.addEventListener('touchmove', ev => {
-			live2d.contentWindow.postMessage({
-				type: 'moveCursor',
-				body: {
-					x: ev.touches[0].clientX - iframeRect.left,
-					y: ev.touches[0].clientY - iframeRect.top,
-				},
-			}, '*');
-		}, { passive: true });
+
+		if (this.$store.state.aiChanMode) {
+			const iframeRect = this.$refs.live2d.getBoundingClientRect();
+			window.addEventListener('mousemove', ev => {
+				this.$refs.live2d.contentWindow.postMessage({
+					type: 'moveCursor',
+					body: {
+						x: ev.clientX - iframeRect.left,
+						y: ev.clientY - iframeRect.top,
+					}
+				}, '*');
+			}, { passive: true });
+			window.addEventListener('touchmove', ev => {
+				this.$refs.live2d.contentWindow.postMessage({
+					type: 'moveCursor',
+					body: {
+						x: ev.touches[0].clientX - iframeRect.left,
+						y: ev.touches[0].clientY - iframeRect.top,
+					}
+				}, '*');
+			}, { passive: true });
+		}
+	},
+
+	methods: {
+		changePage(page) {
+			if (page == null) return;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
+				document.title = `${this.pageInfo.title} | ${instanceName}`;
+			}
+		},
+
+		attachSticky(ref) {
+			const sticky = new StickySidebar(this.$refs[ref], this.$store.state.menuDisplay === 'top' ? 0 : 16, this.$store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+			window.addEventListener('scroll', () => {
+				sticky.calc(window.scrollY);
+			}, { passive: true });
+		},
+
+		top() {
+			window.scroll({ top: 0, behavior: 'smooth' });
+		},
+
+		onTransition() {
+			if (window._scroll) window._scroll();
+		},
+
+		onContextmenu(ev: MouseEvent) {
+			const isLink = (el: HTMLElement) => {
+				if (el.tagName === 'A') return true;
+				if (el.parentElement) {
+					return isLink(el.parentElement);
+				}
+			};
+			if (isLink(ev.target)) return;
+			if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
+			if (window.getSelection().toString() !== '') return;
+			const path = this.$route.path;
+			os.contextMenu([{
+				type: 'label',
+				text: path,
+			}, {
+				icon: this.fullView ? 'fas fa-compress' : 'fas fa-expand',
+				text: this.fullView ? this.$ts.quitFullView : this.$ts.fullView,
+				action: () => {
+					this.fullView = !this.fullView;
+				}
+			}, {
+				icon: 'fas fa-window-maximize',
+				text: this.$ts.openInWindow,
+				action: () => {
+					os.pageWindow(path);
+				}
+			}], ev);
+		},
+
+		onAiClick(ev) {
+			//if (this.live2d) this.live2d.click(ev);
+		}
 	}
 });
 </script>
@@ -198,7 +236,8 @@ onMounted(() => {
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 
-	min-height: 100dvh;
+	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
 
 	&.wallpaper {
@@ -300,7 +339,8 @@ onMounted(() => {
 		top: 0;
 		right: 0;
 		z-index: 1001;
-		height: 100dvh;
+		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+		height: calc(var(--vh, 1vh) * 100);
 		padding: var(--margin);
 		box-sizing: border-box;
 		overflow: auto;
