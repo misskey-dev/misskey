@@ -6,7 +6,7 @@
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
 					<MkInput v-model="query" :debounce="true" type="search">
-						<template #prefix><i class="fas fa-search"></i></template>
+						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.search }}</template>
 					</MkInput>
 					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
@@ -39,7 +39,7 @@
 				<div v-else-if="tab === 'remote'" class="remote">
 					<FormSplit>
 						<MkInput v-model="queryRemote" :debounce="true" type="search">
-							<template #prefix><i class="fas fa-search"></i></template>
+							<template #prefix><i class="ti ti-search"></i></template>
 							<template #label>{{ i18n.ts.search }}</template>
 						</MkInput>
 						<MkInput v-model="host" :debounce="true">
@@ -164,49 +164,49 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 		text: ':' + emoji.name + ':',
 	}, {
 		text: i18n.ts.import,
-		icon: 'fas fa-plus',
+		icon: 'ti ti-plus',
 		action: () => { im(emoji); },
 	}], ev.currentTarget ?? ev.target);
 };
 
 const menu = (ev: MouseEvent) => {
 	os.popupMenu([{
-		icon: 'fas fa-download',
+		icon: 'ti ti-download',
 		text: i18n.ts.export,
 		action: async () => {
 			os.api('export-custom-emojis', {
 			})
-			.then(() => {
-				os.alert({
-					type: 'info',
-					text: i18n.ts.exportRequested,
+				.then(() => {
+					os.alert({
+						type: 'info',
+						text: i18n.ts.exportRequested,
+					});
+				}).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message,
+					});
 				});
-			}).catch((err) => {
-				os.alert({
-					type: 'error',
-					text: err.message,
-				});
-			});
 		},
 	}, {
-		icon: 'fas fa-upload',
+		icon: 'ti ti-upload',
 		text: i18n.ts.import,
 		action: async () => {
 			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
-			.then(() => {
-				os.alert({
-					type: 'info',
-					text: i18n.ts.importRequested,
+				.then(() => {
+					os.alert({
+						type: 'info',
+						text: i18n.ts.importRequested,
+					});
+				}).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message,
+					});
 				});
-			}).catch((err) => {
-				os.alert({
-					type: 'error',
-					text: err.message,
-				});
-			});
 		},
 	}], ev.currentTarget ?? ev.target);
 };
@@ -273,11 +273,11 @@ const delBulk = async () => {
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'fas fa-plus',
+	icon: 'ti ti-plus',
 	text: i18n.ts.addEmoji,
 	handler: add,
 }, {
-	icon: 'fas fa-ellipsis-h',
+	icon: 'ti ti-dots',
 	handler: menu,
 }]);
 
@@ -291,7 +291,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
-	icon: 'fas fa-laugh',
+	icon: 'ti ti-mood-happy',
 })));
 </script>
 

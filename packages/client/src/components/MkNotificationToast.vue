@@ -45,6 +45,7 @@ onMounted(() => {
 	top: 32px;
 	padding: 0 32px;
 	pointer-events: none;
+	container-type: inline-size;
 
 	@media (max-width: 700px) {
 		top: initial;

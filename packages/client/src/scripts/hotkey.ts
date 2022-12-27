@@ -21,7 +21,7 @@ const parseKeymap = (keymap: Keymap) => Object.entries(keymap).map(([patterns, c
 	const result = {
 		patterns: [],
 		callback,
-		allowRepeat: true
+		allowRepeat: true,
 	} as Action;
 
 	if (patterns.match(/^\(.*\)$/) !== null) {
@@ -34,7 +34,7 @@ const parseKeymap = (keymap: Keymap) => Object.entries(keymap).map(([patterns, c
 			which: [],
 			ctrl: false,
 			alt: false,
-			shift: false
+			shift: false,
 		} as Pattern;
 
 		const keys = part.trim().split('+').map(x => x.trim().toLowerCase());
@@ -61,7 +61,7 @@ function match(ev: KeyboardEvent, patterns: Action['patterns']): boolean {
 		pattern.ctrl === ev.ctrlKey &&
 		pattern.shift === ev.shiftKey &&
 		pattern.alt === ev.altKey &&
-		!ev.metaKey
+		!ev.metaKey,
 	);
 }
 

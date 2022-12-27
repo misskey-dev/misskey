@@ -27,7 +27,7 @@ export class UserPreview {
 		popup(defineAsyncComponent(() => import('@/components/MkUserPreview.vue')), {
 			showing,
 			q: this.user,
-			source: this.el
+			source: this.el,
 		}, {
 			mouseover: () => {
 				window.clearTimeout(this.hideTimer);
@@ -41,7 +41,7 @@ export class UserPreview {
 		this.promise = {
 			cancel: () => {
 				showing.value = false;
-			}
+			},
 		};
 
 		this.checkTimer = window.setInterval(() => {
@@ -114,5 +114,5 @@ export default {
 
 		const self = el._userPreviewDirective_;
 		self.preview.detach();
-	}
+	},
 } as Directive;

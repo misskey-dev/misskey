@@ -24,6 +24,8 @@ let ro: ResizeObserver;
 let root = $ref<HTMLElement>();
 let content = $ref<HTMLElement>();
 let margin = $ref(0);
+const widthHistory = [null, null] as [number | null, number | null];
+const heightHistory = [null, null] as [number | null, number | null];
 const shouldSpacerMin = inject('shouldSpacerMin', false);
 
 const adjust = (rect: { width: number; height: number; }) => {
@@ -47,9 +49,26 @@ onMounted(() => {
 			height: entries[0].borderBoxSize[0].blockSize,
 		});
 		*/
+
+		const width = root!.offsetWidth;
+		const height = root!.offsetHeight;
+
+		//#region Prevent infinite resizing
+		// https://github.com/misskey-dev/misskey/issues/9076
+		const pastWidth = widthHistory.pop();
+		widthHistory.unshift(width);
+		const pastHeight = heightHistory.pop();
+		heightHistory.unshift(height);
+
+
+		if (pastWidth === width && pastHeight === height) {
+			return;
+		}
+		//#endregion
+
 		adjust({
-			width: root!.offsetWidth,
-			height: root!.offsetHeight,
+			width,
+			height,
 		});
 	});
 	ro.observe(root!);
@@ -72,5 +91,6 @@ onUnmounted(() => {
 
 .content {
 	margin: 0 auto;
+	container-type: inline-size;
 }
 </style>

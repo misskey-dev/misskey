@@ -15,9 +15,9 @@
 	<FormRadios v-model="overridedDeviceKind" class="_formBlock">
 		<template #label>{{ i18n.ts.overridedDeviceKind }}</template>
 		<option :value="null">{{ i18n.ts.auto }}</option>
-		<option value="smartphone"><i class="fas fa-mobile-alt"/> {{ i18n.ts.smartphone }}</option>
-		<option value="tablet"><i class="fas fa-tablet-alt"/> {{ i18n.ts.tablet }}</option>
-		<option value="desktop"><i class="fas fa-desktop"/> {{ i18n.ts.desktop }}</option>
+		<option value="smartphone"><i class="ti ti-device-mobile"/> {{ i18n.ts.smartphone }}</option>
+		<option value="tablet"><i class="ti ti-device-tablet"/> {{ i18n.ts.tablet }}</option>
+		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 	</FormRadios>
 
 	<FormSwitch v-model="showFixedPostForm" class="_formBlock">{{ i18n.ts.showFixedPostForm }}</FormSwitch>
@@ -48,10 +48,16 @@
 		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
 		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ i18n.ts.squareAvatars }}</FormSwitch>
 		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ i18n.ts.useSystemFont }}</FormSwitch>
-		<FormSwitch v-model="useOsNativeEmojis" class="_formBlock">
-			{{ i18n.ts.useOsNativeEmojis }}
-			<div><Mfm :key="useOsNativeEmojis" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
-		</FormSwitch>
+		<div class="_formBlock">
+			<FormRadios v-model="emojiStyle">
+				<template #label>{{ i18n.ts.emojiStyle }}</template>
+				<option value="native">{{ i18n.ts.native }}</option>
+				<option value="fluentEmoji">Fluent Emoji</option>
+				<option value="twemoji">Twemoji</option>
+			</FormRadios>
+			<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
+		</div>
+
 		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ i18n.ts.disableDrawer }}</FormSwitch>
 
 		<FormRadios v-model="fontSize" class="_formBlock">
@@ -88,7 +94,7 @@
 
 	<FormLink to="/settings/deck" class="_formBlock">{{ i18n.ts.deck }}</FormLink>
 
-	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="fas fa-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
+	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 </div>
 </template>
 
@@ -129,7 +135,7 @@ const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEff
 const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
 const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
 const disableAnimatedMfm = computed(defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v));
-const useOsNativeEmojis = computed(defaultStore.makeGetterSetter('useOsNativeEmojis'));
+const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
 const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
@@ -185,6 +191,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.general,
-	icon: 'fas fa-cogs',
+	icon: 'ti ti-adjustments',
 });
 </script>

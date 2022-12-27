@@ -18,11 +18,11 @@
 		>
 			<slot></slot>
 		</select>
-		<div ref="suffixEl" class="suffix"><i class="fas fa-chevron-down"></i></div>
+		<div ref="suffixEl" class="suffix"><i class="ti ti-chevron-down"></i></div>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 

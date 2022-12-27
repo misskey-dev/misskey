@@ -3,19 +3,19 @@
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 	<FormSuspense :p="init">
 		<FormFolder class="_formBlock">
-			<template #icon><i class="fab fa-twitter"></i></template>
+			<template #icon><i class="ti ti-brand-twitter"></i></template>
 			<template #label>Twitter</template>
 			<template #suffix>{{ enableTwitterIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 			<XTwitter/>
 		</FormFolder>
 		<FormFolder class="_formBlock">
-			<template #icon><i class="fab fa-github"></i></template>
+			<template #icon><i class="ti ti-brand-github"></i></template>
 			<template #label>GitHub</template>
 			<template #suffix>{{ enableGithubIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 			<XGithub/>
 		</FormFolder>
 		<FormFolder class="_formBlock">
-			<template #icon><i class="fab fa-discord"></i></template>
+			<template #icon><i class="ti ti-brand-discord"></i></template>
 			<template #label>Discord</template>
 			<template #suffix>{{ enableDiscordIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 			<XDiscord/>
@@ -52,6 +52,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.integration,
-	icon: 'fas fa-share-alt',
+	icon: 'ti ti-share',
 });
 </script>

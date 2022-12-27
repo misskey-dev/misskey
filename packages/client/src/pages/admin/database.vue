@@ -1,13 +1,15 @@
-<template><MkStickyContainer>
+<template>
+<MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
-	<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
-		<MkKeyValue v-for="table in database" :key="table[0]" oneline style="margin: 1em 0;">
-			<template #key>{{ table[0] }}</template>
-			<template #value>{{ bytes(table[1].size) }} ({{ number(table[1].count) }} recs)</template>
-		</MkKeyValue>
-	</FormSuspense>
-</MkSpacer></MkStickyContainer>
+	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+		<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
+			<MkKeyValue v-for="table in database" :key="table[0]" oneline style="margin: 1em 0;">
+				<template #key>{{ table[0] }}</template>
+				<template #value>{{ bytes(table[1].size) }} ({{ number(table[1].count) }} recs)</template>
+			</MkKeyValue>
+		</FormSuspense>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -28,6 +30,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.database,
-	icon: 'fas fa-database',
+	icon: 'ti ti-database',
 });
 </script>

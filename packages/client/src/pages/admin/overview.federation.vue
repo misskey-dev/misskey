@@ -1,100 +1,185 @@
 <template>
-<div class="wbrkwale">
+<div>
 	<MkLoading v-if="fetching"/>
-	<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="instances">
-		<MkA v-for="(instance, i) in instances" :key="instance.id" :to="`/instance-info/${instance.host}`" class="instance">
-			<img v-if="instance.iconUrl" :src="instance.iconUrl" alt=""/>
-			<div class="body">
-				<div class="name">{{ instance.name ?? instance.host }}</div>
-				<div class="host">{{ instance.host }}</div>
+	<div v-show="!fetching" :class="$style.root">
+		<div v-if="topSubInstancesForPie && topPubInstancesForPie" class="pies">
+			<div class="pie deliver _panel">
+				<div class="title">Sub</div>
+				<XPie :data="topSubInstancesForPie" class="chart"/>
+				<div class="subTitle">Top 10</div>
 			</div>
-			<MkMiniChart class="chart" :src="charts[i].requests.received"/>
-		</MkA>
-	</transition-group>
+			<div class="pie inbox _panel">
+				<div class="title">Pub</div>
+				<XPie :data="topPubInstancesForPie" class="chart"/>
+				<div class="subTitle">Top 10</div>
+			</div>
+		</div>
+		<div v-if="!fetching" class="items">
+			<div class="item _panel sub">
+				<div class="icon"><i class="ti ti-world-download"></i></div>
+				<div class="body">
+					<div class="value">
+						{{ number(federationSubActive) }}
+						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationSubActiveDiff"></MkNumberDiff>
+					</div>
+					<div class="label">Sub</div>
+				</div>
+			</div>
+			<div class="item _panel pub">
+				<div class="icon"><i class="ti ti-world-upload"></i></div>
+				<div class="body">
+					<div class="value">
+						{{ number(federationPubActive) }}
+						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationPubActiveDiff"></MkNumberDiff>
+					</div>
+					<div class="label">Pub</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
+import XPie from './overview.pie.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
+import number from '@/filters/number';
+import MkNumberDiff from '@/components/MkNumberDiff.vue';
+import { i18n } from '@/i18n';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 
-const instances = ref([]);
-const charts = ref([]);
-const fetching = ref(true);
+let topSubInstancesForPie: any = $ref(null);
+let topPubInstancesForPie: any = $ref(null);
+let federationPubActive = $ref<number | null>(null);
+let federationPubActiveDiff = $ref<number | null>(null);
+let federationSubActive = $ref<number | null>(null);
+let federationSubActiveDiff = $ref<number | null>(null);
+let fetching = $ref(true);
 
-const fetch = async () => {
-	const fetchedInstances = await os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
-		limit: 5,
+const { handler: externalTooltipHandler } = useChartTooltip();
+	
+onMounted(async () => {
+	const chart = await os.apiGet('charts/federation', { limit: 2, span: 'day' });
+	federationPubActive = chart.pubActive[0];
+	federationPubActiveDiff = chart.pubActive[0] - chart.pubActive[1];
+	federationSubActive = chart.subActive[0];
+	federationSubActiveDiff = chart.subActive[0] - chart.subActive[1];
+
+	os.apiGet('federation/stats', { limit: 10 }).then(res => {
+		topSubInstancesForPie = res.topSubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followersCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowersCount }]);
+		topPubInstancesForPie = res.topPubInstances.map(x => ({
+			name: x.host,
+			color: x.themeColor,
+			value: x.followingCount,
+			onClick: () => {
+				os.pageWindow(`/instance-info/${x.host}`);
+			},
+		})).concat([{ name: '(other)', color: '#80808080', value: res.otherFollowingCount }]);
 	});
-	const fetchedCharts = await Promise.all(fetchedInstances.map(i => os.apiGet('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
-	instances.value = fetchedInstances;
-	charts.value = fetchedCharts;
-	fetching.value = false;
-};
 
-useInterval(fetch, 1000 * 60, {
-	immediate: true,
-	afterMounted: true,
+	fetching = false;
 });
 </script>
 
-<style lang="scss" scoped>
-.wbrkwale {
-	> .instances {
-		.chart-move {
-			transition: transform 1s ease;
+<style lang="scss" module>
+.root {
+
+	&:global {
+		> .pies {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+			grid-gap: 12px;
+			margin-bottom: 12px;
+
+			> .pie {
+				position: relative;
+				padding: 12px;
+
+				> .title {
+					position: absolute;
+					top: 20px;
+					left: 20px;
+					font-size: 90%;
+				}
+
+				> .chart {
+					max-height: 150px;
+				}
+
+				> .subTitle {
+					position: absolute;
+					bottom: 20px;
+					right: 20px;
+					font-size: 85%;
+				}
+			}
 		}
 
-		> .instance {
-			display: flex;
-			align-items: center;
-			padding: 16px 20px;
+		> .items {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+			grid-gap: 12px;
 
-			&:not(:last-child) {
-				border-bottom: solid 0.5px var(--divider);
-			}
+			> .item {
+				display: flex;
+				box-sizing: border-box;
+				padding: 12px;
 
-			> img {
-				display: block;
-				width: 34px;
-				height: 34px;
-				object-fit: cover;
-				border-radius: 4px;
-				margin-right: 12px;
-			}
-
-			> .body {
-				flex: 1;
-				overflow: hidden;
-				font-size: 0.9em;
-				color: var(--fg);
-				padding-right: 8px;
-
-				> .name {
-					display: block;
-					width: 100%;
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
+				> .icon {
+					display: grid;
+					place-items: center;
+					height: 100%;
+					aspect-ratio: 1;
+					margin-right: 12px;
+					background: var(--accentedBg);
+					color: var(--accent);
+					border-radius: 10px;
 				}
 
-				> .host {
-					margin: 0;
-					font-size: 75%;
-					opacity: 0.7;
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
+				&.sub {
+					> .icon {
+						background: #d5ba0026;
+						color: #dfc300;
+					}
 				}
-			}
 
-			> .chart {
-				height: 30px;
+				&.pub {
+					> .icon {
+						background: #00cf2326;
+						color: #00cd5b;
+					}
+				}
+
+				> .body {
+					padding: 2px 0;
+
+					> .value {
+						font-size: 1.25em;
+						font-weight: bold;
+
+						> .diff {
+							font-size: 0.65em;
+							font-weight: normal;
+						}
+					}
+
+					> .label {
+						font-size: 0.8em;
+						opacity: 0.5;
+					}
+				}
 			}
 		}
 	}
 }
 </style>
+

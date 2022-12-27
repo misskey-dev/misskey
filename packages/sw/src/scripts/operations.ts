@@ -27,6 +27,11 @@ export function openNote(noteId: string, loginId: string) {
 	return openClient('push', `/notes/${noteId}`, loginId, { noteId });
 }
 
+// noteIdからノートを開く
+export function openAntenna(antennaId: string, loginId: string) {
+	return openClient('push', `/timeline/antenna/${antennaId}`, loginId, { antennaId });
+}
+
 export async function openChat(body: any, loginId: string) {
 	if (body.groupId === null) {
 		return openClient('push', `/my/messaging/${getAcct(body.user)}`, loginId, { body });

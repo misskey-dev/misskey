@@ -137,7 +137,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								u.searchParams.set('badge', '1');
 								badge = u.href;
 							} else {
-								const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
+								// 拡張子がないとキャッシュしてくれないCDNがあるので
+								const dummy = `${encodeURIComponent(`${u.host}${u.pathname}`)}.png`;
 								badge = `${origin}/proxy/${dummy}?${url.query({
 									url: u.href,
 									badge: '1'
@@ -249,6 +250,15 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 				icon: data.body.user.avatarUrl,
 				badge: iconUrl('comments'),
 				tag: `messaging:group:${data.body.groupId}`,
+				data,
+				renotify: true,
+			}];
+		case 'unreadAntennaNote':
+			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
+				body: `${getUserName(data.body.note.user)}: ${data.body.note.text || ''}`,
+				icon: data.body.note.user.avatarUrl,
+				badge: iconUrl('satellite'),
+				tag: `antenna:${data.body.antenna.id}`,
 				data,
 				renotify: true,
 			}];

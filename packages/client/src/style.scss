@@ -119,6 +119,28 @@ hr {
 	background: var(--divider);
 }
 
+.ti {
+	vertical-align: -10%;
+	line-height: 0.9em;
+
+	&:before {
+		font-size: 130%;
+	}
+}
+
+.ti-fw {
+	display: inline-block;
+	text-align: center;
+}
+
+._indicatorCircle {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	border-radius: 100%;
+	background: currentColor;
+}
+
 ._noSelect {
 	user-select: none;
 	-webkit-user-select: none;
@@ -162,6 +184,7 @@ hr {
 	font-size: 1em;
 	font-family: inherit;
 	line-height: inherit;
+	max-width: 100%;
 
 	&, * {
 		@extend ._noSelect;

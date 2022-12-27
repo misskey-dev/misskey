@@ -19,12 +19,12 @@
 
 	<FormInput v-model="profile.location" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.location }}</template>
-		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
+		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</FormInput>
 
 	<FormInput v-model="profile.birthday" type="date" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.birthday }}</template>
-		<template #prefix><i class="fas fa-birthday-cake"></i></template>
+		<template #prefix><i class="ti ti-cake"></i></template>
 	</FormInput>
 
 	<FormSelect v-model="profile.lang" class="_formBlock">
@@ -34,7 +34,7 @@
 
 	<FormSlot class="_formBlock">
 		<FormFolder>
-			<template #icon><i class="fas fa-table-list"></i></template>
+			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
 			<div class="_formRoot">
@@ -46,8 +46,8 @@
 						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
 					</FormInput>
 				</FormSplit>
-				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
-				<MkButton inline primary @click="saveFields"><i class="fas fa-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
 		</FormFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -178,7 +178,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.profile,
-	icon: 'fas fa-user',
+	icon: 'ti ti-user',
 });
 </script>
 

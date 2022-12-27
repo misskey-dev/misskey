@@ -93,7 +93,7 @@ export function getNoteMenu(props: {
 	async function clip(): Promise<void> {
 		const clips = await os.api('clips/list');
 		os.popupMenu([{
-			icon: 'fas fa-plus',
+			icon: 'ti ti-plus',
 			text: i18n.ts.createNew,
 			action: async () => {
 				const { canceled, result } = await os.form(i18n.ts.createNewClip, {
@@ -196,70 +196,70 @@ export function getNoteMenu(props: {
 		menu = [
 			...(
 				props.currentClipPage?.value.userId === $i.id ? [{
-					icon: 'fas fa-circle-minus',
+					icon: 'ti ti-backspace',
 					text: i18n.ts.unclip,
 					danger: true,
 					action: unclip,
 				}, null] : []
 			), {
-				icon: 'fas fa-external-link-alt',
+				icon: 'ti ti-external-link',
 				text: i18n.ts.details,
 				action: notedetails,
 			}, {
-				icon: 'fas fa-copy',
+				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
 			}, {
-				icon: 'fas fa-link',
+				icon: 'ti ti-link',
 				text: i18n.ts.copyLink,
 				action: copyLink,
 			}, (appearNote.url || appearNote.uri) ? {
-				icon: 'fas fa-external-link-square-alt',
+				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
 					window.open(appearNote.url || appearNote.uri, '_blank');
 				},
 			} : undefined,
 			{
-				icon: 'fas fa-share-alt',
+				icon: 'ti ti-share',
 				text: i18n.ts.share,
 				action: share,
 			},
 			instance.translatorAvailable ? {
-				icon: 'fas fa-language',
+				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
 			} : undefined,
 			null,
 			statePromise.then(state => state.isFavorited ? {
-				icon: 'fas fa-star',
+				icon: 'ti ti-star-off',
 				text: i18n.ts.unfavorite,
 				action: () => toggleFavorite(false),
 			} : {
-				icon: 'fas fa-star',
+				icon: 'ti ti-star',
 				text: i18n.ts.favorite,
 				action: () => toggleFavorite(true),
 			}),
 			{
-				icon: 'fas fa-paperclip',
+				icon: 'ti ti-paperclip',
 				text: i18n.ts.clip,
 				action: () => clip(),
 			},
 			statePromise.then(state => state.isMutedThread ? {
-				icon: 'fas fa-comment-slash',
+				icon: 'ti ti-message-off',
 				text: i18n.ts.unmuteThread,
 				action: () => toggleThreadMute(false),
 			} : {
-				icon: 'fas fa-comment-slash',
+				icon: 'ti ti-message-off',
 				text: i18n.ts.muteThread,
 				action: () => toggleThreadMute(true),
 			}),
 			appearNote.userId === $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
-				icon: 'fas fa-thumbtack',
+				icon: 'ti ti-pinned-off',
 				text: i18n.ts.unpin,
 				action: () => togglePin(false),
 			} : {
-				icon: 'fas fa-thumbtack',
+				icon: 'ti ti-pin',
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
 			} : undefined,
@@ -276,7 +276,7 @@ export function getNoteMenu(props: {
 			...(appearNote.userId !== $i.id ? [
 				null,
 				{
-					icon: 'fas fa-exclamation-circle',
+					icon: 'ti ti-exclamation-circle',
 					text: i18n.ts.reportAbuse,
 					action: () => {
 						const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
@@ -291,12 +291,12 @@ export function getNoteMenu(props: {
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				null,
 				appearNote.userId === $i.id ? {
-					icon: 'fas fa-edit',
+					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
 					action: delEdit,
 				} : undefined,
 				{
-					icon: 'fas fa-trash-alt',
+					icon: 'ti ti-trash',
 					text: i18n.ts.delete,
 					danger: true,
 					action: del,
@@ -306,19 +306,19 @@ export function getNoteMenu(props: {
 			.filter(x => x !== undefined);
 	} else {
 		menu = [{
-			icon: 'fas fa-external-link-alt',
+			icon: 'ti ti-external-link',
 			text: i18n.ts.detailed,
 			action: openDetail,
 		}, {
-			icon: 'fas fa-copy',
+			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
 		}, {
-			icon: 'fas fa-link',
+			icon: 'ti ti-link',
 			text: i18n.ts.copyLink,
 			action: copyLink,
 		}, (appearNote.url || appearNote.uri) ? {
-			icon: 'fas fa-external-link-square-alt',
+			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url || appearNote.uri, '_blank');
@@ -329,7 +329,7 @@ export function getNoteMenu(props: {
 
 	if (noteActions.length > 0) {
 		menu = menu.concat([null, ...noteActions.map(action => ({
-			icon: 'fas fa-plug',
+			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
 				action.handler(appearNote);

@@ -1,5 +1,5 @@
 <!--
-## 12.x.x (unreleased)
+## 13.x.x (unreleased)
 
 ### Improvements
 
@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 13.0.0 (unreleased)
 
 ### Changes
 - Node.js 18.x or later is required
@@ -18,16 +18,47 @@ You should also include the user name that made the change.
 - ノートのウォッチ機能が削除されました
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- 新たに動的なPagesを作ることはできなくなりました
+	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
+- signToActivityPubGet is set to true by default @syuilo
 
 ### Improvements
+- Push notification of Antenna note @tamaina
+- AVIF support @tamaina
+- Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- Introduce retention-rate aggregation @syuilo
 - Server: improve syslog performance @syuilo
+- Server: improve note scoring for featured notes @CyberRex0
+- Server: delete outdated notifications regularly to improve db performance @syuilo
+- Server: delete outdated hard-mutes regularly to improve db performance @syuilo
+- Server: delete outdated notes of antenna regularly to improve db performance @syuilo
+- Client: use tabler-icons instead of fontawesome to better design @syuilo
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Add link to user RSS feed in profile menu @ssmucny
+- Client: Compress non-animated PNG files @saschanaz
+- Client: Youtube window player @sim1222
+- Client: enhance dashboard of control panel @syuilo
+- Client: Vite is upgraded to v4 @syuilo, @tamaina
+- Client: HMR is available while yarn dev @tamaina
+- Client: Implement the button to subscribe push notification @tamaina
+- Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
+- Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
+- Client: add user list widget @syuilo
+- Client: introduce fluent emoji @syuilo
+- Client: improve overall performance of client @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
-- Client: インスタンスティッカーのfaviconを読み込む際に偽サイト警告が出ることがあるのを修正 @syuilo
+- Server: Fix peers API returning suspended instances @ineffyble
+- Server: trim long text of note from ap @syuilo
+- Server: Ap inboxの最大ペイロードサイズを64kbに制限 @syuilo
+- Server: アンテナの作成数上限を追加 @syuilo
+- Client: case insensitive emoji search @saschanaz
+- Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
+- Client: use proxied image for instance icon @syuilo
+- Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: update emoji picker immediately on all input @saschanaz
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes

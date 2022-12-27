@@ -6,12 +6,12 @@ import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { MetaService } from '@/core/MetaService.js';
 import { truncate } from '@/misc/truncate.js';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { DriveService } from '@/core/DriveService.js';
 import type Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApImageService {

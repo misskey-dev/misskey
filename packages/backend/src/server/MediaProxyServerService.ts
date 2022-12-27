@@ -22,7 +22,7 @@ import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyReques
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const assets = `${_dirname}/../../server/file/assets/`;
+const assets = `${_dirname}/../../src/server/assets/`;
 
 @Injectable()
 export class MediaProxyServerService {

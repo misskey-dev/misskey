@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div v-size="{ max: [400] }" class="yweeujhr">
-			<MkButton primary class="start" @click="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
+			<MkButton primary class="start" @click="start"><i class="ti ti-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 			<div v-if="messages.length > 0" class="history">
 				<MkA
@@ -96,11 +96,11 @@ function onRead(ids) {
 function start(ev) {
 	os.popupMenu([{
 		text: i18n.ts.messagingWithUser,
-		icon: 'fas fa-user',
+		icon: 'ti ti-user',
 		action: () => { startUser(); },
 	}, {
 		text: i18n.ts.messagingWithGroup,
-		icon: 'fas fa-users',
+		icon: 'ti ti-users',
 		action: () => { startGroup(); },
 	}], ev.currentTarget ?? ev.target);
 }
@@ -158,7 +158,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.messaging,
-	icon: 'fas fa-comments',
+	icon: 'ti ti-messages',
 });
 </script>
 
@@ -279,6 +279,30 @@ definePageMetadata({
 	}
 
 	&.max-width_400px {
+		> .history {
+			> .message {
+				&:not(.isMe):not(.isRead) {
+					> div {
+						background-image: none;
+						border-left: solid 4px #3aa2dc;
+					}
+				}
+
+				> div {
+					padding: 16px;
+					font-size: 0.9em;
+
+					> .avatar {
+						margin: 0 12px 0 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+@container (max-width: 400px) {
+	.yweeujhr {
 		> .history {
 			> .message {
 				&:not(.isMe):not(.isRead) {

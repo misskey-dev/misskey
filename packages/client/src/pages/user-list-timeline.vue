@@ -69,7 +69,7 @@ const headerActions = $computed(() => list ? [{
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
-	icon: 'fas fa-cog',
+	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,
 }] : []);
@@ -78,7 +78,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => list ? {
 	title: list.name,
-	icon: 'fas fa-list-ul',
+	icon: 'ti ti-list',
 } : null));
 </script>
 
@@ -107,6 +107,13 @@ definePageMetadata(computed(() => list ? {
 	}
 
 	&.min-width_800px {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+}
+
+@container (min-width: 800px) {
+	.eqqrhokj {
 		max-width: 800px;
 		margin: 0 auto;
 	}

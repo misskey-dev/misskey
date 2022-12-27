@@ -82,6 +82,7 @@ export class ApiServerService {
 				}>('/' + endpoint.name, (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
+						reply.send();
 						return;
 					}
 		
@@ -95,6 +96,7 @@ export class ApiServerService {
 				}>('/' + endpoint.name, (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
+						reply.send();
 						return;
 					}
 		
@@ -138,6 +140,9 @@ export class ApiServerService {
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({
 				select: ['host'],
+				where: {
+					isSuspended: false,
+				},
 			});
 
 			return instances.map(instance => instance.host);

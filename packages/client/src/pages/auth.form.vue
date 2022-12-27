@@ -26,7 +26,7 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkButton
+		MkButton,
 	},
 	props: ['session'],
 	computed: {
@@ -37,12 +37,12 @@ export default defineComponent({
 		},
 		app(): any {
 			return this.session.app;
-		}
+		},
 	},
 	methods: {
 		cancel() {
 			os.api('auth/deny', {
-				token: this.session.token
+				token: this.session.token,
 			}).then(() => {
 				this.$emit('denied');
 			});
@@ -50,11 +50,11 @@ export default defineComponent({
 
 		accept() {
 			os.api('auth/accept', {
-				token: this.session.token
+				token: this.session.token,
 			}).then(() => {
 				this.$emit('accepted');
 			});
-		}
-	}
+		},
+	},
 });
 </script>

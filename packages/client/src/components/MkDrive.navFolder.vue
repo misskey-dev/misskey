@@ -7,7 +7,7 @@
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<i v-if="folder == null" class="fas fa-cloud"></i>
+	<i v-if="folder == null" class="ti ti-cloud"></i>
 	<span>{{ folder == null ? i18n.ts.drive : folder.name }}</span>
 </div>
 </template>
@@ -109,7 +109,7 @@ function onDrop(ev: DragEvent) {
 		emit('removeFile', file.id);
 		os.api('drive/files/update', {
 			fileId: file.id,
-			folderId: props.folder ? props.folder.id : null
+			folderId: props.folder ? props.folder.id : null,
 		});
 	}
 	//#endregion
@@ -123,7 +123,7 @@ function onDrop(ev: DragEvent) {
 		emit('removeFolder', folder.id);
 		os.api('drive/folders/update', {
 			folderId: folder.id,
-			parentId: props.folder ? props.folder.id : null
+			parentId: props.folder ? props.folder.id : null,
 		});
 	}
 	//#endregion

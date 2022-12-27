@@ -51,7 +51,7 @@ export default defineComponent({
 			text: '',
 			flag: true,
 			radio: 'misskey',
-			mfm: `Hello world! This is an @example mention. BTW you are @${this.$i ? this.$i.username : 'guest'}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
+			mfm: `Hello world! This is an @example mention. BTW you are @${this.$i ? this.$i.username : 'guest'}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`,
 		};
 	},
 
@@ -69,17 +69,17 @@ export default defineComponent({
 				foo: {
 					type: 'boolean',
 					default: true,
-					label: 'This is a boolean property'
+					label: 'This is a boolean property',
 				},
 				bar: {
 					type: 'number',
 					default: 300,
-					label: 'This is a number property'
+					label: 'This is a number property',
 				},
 				baz: {
 					type: 'string',
 					default: 'Misskey makes you happy.',
-					label: 'This is a string property'
+					label: 'This is a string property',
 				},
 			});
 		},
@@ -95,7 +95,7 @@ export default defineComponent({
 		async openMenu(ev) {
 			os.popupMenu([{
 				type: 'label',
-				text: 'Fruits'
+				text: 'Fruits',
 			}, {
 				text: 'Create some apples',
 				action: () => {},
@@ -111,6 +111,6 @@ export default defineComponent({
 				action: () => {},
 			}], ev.currentTarget ?? ev.target);
 		},
-	}
+	},
 });
 </script>

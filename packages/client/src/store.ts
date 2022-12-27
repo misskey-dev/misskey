@@ -156,7 +156,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animatedMfm: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	loadRawImages: {
 		where: 'device',
@@ -174,9 +174,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	useOsNativeEmojis: {
+	emojiStyle: {
 		where: 'device',
-		default: false,
+		default: 'twemoji', // twemoji / fluentEmoji / native
 	},
 	disableDrawer: {
 		where: 'device',
@@ -379,12 +379,5 @@ export class ColdDeviceStorage {
 				ColdDeviceStorage.set(key, val);
 			},
 		};
-	}
-}
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$store: typeof defaultStore;
 	}
 }

@@ -3,8 +3,8 @@
 	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value.filter(w => w.place === place)" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 	<MkAd class="a" :prefer="['square']"/>
 
-	<button v-if="editMode" class="_textButton edit" style="font-size: 0.9em;" @click="editMode = false"><i class="fas fa-check"></i> {{ $ts.editWidgetsExit }}</button>
-	<button v-else class="_textButton edit" style="font-size: 0.9em;" @click="editMode = true"><i class="fas fa-pencil-alt"></i> {{ $ts.editWidgets }}</button>
+	<button v-if="editMode" class="_textButton edit" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ $ts.editWidgetsExit }}</button>
+	<button v-else class="_textButton edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ $ts.editWidgets }}</button>
 </div>
 </template>
 
@@ -14,13 +14,13 @@ import XWidgets from '@/components/MkWidgets.vue';
 
 export default defineComponent({
 	components: {
-		XWidgets
+		XWidgets,
 	},
 
 	props: {
 		place: {
 			type: String,
-		}
+		},
 	},
 
 	emits: ['mounted'],
@@ -57,10 +57,10 @@ export default defineComponent({
 		updateWidgets(widgets) {
 			this.$store.set('widgets', [
 				...this.$store.state.widgets.filter(w => w.place !== this.place),
-				...widgets
+				...widgets,
 			]);
-		}
-	}
+		},
+	},
 });
 </script>
 

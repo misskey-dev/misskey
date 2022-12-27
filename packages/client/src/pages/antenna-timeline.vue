@@ -76,7 +76,7 @@ const headerActions = $computed(() => antenna ? [{
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
-	icon: 'fas fa-cog',
+	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,
 }] : []);
@@ -85,7 +85,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => antenna ? {
 	title: antenna.name,
-	icon: 'fas fa-satellite',
+	icon: 'ti ti-antenna',
 } : null));
 </script>
 
@@ -114,6 +114,13 @@ definePageMetadata(computed(() => antenna ? {
 	}
 
 	&.min-width_800px {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+}
+
+@container (min-width: 800px) {
+	.tqmomfks {
 		max-width: 800px;
 		margin: 0 auto;
 	}

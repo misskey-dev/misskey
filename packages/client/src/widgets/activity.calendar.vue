@@ -47,7 +47,7 @@ props.activity.slice().forEach((d, i) => {
 		year: date.getFullYear(),
 		month: date.getMonth(),
 		day: date.getDate(),
-		weekday: date.getDay()
+		weekday: date.getDay(),
 	};
 
 	d.v = peak === 0 ? 0 : d.total / (peak / 2);

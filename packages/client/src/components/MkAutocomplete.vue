@@ -18,7 +18,7 @@
 	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
 		<li v-for="emoji in emojis" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
 			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
-			<span v-else-if="!defaultStore.state.useOsNativeEmojis" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span v-else-if="defaultStore.state.emojiStyle != 'native'" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else class="emoji">{{ emoji.emoji }}</span>
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
@@ -36,7 +36,7 @@
 <script lang="ts">
 import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
-import { char2filePath } from '@/scripts/twemoji-base';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
@@ -59,8 +59,10 @@ const lib = emojilist.filter(x => x.category !== 'flags');
 const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
-	url: char2filePath(x.char),
+	url: char2path(x.char),
 }));
+
+const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 for (const x of lib) {
 	if (x.keywords) {
@@ -69,7 +71,7 @@ for (const x of lib) {
 				emoji: x.char,
 				name: k,
 				aliasOf: x.name,
-				url: char2filePath(x.char),
+				url: char2path(x.char),
 			});
 		}
 	}
@@ -86,7 +88,7 @@ for (const x of customEmojis) {
 		name: x.name,
 		emoji: `:${x.name}:`,
 		url: x.url,
-		isCustomEmoji: true
+		isCustomEmoji: true,
 	});
 
 	if (x.aliases) {
@@ -96,7 +98,7 @@ for (const x of customEmojis) {
 				aliasOf: x.name,
 				emoji: `:${x.name}:`,
 				url: x.url,
-				isCustomEmoji: true
+				isCustomEmoji: true,
 			});
 		}
 	}
@@ -193,7 +195,7 @@ function exec() {
 			os.api('users/search-by-username-and-host', {
 				username: props.q,
 				limit: 10,
-				detail: false
+				detail: false,
 			}).then(searchedUsers => {
 				users.value = searchedUsers as any[];
 				fetching.value = false;
@@ -215,7 +217,7 @@ function exec() {
 			} else {
 				os.api('hashtags/search', {
 					query: props.q,
-					limit: 30
+					limit: 30,
 				}).then(searchedHashtags => {
 					hashtags.value = searchedHashtags as any[];
 					fetching.value = false;

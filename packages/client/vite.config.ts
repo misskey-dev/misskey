@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
@@ -9,11 +8,9 @@ import pluginJson5 from './vite.json5';
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
 export default defineConfig(({ command, mode }) => {
-	fs.mkdirSync(__dirname + '/../../built', { recursive: true });
-	fs.writeFileSync(__dirname + '/../../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
 
 	return {
-		base: '/assets/',
+		base: '/vite/',
 
 		plugins: [
 			pluginVue({
@@ -63,10 +60,10 @@ export default defineConfig(({ command, mode }) => {
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_client_dist_',
+			outDir: __dirname + '/../../built/_vite_',
 			assetsDir: '.',
 			emptyOutDir: false,
-			sourcemap: process.env.NODE_ENV !== 'production',
+			sourcemap: process.env.NODE_ENV === 'development',
 			reportCompressedSize: false,
 		},
 	};

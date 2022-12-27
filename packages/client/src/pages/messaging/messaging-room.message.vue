@@ -2,7 +2,7 @@
 <div v-size="{ max: [400, 500] }" class="thvuemwp" :class="{ isMe }">
 	<MkAvatar class="avatar" :user="message.user" :show-indicator="true"/>
 	<div class="content">
-		<div class="balloon" :class="{ noText: message.text == null }" >
+		<div class="balloon" :class="{ noText: message.text == null }">
 			<button v-if="isMe" class="delete-button" :title="$ts.delete" @click="del">
 				<img src="/client-assets/remove.png" alt="Delete"/>
 			</button>
@@ -29,7 +29,7 @@
 				<span v-if="isMe && message.isRead" class="read">{{ $ts.messageRead }}</span>
 			</template>
 			<MkTime :time="message.createdAt"/>
-			<template v-if="message.is_edited"><i class="fas fa-pencil-alt"></i></template>
+			<template v-if="message.is_edited"><i class="ti ti-pencil"></i></template>
 		</footer>
 	</div>
 </div>
@@ -320,6 +320,39 @@ function del(): void {
 	}
 
 	&.max-width_500px {
+		> .content {
+			> .balloon {
+				> .content {
+					> .text {
+						padding: 8px 16px;
+					}
+				}
+			}
+		}
+	}
+}
+
+@container (max-width: 400px) {
+	.thvuemwp {
+		> .avatar {
+			width: 48px;
+			height: 48px;
+		}
+
+		> .content {
+			> .balloon {
+				> .content {
+					> .text {
+						font-size: 0.9em;
+					}
+				}
+			}
+		}
+	}
+}
+
+@container (max-width: 500px) {
+	.thvuemwp {
 		> .content {
 			> .balloon {
 				> .content {

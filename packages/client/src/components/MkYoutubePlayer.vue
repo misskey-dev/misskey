@@ -1,8 +1,8 @@
 <template>
 <XWindow :initial-width="640" :initial-height="402" :can-resize="true" :close-button="true">
 	<template #header>
-		<i class="icon fa-brands fa-youtube" style="margin-right: 0.5em;"></i>
-		<span>{{ title ?? 'YouTube Player' }}</span>
+		<i class="icon ti ti-brand-youtube" style="margin-right: 0.5em;"></i>
+		<span>{{ title ?? 'YouTube' }}</span>
 	</template>
 
 	<div class="poamfof">

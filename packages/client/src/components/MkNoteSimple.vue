@@ -96,4 +96,24 @@ const showContent = $ref(false);
 		}
 	}
 }
+
+@container (min-width: 350px) {
+	.yohlumlk {
+		> .avatar {
+			margin: 0 10px 0 0;
+			width: 44px;
+			height: 44px;
+		}
+	}
+}
+
+@container (min-width: 500px) {
+	.yohlumlk {
+		> .avatar {
+			margin: 0 12px 0 0;
+			width: 48px;
+			height: 48px;
+		}
+	}
+}
 </style>

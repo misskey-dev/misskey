@@ -1,6 +1,6 @@
 <template>
 <div class="_formRoot">
-	<FormLink class="_formBlock" @click="configure"><template #icon><i class="fas fa-cog"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
+	<FormLink class="_formBlock" @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
 	<FormSection>
 		<FormLink class="_formBlock" @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 		<FormLink class="_formBlock" @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
@@ -9,7 +9,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
 		<MkPushNotificationAllowButton ref="allowButton" />
-		<FormSwitch class="_formBlock" :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
+		<FormSwitch class="_formBlock" :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
 			<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
 			<template #caption>
 				<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
@@ -85,6 +85,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.notifications,
-	icon: 'fas fa-bell',
+	icon: 'ti ti-bell',
 });
 </script>

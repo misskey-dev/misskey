@@ -1,6 +1,8 @@
 /**
  * Client entry point
  */
+// https://vitejs.dev/config/build-options.html#build-modulepreload
+import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 
@@ -126,7 +128,7 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 		}
 
 		// 連携ログインの場合用にCookieを参照する
-		const i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
+		const i = (document.cookie.match(/igi=(\w+)/) ?? [null, null])[1];
 
 		if (i != null && i !== 'null') {
 			if (_DEV_) {

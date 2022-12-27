@@ -34,12 +34,12 @@
 
 					<FormSplit :min-width="280">
 						<FormInput v-model="objectStorageAccessKey" class="_formBlock">
-							<template #prefix><i class="fas fa-key"></i></template>
+							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
 						</FormInput>
 
 						<FormInput v-model="objectStorageSecretKey" class="_formBlock">
-							<template #prefix><i class="fas fa-key"></i></template>
+							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Secret key</template>
 						</FormInput>
 					</FormSplit>
@@ -134,7 +134,7 @@ function save() {
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'fas fa-check',
+	icon: 'ti ti-check',
 	text: i18n.ts.save,
 	handler: save,
 }]);
@@ -143,6 +143,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.objectStorage,
-	icon: 'fas fa-cloud',
+	icon: 'ti ti-cloud',
 });
 </script>

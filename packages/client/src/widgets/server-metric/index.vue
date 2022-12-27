@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent">
-	<template #header><i class="fas fa-server"></i>{{ i18n.ts._widgets.serverMetric }}</template>
-	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
+	<template #header><i class="ti ti-server"></i>{{ i18n.ts._widgets.serverMetric }}</template>
+	<template #func><button class="_button" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
 	<div v-if="meta" class="mkw-serverMetric">
 		<XCpuMemory v-if="widgetProps.view === 0" :connection="connection" :meta="meta"/>

@@ -69,27 +69,27 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => user ? [{
 	key: 'home',
 	title: i18n.ts.overview,
-	icon: 'fas fa-home',
+	icon: 'ti ti-home',
 }, ...($i && ($i.id === user.id)) || user.publicReactions ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,
-	icon: 'fas fa-laugh',
+	icon: 'ti ti-mood-happy',
 }] : [], {
 	key: 'clips',
 	title: i18n.ts.clips,
-	icon: 'fas fa-paperclip',
+	icon: 'ti ti-paperclip',
 }, {
 	key: 'pages',
 	title: i18n.ts.pages,
-	icon: 'fas fa-file-alt',
+	icon: 'ti ti-news',
 }, {
 	key: 'gallery',
 	title: i18n.ts.gallery,
-	icon: 'fas fa-icons',
+	icon: 'ti ti-icons',
 }] : null);
 
 definePageMetadata(computed(() => user ? {
-	icon: 'fas fa-user',
+	icon: 'ti ti-user',
 	title: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
 	subtitle: `@${getAcct(user)}`,
 	userName: user,

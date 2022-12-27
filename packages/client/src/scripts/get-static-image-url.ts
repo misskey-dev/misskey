@@ -8,9 +8,12 @@ export function getStaticImageUrl(baseUrl: string): string {
 		u.searchParams.set('static', '1');
 		return u.href;
 	}
-	const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
+
+	// 拡張子がないとキャッシュしてくれないCDNがあるのでダミーの名前を指定する
+	const dummy = `${encodeURIComponent(`${u.host}${u.pathname}`)}.webp`;
+
 	return `${instanceUrl}/proxy/${dummy}?${url.query({
 		url: u.href,
-		static: '1'
+		static: '1',
 	})}`;
 }

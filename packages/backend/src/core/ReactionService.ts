@@ -83,7 +83,7 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async create(user: { id: User['id']; host: User['host']; }, note: Note, reaction?: string) {
+	public async create(user: { id: User['id']; host: User['host']; isBot: User['isBot'] }, note: Note, reaction?: string) {
 		// Check blocking
 		if (note.userId !== user.id) {
 			const block = await this.blockingsRepository.findOneBy({
@@ -139,7 +139,7 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
-				score: () => '"score" + 1',
+				... (!user.isBot ? { score: () => '"score" + 1' } : {}),
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
@@ -199,7 +199,7 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async delete(user: { id: User['id']; host: User['host']; }, note: Note) {
+	public async delete(user: { id: User['id']; host: User['host']; isBot: User['isBot']; }, note: Note) {
 		// if already unreacted
 		const exist = await this.noteReactionsRepository.findOneBy({
 			noteId: note.id,
@@ -226,7 +226,7 @@ export class ReactionService {
 			.where('id = :id', { id: note.id })
 			.execute();
 	
-		this.notesRepository.decrement({ id: note.id }, 'score', 1);
+		if (!user.isBot) this.notesRepository.decrement({ id: note.id }, 'score', 1);
 	
 		this.globalEventServie.publishNoteStream(note.id, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,

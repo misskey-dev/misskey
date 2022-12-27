@@ -1,6 +1,6 @@
 <template>
 <div class="hkcxmtwj">
-	<MkSwitch :model-value="value" @update:modelValue="updateValue($event)">{{ hpml.interpolate(block.text) }}</MkSwitch>
+	<MkSwitch :model-value="value" @update:model-value="updateValue($event)">{{ hpml.interpolate(block.text) }}</MkSwitch>
 </div>
 </template>
 
@@ -13,17 +13,17 @@ import { SwitchVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
-		MkSwitch
+		MkSwitch,
 	},
 	props: {
 		block: {
 			type: Object as PropType<SwitchVarBlock>,
-			required: true
+			required: true,
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	setup(props, ctx) {
 		const value = computed(() => {
@@ -37,9 +37,9 @@ export default defineComponent({
 
 		return {
 			value,
-			updateValue
+			updateValue,
 		};
-	}
+	},
 });
 </script>
 

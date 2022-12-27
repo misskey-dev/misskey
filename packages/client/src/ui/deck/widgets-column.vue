@@ -1,6 +1,6 @@
 <template>
 <XColumn :menu="menu" :naked="true" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
-	<template #header><i class="fas fa-window-maximize" style="margin-right: 8px;"></i>{{ column.name }}</template>
+	<template #header><i class="ti ti-apps" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
 		<div v-if="!(column.widgets && column.widgets.length > 0) && !edit" class="intro">{{ i18n.ts._deck.widgetsIntroduction }}</div>
@@ -48,7 +48,7 @@ function func() {
 }
 
 const menu = [{
-	icon: 'fas fa-pencil-alt',
+	icon: 'ti ti-pencil',
 	text: i18n.ts.editWidgets,
 	action: func,
 }];

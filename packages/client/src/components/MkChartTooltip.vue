@@ -16,7 +16,7 @@
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 
-const props = defineProps<{
+defineProps<{
 	showing: boolean;
 	x: number;
 	y: number;

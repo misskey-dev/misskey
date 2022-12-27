@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue';
+import { watch, onMounted, onUnmounted, ref } from 'vue';
 import {
 	Chart,
 	ArcElement,
@@ -25,6 +25,7 @@ import number from '@/filters/number';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import { chartVLine } from '@/scripts/chart-vline';
 
 Chart.register(
 	ArcElement,
@@ -44,8 +45,7 @@ Chart.register(
 );
 
 const props = defineProps<{
-	domain: string;
-	connection: any;
+	type: string;
 }>();
 
 const alpha = (hex, a) => {
@@ -67,81 +67,60 @@ const { handler: externalTooltipHandler } = useChartTooltip();
 
 let chartInstance: Chart;
 
-const onStats = (stats) => {
-	chartInstance.data.labels.push('');
-	chartInstance.data.datasets[0].data.push(stats[props.domain].activeSincePrevTick);
-	chartInstance.data.datasets[1].data.push(stats[props.domain].active);
-	chartInstance.data.datasets[2].data.push(stats[props.domain].waiting);
-	chartInstance.data.datasets[3].data.push(stats[props.domain].delayed);
-	if (chartInstance.data.datasets[0].data.length > 100) {
-		chartInstance.data.labels.shift();
-		chartInstance.data.datasets[0].data.shift();
-		chartInstance.data.datasets[1].data.shift();
-		chartInstance.data.datasets[2].data.shift();
-		chartInstance.data.datasets[3].data.shift();
-	}
-	chartInstance.update();
-};
-
-const onStatsLog = (statsLog) => {
-	for (const stats of [...statsLog].reverse()) {
+function setData(values) {
+	if (chartInstance == null) return;
+	for (const value of values) {
 		chartInstance.data.labels.push('');
-		chartInstance.data.datasets[0].data.push(stats[props.domain].activeSincePrevTick);
-		chartInstance.data.datasets[1].data.push(stats[props.domain].active);
-		chartInstance.data.datasets[2].data.push(stats[props.domain].waiting);
-		chartInstance.data.datasets[3].data.push(stats[props.domain].delayed);
+		chartInstance.data.datasets[0].data.push(value);
 		if (chartInstance.data.datasets[0].data.length > 100) {
 			chartInstance.data.labels.shift();
 			chartInstance.data.datasets[0].data.shift();
-			chartInstance.data.datasets[1].data.shift();
-			chartInstance.data.datasets[2].data.shift();
-			chartInstance.data.datasets[3].data.shift();
 		}
 	}
 	chartInstance.update();
-};
+}
+
+function pushData(value) {
+	if (chartInstance == null) return;
+	chartInstance.data.labels.push('');
+	chartInstance.data.datasets[0].data.push(value);
+	if (chartInstance.data.datasets[0].data.length > 100) {
+		chartInstance.data.labels.shift();
+		chartInstance.data.datasets[0].data.shift();
+	}
+	chartInstance.update();
+}
+
+const label =
+	props.type === 'process' ? 'Process' :
+	props.type === 'active' ? 'Active' :
+	props.type === 'delayed' ? 'Delayed' :
+	props.type === 'waiting' ? 'Waiting' :
+	'?' as never;
+
+const color =
+	props.type === 'process' ? '#00E396' :
+	props.type === 'active' ? '#00BCD4' :
+	props.type === 'delayed' ? '#E53935' :
+	props.type === 'waiting' ? '#FFB300' :
+	'?' as never;
 
 onMounted(() => {
+	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+
 	chartInstance = new Chart(chartEl.value, {
 		type: 'line',
 		data: {
 			labels: [],
 			datasets: [{
-				label: 'Process',
+				label: label,
 				pointRadius: 0,
 				tension: 0.3,
 				borderWidth: 2,
 				borderJoinStyle: 'round',
-				borderColor: '#00E396',
-				backgroundColor: alpha('#00E396', 0.1),
-				data: [],
-			}, {
-				label: 'Active',
-				pointRadius: 0,
-				tension: 0.3,
-				borderWidth: 2,
-				borderJoinStyle: 'round',
-				borderColor: '#00BCD4',
-				backgroundColor: alpha('#00BCD4', 0.1),
-				data: [],
-			}, {
-				label: 'Waiting',
-				pointRadius: 0,
-				tension: 0.3,
-				borderWidth: 2,
-				borderJoinStyle: 'round',
-				borderColor: '#FFB300',
-				backgroundColor: alpha('#FFB300', 0.1),
-				data: [],
-			}, {
-				label: 'Delayed',
-				pointRadius: 0,
-				tension: 0.3,
-				borderWidth: 2,
-				borderJoinStyle: 'round',
-				borderColor: '#E53935',
-				borderDash: [5, 5],
-				fill: false,
+				borderColor: color,
+				backgroundColor: alpha(color, 0.2),
+				fill: true,
 				data: [],
 			}],
 		},
@@ -157,9 +136,10 @@ onMounted(() => {
 			},
 			scales: {
 				x: {
-					display: false,
 					grid: {
 						display: false,
+						color: gridColor,
+						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: false,
@@ -167,13 +147,10 @@ onMounted(() => {
 					},
 				},
 				y: {
-					display: false,
 					min: 0,
 					grid: {
-						display: false,
-					},
-					ticks: {
-						display: false,
+						color: gridColor,
+						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 				},
 			},
@@ -194,15 +171,13 @@ onMounted(() => {
 				},
 			},
 		},
+		plugins: [chartVLine(vLineColor)],
 	});
-
-	props.connection.on('stats', onStats);
-	props.connection.on('statsLog', onStatsLog);
 });
 
-onUnmounted(() => {
-	props.connection.off('stats', onStats);
-	props.connection.off('statsLog', onStatsLog);
+defineExpose({
+	setData,
+	pushData,
 });
 </script>
 
