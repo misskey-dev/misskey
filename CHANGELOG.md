@@ -34,6 +34,7 @@ You should also include the user name that made the change.
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
 - Client: Add new gabber kick sounds (thanks for noizenecio)
+- Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
 - Client: Youtube window player @sim1222
 - Client: enhance dashboard of control panel @syuilo

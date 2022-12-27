@@ -159,6 +159,12 @@ export function getUserMenu(user, router: Router = mainRouter) {
 			copyToClipboard(`@${user.username}@${user.host || host}`);
 		},
 	}, {
+		icon: 'ti ti-rss',
+		text: i18n.ts.copyRSS,
+		action: () => {
+			copyToClipboard(`${user.host || host}/@${user.username}.atom`);
+		}
+	}, {
 		icon: 'ti ti-info-circle',
 		text: i18n.ts.info,
 		action: () => {
