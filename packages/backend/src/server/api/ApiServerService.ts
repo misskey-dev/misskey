@@ -82,6 +82,7 @@ export class ApiServerService {
 				}>('/' + endpoint.name, (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
+						reply.send();
 						return;
 					}
 		
@@ -95,6 +96,7 @@ export class ApiServerService {
 				}>('/' + endpoint.name, (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
+						reply.send();
 						return;
 					}
 		

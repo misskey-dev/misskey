@@ -270,6 +270,8 @@ _widgets:
   timeline: "Tidslinje"
   federation: "Federation"
   jobQueue: "Jobbkö"
+  _userList:
+    chooseList: "Välj lista"
 _cw:
   show: "Ladda mer"
 _visibility:
@@ -283,25 +285,6 @@ _exportOrImport:
   userLists: "Listor"
 _charts:
   federation: "Federation"
-_pages:
-  script:
-    categories:
-      list: "Listor"
-    blocks:
-      _join:
-        arg1: "Listor"
-      _randomPick:
-        arg1: "Listor"
-      _dailyRandomPick:
-        arg1: "Listor"
-      _seedRandomPick:
-        arg2: "Listor"
-      _pick:
-        arg1: "Listor"
-      _listLen:
-        arg1: "Listor"
-    types:
-      array: "Listor"
 _notification:
   youWereFollowed: "följde dig"
   _types:

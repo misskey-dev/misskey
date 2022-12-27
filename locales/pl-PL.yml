@@ -450,7 +450,6 @@ language: "Język"
 uiLanguage: "Język wyświetlania UI"
 groupInvited: "Zaproszony(-a) do grupy"
 aboutX: "O {x}"
-useOsNativeEmojis: "Używaj natywnych Emoji systemu"
 disableDrawer: "Nie używaj menu w stylu szuflady"
 youHaveNoGroups: "Nie masz żadnych grup"
 joinOrCreateGroup: "Uzyskaj zaproszenie do dołączenia do grupy lub utwórz własną grupę."
@@ -501,6 +500,7 @@ deleteAll: "Usuń wszystkie"
 showFixedPostForm: "Wyświetlaj formularz tworzenia wpisu w górnej części osi czasu"
 newNoteRecived: "Masz nowy wpis"
 sounds: "Dźwięk"
+sound: "Dźwięki"
 listen: "Słuchaj"
 none: "Brak"
 showInPage: "Pokaż na stronie"
@@ -851,6 +851,7 @@ pushNotificationAlreadySubscribed: "Powiadomienia push są włączone"
 pushNotificationNotSupported: "Przeglądarka lub instancja nie obsługuje powiadomień push"
 sendPushNotificationReadMessage: "Usuń powiadomienia push po przeczytaniu powiadomień i wiadomości."
 sendPushNotificationReadMessageCaption: "Chwilowo pojawi się powiadomienie \"{emptyPushNotificationMessage}\". Może wzrosnąć zużycie baterii urządzenia."
+loggedInAsBot: "Jesteś obecnie zalogowany/a jako bot"
 _sensitiveMediaDetection:
   description: "Zmniejsza wysiłek związany z moderacją serwera dzięki automatycznemu rozpoznawaniu zawartości NSFW za pomocą uczenia maszynowego. To nieznacznie zwiększy obciążenie serwera."
   setSensitiveFlagAutomatically: "Oznacz jako NSFW"
@@ -1217,6 +1218,8 @@ _widgets:
   serverMetric: "Metryka serwera"
   aiscript: "Konsola AiScript"
   aichan: "Ai"
+  _userList:
+    chooseList: "Wybierz listę"
 _cw:
   hide: "Ukryj"
   show: "Załaduj więcej"
@@ -1331,8 +1334,6 @@ _pages:
   eyeCatchingImageRemove: "Usuń przyciągające wzrok zdjęcie"
   chooseBlock: "Dodaj blok"
   selectType: "Wybierz typ"
-  enterVariableName: "Wprowadź nazwę dla swojej zmiennej"
-  variableNameIsAlreadyUsed: "Ta nazwa jest już używana przez inną zmienną"
   contentBlocks: "Zawartość"
   inputBlocks: "Wejście"
   specialBlocks: "Specjalne"
@@ -1342,230 +1343,11 @@ _pages:
     section: "Sekcja"
     image: "Zdjęcia"
     button: "Przycisk"
-    if: "Jeżeli"
-    _if:
-      variable: "Zmienna"
-    post: "Utwórz wpis"
-    _post:
-      text: "Treść"
-    textInput: "Pole tekstowe"
-    _textInput:
-      name: "Nazwa zmiennej"
-      text: "Tytuł"
-      default: "Domyślna wartość"
-    textareaInput: "Pole tekstowe na wiele wierszy"
-    _textareaInput:
-      name: "Nazwa zmiennej"
-      text: "Tytuł"
-      default: "Domyślna wartość"
-    numberInput: "Pole na liczbę"
-    _numberInput:
-      name: "Nazwa zmiennej"
-      text: "Tytuł"
-      default: "Domyślna wartość"
-    _canvas:
-      width: "Szerokość"
-      height: "Wysokość"
     note: "Osadzony wpis"
     _note:
       id: "ID wpisu"
       idDescription: "Możesz też wkleić adres URL wpisu, aby go ustawić."
       detailed: "Szczegółowy widok"
-    switch: "Przełącznik"
-    _switch:
-      name: "Nazwa zmiennej"
-      text: "Tytuł"
-      default: "Domyślna wartość"
-    counter: "Licznik"
-    _counter:
-      name: "Nazwa zmiennej"
-      text: "Tytuł"
-      inc: "Zwiększ o"
-    _button:
-      text: "Tytuł"
-      colored: "Kolorowe"
-      action: "Działanie wykonywane przy naciśnięciu przycisku"
-      _action:
-        dialog: "Pokazuj okno dialogowe"
-        _dialog:
-          content: "Treść"
-        resetRandom: "Resetuj losowe ziarno"
-        pushEvent: "Wyślij zdarzenie"
-        _pushEvent:
-          event: "Nazwa zdarzenia"
-          message: "Wiadomość do wyświetlenia po aktywowaniu"
-          variable: "Zmienna do wysłania"
-          no-variable: "Brak"
-        callAiScript: "Wywołaj AiScript"
-        _callAiScript:
-          functionName: "Nazwa funkcji"
-    radioButton: "Wybór"
-    _radioButton:
-      name: "Nazwa zmiennej"
-      title: "Tytuł"
-      values: "Lista wyborów (oddzielonych znakiem nowego wiersza)"
-      default: "Domyślna wartość"
-  script:
-    categories:
-      flow: "Kontrola przepływu"
-      logical: "Operacje logiczne"
-      operation: "Obliczanie"
-      comparison: "Porównanie"
-      random: "Losowe"
-      value: "Wartość"
-      fn: "Funkcje"
-      text: "Działania na tekście"
-      convert: "Transformacja"
-      list: "Listy"
-    blocks:
-      text: "Tekst"
-      multiLineText: "Tekst (w wielu wierszach)"
-      _textList:
-        info: "Oddziel każdy wpis znakiem nowego wiersza"
-      strLen: "Długość tekstu"
-      _strLen:
-        arg1: "Tekst"
-      _strPick:
-        arg1: "Tekst"
-        arg2: "Położenie znaku"
-      strReplace: "Zamiana tekstu"
-      _strReplace:
-        arg1: "Tekst"
-        arg2: "Tekst do zamiany"
-        arg3: "Zamieniono z"
-      _strReverse:
-        arg1: "Tekst"
-      _join:
-        arg1: "Listy"
-        arg2: "Odstęp"
-      add: "Dodaj"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "Odejmij"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "Pomnóż"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "Podziel"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "Reszta"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      _round:
-        arg1: "Liczba"
-      eq: "A i B są sobie równe"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A i B różnią się"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A I B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A LUB B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A jest mniejsze niż B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A jest większe od B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A jest mniejsze lub równe B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A jest większe lub równe B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Warunek"
-      _if:
-        arg1: "Jeżeli"
-        arg2: "Jeżeli prawda"
-      not: "NIE"
-      _not:
-        arg1: "NIE"
-      random: "Losowe"
-      _random:
-        arg1: "Prawdopodobieństwo"
-      rannum: "Losowa liczba"
-      _rannum:
-        arg1: "Minimalna wartość"
-        arg2: "Maksymalna wartość"
-      randomPick: "Wybierz losowo z listy"
-      _randomPick:
-        arg1: "Listy"
-      dailyRandom: "Losowo (zostaje na dzień)"
-      _dailyRandom:
-        arg1: "Prawdopodobieństwo"
-      dailyRannum: "Losowa liczba (zostaje na dzień)"
-      _dailyRannum:
-        arg1: "Minimalna wartość"
-        arg2: "Maksymalna wartość"
-      dailyRandomPick: "Wybierz losowo z listy (zostaje na dzień)"
-      _dailyRandomPick:
-        arg1: "Listy"
-      seedRandom: "Losowo (z ziarnem)"
-      _seedRandom:
-        arg1: "Ziarno"
-        arg2: "Prawdopodobieństwo"
-      seedRannum: "Losowa liczba (z ziarnem)"
-      _seedRannum:
-        arg1: "Ziarno"
-        arg2: "Minimalna wartość"
-        arg3: "Maksymalna wartość"
-      seedRandomPick: "Wybierz losowo z listy (z ziarnem)"
-      _seedRandomPick:
-        arg1: "Ziarno"
-        arg2: "Listy"
-      DRPWPM: "Wybierz losowo z ważonej listy (zostaje na dzień)"
-      pick: "Wybierz z listy"
-      _pick:
-        arg1: "Listy"
-        arg2: "Położenie"
-      listLen: "Uzyskaj długość listy"
-      _listLen:
-        arg1: "Listy"
-      number: "Liczba"
-      stringToNumber: "Tekst na liczbę"
-      _stringToNumber:
-        arg1: "Tekst"
-      numberToString: "Liczba na tekst"
-      _numberToString:
-        arg1: "Liczba"
-      splitStrByLine: "Rozdziel tekst znakami nowej linii"
-      _splitStrByLine:
-        arg1: "Tekst"
-      ref: "Zmienne"
-      aiScriptVar: "Zmienna AiScript"
-      fn: "Funkcje"
-      _fn:
-        arg1: "Wyjście"
-      for: "Powtórzenie"
-      _for:
-        arg1: "Liczba powtórzeń"
-        arg2: "Działanie"
-    types:
-      string: "Tekst"
-      number: "Liczba"
-      boolean: "Flaguj"
-      array: "Listy"
-    enviromentVariables: "Zmienna środowiskowa"
-    pageVariables: "Element strony"
 _relayStatus:
   requesting: "Oczekujące"
   accepted: "Zaakceptowano"
@@ -1584,6 +1366,7 @@ _notification:
   yourFollowRequestAccepted: "Twoja prośba o możliwość obserwacji została przyjęta"
   youWereInvitedToGroup: "Zaproszony(-a) do grupy"
   pollEnded: "Wyniki ankiety stały się dostępne"
+  unreadAntennaNote: "Antena {name}"
   emptyPushNotificationMessage: "Powiadomienia push zostały zaktualizowane"
   _types:
     all: "Wszystkie"

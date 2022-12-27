@@ -455,7 +455,6 @@ language: "Idioma"
 uiLanguage: "Idioma de visualización de la interfaz"
 groupInvited: "Invitado al grupo"
 aboutX: "Acerca de {x}"
-useOsNativeEmojis: "Usa los emojis nativos de la plataforma"
 disableDrawer: "No mostrar los menús en cajones"
 youHaveNoGroups: "Sin grupos"
 joinOrCreateGroup: "Obtenga una invitación para unirse al grupos o puede crear su propio grupo."
@@ -508,6 +507,7 @@ deleteAll: "Eliminar todos"
 showFixedPostForm: "Mostrar el formulario de las entradas encima de la línea de tiempo"
 newNoteRecived: "Tienes una nota nuevo"
 sounds: "Sonidos"
+sound: "Sonidos"
 listen: "Escuchar"
 none: "Ninguna"
 showInPage: "Mostrar en la página"
@@ -1295,6 +1295,8 @@ _widgets:
   serverMetric: "Estadísticas del servidor"
   aiscript: "Consola de AiScript"
   aichan: "indigo"
+  _userList:
+    chooseList: "Seleccione una lista"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
@@ -1430,8 +1432,6 @@ _pages:
   eyeCatchingImageRemove: "Borrar imagen llamativa"
   chooseBlock: "Agregar bloque"
   selectType: "Elegir tipo"
-  enterVariableName: "Ingrese el nombre de la variable"
-  variableNameIsAlreadyUsed: "El nombre de la variable ya está en uso"
   contentBlocks: "Contenido"
   inputBlocks: "Entrada"
   specialBlocks: "Especial"
@@ -1441,249 +1441,11 @@ _pages:
     section: "Sección"
     image: "Imagen"
     button: "Botón"
-    if: "si"
-    _if:
-      variable: "Variable"
-    post: "Formulario"
-    _post:
-      text: "Contenido"
-      attachCanvasImage: "Nota con lienzo como imagen"
-      canvasId: "Lienzo ID"
-    textInput: "Entrada de texto"
-    _textInput:
-      name: "Nombre de variable"
-      text: "Título"
-      default: "Valor predeterminado"
-    textareaInput: "Entrada de texto en múltiples lineas"
-    _textareaInput:
-      name: "Nombre de variable"
-      text: "Título"
-      default: "Valor predeterminado"
-    numberInput: "Entrada numérica"
-    _numberInput:
-      name: "Nombre de variable"
-      text: "Título"
-      default: "Valor predeterminado"
-    canvas: "Lienzo"
-    _canvas:
-      id: "Lienzo ID"
-      width: "Ancho"
-      height: "Altura"
     note: "Nota embebida"
     _note:
       id: "Id de la nota"
       idDescription: "Pega la URL de la nota para configurarla"
       detailed: "Ver Detalles"
-    switch: "Interruptor"
-    _switch:
-      name: "Nombre de variable"
-      text: "Título"
-      default: "Valor predeterminado"
-    counter: "Contador"
-    _counter:
-      name: "Nombre de variable"
-      text: "Título"
-      inc: "Aumentar cantidad"
-    _button:
-      text: "Título"
-      colored: "Color"
-      action: "Acción al presionar el botón"
-      _action:
-        dialog: "Mostrar cuadro de diálogo"
-        _dialog:
-          content: "Contenido"
-        resetRandom: "Resetear número aleatorio"
-        pushEvent: "Enviar evento"
-        _pushEvent:
-          event: "Nombre del evento"
-          message: "Mensaje mostrado al apretar"
-          variable: "Variable a enviar"
-          no-variable: "Ninguna"
-        callAiScript: "Invocar AiScript"
-        _callAiScript:
-          functionName: "Nombre de la función"
-    radioButton: "Botón de opción"
-    _radioButton:
-      name: "Nombre de variable"
-      title: "Título"
-      values: "Opciones separadas por una nueva linea"
-      default: "Valor predeterminado"
-  script:
-    categories:
-      flow: "Control de flujo"
-      logical: "Operación lógica"
-      operation: "Cálculo"
-      comparison: "Comparar"
-      random: "Aleatorio"
-      value: "Valores"
-      fn: "funciones"
-      text: "Manejo de texto"
-      convert: "Conversion"
-      list: "Listas"
-    blocks:
-      text: "Texto"
-      multiLineText: "Texto (multilinea)"
-      textList: "Lista de texto"
-      _textList:
-        info: "Separe cada texto con una linea nueva"
-      strLen: "Largo del texto"
-      _strLen:
-        arg1: "Texto"
-      strPick: "Extraer caracteres"
-      _strPick:
-        arg1: "Texto"
-        arg2: "Posición del caracter"
-      strReplace: "Sustituir texto"
-      _strReplace:
-        arg1: "Texto"
-        arg2: "Texto a reemplazar"
-        arg3: "Texto reemplazado"
-      strReverse: "Invertir texto"
-      _strReverse:
-        arg1: "Texto"
-      join: "Concatenar texto"
-      _join:
-        arg1: "Listas"
-        arg2: "Separador"
-      add: "Suma"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "Resta"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "Multiplicación"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "División"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "Resto"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "Redondear decimales"
-      _round:
-        arg1: "Número"
-      eq: "A y B son iguales"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A y B son distintos"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A y B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A o B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A es menor que B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A es mayor que B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A es menor o igual que B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A es mayor o igual que B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Si"
-      _if:
-        arg1: "si"
-        arg2: "Entonces"
-        arg3: "Si no"
-      not: "Negación"
-      _not:
-        arg1: "Negación"
-      random: "Aleatorio"
-      _random:
-        arg1: "probabilidad"
-      rannum: "Número aleatorio"
-      _rannum:
-        arg1: "Mínimo"
-        arg2: "Máximo"
-      randomPick: "Elegir aleatoriamente de la lista"
-      _randomPick:
-        arg1: "Listas"
-      dailyRandom: "Aleatorio (Diariamente para cada usuario)"
-      _dailyRandom:
-        arg1: "probabilidad"
-      dailyRannum: "Número aleatorio (Diariamente para cada usuario)"
-      _dailyRannum:
-        arg1: "Mínimo"
-        arg2: "Máximo"
-      dailyRandomPick: "Elegir aleatoriamente de la lista (Diariamente para cada usuario)"
-      _dailyRandomPick:
-        arg1: "Listas"
-      seedRandom: "Aleatorio (semilla)"
-      _seedRandom:
-        arg1: "Semilla"
-        arg2: "probabilidad"
-      seedRannum: "Número aleatorio (semilla)"
-      _seedRannum:
-        arg1: "Semilla"
-        arg2: "Mínimo"
-        arg3: "Máximo"
-      seedRandomPick: "Elegir aleatoriamente de la lista (semilla)"
-      _seedRandomPick:
-        arg1: "Semilla"
-        arg2: "Listas"
-      DRPWPM: "Elegir aleatoriamente de la lista ponderada (Diariamente para cada usuario)"
-      _DRPWPM:
-        arg1: "Lista de texto"
-      pick: "Elegir de la lista"
-      _pick:
-        arg1: "Listas"
-        arg2: "Posición"
-      listLen: "Obtener largo de la lista"
-      _listLen:
-        arg1: "Listas"
-      number: "Número"
-      stringToNumber: "De texto a número"
-      _stringToNumber:
-        arg1: "Texto"
-      numberToString: "De número a texto"
-      _numberToString:
-        arg1: "Número"
-      splitStrByLine: "Separar texto en lineas"
-      _splitStrByLine:
-        arg1: "Texto"
-      ref: "Variables"
-      aiScriptVar: "Variable de AiScript"
-      fn: "funciones"
-      _fn:
-        slots: "Slots"
-        slots-info: "Separe cada uno de los slots con una linea nueva"
-        arg1: "Salida"
-      for: "Repetir"
-      _for:
-        arg1: "Cantidad de repeticiones"
-        arg2: "Acción"
-    typeError: "El slot {slot} acepta el tipo {expect} pero fue ingresado el tipo {actual}"
-    thereIsEmptySlot: "El slot {slot} está vacío"
-    types:
-      string: "Texto"
-      number: "Número"
-      boolean: "Booleano"
-      array: "Listas"
-      stringArray: "Lista de texto"
-    emptySlot: "Slot vacío"
-    enviromentVariables: "Variables de entorno"
-    pageVariables: "Items de la página"
-    argVariables: "Slot de entrada"
 _relayStatus:
   requesting: "Pendiente"
   accepted: "Aceptar"

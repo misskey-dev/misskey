@@ -452,7 +452,6 @@ language: "Язык"
 uiLanguage: "Язык интерфейса"
 groupInvited: "Приглашение в группу"
 aboutX: "Описание {x}"
-useOsNativeEmojis: "Использовать эмодзи операционной системы"
 disableDrawer: "Не использовать выдвижные меню"
 youHaveNoGroups: "У вас нет ни одной группы"
 joinOrCreateGroup: "Получайте приглашения в группы или создавайте свои собственные"
@@ -505,6 +504,7 @@ deleteAll: "Удалить всё"
 showFixedPostForm: "Показывать поле для ввода новой заметки наверху ленты"
 newNoteRecived: "Появилась новая заметка"
 sounds: "Звуки"
+sound: "Звуки"
 listen: "Слушать"
 none: "Ничего"
 showInPage: "Показать страницу"
@@ -863,6 +863,8 @@ beta: "Бета"
 enableAutoSensitive: "Автоматическое определение NSFW"
 enableAutoSensitiveDescription: "Если доступно, используйте машинное обучение для автоматической установки флага NSFW на носителе. Даже если эта функция отключена, она может быть установлена ​​автоматически в зависимости от инстанта."
 account: "Учётные записи"
+windowMaximize: "Развернуть"
+windowRestore: "Восстановить"
 _sensitiveMediaDetection:
   description: "Машинное обучение может быть использовано для автоматического обнаружения чувствительных медиа для модерации. Нагрузка на сервер увеличивается незначительно."
   setSensitiveFlagAutomatically: "Установить флаг NSFW"
@@ -1229,6 +1231,8 @@ _widgets:
   serverMetric: "Показатели сервера"
   aiscript: "Консоль AiScript"
   aichan: "Ай"
+  _userList:
+    chooseList: "Выберите список"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
@@ -1364,8 +1368,6 @@ _pages:
   eyeCatchingImageRemove: "Убрать картинку для привлечения внимания"
   chooseBlock: "Добавить блок"
   selectType: "Выберите вид"
-  enterVariableName: "Ведите имя переменной"
-  variableNameIsAlreadyUsed: "Это имя уже есть у другой переменной"
   contentBlocks: "Содержательные"
   inputBlocks: "Для ввода"
   specialBlocks: "Особые"
@@ -1375,249 +1377,11 @@ _pages:
     section: "Раздел"
     image: "Изображения"
     button: "Кнопка"
-    if: "Условный"
-    _if:
-      variable: "Переменная"
-    post: "Создание заметки"
-    _post:
-      text: "Текст"
-      attachCanvasImage: "Прикрепить изображение с холста"
-      canvasId: "Метка холста"
-    textInput: "Поле ввода текста"
-    _textInput:
-      name: "Имя переменной"
-      text: "Подпись"
-      default: "Исходное содержимое"
-    textareaInput: "Многострочное поле ввода текста"
-    _textareaInput:
-      name: "Имя переменной"
-      text: "Подпись"
-      default: "Исходное содержимое"
-    numberInput: "Поле для ввода числа"
-    _numberInput:
-      name: "Имя переменной"
-      text: "Подпись"
-      default: "Исходное значение"
-    canvas: "Холст"
-    _canvas:
-      id: "Метка холста"
-      width: "Ширина"
-      height: "Высота"
     note: "Встроенная заметка"
     _note:
       id: "Идентификатор заметки"
       idDescription: "Можно также вставить ссылку на заметку."
       detailed: "Подробный вид"
-    switch: "Выключатель"
-    _switch:
-      name: "Имя переменной"
-      text: "Подпись"
-      default: "Исходное содержимое"
-    counter: "Кнопка со счётчиком"
-    _counter:
-      name: "Имя переменной"
-      text: "Надпись"
-      inc: "Увеличивать на"
-    _button:
-      text: "Надпись"
-      colored: "Выделена цветом"
-      action: "Действие по нажатию"
-      _action:
-        dialog: "Показать всплывающий текст"
-        _dialog:
-          content: "Всплывающий текст"
-        resetRandom: "Сброс генератора случайности"
-        pushEvent: "Вызвать событие"
-        _pushEvent:
-          event: "Имя события"
-          message: "Сообщение при нажатии"
-          variable: "Передать переменную с событием"
-          no-variable: "нет"
-        callAiScript: "Вызвать AiScript"
-        _callAiScript:
-          functionName: "Имя функции"
-    radioButton: "Кнопка-переключатель"
-    _radioButton:
-      name: "Имя переменной"
-      title: "Заголовок"
-      values: "Значения"
-      default: "Исходное значение"
-  script:
-    categories:
-      flow: "Управление исполнением"
-      logical: "Логические"
-      operation: "Арифметические"
-      comparison: "Сравнение"
-      random: "Случайные"
-      value: "Значения"
-      fn: "Функции"
-      text: "Текстовые"
-      convert: "Преобразование"
-      list: "Список"
-    blocks:
-      text: "Строка текста"
-      multiLineText: "Многострочный текст"
-      textList: "Список строк текста"
-      _textList:
-        info: "Пишите каждый пункт с новой строки"
-      strLen: "Длина текста"
-      _strLen:
-        arg1: "Текст"
-      strPick: "Взять знак из текста"
-      _strPick:
-        arg1: "Текст"
-        arg2: "Позиция знака"
-      strReplace: "Замена текста"
-      _strReplace:
-        arg1: "Текст, в котором заменять"
-        arg2: "Заменяемый текст"
-        arg3: "Менять на"
-      strReverse: "В обратном порядке"
-      _strReverse:
-        arg1: "Текст"
-      join: "Объединение"
-      _join:
-        arg1: "Списки"
-        arg2: "Разделитель"
-      add: "Добавить"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "Вычитание"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "Умножение"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "Деление"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "Остаток от деления"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "Округление до целого"
-      _round:
-        arg1: "Число"
-      eq: "A равно B"
-      _eq:
-        arg1: "А"
-        arg2: "B"
-      notEq: "A не равно B"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A и B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A или B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "A < B (меньше)"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "A > B (больше)"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "A ⩽ B (меньше или равно)"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: "A ⩾ B (больше или равно)"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Условный"
-      _if:
-        arg1: "Условие"
-        arg2: "Если правда"
-        arg3: "Если ложь"
-      not: "Отрицание"
-      _not:
-        arg1: "Условие"
-      random: "Случайность"
-      _random:
-        arg1: "Вероятность"
-      rannum: "Случайное число"
-      _rannum:
-        arg1: "Минимум"
-        arg2: "Максимум"
-      randomPick: "Случайный выбор из списка"
-      _randomPick:
-        arg1: "Списки"
-      dailyRandom: "Случайность (на день для пользователя)"
-      _dailyRandom:
-        arg1: "Вероятность"
-      dailyRannum: "Случайное число (на день для пользователя)"
-      _dailyRannum:
-        arg1: "Минимум"
-        arg2: "Максимум"
-      dailyRandomPick: "Случайный выбор из списка (на день для пользователя)"
-      _dailyRandomPick:
-        arg1: "Списки"
-      seedRandom: "Псевдослучайность (заданная зерном)"
-      _seedRandom:
-        arg1: "Зерно"
-        arg2: "Вероятность"
-      seedRannum: "Псевдослучайное число (заданное зерном)"
-      _seedRannum:
-        arg1: "Зерно"
-        arg2: "Минимум"
-        arg3: "Максимум"
-      seedRandomPick: "Псевдослучайный выбор из списка (заданный зерном)"
-      _seedRandomPick:
-        arg1: "Зерно"
-        arg2: "Списки"
-      DRPWPM: "Случайный выбор из взвешенного списка (на день для пользователя)"
-      _DRPWPM:
-        arg1: "Список строк текста"
-      pick: "Выбор из списка"
-      _pick:
-        arg1: "Списки"
-        arg2: "Индекс"
-      listLen: "Количество элементов в списке"
-      _listLen:
-        arg1: "Списки"
-      number: "Число"
-      stringToNumber: "Число из текста"
-      _stringToNumber:
-        arg1: "Текст"
-      numberToString: "Число в текст"
-      _numberToString:
-        arg1: "Число"
-      splitStrByLine: "Разделение текста на строки"
-      _splitStrByLine:
-        arg1: "Текст"
-      ref: "Переменная"
-      aiScriptVar: "Переменная AiScript"
-      fn: "Свои функции"
-      _fn:
-        slots: "Аргументы"
-        slots-info: "Напишите имя каждого аргумента с новой строки"
-        arg1: "Формула"
-      for: "Цикл"
-      _for:
-        arg1: "Количество повторений"
-        arg2: "Действие"
-    typeError: "Аргумент {slot} должен быть иметь тип «{expect}», а передали «{actual}»!"
-    thereIsEmptySlot: "Аргумент {slot} не заполнен!"
-    types:
-      string: "Текст"
-      number: "Число"
-      boolean: "Логический"
-      array: "Списки"
-      stringArray: "Список строк текста"
-    emptySlot: "Пустой аргумент"
-    enviromentVariables: "Переменная окружения"
-    pageVariables: "Элемент страницы"
-    argVariables: "Аргументы"
 _relayStatus:
   requesting: "В ожидании одобрения"
   accepted: "Одобрено."

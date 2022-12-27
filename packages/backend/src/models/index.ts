@@ -40,7 +40,7 @@ import { Poll } from '@/models/entities/Poll.js';
 import { PollVote } from '@/models/entities/PollVote.js';
 import { PromoNote } from '@/models/entities/PromoNote.js';
 import { PromoRead } from '@/models/entities/PromoRead.js';
-import { RegistrationTicket } from '@/models/entities/RegistrationTickets.js';
+import { RegistrationTicket } from '@/models/entities/RegistrationTicket.js';
 import { RegistryItem } from '@/models/entities/RegistryItem.js';
 import { Relay } from '@/models/entities/Relay.js';
 import { Signin } from '@/models/entities/Signin.js';
@@ -61,6 +61,7 @@ import { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
+import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
 import type { Repository } from 'typeorm';
 
 export {
@@ -127,6 +128,7 @@ export {
 	UserSecurityKey,
 	Webhook,
 	Channel,
+	RetentionAggregation,
 };
 
 export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
@@ -192,3 +194,4 @@ export type UserPublickeysRepository = Repository<UserPublickey>;
 export type UserSecurityKeysRepository = Repository<UserSecurityKey>;
 export type WebhooksRepository = Repository<Webhook>;
 export type ChannelsRepository = Repository<Channel>;
+export type RetentionAggregationsRepository = Repository<RetentionAggregation>;

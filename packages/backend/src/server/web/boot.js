@@ -57,7 +57,7 @@
 
 	//#region Script
 	function importAppScript() {
-		import(`/assets/${CLIENT_ENTRY}`)
+		import(`/vite/${CLIENT_ENTRY}`)
 			.catch(async e => {
 				await checkUpdate();
 				console.error(e);

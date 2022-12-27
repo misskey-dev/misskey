@@ -12,6 +12,8 @@ import { In, IsNull } from 'typeorm';
 import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
 import fastifyCookie from '@fastify/cookie';
+import fastifyProxy from '@fastify/http-proxy';
+import vary from 'vary';
 import type { Config } from '@/config.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import { DI } from '@/di-symbols.js';
@@ -36,9 +38,10 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const staticAssets = `${_dirname}/../../../assets/`;
-const clientAssets = `${_dirname}/../../../../client/assets/`;
-const assets = `${_dirname}/../../../../../built/_client_dist_/`;
+const clientAssets = `${_dirname}/../../../../frontend/assets/`;
+const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
+const viteOut = `${_dirname}/../../../../../built/_vite_/`;
 
 @Injectable()
 export class ClientServerService {
@@ -151,9 +154,6 @@ export class ClientServerService {
 			},
 			defaultContext: {
 				version: this.config.version,
-				getClientEntry: () => process.env.NODE_ENV === 'production' ?
-					this.config.clientEntry :
-					JSON.parse(readFileSync(`${_dirname}/../../../../../built/_client_dist_/manifest.json`, 'utf-8'))['src/init.ts'],
 				config: this.config,
 			},
 		});
@@ -163,6 +163,23 @@ export class ClientServerService {
 			reply.header('X-Frame-Options', 'DENY');
 			done();
 		});
+
+		//#region vite assets
+		if (this.config.clientManifestExists) {
+			fastify.register(fastifyStatic, {
+				root: viteOut,
+				prefix: '/vite/',
+				maxAge: ms('30 days'),
+				decorateReply: false,
+			});
+		} else {
+			fastify.register(fastifyProxy, {
+				upstream: 'http://localhost:5173', // TODO: port configuration
+				prefix: '/vite',
+				rewritePrefix: '/vite',
+			});
+		}
+		//#endregion
 
 		//#region static assets
 
@@ -198,6 +215,21 @@ export class ClientServerService {
 
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
 			return reply.sendFile('/apple-touch-icon.png', staticAssets);
+		});
+
+		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
+			const path = request.params.path;
+
+			if (!path.match(/^[0-9a-f-]+\.png$/)) {
+				reply.code(404);
+				return;
+			}
+
+			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+
+			return await reply.sendFile(path, `${_dirname}/../../../../../fluent-emojis/dist/`, {
+				maxAge: ms('30 days'),
+			});
 		});
 
 		fastify.get<{ Params: { path: string } }>('/twemoji/:path(.*)', async (request, reply) => {
@@ -389,6 +421,8 @@ export class ClientServerService {
 
 		// Note
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				visibility: In(['public', 'home']),

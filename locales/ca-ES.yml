@@ -405,6 +405,8 @@ _widgets:
   activity: "Activitat"
   federation: "Federació"
   jobQueue: "Cua de tasques"
+  _userList:
+    chooseList: "Tria una llista"
 _cw:
   show: "Carregar més"
 _visibility:
@@ -432,28 +434,6 @@ _pages:
     _note:
       id: "ID de la publicació"
       detailed: "Mostra els detalls"
-  script:
-    categories:
-      list: "Llistes"
-    blocks:
-      _join:
-        arg1: "Llistes"
-      notEq: "A i B són diferents"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      _randomPick:
-        arg1: "Llistes"
-      _dailyRandomPick:
-        arg1: "Llistes"
-      _seedRandomPick:
-        arg2: "Llistes"
-      _pick:
-        arg1: "Llistes"
-      _listLen:
-        arg1: "Llistes"
-    types:
-      array: "Llistes"
 _notification:
   youRenoted: "Impulsat per {name}"
   youWereFollowed: "t'ha seguit"
