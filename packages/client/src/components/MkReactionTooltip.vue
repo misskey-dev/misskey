@@ -33,6 +33,7 @@ const emit = defineEmits<{
 		width: 60px;
 		font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
 		margin: 0 auto;
+		object-fit: contain;
 	}
 
 	> .name {
