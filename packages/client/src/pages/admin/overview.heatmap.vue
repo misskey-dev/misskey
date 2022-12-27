@@ -201,12 +201,13 @@ async function renderChart() {
 				tooltip: {
 					enabled: false,
 					callbacks: {
-						title() {
-							return '';
+						title(context) {
+							const v = context[0].dataset.data[context[0].dataIndex];
+							return v.d;
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
-							return ['d: ' + v.d, 'v: ' + v.v.toFixed(2)];
+							return ['Active: ' + v.v];
 						},
 					},
 					//mode: 'index',
