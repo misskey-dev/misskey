@@ -456,6 +456,8 @@ language: "ภาษา"
 uiLanguage: "ภาษาอินเทอร์เฟซผู้ใช้งาน"
 groupInvited: "คุณได้รับเชิญให้เข้าร่วมกลุ่ม"
 aboutX: "เกี่ยวกับ {x}"
+emojiStyle: "สไตล์อิโมจิ"
+native: "ภาษาแม่"
 disableDrawer: "อย่าใช้ลิ้นชักสไตล์เมนู"
 youHaveNoGroups: "คุณยังไม่มีกลุ่ม"
 joinOrCreateGroup: "รับเชิญเข้าร่วมกลุ่มหรือสร้างกลุ่มของคุณเองเลยนะ"
@@ -1310,6 +1312,7 @@ _widgets:
   serverMetric: "ตัวชี้วัดเซิร์ฟเวอร์"
   aiscript: "AiScript คอนโซล"
   aichan: "เอไอ"
+  userList: "รายชื่อผู้ใช้"
   _userList:
     chooseList: "เลือกรายการ"
 _cw:
