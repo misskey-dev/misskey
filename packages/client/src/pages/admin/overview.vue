@@ -17,6 +17,11 @@
 		</MkFolder>
 
 		<MkFolder class="item">
+			<template #header>Retention rate</template>
+			<XRetention/>
+		</MkFolder>
+
+		<MkFolder class="item">
 			<template #header>Moderators</template>
 			<XModerators/>
 		</MkFolder>
@@ -63,6 +68,7 @@ import XApRequests from './overview.ap-requests.vue';
 import XUsers from './overview.users.vue';
 import XActiveUsers from './overview.active-users.vue';
 import XStats from './overview.stats.vue';
+import XRetention from './overview.retention.vue';
 import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
