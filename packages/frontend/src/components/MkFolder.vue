@@ -156,4 +156,14 @@ export default defineComponent({
 		}
 	}
 }
+
+@container (max-width: 580px) {
+	.ssazuxis {
+		> header {
+			> .title {
+				padding: 8px 10px 8px 0;
+			}
+		}
+	}
+}
 </style>
