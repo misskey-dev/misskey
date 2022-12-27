@@ -7,7 +7,7 @@
 			<XSidebar/>
 		</div>
 		<div v-else ref="widgetsLeft" class="widgets left">
-			<XWidgets :place="'left'" @mounted="attachSticky(widgetsLeft)"/>
+			<XWidgets place="left" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
 		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
@@ -17,7 +17,7 @@
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="null" @mounted="attachSticky(widgetsRight)"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 
@@ -52,7 +52,7 @@ import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/script
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
-const XWidgets = defineAsyncComponent(() => import('./classic.widgets.vue'));
+const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 

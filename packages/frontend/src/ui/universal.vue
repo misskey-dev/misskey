@@ -273,7 +273,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		right: 0;
 		z-index: 1001;
 		height: 100dvh;
-		padding: var(--margin);
+		padding: var(--margin) !important;
 		box-sizing: border-box;
 		overflow: auto;
 		overscroll-behavior: contain;
