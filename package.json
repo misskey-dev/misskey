@@ -8,7 +8,7 @@
 	},
 	"packageManager": "yarn@3.3.0",
 	"workspaces": [
-		"packages/client",
+		"packages/frontend",
 		"packages/backend",
 		"packages/sw"
 	],

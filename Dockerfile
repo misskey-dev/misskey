@@ -12,7 +12,7 @@ COPY [".yarnrc.yml", "package.json", "yarn.lock", "./"]
 COPY [".yarn", "./.yarn"]
 COPY ["scripts", "./scripts"]
 COPY ["packages/backend/package.json", "./packages/backend/"]
-COPY ["packages/client/package.json", "./packages/client/"]
+COPY ["packages/frontend/package.json", "./packages/frontend/"]
 COPY ["packages/sw/package.json", "./packages/sw/"]
 
 RUN yarn install --immutable
@@ -37,7 +37,7 @@ COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
 COPY --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
 COPY --from=builder /misskey/packages/backend/built ./packages/backend/built
-COPY --from=builder /misskey/packages/client/node_modules ./packages/client/node_modules
+COPY --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
 COPY . ./
 
 ENV NODE_ENV=production

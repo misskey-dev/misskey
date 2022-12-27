@@ -38,8 +38,8 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const staticAssets = `${_dirname}/../../../assets/`;
-const clientAssets = `${_dirname}/../../../../client/assets/`;
-const assets = `${_dirname}/../../../../../built/_client_dist_/`;
+const clientAssets = `${_dirname}/../../../../frontend/assets/`;
+const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
 

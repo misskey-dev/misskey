@@ -16,7 +16,7 @@ updates:
     interval: daily
   open-pull-requests-limit: 0
 - package-ecosystem: npm
-  directory: "/packages/client"
+  directory: "/packages/frontend"
   schedule:
     interval: daily
   open-pull-requests-limit: 0

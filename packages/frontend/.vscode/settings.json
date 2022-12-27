@@ -1,7 +1,7 @@
 {
 	"typescript.tsdk": "node_modules\\typescript\\lib",
 	"path-intellisense.mappings": {
-		"@": "${workspaceRoot}/packages/client/src/"
+		"@": "${workspaceRoot}/packages/frontend/src/"
 	},
 	"eslint.validate": [
 		"javascript",
