@@ -1019,6 +1019,8 @@ _mfm:
   font: "Шрифт"
   fontDescription: "Встановлює шрифт для контенту."
   rotate: "Обертати"
+  plain: "Звичайний"
+  plainDescription: "Деактивує всі ефекти MFM, що містяться в цьому ефекті MFM."
 _instanceTicker:
   none: "Не відображати"
   remote: "Відображати для віддалених користувачів"
@@ -1053,6 +1055,7 @@ _wordMute:
 _instanceMute:
   instanceMuteDescription2: "Розділяйте новими рядками"
   title: "Приховує нотатки з перелічених інстансів."
+  heading: "Список заглушених інстансів"
 _theme:
   explore: "Оглянути теми"
   install: "Встановити тему"
@@ -1070,7 +1073,10 @@ _theme:
   color: "Колір"
   key: "Ключ"
   func: "Функції"
+  funcKind: "Тип функції"
   argument: "Аргумент"
+  alpha: "Непрозорість"
+  darken: "Затемнення"
   lighten: "Яскравість"
   inputConstantName: "Введіть назву константи"
   importInfo: "Вставляючи сюди код теми, ви можете добавити її до редактору тем"
