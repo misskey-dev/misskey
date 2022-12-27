@@ -47,6 +47,7 @@ You should also include the user name that made the change.
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: improve overall performance of client @syuilo
+- Client: ui tweaks @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
