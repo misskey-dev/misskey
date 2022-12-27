@@ -44,6 +44,7 @@ You should also include the user name that made the change.
 - Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: add user list widget @syuilo
+- Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: improve overall performance of client @syuilo
 
