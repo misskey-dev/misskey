@@ -160,7 +160,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		},
 	}, {
 		icon: 'fas fa-rss',
-		text: 'i18n.ts.copyRSSFeed',
+		text: i18n.ts.copyRSS,
 		action: () => {
 			copyToClipboard(`${user.host || host}/@${user.username}.atom`);
 		}

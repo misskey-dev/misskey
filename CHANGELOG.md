@@ -22,6 +22,7 @@ You should also include the user name that made the change.
 ### Improvements
 - Server: improve syslog performance @syuilo
 - Client: Add new gabber kick sounds (thanks for noizenecio)
+- Client: Add link to user RSS feed in profile menu @ssmucny
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
