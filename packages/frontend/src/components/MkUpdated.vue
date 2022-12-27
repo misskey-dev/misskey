@@ -25,7 +25,7 @@ const whatIsNew = () => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ewlycnyt {
 	position: relative;
 	padding: 32px;

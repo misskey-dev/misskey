@@ -35,7 +35,7 @@ useTooltip($$(el), (showing) => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .xlcxczvw {
 	word-break: break-all;
 

@@ -235,7 +235,7 @@ defineExpose({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .pemppnzi {
 	position: relative;
 

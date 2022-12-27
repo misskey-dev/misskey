@@ -101,7 +101,7 @@
 	</article>
 	<MkNoteSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
-<div v-else class="_panel lxwezrsl-muted" @click="muted = false">
+<div v-else class="_panel muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
@@ -295,7 +295,7 @@ if (appearNote.replyId) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .lxwezrsl {
 	position: relative;
 	transition: box-shadow 0.1s ease;
@@ -669,7 +669,7 @@ if (appearNote.replyId) {
 	}
 }
 
-.lxwezrsl-muted {
+.muted {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;

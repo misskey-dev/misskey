@@ -70,7 +70,7 @@ defineExpose({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .meijqfqm {
 	position: relative;
 	overflow: clip;

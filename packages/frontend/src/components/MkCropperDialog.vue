@@ -133,9 +133,7 @@ onMounted(() => {
 .fade-leave-to {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss">
 .mk-cropper-dialog {
 	display: flex;
 	flex-direction: column;

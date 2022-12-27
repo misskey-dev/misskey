@@ -51,9 +51,7 @@ const props = defineProps<{
 	0% { opacity: 1; }
 	50% { opacity: 0; }
 }
-</style>
 
-<style lang="scss">
 .urempief {
 	margin-top: var(--margin);
 

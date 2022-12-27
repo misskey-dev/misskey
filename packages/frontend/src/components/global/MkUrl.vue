@@ -53,7 +53,7 @@ const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ieqqeuvs {
 	word-break: break-all;
 

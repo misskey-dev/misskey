@@ -135,7 +135,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .zoaiodol {
 	padding: 12px;
 	font-size: 1.1em;

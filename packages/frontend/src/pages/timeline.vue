@@ -154,7 +154,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .cmuxhskf {
 	> .new {
 		position: sticky;

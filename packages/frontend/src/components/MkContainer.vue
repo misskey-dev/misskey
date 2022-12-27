@@ -140,9 +140,7 @@ export default defineComponent({
 .container-toggle-leave-to {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss">
 .ukygtjoj {
 	position: relative;
 	overflow: clip;

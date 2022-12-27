@@ -69,6 +69,10 @@ function onMousedown(evt: Event) {
 </script>
 
 <style lang="scss" scoped>
+.nvlagfpb {
+	position: absolute;
+}
+
 .fade-enter-active, .fade-leave-active {
 	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 	transform-origin: left top;
@@ -77,11 +81,5 @@ function onMousedown(evt: Event) {
 .fade-enter-from, .fade-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
-}
-</style>
-
-<style lang="scss">
-.nvlagfpb {
-	position: absolute;
 }
 </style>

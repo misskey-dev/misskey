@@ -107,7 +107,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .timnmucd {
 	padding: 16px;
 

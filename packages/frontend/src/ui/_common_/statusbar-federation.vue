@@ -77,9 +77,7 @@ function getInstanceIcon(instance): string {
   opacity: 0;
 	transform: translateY(100%);
 }
-</style>
 
-<style lang="scss">
 .nmidsaqw {
 	display: inline-block;
 	position: relative;

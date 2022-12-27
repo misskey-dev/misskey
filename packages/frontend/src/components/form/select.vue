@@ -164,7 +164,7 @@ const onClick = (ev: MouseEvent) => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .vblkjoeq {
 	> .label {
 		font-size: 0.85em;

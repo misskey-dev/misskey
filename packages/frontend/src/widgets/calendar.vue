@@ -115,7 +115,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mkw-calendar {
 	padding: 16px 0;
 

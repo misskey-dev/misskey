@@ -33,7 +33,7 @@ const color = $computed(() => `hsl(${180 - (props.value * 180)}, 80%, 70%)`);
 const strokeDashoffset = $computed(() => (1 - props.value) * (Math.PI * (r * 2)));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .hsalcinq {
 	display: block;
 	height: 100%;

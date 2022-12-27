@@ -67,7 +67,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .otgbylcu {
 	padding-bottom: 28px + 16px;
 

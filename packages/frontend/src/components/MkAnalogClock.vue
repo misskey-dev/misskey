@@ -205,7 +205,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mbcofsoe {
 	display: block;
 

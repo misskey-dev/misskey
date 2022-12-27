@@ -272,7 +272,7 @@ defineExpose({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .hiyeyicy {
 	&.wide {
 		display: flex;

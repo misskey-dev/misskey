@@ -50,7 +50,7 @@ function computeTitle(event: PointerEvent): void {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-emoji {
 	height: 1.25em;
 	vertical-align: -0.25em;

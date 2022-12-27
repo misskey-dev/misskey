@@ -107,9 +107,7 @@ export default defineComponent({
 .folder-toggle-leave-to {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss">
 .ssazuxis {
 	position: relative;
 
@@ -159,7 +157,7 @@ export default defineComponent({
 	}
 }
 
-@container (max-width: 500px) {
+@container (max-width: 580px) {
 	.ssazuxis {
 		> header {
 			> .title {

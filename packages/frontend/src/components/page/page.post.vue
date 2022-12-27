@@ -86,7 +86,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ngbfujlo {
 	position: relative;
 	padding: 32px;

@@ -1,5 +1,5 @@
 <template>
-<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :custom-emojis="customEmojis" :is-note="isNote" class="havbbuyv" :class="{ nowrap }"/>
+<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :customEmojis="customEmojis" :isNote="isNote" class="havbbuyv" :class="{ nowrap }"/>
 </template>
 
 <script lang="ts" setup>
@@ -158,7 +158,7 @@ const props = withDefaults(defineProps<{
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .havbbuyv {
 	white-space: pre-wrap;
 

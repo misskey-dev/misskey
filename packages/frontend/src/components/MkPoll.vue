@@ -86,7 +86,7 @@ const vote = async (id) => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .tivcixzd {
 	> ul {
 		display: block;

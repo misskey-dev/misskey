@@ -162,7 +162,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .yweeujhr {
 
 	> .start {

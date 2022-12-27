@@ -54,7 +54,7 @@ const menu = [{
 }];
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .wtdtxvec {
 	--margin: 8px;
 	--panelBorder: none;

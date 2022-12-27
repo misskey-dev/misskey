@@ -45,7 +45,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .kudkigyw {
 	display: inline-block;
 	min-width: 300px;

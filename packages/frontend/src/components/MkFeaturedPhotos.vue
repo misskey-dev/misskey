@@ -14,7 +14,7 @@ os.api('meta', { detail: true }).then(gotMeta => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .xfbouadm {
 	background-position: center;
 	background-size: cover;

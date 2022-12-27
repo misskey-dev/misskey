@@ -28,9 +28,9 @@ export default defineComponent({
 
 		onMounted(() => {
 			os.api('notes/show', { noteId: props.block.note })
-				.then(result => {
-					note.value = result;
-				});
+			.then(result => {
+				note.value = result;
+			});
 		});
 
 		return {
@@ -40,7 +40,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .voxdxuby {
 	margin: 1em 0;
 }

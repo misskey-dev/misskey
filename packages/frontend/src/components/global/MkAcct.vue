@@ -18,7 +18,7 @@ defineProps<{
 const host = toUnicode(hostRaw);
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-acct {
 	> .host {
 		opacity: 0.5;

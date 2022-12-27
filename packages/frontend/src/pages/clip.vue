@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions"/></template>
-	<MkSpacer :content-max="800">
+		<MkSpacer :content-max="800">
 		<div v-if="clip">
 			<div class="okzinsic _panel">
 				<div v-if="clip.description" class="description">
@@ -105,7 +105,7 @@ definePageMetadata(computed(() => clip ? {
 } : null));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .okzinsic {
 	position: relative;
 	margin-bottom: var(--margin);

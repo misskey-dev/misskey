@@ -36,7 +36,7 @@ const followersPagination = {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mk-following-or-followers {
 	> .users {
 		display: grid;

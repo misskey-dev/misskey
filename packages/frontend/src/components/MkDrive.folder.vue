@@ -264,7 +264,7 @@ function onContextmenu(ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .rghtznwe {
 	position: relative;
 	padding: 8px;
