@@ -57,7 +57,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mkw-onlineUsers {
 	text-align: center;
 

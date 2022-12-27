@@ -24,7 +24,7 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .beeadbfb {
 	text-align: center;
 

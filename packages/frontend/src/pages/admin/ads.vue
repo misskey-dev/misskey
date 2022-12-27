@@ -119,7 +119,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .uqshojas {
 	> .ad {
 		padding: 32px;

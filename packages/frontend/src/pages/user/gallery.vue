@@ -28,7 +28,7 @@ const pagination = {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .jrnovfpt {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

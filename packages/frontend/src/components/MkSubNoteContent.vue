@@ -39,7 +39,7 @@ const collapsed = $ref(
 	));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .wrmlmaau {
 	overflow-wrap: break-word;
 

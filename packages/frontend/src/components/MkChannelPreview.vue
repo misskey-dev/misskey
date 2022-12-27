@@ -50,7 +50,7 @@ const bannerStyle = computed(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .eftoefju {
 	display: block;
 	overflow: hidden;

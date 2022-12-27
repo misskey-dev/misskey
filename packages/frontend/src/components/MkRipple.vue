@@ -100,7 +100,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vswabwbm {
 	pointer-events: none;
 	position: fixed;

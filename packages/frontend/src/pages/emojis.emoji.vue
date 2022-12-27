@@ -33,7 +33,7 @@ function menu(ev) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .zuvgdzyu {
 	display: flex;
 	align-items: center;

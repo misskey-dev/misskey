@@ -80,7 +80,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .rknalgpo {
 	&.my .ckltabjg:first-child {
 		margin-top: 16px;

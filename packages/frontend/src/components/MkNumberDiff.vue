@@ -30,7 +30,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ceaaebcd {
 	&.isPlus {
 		color: var(--success);

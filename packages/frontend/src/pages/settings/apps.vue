@@ -70,7 +70,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .bfomjevm {
 	display: flex;
 	padding: 16px;

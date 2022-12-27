@@ -79,7 +79,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mkw-digitalClock {
 	padding: 16px 0;
 	text-align: center;

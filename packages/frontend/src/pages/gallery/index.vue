@@ -125,7 +125,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vfpdbgtk {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

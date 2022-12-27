@@ -65,7 +65,7 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[])
+	tabs: () => ([] as Tab[]),
 });
 
 const emit = defineEmits<{
@@ -178,7 +178,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .fdidabkb {
 	--height: 52px;
 	display: flex;

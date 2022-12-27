@@ -64,7 +64,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .dedjhjmo {
 	width: 100%;
 	height: 350px;

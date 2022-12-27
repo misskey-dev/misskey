@@ -215,7 +215,9 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 .menuDrawer-back-leave-active {
 	opacity: 0;
 }
+</style>
 
+<style lang="scss">
 .dkgtipfy {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;

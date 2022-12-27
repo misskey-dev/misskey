@@ -92,7 +92,7 @@ function reduceFrequency(): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .qiivuoyo {
 	background-size: auto auto;
 	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--ad) 8px, var(--ad) 14px );

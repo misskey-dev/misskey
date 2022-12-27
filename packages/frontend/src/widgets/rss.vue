@@ -73,7 +73,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ekmkgxbj {
 	> .feed {
 		padding: 0;

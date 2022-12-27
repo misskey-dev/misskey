@@ -58,7 +58,7 @@ function send() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .dpvffvvy {
 	--root-margin: 16px;
 }

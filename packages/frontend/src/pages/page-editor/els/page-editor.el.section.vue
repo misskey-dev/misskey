@@ -80,7 +80,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ilrvjyvi {
 	> .children {
 		margin: 16px;

@@ -6,10 +6,10 @@
 </template>
 
 <script lang="ts">
-import { TextBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
 import { defineAsyncComponent, defineComponent, PropType } from 'vue';
 import * as mfm from 'mfm-js';
+import { TextBlock } from '@/scripts/hpml/block';
+import { Hpml } from '@/scripts/hpml/evaluator';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 
 export default defineComponent({
@@ -51,7 +51,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mrdgzndn {
 	&:not(:first-child) {
 		margin-top: 0.5em;

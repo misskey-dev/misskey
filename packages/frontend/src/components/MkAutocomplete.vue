@@ -376,7 +376,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .swhvrteh {
 	position: fixed;
 	max-width: 100%;

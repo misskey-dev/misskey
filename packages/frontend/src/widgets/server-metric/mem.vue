@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .zlxnikvl {
 	display: flex;
 	padding: 16px;

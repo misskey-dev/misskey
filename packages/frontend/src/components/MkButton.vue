@@ -98,7 +98,7 @@ function onMousedown(evt: MouseEvent): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .bghgjjyj {
 	position: relative;
 	z-index: 1; // 他コンポーネントのbox-shadowに隠されないようにするため

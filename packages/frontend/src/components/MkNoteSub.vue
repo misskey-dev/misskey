@@ -57,7 +57,7 @@ if (props.detail) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .wrpstxzv {
 	padding: 16px 32px;
 	font-size: 0.9em;

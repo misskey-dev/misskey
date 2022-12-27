@@ -45,7 +45,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .xubzgfgb {
 	position: relative;
 	width: 100%;

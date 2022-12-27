@@ -79,7 +79,7 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .gqyayizv {
 	width: 240px;
 	padding: 8px 0;

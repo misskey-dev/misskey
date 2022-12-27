@@ -57,7 +57,7 @@ async function onClick() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .hdcaacmi {
 	position: relative;
 	display: inline-block;

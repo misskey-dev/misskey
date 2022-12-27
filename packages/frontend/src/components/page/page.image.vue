@@ -19,7 +19,7 @@ const props = defineProps<{
 const image = props.hpml.page.attachedFiles.find(x => x.id === props.block.fileId);
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .lzyxtsnt {
 	> img {
 		max-width: 100%;

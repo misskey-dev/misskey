@@ -128,7 +128,7 @@ function more() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .kmwsukvl {
 	> .body {
 		display: flex;

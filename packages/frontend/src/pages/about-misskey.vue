@@ -207,7 +207,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .znqjceqz {
 	> .about {
 		position: relative;

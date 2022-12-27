@@ -39,7 +39,7 @@ defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vjnjpkug {
 	position: relative;
 

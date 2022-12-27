@@ -53,7 +53,7 @@ const isThumbnailAvailable = computed(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .zdjebgpv {
 	position: relative;
 	display: flex;

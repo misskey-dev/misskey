@@ -50,7 +50,7 @@ const toggle = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ziffeoms {
 	position: relative;
 	display: flex;

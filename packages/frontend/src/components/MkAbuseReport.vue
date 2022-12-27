@@ -63,7 +63,7 @@ function resolve() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .bcekxzvu {
 	display: flex;
 

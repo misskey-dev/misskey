@@ -19,7 +19,7 @@ const initialReactions = new Set(Object.keys(props.note.reactions));
 const isMe = computed(() => $i && $i.id === props.note.userId);
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .tdflqwzn {
 	margin: 4px -2px 0 -2px;
 

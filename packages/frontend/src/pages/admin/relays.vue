@@ -81,7 +81,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .relaycxt {
 	> .status {
 		margin: 8px 0;

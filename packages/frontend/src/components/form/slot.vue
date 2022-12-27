@@ -16,7 +16,7 @@ function focus() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .adhpbeou {
 	> .label {
 		font-size: 0.85em;

@@ -106,7 +106,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .rwqkcmrc {
 	position: relative;
 	text-align: center;

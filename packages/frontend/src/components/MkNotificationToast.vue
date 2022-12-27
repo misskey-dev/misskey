@@ -37,7 +37,9 @@ onMounted(() => {
 	opacity: 0;
 	transform: translateX(-250px);
 }
+</style>
 
+<style lang="scss">
 .mk-notification-toast {
 	position: fixed;
 	left: 0;

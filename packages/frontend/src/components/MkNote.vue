@@ -90,7 +90,7 @@
 		</div>
 	</article>
 </div>
-<div v-else class="muted" @click="muted = false">
+<div v-else class="tkcbzcuz-muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
@@ -292,7 +292,7 @@ function readPromo() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .tkcbzcuz {
 	position: relative;
 	transition: box-shadow 0.1s ease;
@@ -650,7 +650,7 @@ function readPromo() {
 	}
 }
 
-.muted {
+.tkcbzcuz-muted {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;

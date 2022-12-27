@@ -40,7 +40,9 @@ onMounted(() => {
 	opacity: 0;
 	transform: translateY(-100%);
 }
+</style>
 
+<style lang="scss">
 .mk-toast {
 	> .body {
 		position: fixed;

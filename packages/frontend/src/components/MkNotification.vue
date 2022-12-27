@@ -160,7 +160,7 @@ useTooltip(reactionRef, (showing) => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .qglefbjs {
 	position: relative;
 	box-sizing: border-box;

@@ -30,7 +30,7 @@ const copy_ = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .alqyeyti {
 	> .key {
 		font-size: 0.85em;

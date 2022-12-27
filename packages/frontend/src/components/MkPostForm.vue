@@ -715,7 +715,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .gafaadew {
 	position: relative;
 

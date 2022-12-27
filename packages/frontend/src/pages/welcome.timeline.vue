@@ -1,6 +1,6 @@
 <template>
 <div class="civpbkhh">
-	<div ref="scroll" class="scrollbox" v-bind:class="{ scroll: isScrolling }">
+	<div ref="scroll" class="scrollbox" :class="{ scroll: isScrolling }">
 		<div v-for="note in notes" class="note">
 			<div class="content _panel">
 				<div class="body">
@@ -12,7 +12,7 @@
 					<XMediaList :media-list="note.files"/>
 				</div>
 				<div v-if="note.poll">
-					<XPoll :note="note" :readOnly="true"/>
+					<XPoll :note="note" :read-only="true"/>
 				</div>
 			</div>
 			<XReactionsViewer ref="reactionsViewer" :note="note"/>
@@ -71,7 +71,9 @@ export default defineComponent({
 		transform: translate3d(0, calc(-100% + 90vh), 0);
 	}
 }
+</style>
 
+<style lang="scss">
 .civpbkhh {
 	text-align: right;
 

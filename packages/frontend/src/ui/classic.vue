@@ -193,7 +193,9 @@ onMounted(() => {
 .tray-back-leave-active {
 	opacity: 0;
 }
+</style>
 
+<style lang="scss">
 .gbhvwtnk {
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;

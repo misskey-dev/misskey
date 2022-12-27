@@ -174,7 +174,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .adhpbeos {
 	> .label {
 		font-size: 0.85em;

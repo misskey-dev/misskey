@@ -153,7 +153,7 @@ function more(ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mvcprjjd {
 	$nav-width: 250px;
 	$nav-icon-only-width: 80px;

@@ -83,7 +83,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .wbrkwalb {
 	$bodyTitleHieght: 18px;
 	$bodyInfoHieght: 16px;

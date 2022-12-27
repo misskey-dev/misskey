@@ -328,7 +328,9 @@ defineExpose({
 		transform: translateY(100%);
 	}
 }
+</style>
 
+<style lang="scss">
 .qzhlnise {
 	> .bg {
 		&.transparent {

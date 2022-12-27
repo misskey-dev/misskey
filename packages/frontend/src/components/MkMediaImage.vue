@@ -49,7 +49,7 @@ watch(() => props.image, () => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .qjewsnkg {
 	position: relative;
 

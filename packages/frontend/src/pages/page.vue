@@ -172,7 +172,9 @@ definePageMetadata(computed(() => page ? {
 .fade-leave-to {
 	opacity: 0;
 }
+</style>
 
+<style lang="scss">
 .xcukqgmh {
 	> .main {
 		padding: 32px;

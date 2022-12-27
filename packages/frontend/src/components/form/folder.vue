@@ -37,7 +37,7 @@ const toggle = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .dwzlatin {
 	display: block;
 

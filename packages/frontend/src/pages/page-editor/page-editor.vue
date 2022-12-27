@@ -303,7 +303,7 @@ definePageMetadata(computed(() => {
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .jqqmcavi {
 	margin-bottom: 16px;
 

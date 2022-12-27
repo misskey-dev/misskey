@@ -52,7 +52,7 @@ watch(() => props.user.avatarBlurhash, () => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @keyframes earwiggleleft {
 	from { transform: rotate(37.6deg) skew(30deg); }
 	25% { transform: rotate(10deg) skew(30deg); }

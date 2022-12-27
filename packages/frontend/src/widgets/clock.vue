@@ -143,7 +143,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vubelbmv {
 	position: relative;
 

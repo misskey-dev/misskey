@@ -124,8 +124,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss">
 @use "sass:math";
 
 .uawsfosz {

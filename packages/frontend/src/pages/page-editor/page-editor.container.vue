@@ -68,7 +68,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .cpjygsrt {
 	position: relative;
 	overflow: hidden;

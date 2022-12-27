@@ -1,10 +1,21 @@
 <template>
-	<span class="mk-ellipsis">
-		<span>.</span><span>.</span><span>.</span>
-	</span>
+<span class="mk-ellipsis">
+	<span>.</span><span>.</span><span>.</span>
+</span>
 </template>
 
 <style lang="scss" scoped>
+@keyframes ellipsis {
+	0%, 80%, 100% {
+		opacity: 1;
+	}
+	40% {
+		opacity: 0;
+	}
+}
+</style>
+
+<style lang="scss">
 .mk-ellipsis {
 	> span {
 		animation: ellipsis 1.4s infinite ease-in-out both;
@@ -20,15 +31,6 @@
 		&:nth-child(3) {
 			animation-delay: 0.32s;
 		}
-	}
-}
-
-@keyframes ellipsis {
-	0%, 80%, 100% {
-		opacity: 1;
-	}
-	40% {
-		opacity: 0;
 	}
 }
 </style>

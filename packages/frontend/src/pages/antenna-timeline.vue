@@ -89,7 +89,7 @@ definePageMetadata(computed(() => antenna ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .tqmomfks {
 	padding: var(--margin);
 

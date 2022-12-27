@@ -81,7 +81,7 @@ function updateWidgets(thisWidgets) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .efzpzdvf {
 	position: sticky;
 	height: min-content;

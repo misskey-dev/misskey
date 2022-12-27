@@ -116,7 +116,7 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .kvausudm {
 	position: relative;
 

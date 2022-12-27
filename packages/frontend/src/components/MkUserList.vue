@@ -30,7 +30,7 @@ const props = defineProps<{
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .efvhhmdq {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

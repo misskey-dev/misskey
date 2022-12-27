@@ -242,7 +242,7 @@ function resetPassword() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .eppvobhk {
 	> .auth {
 		> .avatar {

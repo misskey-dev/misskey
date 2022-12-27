@@ -62,7 +62,7 @@ function opening() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ryghynhb {
 	&.drawer {
 		border-radius: 24px;

@@ -22,7 +22,7 @@ const props = defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .fefdfafb {
 	display: flex;
 	margin: 0;

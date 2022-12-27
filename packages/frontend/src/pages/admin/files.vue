@@ -113,7 +113,7 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .xrmjdkdw {
 	margin: var(--margin);
 }

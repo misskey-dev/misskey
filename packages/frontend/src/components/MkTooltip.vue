@@ -86,7 +86,9 @@ onUnmounted(() => {
 	opacity: 0;
 	transform: scale(0.75);
 }
+</style>
 
+<style lang="scss">
 .buebdbiu {
 	position: absolute;
 	font-size: 0.8em;

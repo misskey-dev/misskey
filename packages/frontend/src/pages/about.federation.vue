@@ -86,7 +86,7 @@ function getStatus(instance) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .taeiyria {
 	> .query {
 		background: var(--bg);

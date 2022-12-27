@@ -31,7 +31,7 @@ const props = defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ffcbddfc {
 	display: block;
 

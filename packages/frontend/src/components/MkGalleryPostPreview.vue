@@ -25,7 +25,7 @@ const props = defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ttasepnz {
 	display: block;
 	position: relative;

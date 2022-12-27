@@ -245,7 +245,9 @@ async function deleteProfile() {
 .menu-back-leave-active {
 	opacity: 0;
 }
+</style>
 
+<style lang="scss">
 .mk-deck {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 

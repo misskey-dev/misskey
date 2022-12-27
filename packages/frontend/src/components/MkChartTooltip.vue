@@ -33,7 +33,7 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .qpcyisrl {
 	> .title {
 		margin-bottom: 4px;

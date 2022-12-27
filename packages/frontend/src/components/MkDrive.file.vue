@@ -176,7 +176,7 @@ async function deleteFile() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ncvczrfv {
 	position: relative;
 	padding: 8px 0 0 0;

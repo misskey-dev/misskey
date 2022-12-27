@@ -104,7 +104,7 @@ const menu = [{
 }];
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .iwaalbte {
 	text-align: center;
 

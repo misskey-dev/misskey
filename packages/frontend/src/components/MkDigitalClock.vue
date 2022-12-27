@@ -62,7 +62,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .zjobosdg {
 	> .colon {
 		opacity: 0;

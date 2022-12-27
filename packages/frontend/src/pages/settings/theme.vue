@@ -164,7 +164,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .rfqxtzch {
 	border-radius: 6px;
 

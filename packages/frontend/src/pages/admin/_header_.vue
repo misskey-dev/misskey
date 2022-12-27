@@ -147,7 +147,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .fdidabkc {
 	--height: 60px;
 	display: flex;

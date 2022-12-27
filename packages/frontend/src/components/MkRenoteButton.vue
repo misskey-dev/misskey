@@ -74,7 +74,7 @@ const renote = (viaKeyboard = false) => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .eddddedb {
 	display: inline-block;
 	height: 32px;

@@ -111,7 +111,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mk-sparkle {
 	position: relative;
 	display: inline-block;

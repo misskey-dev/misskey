@@ -33,7 +33,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vrvdvrys {
 	display: flex;
 	padding: 16px;

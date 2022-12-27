@@ -1,5 +1,6 @@
 <template>
-<div class="drylbebk"
+<div
+	class="drylbebk"
 	:class="{ draghover }"
 	@click="onClick"
 	@dragover.prevent.stop="onDragover"
@@ -130,7 +131,7 @@ function onDrop(ev: DragEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .drylbebk {
 	> * {
 		pointer-events: none;

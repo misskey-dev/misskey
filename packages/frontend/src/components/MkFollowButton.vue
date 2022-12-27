@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .kpoogebi {
 	position: relative;
 	display: inline-block;

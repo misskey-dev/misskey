@@ -35,7 +35,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ysrxegms {
 	display: inline-block;
 	vertical-align: bottom;

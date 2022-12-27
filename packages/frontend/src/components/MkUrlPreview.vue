@@ -1,5 +1,5 @@
 <template>
-<div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
+<div v-if="playerEnabled" class="mk-url-preview-player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
 	<button class="disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 </div>
@@ -121,8 +121,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.player {
+<style lang="scss">
+.mk-url-preview-player {
 	position: relative;
 	width: 100%;
 

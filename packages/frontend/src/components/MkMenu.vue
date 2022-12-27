@@ -186,7 +186,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .rrevdjwt {
 	padding: 8px 0;
 	box-sizing: border-box;

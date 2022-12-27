@@ -36,7 +36,7 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .giivymft {
 	&.noGap {
 		> .notes {

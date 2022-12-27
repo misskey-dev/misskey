@@ -127,7 +127,7 @@ function showMenu(ev) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .rsqzvsbo {
 	> .top {
 		display: flex;

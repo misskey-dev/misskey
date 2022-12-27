@@ -25,7 +25,7 @@ const emit = defineEmits<{
 let modal = $ref<InstanceType<typeof MkModal>>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .sfhdhdhq {
 	&.drawer {
 		border-radius: 24px;

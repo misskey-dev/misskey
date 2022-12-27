@@ -149,7 +149,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .matxzzsk {
 	> .label {
 		font-size: 0.85em;

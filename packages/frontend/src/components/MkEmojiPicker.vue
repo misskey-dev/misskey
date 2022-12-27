@@ -354,7 +354,7 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .omfetrab {
 	$pad: 8px;
 

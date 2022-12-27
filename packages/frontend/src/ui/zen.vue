@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app">
+<div class="mk-zen">
 	<RouterView/>
 
 	<XCommon/>
@@ -26,8 +26,8 @@ provideMetadataReceiver((info) => {
 document.documentElement.style.overflowY = 'scroll';
 </script>
 
-<style lang="scss" scoped>
-.mk-app {
+<style lang="scss">
+.mk-zen {
 	min-height: 100dvh;
 	box-sizing: border-box;
 }

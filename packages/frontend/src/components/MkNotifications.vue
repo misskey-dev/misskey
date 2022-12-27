@@ -97,7 +97,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .elsfgstc {
 	background: var(--panel);
 }

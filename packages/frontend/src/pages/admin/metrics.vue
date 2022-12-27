@@ -53,43 +53,43 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import {
-  Chart,
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  LineController,
-  CategoryScale,
-  LinearScale,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle,
+	Chart,
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
 } from 'chart.js';
+import MkwFederation from '../../widgets/federation.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '@/config';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
 
 Chart.register(
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  LineController,
-  CategoryScale,
-  LinearScale,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle,
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
 );
 
 const alpha = (hex, a) => {
@@ -462,7 +462,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .xhexznfu {
 	> div:nth-child(2) {
 		padding: 16px;

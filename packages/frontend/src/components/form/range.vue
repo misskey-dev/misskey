@@ -141,7 +141,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @use "sass:math";
 
 .timctyfi {

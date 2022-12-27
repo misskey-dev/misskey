@@ -228,7 +228,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .cwepdizn {
 	::v-deep(.cwepdizn-colors) {
 		text-align: center;

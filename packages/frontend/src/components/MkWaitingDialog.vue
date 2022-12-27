@@ -35,7 +35,7 @@ watch(() => props.showing, () => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .iuyakobc {
 	position: relative;
 	padding: 32px;

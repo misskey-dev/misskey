@@ -31,7 +31,7 @@ const props = defineProps<{
 const showContent = $ref(false);
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .yohlumlk {
 	display: flex;
 	margin: 0;

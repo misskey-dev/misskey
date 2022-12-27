@@ -135,7 +135,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .npcljfve {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい

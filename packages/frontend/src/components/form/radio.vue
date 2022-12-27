@@ -39,7 +39,7 @@ function toggle(): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .novjtctn {
 	position: relative;
 	display: inline-block;

@@ -82,7 +82,7 @@ definePageMetadata(computed(() => list ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .eqqrhokj {
 	padding: var(--margin);
 

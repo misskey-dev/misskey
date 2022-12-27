@@ -32,7 +32,7 @@ watch($$(text), () => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vckmsadr {
 	> textarea {
 		display: block;

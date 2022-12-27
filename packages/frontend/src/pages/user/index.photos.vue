@@ -73,7 +73,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ujigsodd {
 	padding: 8px;
 

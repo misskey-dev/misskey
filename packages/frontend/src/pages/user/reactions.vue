@@ -33,7 +33,7 @@ const pagination = {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .afdcfbfb {
 	> .header {
 		display: flex;

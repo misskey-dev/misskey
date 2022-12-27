@@ -16,7 +16,7 @@
 			class="_panel"
 			@posted="state = 'posted'"
 		/>
-		<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ i18n.ts.close }}</MkButton>
+		<MkButton v-else-if="state === 'posted'" primary :class="$style.close" @click="close()">{{ i18n.ts.close }}</MkButton>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -69,14 +69,14 @@ async function init() {
 				...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : []),
 			]
 			// TypeScriptの指示通りに変換する
-			.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
-			.map(q => os.api('users/show', q)
-				.then(user => {
-					visibleUsers.push(user);
-				}, () => {
-					console.error(`Invalid user query: ${JSON.stringify(q)}`);
-				}),
-			),
+				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
+				.map(q => os.api('users/show', q)
+					.then(user => {
+						visibleUsers.push(user);
+					}, () => {
+						console.error(`Invalid user query: ${JSON.stringify(q)}`);
+					}),
+				),
 		);
 	}
 
@@ -120,13 +120,13 @@ async function init() {
 		if (fileIds) {
 			await Promise.all(
 				fileIds.split(',')
-				.map(fileId => os.api('drive/files/show', { fileId })
-					.then(file => {
-						files.push(file);
-					}, () => {
-						console.error(`Failed to fetch a file ${fileId}`);
-					}),
-				),
+					.map(fileId => os.api('drive/files/show', { fileId })
+						.then(file => {
+							files.push(file);
+						}, () => {
+							console.error(`Failed to fetch a file ${fileId}`);
+						}),
+					),
 			);
 		}
 		//#endregion
@@ -162,7 +162,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .close {
 	margin: 16px auto;
 }

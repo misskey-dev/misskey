@@ -42,7 +42,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .llumlmnx {
 	display: inline-block;
 	min-width: 300px;

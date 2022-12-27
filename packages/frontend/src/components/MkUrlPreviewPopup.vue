@@ -35,7 +35,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .fgmtyycl {
 	position: absolute;
 	width: 500px;

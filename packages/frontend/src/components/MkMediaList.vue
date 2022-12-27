@@ -101,7 +101,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .hoawjimk {
 	> .gird-container {
 		position: relative;

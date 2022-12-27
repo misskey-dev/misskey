@@ -237,7 +237,7 @@ function onSubmit(): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .qlvuhzng {
 	.captcha {
 		margin: 16px 0;

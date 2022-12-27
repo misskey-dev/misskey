@@ -126,7 +126,7 @@ definePageMetadata(computed(() => list ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mk-list-page {
 	> .members {
 		> ._content {

@@ -26,7 +26,7 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .beaffaef {
 	font-size: 0.9em;
 	text-align: left;

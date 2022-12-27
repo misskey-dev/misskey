@@ -10,7 +10,7 @@ defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .jmgmzlwq {
 	font-size: 0.8em;
 	padding: 16px;

@@ -1,5 +1,6 @@
 <template>
-<MkWindow ref="window"
+<MkWindow
+	ref="window"
 	:initial-width="null"
 	:initial-height="null"
 	:can-resize="false"
@@ -34,7 +35,7 @@ function chosen(emoji: any) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .omfetrab {
 	$pad: 8px;
 	--eachSize: 40px;

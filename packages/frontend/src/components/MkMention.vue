@@ -39,7 +39,7 @@ bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .akbvjaqn {
 	display: inline-block;
 	padding: 4px 8px 4px 4px;

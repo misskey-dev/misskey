@@ -90,7 +90,7 @@ useTooltip(buttonRef, async (showing) => {
 }, 100);
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .hkzvhatu {
 	display: inline-block;
 	height: 32px;
