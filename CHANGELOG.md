@@ -20,7 +20,7 @@ You should also include the user name that made the change.
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
-- iOS15未満はサポートされなくなりました
+- iOS15以下のデバイスはサポートされなくなりました
 
 ### Improvements
 - Push notification of Antenna note @tamaina
@@ -37,7 +37,7 @@ You should also include the user name that made the change.
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
-- Client: Youtube window player @sim1222
+- Client: YouTube window player @sim1222
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
