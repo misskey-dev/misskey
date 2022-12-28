@@ -29,14 +29,9 @@ export function openInstanceMenu(ev: MouseEvent) {
 		to: '/about#charts',
 	}, null, {
 		type: 'parent',
-		text: i18n.ts.help,
-		icon: 'ti ti-question-circle',
+		text: i18n.ts.tools,
+		icon: 'ti ti-tool',
 		children: [{
-			type: 'link',
-			to: '/mfm-cheat-sheet',
-			text: i18n.ts._mfm.cheatSheet,
-			icon: 'ti ti-code',
-		}, {
 			type: 'link',
 			to: '/scratchpad',
 			text: i18n.ts.scratchpad,
@@ -46,6 +41,16 @@ export function openInstanceMenu(ev: MouseEvent) {
 			to: '/api-console',
 			text: 'API Console',
 			icon: 'ti ti-terminal-2',
+		}],
+	}, null, {
+		type: 'parent',
+		text: i18n.ts.help,
+		icon: 'ti ti-question-circle',
+		children: [{
+			type: 'link',
+			to: '/mfm-cheat-sheet',
+			text: i18n.ts._mfm.cheatSheet,
+			icon: 'ti ti-code',
 		}, null, {
 			text: i18n.ts.document,
 			icon: 'ti ti-question-circle',
