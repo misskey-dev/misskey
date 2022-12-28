@@ -910,6 +910,7 @@ sendPushNotificationReadMessageCaption: "Na chvíľu sa zobrazí oznámenie \"{e
 windowMaximize: "Maximalizovať"
 windowRestore: "Obnoviť"
 caption: "Nadpis"
+tools: "Nástroje"
 _sensitiveMediaDetection:
   description: "Strojové učenie sa použije na automatickú detekciu citlivých médií na účely ich moderovania. Mierne sa zvýši zaťaženie servera."
   sensitivity: "Citlivosť detekcie"
