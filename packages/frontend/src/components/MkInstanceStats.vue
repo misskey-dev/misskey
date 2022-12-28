@@ -44,6 +44,13 @@
 	</MkFolder>
 
 	<MkFolder class="item">
+		<template #header>Retention rate</template>
+		<div class="_panel" :class="$style.retention">
+			<MkRetentionHeatmap/>
+		</div>
+	</MkFolder>
+
+	<MkFolder class="item">
 		<template #header>Federation</template>
 		<div :class="$style.federation">
 			<div class="pies">
@@ -88,6 +95,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkActiveUsersHeatmap from '@/components/MkActiveUsersHeatmap.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 
 Chart.register(
 	ArcElement,
@@ -220,6 +228,11 @@ onMounted(() => {
 }
 
 .heatmap {
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.retention {
 	padding: 16px;
 	margin-bottom: 16px;
 }
