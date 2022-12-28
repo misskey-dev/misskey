@@ -1,6 +1,6 @@
 <template>
 <MkSpacer :content-max="narrow ? 800 : 1100">
-	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }">
+	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 		<div class="main">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
@@ -99,7 +99,7 @@
 				<XUserTimeline :user="user"/>
 			</div>
 		</div>
-		<div v-if="!narrow" class="sub">
+		<div v-if="!narrow" class="sub" style="container-type: inline-size;">
 			<XPhotos :key="user.id" :user="user"/>
 			<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
 		</div>
