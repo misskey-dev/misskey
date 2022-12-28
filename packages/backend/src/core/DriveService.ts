@@ -398,6 +398,7 @@ export class DriveService {
 		if (oldFile) {
 			this.deleteFile(oldFile, true);
 		}
+		return oldFile ? oldFile.size : 0;
 	}
 
 	/**
@@ -477,13 +478,20 @@ export class DriveService {
 			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
 			// If usage limit exceeded
-			if (usage + info.size > driveCapacity) {
+			let diff = usage + info.size - driveCapacity;
+			while (diff > 0) {
+				let deletedFileSize = 0;
 				if (this.userEntityService.isLocalUser(user)) {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-					this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
+					deletedFileSize = await this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
 				}
+				//break if all file been deleted, case that info.size > driveCapacity
+				if (deletedFileSize == 0) {
+					break;
+				}
+				diff = diff - deletedFileSize;
 			}
 		}
 		//#endregion
