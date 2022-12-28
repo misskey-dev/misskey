@@ -11,7 +11,7 @@
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-					<div class="bkzroven">
+					<div class="bkzroven" style="container-type: inline-size;">
 						<RouterView/>
 					</div>
 				</div>

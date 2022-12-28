@@ -11,7 +11,7 @@
 
 		<div class="contents">
 			<XHeader v-if="!root" class="header" :info="pageInfo"/>
-			<main>
+			<main style="container-type: inline-size;">
 				<RouterView/>
 			</main>
 			<div v-if="!root" class="powered-by">
