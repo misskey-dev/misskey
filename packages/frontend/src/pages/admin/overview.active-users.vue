@@ -34,6 +34,7 @@ import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import gradient from 'chartjs-plugin-gradient';
 import { chartVLine } from '@/scripts/chart-vline';
+import { alpha } from '@/scripts/color';
 
 Chart.register(
 	ArcElement,
@@ -52,14 +53,6 @@ Chart.register(
 	Filler,
 	gradient,
 );
-
-const alpha = (hex, a) => {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
-	const r = parseInt(result[1], 16);
-	const g = parseInt(result[2], 16);
-	const b = parseInt(result[3], 16);
-	return `rgba(${r}, ${g}, ${b}, ${a})`;
-};
 
 const chartEl = $ref<HTMLCanvasElement>(null);
 const now = new Date();
