@@ -114,9 +114,10 @@ async function renderChart() {
 	// フォントカラー
 	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
-	const color = '#3498db';
+	const color = defaultStore.state.darkMode ? '#b4e900' : '#86b300';
 
-	const max = Math.max(...raw.readWrite);
+	// 視覚上の分かりやすさのため上から最も大きい3つの値の平均を最大値とする
+	const max = raw.readWrite.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
 
 	const marginEachCell = 4;
 
