@@ -1,5 +1,5 @@
 <template>
-<div ref="elRef" v-size="{ max: [500, 600] }" class="qglefbjs" :class="notification.type">
+<div ref="elRef" class="qglefbjs" :class="notification.type">
 	<div class="head">
 		<MkAvatar v-if="notification.type === 'pollEnded'" class="icon" :user="notification.note.user"/>
 		<MkAvatar v-else-if="notification.user" class="icon" :user="notification.user"/>
@@ -169,16 +169,6 @@ useTooltip(reactionRef, (showing) => {
 	overflow-wrap: break-word;
 	display: flex;
 	contain: content;
-
-	&.max-width_600px {
-		padding: 16px;
-		font-size: 0.9em;
-	}
-
-	&.max-width_500px {
-		padding: 12px;
-		font-size: 0.85em;
-	}
 
 	> .head {
 		position: sticky;

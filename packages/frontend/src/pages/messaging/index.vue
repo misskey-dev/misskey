@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<div v-size="{ max: [400] }" class="yweeujhr">
+		<div class="yweeujhr">
 			<MkButton primary class="start" @click="start"><i class="ti ti-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 			<div v-if="messages.length > 0" class="history">
@@ -272,28 +272,6 @@ definePageMetadata({
 						display: block;
 						max-width: 100%;
 						max-height: 512px;
-					}
-				}
-			}
-		}
-	}
-
-	&.max-width_400px {
-		> .history {
-			> .message {
-				&:not(.isMe):not(.isRead) {
-					> div {
-						background-image: none;
-						border-left: solid 4px #3aa2dc;
-					}
-				}
-
-				> div {
-					padding: 16px;
-					font-size: 0.9em;
-
-					> .avatar {
-						margin: 0 12px 0 0;
 					}
 				}
 			}

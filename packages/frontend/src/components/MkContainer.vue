@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ max: [380] }" class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }">
+<div class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
@@ -233,7 +233,7 @@ export default defineComponent({
 		}
 	}
 
-	&.max-width_380px, &.thin {
+	&.thin {
 		> header {
 			> .title {
 				padding: 8px 10px;

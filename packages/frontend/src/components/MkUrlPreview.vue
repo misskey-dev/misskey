@@ -6,7 +6,7 @@
 <div v-else-if="tweetId && tweetExpanded" ref="twitter" class="twitter">
 	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
-<div v-else v-size="{ max: [400, 350] }" class="mk-url-preview">
+<div v-else class="mk-url-preview">
 	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
@@ -154,69 +154,6 @@ onUnmounted(() => {
 }
 
 .mk-url-preview {
-	&.max-width_400px {
-		> .link {
-			font-size: 12px;
-
-			> .thumbnail {
-				height: 80px;
-			}
-
-			> article {
-				padding: 12px;
-			}
-		}
-	}
-
-	&.max-width_350px {
-		> .link {
-			font-size: 10px;
-
-			> .thumbnail {
-				height: 70px;
-			}
-
-			> article {
-				padding: 8px;
-
-				> header {
-					margin-bottom: 4px;
-				}
-
-				> footer {
-					margin-top: 4px;
-
-					> img {
-						width: 12px;
-						height: 12px;
-					}
-				}
-			}
-
-			&.compact {
-				> .thumbnail {
-					position: absolute;
-					width: 56px;
-					height: 100%;
-				}
-
-				> article {
-					left: 56px;
-					width: calc(100% - 56px);
-					padding: 4px;
-
-					> header {
-						margin-bottom: 2px;
-					}
-
-					> footer {
-						margin-top: 2px;
-					}
-				}
-			}
-		}
-	}
-
 	> .link {
 		position: relative;
 		display: block;

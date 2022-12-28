@@ -10,7 +10,7 @@ export default defineComponent({
 	render() {
 		const options = this.$slots.default();
 
-		return withDirectives(h('div', {
+		return h('div', {
 			class: 'pxhvhrfw',
 		}, options.map(option => withDirectives(h('button', {
 			class: ['_button', { active: this.modelValue === option.props.value }],
@@ -21,9 +21,7 @@ export default defineComponent({
 			},
 		}, option.children), [
 			[resolveDirective('click-anime')],
-		]))), [
-			[resolveDirective('size'), { max: [500] }],
-		]);
+		])));
 	},
 });
 </script>
@@ -61,8 +59,10 @@ export default defineComponent({
 			margin-right: 6px;
 		}
 	}
+}
 
-	&.max-width_500px {
+@container (max-width: 500px) {
+	.pxhvhrfw {
 		font-size: 80%;
 
 		> button {

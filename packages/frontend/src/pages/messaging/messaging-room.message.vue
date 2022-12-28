@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ max: [400, 500] }" class="thvuemwp" :class="{ isMe }">
+<div class="thvuemwp" :class="{ isMe }">
 	<MkAvatar class="avatar" :user="message.user" :show-indicator="true"/>
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }">
@@ -297,35 +297,6 @@ function del(): void {
 
 				> .read {
 					user-select: none;
-				}
-			}
-		}
-	}
-
-	&.max-width_400px {
-		> .avatar {
-			width: 48px;
-			height: 48px;
-		}
-
-		> .content {
-			> .balloon {
-				> .content {
-					> .text {
-						font-size: 0.9em;
-					}
-				}
-			}
-		}
-	}
-
-	&.max-width_500px {
-		> .content {
-			> .balloon {
-				> .content {
-					> .text {
-						padding: 8px 16px;
-					}
 				}
 			}
 		}

@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ max: [450] }" class="wrpstxzv" :class="{ children: depth > 1 }">
+<div class="wrpstxzv" :class="{ children: depth > 1 }">
 	<div class="main">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
@@ -62,17 +62,9 @@ if (props.detail) {
 	padding: 16px 32px;
 	font-size: 0.9em;
 
-	&.max-width_450px {
-		padding: 14px 16px;
-	}
-
 	&.children {
 		padding: 10px 0 0 16px;
 		font-size: 1em;
-
-		&.max-width_450px {
-			padding: 10px 0 0 8px;
-		}
 	}
 
 	> .main {
