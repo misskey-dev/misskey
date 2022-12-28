@@ -304,6 +304,24 @@ export class ClientServerService {
 			return await reply.sendFile('/robots.txt', staticAssets);
 		});
 
+		// OpenSearch XML
+		fastify.get('/opensearch.xml', async (request, reply) => {
+			const meta = await this.metaService.fetch();
+
+			const name = meta.name || "Misskey";
+			let content = "";
+			content += `<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">`;
+			content += `<ShortName>${name} Search</ShortName>`;
+			content += `<Description>${name} Search</Description>`;
+			content += `<InputEncoding>UTF-8</InputEncoding>`;
+			content += `<Image width="16" height="16" type="image/x-icon">${this.config.url}/favicon.ico</Image>`;
+			content += `<Url type="text/html" template="${this.config.url}/search?q={searchTerms}"/>`;
+			content += `</OpenSearchDescription>`;
+
+			reply.header('Content-Type', 'application/opensearchdescription+xml');
+			return await reply.send(content);
+		});
+
 		//#endregion
 
 		const renderBase = async (reply: FastifyReply) => {
@@ -313,6 +331,7 @@ export class ClientServerService {
 				img: meta.bannerUrl,
 				title: meta.name ?? 'Misskey',
 				instanceName: meta.name ?? 'Misskey',
+				url: this.config.url,
 				desc: meta.description,
 				icon: meta.iconUrl,
 				themeColor: meta.themeColor,
