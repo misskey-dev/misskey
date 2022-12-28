@@ -10,7 +10,6 @@
 	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button v-if="!playerEnabled && player.url" class="_button" :title="i18n.ts.enablePlayer" @click.prevent="isMobile? playerEnabled = true : openPlayer()"><i class="ti ti-player-play"></i></button>
 			</div>
 			<article>
 				<header>
@@ -24,10 +23,18 @@
 			</article>
 		</component>
 	</transition>
-	<div v-if="tweetId" class="expandTweet">
-		<a @click="tweetExpanded = true">
+	<div v-if="tweetId" class="action">
+		<MkButton :small="true" inline @click="tweetExpanded = true">
 			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
-		</a>
+		</MkButton>
+	</div>
+	<div v-if="!playerEnabled && player.url" class="action">
+		<MkButton :small="true" inline @click="playerEnabled = true">
+			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
+		</MkButton>
+		<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
+			<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
+		</MkButton>
 	</div>
 </div>
 </template>
@@ -38,6 +45,7 @@ import { url as local, lang } from '@/config';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
+import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -181,16 +189,6 @@ onUnmounted(() => {
 			justify-content: center;
 			align-items: center;
 
-			> button {
-				font-size: 3.5em;
-				opacity: 0.7;
-
-				&:hover {
-					font-size: 4em;
-					opacity: 0.9;
-				}
-			}
-
 			& + article {
 				left: 100px;
 				width: calc(100% - 100px);
@@ -248,6 +246,13 @@ onUnmounted(() => {
 				}
 			}
 		}
+	}
+
+	> .action {
+		display: flex;
+		gap: 6px;
+		flex-wrap: wrap;
+		margin-top: 6px;
 	}
 }
 
