@@ -20,7 +20,6 @@ You should also include the user name that made the change.
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
-- signToActivityPubGet is set to true by default @syuilo
 - iOS15未満はサポートされなくなりました
 
 ### Improvements
@@ -28,6 +27,7 @@ You should also include the user name that made the change.
 - AVIF support @tamaina
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
 - Introduce retention-rate aggregation @syuilo
+- Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: delete outdated notifications regularly to improve db performance @syuilo
@@ -48,6 +48,7 @@ You should also include the user name that made the change.
 - Client: add user list widget @syuilo
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
+- Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
 
