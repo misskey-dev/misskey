@@ -157,6 +157,7 @@ async function renderChart() {
 						display: true,
 						maxRotation: 0,
 						autoSkipPadding: 8,
+						callback: (value, index, values) => value + 1,
 					},
 				},
 				y: {
