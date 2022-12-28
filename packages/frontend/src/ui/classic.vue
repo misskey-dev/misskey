@@ -235,7 +235,6 @@ onMounted(() => {
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			background: var(--panel);
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;

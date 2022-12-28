@@ -2,6 +2,9 @@
 <div class="azykntjl">
 	<div class="body">
 		<div class="left">
+			<button v-click-anime class="item _button instance" @click="openInstanceMenu">
+				<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+			</button>
 			<MkA v-click-anime v-tooltip="$ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="ti ti-home ti-fw"></i>
 			</MkA>
@@ -40,6 +43,7 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
+import { openInstanceMenu } from './_common_/common';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -88,6 +92,8 @@ export default defineComponent({
 	},
 
 	methods: {
+		openInstanceMenu,
+
 		calcViewState() {
 			this.settingsWindowed = (window.innerWidth > 1400);
 		},
@@ -184,6 +190,25 @@ export default defineComponent({
 				height: 16px;
 				margin: 0 10px;
 				border-right: solid 0.5px var(--divider);
+			}
+
+			> .instance {
+				display: inline-block;
+				position: relative;
+				width: 56px;
+				height: 100%;
+				vertical-align: bottom;
+
+				> img {
+					display: inline-block;
+					width: 24px;
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+					margin: auto;
+				}
 			}
 
 			> .post {

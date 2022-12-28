@@ -89,8 +89,6 @@ function updateWidgets(thisWidgets) {
 	box-sizing: border-box;
 
 	&.universal {
-		padding: var(--margin) 0;
-
 		> * {
 			margin: var(--margin) 0;
 		}

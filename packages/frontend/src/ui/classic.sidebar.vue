@@ -32,9 +32,9 @@
 	</MkA>
 	<div class="divider"></div>
 	<div class="about">
-		<MkA v-click-anime class="link" to="/about">
-			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" class="_ghost"/>
-		</MkA>
+		<button v-click-anime class="item _button" @click="openInstanceMenu">
+			<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+		</button>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
 </div>
@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
+import { openInstanceMenu } from './_common_/common';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -107,6 +108,8 @@ export default defineComponent({
 	},
 
 	methods: {
+		openInstanceMenu,
+
 		calcViewState() {
 			this.iconOnly = (window.innerWidth <= 1400) || (this.$store.state.menuDisplay === 'sideIcon');
 			this.settingsWindowed = (window.innerWidth > 1400);
@@ -207,7 +210,7 @@ export default defineComponent({
 		padding: 8px 0 16px 0;
 		text-align: center;
 
-		> .link {
+		> .item {
 			display: block;
 			width: 32px;
 			margin: 0 auto;
