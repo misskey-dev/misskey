@@ -87,6 +87,11 @@ function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.federation,
 		icon: 'ti ti-whirl',
 		to: '/about#federation',
+	}, {
+		type: 'link',
+		text: i18n.ts.charts,
+		icon: 'ti ti-chart-line',
+		to: '/about#charts',
 	}, null, {
 		type: 'parent',
 		text: i18n.ts.help,
