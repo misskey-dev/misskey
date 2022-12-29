@@ -87,7 +87,7 @@ export class MediaProxyServerService {
 						height: 128,
 						withoutEnlargement: true,
 					})
-					.webp({ ...webpDefault, nearLossless: true })
+					.webp(webpDefault)
 					.toBuffer();
 
 				image = {
@@ -135,7 +135,7 @@ export class MediaProxyServerService {
 					type: 'image/png',
 				};
 			} else if (mime === 'image/svg+xml') {
-				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, { ...webpDefault, nearLossless: true });
+				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, webpDefault);
 			} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			} else {
