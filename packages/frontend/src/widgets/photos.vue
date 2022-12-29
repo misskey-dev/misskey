@@ -20,7 +20,7 @@ import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import { stream } from '@/stream';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/media-proxy';
 import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import { defaultStore } from '@/store';

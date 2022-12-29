@@ -81,8 +81,21 @@ export class MediaProxyServerService {
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 	
 			let image: IImage;
-	
-			if ('static' in request.query && isConvertibleImage) {
+			if ('emoji' in request.query && isConvertibleImage) {
+				const data = await sharp(path, { animated: !('static' in request.query) })
+					.resize({
+						height: 128,
+						withoutEnlargement: true,
+					})
+					.webp({ ...webpDefault, nearLossless: true })
+					.toBuffer();
+
+				image = {
+					data,
+					ext: 'webp',
+					type: 'image/webp',
+				};
+			} else if ('static' in request.query && isConvertibleImage) {
 				image = await this.imageProcessingService.convertToWebp(path, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
 				image = await this.imageProcessingService.convertToWebp(path, 200, 200);
@@ -91,7 +104,7 @@ export class MediaProxyServerService {
 					// 画像でないなら404でお茶を濁す
 					throw new StatusError('Unexpected mime', 404);
 				}
-	
+
 				const mask = sharp(path)
 					.resize(96, 96, {
 						fit: 'inside',

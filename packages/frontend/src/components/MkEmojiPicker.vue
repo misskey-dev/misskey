@@ -81,7 +81,6 @@ import { ref, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import Ripple from '@/components/MkRipple.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';

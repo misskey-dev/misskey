@@ -15,7 +15,7 @@
 			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
-	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
+	<ol v-else-if="q && emojis.length > 0" ref="suggests" class="emojis">
 		<li v-for="emoji in emojis" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
 			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else-if="defaultStore.state.emojiStyle != 'native'" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
@@ -37,7 +37,7 @@
 import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
@@ -49,8 +49,8 @@ import { i18n } from '@/i18n';
 type EmojiDef = {
 	emoji: string;
 	name: string;
+	url: string;
 	aliasOf?: string;
-	url?: string;
 	isCustomEmoji?: boolean;
 };
 
