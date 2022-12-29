@@ -6,7 +6,7 @@
 				<span v-for="note in notes" :key="note.id" class="item">
 					<img class="avatar" :src="note.user.avatarUrl" decoding="async"/>
 					<MkA class="text" :to="notePage(note)">
-						<Mfm class="text" :text="getNoteSummary(note)" :plain="true" :nowrap="true" :custom-emojis="note.emojis"/>
+						<Mfm class="text" :text="getNoteSummary(note)" :plain="true" :nowrap="true"/>
 					</MkA>
 					<span class="divider"></span>
 				</span>
