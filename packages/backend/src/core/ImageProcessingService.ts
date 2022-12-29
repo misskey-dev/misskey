@@ -15,6 +15,7 @@ export const webpDefault: sharp.WebpOptions = {
 	lossless: false,
 	nearLossless: false,
 	smartSubsample: true,
+	mixed: true,
 };
 
 import { bindThis } from '@/decorators.js';
