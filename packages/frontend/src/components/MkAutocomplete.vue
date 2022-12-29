@@ -56,13 +56,13 @@ type EmojiDef = {
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
+const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
+
 const emjdb: EmojiDef[] = lib.map(x => ({
 	emoji: x.char,
 	name: x.name,
 	url: char2path(x.char),
 }));
-
-const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 for (const x of lib) {
 	if (x.keywords) {
