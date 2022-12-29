@@ -155,8 +155,10 @@ async function renderChart() {
 					},
 					ticks: {
 						display: true,
+						padding: 0,
 						maxRotation: 0,
-						autoSkipPadding: 8,
+						autoSkipPadding: 0,
+						autoSkip: false,
 						callback: (value, index, values) => value + 1,
 					},
 				},
