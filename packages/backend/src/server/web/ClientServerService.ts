@@ -232,7 +232,8 @@ export class ClientServerService {
 			const host = path.split('@')[1]?.replace('.webp', '');
 
 			const emoji = await this.emojisRepository.findOneBy({
-				host: host == null ? IsNull() : host,
+				// `@.` is the spec of ReactionService.decodeReaction
+				host: (host == null || host === '.') ? IsNull() : host,
 				name: name,
 			});
 
