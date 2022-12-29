@@ -1,5 +1,5 @@
 <template>
-<Mfm :text="user.name || user.username" :plain="true" :nowrap="nowrap"/>
+<Mfm :text="user.name ?? user.username" :author="user" :plain="true" :nowrap="nowrap"/>
 </template>
 
 <script lang="ts" setup>

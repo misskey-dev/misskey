@@ -273,6 +273,7 @@ export default defineComponent({
 						key: Math.random(),
 						emoji: `:${token.props.name}:`,
 						normal: this.plain,
+						host: this.author?.host,
 					})];
 				}
 
