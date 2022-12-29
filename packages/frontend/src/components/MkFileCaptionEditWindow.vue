@@ -10,12 +10,12 @@
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.describeFile }}</template>
-	<div>
-		<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain" style="height: 100px;"/>
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<MkDriveFileThumbnail :file="file" fit="contain" style="height: 100px; margin-bottom: 16px;"/>
 		<MkTextarea v-model="caption" autofocus :placeholder="i18n.ts.inputNewDescription">
 			<template #label>{{ i18n.ts.caption }}</template>
 		</MkTextarea>
-	</div>
+	</MkSpacer>
 </XModalWindow>
 </template>
 
