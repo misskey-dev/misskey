@@ -12,8 +12,7 @@
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<!--<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>-->
-					<img class="emoji" :src="disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+					<MkEmoji class="emoji" :emoji="`:${emoji.name}:`" />
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
