@@ -9,7 +9,7 @@ import type { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -121,8 +121,8 @@ export class MediaProxyServerService {
 					ext: 'png',
 					type: 'image/png',
 				};
-			}	else if (mime === 'image/svg+xml') {
-				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, 1);
+			} else if (mime === 'image/svg+xml') {
+				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, { ...webpDefault, nearLossless: true });
 			} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			} else {
