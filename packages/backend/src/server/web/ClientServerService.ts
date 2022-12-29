@@ -247,7 +247,7 @@ export class ClientServerService {
 			const url = new URL("/proxy/emoji.webp", this.config.url);
 			url.searchParams.set('url', emoji.publicUrl ?? emoji.originalUrl); // ?? emoji.originalUrl してるのは後方互換性のため
 			url.searchParams.set('emoji', '1');
-			if ('static' in request.params) url.searchParams.set('static', '1');
+			if ('static' in request.query) url.searchParams.set('static', '1');
 
 			return await reply.redirect(
 				301,
