@@ -17,7 +17,7 @@
 		</template>
 	</template>
 
-	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }">
+	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
 		<RouterView :router="router"/>
 	</div>
 </XWindow>

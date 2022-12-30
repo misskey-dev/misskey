@@ -1,5 +1,5 @@
 <template>
-<img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
+<img v-if="isCustom" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
 <img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" decoding="async" @pointerenter="computeTitle"/>
 <span v-else-if="char && useOsNativeEmojis" :alt="alt" @pointerenter="computeTitle">{{ char }}</span>
 <span v-else>{{ emoji }}</span>
@@ -7,44 +7,41 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { defaultStore } from '@/store';
-import { instance } from '@/instance';
 import { getEmojiName } from '@/scripts/emojilist';
 
 const props = defineProps<{
 	emoji: string;
 	normal?: boolean;
 	noStyle?: boolean;
-	customEmojis?: CustomEmoji[];
 	isReaction?: boolean;
+	host?: string | null;
 }>();
 
 const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 const isCustom = computed(() => props.emoji.startsWith(':'));
+const customEmojiName = props.emoji.substr(1, props.emoji.length - 2);
 const char = computed(() => isCustom.value ? undefined : props.emoji);
 const useOsNativeEmojis = computed(() => defaultStore.state.emojiStyle === 'native' && !props.isReaction);
-const ce = computed(() => props.customEmojis ?? instance.emojis ?? []);
-const customEmoji = computed(() => isCustom.value ? ce.value.find(x => x.name === props.emoji.substr(1, props.emoji.length - 2)) : undefined);
 const url = computed(() => {
 	if (char.value) {
 		return char2path(char.value);
 	} else {
-		const rawUrl = (customEmoji.value as CustomEmoji).url;
+		const rawUrl = props.host ? `/emoji/${customEmojiName}@${props.host}.webp` : `/emoji/${customEmojiName}.webp`;
 		return defaultStore.state.disableShowingAnimatedImages
 			? getStaticImageUrl(rawUrl)
 			: rawUrl;
 	}
 });
-const alt = computed(() => customEmoji.value ? `:${customEmoji.value.name}:` : char.value);
+const alt = computed(() => isCustom.value ? `:${customEmojiName}:` : char.value);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
 function computeTitle(event: PointerEvent): void {
-	const title = customEmoji.value
-		? `:${customEmoji.value.name}:`
+	const title = isCustom.value
+		? `:${customEmojiName}:`
 		: (getEmojiName(char.value as string) ?? char.value as string);
 	(event.target as HTMLElement).title = title;
 }

@@ -10,7 +10,7 @@
 			</span>
 			<button class="_button" @click="$refs.modal.close()"><i class="ti ti-x"></i></button>
 		</div>
-		<div class="body">
+		<div class="body" style="container-type: inline-size;">
 			<MkStickyContainer>
 				<template #header><MkPageHeader v-if="pageMetadata?.value && !pageMetadata?.value.hideHeader" :info="pageMetadata?.value"/></template>
 				<RouterView :router="router"/>

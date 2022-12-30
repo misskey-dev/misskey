@@ -53,54 +53,47 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import {
-  Chart,
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  LineController,
-  CategoryScale,
-  LinearScale,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle,
+	Chart,
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
 } from 'chart.js';
+import MkwFederation from '../../widgets/federation.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '@/config';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
-
-Chart.register(
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  LineController,
-  CategoryScale,
-  LinearScale,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle,
-);
-
-const alpha = (hex, a) => {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
-	const r = parseInt(result[1], 16);
-	const g = parseInt(result[2], 16);
-	const b = parseInt(result[3], 16);
-	return `rgba(${r}, ${g}, ${b}, ${a})`;
-};
 import * as os from '@/os';
 import { stream } from '@/stream';
+import { alpha } from '@/scripts/color';
+
+Chart.register(
+	ArcElement,
+	LineElement,
+	BarElement,
+	PointElement,
+	BarController,
+	LineController,
+	CategoryScale,
+	LinearScale,
+	Legend,
+	Title,
+	Tooltip,
+	SubTitle,
+);
 
 export default defineComponent({
 	components: {

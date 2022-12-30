@@ -24,7 +24,7 @@
 			<header v-show="mainRouter.currentRoute?.name !== 'index'" ref="header" class="header">
 				<XHeader :info="pageInfo"/>
 			</header>
-			<main ref="main">
+			<main ref="main" style="container-type: inline-size;">
 				<RouterView/>
 			</main>
 			<div class="powered-by">

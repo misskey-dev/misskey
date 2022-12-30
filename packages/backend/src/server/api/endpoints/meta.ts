@@ -309,6 +309,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		detail: { type: 'boolean', default: true },
+		omitEmojiUrl: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -390,7 +391,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
 				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-				emojis: await this.emojiEntityService.packMany(emojis),
+				emojis: await this.emojiEntityService.packMany(emojis, { omitUrl: ps.omitEmojiUrl }),
 				defaultLightTheme: instance.defaultLightTheme,
 				defaultDarkTheme: instance.defaultDarkTheme,
 				ads: ads.map(ad => ({

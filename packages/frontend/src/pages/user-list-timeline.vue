@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<div ref="rootEl" v-size="{ min: [800] }" class="eqqrhokj">
+	<div ref="rootEl" class="eqqrhokj">
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 		<div class="tl _block">
 			<XTimeline
@@ -104,11 +104,6 @@ definePageMetadata(computed(() => list ? {
 		background: var(--bg);
 		border-radius: var(--radius);
 		overflow: clip;
-	}
-
-	&.min-width_800px {
-		max-width: 800px;
-		margin: 0 auto;
 	}
 }
 

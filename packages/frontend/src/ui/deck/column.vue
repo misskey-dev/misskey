@@ -392,6 +392,7 @@ function onDrop(ev) {
 		overflow-x: clip;
 		-webkit-overflow-scrolling: touch;
 		box-sizing: border-box;
+		container-type: inline-size;
 		background-color: var(--bg);
 	}
 }

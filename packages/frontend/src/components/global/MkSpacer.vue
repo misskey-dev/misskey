@@ -14,6 +14,9 @@ const props = withDefaults(defineProps<{
 	contentMax?: number | null;
 	marginMin?: number;
 	marginMax?: number;
+
+	// MkFolderとかで開閉アニメーションの際にheightを正しく伝えるため
+	container?: HTMLElement,
 }>(), {
 	contentMax: null,
 	marginMin: 12,
@@ -23,7 +26,7 @@ const props = withDefaults(defineProps<{
 let ro: ResizeObserver;
 let root = $ref<HTMLElement>();
 let content = $ref<HTMLElement>();
-let margin = $ref(0);
+let margin = $ref(props.marginMin);
 const widthHistory = [null, null] as [number | null, number | null];
 const heightHistory = [null, null] as [number | null, number | null];
 const shouldSpacerMin = inject('shouldSpacerMin', false);
@@ -41,6 +44,15 @@ const adjust = (rect: { width: number; height: number; }) => {
 	}
 };
 
+if (props.container) {
+	const width = props.container.offsetWidth;
+	const height = props.container.offsetHeight;
+	adjust({
+		width,
+		height,
+	});
+}
+
 onMounted(() => {
 	ro = new ResizeObserver((entries) => {
 		/* iOSが対応していない
@@ -50,8 +62,8 @@ onMounted(() => {
 		});
 		*/
 
-		const width = root!.offsetWidth;
-		const height = root!.offsetHeight;
+		const width = props.container ? props.container.offsetWidth : root!.offsetWidth;
+		const height = props.container ? props.container.offsetHeight : root!.offsetHeight;
 
 		//#region Prevent infinite resizing
 		// https://github.com/misskey-dev/misskey/issues/9076

@@ -2,7 +2,7 @@
 <MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div class="bqxuuuey">
 		<div class="reaction">
-			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
+			<XReactionIcon :reaction="reaction" class="icon" :no-style="true"/>
 			<div class="name">{{ getReactionName(reaction) }}</div>
 		</div>
 		<div class="users">
@@ -27,7 +27,6 @@ defineProps<{
 	reaction: string;
 	users: any[]; // TODO
 	count: number;
-	emojis: any[]; // TODO
 	targetElement: HTMLElement;
 }>();
 

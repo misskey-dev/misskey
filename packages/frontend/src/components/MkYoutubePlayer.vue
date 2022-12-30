@@ -6,11 +6,11 @@
 	</template>
 
 	<div class="poamfof">
-		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="player.url" class="player">
 				<iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 			</div>
-		</transition>
+		</Transition>
 		<MkLoading v-if="fetching"/>
 		<MkError v-else-if="!player.url" @retry="ytFetch()"/>
 	</div>

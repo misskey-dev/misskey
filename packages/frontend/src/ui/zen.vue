@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app">
+<div class="mk-app" style="container-type: inline-size;">
 	<RouterView/>
 
 	<XCommon/>

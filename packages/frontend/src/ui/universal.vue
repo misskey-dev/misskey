@@ -5,7 +5,7 @@
 	<MkStickyContainer class="contents">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
 		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
-			<div :class="$style.content">
+			<div :class="$style.content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
 			<div :class="$style.spacer"></div>
@@ -26,31 +26,31 @@
 		<button class="button post _button" @click="os.post()"><i class="ti ti-pencil"></i></button>
 	</div>
 
-	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
+	<Transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
 		<div
 			v-if="drawerMenuShowing"
 			class="menuDrawer-back _modalBg"
 			@click="drawerMenuShowing = false"
 			@touchstart.passive="drawerMenuShowing = false"
 		></div>
-	</transition>
+	</Transition>
 
-	<transition :name="$store.state.animation ? 'menuDrawer' : ''">
+	<Transition :name="$store.state.animation ? 'menuDrawer' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menuDrawer"/>
-	</transition>
+	</Transition>
 
-	<transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
+	<Transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
 		<div
 			v-if="widgetsShowing"
 			class="widgetsDrawer-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
 		></div>
-	</transition>
+	</Transition>
 
-	<transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
+	<Transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
 		<XWidgets v-if="widgetsShowing" class="widgetsDrawer"/>
-	</transition>
+	</Transition>
 
 	<XCommon/>
 </div>

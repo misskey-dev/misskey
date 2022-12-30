@@ -1,5 +1,5 @@
 <template>
-<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :customEmojis="customEmojis" :isNote="isNote" class="havbbuyv" :class="{ nowrap }"/>
+<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :is-note="isNote" class="havbbuyv" :class="{ nowrap }"/>
 </template>
 
 <script lang="ts" setup>
@@ -11,7 +11,6 @@ const props = withDefaults(defineProps<{
 	plain?: boolean;
 	nowrap?: boolean;
 	author?: any;
-	customEmojis?: any;
 	isNote?: boolean;
 }>(), {
 	plain: false,

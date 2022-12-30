@@ -1,5 +1,5 @@
 <template>
-<div ref="elRef" v-size="{ max: [500, 600] }" class="qglefbjs" :class="notification.type">
+<div ref="elRef" class="qglefbjs" :class="notification.type">
 	<div class="head">
 		<MkAvatar v-if="notification.type === 'pollEnded'" class="icon" :user="notification.note.user"/>
 		<MkAvatar v-else-if="notification.user" class="icon" :user="notification.user"/>
@@ -34,31 +34,31 @@
 		</header>
 		<MkA v-if="notification.type === 'reaction'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<i class="ti ti-quote"></i>
-			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
 			<i class="ti ti-quote"></i>
 		</MkA>
 		<MkA v-if="notification.type === 'renote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
 			<i class="ti ti-quote"></i>
-			<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.renote.emojis"/>
+			<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full"/>
 			<i class="ti ti-quote"></i>
 		</MkA>
 		<MkA v-if="notification.type === 'reply'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
 		</MkA>
 		<MkA v-if="notification.type === 'mention'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
 		</MkA>
 		<MkA v-if="notification.type === 'quote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
 		</MkA>
 		<MkA v-if="notification.type === 'pollVote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<i class="ti ti-quote"></i>
-			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
 			<i class="ti ti-quote"></i>
 		</MkA>
 		<MkA v-if="notification.type === 'pollEnded'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<i class="ti ti-quote"></i>
-			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
 			<i class="ti ti-quote"></i>
 		</MkA>
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
@@ -169,16 +169,6 @@ useTooltip(reactionRef, (showing) => {
 	overflow-wrap: break-word;
 	display: flex;
 	contain: content;
-
-	&.max-width_600px {
-		padding: 16px;
-		font-size: 0.9em;
-	}
-
-	&.max-width_500px {
-		padding: 12px;
-		font-size: 0.85em;
-	}
 
 	> .head {
 		position: sticky;

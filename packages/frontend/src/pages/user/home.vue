@@ -1,6 +1,6 @@
 <template>
 <MkSpacer :content-max="narrow ? 800 : 1100">
-	<div ref="rootEl" v-size="{ max: [500] }" class="ftskorzw" :class="{ wide: !narrow }">
+	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 		<div class="main">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
@@ -41,7 +41,7 @@
 						</div>
 					</div>
 					<div class="description">
-						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
+						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
 						<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
 					</div>
 					<div class="fields system">
@@ -61,10 +61,10 @@
 					<div v-if="user.fields.length > 0" class="fields">
 						<dl v-for="(field, i) in user.fields" :key="i" class="field">
 							<dt class="name">
-								<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
+								<Mfm :text="field.name" :plain="true" :colored="false"/>
 							</dt>
 							<dd class="value">
-								<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
+								<Mfm :text="field.value" :author="user" :i="$i" :colored="false"/>
 							</dd>
 						</dl>
 					</div>
@@ -99,7 +99,7 @@
 				<XUserTimeline :user="user"/>
 			</div>
 		</div>
-		<div v-if="!narrow" class="sub">
+		<div v-if="!narrow" class="sub" style="container-type: inline-size;">
 			<XPhotos :key="user.id" :user="user"/>
 			<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
 		</div>
@@ -405,56 +405,6 @@ onUnmounted(() => {
 		> .contents {
 			> .content {
 				margin-bottom: var(--margin);
-			}
-		}
-	}
-
-	&.max-width_500px {
-		> .main {
-			> .profile > .main {
-				> .banner-container {
-					height: 140px;
-
-					> .fade {
-						display: none;
-					}
-
-					> .title {
-						display: none;
-					}
-				}
-
-				> .title {
-					display: block;
-				}
-
-				> .avatar {
-					top: 90px;
-					left: 0;
-					right: 0;
-					width: 92px;
-					height: 92px;
-					margin: auto;
-				}
-
-				> .description {
-					padding: 16px;
-					text-align: center;
-				}
-
-				> .fields {
-					padding: 16px;
-				}
-
-				> .status {
-					padding: 16px;
-				}
-			}
-
-			> .contents {
-				> .nav {
-					font-size: 80%;
-				}
 			}
 		}
 	}

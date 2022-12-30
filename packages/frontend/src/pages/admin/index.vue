@@ -16,7 +16,7 @@
 			</div>
 		</MkSpacer>
 	</div>
-	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
+	<div v-if="!(narrow && currentPage?.route.name == null)" class="main" style="container-type: inline-size;">
 		<RouterView/>
 	</div>
 </div>

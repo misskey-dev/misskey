@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ max: [380] }" class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }">
+<div class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
@@ -10,7 +10,7 @@
 			</button>
 		</div>
 	</header>
-	<transition
+	<Transition
 		:name="$store.state.animation ? 'container-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
@@ -23,7 +23,7 @@
 				<span>{{ $ts.showMore }}</span>
 			</button>
 		</div>
-	</transition>
+	</Transition>
 </div>
 </template>
 
@@ -131,7 +131,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .container-toggle-enter-active, .container-toggle-leave-active {
-	overflow-y: hidden;
+	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
 .container-toggle-enter-from {
@@ -233,7 +233,7 @@ export default defineComponent({
 		}
 	}
 
-	&.max-width_380px, &.thin {
+	&.thin {
 		> header {
 			> .title {
 				padding: 8px 10px;

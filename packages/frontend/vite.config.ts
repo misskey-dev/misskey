@@ -8,7 +8,6 @@ import pluginJson5 from './vite.json5';
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
 export default defineConfig(({ command, mode }) => {
-
 	return {
 		base: '/vite/',
 
@@ -46,7 +45,6 @@ export default defineConfig(({ command, mode }) => {
 				'chrome100',
 				'firefox100',
 				'safari15',
-				'es2017', // TODO: そのうち消す
 			],
 			manifest: 'manifest.json',
 			rollupOptions: {

@@ -1,12 +1,12 @@
 <template>
 <div class="mk-toast">
-	<transition :name="$store.state.animation ? 'toast' : ''" appear @after-leave="emit('closed')">
+	<Transition :name="$store.state.animation ? 'toast' : ''" appear @after-leave="emit('closed')">
 		<div v-if="showing" class="body _acrylic" :style="{ zIndex }">
 			<div class="message">
 				{{ message }}
 			</div>
 		</div>
-	</transition>
+	</Transition>
 </div>
 </template>
 
