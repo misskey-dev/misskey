@@ -2644,7 +2644,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sanitize-html@npm:2.8.0":
+"@types/sanitize-html@npm:2.8.0, @types/sanitize-html@npm:^2.8.0":
   version: 2.8.0
   resolution: "@types/sanitize-html@npm:2.8.0"
   dependencies:
@@ -8055,6 +8055,7 @@ __metadata:
     "@types/katex": 0.14.0
     "@types/matter-js": 0.18.2
     "@types/punycode": 2.1.0
+    "@types/sanitize-html": ^2.8.0
     "@types/seedrandom": 3.0.3
     "@types/throttle-debounce": 5.0.0
     "@types/tinycolor2": 1.4.3
@@ -8101,6 +8102,7 @@ __metadata:
     rndstr: 1.0.0
     rollup: 3.9.0
     s-age: 1.1.2
+    sanitize-html: ^2.8.1
     sass: 1.57.1
     seedrandom: 3.0.5
     start-server-and-test: 1.15.2
@@ -14944,7 +14946,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sanitize-html@npm:2.8.1":
+"sanitize-html@npm:2.8.1, sanitize-html@npm:^2.8.1":
   version: 2.8.1
   resolution: "sanitize-html@npm:2.8.1"
   dependencies:
