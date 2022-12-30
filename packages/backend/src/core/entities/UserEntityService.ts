@@ -392,7 +392,6 @@ export class UserEntityService implements OnModuleInit {
 			host: user.host,
 			avatarUrl: this.getAvatarUrlSync(user),
 			avatarBlurhash: user.avatar?.blurhash ?? null,
-			avatarColor: null, // 後方互換性のため
 			isAdmin: user.isAdmin ?? falsy,
 			isModerator: user.isModerator ?? falsy,
 			isBot: user.isBot ?? falsy,
@@ -418,7 +417,6 @@ export class UserEntityService implements OnModuleInit {
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
 				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
 				bannerBlurhash: user.banner?.blurhash ?? null,
-				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
 				isSilenced: user.isSilenced ?? falsy,
 				isSuspended: user.isSuspended ?? falsy,

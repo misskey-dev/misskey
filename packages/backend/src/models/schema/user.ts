@@ -32,11 +32,6 @@ export const packedUserLiteSchema = {
 			type: 'any',
 			nullable: true, optional: false,
 		},
-		avatarColor: {
-			type: 'any',
-			nullable: true, optional: false,
-			default: null,
-		},
 		isAdmin: {
 			type: 'boolean',
 			nullable: false, optional: true,
@@ -100,11 +95,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 		bannerBlurhash: {
 			type: 'any',
 			nullable: true, optional: false,
-		},
-		bannerColor: {
-			type: 'any',
-			nullable: true, optional: false,
-			default: null,
 		},
 		isLocked: {
 			type: 'boolean',
