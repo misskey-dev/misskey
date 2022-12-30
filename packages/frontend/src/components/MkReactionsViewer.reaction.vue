@@ -1,6 +1,5 @@
 <template>
 <button
-	v-if="count > 0"
 	ref="buttonRef"
 	v-ripple="canToggle"
 	class="hkzvhatu _button"
