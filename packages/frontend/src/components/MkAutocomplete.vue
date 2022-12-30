@@ -37,7 +37,6 @@
 import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
