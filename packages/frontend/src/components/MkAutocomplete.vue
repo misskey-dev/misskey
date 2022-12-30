@@ -17,7 +17,7 @@
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
 		<li v-for="emoji in emojis" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
+			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="`/emoji/${emoji.name}.webp`" :alt="emoji.emoji"/></span>
 			<span v-else-if="defaultStore.state.emojiStyle != 'native'" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else class="emoji">{{ emoji.emoji }}</span>
 			<!-- eslint-disable-next-line vue/no-v-html -->
