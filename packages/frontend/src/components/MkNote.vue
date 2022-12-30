@@ -33,12 +33,12 @@
 	<article class="article" @contextmenu.stop="onContextmenu">
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
-			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
+			<MkNoteHeader class="header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
 			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
 					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
-					<XCwButton v-model="showContent" :note="appearNote"/>
+					<MkCwButton v-model="showContent" :note="appearNote"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed, isLong }">
 					<div class="text">
@@ -55,11 +55,11 @@
 						</div>
 					</div>
 					<div v-if="appearNote.files.length > 0" class="files">
-						<XMediaList :media-list="appearNote.files"/>
+						<MkMediaList :media-list="appearNote.files"/>
 					</div>
-					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
+					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
-					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
+					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote"/></div>
 					<button v-if="isLong && collapsed" class="fade _button" @click="collapsed = false">
 						<span>{{ i18n.ts.showMore }}</span>
 					</button>
@@ -70,12 +70,12 @@
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer class="footer">
-				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
+				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
-				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
+				<MkRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
 					<i class="ti ti-plus"></i>
 				</button>
@@ -105,13 +105,13 @@ import { computed, inject, onMounted, onUnmounted, reactive, ref, Ref } from 'vu
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
-import XNoteHeader from '@/components/MkNoteHeader.vue';
-import XNoteSimple from '@/components/MkNoteSimple.vue';
-import XReactionsViewer from '@/components/MkReactionsViewer.vue';
-import XMediaList from '@/components/MkMediaList.vue';
-import XCwButton from '@/components/MkCwButton.vue';
-import XPoll from '@/components/MkPoll.vue';
-import XRenoteButton from '@/components/MkRenoteButton.vue';
+import MkNoteHeader from '@/components/MkNoteHeader.vue';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
+import MkCwButton from '@/components/MkCwButton.vue';
+import MkPoll from '@/components/MkPoll.vue';
+import MkRenoteButton from '@/components/MkRenoteButton.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import MkVisibility from '@/components/MkVisibility.vue';
@@ -158,7 +158,7 @@ const isRenote = (
 
 const el = ref<HTMLElement>();
 const menuButton = ref<HTMLElement>();
-const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
+const renoteButton = ref<InstanceType<typeof MkRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);

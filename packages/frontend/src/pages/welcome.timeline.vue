@@ -9,13 +9,13 @@
 					<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 				</div>
 				<div v-if="note.files.length > 0" class="richcontent">
-					<XMediaList :media-list="note.files"/>
+					<MkMediaList :media-list="note.files"/>
 				</div>
 				<div v-if="note.poll">
-					<XPoll :note="note" :readOnly="true"/>
+					<MkPoll :note="note" :readOnly="true"/>
 				</div>
 			</div>
-			<XReactionsViewer ref="reactionsViewer" :note="note"/>
+			<MkReactionsViewer ref="reactionsViewer" :note="note"/>
 		</div>
 	</div>
 </div>
@@ -23,16 +23,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XReactionsViewer from '@/components/MkReactionsViewer.vue';
-import XMediaList from '@/components/MkMediaList.vue';
-import XPoll from '@/components/MkPoll.vue';
+import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
+import MkPoll from '@/components/MkPoll.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XReactionsViewer,
-		XMediaList,
-		XPoll,
+		MkReactionsViewer,
+		MkMediaList,
+		MkPoll,
 	},
 
 	data() {

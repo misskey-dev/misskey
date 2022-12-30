@@ -3,11 +3,11 @@
 	<div class="main">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
-			<XNoteHeader class="header" :note="note" :mini="true"/>
+			<MkNoteHeader class="header" :note="note" :mini="true"/>
 			<div class="body">
 				<p v-if="note.cw != null" class="cw">
 					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i"/>
-					<XCwButton v-model="showContent" :note="note"/>
+					<MkCwButton v-model="showContent" :note="note"/>
 				</p>
 				<div v-show="note.cw == null || showContent" class="content">
 					<MkSubNoteContent class="text" :note="note"/>
@@ -27,9 +27,9 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
-import XNoteHeader from '@/components/MkNoteHeader.vue';
+import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
-import XCwButton from '@/components/MkCwButton.vue';
+import MkCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

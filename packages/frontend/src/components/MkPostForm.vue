@@ -26,8 +26,8 @@
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
-		<XNoteSimple v-if="reply" class="preview" :note="reply"/>
-		<XNoteSimple v-if="renote" class="preview" :note="renote"/>
+		<MkNoteSimple v-if="reply" class="preview" :note="reply"/>
+		<MkNoteSimple v-if="renote" class="preview" :note="renote"/>
 		<div v-if="quoteId" class="with-quote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
@@ -44,7 +44,7 @@
 		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 		<XPostFormAttaches v-model="files" class="attaches" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
-		<XPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
+		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" class="preview" :text="text"/>
 		<footer>
 			<button v-tooltip="i18n.ts.attachFile" class="_button" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
@@ -71,10 +71,10 @@ import { length } from 'stringz';
 import { toASCII } from 'punycode/';
 import * as Acct from 'misskey-js/built/acct';
 import { throttle } from 'throttle-debounce';
-import XNoteSimple from '@/components/MkNoteSimple.vue';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
-import XPollEditor from '@/components/MkPollEditor.vue';
+import MkPollEditor from '@/components/MkPollEditor.vue';
 import { host, url } from '@/config';
 import { erase, unique } from '@/scripts/array';
 import { extractMentions } from '@/scripts/extract-mentions';
