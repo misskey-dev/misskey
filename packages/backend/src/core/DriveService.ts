@@ -377,9 +377,9 @@ export class DriveService {
 		if (result) this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 	}
 
-	// Delete oldest file (without avatar or banner)
+	// Expire oldest file (without avatar or banner) of remote user
 	@bindThis
-	private async deleteOldFile(user: IRemoteUser): Promise<number | null> {
+	private async expireOldFile(user: IRemoteUser): Promise<number | null> {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -490,7 +490,7 @@ export class DriveService {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				}
 
-				const deletedFileSize = await this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
+				const deletedFileSize = await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
 				// No more files to delete
 				if (deletedFileSize === null) {
 					break;
