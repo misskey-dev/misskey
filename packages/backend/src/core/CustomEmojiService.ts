@@ -111,7 +111,8 @@ export class CustomEmojiService {
 		if (emoji == null) return null;
 
 		const isLocal = emoji.host == null;
-		const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため
+		// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+		const emojiUrl = emoji.publicUrl || emoji.originalUrl;
 		const url = emojiUrl;
 
 		return {

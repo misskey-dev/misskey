@@ -245,7 +245,8 @@ export class ClientServerService {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
 			const url = new URL("/proxy/emoji.webp", this.config.url);
-			url.searchParams.set('url', emoji.publicUrl ?? emoji.originalUrl); // ?? emoji.originalUrl してるのは後方互換性のため
+			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
 			url.searchParams.set('emoji', '1');
 			if ('static' in request.query) url.searchParams.set('static', '1');
 

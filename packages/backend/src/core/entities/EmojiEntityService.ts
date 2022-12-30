@@ -32,8 +32,8 @@ export class EmojiEntityService {
 			name: emoji.name,
 			category: emoji.category,
 			host: emoji.host,
-			// ?? emoji.originalUrl してるのは後方互換性のため
-			url: opts.omitUrl ? undefined : (emoji.publicUrl ?? emoji.originalUrl),
+			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+			url: opts.omitUrl ? undefined : (emoji.publicUrl || emoji.originalUrl),
 		};
 	}
 
