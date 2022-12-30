@@ -78,8 +78,8 @@ const inputEl = ref<HTMLElement>();
 const prefixEl = ref<HTMLElement>();
 const suffixEl = ref<HTMLElement>();
 const height =
-	props.small ? 36 :
-	props.large ? 38 :
+	props.small ? 35 :
+	props.large ? 39 :
 	37;
 
 const focus = () => inputEl.value.focus();
