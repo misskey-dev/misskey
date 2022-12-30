@@ -31,7 +31,7 @@
 				</MkSelect>
 			</div>
 			<div class="chart _panel">
-				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="detailed"></MkChart>
+				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="true"></MkChart>
 			</div>
 		</div>
 	</MkFolder>
@@ -122,7 +122,7 @@ Chart.register(
 	Filler,
 );
 
-const chartLimit = 90;
+const chartLimit = 500;
 let chartSpan = $ref<'hour' | 'day'>('hour');
 let chartSrc = $ref('active-users');
 let heatmapSrc = $ref('active-users');
