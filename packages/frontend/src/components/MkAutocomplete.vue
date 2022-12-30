@@ -15,13 +15,13 @@
 			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
-	<ol v-else-if="q && emojis.length > 0" ref="suggests" class="emojis">
+	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
 		<li v-for="emoji in emojis" tabindex="-1" :key="emoji.emoji" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
 			<div class="emoji">
 				<MkEmoji :emoji="emoji.emoji" />
 			</div>
 			<!-- eslint-disable-next-line vue/no-v-html -->
-			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
+			<span class="name" v-html="emoji.name.replace(q ?? '', `<b>${q}</b>`)"></span>
 			<span v-if="emoji.aliasOf" class="alias">({{ emoji.aliasOf }})</span>
 		</li>
 	</ol>
