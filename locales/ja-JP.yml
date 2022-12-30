@@ -915,6 +915,7 @@ windowRestore: "元に戻す"
 caption: "キャプション"
 loggedInAsBot: "Botアカウントでログイン中"
 tools: "ツール"
+cannotLoad: "読み込めません"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"

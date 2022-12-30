@@ -7,22 +7,26 @@
 	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
 <div v-else class="mk-url-preview">
-	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
-		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
-			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
-			</div>
-			<article>
-				<header>
-					<h1 :title="title">{{ title }}</h1>
-				</header>
-				<p v-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
-				<footer>
-					<img v-if="icon" class="icon" :src="icon"/>
-					<p :title="sitename">{{ sitename }}</p>
-				</footer>
-			</article>
-		</component>
-	</Transition>
+	<component :is="self ? 'MkA' : 'a'" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
+		<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
+		</div>
+		<article>
+			<header>
+				<h1 v-if="unknownUrl">{{ url }}</h1>
+				<h1 v-else-if="fetching"><MkEllipsis/></h1>
+				<h1 v-else :title="title">{{ title }}</h1>
+			</header>
+			<p v-if="unknownUrl">{{ i18n.ts.cannotLoad }}</p>
+			<p v-else-if="fetching"><MkEllipsis/></p>
+			<p v-else-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
+			<footer>
+				<img v-if="icon" class="icon" :src="icon"/>
+				<p v-if="unknownUrl">?</p>
+				<p v-else-if="fetching"><MkEllipsis/></p>
+				<p v-else :title="sitename">{{ sitename }}</p>
+			</footer>
+		</article>
+	</component>
 	<div v-if="tweetId" class="action">
 		<MkButton :small="true" inline @click="tweetExpanded = true">
 			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
@@ -78,6 +82,7 @@ let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 let tweetHeight = $ref(150);
+let unknownUrl = $ref(false);
 
 const requestUrl = new URL(props.url);
 
@@ -96,7 +101,10 @@ requestUrl.hash = '';
 
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
 	res.json().then(info => {
-		if (info.url == null) return;
+		if (info.url == null) {
+			unknownUrl = true;
+			return;
+		}
 		title = info.title;
 		description = info.description;
 		thumbnail = info.thumbnail;
