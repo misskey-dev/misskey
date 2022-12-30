@@ -69,7 +69,6 @@ const calcThumbPosition = () => {
 		thumbPosition.value = 0;
 	} else {
 		thumbPosition.value = (containerEl.value.offsetWidth - getThumbWidth()) * steppedRawValue.value;
-		console.log(containerEl.value.offsetWidth, getThumbWidth());
 	}
 };
 watch([steppedRawValue, containerEl], calcThumbPosition);
