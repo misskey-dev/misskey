@@ -228,7 +228,7 @@ definePageMetadata({
 
 		> .icon {
 			display: block;
-			width: 100px;
+			width: 80px;
 			margin: 0 auto;
 			border-radius: 16px;
 		}
