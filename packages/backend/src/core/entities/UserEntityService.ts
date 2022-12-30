@@ -409,7 +409,6 @@ export class UserEntityService implements OnModuleInit {
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
 			onlineStatus: this.getOnlineStatus(user),
-			driveCapacityOverrideMb: user.driveCapacityOverrideMb,
 
 			...(opts.detail ? {
 				url: profile!.url,
@@ -446,6 +445,9 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
+				...(isMe || opts.includeSecrets ? {
+					driveCapacityOverrideMb: user.driveCapacityOverrideMb,
+				} : {}),
 			} : {}),
 
 			...(opts.detail && isMe ? {
