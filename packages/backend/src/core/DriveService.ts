@@ -377,8 +377,9 @@ export class DriveService {
 		if (result) this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 	}
 
+	// Delete oldest file (without avatar or banner)
 	@bindThis
-	private async deleteOldFile(user: IRemoteUser) {
+	private async deleteOldFile(user: IRemoteUser): Promise<number | null> {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -397,8 +398,10 @@ export class DriveService {
 
 		if (oldFile) {
 			this.deleteFile(oldFile, true);
+			return oldFile.size;
 		}
-		return oldFile ? oldFile.size : 0;
+
+		return null;
 	}
 
 	/**
@@ -465,11 +468,13 @@ export class DriveService {
 		if (user && !isLink) {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
 			const u = await this.usersRepository.findOneBy({ id: user.id });
+			const isLocalUser = this.userEntityService.isLocalUser(user);
 
 			const instance = await this.metaService.fetch();
-			let driveCapacity = 1024 * 1024 * (this.userEntityService.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
 
-			if (this.userEntityService.isLocalUser(user) && u?.driveCapacityOverrideMb != null) {
+			let driveCapacity = 1024 * 1024 * (isLocalUser ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+
+			if (isLocalUser && u?.driveCapacityOverrideMb != null) {
 				driveCapacity = 1024 * 1024 * u.driveCapacityOverrideMb;
 				this.registerLogger.debug('drive capacity override applied');
 				this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
@@ -477,21 +482,20 @@ export class DriveService {
 
 			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
+			let excess = usage + info.size - driveCapacity;
+
 			// If usage limit exceeded
-			let diff = usage + info.size - driveCapacity;
-			while (diff > 0) {
-				let deletedFileSize = 0;
-				if (this.userEntityService.isLocalUser(user)) {
+			while (excess > 0) {
+				if (isLocalUser) {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
-				} else {
-				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-					deletedFileSize = await this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
 				}
-				//break if all file been deleted, case that info.size > driveCapacity
-				if (deletedFileSize == 0) {
+
+				const deletedFileSize = await this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
+				// No more files to delete
+				if (deletedFileSize === null) {
 					break;
 				}
-				diff = diff - deletedFileSize;
+				excess = excess - deletedFileSize;
 			}
 		}
 		//#endregion
