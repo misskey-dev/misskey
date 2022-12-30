@@ -45,7 +45,7 @@ import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
-import * as sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 
 type EmojiDef = {
 	emoji: string;
