@@ -1,6 +1,6 @@
 <template>
 <MkLoading v-if="!loaded"/>
-<Transition :name="$store.state.animation ? 'zoom' : ''" appear>
+<Transition :name="$store.state.animation ? '_transition_zoom' : ''" appear>
 	<div v-show="loaded" class="mjndxjch">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></p>

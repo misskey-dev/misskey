@@ -1,6 +1,6 @@
 <template>
 <div class="wbrkwale">
-	<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="instances">
 			<MkA v-for="(instance, i) in instances" :key="instance.id" v-tooltip.mfm.noDelay="`${instance.name}\n${instance.host}\n${instance.softwareName} ${instance.softwareVersion}`" :to="`/instance-info/${instance.host}`" class="instance">

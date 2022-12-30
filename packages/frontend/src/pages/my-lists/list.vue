@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div class="mk-list-page">
-			<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+			<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 				<div v-if="list" class="_section">
 					<div class="_content">
 						<MkButton inline @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
@@ -13,7 +13,7 @@
 				</div>
 			</Transition>
 
-			<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+			<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 				<div v-if="list" class="_section members _gap">
 					<div class="_title">{{ i18n.ts.members }}</div>
 					<div class="_content">

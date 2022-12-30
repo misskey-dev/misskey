@@ -1,6 +1,6 @@
 <template>
 <div>
-	<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root">
 			<div class="item _panel users">

@@ -1,5 +1,5 @@
 <template>
-<Transition :name="$store.state.animation ? 'zoom' : ''" appear>
+<Transition :name="$store.state.animation ? '_transition_zoom' : ''" appear>
 	<div class="mjndxjcg">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>

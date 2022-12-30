@@ -1,6 +1,6 @@
 <template>
 <div :class="$style.root">
-	<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="users">
 			<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/user-info/${user.id}`" class="user">
