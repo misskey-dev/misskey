@@ -1,6 +1,6 @@
 <template>
 <button class="zuvgdzyu _button" @click="menu">
-	<img :src="emoji.url" class="img" :alt="emoji.name"/>
+	<img :src="`/emoji/${emoji.name}.webp`" class="img" :alt="emoji.name"/>
 	<div class="body">
 		<div class="name _monospace">{{ emoji.name }}</div>
 		<div class="info">{{ emoji.aliases.join(' ') }}</div>

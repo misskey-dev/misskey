@@ -1,7 +1,6 @@
 import { App } from 'vue';
 
 import userPreview from './user-preview';
-import size from './size';
 import getSize from './get-size';
 import ripple from './ripple';
 import tooltip from './tooltip';
@@ -15,7 +14,6 @@ import adaptiveBorder from './adaptive-border';
 export default function(app: App) {
 	app.directive('userPreview', userPreview);
 	app.directive('user-preview', userPreview);
-	app.directive('size', size);
 	app.directive('get-size', getSize);
 	app.directive('ripple', ripple);
 	app.directive('tooltip', tooltip);

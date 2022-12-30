@@ -4,7 +4,6 @@
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
-	v-size="{ max: [500, 450, 350, 300] }"
 	class="lxwezrsl _block"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
@@ -49,29 +48,29 @@
 		<div class="main">
 			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
-					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
-					<XCwButton v-model="showContent" :note="appearNote"/>
+					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
+					<MkCwButton v-model="showContent" :note="appearNote"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" class="content">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
+						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
 						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else class="translated">
 								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
+								<Mfm :text="translation.text" :author="appearNote.user" :i="$i"/>
 							</div>
 						</div>
 					</div>
 					<div v-if="appearNote.files.length > 0" class="files">
-						<XMediaList :media-list="appearNote.files"/>
+						<MkMediaList :media-list="appearNote.files"/>
 					</div>
-					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
+					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" class="url-preview"/>
-					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
+					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote"/></div>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
@@ -81,12 +80,12 @@
 						<MkTime :time="appearNote.createdAt" mode="detail"/>
 					</MkA>
 				</div>
-				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
+				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
-				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
+				<MkRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
 					<i class="ti ti-plus"></i>
 				</button>
@@ -117,12 +116,12 @@ import { computed, inject, onMounted, onUnmounted, reactive, ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
-import XNoteSimple from '@/components/MkNoteSimple.vue';
-import XReactionsViewer from '@/components/MkReactionsViewer.vue';
-import XMediaList from '@/components/MkMediaList.vue';
-import XCwButton from '@/components/MkCwButton.vue';
-import XPoll from '@/components/MkPoll.vue';
-import XRenoteButton from '@/components/MkRenoteButton.vue';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
+import MkCwButton from '@/components/MkCwButton.vue';
+import MkPoll from '@/components/MkPoll.vue';
+import MkRenoteButton from '@/components/MkRenoteButton.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import MkVisibility from '@/components/MkVisibility.vue';
@@ -169,7 +168,7 @@ const isRenote = (
 
 const el = ref<HTMLElement>();
 const menuButton = ref<HTMLElement>();
-const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
+const renoteButton = ref<InstanceType<typeof MkRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
@@ -542,64 +541,6 @@ if (appearNote.replyId) {
 
 	> .reply {
 		border-top: solid 0.5px var(--divider);
-	}
-
-	&.max-width_500px {
-		font-size: 0.9em;
-	}
-
-	&.max-width_450px {
-		> .renote {
-			padding: 8px 16px 0 16px;
-		}
-
-		> .article {
-			padding: 16px;
-
-			> .header {
-				> .avatar {
-					width: 50px;
-					height: 50px;
-				}
-			}
-		}
-	}
-
-	&.max-width_350px {
-		> .article {
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 18px;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	&.max-width_300px {
-		font-size: 0.825em;
-
-		> .article {
-			> .header {
-				> .avatar {
-					width: 50px;
-					height: 50px;
-				}
-			}
-
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 12px;
-						}
-					}
-				}
-			}
-		}
 	}
 }
 

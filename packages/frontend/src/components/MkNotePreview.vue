@@ -1,5 +1,5 @@
 <template>
-<div v-size="{ min: [350, 500] }" class="fefdfafb">
+<div class="fefdfafb">
 	<MkAvatar class="avatar" :user="$i"/>
 	<div class="main">
 		<div class="header">
@@ -29,22 +29,6 @@ const props = defineProps<{
 	padding: 0;
 	overflow: clip;
 	font-size: 0.95em;
-
-	&.min-width_350px {
-		> .avatar {
-			margin: 0 10px 0 0;
-			width: 44px;
-			height: 44px;
-		}
-	}
-
-	&.min-width_500px {
-		> .avatar {
-			margin: 0 12px 0 0;
-			width: 48px;
-			height: 48px;
-		}
-	}
 
 	> .avatar {
 		flex-shrink: 0;

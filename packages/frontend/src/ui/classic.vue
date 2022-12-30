@@ -7,32 +7,32 @@
 			<XSidebar/>
 		</div>
 		<div v-else ref="widgetsLeft" class="widgets left">
-			<XWidgets place="left" @mounted="attachSticky(widgetsLeft)"/>
+			<XWidgets place="left" @mounted="attachSticky(widgetsLeft)" :classic="true"/>
 		</div>
 
 		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
-			<div class="content">
+			<div class="content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="showMenuOnTop ? 'right' : null" @mounted="attachSticky(widgetsRight)"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" @mounted="attachSticky(widgetsRight)" :classic="true"/>
 		</div>
 	</div>
 
-	<transition :name="$store.state.animation ? 'tray-back' : ''">
+	<Transition :name="$store.state.animation ? 'tray-back' : ''">
 		<div
 			v-if="widgetsShowing"
 			class="tray-back _modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
 		></div>
-	</transition>
+	</Transition>
 
-	<transition :name="$store.state.animation ? 'tray' : ''">
+	<Transition :name="$store.state.animation ? 'tray' : ''">
 		<XWidgets v-if="widgetsShowing" class="tray"/>
-	</transition>
+	</Transition>
 
 	<iframe v-if="$store.state.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
 
@@ -235,7 +235,6 @@ onMounted(() => {
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			background: var(--panel);
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;

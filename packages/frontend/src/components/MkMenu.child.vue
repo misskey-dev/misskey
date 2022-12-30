@@ -44,6 +44,10 @@ function onChildClosed(actioned?: boolean) {
 	}
 }
 
+watch(() => props.targetElement, () => {
+	setPosition();
+});
+
 onMounted(() => {
 	setPosition();
 	nextTick(() => {

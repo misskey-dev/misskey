@@ -11,7 +11,7 @@
 
 	<div class="_monolithic_">
 		<div class="yigymqpb _section">
-			<img :src="emoji.url" class="img"/>
+			<img :src="`/emoji/${emoji.name}.webp`" class="img"/>
 			<MkInput v-model="name" class="_formBlock">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>

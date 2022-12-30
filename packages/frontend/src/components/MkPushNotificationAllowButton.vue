@@ -126,7 +126,7 @@ function encode(buffer: ArrayBuffer | null) {
  * Convert the URL safe base64 string to a Uint8Array
  * @param base64String base64 string
  */
- function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - base64String.length % 4) % 4);
 	const base64 = (base64String + padding)
 		.replace(/-/g, '+')
@@ -141,25 +141,29 @@ function encode(buffer: ArrayBuffer | null) {
 	return outputArray;
 }
 
-navigator.serviceWorker.ready.then(async swr => {
-	registration = swr;
+if (navigator.serviceWorker == null) {
+	// TODO: よしなに？
+} else {
+	navigator.serviceWorker.ready.then(async swr => {
+		registration = swr;
 
-	pushSubscription = await registration.pushManager.getSubscription();
+		pushSubscription = await registration.pushManager.getSubscription();
 
-	if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
-		supported = true;
+		if (instance.swPublickey && ('PushManager' in window) && $i && $i.token) {
+			supported = true;
 
-		if (pushSubscription) {
-			const res = await api('sw/show-registration', {
-				endpoint: pushSubscription.endpoint,
-			});
+			if (pushSubscription) {
+				const res = await api('sw/show-registration', {
+					endpoint: pushSubscription.endpoint,
+				});
 
-			if (res) {
-				pushRegistrationInServer = res;
+				if (res) {
+					pushRegistrationInServer = res;
+				}
 			}
 		}
-	}
-});
+	});
+}
 
 defineExpose({
 	pushRegistrationInServer: $$(pushRegistrationInServer),

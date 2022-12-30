@@ -512,10 +512,10 @@ hr {
 	transition-timing-function: cubic-bezier(0,.5,.5,1);
 }
 
-.zoom-enter-active, .zoom-leave-active {
+._transition_zoom-enter-active, ._transition_zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }
-.zoom-enter-from, .zoom-leave-to {
+._transition_zoom-enter-from, ._transition_zoom-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
 }

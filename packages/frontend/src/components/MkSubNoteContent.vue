@@ -4,16 +4,16 @@
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deleted }})</span>
 		<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
+		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i"/>
 		<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
 	<details v-if="note.files.length > 0">
 		<summary>({{ $t('withNFiles', { n: note.files.length }) }})</summary>
-		<XMediaList :media-list="note.files"/>
+		<MkMediaList :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
-		<XPoll :note="note"/>
+		<MkPoll :note="note"/>
 	</details>
 	<button v-if="collapsed" class="fade _button" @click="collapsed = false">
 		<span>{{ i18n.ts.showMore }}</span>
@@ -24,8 +24,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
-import XMediaList from '@/components/MkMediaList.vue';
-import XPoll from '@/components/MkPoll.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
+import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{

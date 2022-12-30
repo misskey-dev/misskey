@@ -1,8 +1,8 @@
 <template>
 <div class="mk-notification-toast" :style="{ zIndex }">
-	<transition :name="$store.state.animation ? 'notification-toast' : ''" appear @after-leave="$emit('closed')">
+	<Transition :name="$store.state.animation ? 'notification-toast' : ''" appear @after-leave="$emit('closed')">
 		<XNotification v-if="showing" :notification="notification" class="notification _acrylic"/>
-	</transition>
+	</Transition>
 </div>
 </template>
 

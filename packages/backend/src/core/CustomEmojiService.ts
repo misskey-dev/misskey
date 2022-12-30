@@ -2,12 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
 import { IdService } from '@/core/IdService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { Cache } from '@/misc/cache.js';
-import { query } from '@/misc/prelude/url.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { EmojisRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -27,9 +25,6 @@ export class CustomEmojiService {
 	private cache: Cache<Emoji | null>;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.db)
 		private db: DataSource,
 
@@ -117,7 +112,7 @@ export class CustomEmojiService {
 
 		const isLocal = emoji.host == null;
 		const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため
-		const url = isLocal ? emojiUrl : `${this.config.url}/proxy/${encodeURIComponent((new URL(emojiUrl)).pathname)}?${query({ url: emojiUrl })}`;
+		const url = emojiUrl;
 
 		return {
 			name: emojiName,
