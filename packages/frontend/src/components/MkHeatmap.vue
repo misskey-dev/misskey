@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import {
 	Chart,
 	ArcElement,
@@ -54,6 +54,10 @@ Chart.register(
 	MatrixController, MatrixElement,
 );
 
+const props = defineProps<{
+	src: string;
+}>();
+
 const rootEl = $ref<HTMLDivElement>(null);
 const chartEl = $ref<HTMLCanvasElement>(null);
 const now = new Date();
@@ -96,7 +100,24 @@ async function renderChart() {
 		});
 	};
 
-	const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
+	let values;
+
+	if (props.src === 'active-users') {
+		const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
+		values = raw.readWrite;
+	} else if (props.src === 'notes') {
+		const raw = await os.api('charts/notes', { limit: chartLimit, span: 'day' });
+		values = raw.local.inc;
+	} else if (props.src === 'ap-requests-inbox-received') {
+		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		values = raw.inboxReceived;
+	} else if (props.src === 'ap-requests-deliver-succeeded') {
+		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		values = raw.deliverSucceeded;
+	} else if (props.src === 'ap-requests-deliver-failed') {
+		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		values = raw.deliverFailed;
+	}
 
 	fetching = false;
 
@@ -110,7 +131,9 @@ async function renderChart() {
 	const color = defaultStore.state.darkMode ? '#b4e900' : '#86b300';
 
 	// 視覚上の分かりやすさのため上から最も大きい3つの値の平均を最大値とする
-	const max = raw.readWrite.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
+	const max = values.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
+
+	const min = Math.max(0, Math.min(...values) - 1);
 
 	const marginEachCell = 4;
 
@@ -119,14 +142,17 @@ async function renderChart() {
 		data: {
 			datasets: [{
 				label: 'Read & Write',
-				data: format(raw.readWrite),
+				data: format(values),
 				pointRadius: 0,
 				borderWidth: 0,
 				borderJoinStyle: 'round',
 				borderRadius: 3,
 				backgroundColor(c) {
 					const value = c.dataset.data[c.dataIndex].v;
-					const a = value / max;
+					let a = (value - min) / max;
+					if (value !== 0) { // 0でない限りは完全に不可視にはしない
+						a = Math.max(a, 0.05);
+					}
 					return alpha(color, a);
 				},
 				fill: true,
@@ -221,6 +247,11 @@ async function renderChart() {
 		},
 	});
 }
+
+watch(() => props.src, () => {
+	fetching = true;
+	renderChart();
+});
 
 onMounted(async () => {
 	renderChart();
