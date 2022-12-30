@@ -1,12 +1,12 @@
 <template>
-<transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
+<Transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
 	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
 			<Mfm v-if="asMfm" :text="text"/>
 			<span v-else>{{ text }}</span>
 		</slot>
 	</div>
-</transition>
+</Transition>
 </template>
 
 <script lang="ts" setup>

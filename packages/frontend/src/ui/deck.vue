@@ -54,18 +54,18 @@
 		<button class="button post _button" @click="os.post()"><i class="ti ti-pencil"></i></button>
 	</div>
 
-	<transition :name="$store.state.animation ? 'menu-back' : ''">
+	<Transition :name="$store.state.animation ? 'menu-back' : ''">
 		<div
 			v-if="drawerMenuShowing"
 			class="menu-back _modalBg"
 			@click="drawerMenuShowing = false"
 			@touchstart.passive="drawerMenuShowing = false"
 		></div>
-	</transition>
+	</Transition>
 
-	<transition :name="$store.state.animation ? 'menu' : ''">
+	<Transition :name="$store.state.animation ? 'menu' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
-	</transition>
+	</Transition>
 
 	<XCommon/>
 </div>

@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<div>
-		<transition name="fade" mode="out-in">
+		<Transition name="fade" mode="out-in">
 			<div v-if="user">
 				<XHome v-if="tab === 'home'" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
@@ -12,7 +12,7 @@
 			</div>
 			<MkError v-else-if="error" @retry="fetchUser()"/>
 			<MkLoading v-else/>
-		</transition>
+		</Transition>
 	</div>
 </MkStickyContainer>
 </template>

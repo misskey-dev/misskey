@@ -4,7 +4,7 @@
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
-		<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="tags">
+		<TransitionGroup v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
@@ -12,7 +12,7 @@
 				</div>
 				<MkMiniChart class="chart" :src="stat.chart"/>
 			</div>
-		</transition-group>
+		</TransitionGroup>
 	</div>
 </MkContainer>
 </template>

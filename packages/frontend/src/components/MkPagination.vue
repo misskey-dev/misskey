@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 	<MkLoading v-if="fetching"/>
 
 	<MkError v-else-if="error" @retry="init()"/>
@@ -28,7 +28,7 @@
 			<MkLoading v-else class="loading"/>
 		</div>
 	</div>
-</transition>
+</Transition>
 </template>
 
 <script lang="ts" setup>

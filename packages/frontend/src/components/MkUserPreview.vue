@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? 'popup' : ''" appear @after-leave="emit('closed')">
+<Transition :name="$store.state.animation ? 'popup' : ''" appear @after-leave="emit('closed')">
 	<div v-if="showing" class="fxxzrfni _popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
 		<div v-if="user != null" class="info">
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
@@ -30,7 +30,7 @@
 			<MkLoading/>
 		</div>
 	</div>
-</transition>
+</Transition>
 </template>
 
 <script lang="ts" setup>

@@ -8,7 +8,7 @@
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
 	</header>
-	<transition
+	<Transition
 		:name="$store.state.animation ? 'folder-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
@@ -18,7 +18,7 @@
 		<div v-show="showBody">
 			<slot></slot>
 		</div>
-	</transition>
+	</Transition>
 </div>
 </template>
 

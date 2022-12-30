@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div class="fcuexfpr">
-			<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note" class="note">
 					<div v-if="showNext" class="_gap">
 						<XNotes class="_content" :pagination="nextPagination" :no-gap="true"/>
@@ -34,7 +34,7 @@
 				</div>
 				<MkError v-else-if="error" @retry="fetch()"/>
 				<MkLoading v-else/>
-			</transition>
+			</Transition>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>

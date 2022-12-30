@@ -6,13 +6,13 @@
 	<div class="ekmkgxbk">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<transition name="change" mode="default">
+			<Transition name="change" mode="default">
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
 					<span v-for="item in items" class="item">
 						<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
 					</span>
 				</MarqueeText>
-			</transition>
+			</Transition>
 		</div>
 	</div>
 </MkContainer>

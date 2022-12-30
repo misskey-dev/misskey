@@ -10,7 +10,7 @@
 			</button>
 		</div>
 	</header>
-	<transition
+	<Transition
 		:name="$store.state.animation ? 'container-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
@@ -23,7 +23,7 @@
 				<span>{{ $ts.showMore }}</span>
 			</button>
 		</div>
-	</transition>
+	</Transition>
 </div>
 </template>
 

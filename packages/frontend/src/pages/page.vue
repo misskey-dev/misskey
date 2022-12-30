@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="page" :key="page.id" class="xcukqgmh">
 				<div class="_block main">
 					<!--
@@ -57,7 +57,7 @@
 			</div>
 			<MkError v-else-if="error" @retry="fetchPage()"/>
 			<MkLoading v-else/>
-		</transition>
+		</Transition>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
