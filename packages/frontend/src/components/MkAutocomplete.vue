@@ -16,12 +16,12 @@
 		</li>
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
-		<li v-for="emoji in emojis" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="`/emoji/${emoji.name}.webp`" :alt="emoji.emoji"/></span>
-			<span v-else-if="defaultStore.state.emojiStyle != 'native'" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
-			<span v-else class="emoji">{{ emoji.emoji }}</span>
+		<li v-for="emoji in emojis" tabindex="-1" :key="emoji.emoji" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
+			<div class="emoji">
+				<MkEmoji :emoji="emoji.emoji" />
+			</div>
 			<!-- eslint-disable-next-line vue/no-v-html -->
-			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
+			<span class="name" v-html="emoji.name.replace(q ?? '', `<b>${q}</b>`)"></span>
 			<span v-if="emoji.aliasOf" class="alias">({{ emoji.aliasOf }})</span>
 		</li>
 	</ol>
@@ -37,7 +37,6 @@
 import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import contains from '@/scripts/contains';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
@@ -49,9 +48,13 @@ import { i18n } from '@/i18n';
 type EmojiDef = {
 	emoji: string;
 	name: string;
+	url: string;
 	aliasOf?: string;
-	url?: string;
-	isCustomEmoji?: boolean;
+} | {
+	emoji: string;
+	name: string;
+	aliasOf?: string;
+	isCustomEmoji?: true;
 };
 
 const lib = emojilist.filter(x => x.category !== 'flags');
@@ -87,7 +90,6 @@ for (const x of customEmojis) {
 	emojiDefinitions.push({
 		name: x.name,
 		emoji: `:${x.name}:`,
-		url: x.url,
 		isCustomEmoji: true,
 	});
 
@@ -97,7 +99,6 @@ for (const x of customEmojis) {
 				name: alias,
 				aliasOf: x.name,
 				emoji: `:${x.name}:`,
-				url: x.url,
 				isCustomEmoji: true,
 			});
 		}
@@ -452,14 +453,20 @@ onBeforeUnmount(() => {
 	> .emojis > li {
 
 		.emoji {
-			display: inline-block;
+			display: flex;
 			margin: 0 4px 0 0;
+			height: 24px;
 			width: 24px;
+			justify-content: center;
+			align-items: center;
+			font-size: 20px;
 
 			> img {
+				height: 24px;
 				width: 24px;
-				vertical-align: bottom;
+				object-fit: scale-down;
 			}
+
 		}
 
 		.alias {

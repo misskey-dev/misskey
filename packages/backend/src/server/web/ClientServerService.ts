@@ -220,7 +220,7 @@ export class ClientServerService {
 			return reply.sendFile('/apple-touch-icon.png', staticAssets);
 		});
 
-		fastify.get<{ Params: { path: string } }>('/emoji/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
@@ -244,8 +244,15 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			// ?? emoji.originalUrl してるのは後方互換性のため
-			return await reply.redirect(301, emoji.publicUrl ?? emoji.originalUrl);
+			const url = new URL("/proxy/emoji.webp", this.config.url);
+			url.searchParams.set('url', emoji.publicUrl ?? emoji.originalUrl); // ?? emoji.originalUrl してるのは後方互換性のため
+			url.searchParams.set('emoji', '1');
+			if ('static' in request.query) url.searchParams.set('static', '1');
+
+			return await reply.redirect(
+				301,
+				url.toString(),
+			);
 		});
 
 		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {

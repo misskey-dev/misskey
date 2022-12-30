@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { defaultStore } from '@/store';
 import { getEmojiName } from '@/scripts/emojilist';
