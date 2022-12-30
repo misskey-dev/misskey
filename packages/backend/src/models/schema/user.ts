@@ -55,25 +55,6 @@ export const packedUserLiteSchema = {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},
-		emojis: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'object',
-				nullable: false, optional: false,
-				properties: {
-					name: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					url: {
-						type: 'string',
-						nullable: false, optional: false,
-						format: 'url',
-					},
-				},
-			},
-		},
 		onlineStatus: {
 			type: 'string',
 			format: 'url',
