@@ -21,7 +21,8 @@
 				<MkEmoji :emoji="emoji.emoji" />
 			</div>
 			<!-- eslint-disable-next-line vue/no-v-html -->
-			<span class="name" v-html="emoji.name.replace(q ?? '', `<b>${q}</b>`)"></span>
+			<span v-if="q" class="name" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
+			<span v-else v-text="emoji.name"></span>
 			<span v-if="emoji.aliasOf" class="alias">({{ emoji.aliasOf }})</span>
 		</li>
 	</ol>
@@ -44,6 +45,7 @@ import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
+import * as sanitizeHtml from 'sanitize-html';
 
 type EmojiDef = {
 	emoji: string;
@@ -453,6 +455,7 @@ onBeforeUnmount(() => {
 	> .emojis > li {
 
 		.emoji {
+			flex-shrink: 0;
 			display: flex;
 			margin: 0 4px 0 0;
 			height: 24px;
@@ -469,7 +472,12 @@ onBeforeUnmount(() => {
 
 		}
 
+		.name {
+			flex-shrink: 1;
+		}
+
 		.alias {
+			flex-shrink: 9999999;
 			margin: 0 0 0 8px;
 		}
 	}
