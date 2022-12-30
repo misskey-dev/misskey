@@ -98,7 +98,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .folder-toggle-enter-active, .folder-toggle-leave-active {
-	overflow-y: hidden;
+	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
 .folder-toggle-enter-from {

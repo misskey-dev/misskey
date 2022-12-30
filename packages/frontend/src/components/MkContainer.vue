@@ -131,7 +131,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .container-toggle-enter-active, .container-toggle-leave-active {
-	overflow-y: hidden;
+	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
 .container-toggle-enter-from {

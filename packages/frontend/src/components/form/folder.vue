@@ -1,5 +1,5 @@
 <template>
-<div class="dwzlatin" :class="{ opened }">
+<div class="dwzlatin" :class="{ opened }" ref="root">
 	<div class="header _button" @click="toggle">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot name="label"></slot></span>
@@ -9,17 +9,29 @@
 			<i v-else class="ti ti-chevron-down icon"></i>
 		</span>
 	</div>
-	<KeepAlive>
-		<div v-if="openedAtLeastOnce" v-show="opened" class="body">
-			<MkSpacer :margin-min="14" :margin-max="22">
-				<slot></slot>
-			</MkSpacer>
-		</div>
-	</KeepAlive>
+	<div v-if="openedAtLeastOnce" class="body">
+		<Transition
+			:name="$store.state.animation ? 'folder-toggle' : ''"
+			@enter="enter"
+			@after-enter="afterEnter"
+			@leave="leave"
+			@after-leave="afterLeave"
+		>
+			<KeepAlive>
+				<div v-show="opened">
+					<MkSpacer :margin-min="14" :margin-max="22" :container="root">
+						<slot></slot>
+					</MkSpacer>
+				</div>
+			</KeepAlive>
+		</Transition>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { nextTick } from 'vue';
+
 const props = withDefaults(defineProps<{
 	defaultOpen: boolean;
 }>(), {
@@ -28,16 +40,50 @@ const props = withDefaults(defineProps<{
 
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);
+let root = $ref<HTMLElement>();
 
-const toggle = () => {
-	opened = !opened;
-	if (opened) {
+function enter(el) {
+	const elementHeight = el.getBoundingClientRect().height;
+	el.style.height = 0;
+	el.offsetHeight; // reflow
+	el.style.height = elementHeight + 'px';
+}
+
+function afterEnter(el) {
+	el.style.height = null;
+}
+
+function leave(el) {
+	const elementHeight = el.getBoundingClientRect().height;
+	el.style.height = elementHeight + 'px';
+	el.offsetHeight; // reflow
+	el.style.height = 0;
+}
+
+function afterLeave(el) {
+	el.style.height = null;
+}
+
+function toggle() {
+	if (!opened) {
 		openedAtLeastOnce = true;
 	}
-};
+
+	nextTick(() => {
+		opened = !opened;
+	});
+}
 </script>
 
 <style lang="scss" scoped>
+.folder-toggle-enter-active, .folder-toggle-leave-active {
+	overflow-y: clip;
+	transition: opacity 0.3s, height 0.3s, transform 0.3s !important;
+}
+.folder-toggle-enter-from, .folder-toggle-leave-to {
+	opacity: 0;
+}
+
 .dwzlatin {
 	display: block;
 
