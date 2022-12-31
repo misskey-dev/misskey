@@ -8087,6 +8087,7 @@ __metadata:
     eslint-plugin-import: 2.26.0
     eslint-plugin-vue: 9.8.0
     eventemitter3: 5.0.0
+    gsap: ^3.11.4
     idb-keyval: 6.2.0
     insert-text-at-cursor: 0.3.0
     is-file-animated: 1.0.2
@@ -8656,6 +8657,13 @@ __metadata:
   version: 1.0.4
   resolution: "grapheme-splitter@npm:1.0.4"
   checksum: 0c22ec54dee1b05cd480f78cf14f732cb5b108edc073572c4ec205df4cd63f30f8db8025afc5debc8835a8ddeacf648a1c7992fe3dcd6ad38f9a476d84906620
+  languageName: node
+  linkType: hard
+
+"gsap@npm:^3.11.4":
+  version: 3.11.4
+  resolution: "gsap@npm:3.11.4"
+  checksum: 1f8ef165c5bb35cdda785b31bb733357072e7efdc67297612b7c7b4b775e422d407bd91efad8a26bb07b686640d4f001d5f1c04abd0fe13c5a479dae1368a219
   languageName: node
   linkType: hard
 

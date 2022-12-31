@@ -15,7 +15,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 	}, {
 		type: 'link',
 		text: i18n.ts.customEmojis,
-		icon: 'ti ti-mood-happy',
+		icon: 'ti ti-icons',
 		to: '/about#emojis',
 	}, {
 		type: 'link',

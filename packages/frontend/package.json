@@ -30,6 +30,7 @@
 		"date-fns": "2.29.3",
 		"escape-regexp": "0.0.1",
 		"eventemitter3": "5.0.0",
+		"gsap": "^3.11.4",
 		"idb-keyval": "6.2.0",
 		"insert-text-at-cursor": "0.3.0",
 		"is-file-animated": "1.0.2",

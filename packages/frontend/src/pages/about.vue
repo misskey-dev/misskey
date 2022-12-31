@@ -119,7 +119,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'emojis',
 	title: i18n.ts.customEmojis,
-	icon: 'ti ti-mood-happy',
+	icon: 'ti ti-icons',
 }, {
 	key: 'federation',
 	title: i18n.ts.federation,
