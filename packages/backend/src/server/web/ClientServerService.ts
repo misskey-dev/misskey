@@ -228,7 +228,7 @@ export class ClientServerService {
 				return;
 			}
 
-			reply.header('Cache-Control', 'public, max-age=3600');
+			reply.header('Cache-Control', 'public, max-age=86400');
 
 			const name = path.split('@')[0].replace('.webp', '');
 			const host = path.split('@')[1]?.replace('.webp', '');
