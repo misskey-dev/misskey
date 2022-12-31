@@ -21,6 +21,12 @@ You should also include the user name that made the change.
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
 - iOS15以下のデバイスはサポートされなくなりました
+- API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
+	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
+	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
+	- remote: `https://p1.a9z.dev/emoji/syuilo_birth_present@mk.f72u.net.webp`
+- API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
+- API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
 
 ### Improvements
 - Push notification of Antenna note @tamaina

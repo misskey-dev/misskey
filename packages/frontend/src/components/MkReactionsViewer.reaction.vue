@@ -81,7 +81,6 @@ useTooltip(buttonRef, async (showing) => {
 	os.popup(XDetails, {
 		showing,
 		reaction: props.reaction,
-		emojis: props.note.emojis,
 		users,
 		count: props.count,
 		targetElement: buttonRef.value,

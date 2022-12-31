@@ -914,6 +914,8 @@ windowMaximize: "Maximieren"
 windowRestore: "Wiederherstellen"
 caption: "Beschreibung"
 loggedInAsBot: "Momentan als Bot angemeldet"
+tools: "Werkzeuge"
+cannotLoad: "Kann nicht geladen werden"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
