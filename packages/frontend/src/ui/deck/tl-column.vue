@@ -2,9 +2,9 @@
 <XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
-		<i v-else-if="column.tl === 'local'" class="ti ti-messages"></i>
-		<i v-else-if="column.tl === 'social'" class="ti ti-share"></i>
-		<i v-else-if="column.tl === 'global'" class="ti ti-world"></i>
+		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
+		<i v-else-if="column.tl === 'social'" class="ti ti-rocket"></i>
+		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
