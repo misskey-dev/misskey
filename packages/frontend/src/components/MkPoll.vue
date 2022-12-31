@@ -102,7 +102,7 @@ const vote = async (id) => {
 			//border: solid 0.5px var(--divider);
 			background: var(--accentedBg);
 			border-radius: 4px;
-			overflow: hidden;
+			overflow: clip;
 			cursor: pointer;
 
 			> .backdrop {
