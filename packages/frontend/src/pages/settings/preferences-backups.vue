@@ -101,7 +101,7 @@ const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 
 const scope = ['clientPreferencesProfiles'];
 
-const profileProps = ['name', 'createdAt', 'updatedAt', 'misskeyVersion', 'settings'];
+const profileProps = ['name', 'createdAt', 'updatedAt', 'misskeyVersion', 'settings', 'host'];
 
 type Profile = {
 	name: string;
