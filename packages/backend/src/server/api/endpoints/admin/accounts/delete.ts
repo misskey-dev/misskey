@@ -11,7 +11,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	rolePermission: 'deleteAccount',
 } as const;
 
 export const paramDef = {

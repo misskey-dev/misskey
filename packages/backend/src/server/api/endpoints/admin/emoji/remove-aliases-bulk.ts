@@ -8,7 +8,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	rolePermission: 'updateEmoji',
 } as const;
 
 export const paramDef = {

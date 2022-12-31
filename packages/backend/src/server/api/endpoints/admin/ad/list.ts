@@ -8,7 +8,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	rolePermission: 'manageAds',
 } as const;
 
 export const paramDef = {

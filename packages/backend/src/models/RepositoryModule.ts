@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserGroup, UserGroupJoining, UserGroupInvitation, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, MessagingMessage, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, AntennaNote, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelNotePining, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation } from './index.js';
+import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserGroup, UserGroupJoining, UserGroupInvitation, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, MessagingMessage, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, AntennaNote, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelNotePining, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, Role, RoleAssignment } from './index.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
 
@@ -388,6 +388,18 @@ const $retentionAggregationsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $rolesRepository: Provider = {
+	provide: DI.rolesRepository,
+	useFactory: (db: DataSource) => db.getRepository(Role),
+	inject: [DI.db],
+};
+
+const $roleAssignmentsRepository: Provider = {
+	provide: DI.roleAssignmentsRepository,
+	useFactory: (db: DataSource) => db.getRepository(RoleAssignment),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [
 	],
@@ -456,6 +468,8 @@ const $retentionAggregationsRepository: Provider = {
 		$adsRepository,
 		$passwordResetRequestsRepository,
 		$retentionAggregationsRepository,
+		$rolesRepository,
+		$roleAssignmentsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -522,6 +536,8 @@ const $retentionAggregationsRepository: Provider = {
 		$adsRepository,
 		$passwordResetRequestsRepository,
 		$retentionAggregationsRepository,
+		$rolesRepository,
+		$roleAssignmentsRepository,
 	],
 })
 export class RepositoryModule {}
