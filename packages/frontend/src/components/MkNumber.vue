@@ -1,5 +1,5 @@
 <template>
-<span>{{ number(tweened.number.toFixed(0)) }}</span>
+<span>{{ number(Math.floor(tweened.number)) }}</span>
 </template>
 
 <script lang="ts" setup>
@@ -16,7 +16,7 @@ const tweened = reactive({
 });
 
 watch(() => props.value, (n) => {
-	gsap.to(tweened, { duration: 0.5, number: Number(n) || 0 });
+	gsap.to(tweened, { duration: 1, number: Number(n) || 0 });
 }, {
 	immediate: true,
 });
