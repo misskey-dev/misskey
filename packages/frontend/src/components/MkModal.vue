@@ -1,5 +1,5 @@
 <template>
-<Transition :name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? 200 : 0" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
+<Transition :name="transitionName" :duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
@@ -74,20 +74,27 @@ const type = $computed(() => {
 		return props.preferType!;
 	}
 });
+let transitionName = $ref(defaultStore.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : '');
+let transitionDuration = $ref(defaultStore.state.animation ? 200 : 0);
 
 let contentClicking = false;
 
-const close = () => {
+function close(opts: { useSendAnimation?: boolean } = {}) {
+	if (opts.useSendAnimation) {
+		transitionName = 'send';
+		transitionDuration = 400;
+	}
+
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
 	emit('close');
-};
+}
 
-const onBgClick = () => {
+function onBgClick() {
 	if (contentClicking) return;
 	emit('click');
-};
+}
 
 if (type === 'drawer') {
 	maxHeight = window.innerHeight / 1.5;
@@ -254,6 +261,30 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.send-enter-active, .send-leave-active {
+	> .bg {
+		transition: opacity 0.3s !important;
+	}
+
+	> .content {
+		transform-style: preserve-3d;
+    transform: perspective(50cm) translateZ(0px) translateY(0px) rotateX(0deg);
+		transition: opacity 0.4s cubic-bezier(.5,-0.5,.75,1), transform 0.4s cubic-bezier(.5,-0.5,.75,1) !important;
+	}
+}
+.send-enter-from, .send-leave-to {
+	> .bg {
+		opacity: 0;
+	}
+
+	> .content {
+		pointer-events: none;
+		opacity: 0;
+		transform-style: preserve-3d;
+		transform: perspective(50cm) translateZ(-300px) translateY(-200px) rotateX(40deg);
+	}
+}
+
 .modal-enter-active, .modal-leave-active {
 	> .bg {
 		transition: opacity 0.2s !important;

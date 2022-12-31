@@ -22,7 +22,14 @@
 				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
 			</button>
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<button class="submit _buttonGradate" :disabled="!canPost" data-cy-open-post-form-submit @click="post">{{ submitText }}<i :class="reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i></button>
+			<button v-click-anime class="submit _button" :class="{ posting }" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
+				<div class="inner _buttonGradate">
+					<template v-if="posted"></template>
+					<template v-else-if="posting"><MkEllipsis/></template>
+					<template v-else>{{ submitText }}</template>
+					<i :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i>
+				</div>
+			</button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
@@ -41,7 +48,7 @@
 		</div>
 		<MkInfo v-if="hasNotSpecifiedMentions" warn class="hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
-		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
+		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 		<XPostFormAttaches v-model="files" class="attaches" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
@@ -90,6 +97,7 @@ import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
+import Ripple from '@/components/MkRipple.vue';
 
 const modal = inject('modal');
 
@@ -108,6 +116,7 @@ const props = withDefaults(defineProps<{
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
+	freezeAfterPosted?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
@@ -125,6 +134,7 @@ const hashtagsInputEl = $ref<HTMLInputElement | null>(null);
 const visibilityButton = $ref<HTMLElement | null>(null);
 
 let posting = $ref(false);
+let posted = $ref(false);
 let text = $ref(props.initialText ?? '');
 let files = $ref(props.initialFiles ?? []);
 let poll = $ref<{
@@ -206,7 +216,7 @@ const maxTextLength = $computed((): number => {
 });
 
 const canPost = $computed((): boolean => {
-	return !posting &&
+	return !posting && !posted &&
 		(1 <= textLength || 1 <= files.length || !!poll || !!props.renote) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
@@ -559,7 +569,15 @@ function deleteDraft() {
 	localStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-async function post() {
+async function post(ev?: MouseEvent) {
+	if (ev) {
+		const el = ev.currentTarget ?? ev.target;
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(Ripple, { x, y }, {}, 'end');
+	}
+
 	let postData = {
 		text: text === '' ? undefined : text,
 		fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
@@ -594,7 +612,11 @@ async function post() {
 
 	posting = true;
 	os.api('notes/create', postData, token).then(() => {
-		clear();
+		if (props.freezeAfterPosted) {
+			posted = true;
+		} else {
+			clear();
+		}
 		nextTick(() => {
 			deleteDraft();
 			emit('posted');
@@ -713,6 +735,10 @@ onMounted(() => {
 		nextTick(() => watchForDraft());
 	});
 });
+
+defineExpose({
+	clear,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -793,19 +819,28 @@ onMounted(() => {
 
 			> .submit {
 				margin: 16px 16px 16px 0;
-				padding: 0 12px;
-				line-height: 34px;
-				font-weight: bold;
 				vertical-align: bottom;
-				border-radius: 4px;
-				font-size: 0.9em;
 
 				&:disabled {
 					opacity: 0.7;
 				}
 
-				> i {
-					margin-left: 6px;
+				&.posting {
+					cursor: wait;
+				}
+
+				> .inner {
+					padding: 0 12px;
+					line-height: 34px;
+					font-weight: bold;
+					border-radius: 4px;
+					font-size: 0.9em;
+					min-width: 90px;
+					box-sizing: border-box;
+
+					> i {
+						margin-left: 6px;
+					}
 				}
 			}
 		}
