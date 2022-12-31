@@ -9,6 +9,7 @@
 <script lang="ts" setup>
 import { onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
+import { dateTimeFormat } from '@/scripts/intl-const';
 
 const props = withDefaults(defineProps<{
 	time: Date | string;
@@ -18,7 +19,7 @@ const props = withDefaults(defineProps<{
 });
 
 const _time = typeof props.time === 'string' ? new Date(props.time) : props.time;
-const absolute = _time.toLocaleString();
+const absolute = dateTimeFormat.format(_time);
 
 let now = $shallowRef(new Date());
 const relative = $computed(() => {
