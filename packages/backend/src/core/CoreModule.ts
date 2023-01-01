@@ -57,6 +57,7 @@ import UsersChart from './chart/charts/users.js';
 import ActiveUsersChart from './chart/charts/active-users.js';
 import InstanceChart from './chart/charts/instance.js';
 import PerUserNotesChart from './chart/charts/per-user-notes.js';
+import PerUserPvChart from './chart/charts/per-user-pv.js';
 import DriveChart from './chart/charts/drive.js';
 import PerUserReactionsChart from './chart/charts/per-user-reactions.js';
 import HashtagChart from './chart/charts/hashtag.js';
@@ -176,6 +177,7 @@ const $UsersChart: Provider = { provide: 'UsersChart', useExisting: UsersChart }
 const $ActiveUsersChart: Provider = { provide: 'ActiveUsersChart', useExisting: ActiveUsersChart };
 const $InstanceChart: Provider = { provide: 'InstanceChart', useExisting: InstanceChart };
 const $PerUserNotesChart: Provider = { provide: 'PerUserNotesChart', useExisting: PerUserNotesChart };
+const $PerUserPvChart: Provider = { provide: 'PerUserPvChart', useExisting: PerUserPvChart };
 const $DriveChart: Provider = { provide: 'DriveChart', useExisting: DriveChart };
 const $PerUserReactionsChart: Provider = { provide: 'PerUserReactionsChart', useExisting: PerUserReactionsChart };
 const $HashtagChart: Provider = { provide: 'HashtagChart', useExisting: HashtagChart };
@@ -298,6 +300,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ActiveUsersChart,
 		InstanceChart,
 		PerUserNotesChart,
+		PerUserPvChart,
 		DriveChart,
 		PerUserReactionsChart,
 		HashtagChart,
@@ -414,6 +417,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ActiveUsersChart,
 		$InstanceChart,
 		$PerUserNotesChart,
+		$PerUserPvChart,
 		$DriveChart,
 		$PerUserReactionsChart,
 		$HashtagChart,
@@ -530,6 +534,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ActiveUsersChart,
 		InstanceChart,
 		PerUserNotesChart,
+		PerUserPvChart,
 		DriveChart,
 		PerUserReactionsChart,
 		HashtagChart,
@@ -645,6 +650,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ActiveUsersChart,
 		$InstanceChart,
 		$PerUserNotesChart,
+		$PerUserPvChart,
 		$DriveChart,
 		$PerUserReactionsChart,
 		$HashtagChart,
