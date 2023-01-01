@@ -26,7 +26,7 @@ const fs = require('fs');
 		stderr: process.stderr,
 	});
 
-	execa('yarn', ['workspace', 'client', 'watch'], {
+	execa('yarn', ['workspace', 'frontend', 'watch'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,

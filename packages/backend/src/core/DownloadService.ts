@@ -33,7 +33,7 @@ export class DownloadService {
 
 	@bindThis
 	public async downloadUrl(url: string, path: string): Promise<void> {
-		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
+		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
 	
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
