@@ -4,7 +4,7 @@
 		<MkA
 			v-for="file in items"
 			:key="file.id"
-			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${new Date(file.createdAt).toLocaleString()}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`"
+			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${dateString(file.createdAt)}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`"
 			:to="`/admin/file/${file.id}`"
 			class="file _button"
 		>
@@ -39,6 +39,7 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { dateString } from '@/filters/date';
 
 const props = defineProps<{
 	pagination: any;

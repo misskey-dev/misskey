@@ -45,11 +45,12 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted } from 'vue';
-import { url as local, lang } from '@/config';
+import { url as local } from '@/config';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
+import { versatileLang } from '@/scripts/intl-const';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -95,11 +96,9 @@ if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/
 	requestUrl.hostname = 'www.youtube.com';
 }
 
-const requestLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
-
 requestUrl.hash = '';
 
-window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
+window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
 	res.json().then(info => {
 		if (info.url == null) {
 			unknownUrl = true;

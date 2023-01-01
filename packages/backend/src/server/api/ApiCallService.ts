@@ -290,7 +290,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// API invoking
-		const before = performance.now();
 		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
 			if (err instanceof ApiError) {
 				throw err;
@@ -312,12 +311,6 @@ export class ApiCallService implements OnApplicationShutdown {
 						stack: err.stack,
 					},
 				});
-			}
-		}).finally(() => {
-			const after = performance.now();
-			const time = after - before;
-			if (time > 1000) {
-				this.logger.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 			}
 		});
 	}

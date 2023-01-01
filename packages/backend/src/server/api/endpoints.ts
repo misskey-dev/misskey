@@ -98,6 +98,7 @@ import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
 import * as ep___charts_user_following from './endpoints/charts/user/following.js';
 import * as ep___charts_user_notes from './endpoints/charts/user/notes.js';
+import * as ep___charts_user_pv from './endpoints/charts/user/pv.js';
 import * as ep___charts_user_reactions from './endpoints/charts/user/reactions.js';
 import * as ep___charts_users from './endpoints/charts/users.js';
 import * as ep___clips_addNote from './endpoints/clips/add-note.js';
@@ -416,6 +417,7 @@ const eps = [
 	['charts/user/drive', ep___charts_user_drive],
 	['charts/user/following', ep___charts_user_following],
 	['charts/user/notes', ep___charts_user_notes],
+	['charts/user/pv', ep___charts_user_pv],
 	['charts/user/reactions', ep___charts_user_reactions],
 	['charts/users', ep___charts_users],
 	['clips/add-note', ep___clips_addNote],
