@@ -9,6 +9,10 @@
 
 <XUpload v-if="uploads.length > 0"/>
 
+<TransitionGroup :name="$store.state.animation ? 'notification' : ''" tag="div" class="notifications">
+	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" class="notification"/>
+</TransitionGroup>
+
 <XStreamIndicator/>
 
 <div v-if="pendingApiRequestsCount > 0" id="wait"></div>
@@ -19,8 +23,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, nextTick } from 'vue';
+import * as misskey from 'misskey-js';
 import { swInject } from './sw-inject';
+import XNotification from './notification.vue';
 import { popup, popups, pendingApiRequestsCount } from '@/os';
 import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
@@ -33,7 +39,9 @@ const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-const onNotification = notification => {
+let notifications = $ref<misskey.entities.Notification[]>([]);
+
+function onNotification(notification) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
@@ -41,13 +49,18 @@ const onNotification = notification => {
 			id: notification.id,
 		});
 
-		popup(defineAsyncComponent(() => import('@/components/MkNotificationToast.vue')), {
-			notification,
-		}, {}, 'closed');
+		notifications.unshift(notification);
+		window.setTimeout(() => {
+			if (notifications.length > 3) notifications.pop();
+		}, 500);
+
+		window.setTimeout(() => {
+			notifications = notifications.filter(x => x.id !== notification.id);
+		}, 6000);
 	}
 
 	sound.play('notification');
-};
+}
 
 if ($i) {
 	const connection = stream.useChannel('main', null, 'UI');
@@ -59,6 +72,53 @@ if ($i) {
 	}
 }
 </script>
+
+<style lang="scss" scoped>
+.notification-move, .notification-enter-active, .notification-leave-active {
+	transition: opacity 0.3s, transform 0.3s !important;
+}
+.notification-enter-from, .notification-leave-to {
+	opacity: 0;
+	transform: translateX(-250px);
+}
+
+.notifications {
+	position: fixed;
+	z-index: 3900000;
+	left: 0;
+	width: 250px;
+	top: 32px;
+	padding: 0 32px;
+	pointer-events: none;
+	container-type: inline-size;
+
+	> .notification {
+		& + .notification {
+			margin-top: 8px;
+		}
+	}
+
+	@media (max-width: 700px) {
+		top: initial;
+		bottom: 112px;
+		padding: 0 16px;
+		display: flex;
+		flex-direction: column-reverse;
+
+		> .notification {
+			& + .notification {
+				margin-top: 0;
+				margin-bottom: 8px;
+			}
+		}
+	}
+
+	@media (max-width: 500px) {
+		bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
+		padding: 0 8px;
+	}
+}
+</style>
 
 <style lang="scss">
 @keyframes dev-ticker-blink {
