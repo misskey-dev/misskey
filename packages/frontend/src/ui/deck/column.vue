@@ -334,10 +334,6 @@ function onDrop(ev) {
 			user-select: none;
 		}
 
-		> * {
-			flex-shrink: 0;
-		}
-
 		&.indicated {
 			box-shadow: 0 3px 0 0 var(--accent);
 		}
@@ -348,7 +344,6 @@ function onDrop(ev) {
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			flex-shrink: 1;
 		}
 
 		> span:only-of-type {
