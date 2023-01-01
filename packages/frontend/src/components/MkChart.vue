@@ -40,6 +40,7 @@ import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
+import date from '@/filters/date';
 
 const props = defineProps({
 	src: {
@@ -171,7 +172,7 @@ const render = () => {
 	chartInstance = new Chart(chartEl.value, {
 		type: props.bar ? 'bar' : 'line',
 		data: {
-			labels: new Array(props.limit).fill(0).map((_, i) => getDate(i).toLocaleString()).slice().reverse(),
+			labels: new Array(props.limit).fill(0).map((_, i) => date(getDate(i))).slice().reverse(),
 			datasets: chartData.series.map((x, i) => ({
 				parsing: false,
 				label: x.name,
