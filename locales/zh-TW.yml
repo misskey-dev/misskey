@@ -1382,7 +1382,7 @@ _profile:
   changeBanner: "變更橫幅圖像"
 _exportOrImport:
   allNotes: "所有貼文"
-  favoritedNotes: "我的最愛的貼文"
+  favoritedNotes: "「我的最愛」貼文"
   followingList: "追隨中"
   muteList: "靜音"
   blockingList: "封鎖"
