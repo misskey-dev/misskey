@@ -333,7 +333,7 @@ export class FileInfoService {
 		// 種類が不明でもSVGかもしれない
 		if (await this.checkSvg(path)) {
 			return TYPE_SVG;
-		} 
+		}
 
 		// それでも種類が不明なら application/octet-stream にする
 		return TYPE_OCTET_STREAM;
@@ -371,16 +371,11 @@ export class FileInfoService {
 	 * Check the file is SVG or not
 	 */
 	@bindThis
-	public async checkSvg(target: string | Buffer) {
+	public async checkSvg(path: string) {
 		try {
-			if (typeof target === 'string') {
-				const size = await this.getFileSize(target);
-				if (size > 1 * 1024 * 1024) return false;
-				return isSvg(await fs.promises.readFile(target));
-			} else {
-				if (target.length > 1 * 1024 * 1024) return false;
-				return isSvg(target);
-			}
+			const size = await this.getFileSize(path);
+			if (size > 1 * 1024 * 1024) return false;
+			return isSvg(await fs.promises.readFile(target));
 		} catch {
 			return false;
 		}
