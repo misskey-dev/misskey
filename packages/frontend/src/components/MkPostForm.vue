@@ -23,7 +23,7 @@
 			</button>
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
 			<button v-click-anime class="submit _button" :class="{ posting }" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
-				<div class="inner _buttonGradate">
+				<div class="inner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
@@ -829,6 +829,18 @@ defineExpose({
 					cursor: wait;
 				}
 
+				&:not(:disabled):hover {
+					> .inner {
+						background: linear-gradient(90deg, var(--X8), var(--X8));
+					}
+				}
+
+				&:not(:disabled):active {
+					> .inner {
+						background: linear-gradient(90deg, var(--X8), var(--X8));
+					}
+				}
+
 				> .inner {
 					padding: 0 12px;
 					line-height: 34px;
@@ -837,6 +849,8 @@ defineExpose({
 					font-size: 0.9em;
 					min-width: 90px;
 					box-sizing: border-box;
+					color: var(--fgOnAccent);
+					background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 
 					> i {
 						margin-left: 6px;
