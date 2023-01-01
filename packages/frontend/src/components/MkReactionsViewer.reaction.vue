@@ -19,6 +19,7 @@ import XReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
+import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 
 const props = defineProps<{
 	reaction: string;
@@ -57,7 +58,10 @@ const toggleReaction = () => {
 const anime = () => {
 	if (document.hidden) return;
 
-	// TODO: 新しくリアクションが付いたことが視覚的に分かりやすいアニメーション
+	const rect = buttonRef.value.getBoundingClientRect();
+	const x = rect.left + (buttonRef.value.offsetWidth / 2);
+	const y = rect.top + (buttonRef.value.offsetHeight / 2);
+	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
 };
 
 watch(() => props.count, (newCount, oldCount) => {
