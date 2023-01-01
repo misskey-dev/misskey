@@ -51,6 +51,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import { dateString } from '@/filters/date';
 
 const props = defineProps<{
 	noteId: string;
@@ -127,7 +128,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => note ? {
 	title: i18n.ts.note,
-	subtitle: new Date(note.createdAt).toLocaleString(),
+	subtitle: dateString(note.createdAt),
 	avatar: note.user,
 	path: `/notes/${note.id}`,
 	share: {

@@ -99,6 +99,7 @@ import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
 import * as ep___charts_user_following from './endpoints/charts/user/following.js';
 import * as ep___charts_user_notes from './endpoints/charts/user/notes.js';
+import * as ep___charts_user_pv from './endpoints/charts/user/pv.js';
 import * as ep___charts_user_reactions from './endpoints/charts/user/reactions.js';
 import * as ep___charts_users from './endpoints/charts/users.js';
 import * as ep___clips_addNote from './endpoints/clips/add-note.js';
@@ -419,6 +420,7 @@ const $charts_notes: Provider = { provide: 'ep:charts/notes', useClass: ep___cha
 const $charts_user_drive: Provider = { provide: 'ep:charts/user/drive', useClass: ep___charts_user_drive.default };
 const $charts_user_following: Provider = { provide: 'ep:charts/user/following', useClass: ep___charts_user_following.default };
 const $charts_user_notes: Provider = { provide: 'ep:charts/user/notes', useClass: ep___charts_user_notes.default };
+const $charts_user_pv: Provider = { provide: 'ep:charts/user/pv', useClass: ep___charts_user_pv.default };
 const $charts_user_reactions: Provider = { provide: 'ep:charts/user/reactions', useClass: ep___charts_user_reactions.default };
 const $charts_users: Provider = { provide: 'ep:charts/users', useClass: ep___charts_users.default };
 const $clips_addNote: Provider = { provide: 'ep:clips/add-note', useClass: ep___clips_addNote.default };
@@ -743,6 +745,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$charts_user_drive,
 		$charts_user_following,
 		$charts_user_notes,
+		$charts_user_pv,
 		$charts_user_reactions,
 		$charts_users,
 		$clips_addNote,
@@ -1061,6 +1064,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$charts_user_drive,
 		$charts_user_following,
 		$charts_user_notes,
+		$charts_user_pv,
 		$charts_user_reactions,
 		$charts_users,
 		$clips_addNote,

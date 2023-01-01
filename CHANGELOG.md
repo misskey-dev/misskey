@@ -34,6 +34,7 @@ You should also include the user name that made the change.
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
 - Introduce retention-rate aggregation @syuilo
 - Make possible to export favorited notes @syuilo
+- Add per user pv chart @syuilo
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: improve note scoring for featured notes @CyberRex0
