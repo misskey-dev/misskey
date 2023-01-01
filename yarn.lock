@@ -4496,10 +4496,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer/archive/v2.2.1-misskey.3.tar.gz":
+"browser-image-resizer@git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3":
   version: 2.2.1-misskey.3
-  resolution: "browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer/archive/v2.2.1-misskey.3.tar.gz"
-  checksum: 373336a3b209f931e0c63257434c44c14455dfa2d668a6e4b852f32492307a866dc98378ce9ee1c72868f58a4b836b58fe47367ec794cfffbd23040a7825d328
+  resolution: "browser-image-resizer@https://github.com/misskey-dev/browser-image-resizer.git#commit=0227e860621e55cbed0aabe6dc601096a7748c4a"
+  checksum: 2c5b3bbea6c7b30153c8aa339eaff14c4c17f7a3992525e7c103d5b6674ad5015ba6d822cd8e9a1835d642743bcd1ff7fb47f9322065971db9e5da5f43d3bd72
   languageName: node
   linkType: hard
 
