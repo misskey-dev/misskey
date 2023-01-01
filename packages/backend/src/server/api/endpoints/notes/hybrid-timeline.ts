@@ -81,6 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('note.createdAt > :minDate', { minDate: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) }) // 30日前まで
 				.andWhere(new Brackets(qb => {
 					qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id })
 						.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
