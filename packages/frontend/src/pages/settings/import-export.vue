@@ -9,6 +9,14 @@
 		</FormFolder>
 	</FormSection>
 	<FormSection>
+		<template #label>{{ i18n.ts._exportOrImport.favoritedNotes }}</template>
+		<FormFolder>
+			<template #label>{{ i18n.ts.export }}</template>
+			<template #icon><i class="ti ti-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportFavorites()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+		</FormFolder>
+	</FormSection>
+	<FormSection>
 		<template #label>{{ i18n.ts._exportOrImport.followingList }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
@@ -106,6 +114,10 @@ const onError = (ev) => {
 
 const exportNotes = () => {
 	os.api('i/export-notes', {}).then(onExportSuccess).catch(onError);
+};
+
+const exportFavorites = () => {
+	os.api('i/export-favorites', {}).then(onExportSuccess).catch(onError);
 };
 
 const exportFollowing = () => {

@@ -5,10 +5,10 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class QueueService {
@@ -90,6 +90,16 @@ export class QueueService {
 	@bindThis
 	public createExportNotesJob(user: ThinUser) {
 		return this.dbQueue.add('exportNotes', {
+			user: user,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
+	public createExportFavoritesJob(user: ThinUser) {
+		return this.dbQueue.add('exportFavorites', {
 			user: user,
 		}, {
 			removeOnComplete: true,

@@ -175,6 +175,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
@@ -492,6 +493,7 @@ const eps = [
 	['i/export-following', ep___i_exportFollowing],
 	['i/export-mute', ep___i_exportMute],
 	['i/export-notes', ep___i_exportNotes],
+	['i/export-favorites', ep___i_exportFavorites],
 	['i/export-user-lists', ep___i_exportUserLists],
 	['i/favorites', ep___i_favorites],
 	['i/gallery/likes', ep___i_gallery_likes],
