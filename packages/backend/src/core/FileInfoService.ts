@@ -5,7 +5,7 @@ import * as stream from 'node:stream';
 import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
-import { fileTypeFromFile } from 'file-type';
+import { fileTypeFromFile, fileTypeFromStream } from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
@@ -15,6 +15,7 @@ import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { bindThis } from '@/decorators.js';
+import type { Request } from 'got';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -39,7 +40,7 @@ const TYPE_OCTET_STREAM = {
 	ext: null,
 };
 
-const TYPE_SVG = {
+export const TYPE_SVG = {
 	mime: 'image/svg+xml',
 	ext: 'svg',
 };
@@ -306,9 +307,9 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async detectType(path: string): Promise<{
-	mime: string;
-	ext: string | null;
-}> {
+		mime: string;
+		ext: string | null;
+	}> {
 	// Check 0 byte
 		const fileSize = await this.getFileSize(path);
 		if (fileSize === 0) {
@@ -332,9 +333,37 @@ export class FileInfoService {
 		// 種類が不明でもSVGかもしれない
 		if (await this.checkSvg(path)) {
 			return TYPE_SVG;
-		}
+		} 
 
 		// それでも種類が不明なら application/octet-stream にする
+		return TYPE_OCTET_STREAM;
+	}
+
+	/**
+	 * Detect MIME Type and extension by stream for performance (this cannot detect SVG)
+	 */
+	@bindThis
+	public async detectRequestType(request: Request): Promise<{
+		mime: string;
+		ext: string | null;
+	}> {
+		// Check 0 byte
+		if ((request.response?.complete || request.closed) && !request.response?.rawBody?.length) {
+			return TYPE_OCTET_STREAM;
+		}
+
+		const copied = request.pipe(new stream.PassThrough());
+
+		const type = await fileTypeFromStream(copied);
+
+		if (type) {
+			return {
+				mime: type.mime,
+				ext: type.ext,
+			};
+		}
+
+		// 種類が不明なら application/octet-stream にする
 		return TYPE_OCTET_STREAM;
 	}
 
@@ -342,11 +371,16 @@ export class FileInfoService {
 	 * Check the file is SVG or not
 	 */
 	@bindThis
-	public async checkSvg(path: string) {
+	public async checkSvg(target: string | Buffer) {
 		try {
-			const size = await this.getFileSize(path);
-			if (size > 1 * 1024 * 1024) return false;
-			return isSvg(fs.readFileSync(path));
+			if (typeof target === 'string') {
+				const size = await this.getFileSize(target);
+				if (size > 1 * 1024 * 1024) return false;
+				return isSvg(await fs.promises.readFile(target));
+			} else {
+				if (target.length > 1 * 1024 * 1024) return false;
+				return isSvg(target);
+			}
 		} catch {
 			return false;
 		}

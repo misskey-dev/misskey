@@ -9,6 +9,14 @@ export type IImage = {
 	type: string;
 };
 
+export type IImageStream = {
+	data: NodeJS.ReadableStream;
+	ext: string | null;
+	type: string;
+};
+
+export type IImageStreamable = IImage | IImageStream;
+
 export const webpDefault: sharp.WebpOptions = {
 	quality: 85,
 	alphaQuality: 95,
@@ -63,20 +71,33 @@ export class ImageProcessingService {
 	 *   with resize, remove metadata, resolve orientation, stop animation
 	 */
 	@bindThis
+	public convertSharpToWebpStream(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): sharp.Sharp {
+		return sharp
+			.resize(width, height, {
+				fit: 'inside',
+				withoutEnlargement: true,
+			})
+			.rotate()
+			.webp(options);
+	}
+	
+	@bindThis
+	public convertSharpToWebpStreamObj(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageStream {
+		return {
+			data: this.convertSharpToWebpStream(sharp, width, height, options),
+			ext: 'webp',
+			type: 'image/webp',
+		}
+	}
+
+	@bindThis
 	public async convertToWebp(path: string, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
 		return this.convertSharpToWebp(await sharp(path), width, height, options);
 	}
 
 	@bindThis
 	public async convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
-		const data = await sharp
-			.resize(width, height, {
-				fit: 'inside',
-				withoutEnlargement: true,
-			})
-			.rotate()
-			.webp(options)
-			.toBuffer();
+		const data = await this.convertSharpToWebpStream(sharp, width, height, options).toBuffer();
 
 		return {
 			data,

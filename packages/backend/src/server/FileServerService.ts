@@ -12,14 +12,17 @@ import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
-import { FileInfoService } from '@/core/FileInfoService.js';
+import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import { PassThrough } from 'node:stream';
+import sharp from 'sharp';
+import { Request } from 'got';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -106,29 +109,43 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (file.isLink && file.uri) {	// 期限切れリモートファイル
 				const [path, cleanup] = await createTemp();
+				const got = this.downloadService.gotUrl(file.uri);;
 
 				try {
-					await this.downloadService.downloadUrl(file.uri, path);
+					const fileSaving = this.downloadService.pipeRequestToFile(got, path);
+					const streamCopy = got.pipe(new PassThrough());
 
-					const { mime, ext } = await this.fileInfoService.detectType(path);
+					let { mime, ext } = await this.fileInfoService.detectRequestType(got);
+					if (mime === 'application/octet-stream' || mime === 'application/xml') {
+						await fileSaving;
+						if (await this.fileInfoService.checkSvg(path)) {
+							mime = TYPE_SVG.mime;
+							ext = TYPE_SVG.ext;
+						}
+					}
 
 					const convertFile = async () => {
 						if (isThumbnail) {
 							if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(mime)) {
-								return await this.imageProcessingService.convertToWebp(path, 498, 280);
+								return this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 498, 280);
 							} else if (mime.startsWith('video/')) {
+								await fileSaving;
 								return await this.videoProcessingService.generateVideoThumbnail(path);
 							}
 						}
 
 						if (isWebpublic) {
 							if (['image/svg+xml'].includes(mime)) {
-								return await this.imageProcessingService.convertToPng(path, 2048, 2048);
+								return {
+									data: this.imageProcessingService.convertSharpToWebpStream(streamCopy.pipe(sharp()), 2048, 2048, { ...webpDefault, lossless: true }),
+									ext: 'webp',
+									type: 'image/webp',
+								};
 							}
 						}
 
 						return {
-							data: fs.readFileSync(path),
+							data: streamCopy,
 							ext,
 							type: mime,
 						};
@@ -141,6 +158,7 @@ export class FileServerService {
 				} catch (err) {
 					this.logger.error(`${err}`);
 
+					if (!got.closed) got.destroy();
 					if (err instanceof StatusError && err.isClientError) {
 						reply.code(err.statusCode);
 						reply.header('Cache-Control', 'max-age=86400');

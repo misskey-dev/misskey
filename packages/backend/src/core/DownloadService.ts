@@ -32,8 +32,8 @@ export class DownloadService {
 	}
 
 	@bindThis
-	public async downloadUrl(url: string, path: string): Promise<void> {
-		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
+	public gotUrl(url: string): Got.Request {
+		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
 	
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
@@ -82,9 +82,16 @@ export class DownloadService {
 				req.destroy();
 			}
 		});
-	
+
+		return req;
+	}
+
+	@bindThis
+	public async pipeRequestToFile(req: Got.Request, path: string): Promise<void> {
+		const copied = req.pipe(new stream.PassThrough());
 		try {
-			await pipeline(req, fs.createWriteStream(path));
+			this.logger.info(`Saving File to ${chalk.cyanBright(path)} from downloading ...`);
+			await pipeline(copied, fs.createWriteStream(path));
 		} catch (e) {
 			if (e instanceof Got.HTTPError) {
 				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
@@ -92,7 +99,11 @@ export class DownloadService {
 				throw e;
 			}
 		}
-	
+	}
+
+	@bindThis
+	public async downloadUrl(url: string, path: string): Promise<void> {
+		await this.pipeRequestToFile(this.gotUrl(url), path);
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 
