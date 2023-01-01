@@ -1382,6 +1382,7 @@ _profile:
   changeBanner: "Change banner"
 _exportOrImport:
   allNotes: "All notes"
+  favoritedNotes: "Favorite notes"
   followingList: "Followed users"
   muteList: "Muted users"
   blockingList: "Blocked users"
