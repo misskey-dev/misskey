@@ -1,8 +1,12 @@
-import { Meta } from '@/models/entities/meta.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { db } from '@/db/postgre.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import type { Meta } from '@/models/entities/Meta.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -48,6 +52,9 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
+		enableTurnstile: { type: 'boolean' },
+		turnstileSiteKey: { type: 'string', nullable: true },
+		turnstileSecretKey: { type: 'string', nullable: true },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		setSensitiveFlagAutomatically: { type: 'boolean' },
@@ -107,340 +114,348 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const set = {} as Partial<Meta>;
-
-	if (typeof ps.disableRegistration === 'boolean') {
-		set.disableRegistration = ps.disableRegistration;
-	}
-
-	if (typeof ps.disableLocalTimeline === 'boolean') {
-		set.disableLocalTimeline = ps.disableLocalTimeline;
-	}
-
-	if (typeof ps.disableGlobalTimeline === 'boolean') {
-		set.disableGlobalTimeline = ps.disableGlobalTimeline;
-	}
-
-	if (typeof ps.useStarForReactionFallback === 'boolean') {
-		set.useStarForReactionFallback = ps.useStarForReactionFallback;
-	}
-
-	if (Array.isArray(ps.pinnedUsers)) {
-		set.pinnedUsers = ps.pinnedUsers.filter(Boolean);
-	}
-
-	if (Array.isArray(ps.hiddenTags)) {
-		set.hiddenTags = ps.hiddenTags.filter(Boolean);
-	}
-
-	if (Array.isArray(ps.blockedHosts)) {
-		set.blockedHosts = ps.blockedHosts.filter(Boolean);
-	}
-
-	if (ps.themeColor !== undefined) {
-		set.themeColor = ps.themeColor;
-	}
-
-	if (ps.mascotImageUrl !== undefined) {
-		set.mascotImageUrl = ps.mascotImageUrl;
-	}
-
-	if (ps.bannerUrl !== undefined) {
-		set.bannerUrl = ps.bannerUrl;
-	}
-
-	if (ps.iconUrl !== undefined) {
-		set.iconUrl = ps.iconUrl;
-	}
-
-	if (ps.backgroundImageUrl !== undefined) {
-		set.backgroundImageUrl = ps.backgroundImageUrl;
-	}
-
-	if (ps.logoImageUrl !== undefined) {
-		set.logoImageUrl = ps.logoImageUrl;
-	}
-
-	if (ps.name !== undefined) {
-		set.name = ps.name;
-	}
-
-	if (ps.description !== undefined) {
-		set.description = ps.description;
-	}
-
-	if (ps.defaultLightTheme !== undefined) {
-		set.defaultLightTheme = ps.defaultLightTheme;
-	}
-
-	if (ps.defaultDarkTheme !== undefined) {
-		set.defaultDarkTheme = ps.defaultDarkTheme;
-	}
-
-	if (ps.localDriveCapacityMb !== undefined) {
-		set.localDriveCapacityMb = ps.localDriveCapacityMb;
-	}
-
-	if (ps.remoteDriveCapacityMb !== undefined) {
-		set.remoteDriveCapacityMb = ps.remoteDriveCapacityMb;
-	}
-
-	if (ps.cacheRemoteFiles !== undefined) {
-		set.cacheRemoteFiles = ps.cacheRemoteFiles;
-	}
-
-	if (ps.emailRequiredForSignup !== undefined) {
-		set.emailRequiredForSignup = ps.emailRequiredForSignup;
-	}
-
-	if (ps.enableHcaptcha !== undefined) {
-		set.enableHcaptcha = ps.enableHcaptcha;
-	}
-
-	if (ps.hcaptchaSiteKey !== undefined) {
-		set.hcaptchaSiteKey = ps.hcaptchaSiteKey;
-	}
-
-	if (ps.hcaptchaSecretKey !== undefined) {
-		set.hcaptchaSecretKey = ps.hcaptchaSecretKey;
-	}
-
-	if (ps.enableRecaptcha !== undefined) {
-		set.enableRecaptcha = ps.enableRecaptcha;
-	}
-
-	if (ps.recaptchaSiteKey !== undefined) {
-		set.recaptchaSiteKey = ps.recaptchaSiteKey;
-	}
-
-	if (ps.recaptchaSecretKey !== undefined) {
-		set.recaptchaSecretKey = ps.recaptchaSecretKey;
-	}
-
-	if (ps.sensitiveMediaDetection !== undefined) {
-		set.sensitiveMediaDetection = ps.sensitiveMediaDetection;
-	}
-
-	if (ps.sensitiveMediaDetectionSensitivity !== undefined) {
-		set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
-	}
-
-	if (ps.setSensitiveFlagAutomatically !== undefined) {
-		set.setSensitiveFlagAutomatically = ps.setSensitiveFlagAutomatically;
-	}
-
-	if (ps.enableSensitiveMediaDetectionForVideos !== undefined) {
-		set.enableSensitiveMediaDetectionForVideos = ps.enableSensitiveMediaDetectionForVideos;
-	}
-
-	if (ps.proxyAccountId !== undefined) {
-		set.proxyAccountId = ps.proxyAccountId;
-	}
-
-	if (ps.maintainerName !== undefined) {
-		set.maintainerName = ps.maintainerName;
-	}
-
-	if (ps.maintainerEmail !== undefined) {
-		set.maintainerEmail = ps.maintainerEmail;
-	}
-
-	if (Array.isArray(ps.langs)) {
-		set.langs = ps.langs.filter(Boolean);
-	}
-
-	if (Array.isArray(ps.pinnedPages)) {
-		set.pinnedPages = ps.pinnedPages.filter(Boolean);
-	}
-
-	if (ps.pinnedClipId !== undefined) {
-		set.pinnedClipId = ps.pinnedClipId;
-	}
-
-	if (ps.summalyProxy !== undefined) {
-		set.summalyProxy = ps.summalyProxy;
-	}
-
-	if (ps.enableTwitterIntegration !== undefined) {
-		set.enableTwitterIntegration = ps.enableTwitterIntegration;
-	}
-
-	if (ps.twitterConsumerKey !== undefined) {
-		set.twitterConsumerKey = ps.twitterConsumerKey;
-	}
-
-	if (ps.twitterConsumerSecret !== undefined) {
-		set.twitterConsumerSecret = ps.twitterConsumerSecret;
-	}
-
-	if (ps.enableGithubIntegration !== undefined) {
-		set.enableGithubIntegration = ps.enableGithubIntegration;
-	}
-
-	if (ps.githubClientId !== undefined) {
-		set.githubClientId = ps.githubClientId;
-	}
-
-	if (ps.githubClientSecret !== undefined) {
-		set.githubClientSecret = ps.githubClientSecret;
-	}
-
-	if (ps.enableDiscordIntegration !== undefined) {
-		set.enableDiscordIntegration = ps.enableDiscordIntegration;
-	}
-
-	if (ps.discordClientId !== undefined) {
-		set.discordClientId = ps.discordClientId;
-	}
-
-	if (ps.discordClientSecret !== undefined) {
-		set.discordClientSecret = ps.discordClientSecret;
-	}
-
-	if (ps.enableEmail !== undefined) {
-		set.enableEmail = ps.enableEmail;
-	}
-
-	if (ps.email !== undefined) {
-		set.email = ps.email;
-	}
-
-	if (ps.smtpSecure !== undefined) {
-		set.smtpSecure = ps.smtpSecure;
-	}
-
-	if (ps.smtpHost !== undefined) {
-		set.smtpHost = ps.smtpHost;
-	}
-
-	if (ps.smtpPort !== undefined) {
-		set.smtpPort = ps.smtpPort;
-	}
-
-	if (ps.smtpUser !== undefined) {
-		set.smtpUser = ps.smtpUser;
-	}
-
-	if (ps.smtpPass !== undefined) {
-		set.smtpPass = ps.smtpPass;
-	}
-
-	if (ps.errorImageUrl !== undefined) {
-		set.errorImageUrl = ps.errorImageUrl;
-	}
-
-	if (ps.enableServiceWorker !== undefined) {
-		set.enableServiceWorker = ps.enableServiceWorker;
-	}
-
-	if (ps.swPublicKey !== undefined) {
-		set.swPublicKey = ps.swPublicKey;
-	}
-
-	if (ps.swPrivateKey !== undefined) {
-		set.swPrivateKey = ps.swPrivateKey;
-	}
-
-	if (ps.tosUrl !== undefined) {
-		set.ToSUrl = ps.tosUrl;
-	}
-
-	if (ps.repositoryUrl !== undefined) {
-		set.repositoryUrl = ps.repositoryUrl;
-	}
-
-	if (ps.feedbackUrl !== undefined) {
-		set.feedbackUrl = ps.feedbackUrl;
-	}
-
-	if (ps.useObjectStorage !== undefined) {
-		set.useObjectStorage = ps.useObjectStorage;
-	}
-
-	if (ps.objectStorageBaseUrl !== undefined) {
-		set.objectStorageBaseUrl = ps.objectStorageBaseUrl;
-	}
-
-	if (ps.objectStorageBucket !== undefined) {
-		set.objectStorageBucket = ps.objectStorageBucket;
-	}
-
-	if (ps.objectStoragePrefix !== undefined) {
-		set.objectStoragePrefix = ps.objectStoragePrefix;
-	}
-
-	if (ps.objectStorageEndpoint !== undefined) {
-		set.objectStorageEndpoint = ps.objectStorageEndpoint;
-	}
-
-	if (ps.objectStorageRegion !== undefined) {
-		set.objectStorageRegion = ps.objectStorageRegion;
-	}
-
-	if (ps.objectStoragePort !== undefined) {
-		set.objectStoragePort = ps.objectStoragePort;
-	}
-
-	if (ps.objectStorageAccessKey !== undefined) {
-		set.objectStorageAccessKey = ps.objectStorageAccessKey;
-	}
-
-	if (ps.objectStorageSecretKey !== undefined) {
-		set.objectStorageSecretKey = ps.objectStorageSecretKey;
-	}
-
-	if (ps.objectStorageUseSSL !== undefined) {
-		set.objectStorageUseSSL = ps.objectStorageUseSSL;
-	}
-
-	if (ps.objectStorageUseProxy !== undefined) {
-		set.objectStorageUseProxy = ps.objectStorageUseProxy;
-	}
-
-	if (ps.objectStorageSetPublicRead !== undefined) {
-		set.objectStorageSetPublicRead = ps.objectStorageSetPublicRead;
-	}
-
-	if (ps.objectStorageS3ForcePathStyle !== undefined) {
-		set.objectStorageS3ForcePathStyle = ps.objectStorageS3ForcePathStyle;
-	}
-
-	if (ps.deeplAuthKey !== undefined) {
-		if (ps.deeplAuthKey === '') {
-			set.deeplAuthKey = null;
-		} else {
-			set.deeplAuthKey = ps.deeplAuthKey;
-		}
-	}
-
-	if (ps.deeplIsPro !== undefined) {
-		set.deeplIsPro = ps.deeplIsPro;
-	}
-
-	if (ps.enableIpLogging !== undefined) {
-		set.enableIpLogging = ps.enableIpLogging;
-	}
-
-	if (ps.enableActiveEmailValidation !== undefined) {
-		set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
-	}
-
-	await db.transaction(async transactionalEntityManager => {
-		const metas = await transactionalEntityManager.find(Meta, {
-			order: {
-				id: 'DESC',
-			},
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		private metaService: MetaService,
+		private moderationLogService: ModerationLogService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const set = {} as Partial<Meta>;
+
+			if (typeof ps.disableRegistration === 'boolean') {
+				set.disableRegistration = ps.disableRegistration;
+			}
+
+			if (typeof ps.disableLocalTimeline === 'boolean') {
+				set.disableLocalTimeline = ps.disableLocalTimeline;
+			}
+
+			if (typeof ps.disableGlobalTimeline === 'boolean') {
+				set.disableGlobalTimeline = ps.disableGlobalTimeline;
+			}
+
+			if (typeof ps.useStarForReactionFallback === 'boolean') {
+				set.useStarForReactionFallback = ps.useStarForReactionFallback;
+			}
+
+			if (Array.isArray(ps.pinnedUsers)) {
+				set.pinnedUsers = ps.pinnedUsers.filter(Boolean);
+			}
+
+			if (Array.isArray(ps.hiddenTags)) {
+				set.hiddenTags = ps.hiddenTags.filter(Boolean);
+			}
+
+			if (Array.isArray(ps.blockedHosts)) {
+				set.blockedHosts = ps.blockedHosts.filter(Boolean);
+			}
+
+			if (ps.themeColor !== undefined) {
+				set.themeColor = ps.themeColor;
+			}
+
+			if (ps.mascotImageUrl !== undefined) {
+				set.mascotImageUrl = ps.mascotImageUrl;
+			}
+
+			if (ps.bannerUrl !== undefined) {
+				set.bannerUrl = ps.bannerUrl;
+			}
+
+			if (ps.iconUrl !== undefined) {
+				set.iconUrl = ps.iconUrl;
+			}
+
+			if (ps.backgroundImageUrl !== undefined) {
+				set.backgroundImageUrl = ps.backgroundImageUrl;
+			}
+
+			if (ps.logoImageUrl !== undefined) {
+				set.logoImageUrl = ps.logoImageUrl;
+			}
+
+			if (ps.name !== undefined) {
+				set.name = ps.name;
+			}
+
+			if (ps.description !== undefined) {
+				set.description = ps.description;
+			}
+
+			if (ps.defaultLightTheme !== undefined) {
+				set.defaultLightTheme = ps.defaultLightTheme;
+			}
+
+			if (ps.defaultDarkTheme !== undefined) {
+				set.defaultDarkTheme = ps.defaultDarkTheme;
+			}
+
+			if (ps.localDriveCapacityMb !== undefined) {
+				set.localDriveCapacityMb = ps.localDriveCapacityMb;
+			}
+
+			if (ps.remoteDriveCapacityMb !== undefined) {
+				set.remoteDriveCapacityMb = ps.remoteDriveCapacityMb;
+			}
+
+			if (ps.cacheRemoteFiles !== undefined) {
+				set.cacheRemoteFiles = ps.cacheRemoteFiles;
+			}
+
+			if (ps.emailRequiredForSignup !== undefined) {
+				set.emailRequiredForSignup = ps.emailRequiredForSignup;
+			}
+
+			if (ps.enableHcaptcha !== undefined) {
+				set.enableHcaptcha = ps.enableHcaptcha;
+			}
+
+			if (ps.hcaptchaSiteKey !== undefined) {
+				set.hcaptchaSiteKey = ps.hcaptchaSiteKey;
+			}
+
+			if (ps.hcaptchaSecretKey !== undefined) {
+				set.hcaptchaSecretKey = ps.hcaptchaSecretKey;
+			}
+
+			if (ps.enableRecaptcha !== undefined) {
+				set.enableRecaptcha = ps.enableRecaptcha;
+			}
+
+			if (ps.recaptchaSiteKey !== undefined) {
+				set.recaptchaSiteKey = ps.recaptchaSiteKey;
+			}
+
+			if (ps.recaptchaSecretKey !== undefined) {
+				set.recaptchaSecretKey = ps.recaptchaSecretKey;
+			}
+
+			if (ps.enableTurnstile !== undefined) {
+				set.enableTurnstile = ps.enableTurnstile;
+			}
+
+			if (ps.turnstileSiteKey !== undefined) {
+				set.turnstileSiteKey = ps.turnstileSiteKey;
+			}
+
+			if (ps.turnstileSecretKey !== undefined) {
+				set.turnstileSecretKey = ps.turnstileSecretKey;
+			}
+
+			if (ps.sensitiveMediaDetection !== undefined) {
+				set.sensitiveMediaDetection = ps.sensitiveMediaDetection;
+			}
+
+			if (ps.sensitiveMediaDetectionSensitivity !== undefined) {
+				set.sensitiveMediaDetectionSensitivity = ps.sensitiveMediaDetectionSensitivity;
+			}
+
+			if (ps.setSensitiveFlagAutomatically !== undefined) {
+				set.setSensitiveFlagAutomatically = ps.setSensitiveFlagAutomatically;
+			}
+
+			if (ps.enableSensitiveMediaDetectionForVideos !== undefined) {
+				set.enableSensitiveMediaDetectionForVideos = ps.enableSensitiveMediaDetectionForVideos;
+			}
+
+			if (ps.proxyAccountId !== undefined) {
+				set.proxyAccountId = ps.proxyAccountId;
+			}
+
+			if (ps.maintainerName !== undefined) {
+				set.maintainerName = ps.maintainerName;
+			}
+
+			if (ps.maintainerEmail !== undefined) {
+				set.maintainerEmail = ps.maintainerEmail;
+			}
+
+			if (Array.isArray(ps.langs)) {
+				set.langs = ps.langs.filter(Boolean);
+			}
+
+			if (Array.isArray(ps.pinnedPages)) {
+				set.pinnedPages = ps.pinnedPages.filter(Boolean);
+			}
+
+			if (ps.pinnedClipId !== undefined) {
+				set.pinnedClipId = ps.pinnedClipId;
+			}
+
+			if (ps.summalyProxy !== undefined) {
+				set.summalyProxy = ps.summalyProxy;
+			}
+
+			if (ps.enableTwitterIntegration !== undefined) {
+				set.enableTwitterIntegration = ps.enableTwitterIntegration;
+			}
+
+			if (ps.twitterConsumerKey !== undefined) {
+				set.twitterConsumerKey = ps.twitterConsumerKey;
+			}
+
+			if (ps.twitterConsumerSecret !== undefined) {
+				set.twitterConsumerSecret = ps.twitterConsumerSecret;
+			}
+
+			if (ps.enableGithubIntegration !== undefined) {
+				set.enableGithubIntegration = ps.enableGithubIntegration;
+			}
+
+			if (ps.githubClientId !== undefined) {
+				set.githubClientId = ps.githubClientId;
+			}
+
+			if (ps.githubClientSecret !== undefined) {
+				set.githubClientSecret = ps.githubClientSecret;
+			}
+
+			if (ps.enableDiscordIntegration !== undefined) {
+				set.enableDiscordIntegration = ps.enableDiscordIntegration;
+			}
+
+			if (ps.discordClientId !== undefined) {
+				set.discordClientId = ps.discordClientId;
+			}
+
+			if (ps.discordClientSecret !== undefined) {
+				set.discordClientSecret = ps.discordClientSecret;
+			}
+
+			if (ps.enableEmail !== undefined) {
+				set.enableEmail = ps.enableEmail;
+			}
+
+			if (ps.email !== undefined) {
+				set.email = ps.email;
+			}
+
+			if (ps.smtpSecure !== undefined) {
+				set.smtpSecure = ps.smtpSecure;
+			}
+
+			if (ps.smtpHost !== undefined) {
+				set.smtpHost = ps.smtpHost;
+			}
+
+			if (ps.smtpPort !== undefined) {
+				set.smtpPort = ps.smtpPort;
+			}
+
+			if (ps.smtpUser !== undefined) {
+				set.smtpUser = ps.smtpUser;
+			}
+
+			if (ps.smtpPass !== undefined) {
+				set.smtpPass = ps.smtpPass;
+			}
+
+			if (ps.errorImageUrl !== undefined) {
+				set.errorImageUrl = ps.errorImageUrl;
+			}
+
+			if (ps.enableServiceWorker !== undefined) {
+				set.enableServiceWorker = ps.enableServiceWorker;
+			}
+
+			if (ps.swPublicKey !== undefined) {
+				set.swPublicKey = ps.swPublicKey;
+			}
+
+			if (ps.swPrivateKey !== undefined) {
+				set.swPrivateKey = ps.swPrivateKey;
+			}
+
+			if (ps.tosUrl !== undefined) {
+				set.ToSUrl = ps.tosUrl;
+			}
+
+			if (ps.repositoryUrl !== undefined) {
+				set.repositoryUrl = ps.repositoryUrl;
+			}
+
+			if (ps.feedbackUrl !== undefined) {
+				set.feedbackUrl = ps.feedbackUrl;
+			}
+
+			if (ps.useObjectStorage !== undefined) {
+				set.useObjectStorage = ps.useObjectStorage;
+			}
+
+			if (ps.objectStorageBaseUrl !== undefined) {
+				set.objectStorageBaseUrl = ps.objectStorageBaseUrl;
+			}
+
+			if (ps.objectStorageBucket !== undefined) {
+				set.objectStorageBucket = ps.objectStorageBucket;
+			}
+
+			if (ps.objectStoragePrefix !== undefined) {
+				set.objectStoragePrefix = ps.objectStoragePrefix;
+			}
+
+			if (ps.objectStorageEndpoint !== undefined) {
+				set.objectStorageEndpoint = ps.objectStorageEndpoint;
+			}
+
+			if (ps.objectStorageRegion !== undefined) {
+				set.objectStorageRegion = ps.objectStorageRegion;
+			}
+
+			if (ps.objectStoragePort !== undefined) {
+				set.objectStoragePort = ps.objectStoragePort;
+			}
+
+			if (ps.objectStorageAccessKey !== undefined) {
+				set.objectStorageAccessKey = ps.objectStorageAccessKey;
+			}
+
+			if (ps.objectStorageSecretKey !== undefined) {
+				set.objectStorageSecretKey = ps.objectStorageSecretKey;
+			}
+
+			if (ps.objectStorageUseSSL !== undefined) {
+				set.objectStorageUseSSL = ps.objectStorageUseSSL;
+			}
+
+			if (ps.objectStorageUseProxy !== undefined) {
+				set.objectStorageUseProxy = ps.objectStorageUseProxy;
+			}
+
+			if (ps.objectStorageSetPublicRead !== undefined) {
+				set.objectStorageSetPublicRead = ps.objectStorageSetPublicRead;
+			}
+
+			if (ps.objectStorageS3ForcePathStyle !== undefined) {
+				set.objectStorageS3ForcePathStyle = ps.objectStorageS3ForcePathStyle;
+			}
+
+			if (ps.deeplAuthKey !== undefined) {
+				if (ps.deeplAuthKey === '') {
+					set.deeplAuthKey = null;
+				} else {
+					set.deeplAuthKey = ps.deeplAuthKey;
+				}
+			}
+
+			if (ps.deeplIsPro !== undefined) {
+				set.deeplIsPro = ps.deeplIsPro;
+			}
+
+			if (ps.enableIpLogging !== undefined) {
+				set.enableIpLogging = ps.enableIpLogging;
+			}
+
+			if (ps.enableActiveEmailValidation !== undefined) {
+				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
+			}
+
+			await this.metaService.update(set);
+			this.moderationLogService.insertModerationLog(me, 'updateMeta');
 		});
-
-		const meta = metas[0];
-
-		if (meta) {
-			await transactionalEntityManager.update(Meta, meta.id, set);
-		} else {
-			await transactionalEntityManager.save(Meta, set);
-		}
-	});
-
-	insertModerationLog(me, 'updateMeta');
-});
+	}
+}

@@ -1,5 +1,8 @@
-import define from '../../define.js';
-import { Clips } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { ClipsRepository } from '@/models/index.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['clips', 'account'],
@@ -26,10 +29,20 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const clips = await Clips.findBy({
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.clipsRepository)
+		private clipsRepository: ClipsRepository,
 
-	return await Promise.all(clips.map(x => Clips.pack(x)));
-});
+		private clipEntityService: ClipEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const clips = await this.clipsRepository.findBy({
+				userId: me.id,
+			});
+
+			return await Promise.all(clips.map(x => this.clipEntityService.pack(x)));
+		});
+	}
+}

@@ -1,7 +1,10 @@
-import define from '../../define.js';
-import { Users } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository } from '@/models/index.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+
 export const meta = {
 	tags: ['admin'],
 
@@ -19,29 +22,40 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	if (user == null) {
-		throw new Error('user not found');
-	}
+		private userEntityService: UserEntityService,
+		private moderationLogService: ModerationLogService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
-	if (!Users.isLocalUser(user)) {
-		throw new Error('user is not local user');
-	} 
+			if (user == null) {
+				throw new Error('user not found');
+			}
 
-	/*if (user.isAdmin) {
+			if (!this.userEntityService.isLocalUser(user)) {
+				throw new Error('user is not local user');
+			} 
+
+			/*if (user.isAdmin) {
 		throw new Error('cannot suspend admin');
 	}
 	if (user.isModerator) {
 		throw new Error('cannot suspend moderator');
 	}*/
 
-	await Users.update(user.id, {
-		driveCapacityOverrideMb: ps.overrideMb,
-	});
+			await this.usersRepository.update(user.id, {
+				driveCapacityOverrideMb: ps.overrideMb,
+			});
 
-	insertModerationLog(me, 'change-drive-capacity-override', {
-		targetId: user.id,
-	});
-});
+			this.moderationLogService.insertModerationLog(me, 'change-drive-capacity-override', {
+				targetId: user.id,
+			});
+		});
+	}
+}

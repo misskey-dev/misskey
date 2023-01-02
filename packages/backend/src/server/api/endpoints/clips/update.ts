@@ -1,6 +1,9 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { ClipsRepository } from '@/models/index.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { Clips } from '@/models/index.js';
 
 export const meta = {
 	tags: ['clips'],
@@ -36,22 +39,32 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch the clip
-	const clip = await Clips.findOneBy({
-		id: ps.clipId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.clipsRepository)
+		private clipsRepository: ClipsRepository,
 
-	if (clip == null) {
-		throw new ApiError(meta.errors.noSuchClip);
+		private clipEntityService: ClipEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the clip
+			const clip = await this.clipsRepository.findOneBy({
+				id: ps.clipId,
+				userId: me.id,
+			});
+
+			if (clip == null) {
+				throw new ApiError(meta.errors.noSuchClip);
+			}
+
+			await this.clipsRepository.update(clip.id, {
+				name: ps.name,
+				description: ps.description,
+				isPublic: ps.isPublic,
+			});
+
+			return await this.clipEntityService.pack(clip.id);
+		});
 	}
-
-	await Clips.update(clip.id, {
-		name: ps.name,
-		description: ps.description,
-		isPublic: ps.isPublic,
-	});
-
-	return await Clips.pack(clip.id);
-});
+}

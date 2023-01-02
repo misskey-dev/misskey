@@ -1,7 +1,9 @@
-import define from '../../../define.js';
-import { Emojis } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { EmojisRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -35,18 +37,31 @@ export const paramDef = {
 	required: ['id', 'name', 'aliases'],
 } as const;
 
+// TODO: ロジックをサービスに切り出す
+
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const emoji = await Emojis.findOneBy({ id: ps.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
 
-	if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const emoji = await this.emojisRepository.findOneBy({ id: ps.id });
 
-	await Emojis.update(emoji.id, {
-		updatedAt: new Date(),
-		name: ps.name,
-		category: ps.category,
-		aliases: ps.aliases,
-	});
+			if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
-	await db.queryResultCache!.remove(['meta_emojis']);
-});
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				name: ps.name,
+				category: ps.category,
+				aliases: ps.aliases,
+			});
+
+			await this.db.queryResultCache!.remove(['meta_emojis']);
+		});
+	}
+}

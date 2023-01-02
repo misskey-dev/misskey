@@ -1,9 +1,12 @@
 import { IsNull } from 'typeorm';
-import { Users } from '@/models/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UsersRepository } from '@/models/index.js';
 import * as Acct from '@/misc/acct.js';
-import { User } from '@/models/entities/user.js';
-import define from '../define.js';
+import type { User } from '@/models/entities/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/core/MetaService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['users'],
@@ -28,13 +31,24 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const meta = await fetchMeta();
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	const users = await Promise.all(meta.pinnedUsers.map(acct => Acct.parse(acct)).map(acct => Users.findOneBy({
-		usernameLower: acct.username.toLowerCase(),
-		host: acct.host ?? IsNull(),
-	})));
+		private metaService: MetaService,
+		private userEntityService: UserEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const meta = await this.metaService.fetch();
 
-	return await Users.packMany(users.filter(x => x !== undefined) as User[], me, { detail: true });
-});
+			const users = await Promise.all(meta.pinnedUsers.map(acct => Acct.parse(acct)).map(acct => this.usersRepository.findOneBy({
+				usernameLower: acct.username.toLowerCase(),
+				host: acct.host ?? IsNull(),
+			})));
+
+			return await this.userEntityService.packMany(users.filter(x => x !== null) as User[], me, { detail: true });
+		});
+	}
+}
