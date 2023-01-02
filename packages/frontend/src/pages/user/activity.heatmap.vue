@@ -12,11 +12,11 @@ import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick, w
 import { Chart } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
+import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import { initChart } from '@/scripts/init-chart';
@@ -25,6 +25,7 @@ initChart();
 
 const props = defineProps<{
 	src: string;
+	user: misskey.entities.User;
 }>();
 
 const rootEl = $ref<HTMLDivElement>(null);
@@ -71,21 +72,9 @@ async function renderChart() {
 
 	let values;
 
-	if (props.src === 'active-users') {
-		const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
-		values = raw.readWrite;
-	} else if (props.src === 'notes') {
-		const raw = await os.api('charts/notes', { limit: chartLimit, span: 'day' });
-		values = raw.local.inc;
-	} else if (props.src === 'ap-requests-inbox-received') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
-		values = raw.inboxReceived;
-	} else if (props.src === 'ap-requests-deliver-succeeded') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
-		values = raw.deliverSucceeded;
-	} else if (props.src === 'ap-requests-deliver-failed') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
-		values = raw.deliverFailed;
+	if (props.src === 'notes') {
+		const raw = await os.api('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
+		values = raw.inc;
 	}
 
 	fetching = false;
@@ -110,7 +99,7 @@ async function renderChart() {
 		type: 'matrix',
 		data: {
 			datasets: [{
-				label: 'Read & Write',
+				label: '',
 				data: format(values),
 				pointRadius: 0,
 				borderWidth: 0,
@@ -203,7 +192,7 @@ async function renderChart() {
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
-							return ['Active: ' + v.v];
+							return [v.v];
 						},
 					},
 					//mode: 'index',

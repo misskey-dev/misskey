@@ -52,21 +52,7 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-} from 'chart.js';
+import { Chart } from 'chart.js';
 import MkwFederation from '../../widgets/federation.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -79,21 +65,9 @@ import number from '@/filters/number';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { alpha } from '@/scripts/color';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-);
+initChart();
 
 export default defineComponent({
 	components: {

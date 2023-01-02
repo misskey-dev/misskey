@@ -14,26 +14,9 @@
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
 import { onMounted, ref, watch, PropType, onUnmounted } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-} from 'chart.js';
+import { Chart } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
-import zoomPlugin from 'chartjs-plugin-zoom';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -41,6 +24,9 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import date from '@/filters/date';
+import { initChart } from '@/scripts/init-chart';
+
+initChart();
 
 const props = defineProps({
 	src: {
@@ -81,25 +67,6 @@ const props = defineProps({
 		default: null,
 	},
 });
-
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	zoomPlugin,
-	gradient,
-);
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -742,6 +709,33 @@ const fetchPerUserNotesChart = async (): Promise<typeof chartData> => {
 	};
 };
 
+const fetchPerUserPvChart = async (): Promise<typeof chartData> => {
+	const raw = await os.apiGet('charts/user/pv', { userId: props.args.user.id, limit: props.limit, span: props.span });
+	return {
+		series: [{
+			name: 'Unique PV (user)',
+			type: 'area',
+			data: format(raw.upv.user),
+			color: colors.purple,
+		}, {
+			name: 'PV (user)',
+			type: 'area',
+			data: format(raw.pv.user),
+			color: colors.green,
+		}, {
+			name: 'Unique PV (visitor)',
+			type: 'area',
+			data: format(raw.upv.visitor),
+			color: colors.yellow,
+		}, {
+			name: 'PV (visitor)',
+			type: 'area',
+			data: format(raw.pv.visitor),
+			color: colors.blue,
+		}],
+	};
+};
+
 const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
 	const raw = await os.apiGet('charts/user/following', { userId: props.args.user.id, limit: props.limit, span: props.span });
 	return {
@@ -814,6 +808,7 @@ const fetchAndRender = async () => {
 			case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
 
 			case 'per-user-notes': return fetchPerUserNotesChart();
+			case 'per-user-pv': return fetchPerUserPvChart();
 			case 'per-user-following': return fetchPerUserFollowingChart();
 			case 'per-user-followers': return fetchPerUserFollowersChart();
 			case 'per-user-drive': return fetchPerUserDriveChart();

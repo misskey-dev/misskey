@@ -12,6 +12,7 @@ import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } 
 import { Chart } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
+import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
@@ -23,10 +24,14 @@ import { initChart } from '@/scripts/init-chart';
 
 initChart();
 
+const props = defineProps<{
+	user: misskey.entities.User;
+}>();
+
 const chartEl = $ref<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
-const chartLimit = 7;
+const chartLimit = 30;
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
@@ -51,7 +56,7 @@ async function renderChart() {
 		}));
 	};
 
-	const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
+	const raw = await os.api('charts/user/pv', { userId: props.user.id, limit: chartLimit, span: 'day' });
 
 	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
@@ -59,37 +64,35 @@ async function renderChart() {
 	// フォントカラー
 	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
-	const colorRead = '#3498db';
-	const colorWrite = '#2ecc71';
-
-	const max = Math.max(...raw.read);
+	const colorUser = '#3498db';
+	const colorVisitor = '#2ecc71';
 
 	chartInstance = new Chart(chartEl, {
 		type: 'bar',
 		data: {
 			datasets: [{
 				parsing: false,
-				label: 'Read',
-				data: format(raw.read).slice().reverse(),
+				label: 'UPV (user)',
+				data: format(raw.upv.user).slice().reverse(),
 				pointRadius: 0,
 				borderWidth: 0,
 				borderJoinStyle: 'round',
 				borderRadius: 4,
-				backgroundColor: colorRead,
+				backgroundColor: colorUser,
 				barPercentage: 0.7,
-				categoryPercentage: 0.5,
+				categoryPercentage: 1,
 				fill: true,
 			}, {
 				parsing: false,
-				label: 'Write',
-				data: format(raw.write).slice().reverse(),
+				label: 'UPV (visitor)',
+				data: format(raw.upv.visitor).slice().reverse(),
 				pointRadius: 0,
 				borderWidth: 0,
 				borderJoinStyle: 'round',
 				borderRadius: 4,
-				backgroundColor: colorWrite,
+				backgroundColor: colorVisitor,
 				barPercentage: 0.7,
-				categoryPercentage: 0.5,
+				categoryPercentage: 1,
 				fill: true,
 			}],
 		},
@@ -107,6 +110,7 @@ async function renderChart() {
 				x: {
 					type: 'time',
 					offset: true,
+					stacked: true,
 					time: {
 						stepSize: 1,
 						unit: 'day',
@@ -129,6 +133,7 @@ async function renderChart() {
 				},
 				y: {
 					position: 'left',
+					stacked: true,
 					suggestedMax: 10,
 					grid: {
 						display: true,
@@ -147,8 +152,25 @@ async function renderChart() {
 			},
 			animation: false,
 			plugins: {
+				title: {
+					display: true,
+					text: 'Unique PV',
+					padding: {
+						left: 0,
+						right: 0,
+						top: 0,
+						bottom: 12,
+					},
+				},
 				legend: {
-					display: false,
+					display: true,
+					position: 'bottom',
+					padding: {
+						left: 0,
+						right: 0,
+						top: 8,
+						bottom: 0,
+					},
 				},
 				tooltip: {
 					enabled: false,

@@ -16,23 +16,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-} from 'chart.js';
+import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
@@ -45,24 +29,9 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
 import { defaultStore } from '@/store';
 import { alpha } from '@/scripts/color';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	gradient,
-);
+initChart();
 
 const chartLimit = 50;
 const chartEl = $ref<HTMLCanvasElement>();

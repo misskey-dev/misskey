@@ -77,24 +77,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	DoughnutController,
-} from 'chart.js';
+import { Chart } from 'chart.js';
 import MkSelect from '@/components/form/select.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
@@ -103,24 +86,9 @@ import { i18n } from '@/i18n';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	DoughnutController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-);
+initChart();
 
 const chartLimit = 500;
 let chartSpan = $ref<'hour' | 'day'>('hour');
