@@ -113,18 +113,20 @@ mainRouter.on('change', () => {
 
 document.documentElement.style.overflowY = 'scroll';
 
-if (defaultStore.state.widgets.length === 0) {
-	defaultStore.set('widgets', [{
-		name: 'calendar',
-		id: 'a', place: 'right', data: {},
-	}, {
-		name: 'notifications',
-		id: 'b', place: 'right', data: {},
-	}, {
-		name: 'trends',
-		id: 'c', place: 'right', data: {},
-	}]);
-}
+defaultStore.ready.then(() => {
+	if (defaultStore.state.widgets.length === 0) {
+		defaultStore.set('widgets', [{
+			name: 'calendar',
+			id: 'a', place: 'right', data: {},
+		}, {
+			name: 'notifications',
+			id: 'b', place: 'right', data: {},
+		}, {
+			name: 'trends',
+			id: 'c', place: 'right', data: {},
+		}]);
+	}
+});
 
 onMounted(() => {
 	if (!isDesktop.value) {

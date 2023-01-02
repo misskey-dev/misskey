@@ -7,7 +7,7 @@
 			<XSidebar/>
 		</div>
 		<div v-else ref="widgetsLeft" class="widgets left">
-			<XWidgets place="left" @mounted="attachSticky(widgetsLeft)" :classic="true"/>
+			<XWidgets place="left" :classic="true" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
 		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
@@ -17,7 +17,7 @@
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="showMenuOnTop ? 'right' : null" @mounted="attachSticky(widgetsRight)" :classic="true"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" :classic="true" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 
@@ -129,18 +129,20 @@ if (window.innerWidth < 1024) {
 
 document.documentElement.style.overflowY = 'scroll';
 
-if (defaultStore.state.widgets.length === 0) {
-	defaultStore.set('widgets', [{
-		name: 'calendar',
-		id: 'a', place: null, data: {},
-	}, {
-		name: 'notifications',
-		id: 'b', place: null, data: {},
-	}, {
-		name: 'trends',
-		id: 'c', place: null, data: {},
-	}]);
-}
+defaultStore.ready.then(() => {
+	if (defaultStore.state.widgets.length === 0) {
+		defaultStore.set('widgets', [{
+			name: 'calendar',
+			id: 'a', place: null, data: {},
+		}, {
+			name: 'notifications',
+			id: 'b', place: null, data: {},
+		}, {
+			name: 'trends',
+			id: 'c', place: null, data: {},
+		}]);
+	}
+});
 
 onMounted(() => {
 	window.addEventListener('resize', () => {
