@@ -119,6 +119,7 @@
 		"twemoji-parser": "14.0.0",
 		"typeorm": "0.3.11",
 		"ulid": "2.3.0",
+		"undici": "^5.14.0",
 		"unzipper": "0.10.11",
 		"uuid": "9.0.0",
 		"vary": "1.1.2",
