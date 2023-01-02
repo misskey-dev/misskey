@@ -237,7 +237,7 @@ export class HttpRequestService {
 				keepalive: true,
 				signal: controller.signal,
 			}),
-			new Promise<null>((res) => setTimeout(() => res(null)))
+			new Promise<null>((res) => setTimeout(() => res(null), timeout))
 		]);
 
 		if (res == null) {
