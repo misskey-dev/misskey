@@ -98,6 +98,7 @@ import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
 import * as ep___charts_user_following from './endpoints/charts/user/following.js';
 import * as ep___charts_user_notes from './endpoints/charts/user/notes.js';
+import * as ep___charts_user_pv from './endpoints/charts/user/pv.js';
 import * as ep___charts_user_reactions from './endpoints/charts/user/reactions.js';
 import * as ep___charts_users from './endpoints/charts/users.js';
 import * as ep___clips_addNote from './endpoints/clips/add-note.js';
@@ -175,6 +176,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
@@ -271,6 +273,8 @@ import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
 import * as ep___serverInfo from './endpoints/server-info.js';
 import * as ep___stats from './endpoints/stats.js';
+import * as ep___sw_show_registration from './endpoints/sw/show-registration.js';
+import * as ep___sw_update_registration from './endpoints/sw/update-registration.js';
 import * as ep___sw_register from './endpoints/sw/register.js';
 import * as ep___sw_unregister from './endpoints/sw/unregister.js';
 import * as ep___test from './endpoints/test.js';
@@ -312,6 +316,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
+import * as ep___retention from './endpoints/retention.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -412,6 +417,7 @@ const eps = [
 	['charts/user/drive', ep___charts_user_drive],
 	['charts/user/following', ep___charts_user_following],
 	['charts/user/notes', ep___charts_user_notes],
+	['charts/user/pv', ep___charts_user_pv],
 	['charts/user/reactions', ep___charts_user_reactions],
 	['charts/users', ep___charts_users],
 	['clips/add-note', ep___clips_addNote],
@@ -489,6 +495,7 @@ const eps = [
 	['i/export-following', ep___i_exportFollowing],
 	['i/export-mute', ep___i_exportMute],
 	['i/export-notes', ep___i_exportNotes],
+	['i/export-favorites', ep___i_exportFavorites],
 	['i/export-user-lists', ep___i_exportUserLists],
 	['i/favorites', ep___i_favorites],
 	['i/gallery/likes', ep___i_gallery_likes],
@@ -585,6 +592,8 @@ const eps = [
 	['reset-password', ep___resetPassword],
 	['server-info', ep___serverInfo],
 	['stats', ep___stats],
+	['sw/show-registration', ep___sw_show_registration],
+	['sw/update-registration', ep___sw_update_registration],
 	['sw/register', ep___sw_register],
 	['sw/unregister', ep___sw_unregister],
 	['test', ep___test],
@@ -626,6 +635,7 @@ const eps = [
 	['users/stats', ep___users_stats],
 	['admin/drive-capacity-override', ep___admin_driveCapOverride],
 	['fetch-rss', ep___fetchRss],
+	['retention', ep___retention],
 ];
 
 export interface IEndpointMeta {

@@ -1,28 +1,84 @@
 <!--
-## 12.x.x (unreleased)
+## 13.x.x (unreleased)
 
 ### Improvements
 
 ### Bugfixes
-- 
+-
 
 You should also include the user name that made the change.
 -->
 
-## 12.x.x (unreleased)
+## 13.0.0 (unreleased)
 
 ### Changes
 - Node.js 18.x or later is required
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - ノートのウォッチ機能が削除されました
+- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
+	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- 新たに動的なPagesを作ることはできなくなりました
+	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
+- iOS15以下のデバイスはサポートされなくなりました
+- API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
+	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
+	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
+	- remote: `https://p1.a9z.dev/emoji/syuilo_birth_present@mk.f72u.net.webp`
+- API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
+- API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
 
 ### Improvements
+- Push notification of Antenna note @tamaina
+- AVIF support @tamaina
+- Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- Introduce retention-rate aggregation @syuilo
+- Make possible to export favorited notes @syuilo
+- Add per user pv chart @syuilo
+- Server: signToActivityPubGet is set to true by default @syuilo
+- Server: improve syslog performance @syuilo
+- Server: improve note scoring for featured notes @CyberRex0
+- Server: delete outdated notifications regularly to improve db performance @syuilo
+- Server: delete outdated hard-mutes regularly to improve db performance @syuilo
+- Server: delete outdated notes of antenna regularly to improve db performance @syuilo
+- Client: use tabler-icons instead of fontawesome to better design @syuilo
+- Client: Add new gabber kick sounds (thanks for noizenecio)
+- Client: Add link to user RSS feed in profile menu @ssmucny
+- Client: Compress non-animated PNG files @saschanaz
+- Client: YouTube window player @sim1222
+- Client: enhance dashboard of control panel @syuilo
+- Client: Vite is upgraded to v4 @syuilo, @tamaina
+- Client: HMR is available while yarn dev @tamaina
+- Client: Make widgets of universal/classic sync between devices @tamaina
+- Client: Implement the button to subscribe push notification @tamaina
+- Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
+- Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
+- Client: OpenSearch support @SoniEx2 @chaoticryptidz
+- Client: add user list widget @syuilo
+- Client: add heatmap of daily active users to about page @syuilo
+- Client: introduce fluent emoji @syuilo
+- Client: show bot warning on screen when logged in as bot account @syuilo
+- Client: improve overall performance of client @syuilo
+- Client: ui tweaks @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
-- Client: インスタンスティッカーのfaviconを読み込む際に偽サイト警告が出ることがあるのを修正 @syuilo
+- Server: Fix peers API returning suspended instances @ineffyble
+- Server: trim long text of note from ap @syuilo
+- Server: Ap inboxの最大ペイロードサイズを64kbに制限 @syuilo
+- Server: アンテナの作成数上限を追加 @syuilo
+- Client: case insensitive emoji search @saschanaz
+- Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
+- Client: use proxied image for instance icon @syuilo
+- Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: update emoji picker immediately on all input @saschanaz
+- Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
+- Client: fix wrong link in tutorial @syuilo
+
+## 12.119.1 (2022/12/03)
+### Bugfixes
+- Server: Mitigate AP reference chain DoS vector @skehmatics
 
 ## 12.119.0 (2022/09/10)
 
@@ -170,8 +226,6 @@ same as 12.112.0
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0
-- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
-	- You may have to `yarn run clean-all` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 
 ### Bugfixes
 - Server: Fix GenerateVideoThumbnail failed @mei23

@@ -7,6 +7,7 @@ import type { Packed } from '@/misc/schema.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
@@ -22,9 +23,10 @@ class HybridTimelineChannel extends Channel {
 		connection: Channel['connection'],
 	) {
 		super(id, connection);
-		this.onNote = this.onNote.bind(this);
+		//this.onNote = this.onNote.bind(this);
 	}
 
+	@bindThis
 	public async init(params: any): Promise<void> {
 		const meta = await this.metaService.fetch();
 		if (meta.disableLocalTimeline && !this.user!.isAdmin && !this.user!.isModerator) return;
@@ -33,6 +35,7 @@ class HybridTimelineChannel extends Channel {
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
+	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		// チャンネルの投稿ではなく、自分自身の投稿 または
 		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
@@ -95,6 +98,7 @@ class HybridTimelineChannel extends Channel {
 		this.send('note', note);
 	}
 
+	@bindThis
 	public dispose(): void {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
@@ -112,6 +116,7 @@ export class HybridTimelineChannelService {
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): HybridTimelineChannel {
 		return new HybridTimelineChannel(
 			this.metaService,

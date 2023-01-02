@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import Router from '@koa/router';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
 import autwh from 'autwh';
@@ -12,8 +11,10 @@ import type { ILocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { bindThis } from '@/decorators.js';
 import { SigninService } from '../SigninService.js';
-import type Koa from 'koa';
+import type { FastifyInstance, FastifyRequest, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class TwitterServerService {
@@ -36,21 +37,19 @@ export class TwitterServerService {
 		private metaService: MetaService,
 		private signinService: SigninService,
 	) {
+		//this.create = this.create.bind(this);
 	}
 
-	public create() {
-		const router = new Router();
-
-		router.get('/disconnect/twitter', async ctx => {
-			if (!this.compareOrigin(ctx)) {
-				ctx.throw(400, 'invalid origin');
-				return;
+	@bindThis
+	public create(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
+		fastify.get('/disconnect/twitter', async (request, reply) => {
+			if (!this.compareOrigin(request)) {
+				throw new FastifyReplyError(400, 'invalid origin');
 			}
 
-			const userToken = this.getUserToken(ctx);
+			const userToken = this.getUserToken(request);
 			if (userToken == null) {
-				ctx.throw(400, 'signin required');
-				return;
+				throw new FastifyReplyError(400, 'signin required');
 			}
 
 			const user = await this.usersRepository.findOneByOrFail({
@@ -66,13 +65,13 @@ export class TwitterServerService {
 				integrations: profile.integrations,
 			});
 
-			ctx.body = 'Twitterの連携を解除しました :v:';
-
 			// Publish i updated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', await this.userEntityService.pack(user, user, {
 				detail: true,
 				includeSecrets: true,
 			}));
+
+			return 'Twitterの連携を解除しました :v:';
 		});
 
 		const getTwAuth = async () => {
@@ -89,25 +88,23 @@ export class TwitterServerService {
 			}
 		};
 
-		router.get('/connect/twitter', async ctx => {
-			if (!this.compareOrigin(ctx)) {
-				ctx.throw(400, 'invalid origin');
-				return;
+		fastify.get('/connect/twitter', async (request, reply) => {
+			if (!this.compareOrigin(request)) {
+				throw new FastifyReplyError(400, 'invalid origin');
 			}
 
-			const userToken = this.getUserToken(ctx);
+			const userToken = this.getUserToken(request);
 			if (userToken == null) {
-				ctx.throw(400, 'signin required');
-				return;
+				throw new FastifyReplyError(400, 'signin required');
 			}
 
 			const twAuth = await getTwAuth();
 			const twCtx = await twAuth!.begin();
 			this.redisClient.set(userToken, JSON.stringify(twCtx));
-			ctx.redirect(twCtx.url);
+			reply.redirect(twCtx.url);
 		});
 
-		router.get('/signin/twitter', async ctx => {
+		fastify.get('/signin/twitter', async (request, reply) => {
 			const twAuth = await getTwAuth();
 			const twCtx = await twAuth!.begin();
 
@@ -115,26 +112,25 @@ export class TwitterServerService {
 
 			this.redisClient.set(sessid, JSON.stringify(twCtx));
 
-			ctx.cookies.set('signin_with_twitter_sid', sessid, {
+			reply.setCookie('signin_with_twitter_sid', sessid, {
 				path: '/',
 				secure: this.config.url.startsWith('https'),
 				httpOnly: true,
 			});
 
-			ctx.redirect(twCtx.url);
+			reply.redirect(twCtx.url);
 		});
 
-		router.get('/tw/cb', async ctx => {
-			const userToken = this.getUserToken(ctx);
+		fastify.get('/tw/cb', async (request, reply) => {
+			const userToken = this.getUserToken(request);
 
 			const twAuth = await getTwAuth();
 
 			if (userToken == null) {
-				const sessid = ctx.cookies.get('signin_with_twitter_sid');
+				const sessid = request.cookies['signin_with_twitter_sid'];
 
 				if (sessid == null) {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const get = new Promise<any>((res, rej) => {
@@ -145,10 +141,9 @@ export class TwitterServerService {
 
 				const twCtx = await get;
 
-				const verifier = ctx.query.oauth_verifier;
+				const verifier = request.query.oauth_verifier;
 				if (!verifier || typeof verifier !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const result = await twAuth!.done(JSON.parse(twCtx), verifier);
@@ -159,17 +154,15 @@ export class TwitterServerService {
 					.getOne();
 
 				if (link == null) {
-					ctx.throw(404, `@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
-					return;
+					throw new FastifyReplyError(404, `@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
 				}
 
-				this.signinService.signin(ctx, await this.usersRepository.findOneBy({ id: link.userId }) as ILocalUser, true);
+				return this.signinService.signin(request, reply, await this.usersRepository.findOneBy({ id: link.userId }) as ILocalUser, true);
 			} else {
-				const verifier = ctx.query.oauth_verifier;
+				const verifier = request.query.oauth_verifier;
 
 				if (!verifier || typeof verifier !== 'string') {
-					ctx.throw(400, 'invalid session');
-					return;
+					throw new FastifyReplyError(400, 'invalid session');
 				}
 
 				const get = new Promise<any>((res, rej) => {
@@ -201,29 +194,31 @@ export class TwitterServerService {
 					},
 				});
 
-				ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
-
 				// Publish i updated event
 				this.globalEventService.publishMainStream(user.id, 'meUpdated', await this.userEntityService.pack(user, user, {
 					detail: true,
 					includeSecrets: true,
 				}));
+
+				return `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
 			}
 		});
 
-		return router;
+		done();
 	}
 
-	private getUserToken(ctx: Koa.BaseContext): string | null {
-		return ((ctx.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
+	@bindThis
+	private getUserToken(request: FastifyRequest): string | null {
+		return ((request.headers['cookie'] ?? '').match(/igi=(\w+)/) ?? [null, null])[1];
 	}
 	
-	private compareOrigin(ctx: Koa.BaseContext): boolean {
+	@bindThis
+	private compareOrigin(request: FastifyRequest): boolean {
 		function normalizeUrl(url?: string): string {
 			return url ? url.endsWith('/') ? url.substr(0, url.length - 1) : url : '';
 		}
 	
-		const referer = ctx.headers['referer'];
+		const referer = request.headers['referer'];
 	
 		return (normalizeUrl(referer) === normalizeUrl(this.config.url));
 	}

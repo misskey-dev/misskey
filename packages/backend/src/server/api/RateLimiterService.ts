@@ -4,11 +4,13 @@ import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 import type { IEndpointMeta } from './endpoints.js';
 
 @Injectable()
 export class RateLimiterService {
 	private logger: Logger;
+	private disabled = false;
 
 	constructor(
 		@Inject(DI.redis)
@@ -17,12 +19,17 @@ export class RateLimiterService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('limiter');
+
+		if (process.env.NODE_ENV !== 'production') {
+			this.disabled = true;
+		}
 	}
 
+	@bindThis
 	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string) {
 		return new Promise<void>((ok, reject) => {
-			if (process.env.NODE_ENV === 'test') ok();
-			
+			if (this.disabled) ok();
+
 			// Short-term limit
 			const min = (): void => {
 				const minIntervalLimiter = new Limiter({

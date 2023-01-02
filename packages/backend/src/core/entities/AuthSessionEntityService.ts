@@ -7,6 +7,7 @@ import type { AuthSession } from '@/models/entities/AuthSession.js';
 import type { User } from '@/models/entities/User.js';
 import { UserEntityService } from './UserEntityService.js';
 import { AppEntityService } from './AppEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class AuthSessionEntityService {
@@ -18,6 +19,7 @@ export class AuthSessionEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: AuthSession['id'] | AuthSession,
 		me?: { id: User['id'] } | null | undefined,

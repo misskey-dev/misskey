@@ -318,6 +318,8 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "Zapnout ReCAPTCHu"
 recaptchaSiteKey: "Klíč stránky"
 recaptchaSecretKey: "Tajný Klíč (Secret Key)"
+turnstileSiteKey: "Klíč stránky"
+turnstileSecretKey: "Tajný Klíč (Secret Key)"
 antennas: "Antény"
 manageAntennas: "Spravovat Antény"
 name: "Jméno"
@@ -400,7 +402,6 @@ language: "Jazyk"
 uiLanguage: "Jazyk uživatelského rozhraní"
 groupInvited: "Pozvat do skupiny"
 aboutX: "O {x}"
-useOsNativeEmojis: "Použití nativních emoji operačního systému"
 youHaveNoGroups: "Nemáte žádné skupiny"
 joinOrCreateGroup: "Můžete požádat o pozvání do stávající skupiny nebo vytvořit novou."
 noHistory: "Žádná historie"
@@ -709,6 +710,8 @@ _widgets:
   jobQueue: "Fronta úloh"
   aiscript: "AiScript conzole"
   aichan: "Ai"
+  _userList:
+    chooseList: "Vybrat seznam"
 _cw:
   hide: "Skrýt"
   show: "Zobrazit více"
@@ -768,145 +771,6 @@ _pages:
     section: "Sekce"
     image: "Obrázky"
     button: "Tlačítko"
-    if: "Pokud"
-    _if:
-      variable: "Proměnná"
-    _post:
-      text: "Obsah"
-      canvasId: "Canvas ID"
-    _textInput:
-      name: "Jméno proměnné"
-      text: "Titulek"
-      default: "Výchozí hodnota"
-    _textareaInput:
-      name: "Jméno proměnné"
-      text: "Titulek"
-      default: "Výchozí hodnota"
-    _numberInput:
-      name: "Jméno proměnné"
-      text: "Titulek"
-      default: "Výchozí hodnota"
-    canvas: "Canvas"
-    _canvas:
-      id: "Canvas ID"
-      width: "Šířka"
-      height: "Výška"
-    _switch:
-      name: "Jméno proměnné"
-      text: "Titulek"
-      default: "Výchozí hodnota"
-    _counter:
-      name: "Jméno proměnné"
-      text: "Titulek"
-      inc: "Krok"
-    _button:
-      text: "Titulek"
-      colored: "Barevné"
-      _action:
-        _dialog:
-          content: "Obsah"
-    _radioButton:
-      name: "Jméno proměnné"
-      default: "Výchozí hodnota"
-  script:
-    categories:
-      list: "Seznamy"
-    blocks:
-      text: "Text"
-      _strLen:
-        arg1: "Text"
-      _strPick:
-        arg1: "Text"
-      _strReplace:
-        arg1: "Text"
-      _strReverse:
-        arg1: "Text"
-      _join:
-        arg1: "Seznamy"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "Zaokrouhlení zlomku"
-      _round:
-        arg1: "Číselná hodnota"
-      eq: "A a B jsou stejné"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A a B jsou odlišné"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Větev"
-      _if:
-        arg1: "Pokud"
-        arg2: "Potom"
-        arg3: "Nebo"
-      random: "Náhodně"
-      _random:
-        arg1: "Pravděpodobnost"
-      rannum: "Náhodné číslo"
-      _rannum:
-        arg1: "Minimální hodnota"
-        arg2: "Maximální hodnota"
-      _randomPick:
-        arg1: "Seznamy"
-      _dailyRandom:
-        arg1: "Pravděpodobnost"
-      _dailyRannum:
-        arg1: "Minimální hodnota"
-        arg2: "Maximální hodnota"
-      _dailyRandomPick:
-        arg1: "Seznamy"
-      _seedRandom:
-        arg2: "Pravděpodobnost"
-      _seedRannum:
-        arg2: "Minimální hodnota"
-        arg3: "Maximální hodnota"
-      _seedRandomPick:
-        arg2: "Seznamy"
-      _pick:
-        arg1: "Seznamy"
-      _listLen:
-        arg1: "Seznamy"
-      number: "Číselná hodnota"
-      _stringToNumber:
-        arg1: "Text"
-      _numberToString:
-        arg1: "Číselná hodnota"
-      _splitStrByLine:
-        arg1: "Text"
-    types:
-      string: "Text"
-      number: "Číselná hodnota"
-      array: "Seznamy"
 _notification:
   youWereFollowed: "Máte nového následovníka"
   youWereInvitedToGroup: "Pozvat do skupiny"

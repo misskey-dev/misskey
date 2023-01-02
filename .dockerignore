@@ -10,9 +10,11 @@ db/
 docker-compose.yml
 elasticsearch/
 node_modules/
+packages/*/node_modules
 redis/
 files/
 misskey-assets/
+fluent-emojis/
 .pnp.*
 .yarn/*
 !.yarn/patches

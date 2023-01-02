@@ -6,7 +6,7 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['account'],
 
-	requireCredential: true,
+	requireCredential: false,
 
 	description: 'Unregister from receiving push notifications.',
 } as const;
@@ -28,7 +28,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			await this.swSubscriptionsRepository.delete({
-				userId: me.id,
+				...(me ? { userId: me.id } : {}),
 				endpoint: ps.endpoint,
 			});
 		});

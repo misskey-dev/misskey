@@ -8,6 +8,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
+import { bindThis } from '@/decorators.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type * as websocket from 'websocket';
 import type { EventEmitter } from 'events';
@@ -52,10 +53,10 @@ export default class Connection {
 		if (user) this.user = user;
 		if (token) this.token = token;
 
-		this.onWsConnectionMessage = this.onWsConnectionMessage.bind(this);
-		this.onUserEvent = this.onUserEvent.bind(this);
-		this.onNoteStreamMessage = this.onNoteStreamMessage.bind(this);
-		this.onBroadcastMessage = this.onBroadcastMessage.bind(this);
+		//this.onWsConnectionMessage = this.onWsConnectionMessage.bind(this);
+		//this.onUserEvent = this.onUserEvent.bind(this);
+		//this.onNoteStreamMessage = this.onNoteStreamMessage.bind(this);
+		//this.onBroadcastMessage = this.onBroadcastMessage.bind(this);
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
@@ -74,6 +75,7 @@ export default class Connection {
 		}
 	}
 
+	@bindThis
 	private onUserEvent(data: StreamMessages['user']['payload']) { // { type, body }と展開するとそれぞれ型が分離してしまう
 		switch (data.type) {
 			case 'follow':
@@ -119,6 +121,7 @@ export default class Connection {
 	/**
 	 * クライアントからメッセージ受信時
 	 */
+	@bindThis
 	private async onWsConnectionMessage(data: websocket.Message) {
 		if (data.type !== 'utf8') return;
 		if (data.utf8Data == null) return;
@@ -153,10 +156,12 @@ export default class Connection {
 		}
 	}
 
+	@bindThis
 	private onBroadcastMessage(data: StreamMessages['broadcast']['payload']) {
 		this.sendMessageToWs(data.type, data.body);
 	}
 
+	@bindThis
 	public cacheNote(note: Packed<'Note'>) {
 		const add = (note: Packed<'Note'>) => {
 			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
@@ -176,6 +181,7 @@ export default class Connection {
 		if (note.renote) add(note.renote);
 	}
 
+	@bindThis
 	private readNote(body: any) {
 		const id = body.id;
 
@@ -190,6 +196,7 @@ export default class Connection {
 		}
 	}
 
+	@bindThis
 	private onReadNotification(payload: any) {
 		if (!payload.id) return;
 		this.notificationService.readNotification(this.user!.id, [payload.id]);
@@ -198,6 +205,7 @@ export default class Connection {
 	/**
 	 * 投稿購読要求時
 	 */
+	@bindThis
 	private onSubscribeNote(payload: any) {
 		if (!payload.id) return;
 
@@ -215,6 +223,7 @@ export default class Connection {
 	/**
 	 * 投稿購読解除要求時
 	 */
+	@bindThis
 	private onUnsubscribeNote(payload: any) {
 		if (!payload.id) return;
 
@@ -225,6 +234,7 @@ export default class Connection {
 		}
 	}
 
+	@bindThis
 	private async onNoteStreamMessage(data: StreamMessages['note']['payload']) {
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
@@ -236,6 +246,7 @@ export default class Connection {
 	/**
 	 * チャンネル接続要求時
 	 */
+	@bindThis
 	private onChannelConnectRequested(payload: any) {
 		const { channel, id, params, pong } = payload;
 		this.connectChannel(id, params, channel, pong);
@@ -244,6 +255,7 @@ export default class Connection {
 	/**
 	 * チャンネル切断要求時
 	 */
+	@bindThis
 	private onChannelDisconnectRequested(payload: any) {
 		const { id } = payload;
 		this.disconnectChannel(id);
@@ -252,6 +264,7 @@ export default class Connection {
 	/**
 	 * クライアントにメッセージ送信
 	 */
+	@bindThis
 	public sendMessageToWs(type: string, payload: any) {
 		this.wsConnection.send(JSON.stringify({
 			type: type,
@@ -262,6 +275,7 @@ export default class Connection {
 	/**
 	 * チャンネルに接続
 	 */
+	@bindThis
 	public connectChannel(id: string, params: any, channel: string, pong = false) {
 		const channelService = this.channelsService.getChannelService(channel);
 
@@ -289,6 +303,7 @@ export default class Connection {
 	 * チャンネルから切断
 	 * @param id チャンネルコネクションID
 	 */
+	@bindThis
 	public disconnectChannel(id: string) {
 		const channel = this.channels.find(c => c.id === id);
 
@@ -302,6 +317,7 @@ export default class Connection {
 	 * チャンネルへメッセージ送信要求時
 	 * @param data メッセージ
 	 */
+	@bindThis
 	private onChannelMessageRequested(data: any) {
 		const channel = this.channels.find(c => c.id === data.id);
 		if (channel != null && channel.onMessage != null) {
@@ -309,12 +325,14 @@ export default class Connection {
 		}
 	}
 
+	@bindThis
 	private typingOnChannel(channel: ChannelModel['id']) {
 		if (this.user) {
 			this.globalEventService.publishChannelStream(channel, 'typing', this.user.id);
 		}
 	}
 
+	@bindThis
 	private typingOnMessaging(param: { partner?: User['id']; group?: UserGroup['id']; }) {
 		if (this.user) {
 			if (param.partner) {
@@ -325,6 +343,7 @@ export default class Connection {
 		}
 	}
 
+	@bindThis
 	private async updateFollowing() {
 		const followings = await this.followingsRepository.find({
 			where: {
@@ -336,6 +355,7 @@ export default class Connection {
 		this.following = new Set<string>(followings.map(x => x.followeeId));
 	}
 
+	@bindThis
 	private async updateMuting() {
 		const mutings = await this.mutingsRepository.find({
 			where: {
@@ -347,6 +367,7 @@ export default class Connection {
 		this.muting = new Set<string>(mutings.map(x => x.muteeId));
 	}
 
+	@bindThis
 	private async updateBlocking() { // ここでいうBlockingは被Blockingの意
 		const blockings = await this.blockingsRepository.find({
 			where: {
@@ -358,6 +379,7 @@ export default class Connection {
 		this.blocking = new Set<string>(blockings.map(x => x.blockerId));
 	}
 
+	@bindThis
 	private async updateFollowingChannels() {
 		const followings = await this.channelFollowingsRepository.find({
 			where: {
@@ -369,6 +391,7 @@ export default class Connection {
 		this.followingChannels = new Set<string>(followings.map(x => x.followeeId));
 	}
 
+	@bindThis
 	private async updateUserProfile() {
 		this.userProfile = await this.userProfilesRepository.findOneBy({
 			userId: this.user!.id,
@@ -378,6 +401,7 @@ export default class Connection {
 	/**
 	 * ストリームが切れたとき
 	 */
+	@bindThis
 	public dispose() {
 		for (const c of this.channels.filter(c => c.dispose)) {
 			if (c.dispose) c.dispose();

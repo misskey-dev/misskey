@@ -1,3 +1,8 @@
+/* objを検査して
+ * 1. 配列に何も入っていない時はクエリを付けない
+ * 2. プロパティがundefinedの時はクエリを付けない
+ * （new URLSearchParams(obj)ではそこまで丁寧なことをしてくれない）
+ */ 
 export function query(obj: Record<string, unknown>): string {
 	const params = Object.entries(obj)
 		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)

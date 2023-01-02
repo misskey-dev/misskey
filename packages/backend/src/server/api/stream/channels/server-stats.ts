@@ -1,5 +1,6 @@
 import Xev from 'xev';
 import { Inject, Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
 const ev = new Xev();
@@ -11,18 +12,21 @@ class ServerStatsChannel extends Channel {
 
 	constructor(id: string, connection: Channel['connection']) {
 		super(id, connection);
-		this.onStats = this.onStats.bind(this);
-		this.onMessage = this.onMessage.bind(this);
+		//this.onStats = this.onStats.bind(this);
+		//this.onMessage = this.onMessage.bind(this);
 	}
 
+	@bindThis
 	public async init(params: any) {
 		ev.addListener('serverStats', this.onStats);
 	}
 
+	@bindThis
 	private onStats(stats: any) {
 		this.send('stats', stats);
 	}
 
+	@bindThis
 	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'requestLog':
@@ -37,6 +41,7 @@ class ServerStatsChannel extends Channel {
 		}
 	}
 
+	@bindThis
 	public dispose() {
 		ev.removeListener('serverStats', this.onStats);
 	}
@@ -51,6 +56,7 @@ export class ServerStatsChannelService {
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): ServerStatsChannel {
 		return new ServerStatsChannel(
 			id,

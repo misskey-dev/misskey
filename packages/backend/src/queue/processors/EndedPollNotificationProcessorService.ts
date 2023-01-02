@@ -8,6 +8,7 @@ import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { EndedPollNotificationJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class EndedPollNotificationProcessorService {
@@ -29,6 +30,7 @@ export class EndedPollNotificationProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('ended-poll-notification');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<EndedPollNotificationJobData>, done: () => void): Promise<void> {
 		const note = await this.notesRepository.findOneBy({ id: job.data.noteId });
 		if (note == null || !note.hasPoll) {

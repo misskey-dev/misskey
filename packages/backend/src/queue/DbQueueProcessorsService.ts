@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { DbJobData } from '@/queue/types.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
 import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
@@ -15,6 +16,7 @@ import { ImportBlockingProcessorService } from './processors/ImportBlockingProce
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
 import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
 import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
+import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 import type Bull from 'bull';
 
 @Injectable()
@@ -26,6 +28,7 @@ export class DbQueueProcessorsService {
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
 		private exportCustomEmojisProcessorService: ExportCustomEmojisProcessorService,
 		private exportNotesProcessorService: ExportNotesProcessorService,
+		private exportFavoritesProcessorService: ExportFavoritesProcessorService,
 		private exportFollowingProcessorService: ExportFollowingProcessorService,
 		private exportMutingProcessorService: ExportMutingProcessorService,
 		private exportBlockingProcessorService: ExportBlockingProcessorService,
@@ -39,10 +42,12 @@ export class DbQueueProcessorsService {
 	) {
 	}
 
+	@bindThis
 	public start(q: Bull.Queue): void {
 		q.process('deleteDriveFiles', (job, done) => this.deleteDriveFilesProcessorService.process(job, done));
 		q.process('exportCustomEmojis', (job, done) => this.exportCustomEmojisProcessorService.process(job, done));
 		q.process('exportNotes', (job, done) => this.exportNotesProcessorService.process(job, done));
+		q.process('exportFavorites', (job, done) => this.exportFavoritesProcessorService.process(job, done));
 		q.process('exportFollowing', (job, done) => this.exportFollowingProcessorService.process(job, done));
 		q.process('exportMuting', (job, done) => this.exportMutingProcessorService.process(job, done));
 		q.process('exportBlocking', (job, done) => this.exportBlockingProcessorService.process(job, done));

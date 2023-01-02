@@ -31,7 +31,7 @@ export const packedEmojiSchema = {
 		},
 		url: {
 			type: 'string',
-			optional: false, nullable: false,
+			optional: true, nullable: false,
 		},
 	},
 } as const;

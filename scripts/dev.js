@@ -1,7 +1,14 @@
 const execa = require('execa');
+const fs = require('fs');
 
 (async () => {
 	await execa('yarn', ['clean'], {
+		cwd: __dirname + '/../',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
+
+	await execa('yarn', ['build-pre'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
@@ -19,7 +26,7 @@ const execa = require('execa');
 		stderr: process.stderr,
 	});
 
-	execa('yarn', ['workspace', 'client', 'watch'], {
+	execa('yarn', ['workspace', 'frontend', 'watch'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
@@ -33,6 +40,9 @@ const execa = require('execa');
 
 	const start = async () => {
 		try {
+			const exist = fs.existsSync(__dirname + '/../packages/backend/built/boot/index.js')
+			if (!exist) throw new Error('not exist yet');
+
 			await execa('yarn', ['start'], {
 				cwd: __dirname + '/../',
 				stdout: process.stdout,

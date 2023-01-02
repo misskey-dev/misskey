@@ -8,6 +8,7 @@ import type { User } from '@/models/entities/User.js';
 import type { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class GalleryPostEntityService {
@@ -23,6 +24,7 @@ export class GalleryPostEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: GalleryPost['id'] | GalleryPost,
 		me?: { id: User['id'] } | null | undefined,
@@ -47,6 +49,7 @@ export class GalleryPostEntityService {
 		});
 	}
 
+	@bindThis
 	public packMany(
 		posts: GalleryPost[],
 		me?: { id: User['id'] } | null | undefined,

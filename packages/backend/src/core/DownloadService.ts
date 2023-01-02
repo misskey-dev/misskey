@@ -15,6 +15,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 
 const pipeline = util.promisify(stream.pipeline);
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DownloadService {
@@ -30,8 +31,9 @@ export class DownloadService {
 		this.logger = this.loggerService.getLogger('download');
 	}
 
+	@bindThis
 	public async downloadUrl(url: string, path: string): Promise<void> {
-		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
+		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
 	
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
@@ -94,6 +96,7 @@ export class DownloadService {
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 
+	@bindThis
 	public async downloadTextFile(url: string): Promise<string> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
@@ -112,6 +115,7 @@ export class DownloadService {
 		}
 	}
 	
+	@bindThis
 	private isPrivateIp(ip: string): boolean {
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
 			const cidr = new IPCIDR(net);

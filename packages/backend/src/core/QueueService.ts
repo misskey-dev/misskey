@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import type { IActivity } from '@/core/remote/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './queue/QueueModule.js';
+import { bindThis } from '@/decorators.js';
+import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
 
@@ -24,6 +25,7 @@ export class QueueService {
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {}
 
+	@bindThis
 	public deliver(user: ThinUser, content: IActivity | null, to: string | null) {
 		if (content == null) return null;
 		if (to == null) return null;
@@ -47,6 +49,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
 		const data = {
 			activity: activity,
@@ -64,6 +67,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createDeleteDriveFilesJob(user: ThinUser) {
 		return this.dbQueue.add('deleteDriveFiles', {
 			user: user,
@@ -73,6 +77,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createExportCustomEmojisJob(user: ThinUser) {
 		return this.dbQueue.add('exportCustomEmojis', {
 			user: user,
@@ -82,6 +87,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createExportNotesJob(user: ThinUser) {
 		return this.dbQueue.add('exportNotes', {
 			user: user,
@@ -91,6 +97,17 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
+	public createExportFavoritesJob(user: ThinUser) {
+		return this.dbQueue.add('exportFavorites', {
+			user: user,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createExportFollowingJob(user: ThinUser, excludeMuting = false, excludeInactive = false) {
 		return this.dbQueue.add('exportFollowing', {
 			user: user,
@@ -102,6 +119,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createExportMuteJob(user: ThinUser) {
 		return this.dbQueue.add('exportMuting', {
 			user: user,
@@ -111,6 +129,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createExportBlockingJob(user: ThinUser) {
 		return this.dbQueue.add('exportBlocking', {
 			user: user,
@@ -120,6 +139,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createExportUserListsJob(user: ThinUser) {
 		return this.dbQueue.add('exportUserLists', {
 			user: user,
@@ -129,6 +149,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importFollowing', {
 			user: user,
@@ -139,6 +160,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createImportMutingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importMuting', {
 			user: user,
@@ -149,6 +171,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createImportBlockingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importBlocking', {
 			user: user,
@@ -159,6 +182,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importUserLists', {
 			user: user,
@@ -169,6 +193,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createImportCustomEmojisJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importCustomEmojis', {
 			user: user,
@@ -179,6 +204,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; } = {}) {
 		return this.dbQueue.add('deleteAccount', {
 			user: user,
@@ -189,6 +215,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createDeleteObjectStorageFileJob(key: string) {
 		return this.objectStorageQueue.add('deleteFile', {
 			key: key,
@@ -198,6 +225,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public createCleanRemoteFilesJob() {
 		return this.objectStorageQueue.add('cleanRemoteFiles', {}, {
 			removeOnComplete: true,
@@ -205,6 +233,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public webhookDeliver(webhook: Webhook, type: typeof webhookEventTypes[number], content: unknown) {
 		const data = {
 			type,
@@ -228,6 +257,7 @@ export class QueueService {
 		});
 	}
 
+	@bindThis
 	public destroy() {
 		this.deliverQueue.once('cleaned', (jobs, status) => {
 			//deliverLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);

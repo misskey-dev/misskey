@@ -6,6 +6,7 @@ import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -23,6 +24,7 @@ export class AiService {
 	) {
 	}
 
+	@bindThis
 	public async detectSensitive(path: string): Promise<nsfw.predictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
@@ -53,6 +55,7 @@ export class AiService {
 		}
 	}
 
+	@bindThis
 	private async getCpuFlags(): Promise<string[]> {
 		const str = await si.cpuFlags();
 		return str.split(/\s+/);

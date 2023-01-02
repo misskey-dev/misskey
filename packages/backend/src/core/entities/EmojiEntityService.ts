@@ -6,6 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
+import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class EmojiEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Emoji['id'] | Emoji,
 	): Promise<Packed<'Emoji'>> {
@@ -29,11 +31,10 @@ export class EmojiEntityService {
 			name: emoji.name,
 			category: emoji.category,
 			host: emoji.host,
-			// ?? emoji.originalUrl してるのは後方互換性のため
-			url: emoji.publicUrl ?? emoji.originalUrl,
 		};
 	}
 
+	@bindThis
 	public packMany(
 		emojis: any[],
 	) {

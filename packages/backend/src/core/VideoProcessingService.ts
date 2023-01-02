@@ -5,6 +5,7 @@ import type { Config } from '@/config.js';
 import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { createTempDir } from '@/misc/create-temp.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class VideoProcessingService {
@@ -16,6 +17,7 @@ export class VideoProcessingService {
 	) {
 	}
 
+	@bindThis
 	public async generateVideoThumbnail(source: string): Promise<IImage> {
 		const [dir, cleanup] = await createTempDir();
 	
@@ -33,9 +35,8 @@ export class VideoProcessingService {
 						timestamps: ['5%'],
 					});
 			});
-	
-			// JPEGに変換 (Webpでもいいが、MastodonはWebpをサポートせず表示できなくなる)
-			return await this.imageProcessingService.convertToJpeg(`${dir}/out.png`, 498, 280);
+
+			return await this.imageProcessingService.convertToWebp(`${dir}/out.png`, 498, 280);
 		} finally {
 			cleanup();
 		}

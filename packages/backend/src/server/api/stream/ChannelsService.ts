@@ -15,6 +15,7 @@ import { MessagingChannelService } from './channels/messaging.js';
 import { MessagingIndexChannelService } from './channels/messaging-index.js';
 import { DriveChannelService } from './channels/drive.js';
 import { HashtagChannelService } from './channels/hashtag.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ChannelsService {
@@ -37,6 +38,7 @@ export class ChannelsService {
 	) {
 	}
 
+	@bindThis
 	public getChannelService(name: string) {
 		switch (name) {
 			case 'main': return this.mainChannelService;

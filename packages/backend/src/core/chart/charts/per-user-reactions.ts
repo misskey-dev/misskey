@@ -5,6 +5,7 @@ import type { Note } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/per-user-reactions.js';
@@ -35,6 +36,7 @@ export default class PerUserReactionsChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async update(user: { id: User['id'], host: User['host'] }, note: Note): Promise<void> {
 		const prefix = this.userEntityService.isLocalUser(user) ? 'local' : 'remote';
 		this.commit({
