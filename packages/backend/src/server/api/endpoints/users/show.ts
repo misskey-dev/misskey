@@ -139,10 +139,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.noSuchUser);
 				}
 
-				if (me == null && ip != null) {
-					this.perUserPvChart.commitByVisitor(user, ip);
-				} else if (me && me.id !== user.id) {
-					this.perUserPvChart.commitByUser(user, me.id);
+				if (user.host == null) {
+					if (me == null && ip != null) {
+						this.perUserPvChart.commitByVisitor(user, ip);
+					} else if (me && me.id !== user.id) {
+						this.perUserPvChart.commitByUser(user, me.id);
+					}
 				}
 
 				return await this.userEntityService.pack(user, me, {
