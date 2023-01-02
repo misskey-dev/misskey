@@ -34,57 +34,29 @@ export class DownloadService {
 	@bindThis
 	public async downloadUrl(url: string, path: string): Promise<void> {
 		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
-	
+
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
 	
-		const req = got.stream(url, {
+		const response = await this.httpRequestService.fetch({
+			method: 'GET',
+			url,
 			headers: {
 				'User-Agent': this.config.userAgent,
 			},
-			timeout: {
-				lookup: timeout,
-				connect: timeout,
-				secureConnect: timeout,
-				socket: timeout,	// read timeout
-				response: timeout,
-				send: timeout,
-				request: operationTimeout,	// whole operation timeout
-			},
-			agent: {
-				http: this.httpRequestService.httpAgent,
-				https: this.httpRequestService.httpsAgent,
-			},
-			http2: false,	// default
-			retry: {
-				limit: 0,
-			},
-		}).on('response', (res: Got.Response) => {
-			if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !this.config.proxy && res.ip) {
-				if (this.isPrivateIp(res.ip)) {
-					this.logger.warn(`Blocked address: ${res.ip}`);
-					req.destroy();
-				}
-			}
-	
-			const contentLength = res.headers['content-length'];
-			if (contentLength != null) {
-				const size = Number(contentLength);
-				if (size > maxSize) {
-					this.logger.warn(`maxSize exceeded (${size} > ${maxSize}) on response`);
-					req.destroy();
-				}
-			}
-		}).on('downloadProgress', (progress: Got.Progress) => {
-			if (progress.transferred > maxSize) {
-				this.logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
-				req.destroy();
-			}
+			timeout,
+			size: maxSize,
+			ipCheckers:
+				(process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') &&
+					!this.config.proxy ?
+						[{ type: 'black', fn: this.isPrivateIp }] :
+						undefined,
+			// http2: false,	// default
 		});
 	
 		try {
-			await pipeline(req, fs.createWriteStream(path));
+			await pipeline(stream.Readable.fromWeb(streaming), fs.createWriteStream(path));
 		} catch (e) {
 			if (e instanceof Got.HTTPError) {
 				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
@@ -124,6 +96,6 @@ export class DownloadService {
 			}
 		}
 
-		return PrivateIp(ip);
+		return PrivateIp(ip) ?? false;
 	}
 }

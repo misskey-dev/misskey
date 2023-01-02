@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import summaly from 'summaly';
+import * as summaly from 'summaly';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -65,7 +65,7 @@ export class UrlPreviewService {
 			: `Getting preview of ${url}@${lang} ...`);
 	
 		try {
-			const summary = meta.summalyProxy ? await this.httpRequestService.getJson(`${meta.summalyProxy}?${query({
+			const summary = meta.summalyProxy ? await this.httpRequestService.getJson<ReturnType<typeof summaly.default>>(`${meta.summalyProxy}?${query({
 				url: url,
 				lang: lang ?? 'ja-JP',
 			})}`) : await summaly.default(url, {
