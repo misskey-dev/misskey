@@ -285,8 +285,10 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		z-index: 1000;
 		bottom: 0;
 		left: 0;
-		padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px) 16px;
-		display: flex;
+		padding: 12px 12px calc(env(safe-area-inset-bottom, 0px) + 8px) 12px;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		grid-gap: 8px;
 		width: 100%;
 		box-sizing: border-box;
 		-webkit-backdrop-filter: var(--blur, blur(32px));
@@ -296,25 +298,14 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 
 		> .button {
 			position: relative;
-			flex: 1;
 			padding: 0;
+			aspect-ratio: 1;
+			width: 100%;
+			max-width: 60px;
 			margin: auto;
-			height: 64px;
-			border-radius: 8px;
+			border-radius: 100%;
 			background: var(--panel);
 			color: var(--fg);
-
-			&:not(:last-child) {
-				margin-right: 12px;
-			}
-
-			@media (max-width: 400px) {
-				height: 60px;
-
-				&:not(:last-child) {
-					margin-right: 8px;
-				}
-			}
 
 			&:hover {
 				background: var(--X2);
@@ -327,14 +318,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 				color: var(--indicator);
 				font-size: 16px;
 				animation: blink 1s infinite;
-			}
-
-			&:first-child {
-				margin-left: 0;
-			}
-
-			&:last-child {
-				margin-right: 0;
 			}
 
 			> * {
