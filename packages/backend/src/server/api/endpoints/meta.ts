@@ -1,10 +1,13 @@
 import { IsNull, MoreThan } from 'typeorm';
-import config from '@/config/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { Ads, Emojis, Users } from '@/models/index.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import define from '../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
+import { MAX_NOTE_TEXT_LENGTH, DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -26,7 +29,6 @@ export const meta = {
 			version: {
 				type: 'string',
 				optional: false, nullable: false,
-				example: config.version,
 			},
 			name: {
 				type: 'string',
@@ -113,6 +115,14 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			recaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableTurnstile: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			turnstileSiteKey: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -304,111 +314,135 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const instance = await fetchMeta(true);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
+	
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	const emojis = await Emojis.find({
-		where: {
-			host: IsNull(),
-		},
-		order: {
-			category: 'ASC',
-			name: 'ASC',
-		},
-		cache: {
-			id: 'meta_emojis',
-			milliseconds: 3600000,	// 1 hour
-		},
-	});
+		@Inject(DI.adsRepository)
+		private adsRepository: AdsRepository,
 
-	const ads = await Ads.find({
-		where: {
-			expiresAt: MoreThan(new Date()),
-		},
-	});
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
 
-	const response: any = {
-		maintainerName: instance.maintainerName,
-		maintainerEmail: instance.maintainerEmail,
+		private userEntityService: UserEntityService,
+		private emojiEntityService: EmojiEntityService,
+		private metaService: MetaService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const instance = await this.metaService.fetch(true);
 
-		version: config.version,
+			const emojis = await this.emojisRepository.find({
+				where: {
+					host: IsNull(),
+				},
+				order: {
+					category: 'ASC',
+					name: 'ASC',
+				},
+				cache: {
+					id: 'meta_emojis',
+					milliseconds: 3600000,	// 1 hour
+				},
+			});
 
-		name: instance.name,
-		uri: config.url,
-		description: instance.description,
-		langs: instance.langs,
-		tosUrl: instance.ToSUrl,
-		repositoryUrl: instance.repositoryUrl,
-		feedbackUrl: instance.feedbackUrl,
-		disableRegistration: instance.disableRegistration,
-		disableLocalTimeline: instance.disableLocalTimeline,
-		disableGlobalTimeline: instance.disableGlobalTimeline,
-		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
-		emailRequiredForSignup: instance.emailRequiredForSignup,
-		enableHcaptcha: instance.enableHcaptcha,
-		hcaptchaSiteKey: instance.hcaptchaSiteKey,
-		enableRecaptcha: instance.enableRecaptcha,
-		recaptchaSiteKey: instance.recaptchaSiteKey,
-		swPublickey: instance.swPublicKey,
-		themeColor: instance.themeColor,
-		mascotImageUrl: instance.mascotImageUrl,
-		bannerUrl: instance.bannerUrl,
-		errorImageUrl: instance.errorImageUrl,
-		iconUrl: instance.iconUrl,
-		backgroundImageUrl: instance.backgroundImageUrl,
-		logoImageUrl: instance.logoImageUrl,
-		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-		emojis: await Emojis.packMany(emojis),
-		defaultLightTheme: instance.defaultLightTheme,
-		defaultDarkTheme: instance.defaultDarkTheme,
-		ads: ads.map(ad => ({
-			id: ad.id,
-			url: ad.url,
-			place: ad.place,
-			ratio: ad.ratio,
-			imageUrl: ad.imageUrl,
-		})),
-		enableEmail: instance.enableEmail,
+			const ads = await this.adsRepository.find({
+				where: {
+					expiresAt: MoreThan(new Date()),
+				},
+			});
 
-		enableTwitterIntegration: instance.enableTwitterIntegration,
-		enableGithubIntegration: instance.enableGithubIntegration,
-		enableDiscordIntegration: instance.enableDiscordIntegration,
+			const response: any = {
+				maintainerName: instance.maintainerName,
+				maintainerEmail: instance.maintainerEmail,
 
-		enableServiceWorker: instance.enableServiceWorker,
+				version: this.config.version,
 
-		translatorAvailable: instance.deeplAuthKey != null,
+				name: instance.name,
+				uri: this.config.url,
+				description: instance.description,
+				langs: instance.langs,
+				tosUrl: instance.ToSUrl,
+				repositoryUrl: instance.repositoryUrl,
+				feedbackUrl: instance.feedbackUrl,
+				disableRegistration: instance.disableRegistration,
+				disableLocalTimeline: instance.disableLocalTimeline,
+				disableGlobalTimeline: instance.disableGlobalTimeline,
+				driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
+				driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
+				emailRequiredForSignup: instance.emailRequiredForSignup,
+				enableHcaptcha: instance.enableHcaptcha,
+				hcaptchaSiteKey: instance.hcaptchaSiteKey,
+				enableRecaptcha: instance.enableRecaptcha,
+				recaptchaSiteKey: instance.recaptchaSiteKey,
+				enableTurnstile: instance.enableTurnstile,
+				turnstileSiteKey: instance.turnstileSiteKey,
+				swPublickey: instance.swPublicKey,
+				themeColor: instance.themeColor,
+				mascotImageUrl: instance.mascotImageUrl,
+				bannerUrl: instance.bannerUrl,
+				errorImageUrl: instance.errorImageUrl,
+				iconUrl: instance.iconUrl,
+				backgroundImageUrl: instance.backgroundImageUrl,
+				logoImageUrl: instance.logoImageUrl,
+				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
+				emojis: await this.emojiEntityService.packMany(emojis),
+				defaultLightTheme: instance.defaultLightTheme,
+				defaultDarkTheme: instance.defaultDarkTheme,
+				ads: ads.map(ad => ({
+					id: ad.id,
+					url: ad.url,
+					place: ad.place,
+					ratio: ad.ratio,
+					imageUrl: ad.imageUrl,
+				})),
+				enableEmail: instance.enableEmail,
 
-		...(ps.detail ? {
-			pinnedPages: instance.pinnedPages,
-			pinnedClipId: instance.pinnedClipId,
-			cacheRemoteFiles: instance.cacheRemoteFiles,
-			requireSetup: (await Users.countBy({
-				host: IsNull(),
-			})) === 0,
-		} : {}),
-	};
+				enableTwitterIntegration: instance.enableTwitterIntegration,
+				enableGithubIntegration: instance.enableGithubIntegration,
+				enableDiscordIntegration: instance.enableDiscordIntegration,
 
-	if (ps.detail) {
-		const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+				enableServiceWorker: instance.enableServiceWorker,
 
-		response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
-		response.features = {
-			registration: !instance.disableRegistration,
-			localTimeLine: !instance.disableLocalTimeline,
-			globalTimeLine: !instance.disableGlobalTimeline,
-			emailRequiredForSignup: instance.emailRequiredForSignup,
-			elasticsearch: config.elasticsearch ? true : false,
-			hcaptcha: instance.enableHcaptcha,
-			recaptcha: instance.enableRecaptcha,
-			objectStorage: instance.useObjectStorage,
-			twitter: instance.enableTwitterIntegration,
-			github: instance.enableGithubIntegration,
-			discord: instance.enableDiscordIntegration,
-			serviceWorker: instance.enableServiceWorker,
-			miauth: true,
-		};
+				translatorAvailable: instance.deeplAuthKey != null,
+
+				...(ps.detail ? {
+					pinnedPages: instance.pinnedPages,
+					pinnedClipId: instance.pinnedClipId,
+					cacheRemoteFiles: instance.cacheRemoteFiles,
+					requireSetup: (await this.usersRepository.countBy({
+						host: IsNull(),
+					})) === 0,
+				} : {}),
+			};
+
+			if (ps.detail) {
+				const proxyAccount = instance.proxyAccountId ? await this.userEntityService.pack(instance.proxyAccountId).catch(() => null) : null;
+
+				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
+				response.features = {
+					registration: !instance.disableRegistration,
+					localTimeLine: !instance.disableLocalTimeline,
+					globalTimeLine: !instance.disableGlobalTimeline,
+					emailRequiredForSignup: instance.emailRequiredForSignup,
+					elasticsearch: this.config.elasticsearch ? true : false,
+					hcaptcha: instance.enableHcaptcha,
+					recaptcha: instance.enableRecaptcha,
+					turnstile: instance.enableTurnstile,
+					objectStorage: instance.useObjectStorage,
+					twitter: instance.enableTwitterIntegration,
+					github: instance.enableGithubIntegration,
+					discord: instance.enableDiscordIntegration,
+					serviceWorker: instance.enableServiceWorker,
+					miauth: true,
+				};
+			}
+
+			return response;
+		});
 	}
-
-	return response;
-});
+}

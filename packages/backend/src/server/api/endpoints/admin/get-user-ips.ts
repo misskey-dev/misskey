@@ -1,5 +1,7 @@
-import { UserIps } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserIpsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -17,15 +19,23 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const ips = await UserIps.find({
-		where: { userId: ps.userId },
-		order: { createdAt: 'DESC' },
-		take: 30,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userIpsRepository)
+		private userIpsRepository: UserIpsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const ips = await this.userIpsRepository.find({
+				where: { userId: ps.userId },
+				order: { createdAt: 'DESC' },
+				take: 30,
+			});
 
-	return ips.map(x => ({
-		ip: x.ip,
-		createdAt: x.createdAt.toISOString(),
-	}));
-});
+			return ips.map(x => ({
+				ip: x.ip,
+				createdAt: x.createdAt.toISOString(),
+			}));
+		});
+	}
+}

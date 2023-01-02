@@ -347,6 +347,8 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "Activează reCAPTCHA"
 recaptchaSiteKey: "Site key"
 recaptchaSecretKey: "Secret key"
+turnstileSiteKey: "Site key"
+turnstileSecretKey: "Secret key"
 avoidMultiCaptchaConfirm: "Folosirea mai multor sisteme Captcha poate cauza interferență între acestea. Ai dori să dezactivezi alte sisteme Captcha acum active? Dacă preferi să rămână activate, apasă Anulare."
 antennas: "Antene"
 manageAntennas: "Gestionează Antenele"
@@ -448,7 +450,6 @@ language: "Limbă"
 uiLanguage: "Limba interfeței"
 groupInvited: "Ai fost invitat într-un grup"
 aboutX: "Despre {x}"
-useOsNativeEmojis: "Folosește emojiuri native OS-ului"
 disableDrawer: "Nu folosi meniuri în stil sertar"
 youHaveNoGroups: "Nu ai niciun grup"
 joinOrCreateGroup: "Primește o invitație într-un grup sau creează unul nou."
@@ -501,6 +502,7 @@ deleteAll: "Șterge tot"
 showFixedPostForm: "Arată caseta de postare în vârful cronologie"
 newNoteRecived: "Sunt note noi"
 sounds: "Sunete"
+sound: "Sunete"
 listen: "Ascultă"
 none: "Nimic"
 showInPage: "Arată în pagină"
@@ -670,6 +672,8 @@ _widgets:
   activity: "Activitate"
   federation: "Federație"
   jobQueue: "coada de job-uri"
+  _userList:
+    chooseList: "Selectează o listă"
 _cw:
   show: "Incarcă mai mult"
 _visibility:
@@ -690,24 +694,6 @@ _timelines:
 _pages:
   blocks:
     image: "Imagini"
-  script:
-    categories:
-      list: "Liste"
-    blocks:
-      _join:
-        arg1: "Liste"
-      _randomPick:
-        arg1: "Liste"
-      _dailyRandomPick:
-        arg1: "Liste"
-      _seedRandomPick:
-        arg2: "Liste"
-      _pick:
-        arg1: "Liste"
-      _listLen:
-        arg1: "Liste"
-    types:
-      array: "Liste"
 _notification:
   youWereFollowed: "te-a urmărit"
   youWereInvitedToGroup: "Ai fost invitat într-un grup"

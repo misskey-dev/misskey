@@ -1,5 +1,7 @@
-import define from '../../../define.js';
-import { Ads } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AdsRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -33,18 +35,26 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const ad = await Ads.findOneBy({ id: ps.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private adsRepository: AdsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const ad = await this.adsRepository.findOneBy({ id: ps.id });
 
-	if (ad == null) throw new ApiError(meta.errors.noSuchAd);
+			if (ad == null) throw new ApiError(meta.errors.noSuchAd);
 
-	await Ads.update(ad.id, {
-		url: ps.url,
-		place: ps.place,
-		priority: ps.priority,
-		ratio: ps.ratio,
-		memo: ps.memo,
-		imageUrl: ps.imageUrl,
-		expiresAt: new Date(ps.expiresAt),
-	});
-});
+			await this.adsRepository.update(ad.id, {
+				url: ps.url,
+				place: ps.place,
+				priority: ps.priority,
+				ratio: ps.ratio,
+				memo: ps.memo,
+				imageUrl: ps.imageUrl,
+				expiresAt: new Date(ps.expiresAt),
+			});
+		});
+	}
+}

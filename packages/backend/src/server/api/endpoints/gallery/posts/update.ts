@@ -1,9 +1,12 @@
 import ms from 'ms';
-import define from '../../../define.js';
-import { DriveFiles, GalleryPosts } from '@/models/index.js';
-import { GalleryPost } from '@/models/entities/gallery-post.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/index.js';
+import { GalleryPost } from '@/models/entities/GalleryPost.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -43,30 +46,43 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const files = (await Promise.all(ps.fileIds.map(fileId =>
-		DriveFiles.findOneBy({
-			id: fileId,
-			userId: user.id,
-		})
-	))).filter((file): file is DriveFile => file != null);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.galleryPostsRepository)
+		private galleryPostsRepository: GalleryPostsRepository,
 
-	if (files.length === 0) {
-		throw new Error();
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
+		private galleryPostEntityService: GalleryPostEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const files = (await Promise.all(ps.fileIds.map(fileId =>
+				this.driveFilesRepository.findOneBy({
+					id: fileId,
+					userId: me.id,
+				}),
+			))).filter((file): file is DriveFile => file != null);
+
+			if (files.length === 0) {
+				throw new Error();
+			}
+
+			await this.galleryPostsRepository.update({
+				id: ps.postId,
+				userId: me.id,
+			}, {
+				updatedAt: new Date(),
+				title: ps.title,
+				description: ps.description,
+				isSensitive: ps.isSensitive,
+				fileIds: files.map(file => file.id),
+			});
+
+			const post = await this.galleryPostsRepository.findOneByOrFail({ id: ps.postId });
+
+			return await this.galleryPostEntityService.pack(post, me);
+		});
 	}
-
-	await GalleryPosts.update({
-		id: ps.postId,
-		userId: user.id,
-	}, {
-		updatedAt: new Date(),
-		title: ps.title,
-		description: ps.description,
-		isSensitive: ps.isSensitive,
-		fileIds: files.map(file => file.id),
-	});
-
-	const post = await GalleryPosts.findOneByOrFail({ id: ps.postId });
-
-	return await GalleryPosts.pack(post, user);
-});
+}

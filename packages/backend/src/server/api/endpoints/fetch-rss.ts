@@ -1,7 +1,9 @@
 import Parser from 'rss-parser';
-import { getResponse } from '@/misc/fetch.js';
-import config from '@/config/index.js';
-import define from '../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 const rssParser = new Parser();
 
@@ -22,18 +24,28 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const res = await getResponse({
-		url: ps.url,
-		method: 'GET',
-		headers: Object.assign({
-			'User-Agent': config.userAgent,
-			Accept: 'application/rss+xml, */*',
-		}),
-		timeout: 5000,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
 
-	const text = await res.text();
+		private httpRequestService: HttpRequestService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const res = await this.httpRequestService.getResponse({
+				url: ps.url,
+				method: 'GET',
+				headers: Object.assign({
+					'User-Agent': config.userAgent,
+					Accept: 'application/rss+xml, */*',
+				}),
+				timeout: 5000,
+			});
 
-	return rssParser.parseString(text);
-});
+			const text = await res.text();
+
+			return rssParser.parseString(text);
+		});
+	}
+}

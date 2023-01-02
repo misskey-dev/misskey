@@ -1,7 +1,11 @@
 import bcrypt from 'bcryptjs';
-import define from '../../../define.js';
-import { UserProfiles, UserSecurityKeys, Users } from '@/models/index.js';
-import { publishMainStream } from '@/services/stream.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -19,27 +23,41 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userSecurityKeysRepository)
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
-	if (!same) {
-		throw new Error('incorrect password');
+		private userEntityService: UserEntityService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
+
+			// Compare password
+			const same = await bcrypt.compare(ps.password, profile.password!);
+
+			if (!same) {
+				throw new Error('incorrect password');
+			}
+
+			// Make sure we only delete the user's own creds
+			await this.userSecurityKeysRepository.delete({
+				userId: me.id,
+				id: ps.credentialId,
+			});
+
+			// Publish meUpdated event
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
+				detail: true,
+				includeSecrets: true,
+			}));
+
+			return {};
+		});
 	}
-
-	// Make sure we only delete the user's own creds
-	await UserSecurityKeys.delete({
-		userId: user.id,
-		id: ps.credentialId,
-	});
-
-	// Publish meUpdated event
-	publishMainStream(user.id, 'meUpdated', await Users.pack(user.id, user, {
-		detail: true,
-		includeSecrets: true,
-	}));
-
-	return {};
-});
+}

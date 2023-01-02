@@ -1,7 +1,9 @@
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../../define.js';
-import { RegistryItems } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { RegistryItemsRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
@@ -22,37 +24,48 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = RegistryItems.createQueryBuilder('item')
-		.where('item.domain IS NULL')
-		.andWhere('item.userId = :userId', { userId: user.id })
-		.andWhere('item.key = :key', { key: ps.key })
-		.andWhere('item.scope = :scope', { scope: ps.scope });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.registryItemsRepository)
+		private registryItemsRepository: RegistryItemsRepository,
 
-	const existingItem = await query.getOne();
+		private idService: IdService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.registryItemsRepository.createQueryBuilder('item')
+				.where('item.domain IS NULL')
+				.andWhere('item.userId = :userId', { userId: me.id })
+				.andWhere('item.key = :key', { key: ps.key })
+				.andWhere('item.scope = :scope', { scope: ps.scope });
 
-	if (existingItem) {
-		await RegistryItems.update(existingItem.id, {
-			updatedAt: new Date(),
-			value: ps.value,
-		});
-	} else {
-		await RegistryItems.insert({
-			id: genId(),
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			userId: user.id,
-			domain: null,
-			scope: ps.scope,
-			key: ps.key,
-			value: ps.value,
+			const existingItem = await query.getOne();
+
+			if (existingItem) {
+				await this.registryItemsRepository.update(existingItem.id, {
+					updatedAt: new Date(),
+					value: ps.value,
+				});
+			} else {
+				await this.registryItemsRepository.insert({
+					id: this.idService.genId(),
+					createdAt: new Date(),
+					updatedAt: new Date(),
+					userId: me.id,
+					domain: null,
+					scope: ps.scope,
+					key: ps.key,
+					value: ps.value,
+				});
+			}
+
+			// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
+			this.globalEventService.publishMainStream(me.id, 'registryUpdated', {
+				scope: ps.scope,
+				key: ps.key,
+				value: ps.value,
+			});
 		});
 	}
-
-	// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
-	publishMainStream(user.id, 'registryUpdated', {
-		scope: ps.scope,
-		key: ps.key,
-		value: ps.value,
-	});
-});
+}

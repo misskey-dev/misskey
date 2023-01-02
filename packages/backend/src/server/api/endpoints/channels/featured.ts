@@ -1,5 +1,8 @@
-import define from '../../define.js';
-import { Channels } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { ChannelsRepository } from '@/models/index.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['channels'],
@@ -24,12 +27,22 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const query = Channels.createQueryBuilder('channel')
-		.where('channel.lastNotedAt IS NOT NULL')
-		.orderBy('channel.lastNotedAt', 'DESC');
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.channelsRepository)
+		private channelsRepository: ChannelsRepository,
 
-	const channels = await query.take(10).getMany();
+		private channelEntityService: ChannelEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.channelsRepository.createQueryBuilder('channel')
+				.where('channel.lastNotedAt IS NOT NULL')
+				.orderBy('channel.lastNotedAt', 'DESC');
 
-	return await Promise.all(channels.map(x => Channels.pack(x, me)));
-});
+			const channels = await query.take(10).getMany();
+
+			return await Promise.all(channels.map(x => this.channelEntityService.pack(x, me)));
+		});
+	}
+}

@@ -1,6 +1,8 @@
-import define from '../../../define.js';
-import { Announcements } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AnnouncementsRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -55,15 +57,25 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const announcement = await Announcements.insert({
-		id: genId(),
-		createdAt: new Date(),
-		updatedAt: null,
-		title: ps.title,
-		text: ps.text,
-		imageUrl: ps.imageUrl,
-	}).then(x => Announcements.findOneByOrFail(x.identifiers[0]));
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
 
-	return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
-});
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const announcement = await this.announcementsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				updatedAt: null,
+				title: ps.title,
+				text: ps.text,
+				imageUrl: ps.imageUrl,
+			}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
+
+			return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
+		});
+	}
+}

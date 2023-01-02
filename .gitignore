@@ -9,6 +9,17 @@
 node_modules
 report.*.json
 
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+packages/frontend/.yarn/cache
+packages/backend/.yarn/cache
+packages/sw/.yarn/cache
+
 # Cypress
 cypress/screenshots
 cypress/videos
