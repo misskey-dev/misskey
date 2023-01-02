@@ -251,7 +251,7 @@ function onDrop(ev) {
 	--deckColumnHeaderHeight: 40px;
 
 	height: 100%;
-	overflow: hidden;
+	overflow: clip;
 	contain: strict;
 
 	&.draghover {
