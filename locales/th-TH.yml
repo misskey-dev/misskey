@@ -1382,6 +1382,7 @@ _profile:
   changeBanner: "เปลี่ยนแบนเนอร์"
 _exportOrImport:
   allNotes: "โน้ตทั้งหมด"
+  favoritedNotes: "บันทึกที่ชื่นชอบ"
   followingList: "กำลังติดตาม"
   muteList: "ปิดเสียง"
   blockingList: "บล็อค"
