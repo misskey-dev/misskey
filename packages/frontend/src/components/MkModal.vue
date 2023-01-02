@@ -369,6 +369,10 @@ defineExpose({
 		}
 	}
 
+	> .content {
+		container-type: inline-size;
+	}
+
 	&.dialog {
 		> .content {
 			position: fixed;
