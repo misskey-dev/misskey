@@ -113,7 +113,7 @@ mainRouter.on('change', () => {
 
 document.documentElement.style.overflowY = 'scroll';
 
-defaultStore.ready.then(() => {
+defaultStore.loaded.then(() => {
 	if (defaultStore.state.widgets.length === 0) {
 		defaultStore.set('widgets', [{
 			name: 'calendar',
