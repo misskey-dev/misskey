@@ -54,17 +54,13 @@ export class DownloadService {
 						undefined,
 			// http2: false,	// default
 		});
-	
-		try {
-			await pipeline(stream.Readable.fromWeb(streaming), fs.createWriteStream(path));
-		} catch (e) {
-			if (e instanceof Got.HTTPError) {
-				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
-			} else {
-				throw e;
-			}
+
+		if (response.body === null) {
+			throw new StatusError('No body', 400, 'No body');
 		}
-	
+
+		await pipeline(stream.Readable.fromWeb(response.body), fs.createWriteStream(path));
+
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 
