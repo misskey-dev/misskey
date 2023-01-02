@@ -43,11 +43,14 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import XUserList from '@/components/MkUserList.vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	tag?: string;
-}>();
+	initialTab?: string;
+}>(), {
+	initialTab: 'featured',
+});
 
-let tab = $ref('featured');
+let tab = $ref(props.initialTab);
 let tagsEl = $ref<InstanceType<typeof MkFolder>>();
 let searchQuery = $ref(null);
 let searchOrigin = $ref('combined');

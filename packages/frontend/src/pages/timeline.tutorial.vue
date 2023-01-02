@@ -36,10 +36,10 @@
 		<div>{{ i18n.ts._tutorial.step5_1 }}</div>
 		<I18n :src="i18n.ts._tutorial.step5_2" tag="div">
 			<template #featured>
-				<MkA class="_link" to="/featured">{{ i18n.ts.featured }}</MkA>
+				<MkA class="_link" to="/explore">{{ i18n.ts.featured }}</MkA>
 			</template>
 			<template #explore>
-				<MkA class="_link" to="/explore">{{ i18n.ts.explore }}</MkA>
+				<MkA class="_link" to="/explore#users">{{ i18n.ts.explore }}</MkA>
 			</template>
 		</I18n>
 		<div>{{ i18n.ts._tutorial.step5_3 }}</div>
