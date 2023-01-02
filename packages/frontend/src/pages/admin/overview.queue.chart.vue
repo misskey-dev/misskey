@@ -21,11 +21,6 @@ const props = defineProps<{
 
 const chartEl = ref<HTMLCanvasElement>(null);
 
-const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-// フォントカラー
-Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-
 const { handler: externalTooltipHandler } = useChartTooltip();
 
 let chartInstance: Chart;
@@ -101,8 +96,6 @@ onMounted(() => {
 				x: {
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: false,
@@ -112,8 +105,6 @@ onMounted(() => {
 				y: {
 					min: 0,
 					grid: {
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 				},
 			},

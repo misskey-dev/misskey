@@ -128,11 +128,7 @@ const render = () => {
 		chartInstance.destroy();
 	}
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 	const maxes = chartData.series.map((x, i) => Math.max(...x.data.map(d => d.y)));
 
@@ -188,8 +184,6 @@ const render = () => {
 						unit: props.span === 'day' ? 'month' : 'day',
 					},
 					grid: {
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: props.detailed,
@@ -208,8 +202,6 @@ const render = () => {
 					stacked: props.stacked,
 					suggestedMax: 50,
 					grid: {
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: props.detailed,
@@ -227,7 +219,6 @@ const render = () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: props.detailed,

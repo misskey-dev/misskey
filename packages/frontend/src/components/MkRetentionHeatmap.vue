@@ -64,11 +64,6 @@ async function renderChart() {
 
 	await nextTick();
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-
 	const color = defaultStore.state.darkMode ? '#b4e900' : '#86b300';
 
 	// 視覚上の分かりやすさのため上から最も大きい3つの値の平均を最大値とする
@@ -119,8 +114,6 @@ async function renderChart() {
 					suggestedMax: maxDays,
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -143,8 +136,6 @@ async function renderChart() {
 					},
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						maxRotation: 0,
@@ -156,7 +147,6 @@ async function renderChart() {
 					},
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,

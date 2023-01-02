@@ -18,9 +18,6 @@ const props = defineProps<{
 
 const chartEl = ref<HTMLCanvasElement>(null);
 
-// フォントカラー
-Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-
 const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',
 });

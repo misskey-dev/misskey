@@ -53,11 +53,7 @@ async function renderChart() {
 
 	const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 	const colorRead = '#3498db';
 	const colorWrite = '#2ecc71';
@@ -113,8 +109,6 @@ async function renderChart() {
 					},
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -132,8 +126,6 @@ async function renderChart() {
 					suggestedMax: 10,
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -145,7 +137,6 @@ async function renderChart() {
 				intersect: false,
 				mode: 'index',
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,
