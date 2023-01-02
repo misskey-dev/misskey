@@ -241,7 +241,7 @@ export class HttpRequestService {
 		]);
 
 		if (res == null) {
-			throw new StatusError(`Request Timeout`, 408, 'Request Timeout');
+			throw new StatusError(`Gateway Timeout`, 504, 'Gateway Timeout');
 		}
 
 		if (!res.ok && !args.noOkError) {
