@@ -19,32 +19,26 @@ export class HttpRequestService {
 	/**
 	 * Get http non-proxy agent (undici)
 	 */
-	private agent: undici.Agent;
+	private nonProxiedAgent: undici.Agent;
 
 	/**
 	 * Get http proxy or non-proxy agent (undici)
 	 */
-	public proxiedAgent: undici.ProxyAgent | undici.Agent;
+	public agent: undici.ProxyAgent | undici.Agent;
 
-	/**
-	 * Get http non-proxy agent
-	 */
+	//#region for old http/https, only used in S3Service
+	// http non-proxy agent
 	private http: http.Agent;
 
-	/**
-	 * Get https non-proxy agent
-	 */
+	// https non-proxy agent
 	private https: https.Agent;
 
-	/**
-	 * Get http proxy or non-proxy agent
-	 */
+	// http proxy or non-proxy agent
 	public httpAgent: http.Agent;
 
-	/**
-	 * Get https proxy or non-proxy agent
-	 */
+	// https proxy or non-proxy agent
 	public httpsAgent: https.Agent;
+	//#endregion
 
 	public readonly dnsCache: CacheableLookup;
 	public readonly clientDefaults: undici.Agent.Options;
@@ -70,7 +64,7 @@ export class HttpRequestService {
 			},
 		}
 
-		this.agent = new undici.Agent({
+		this.nonProxiedAgent = new undici.Agent({
 			...this.clientDefaults,
 		});
 
@@ -88,15 +82,16 @@ export class HttpRequestService {
 
 		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
 
-		this.proxiedAgent = config.proxy
+		this.agent = config.proxy
 			? new undici.ProxyAgent({
 				...this.clientDefaults,
 				connections: maxSockets,
 
 				uri: config.proxy,
 			})
-			: this.agent;
+			: this.nonProxiedAgent;
 
+	//#region for old http/https, only used in S3Service
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
 				keepAlive: true,
@@ -119,6 +114,7 @@ export class HttpRequestService {
 			})
 			: this.https;
 	}
+	//#endregion
 
 	/**
 	 * Get agent by URL
@@ -128,14 +124,14 @@ export class HttpRequestService {
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false): undici.Agent | undici.ProxyAgent {
 		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
-			return this.agent;
+			return this.nonProxiedAgent;
 		} else {
-			return this.proxiedAgent;
+			return this.agent;
 		}
 	}
 
 	/**
-	 * Get agent by URL
+	 * Get http agent by URL
 	 * @param url URL
 	 * @param bypassProxy Allways bypass proxy
 	 */
@@ -177,7 +173,7 @@ export class HttpRequestService {
 			size: 1024 * 256,
 		});
 
-		return await res.json();
+		return await res.json() as T;
 	}
 
 	@bindThis
