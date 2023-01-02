@@ -65,7 +65,7 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[])
+	tabs: () => ([] as Tab[]),
 });
 
 const emit = defineEmits<{
@@ -180,7 +180,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .fdidabkb {
-	--height: 52px;
+	--height: 50px;
 	display: flex;
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
