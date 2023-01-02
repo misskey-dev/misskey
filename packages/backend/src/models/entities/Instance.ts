@@ -60,14 +60,6 @@ export class Instance {
 	public followersCount: number;
 
 	/**
-	 * 直近のリクエスト送信日時
-	 */
-	@Column('timestamp with time zone', {
-		nullable: true,
-	})
-	public latestRequestSentAt: Date | null;
-
-	/**
 	 * 直近のリクエスト送信時のHTTPステータスコード
 	 */
 	@Column('integer', {

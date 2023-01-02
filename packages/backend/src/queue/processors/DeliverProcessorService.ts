@@ -15,10 +15,10 @@ import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData } from '../types.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DeliverProcessorService {
@@ -85,7 +85,6 @@ export class DeliverProcessorService {
 			// Update stats
 			this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
 				this.instancesRepository.update(i.id, {
-					latestRequestSentAt: new Date(),
 					latestStatus: 200,
 					lastCommunicatedAt: new Date(),
 					isNotResponding: false,
@@ -100,10 +99,9 @@ export class DeliverProcessorService {
 
 			return 'Success';
 		} catch (res) {
-		// Update stats
+			// Update stats
 			this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
 				this.instancesRepository.update(i.id, {
-					latestRequestSentAt: new Date(),
 					latestStatus: res instanceof StatusError ? res.statusCode : null,
 					isNotResponding: true,
 				});
@@ -114,17 +112,17 @@ export class DeliverProcessorService {
 			});
 
 			if (res instanceof StatusError) {
-			// 4xx
+				// 4xx
 				if (res.isClientError) {
-				// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
-				// 何回再送しても成功することはないということなのでエラーにはしないでおく
+					// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
+					// 何回再送しても成功することはないということなのでエラーにはしないでおく
 					return `${res.statusCode} ${res.statusMessage}`;
 				}
 
 				// 5xx etc.
 				throw `${res.statusCode} ${res.statusMessage}`;
 			} else {
-			// DNS error, socket error, timeout ...
+				// DNS error, socket error, timeout ...
 				throw res;
 			}
 		}
