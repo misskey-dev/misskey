@@ -63,17 +63,17 @@ let transformOrigin = $ref('center');
 let showing = $ref(true);
 let content = $ref<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
-const type = $computed(() => {
-	if (props.preferType === 'auto') {
-		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
-			return 'drawer';
-		} else {
-			return props.src != null ? 'popup' : 'dialog';
-		}
+let type = $ref<ModalTypes>();
+console.log(props.preferType, isTouchUsing, deviceKind);
+if (props.preferType === 'auto') {
+	if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
+		type = 'drawer';
 	} else {
-		return props.preferType!;
+		type = props.src != null ? 'popup' : 'dialog';
 	}
-});
+} else {
+	type = props.preferType!;
+}
 let transitionName = $ref(defaultStore.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : '');
 let transitionDuration = $ref(defaultStore.state.animation ? 200 : 0);
 
