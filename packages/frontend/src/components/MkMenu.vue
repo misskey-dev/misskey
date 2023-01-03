@@ -203,7 +203,7 @@ onBeforeUnmount(() => {
 	> .item {
 		display: block;
 		position: relative;
-		padding: 6px 16px;
+		padding: 5px 16px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
