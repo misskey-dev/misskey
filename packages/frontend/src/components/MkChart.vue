@@ -13,7 +13,7 @@
   id-denylist violation when setting it. This is causing about 60+ lint issues.
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
-import { onMounted, ref, watch, PropType, onUnmounted } from 'vue';
+import { onMounted, ref, shallowRef, watch, PropType, onUnmounted } from 'vue';
 import { Chart } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
@@ -102,7 +102,7 @@ let chartData: {
 	}[];
 } = null;
 
-const chartEl = ref<HTMLCanvasElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 const fetching = ref(true);
 
 const getDate = (ago: number) => {

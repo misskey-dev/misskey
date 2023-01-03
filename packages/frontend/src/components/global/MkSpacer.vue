@@ -24,8 +24,8 @@ const props = withDefaults(defineProps<{
 });
 
 let ro: ResizeObserver;
-let root = $ref<HTMLElement>();
-let content = $ref<HTMLElement>();
+let root = $shallowRef<HTMLElement>();
+let content = $shallowRef<HTMLElement>();
 let margin = $ref(props.marginMin);
 const widthHistory = [null, null] as [number | null, number | null];
 const heightHistory = [null, null] as [number | null, number | null];
@@ -71,7 +71,6 @@ onMounted(() => {
 		widthHistory.unshift(width);
 		const pastHeight = heightHistory.pop();
 		heightHistory.unshift(height);
-
 
 		if (pastWidth === width && pastHeight === height) {
 			return;

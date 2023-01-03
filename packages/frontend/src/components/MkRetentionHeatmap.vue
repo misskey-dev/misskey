@@ -23,8 +23,8 @@ import { initChart } from '@/scripts/init-chart';
 
 initChart();
 
-const rootEl = $ref<HTMLDivElement>(null);
-const chartEl = $ref<HTMLCanvasElement>(null);
+const rootEl = $shallowRef<HTMLDivElement>(null);
+const chartEl = $shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
 let fetching = $ref(true);

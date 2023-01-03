@@ -28,7 +28,7 @@ const props = defineProps<{
 	user: misskey.entities.User;
 }>();
 
-const chartEl = $ref<HTMLCanvasElement>(null);
+const chartEl = $shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;

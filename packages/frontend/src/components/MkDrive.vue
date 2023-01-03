@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { markRaw, nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
@@ -119,7 +119,7 @@ const emit = defineEmits<{
 }>();
 
 const loadMoreFiles = ref<InstanceType<typeof MkButton>>();
-const fileInput = ref<HTMLInputElement>();
+const fileInput = shallowRef<HTMLInputElement>();
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 const files = ref<Misskey.entities.DriveFile[]>([]);

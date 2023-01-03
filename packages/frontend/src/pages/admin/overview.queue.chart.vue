@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onMounted, onUnmounted, ref } from 'vue';
+import { watch, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import number from '@/filters/number';
 import * as os from '@/os';
@@ -19,7 +19,7 @@ const props = defineProps<{
 	type: string;
 }>();
 
-const chartEl = ref<HTMLCanvasElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 

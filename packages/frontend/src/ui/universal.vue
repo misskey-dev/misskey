@@ -86,7 +86,7 @@ window.addEventListener('resize', () => {
 });
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsEl = $ref<HTMLElement>();
+const widgetsEl = $shallowRef<HTMLElement>();
 const widgetsShowing = $ref(false);
 
 provide('router', mainRouter);

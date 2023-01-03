@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import * as os from '@/os';
 import { calcPopupPosition } from '@/scripts/popup-position';
 
@@ -34,7 +34,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const el = ref<HTMLElement>();
+const el = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex('high');
 
 function setPosition() {

@@ -51,7 +51,7 @@ const props = defineProps<{
 
 const imgUrl = getProxiedImageUrl(props.file.url);
 let dialogEl = $ref<InstanceType<typeof XModalWindow>>();
-let imgEl = $ref<HTMLImageElement>();
+let imgEl = $shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;
 let loading = $ref(true);
 

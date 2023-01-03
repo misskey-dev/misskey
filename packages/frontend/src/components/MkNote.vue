@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref, Ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -156,11 +156,11 @@ const isRenote = (
 	note.poll == null
 );
 
-const el = ref<HTMLElement>();
-const menuButton = ref<HTMLElement>();
+const el = shallowRef<HTMLElement>();
+const menuButton = shallowRef<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof MkRenoteButton>>();
-const renoteTime = ref<HTMLElement>();
-const reactButton = ref<HTMLElement>();
+const renoteTime = shallowRef<HTMLElement>();
+const reactButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);

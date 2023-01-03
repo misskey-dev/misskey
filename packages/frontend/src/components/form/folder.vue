@@ -40,7 +40,7 @@ const props = withDefaults(defineProps<{
 
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);
-let root = $ref<HTMLElement>();
+let root = $shallowRef<HTMLElement>();
 
 function enter(el) {
 	const elementHeight = el.getBoundingClientRect().height;

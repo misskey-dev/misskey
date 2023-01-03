@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
@@ -102,8 +102,8 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
-const search = ref<HTMLInputElement>();
-const emojis = ref<HTMLDivElement>();
+const search = shallowRef<HTMLInputElement>();
+const emojis = shallowRef<HTMLDivElement>();
 
 const {
 	reactions: pinned,

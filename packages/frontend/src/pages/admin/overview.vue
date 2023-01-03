@@ -82,7 +82,7 @@ import { defaultStore } from '@/store';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
-const rootEl = $ref<HTMLElement>();
+const rootEl = $shallowRef<HTMLElement>();
 let serverInfo: any = $ref(null);
 let topSubInstancesForPie: any = $ref(null);
 let topPubInstancesForPie: any = $ref(null);

@@ -64,7 +64,7 @@ let fullView = $ref(false);
 let globalHeaderHeight = $ref(0);
 const wallpaper = localStorage.getItem('wallpaper') != null;
 const showMenuOnTop = $computed(() => defaultStore.state.menuDisplay === 'top');
-let live2d = $ref<HTMLIFrameElement>();
+let live2d = $shallowRef<HTMLIFrameElement>();
 let widgetsLeft = $ref();
 let widgetsRight = $ref();
 
