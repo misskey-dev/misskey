@@ -85,7 +85,6 @@ export class DeliverProcessorService {
 			// Update stats
 			this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
 				this.instancesRepository.update(i.id, {
-					latestStatus: 200,
 					isNotResponding: false,
 				});
 
@@ -101,7 +100,6 @@ export class DeliverProcessorService {
 			// Update stats
 			this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
 				this.instancesRepository.update(i.id, {
-					latestStatus: res instanceof StatusError ? res.statusCode : null,
 					isNotResponding: true,
 				});
 
