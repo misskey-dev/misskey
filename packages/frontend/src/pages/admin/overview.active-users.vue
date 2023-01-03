@@ -12,11 +12,10 @@ import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } 
 import { Chart } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
+import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import gradient from 'chartjs-plugin-gradient';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import { initChart } from '@/scripts/init-chart';

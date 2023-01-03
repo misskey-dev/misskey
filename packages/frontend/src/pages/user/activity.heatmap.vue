@@ -14,7 +14,6 @@ import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';

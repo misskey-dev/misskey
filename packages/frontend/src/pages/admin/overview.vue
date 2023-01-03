@@ -77,7 +77,6 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkFolder from '@/components/MkFolder.vue';

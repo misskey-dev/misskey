@@ -15,7 +15,6 @@
 */
 import { onMounted, ref, shallowRef, watch, PropType, onUnmounted } from 'vue';
 import { Chart } from 'chart.js';
-import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
