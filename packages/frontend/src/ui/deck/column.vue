@@ -40,7 +40,7 @@ import { MenuItem } from '@/types/menu';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
-provide('shouldSpacerMin', true);
+provide('forceSpacerMin', true);
 
 const props = withDefaults(defineProps<{
 	column: Column;

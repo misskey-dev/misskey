@@ -76,7 +76,7 @@ provideMetadataReceiver((info) => {
 	}
 });
 provide('shouldHeaderThin', showMenuOnTop);
-provide('shouldSpacerMin', true);
+provide('forceSpacerMin', true);
 
 function attachSticky(el) {
 	const sticky = new StickySidebar(el, defaultStore.state.menuDisplay === 'top' ? 0 : 16, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
