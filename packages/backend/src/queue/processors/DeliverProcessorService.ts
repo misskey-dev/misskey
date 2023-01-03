@@ -48,7 +48,6 @@ export class DeliverProcessorService {
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
 		this.suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
-		this.latest = null;
 	}
 
 	@bindThis
@@ -76,10 +75,6 @@ export class DeliverProcessorService {
 		}
 
 		try {
-			if (this.latest !== (this.latest = JSON.stringify(job.data.content, null, 2))) {
-				this.logger.debug(`delivering ${this.latest}`);
-			}
-
 			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content);
 
 			// Update stats
