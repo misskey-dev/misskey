@@ -37,7 +37,7 @@ export class DownloadService {
 				buildConnector({
 					...this.httpRequestService.clientDefaults.connect,
 				}),
-				this.isPrivateIp
+				(ip) => !this.isPrivateIp(ip)
 			),
 			bodyTimeout: 30 * 1000,
 		}));
