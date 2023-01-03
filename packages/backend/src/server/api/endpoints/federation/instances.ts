@@ -64,8 +64,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				case '-followers': query.orderBy('instance.followersCount', 'ASC'); break;
 				case '+caughtAt': query.orderBy('instance.caughtAt', 'DESC'); break;
 				case '-caughtAt': query.orderBy('instance.caughtAt', 'ASC'); break;
-				case '+lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'DESC'); break;
-				case '-lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'ASC'); break;
 
 				default: query.orderBy('instance.id', 'DESC'); break;
 			}

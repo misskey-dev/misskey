@@ -54,7 +54,7 @@ function onInstanceClick(i) {
 
 useInterval(() => {
 	os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
+		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {
 		activeInstances = res;

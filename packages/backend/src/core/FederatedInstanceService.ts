@@ -35,7 +35,6 @@ export class FederatedInstanceService {
 				id: this.idService.genId(),
 				host,
 				caughtAt: new Date(),
-				lastCommunicatedAt: new Date(),
 			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
 	
 			this.cache.set(host, i);

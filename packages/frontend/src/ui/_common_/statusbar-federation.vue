@@ -44,7 +44,7 @@ let key = $ref(0);
 
 const tick = () => {
 	os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
+		sort: '+latestRequestReceivedAt',
 		limit: 30,
 	}).then(res => {
 		instances.value = res;

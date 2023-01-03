@@ -32,11 +32,6 @@ export const packedFederationInstanceSchema = {
 			type: 'number',
 			optional: false, nullable: false,
 		},
-		lastCommunicatedAt: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'date-time',
-		},
 		isNotResponding: {
 			type: 'boolean',
 			optional: false, nullable: false,

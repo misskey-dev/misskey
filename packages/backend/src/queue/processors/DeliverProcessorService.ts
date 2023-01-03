@@ -86,7 +86,6 @@ export class DeliverProcessorService {
 			this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
 				this.instancesRepository.update(i.id, {
 					latestStatus: 200,
-					lastCommunicatedAt: new Date(),
 					isNotResponding: false,
 				});
 

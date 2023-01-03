@@ -33,7 +33,6 @@ export class InstanceEntityService {
 			notesCount: instance.notesCount,
 			followingCount: instance.followingCount,
 			followersCount: instance.followersCount,
-			lastCommunicatedAt: instance.lastCommunicatedAt.toISOString(),
 			isNotResponding: instance.isNotResponding,
 			isSuspended: instance.isSuspended,
 			isBlocked: meta.blockedHosts.includes(instance.host),

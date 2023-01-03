@@ -76,12 +76,6 @@ export class Instance {
 	public latestRequestReceivedAt: Date | null;
 
 	/**
-	 * このインスタンスと最後にやり取りした日時
-	 */
-	@Column('timestamp with time zone')
-	public lastCommunicatedAt: Date;
-
-	/**
 	 * このインスタンスと不通かどうか
 	 */
 	@Column('boolean', {

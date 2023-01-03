@@ -153,7 +153,7 @@ onMounted(async () => {
 	});
 
 	os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
+		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {
 		activeInstances = res;
