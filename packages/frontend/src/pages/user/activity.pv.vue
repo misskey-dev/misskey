@@ -3,6 +3,7 @@
 	<MkLoading v-if="fetching"/>
 	<div v-show="!fetching" :class="$style.root" class="_panel">
 		<canvas ref="chartEl"></canvas>
+		<MkChartLegend ref="legendEl" style="margin-top: 8px;"/>
 	</div>
 </div>
 </template>
@@ -20,6 +21,8 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import { initChart } from '@/scripts/init-chart';
+import { chartLegend } from '@/scripts/chart-legend';
+import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
 
@@ -28,6 +31,7 @@ const props = defineProps<{
 }>();
 
 const chartEl = $shallowRef<HTMLCanvasElement>(null);
+let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;
@@ -153,14 +157,7 @@ async function renderChart() {
 					},
 				},
 				legend: {
-					display: true,
-					position: 'bottom',
-					padding: {
-						left: 0,
-						right: 0,
-						top: 8,
-						bottom: 0,
-					},
+					display: false,
 				},
 				tooltip: {
 					enabled: false,
@@ -173,7 +170,7 @@ async function renderChart() {
 				gradient,
 			},
 		},
-		plugins: [chartVLine(vLineColor)],
+		plugins: [chartVLine(vLineColor), chartLegend(legendEl)],
 	});
 
 	fetching = false;
