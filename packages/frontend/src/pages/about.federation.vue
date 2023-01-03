@@ -30,15 +30,13 @@
 				<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
 				<option value="+caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
 				<option value="-caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+lastCommunicatedAt">{{ i18n.ts.lastCommunication }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-lastCommunicatedAt">{{ i18n.ts.lastCommunication }} ({{ i18n.ts.ascendingOrder }})</option>
 			</MkSelect>
 		</FormSplit>
 	</div>
 
 	<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
 		<div class="dqokceoi">
-			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Last communicated: ${new Date(instance.lastCommunicatedAt).toLocaleString()}\nStatus: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
+			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
 				<MkInstanceCardMini :instance="instance"/>
 			</MkA>
 		</div>
@@ -56,6 +54,7 @@ import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { dateString } from '@/filters/date';
 
 let host = $ref('');
 let state = $ref('federating');

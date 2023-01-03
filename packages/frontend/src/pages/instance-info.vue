@@ -41,14 +41,6 @@
 					<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.latestRequestSentAt }}</template>
-					<template #value><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></template>
-				</MkKeyValue>
-				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.latestStatus }}</template>
-					<template #value>{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</template>
-				</MkKeyValue>
-				<MkKeyValue oneline style="margin: 1em 0;">
 					<template #key>{{ i18n.ts.latestRequestReceivedAt }}</template>
 					<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
 				</MkKeyValue>
@@ -101,7 +93,7 @@
 		</div>
 		<div v-else-if="tab === 'users'" class="_formRoot">
 			<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
-				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${new Date(user.updatedAt).toLocaleString()}`" class="user" :to="`/user-info/${user.id}`">
+				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/user-info/${user.id}`">
 					<MkUserCardMini :user="user"/>
 				</MkA>
 			</MkPagination>
@@ -135,6 +127,7 @@ import { i18n } from '@/i18n';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
+import { dateString } from '@/filters/date';
 
 const props = defineProps<{
 	host: string;

@@ -18,9 +18,9 @@ const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
 
-const rootEl = $ref<HTMLElement>();
-const headerEl = $ref<HTMLElement>();
-const bodyEl = $ref<HTMLElement>();
+const rootEl = $shallowRef<HTMLElement>();
+const headerEl = $shallowRef<HTMLElement>();
+const bodyEl = $shallowRef<HTMLElement>();
 
 let headerHeight = $ref<string | undefined>();
 let childStickyTop = $ref(0);

@@ -9,52 +9,20 @@
 
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-} from 'chart.js';
+import { Chart } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
+import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import gradient from 'chartjs-plugin-gradient';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	gradient,
-);
+initChart();
 
-const chartEl = $ref<HTMLCanvasElement>(null);
+const chartEl = $shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 7;
@@ -84,11 +52,7 @@ async function renderChart() {
 
 	const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 	const colorRead = '#3498db';
 	const colorWrite = '#2ecc71';
@@ -144,8 +108,6 @@ async function renderChart() {
 					},
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -163,8 +125,6 @@ async function renderChart() {
 					suggestedMax: 10,
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -176,7 +136,6 @@ async function renderChart() {
 				intersect: false,
 				mode: 'index',
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,

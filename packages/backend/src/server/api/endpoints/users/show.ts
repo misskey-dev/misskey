@@ -6,6 +6,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DI } from '@/di-symbols.js';
+import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
 import { ApiError } from '../../error.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import type { FindOptionsWhere } from 'typeorm';
@@ -90,9 +91,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private userEntityService: UserEntityService,
 		private remoteUserResolveService: RemoteUserResolveService,
+		private perUserPvChart: PerUserPvChart,
 		private apiLoggerService: ApiLoggerService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, _1, _2, _3, ip) => {
 			let user;
 
 			const isAdminOrModerator = me && (me.isAdmin || me.isModerator);
@@ -135,6 +137,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				if (user == null || (!isAdminOrModerator && user.isSuspended)) {
 					throw new ApiError(meta.errors.noSuchUser);
+				}
+
+				if (user.host == null) {
+					if (me == null && ip != null) {
+						this.perUserPvChart.commitByVisitor(user, ip);
+					} else if (me && me.id !== user.id) {
+						this.perUserPvChart.commitByUser(user, me.id);
+					}
 				}
 
 				return await this.userEntityService.pack(user, me, {

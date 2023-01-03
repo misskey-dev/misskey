@@ -8,54 +8,27 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-} from 'chart.js';
+import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { Chart } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
+import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	MatrixController, MatrixElement,
-);
+initChart();
 
-const rootEl = $ref<HTMLDivElement>(null);
-const chartEl = $ref<HTMLCanvasElement>(null);
+const props = defineProps<{
+	src: string;
+	user: misskey.entities.User;
+}>();
+
+const rootEl = $shallowRef<HTMLDivElement>(null);
+const chartEl = $shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
 let fetching = $ref(true);
@@ -96,21 +69,23 @@ async function renderChart() {
 		});
 	};
 
-	const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
+	let values;
+
+	if (props.src === 'notes') {
+		const raw = await os.api('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
+		values = raw.inc;
+	}
 
 	fetching = false;
 
 	await nextTick();
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-
 	const color = defaultStore.state.darkMode ? '#b4e900' : '#86b300';
 
 	// 視覚上の分かりやすさのため上から最も大きい3つの値の平均を最大値とする
-	const max = raw.readWrite.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
+	const max = values.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
+
+	const min = Math.max(0, Math.min(...values) - 1);
 
 	const marginEachCell = 4;
 
@@ -118,15 +93,18 @@ async function renderChart() {
 		type: 'matrix',
 		data: {
 			datasets: [{
-				label: 'Read & Write',
-				data: format(raw.readWrite),
+				label: '',
+				data: format(values),
 				pointRadius: 0,
 				borderWidth: 0,
 				borderJoinStyle: 'round',
 				borderRadius: 3,
 				backgroundColor(c) {
 					const value = c.dataset.data[c.dataIndex].v;
-					const a = value / max;
+					let a = (value - min) / max;
+					if (value !== 0) { // 0でない限りは完全に不可視にはしない
+						a = Math.max(a, 0.05);
+					}
 					return alpha(color, a);
 				},
 				fill: true,
@@ -165,8 +143,6 @@ async function renderChart() {
 					},
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -180,8 +156,6 @@ async function renderChart() {
 					position: 'right',
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						maxRotation: 0,
@@ -194,7 +168,6 @@ async function renderChart() {
 					},
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,
@@ -208,7 +181,7 @@ async function renderChart() {
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
-							return ['Active: ' + v.v];
+							return [v.v];
 						},
 					},
 					//mode: 'index',
@@ -221,6 +194,11 @@ async function renderChart() {
 		},
 	});
 }
+
+watch(() => props.src, () => {
+	fetching = true;
+	renderChart();
+});
 
 onMounted(async () => {
 	renderChart();

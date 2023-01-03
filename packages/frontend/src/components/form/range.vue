@@ -69,7 +69,6 @@ const calcThumbPosition = () => {
 		thumbPosition.value = 0;
 	} else {
 		thumbPosition.value = (containerEl.value.offsetWidth - getThumbWidth()) * steppedRawValue.value;
-		console.log(containerEl.value.offsetWidth, getThumbWidth());
 	}
 };
 watch([steppedRawValue, containerEl], calcThumbPosition);
@@ -174,7 +173,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	$thumbWidth: 20px;
 
 	> .body {
-		padding: 10px 12px;
+		padding: 8px 12px;
 		background: var(--panel);
 		border: solid 1px var(--panel);
 		border-radius: 6px;

@@ -31,7 +31,7 @@ const emit = defineEmits<{
 	(ev: 'mounted', el?: Element): void;
 }>();
 
-let rootEl = $ref<HTMLDivElement>();
+let rootEl = $shallowRef<HTMLDivElement>();
 
 const widgets = $computed(() => {
 	if (props.place === null) return defaultStore.reactiveState.widgets.value;

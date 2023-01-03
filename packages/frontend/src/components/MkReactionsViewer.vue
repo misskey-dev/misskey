@@ -1,10 +1,8 @@
 <template>
 <Transition :name="$store.state.animation ? 'y' : ''">
-<div v-if="Object.keys(note.reactions).length > 0" class="tdflqwzn" :class="{ isMe }">
-	<TransitionGroup :name="$store.state.animation ? 'x' : ''">
+	<TransitionGroup v-if="Object.keys(note.reactions).length > 0" :name="$store.state.animation ? 'x' : ''" tag="div" class="tdflqwzn" :class="{ isMe }">
 		<XReaction v-for="(count, reaction) in note.reactions" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
 	</TransitionGroup>
-</div>
 </Transition>
 </template>
 

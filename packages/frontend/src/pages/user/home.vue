@@ -55,7 +55,7 @@
 						</dl>
 						<dl class="field">
 							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
-							<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
+							<dd class="value">{{ dateString(user.createdAt) }} (<MkTime :time="user.createdAt"/>)</dd>
 						</dl>
 					</div>
 					<div v-if="user.fields.length > 0" class="fields">
@@ -127,6 +127,7 @@ import * as os from '@/os';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { dateString } from '@/filters/date';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -202,12 +203,12 @@ onUnmounted(() => {
 
 			> .main {
 				position: relative;
-				overflow: hidden;
+				overflow: clip;
 
 				> .banner-container {
 					position: relative;
 					height: 250px;
-					overflow: hidden;
+					overflow: clip;
 					background-size: cover;
 					background-position: center;
 

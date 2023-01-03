@@ -12,7 +12,7 @@
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<MkEmoji class="emoji" :emoji="`:${emoji.name}:`" />
+					<MkEmoji class="emoji" :emoji="`:${emoji.name}:`"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
@@ -77,11 +77,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
-import Ripple from '@/components/MkRipple.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
@@ -102,8 +102,8 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
-const search = ref<HTMLInputElement>();
-const emojis = ref<HTMLDivElement>();
+const search = shallowRef<HTMLInputElement>();
+const emojis = shallowRef<HTMLDivElement>();
 
 const {
 	reactions: pinned,
@@ -288,7 +288,7 @@ function chosen(emoji: any, ev?: MouseEvent) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(Ripple, { x, y }, {}, 'end');
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
 	}
 
 	const key = getKey(emoji);

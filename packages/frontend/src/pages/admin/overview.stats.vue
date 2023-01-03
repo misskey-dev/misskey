@@ -7,7 +7,7 @@
 				<div class="icon"><i class="ti ti-users"></i></div>
 				<div class="body">
 					<div class="value">
-						{{ number(stats.originalUsersCount) }}
+						<MkNumber :value="stats.originalUsersCount" style="margin-right: 0.5em;"/>
 						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"></MkNumberDiff>
 					</div>
 					<div class="label">Users</div>
@@ -17,7 +17,7 @@
 				<div class="icon"><i class="ti ti-pencil"></i></div>
 				<div class="body">
 					<div class="value">
-						{{ number(stats.originalNotesCount) }}
+						<MkNumber :value="stats.originalNotesCount" style="margin-right: 0.5em;"/>
 						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"></MkNumberDiff>
 					</div>
 					<div class="label">Notes</div>
@@ -27,16 +27,25 @@
 				<div class="icon"><i class="ti ti-planet"></i></div>
 				<div class="body">
 					<div class="value">
-						{{ number(stats.instances) }}
+						<MkNumber :value="stats.instances" style="margin-right: 0.5em;"/>
 					</div>
 					<div class="label">Instances</div>
+				</div>
+			</div>
+			<div class="item _panel emojis">
+				<div class="icon"><i class="ti ti-icons"></i></div>
+				<div class="body">
+					<div class="value">
+						<MkNumber :value="$instance.emojis.length" style="margin-right: 0.5em;"/>
+					</div>
+					<div class="label">Custom emojis</div>
 				</div>
 			</div>
 			<div class="item _panel online">
 				<div class="icon"><i class="ti ti-access-point"></i></div>
 				<div class="body">
 					<div class="value">
-						{{ number(onlineUsersCount) }}
+						<MkNumber :value="stats.onlineUsersCount" style="margin-right: 0.5em;"/>
 					</div>
 					<div class="label">Online</div>
 				</div>
@@ -52,6 +61,7 @@ import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
+import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n';
 
 let stats: any = $ref(null);
@@ -124,6 +134,13 @@ onMounted(async () => {
 				}
 			}
 
+			&.emojis {
+				> .icon {
+					background: #d5ba0026;
+						color: #dfc300;
+				}
+			}
+
 			&.online {
 				> .icon {
 					background: #8a00d126;
@@ -135,7 +152,7 @@ onMounted(async () => {
 				padding: 2px 0;
 
 				> .value {
-					font-size: 1.25em;
+					font-size: 1.2em;
 					font-weight: bold;
 
 					> .diff {

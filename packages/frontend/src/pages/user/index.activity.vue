@@ -33,9 +33,15 @@ let chartSrc = $ref('per-user-notes');
 function showMenu(ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.notes,
-		active: true,
+		active: chartSrc === 'per-user-notes',
 		action: () => {
 			chartSrc = 'per-user-notes';
+		},
+	}, {
+		text: i18n.ts.numberOfProfileView,
+		active: chartSrc === 'per-user-pv',
+		action: () => {
+			chartSrc = 'per-user-pv';
 		},
 	}, /*, {
 		text: i18n.ts.following,
