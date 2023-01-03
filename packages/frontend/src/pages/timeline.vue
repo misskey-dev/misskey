@@ -41,8 +41,8 @@ const keymap = {
 	't': focus,
 };
 
-const tlComponent = $ref<InstanceType<typeof XTimeline>>();
-const rootEl = $ref<HTMLElement>();
+const tlComponent = $shallowRef<InstanceType<typeof XTimeline>>();
+const rootEl = $shallowRef<HTMLElement>();
 
 let queue = $ref(0);
 const src = $computed({ get: () => defaultStore.reactiveState.tl.value.src, set: (x) => saveSrc(x) });
@@ -119,17 +119,17 @@ const headerTabs = $computed(() => [{
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
-	icon: 'ti ti-messages',
+	icon: 'ti ti-planet',
 	iconOnly: true,
 }, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
-	icon: 'ti ti-share',
+	icon: 'ti ti-rocket',
 	iconOnly: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
-	icon: 'ti ti-world',
+	icon: 'ti ti-whirl',
 	iconOnly: true,
 }] : []), {
 	icon: 'ti ti-list',
@@ -150,7 +150,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-messages' : src === 'social' ? 'ti ti-share' : src === 'global' ? 'ti ti-world' : 'ti ti-home',
+	icon: src === 'local' ? 'ti ti-planet' : src === 'social' ? 'ti ti-rocket' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
 })));
 </script>
 

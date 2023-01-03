@@ -1,6 +1,6 @@
 <template>
 <KeepAlive :max="defaultStore.state.numberOfPageCache">
-	<Suspense>
+	<Suspense :timeout="0">
 		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
 
 		<template #fallback>

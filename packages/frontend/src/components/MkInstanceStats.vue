@@ -31,15 +31,22 @@
 				</MkSelect>
 			</div>
 			<div class="chart _panel">
-				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="detailed"></MkChart>
+				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="true"></MkChart>
 			</div>
 		</div>
 	</MkFolder>
 
 	<MkFolder class="item">
 		<template #header>Active users heatmap</template>
+		<MkSelect v-model="heatmapSrc" style="margin: 0 0 12px 0;">
+			<option value="active-users">Active users</option>
+			<option value="notes">Notes</option>
+			<option value="ap-requests-inbox-received">AP Requests: inboxReceived</option>
+			<option value="ap-requests-deliver-succeeded">AP Requests: deliverSucceeded</option>
+			<option value="ap-requests-deliver-failed">AP Requests: deliverFailed</option>
+		</MkSelect>
 		<div class="_panel" :class="$style.heatmap">
-			<MkActiveUsersHeatmap/>
+			<MkHeatmap :src="heatmapSrc"/>
 		</div>
 	</MkFolder>
 
@@ -70,62 +77,25 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	DoughnutController,
-} from 'chart.js';
+import { Chart } from 'chart.js';
 import MkSelect from '@/components/form/select.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import MkActiveUsersHeatmap from '@/components/MkActiveUsersHeatmap.vue';
+import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	DoughnutController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-);
+initChart();
 
-const props = withDefaults(defineProps<{
-	chartLimit?: number;
-	detailed?: boolean;
-}>(), {
-	chartLimit: 90,
-});
-
-const chartSpan = $ref<'hour' | 'day'>('hour');
-const chartSrc = $ref('active-users');
-let subDoughnutEl = $ref<HTMLCanvasElement>();
-let pubDoughnutEl = $ref<HTMLCanvasElement>();
+const chartLimit = 500;
+let chartSpan = $ref<'hour' | 'day'>('hour');
+let chartSrc = $ref('active-users');
+let heatmapSrc = $ref('active-users');
+let subDoughnutEl = $shallowRef<HTMLCanvasElement>();
+let pubDoughnutEl = $shallowRef<HTMLCanvasElement>();
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',

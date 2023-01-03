@@ -16,7 +16,7 @@
 			</div>
 		</MkSpacer>
 	</div>
-	<div v-if="!(narrow && currentPage?.route.name == null)" class="main" style="container-type: inline-size;">
+	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
 		<RouterView/>
 	</div>
 </div>
@@ -97,7 +97,7 @@ const menuDef = $computed(() => [{
 		to: '/admin/users',
 		active: currentPage?.route.name === 'users',
 	}, {
-		icon: 'ti ti-mood-happy',
+		icon: 'ti ti-icons',
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
 		active: currentPage?.route.name === 'emojis',

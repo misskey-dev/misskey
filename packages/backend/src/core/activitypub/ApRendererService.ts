@@ -172,7 +172,8 @@ export class ApRendererService {
 			icon: {
 				type: 'Image',
 				mediaType: emoji.type ?? 'image/png',
-				url: emoji.publicUrl ?? emoji.originalUrl, // ?? emoji.originalUrl してるのは後方互換性のため
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url: emoji.publicUrl || emoji.originalUrl,
 			},
 		};
 	}

@@ -78,11 +78,11 @@ const emit = defineEmits<{
 	(ev: 'close', actioned?: boolean): void;
 }>();
 
-let itemsEl = $ref<HTMLDivElement>();
+let itemsEl = $shallowRef<HTMLDivElement>();
 
 let items2: InnerMenuItem[] = $ref([]);
 
-let child = $ref<InstanceType<typeof XChild>>();
+let child = $shallowRef<InstanceType<typeof XChild>>();
 
 let keymap = $computed(() => ({
 	'up|k|shift+tab': focusUp,
@@ -112,7 +112,7 @@ watch(() => props.items, () => {
 });
 
 let childMenu = $ref<MenuItem[] | null>();
-let childTarget = $ref<HTMLElement | null>();
+let childTarget = $shallowRef<HTMLElement | null>();
 
 function closeChild() {
 	childMenu = null;
@@ -203,7 +203,7 @@ onBeforeUnmount(() => {
 	> .item {
 		display: block;
 		position: relative;
-		padding: 6px 16px;
+		padding: 5px 16px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
@@ -224,10 +224,6 @@ onBeforeUnmount(() => {
 			width: calc(100% - 16px);
 			height: 100%;
 			border-radius: 6px;
-		}
-
-		> * {
-			position: relative;
 		}
 
 		&:not(:disabled):hover {

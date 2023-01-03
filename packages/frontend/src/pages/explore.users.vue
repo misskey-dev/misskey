@@ -72,7 +72,7 @@ const props = defineProps<{
 }>();
 
 let origin = $ref('local');
-let tagsEl = $ref<InstanceType<typeof MkFolder>>();
+let tagsEl = $shallowRef<InstanceType<typeof MkFolder>>();
 let tagsLocal = $ref([]);
 let tagsRemote = $ref([]);
 

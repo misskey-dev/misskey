@@ -22,7 +22,7 @@ export class FederatedInstanceService {
 	}
 
 	@bindThis
-	public async registerOrFetchInstanceDoc(host: string): Promise<Instance> {
+	public async fetch(host: string): Promise<Instance> {
 		host = this.utilityService.toPuny(host);
 	
 		const cached = this.cache.get(host);
@@ -35,7 +35,6 @@ export class FederatedInstanceService {
 				id: this.idService.genId(),
 				host,
 				caughtAt: new Date(),
-				lastCommunicatedAt: new Date(),
 			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
 	
 			this.cache.set(host, i);
@@ -44,5 +43,18 @@ export class FederatedInstanceService {
 			this.cache.set(host, index);
 			return index;
 		}
+	}
+
+	@bindThis
+	public async updateCachePartial(host: string, data: Partial<Instance>): Promise<void> {
+		host = this.utilityService.toPuny(host);
+	
+		const cached = this.cache.get(host);
+		if (cached == null) return;
+	
+		this.cache.set(host, {
+			...cached,
+			...data,
+		});
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "13.0.0-beta.8",
+	"version": "13.0.0-beta.20",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -57,7 +57,7 @@
 		"@typescript-eslint/parser": "5.47.1",
 		"cross-env": "7.0.3",
 		"cypress": "12.2.0",
-		"eslint": "^8.30.0",
+		"eslint": "^8.31.0",
 		"start-server-and-test": "1.15.2",
 		"typescript": "4.9.4"
 	}

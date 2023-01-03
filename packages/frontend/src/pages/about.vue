@@ -76,7 +76,7 @@
 		<XFederation/>
 	</MkSpacer>
 	<MkSpacer v-else-if="tab === 'charts'" :content-max="1000" :margin-min="20">
-		<MkInstanceStats :chart-limit="500" :detailed="true"/>
+		<MkInstanceStats/>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -119,7 +119,7 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'emojis',
 	title: i18n.ts.customEmojis,
-	icon: 'ti ti-mood-happy',
+	icon: 'ti ti-icons',
 }, {
 	key: 'federation',
 	title: i18n.ts.federation,

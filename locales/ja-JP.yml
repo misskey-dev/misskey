@@ -167,7 +167,6 @@ annotation: "注釈"
 federation: "連合"
 instances: "インスタンス"
 registeredAt: "初観測"
-latestRequestSentAt: "直近のリクエスト送信"
 latestRequestReceivedAt: "直近のリクエスト受信"
 latestStatus: "直近のステータス"
 storageUsage: "ストレージ使用量"
@@ -916,6 +915,7 @@ caption: "キャプション"
 loggedInAsBot: "Botアカウントでログイン中"
 tools: "ツール"
 cannotLoad: "読み込めません"
+numberOfProfileView: "プロフィール表示回数"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -1421,6 +1421,7 @@ _profile:
 
 _exportOrImport:
   allNotes: "全てのノート"
+  favoritedNotes: "お気に入りにしたノート"
   followingList: "フォロー"
   muteList: "ミュート"
   blockingList: "ブロック"

@@ -1,7 +1,7 @@
 <template>
 <div class="_formRoot">
 	<FormSection>
-		<template #label>{{ i18n.ts._exportOrImport.allNotes }}</template>
+		<template #label><i class="ti ti-pencil"></i> {{ i18n.ts._exportOrImport.allNotes }}</template>
 		<FormFolder>
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
@@ -9,7 +9,15 @@
 		</FormFolder>
 	</FormSection>
 	<FormSection>
-		<template #label>{{ i18n.ts._exportOrImport.followingList }}</template>
+		<template #label><i class="ti ti-star"></i> {{ i18n.ts._exportOrImport.favoritedNotes }}</template>
+		<FormFolder>
+			<template #label>{{ i18n.ts.export }}</template>
+			<template #icon><i class="ti ti-download"></i></template>
+			<MkButton primary :class="$style.button" inline @click="exportFavorites()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+		</FormFolder>
+	</FormSection>
+	<FormSection>
+		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.followingList }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
@@ -28,7 +36,7 @@
 		</FormFolder>
 	</FormSection>
 	<FormSection>
-		<template #label>{{ i18n.ts._exportOrImport.userLists }}</template>
+		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.userLists }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
@@ -41,7 +49,7 @@
 		</FormFolder>
 	</FormSection>
 	<FormSection>
-		<template #label>{{ i18n.ts._exportOrImport.muteList }}</template>
+		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.muteList }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
@@ -54,7 +62,7 @@
 		</FormFolder>
 	</FormSection>
 	<FormSection>
-		<template #label>{{ i18n.ts._exportOrImport.blockingList }}</template>
+		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.blockingList }}</template>
 		<FormFolder class="_formBlock">
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
@@ -106,6 +114,10 @@ const onError = (ev) => {
 
 const exportNotes = () => {
 	os.api('i/export-notes', {}).then(onExportSuccess).catch(onError);
+};
+
+const exportFavorites = () => {
+	os.api('i/export-favorites', {}).then(onExportSuccess).catch(onError);
 };
 
 const exportFollowing = () => {

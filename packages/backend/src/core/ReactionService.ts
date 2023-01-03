@@ -161,7 +161,8 @@ export class ReactionService {
 			reaction: decodedReaction.reaction,
 			emoji: emoji != null ? {
 				name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
-				url: emoji.publicUrl ?? emoji.originalUrl, // || emoji.originalUrl してるのは後方互換性のため
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url: emoji.publicUrl || emoji.originalUrl,
 			} : null,
 			userId: user.id,
 		});

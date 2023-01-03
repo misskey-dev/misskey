@@ -71,14 +71,14 @@ const props = withDefaults(defineProps<{
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
 }>(), {
-	displayLimit: 30,
+	displayLimit: 20,
 });
 
 const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
 }>();
 
-let rootEl = $ref<HTMLElement>();
+let rootEl = $shallowRef<HTMLElement>();
 
 // 遡り中かどうか
 let backed = $ref(false);

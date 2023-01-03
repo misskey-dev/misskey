@@ -58,7 +58,7 @@ const fetching = ref(true);
 
 const fetch = async () => {
 	const fetchedInstances = await os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
+		sort: '+latestRequestReceivedAt',
 		limit: 5,
 	});
 	const fetchedCharts = await Promise.all(fetchedInstances.map(i => os.apiGet('charts/instance', { host: i.host, limit: 16, span: 'hour' })));

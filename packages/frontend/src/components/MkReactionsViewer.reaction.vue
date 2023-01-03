@@ -1,6 +1,5 @@
 <template>
 <button
-	v-if="count > 0"
 	ref="buttonRef"
 	v-ripple="canToggle"
 	class="hkzvhatu _button"
@@ -13,13 +12,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
+import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 
 const props = defineProps<{
 	reaction: string;
@@ -28,7 +28,7 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const buttonRef = ref<HTMLElement>();
+const buttonRef = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
@@ -58,7 +58,10 @@ const toggleReaction = () => {
 const anime = () => {
 	if (document.hidden) return;
 
-	// TODO: 新しくリアクションが付いたことが視覚的に分かりやすいアニメーション
+	const rect = buttonRef.value.getBoundingClientRect();
+	const x = rect.left + (buttonRef.value.offsetWidth / 2);
+	const y = rect.top + (buttonRef.value.offsetHeight / 2);
+	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
 };
 
 watch(() => props.count, (newCount, oldCount) => {
@@ -82,7 +85,6 @@ useTooltip(buttonRef, async (showing) => {
 	os.popup(XDetails, {
 		showing,
 		reaction: props.reaction,
-		emojis: props.note.emojis,
 		users,
 		count: props.count,
 		targetElement: buttonRef.value,

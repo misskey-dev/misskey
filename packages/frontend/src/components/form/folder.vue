@@ -1,5 +1,5 @@
 <template>
-<div class="dwzlatin" :class="{ opened }" ref="root">
+<div class="dwzlatin" :class="{ opened }">
 	<div class="header _button" @click="toggle">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot name="label"></slot></span>
@@ -19,7 +19,7 @@
 		>
 			<KeepAlive>
 				<div v-show="opened">
-					<MkSpacer :margin-min="14" :margin-max="22" :container="root">
+					<MkSpacer :margin-min="14" :margin-max="22">
 						<slot></slot>
 					</MkSpacer>
 				</div>
@@ -40,7 +40,6 @@ const props = withDefaults(defineProps<{
 
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);
-let root = $ref<HTMLElement>();
 
 function enter(el) {
 	const elementHeight = el.getBoundingClientRect().height;
@@ -142,6 +141,7 @@ function toggle() {
 	> .body {
 		background: var(--panel);
 		border-radius: 0 0 6px 6px;
+		container-type: inline-size;
 	}
 
 	&.opened {
