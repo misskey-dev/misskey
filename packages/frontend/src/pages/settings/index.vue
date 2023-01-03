@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
@@ -40,7 +40,7 @@ const indexInfo = {
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
-const el = ref<HTMLElement | null>(null);
+const el = shallowRef<HTMLElement | null>(null);
 const childInfo = ref(null);
 
 const router = useRouter();

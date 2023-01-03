@@ -19,7 +19,7 @@ const emit = defineEmits<{
 }>();
 
 let up = $ref(false);
-const zIndex = os.claimZIndex('high');
+const zIndex = os.claimZIndex('veryLow');
 
 onMounted(() => {
 	window.setTimeout(() => {

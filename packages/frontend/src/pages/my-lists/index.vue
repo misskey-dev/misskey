@@ -25,7 +25,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const pagingComponent = $ref<InstanceType<typeof MkPagination>>();
+const pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
 const pagination = {
 	endpoint: 'users/lists/list' as const,

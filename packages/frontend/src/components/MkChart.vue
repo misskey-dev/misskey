@@ -1,6 +1,7 @@
 <template>
 <div class="cbbedffa">
 	<canvas ref="chartEl"></canvas>
+	<MkChartLegend ref="legendEl" style="margin-top: 8px;"/>
 	<div v-if="fetching" class="fetching">
 		<MkLoading/>
 	</div>
@@ -13,27 +14,9 @@
   id-denylist violation when setting it. This is causing about 60+ lint issues.
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
-import { onMounted, ref, watch, PropType, onUnmounted } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-} from 'chart.js';
-import 'chartjs-adapter-date-fns';
+import { onMounted, ref, shallowRef, watch, PropType, onUnmounted } from 'vue';
+import { Chart } from 'chart.js';
 import { enUS } from 'date-fns/locale';
-import zoomPlugin from 'chartjs-plugin-zoom';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -41,6 +24,11 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import date from '@/filters/date';
+import { initChart } from '@/scripts/init-chart';
+import { chartLegend } from '@/scripts/chart-legend';
+import MkChartLegend from '@/components/MkChartLegend.vue';
+
+initChart();
 
 const props = defineProps({
 	src: {
@@ -82,24 +70,7 @@ const props = defineProps({
 	},
 });
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	zoomPlugin,
-	gradient,
-);
+let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -135,7 +106,7 @@ let chartData: {
 	}[];
 } = null;
 
-const chartEl = ref<HTMLCanvasElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 const fetching = ref(true);
 
 const getDate = (ago: number) => {
@@ -161,11 +132,7 @@ const render = () => {
 		chartInstance.destroy();
 	}
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 	const maxes = chartData.series.map((x, i) => Math.max(...x.data.map(d => d.y)));
 
@@ -221,8 +188,6 @@ const render = () => {
 						unit: props.span === 'day' ? 'month' : 'day',
 					},
 					grid: {
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: props.detailed,
@@ -241,8 +206,6 @@ const render = () => {
 					stacked: props.stacked,
 					suggestedMax: 50,
 					grid: {
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: props.detailed,
@@ -260,14 +223,9 @@ const render = () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
-					display: props.detailed,
-					position: 'bottom',
-					labels: {
-						boxWidth: 16,
-					},
+					display: false,
 				},
 				tooltip: {
 					enabled: false,
@@ -307,7 +265,7 @@ const render = () => {
 				gradient,
 			},
 		},
-		plugins: [chartVLine(vLineColor)],
+		plugins: [chartVLine(vLineColor), ...(props.detailed ? [chartLegend(legendEl)] : [])],
 	});
 };
 
@@ -742,6 +700,33 @@ const fetchPerUserNotesChart = async (): Promise<typeof chartData> => {
 	};
 };
 
+const fetchPerUserPvChart = async (): Promise<typeof chartData> => {
+	const raw = await os.apiGet('charts/user/pv', { userId: props.args.user.id, limit: props.limit, span: props.span });
+	return {
+		series: [{
+			name: 'Unique PV (user)',
+			type: 'area',
+			data: format(raw.upv.user),
+			color: colors.purple,
+		}, {
+			name: 'PV (user)',
+			type: 'area',
+			data: format(raw.pv.user),
+			color: colors.green,
+		}, {
+			name: 'Unique PV (visitor)',
+			type: 'area',
+			data: format(raw.upv.visitor),
+			color: colors.yellow,
+		}, {
+			name: 'PV (visitor)',
+			type: 'area',
+			data: format(raw.pv.visitor),
+			color: colors.blue,
+		}],
+	};
+};
+
 const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
 	const raw = await os.apiGet('charts/user/following', { userId: props.args.user.id, limit: props.limit, span: props.span });
 	return {
@@ -814,6 +799,7 @@ const fetchAndRender = async () => {
 			case 'instance-drive-files-total': return fetchInstanceDriveFilesChart(true);
 
 			case 'per-user-notes': return fetchPerUserNotesChart();
+			case 'per-user-pv': return fetchPerUserPvChart();
 			case 'per-user-following': return fetchPerUserFollowingChart();
 			case 'per-user-followers': return fetchPerUserFollowersChart();
 			case 'per-user-drive': return fetchPerUserDriveChart();

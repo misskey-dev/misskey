@@ -23,8 +23,13 @@ export class Storage<T extends StateDef> {
 	// TODO: これが実装されたらreadonlyにしたい: https://github.com/microsoft/TypeScript/issues/37487
 	public readonly state: { [K in keyof T]: T[K]['default'] };
 	public readonly reactiveState: { [K in keyof T]: Ref<T[K]['default']> };
+	public readonly ready: Promise<void>;
+	private markAsReady: () => void = () => {};
 
 	constructor(key: string, def: T) {
+		this.ready = new Promise((res) => {
+			this.markAsReady = res;
+		});
 		this.key = key;
 		this.keyForLocalStorage = 'pizzax::' + key;
 		this.def = def;
@@ -72,6 +77,7 @@ export class Storage<T extends StateDef> {
 						}
 					}
 					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
+					this.markAsReady();
 				});
 			}, 1);
 			// streamingのuser storage updateイベントを監視して更新
@@ -87,6 +93,8 @@ export class Storage<T extends StateDef> {
 					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				}
 			});
+		} else {
+			this.markAsReady();
 		}
 	}
 

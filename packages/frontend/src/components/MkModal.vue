@@ -61,9 +61,9 @@ let maxHeight = $ref<number>();
 let fixed = $ref(false);
 let transformOrigin = $ref('center');
 let showing = $ref(true);
-let content = $ref<HTMLElement>();
+let content = $shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
-const type = $computed(() => {
+const type = $computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
 		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
 			return 'drawer';
@@ -383,6 +383,7 @@ defineExpose({
 			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
 			overflow: auto;
 			display: flex;
+			container-type: inline-size;
 
 			@media (max-width: 500px) {
 				padding: 16px;

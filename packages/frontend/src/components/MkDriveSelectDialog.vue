@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
 import XModalWindow from '@/components/MkModalWindow.vue';
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = ref<InstanceType<typeof XModalWindow>>();
+const dialog = shallowRef<InstanceType<typeof XModalWindow>>();
 
 const selected = ref<Misskey.entities.DriveFile[]>([]);
 

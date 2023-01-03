@@ -915,6 +915,7 @@ windowRestore: "복구"
 caption: "캡션"
 loggedInAsBot: "봇 계정으로 로그인중"
 tools: "도구"
+cannotLoad: "불러오지 못했습니다"
 _sensitiveMediaDetection:
   description: "기계학습을 통해 자동으로 민감한 미디어를 탐지하여, 모더레이션에 참고할 수 있도록 합니다. 서버의 부하를 약간 증가시킵니다."
   sensitivity: "탐지 민감도"

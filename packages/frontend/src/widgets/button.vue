@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { AiScript, parse, utils } from '@syuilo/aiscript';
+import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
@@ -48,8 +48,10 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
+const parser = new Parser();
+
 const run = async () => {
-	const aiscript = new AiScript(createAiScriptEnv({
+	const aiscript = new Interpreter(createAiScriptEnv({
 		storageKey: 'widget',
 		token: $i?.token,
 	}), {
@@ -72,7 +74,7 @@ const run = async () => {
 
 	let ast;
 	try {
-		ast = parse(widgetProps.script);
+		ast = parser.parse(widgetProps.script);
 	} catch (err) {
 		os.alert({
 			type: 'error',

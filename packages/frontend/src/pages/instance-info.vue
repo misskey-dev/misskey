@@ -41,14 +41,6 @@
 					<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.latestRequestSentAt }}</template>
-					<template #value><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></template>
-				</MkKeyValue>
-				<MkKeyValue oneline style="margin: 1em 0;">
-					<template #key>{{ i18n.ts.latestStatus }}</template>
-					<template #value>{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</template>
-				</MkKeyValue>
-				<MkKeyValue oneline style="margin: 1em 0;">
 					<template #key>{{ i18n.ts.latestRequestReceivedAt }}</template>
 					<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
 				</MkKeyValue>

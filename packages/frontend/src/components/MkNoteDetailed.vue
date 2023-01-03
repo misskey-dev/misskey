@@ -70,7 +70,7 @@
 					</div>
 					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" class="url-preview"/>
-					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote"/></div>
+					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote" class="note"/></div>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
@@ -112,7 +112,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -166,11 +166,11 @@ const isRenote = (
 	note.poll == null
 );
 
-const el = ref<HTMLElement>();
-const menuButton = ref<HTMLElement>();
-const renoteButton = ref<InstanceType<typeof MkRenoteButton>>();
-const renoteTime = ref<HTMLElement>();
-const reactButton = ref<HTMLElement>();
+const el = shallowRef<HTMLElement>();
+const menuButton = shallowRef<HTMLElement>();
+const renoteButton = shallowRef<InstanceType<typeof MkRenoteButton>>();
+const renoteTime = shallowRef<HTMLElement>();
+const reactButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
@@ -298,7 +298,7 @@ if (appearNote.replyId) {
 .lxwezrsl {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden;
+	overflow: clip;
 	contain: content;
 
 	&:focus-visible {
@@ -491,7 +491,7 @@ if (appearNote.replyId) {
 					> .renote {
 						padding: 8px 0;
 
-						> * {
+						> .note {
 							padding: 16px;
 							border: dashed 1px var(--renote);
 							border-radius: 8px;

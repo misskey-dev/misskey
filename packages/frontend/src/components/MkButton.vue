@@ -47,8 +47,8 @@ const emit = defineEmits<{
 	(ev: 'click', payload: MouseEvent): void;
 }>();
 
-let el = $ref<HTMLElement | null>(null);
-let ripples = $ref<HTMLElement | null>(null);
+let el = $shallowRef<HTMLElement | null>(null);
+let ripples = $shallowRef<HTMLElement | null>(null);
 
 onMounted(() => {
 	if (props.autofocus) {
@@ -207,7 +207,7 @@ function onMousedown(evt: MouseEvent): void {
 		width: 100%;
 		height: 100%;
 		border-radius: 6px;
-		overflow: hidden;
+		overflow: clip;
 
 		::v-deep(div) {
 			position: absolute;

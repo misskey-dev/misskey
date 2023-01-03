@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
@@ -94,7 +94,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = ref<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const inputValue = ref(props.input?.default || null);
 const selectedValue = ref(props.select?.default || null);

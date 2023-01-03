@@ -86,7 +86,7 @@ export default class FederationChart extends Chart<typeof schema> {
 				.where(`instance.host IN (${ subInstancesQuery.getQuery() })`)
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT IN (:...blocked)', { blocked: meta.blockedHosts })
 				.andWhere('instance.isSuspended = false')
-				.andWhere('instance.lastCommunicatedAt > :gt', { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
+				.andWhere('instance.isNotResponding = false')
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 			this.instancesRepository.createQueryBuilder('instance')
@@ -94,7 +94,7 @@ export default class FederationChart extends Chart<typeof schema> {
 				.where(`instance.host IN (${ pubInstancesQuery.getQuery() })`)
 				.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT IN (:...blocked)', { blocked: meta.blockedHosts })
 				.andWhere('instance.isSuspended = false')
-				.andWhere('instance.lastCommunicatedAt > :gt', { gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) })
+				.andWhere('instance.isNotResponding = false')
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 		]);

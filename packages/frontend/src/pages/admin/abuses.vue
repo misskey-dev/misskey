@@ -58,7 +58,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-let reports = $ref<InstanceType<typeof MkPagination>>();
+let reports = $shallowRef<InstanceType<typeof MkPagination>>();
 
 let state = $ref('unresolved');
 let reporterOrigin = $ref('combined');

@@ -44,7 +44,7 @@ const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'pop
 	deviceKind === 'smartphone' ? 'drawer' :
 	'dialog';
 
-const modal = $ref<InstanceType<typeof MkModal>>();
+const modal = $shallowRef<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 

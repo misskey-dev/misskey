@@ -20,6 +20,9 @@ You should also include the user name that made the change.
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
+- AiScriptが0.12.0にアップデートされました
+	- 0.12.0の変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
+	- 0.12.0未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
@@ -27,6 +30,7 @@ You should also include the user name that made the change.
 	- remote: `https://p1.a9z.dev/emoji/syuilo_birth_present@mk.f72u.net.webp`
 - API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
 - API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
+- API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
 
 ### Improvements
 - Push notification of Antenna note @tamaina
@@ -41,6 +45,7 @@ You should also include the user name that made the change.
 - Server: delete outdated notifications regularly to improve db performance @syuilo
 - Server: delete outdated hard-mutes regularly to improve db performance @syuilo
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
+- Server: improve activitypub deliver performance @syuilo
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Add link to user RSS feed in profile menu @ssmucny
@@ -74,6 +79,7 @@ You should also include the user name that made the change.
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
+- Client: fix wrong link in tutorial @syuilo
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes

@@ -16,23 +16,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-} from 'chart.js';
+import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
@@ -45,28 +29,13 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
 import { defaultStore } from '@/store';
 import { alpha } from '@/scripts/color';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	gradient,
-);
+initChart();
 
 const chartLimit = 50;
-const chartEl = $ref<HTMLCanvasElement>();
-const chartEl2 = $ref<HTMLCanvasElement>();
+const chartEl = $shallowRef<HTMLCanvasElement>();
+const chartEl2 = $shallowRef<HTMLCanvasElement>();
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
@@ -99,16 +68,12 @@ onMounted(async () => {
 
 	const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	const succColor = '#87e000';
 	const failColor = '#ff4400';
 
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 	new Chart(chartEl, {
 		type: 'line',
@@ -164,8 +129,6 @@ onMounted(async () => {
 					},
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -185,8 +148,6 @@ onMounted(async () => {
 					suggestedMax: 10,
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -205,7 +166,6 @@ onMounted(async () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,
@@ -263,8 +223,6 @@ onMounted(async () => {
 					},
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: false,
@@ -283,8 +241,6 @@ onMounted(async () => {
 					suggestedMax: 10,
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 				},
 			},
@@ -298,7 +254,6 @@ onMounted(async () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,

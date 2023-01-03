@@ -16,9 +16,9 @@
 		</li>
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
-		<li v-for="emoji in emojis" tabindex="-1" :key="emoji.emoji" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
+		<li v-for="emoji in emojis" :key="emoji.emoji" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
 			<div class="emoji">
-				<MkEmoji :emoji="emoji.emoji" />
+				<MkEmoji :emoji="emoji.emoji"/>
 			</div>
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span v-if="q" class="name" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
@@ -35,7 +35,8 @@
 </template>
 
 <script lang="ts">
-import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { markRaw, ref, shallowRef, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import sanitizeHtml from 'sanitize-html';
 import contains from '@/scripts/contains';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { acct } from '@/filters/user';
@@ -45,7 +46,6 @@ import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
-import sanitizeHtml from 'sanitize-html';
 
 type EmojiDef = {
 	emoji: string;
@@ -136,7 +136,7 @@ const emit = defineEmits<{
 }>();
 
 const suggests = ref<Element>();
-const rootEl = ref<HTMLDivElement>();
+const rootEl = shallowRef<HTMLDivElement>();
 
 const fetching = ref(true);
 const users = ref<any[]>([]);
@@ -384,7 +384,7 @@ onBeforeUnmount(() => {
 	position: fixed;
 	max-width: 100%;
 	margin-top: calc(1em + 8px);
-	overflow: hidden;
+	overflow: clip;
 	transition: top 0.1s ease, left 0.1s ease;
 
 	> ol {
@@ -401,7 +401,7 @@ onBeforeUnmount(() => {
 			align-items: center;
 			padding: 4px 12px;
 			white-space: nowrap;
-			overflow: hidden;
+			overflow: clip;
 			font-size: 0.9em;
 			cursor: default;
 

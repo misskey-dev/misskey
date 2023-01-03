@@ -246,32 +246,6 @@ hr {
 	}
 }
 
-._inputs {
-	display: flex;
-	margin: 32px 0;
-
-	&:first-child {
-		margin-top: 8px;
-	}
-
-	&:last-child {
-		margin-bottom: 8px;
-	}
-
-	> * {
-		flex: 1;
-		margin: 0 !important;
-
-		&:not(:first-child) {
-			margin-left: 8px !important;
-		}
-
-		&:not(:last-child) {
-			margin-right: 8px !important;
-		}
-	}
-}
-
 ._panel {
 	background: var(--panel);
 	border-radius: var(--radius);
@@ -469,14 +443,6 @@ hr {
 		height: 128px;
 		margin-bottom: 16px;
 		border-radius: 16px;
-	}
-}
-
-._keyValue {
-	display: flex;
-
-	> * {
-		flex: 1;
 	}
 }
 

@@ -47,7 +47,7 @@ defineEmits<{
 const router = new Router(routes, props.initialPath);
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-let windowEl = $ref<InstanceType<typeof XWindow>>();
+let windowEl = $shallowRef<InstanceType<typeof XWindow>>();
 const history = $ref<{ path: string; key: any; }[]>([{
 	path: router.getCurrentPath(),
 	key: router.getCurrentKey(),

@@ -128,10 +128,10 @@ const emit = defineEmits<{
 	(ev: 'esc'): void;
 }>();
 
-const textareaEl = $ref<HTMLTextAreaElement | null>(null);
-const cwInputEl = $ref<HTMLInputElement | null>(null);
-const hashtagsInputEl = $ref<HTMLInputElement | null>(null);
-const visibilityButton = $ref<HTMLElement | null>(null);
+const textareaEl = $shallowRef<HTMLTextAreaElement | null>(null);
+const cwInputEl = $shallowRef<HTMLInputElement | null>(null);
+const hashtagsInputEl = $shallowRef<HTMLInputElement | null>(null);
+const visibilityButton = $shallowRef<HTMLElement | null>(null);
 
 let posting = $ref(false);
 let posted = $ref(false);
