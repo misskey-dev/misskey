@@ -30,6 +30,7 @@ You should also include the user name that made the change.
 	- remote: `https://p1.a9z.dev/emoji/syuilo_birth_present@mk.f72u.net.webp`
 - API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
 - API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
+- API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
 
 ### Improvements
 - Push notification of Antenna note @tamaina
