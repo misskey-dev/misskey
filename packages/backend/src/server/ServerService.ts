@@ -1,10 +1,8 @@
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import * as http from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import Fastify from 'fastify';
 import { IsNull } from 'typeorm';
-import fastifyFormBody from '@fastify/formbody';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
@@ -69,8 +67,6 @@ export class ServerService {
 				done();
 			});
 		}
-
-		fastify.register(fastifyFormBody);
 
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.fileServerService.createServer, { prefix: '/files' });
