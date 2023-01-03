@@ -4,7 +4,6 @@ import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import { fetch } from 'undici';
 
 type CaptchaResponse = {
 	success: boolean;
@@ -28,16 +27,20 @@ export class CaptchaService {
 			response,
 		});
 	
-		const res = await fetch(url, {
-			method: 'POST',
-			body: params,
-			headers: {
-				'User-Agent': this.config.userAgent,
+		const res = await this.httpRequestService.fetch(
+			url,
+			{
+				method: 'POST',
+				body: params,
+				headers: {
+					'User-Agent': this.config.userAgent,
+				},
 			},
-			// TODO
-			//timeout: 10 * 1000,
-			dispatcher: this.httpRequestService.getAgentByUrl(new URL(url)),
-		}).catch(err => {
+			{
+				noOkError: true,
+				bypassProxy: true,
+			}
+		).catch(err => {
 			throw `${err.message ?? err}`;
 		});
 	

@@ -9,22 +9,122 @@ import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
 import * as undici from 'undici';
 import { LookupFunction } from 'node:net';
-import { TransformStream } from 'node:stream/web';
-import * as dns from 'node:dns';
 
+// true to allow, false to deny
 export type IpChecker = (ip: string) => boolean;
 
-@Injectable()
-export class HttpRequestService {
+/* 
+ *  Child class to create and save Agent for fetch.
+ *  You should construct this when you want
+ *  to change timeout, size limit, socket connect function, etc.
+ */
+export class UndiciFetcher {
 	/**
 	 * Get http non-proxy agent (undici)
 	 */
-	private nonProxiedAgent: undici.Agent;
-
+	public nonProxiedAgent: undici.Agent;
+  
 	/**
 	 * Get http proxy or non-proxy agent (undici)
 	 */
 	public agent: undici.ProxyAgent | undici.Agent;
+
+	private proxyBypassHosts: string[];
+	private userAgent: string | undefined;
+
+	constructor(args: {
+		agentOptions: undici.Agent.Options;
+		proxy?: {
+			uri: string;
+			options?: undici.Agent.Options; // Override of agentOptions
+		},
+		proxyBypassHosts?: string[];
+		userAgent?: string;
+	}) {
+		this.proxyBypassHosts = args.proxyBypassHosts ?? [];
+		this.userAgent = args.userAgent;
+
+		this.nonProxiedAgent = new undici.Agent({
+			...args.agentOptions,
+		});
+		this.agent = args.proxy
+			? new undici.ProxyAgent({
+				...args.agentOptions,
+				...args.proxy.options,
+
+				uri: args.proxy.uri,
+			})
+			: this.nonProxiedAgent;
+	}
+
+	/**
+	 * Get agent by URL
+	 * @param url URL
+	 * @param bypassProxy Allways bypass proxy
+	 */
+	@bindThis
+	public getAgentByUrl(url: URL, bypassProxy = false): undici.Agent | undici.ProxyAgent {
+		if (bypassProxy || this.proxyBypassHosts.includes(url.hostname)) {
+			return this.nonProxiedAgent;
+		} else {
+			return this.agent;
+		}
+	}
+
+	@bindThis
+	public async fetch(
+		url: string | URL,
+		options: undici.RequestInit = {},
+		privateOptions: { noOkError?: boolean; bypassProxy?: boolean; } = { noOkError: false, bypassProxy: false }
+	): Promise<undici.Response> {
+		const res = await undici.fetch(url, {
+			dispatcher: this.getAgentByUrl(new URL(url), privateOptions.bypassProxy),
+			...options,
+		})
+		if (!res.ok && !privateOptions.noOkError) {
+			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
+		}
+		return res;
+	}
+
+	@bindThis
+	public async getJson<T extends unknown>(url: string, accept = 'application/json, */*', headers?: Record<string, string>): Promise<T> {
+		const res = await this.fetch(
+			url,
+			{
+				headers: Object.assign({
+					'User-Agent': this.userAgent,
+					Accept: accept,
+				}, headers ?? {}),
+			}
+		);
+
+		return await res.json() as T;
+	}
+
+	@bindThis
+	public async getHtml(url: string, accept = 'text/html, */*', headers?: Record<string, string>): Promise<string> {
+		const res = await this.fetch(
+			url,
+			{
+				headers: Object.assign({
+					'User-Agent': this.userAgent,
+					Accept: accept,
+				}, headers ?? {}),
+			}
+		);
+
+		return await res.text();
+	}
+}
+
+@Injectable()
+export class HttpRequestService {
+	public defaultFetcher: UndiciFetcher;
+	public fetch: UndiciFetcher['fetch'];
+	public getHtml: UndiciFetcher['getHtml'];
+	public defaultJsonFetcher: UndiciFetcher;
+	public getJson: UndiciFetcher['getJson'];
 
 	//#region for old http/https, only used in S3Service
 	// http non-proxy agent
@@ -42,6 +142,7 @@ export class HttpRequestService {
 
 	public readonly dnsCache: CacheableLookup;
 	public readonly clientDefaults: undici.Agent.Options;
+	private maxSockets: number;
 
 	constructor(
 		@Inject(DI.config)
@@ -54,20 +155,35 @@ export class HttpRequestService {
 		});
 
 		this.clientDefaults = {
-			keepAliveTimeout: 4 * 1000,
+			keepAliveTimeout: 30 * 1000,
 			keepAliveMaxTimeout: 10 * 60 * 1000,
 			keepAliveTimeoutThreshold: 1 * 1000,
 			strictContentLength: true,
+			headersTimeout: 10 * 1000,
+			bodyTimeout: 10 * 1000,
+			maxHeaderSize: 16364, // default
+			maxResponseSize: 10 * 1024 * 1024,
 			connect: {
-				maxCachedSessions: 100, // TLSセッションのキャッシュ数 https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L80
+				timeout: 10 * 1000, // コネクションが確立するまでのタイムアウト
+				maxCachedSessions: 300, // TLSセッションのキャッシュ数 https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L80
 				lookup: this.dnsCache.lookup as LookupFunction, // https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L98
 			},
 		}
 
-		this.nonProxiedAgent = new undici.Agent({
-			...this.clientDefaults,
-		});
+		this.maxSockets = Math.max(256, this.config.deliverJobConcurrency ?? 128);
 
+		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherConstructorOption());
+
+		this.fetch = this.defaultFetcher.fetch;
+		this.getHtml = this.defaultFetcher.getHtml;
+
+		this.defaultJsonFetcher = new UndiciFetcher(this.getStandardUndiciFetcherConstructorOption({
+			maxResponseSize: 1024 * 256,
+		}));
+
+		this.getJson = this.defaultJsonFetcher.getJson;
+
+		//#region for old http/https, only used in S3Service
 		this.http = new http.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
@@ -80,23 +196,11 @@ export class HttpRequestService {
 			lookup: this.dnsCache.lookup,
 		} as https.AgentOptions);
 
-		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
-
-		this.agent = config.proxy
-			? new undici.ProxyAgent({
-				...this.clientDefaults,
-				connections: maxSockets,
-
-				uri: config.proxy,
-			})
-			: this.nonProxiedAgent;
-
-	//#region for old http/https, only used in S3Service
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
 				keepAlive: true,
 				keepAliveMsecs: 30 * 1000,
-				maxSockets,
+				maxSockets: this.maxSockets,
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
@@ -107,26 +211,35 @@ export class HttpRequestService {
 			? new HttpsProxyAgent({
 				keepAlive: true,
 				keepAliveMsecs: 30 * 1000,
-				maxSockets,
+				maxSockets: this.maxSockets,
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
 			})
 			: this.https;
+		//#endregion
 	}
-	//#endregion
 
 	/**
-	 * Get agent by URL
+	 * Get http agent by URL
 	 * @param url URL
 	 * @param bypassProxy Allways bypass proxy
 	 */
 	@bindThis
-	public getAgentByUrl(url: URL, bypassProxy = false): undici.Agent | undici.ProxyAgent {
-		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
-			return this.nonProxiedAgent;
-		} else {
-			return this.agent;
+	public getStandardUndiciFetcherConstructorOption(opts: undici.Agent.Options = {}) {
+		return {
+			agentOptions: {
+				...this.clientDefaults,
+				...opts,
+			},
+			...(this.config.proxy ? {
+			proxy: {
+				uri: this.config.proxy,
+				options: {
+					connections: this.maxSockets,
+				}
+			}
+			} : {}),
 		}
 	}
 
@@ -143,141 +256,33 @@ export class HttpRequestService {
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;
 		}
 	}
+
 	/**
 	 * check ip
 	 */
 	@bindThis
-	public checkIp(url: URL, fn: IpChecker): Promise<boolean> {
-		const lookup = this.dnsCache.lookup as LookupFunction || dns.lookup;
-
-		return new Promise((resolve, reject) => {
-			lookup(url.hostname, {}, (err, ip) => {
+	public getConnectorWithIpCheck(connector: undici.buildConnector.connector, checkIp: IpChecker): undici.buildConnector.connectorAsync {
+		return (options, cb) => {
+			connector(options, (err, socket) => {
 				if (err) {
-					resolve(false);
-				} else {
-					resolve(fn(ip));
+					cb(err, null);
+					return;
 				}
+
+				if (socket.remoteAddress == undefined) {
+					cb(new Error('remoteAddress is undefined (maybe socket destroyed)'), null);
+					return;
+				}
+
+				// allow
+				if (checkIp(socket.remoteAddress)) {
+					cb(null, socket);
+					return;
+				}
+
+				socket.destroy();
+				cb(new StatusError('IP is not allowed', 403, 'IP is not allowed'), null);
 			});
-		});
-	}
-
-	@bindThis
-	public async getJson<T extends unknown>(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>): Promise<T> {
-		const res = await this.fetch({
-			url,
-			headers: Object.assign({
-				'User-Agent': this.config.userAgent,
-				Accept: accept,
-			}, headers ?? {}),
-			timeout,
-			size: 1024 * 256,
-		});
-
-		return await res.json() as T;
-	}
-
-	@bindThis
-	public async getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: Record<string, string>): Promise<string> {
-		const res = await this.fetch({
-			url,
-			headers: Object.assign({
-				'User-Agent': this.config.userAgent,
-				Accept: accept,
-			}, headers ?? {}),
-			timeout,
-		});
-
-		return await res.text();
-	}
-
-	@bindThis
-	public async fetch(args: {
-		url: string,
-		method?: string,
-		body?: string,
-		headers?: Record<string, string>,
-		timeout?: number,
-		size?: number,
-		redirect?: RequestRedirect | undefined,
-		dispatcher?: undici.Dispatcher,
-		ipCheckers?: {
-			type: 'black' | 'white',
-			fn: IpChecker,
-		}[],
-		noOkError?: boolean,
-	}): Promise<undici.Response> {
-		const url = new URL(args.url);
-
-		if (args.ipCheckers) {
-			for (const check of args.ipCheckers) {
-				const result = await this.checkIp(url, check.fn);
-				if (
-					(check.type === 'black' && result === true) ||
-					(check.type === 'white' && result === false)
-				) {
-					throw new StatusError('IP is not allowed', 403, 'IP is not allowed');
-				}
-			}
-		}
-
-		const timeout = args.timeout ?? 10 * 1000;
-
-		const controller = new AbortController();
-		setTimeout(() => {
-			controller.abort();
-		}, timeout * 6);
-
-		const res = await Promise.race([
-			undici.fetch(args.url, {
-				method: args.method ?? 'GET',
-				headers: args.headers,
-				body: args.body,
-				redirect: args.redirect,
-				dispatcher: args.dispatcher ?? this.getAgentByUrl(url),
-				keepalive: true,
-				signal: controller.signal,
-			}),
-			new Promise<null>((res) => setTimeout(() => res(null), timeout))
-		]);
-
-		if (res == null) {
-			throw new StatusError(`Gateway Timeout`, 504, 'Gateway Timeout');
-		}
-
-		if (!res.ok && !args.noOkError) {
-			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
-		}
-
-		return ({
-			...res,
-			body: this.fetchLimiter(res, args.size),
-		});
-	}
-
-	/**
-	 * Fetch body limiter
-	 * @param res undici.Response
-	 * @param size number of Max size (Bytes) (default: 10MiB)
-	 * @returns ReadableStream<Uint8Array> (provided by node:stream/web)
-	 */
-	@bindThis
-	private fetchLimiter(res: undici.Response, size: number = 10 * 1024 * 1024) {
-		if (res.body == null) return null;
-
-		let total = 0;
-		return res.body.pipeThrough(new TransformStream({
-			start() {},
-			transform(chunk, controller) {
-				// TypeScirptグローバルの定義はUnit8ArrayだがundiciはReadableStream<any>を渡してくるので一応変換
-				const uint8 = new Uint8Array(chunk);
-				total += uint8.length;
-				if (total > size) {
-					controller.error(new StatusError(`Payload Too Large`, 413, 'Payload Too Large'));
-				} else {
-					controller.enqueue(uint8);
-				}
-			},
-			flush() {},
-		}));
+		};
 	}
 }

@@ -8,11 +8,12 @@ import got, * as Got from 'got';
 import chalk from 'chalk';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { StatusError } from '@/misc/status-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
+import { buildConnector } from 'undici';
 
 const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
@@ -20,6 +21,7 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class DownloadService {
 	private logger: Logger;
+	private undiciFetcher: UndiciFetcher:;
 
 	constructor(
 		@Inject(DI.config)
@@ -29,6 +31,16 @@ export class DownloadService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('download');
+
+		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherConstructorOption({
+			connect: this.httpRequestService.getConnectorWithIpCheck(
+				buildConnector({
+					...this.httpRequestService.clientDefaults.connect,
+				}),
+				this.isPrivateIp
+			),
+			bodyTimeout: 30 * 1000,
+		}));
 	}
 
 	@bindThis
@@ -38,22 +50,16 @@ export class DownloadService {
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
-	
-		const response = await this.httpRequestService.fetch({
-			method: 'GET',
+
+		const response = await this.undiciFetcher.fetch(
 			url,
-			headers: {
-				'User-Agent': this.config.userAgent,
-			},
-			timeout,
-			size: maxSize,
-			ipCheckers:
-				(process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') &&
-					!this.config.proxy ?
-						[{ type: 'black', fn: this.isPrivateIp }] :
-						undefined,
-			// http2: false,	// default
-		});
+			{
+				method: 'GET',
+				headers: {
+					'User-Agent': this.config.userAgent,
+				},
+			}
+		);
 
 		if (response.body === null) {
 			throw new StatusError('No body', 400, 'No body');

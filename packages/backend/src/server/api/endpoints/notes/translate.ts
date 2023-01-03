@@ -83,25 +83,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const endpoint = instance.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
 
-			const res = await this.httpRequestService.fetch({
-				url: endpoint,
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'User-Agent': config.userAgent,
-					Accept: 'application/json, */*',
+			const res = await this.httpRequestService.fetch(
+				endpoint,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						'User-Agent': config.userAgent,
+						Accept: 'application/json, */*',
+					},
+					body: params.toString(),
 				},
-				body: params.toString(),
-				// TODO
-				//timeout: 10000,
-			});
+				{
+					noOkError: false,
+					bypassProxy: true,
+				}
+			);
 
 			const json = (await res.json()) as {
-		translations: {
-			detected_source_language: string;
-			text: string;
-		}[];
-	};
+				translations: {
+					detected_source_language: string;
+					text: string;
+				}[];
+			};
 
 			return {
 				sourceLang: json.translations[0].detected_source_language,

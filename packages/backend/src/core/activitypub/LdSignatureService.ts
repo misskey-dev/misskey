@@ -115,15 +115,20 @@ class LdSignature {
 
 	@bindThis
 	private async fetchDocument(url: string) {
-		const json = await this.httpRequestService.fetch({
+		const json = await this.httpRequestService.fetch(
 			url,
-			headers: {
-				Accept: 'application/ld+json, application/json',
+			{
+				headers: {
+					Accept: 'application/ld+json, application/json',
+				},
+				// TODO
+				//timeout: this.loderTimeout,
 			},
-			noOkError: true,
-			// TODO
-			//timeout: this.loderTimeout,
-		}).then(res => {
+			{
+				noOkError: true,
+				bypassProxy: false,
+			}
+		).then(res => {
 			if (!res.ok) {
 				throw `${res.status} ${res.statusText}`;
 			} else {
