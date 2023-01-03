@@ -59,6 +59,7 @@ export class UndiciFetcher {
 			connect: (process.env.NODE_ENV !== 'production' && typeof args.agentOptions.connect !== 'function')
 				? (options, cb) => {
 					undici.buildConnector(args.agentOptions.connect as undici.buildConnector.BuildOptions)(options, (err, socket) => {
+						this.logger?.debug('Socket connector called', socket);
 						if (err) {
 							this.logger?.debug(`Socket error`, err);
 							cb(new Error(`Error while socket connecting\n${err}`), null);
@@ -80,6 +81,7 @@ export class UndiciFetcher {
 				connect: (process.env.NODE_ENV !== 'production' && typeof (args.proxy?.options?.connect ?? args.agentOptions.connect) !== 'function')
 					? (options, cb) => {
 						undici.buildConnector((args.proxy?.options?.connect ?? args.agentOptions.connect) as undici.buildConnector.BuildOptions)(options, (err, socket) => {
+							this.logger?.debug('Socket connector called', socket);
 							if (err) {
 								this.logger?.debug(`Socket error`, err);
 								cb(new Error(`Error while socket connecting\n${err}`), null);
@@ -116,7 +118,10 @@ export class UndiciFetcher {
 		const res = await undici.fetch(url, {
 			dispatcher: this.getAgentByUrl(new URL(url), privateOptions.bypassProxy),
 			...options,
-		})
+		}).catch((err) => {
+			this.logger?.error('fetch error', err);
+			throw new StatusError('Resource Unreachable', 500, 'Resource Unreachable');
+		});
 		if (!res.ok && !privateOptions.noOkError) {
 			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
 		}
@@ -304,8 +309,8 @@ export class HttpRequestService {
 	@bindThis
 	public getConnectorWithIpCheck(connector: undici.buildConnector.connector, checkIp: IpChecker): undici.buildConnector.connectorAsync {
 		return (options, cb) => {
-			this.logger.debug('socket connecting...')
 			connector(options, (err, socket) => {
+				this.logger.debug('Socket connector called', socket);
 				if (err) {
 					this.logger.error(`Socket error`, err)
 					cb(new Error(`Error while socket connecting\n${err}`), null);
