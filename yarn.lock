@@ -917,6 +917,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/formbody@npm:^7.4.0":
+  version: 7.4.0
+  resolution: "@fastify/formbody@npm:7.4.0"
+  dependencies:
+    fast-querystring: ^1.0.0
+    fastify-plugin: ^4.0.0
+  checksum: 5bff8180b71343179e3e5bd8b2f88b17459062cf55035c60fbda8db1e8d9682645b2f47ce8b898190814ae241631fee0345edd4e4f396e34fab6fb7eb681381d
+  languageName: node
+  linkType: hard
+
 "@fastify/http-proxy@npm:^8.4.0":
   version: 8.4.0
   resolution: "@fastify/http-proxy@npm:8.4.0"
@@ -4123,6 +4133,7 @@ __metadata:
     "@fastify/accepts": 4.1.0
     "@fastify/cookie": ^8.3.0
     "@fastify/cors": 8.2.0
+    "@fastify/formbody": ^7.4.0
     "@fastify/http-proxy": ^8.4.0
     "@fastify/multipart": 7.3.0
     "@fastify/static": 6.6.0

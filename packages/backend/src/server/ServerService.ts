@@ -4,17 +4,18 @@ import * as http from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import Fastify from 'fastify';
 import { IsNull } from 'typeorm';
+import fastifyFormBody from '@fastify/formbody';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { envOption } from '@/env.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -23,7 +24,6 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ServerService {
@@ -69,6 +69,8 @@ export class ServerService {
 				done();
 			});
 		}
+
+		fastify.register(fastifyFormBody);
 
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.fileServerService.createServer, { prefix: '/files' });
