@@ -255,6 +255,7 @@ total: "Σύνολο"
 appearance: "Εμφάνιση"
 accountSettings: "Ρυθμίσεις λογαριασμού"
 sounds: "Ήχοι"
+sound: "Ήχοι"
 listen: "Ακρόαση"
 showInPage: "Εμφάνιση στη σελίδα"
 volume: "Ένταση"
@@ -354,6 +355,8 @@ _widgets:
   postForm: "Φόρμα δημοσίευσης"
   button: "Κουμπί"
   onlineUsers: "Συνδεδεμένα μέλη"
+  _userList:
+    chooseList: "Επιλέξτε μία λίστα"
 _cw:
   show: "Δείτε περισσότερα"
 _visibility:
@@ -380,26 +383,6 @@ _pages:
   viewPage: "Δείτε τις Σελίδες σας"
   blocks:
     image: "Εικόνες"
-    _switch:
-      text: "Τίτλος"
-  script:
-    categories:
-      list: "Λίστες"
-    blocks:
-      _join:
-        arg1: "Λίστες"
-      _randomPick:
-        arg1: "Λίστες"
-      _dailyRandomPick:
-        arg1: "Λίστες"
-      _seedRandomPick:
-        arg2: "Λίστες"
-      _pick:
-        arg1: "Λίστες"
-      _listLen:
-        arg1: "Λίστα"
-    types:
-      array: "Λίστες"
 _notification:
   youGotMessagingMessageFromUser: "{name} σάς έστειλε ένα μήνυμα συνομιλίας"
   youWereFollowed: "σε ακολούθησε"

@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
+import fastifyCookie from '@fastify/cookie';
 import { ModuleRef, repl } from '@nestjs/core';
 import type { Config } from '@/config.js';
 import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import endpoints, { IEndpoint } from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
@@ -14,7 +15,7 @@ import { SigninApiService } from './SigninApiService.js';
 import { GithubServerService } from './integration/GithubServerService.js';
 import { DiscordServerService } from './integration/DiscordServerService.js';
 import { TwitterServerService } from './integration/TwitterServerService.js';
-import { bindThis } from '@/decorators.js';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class ApiServerService {
@@ -57,6 +58,8 @@ export class ApiServerService {
 			},
 		});
 
+		fastify.register(fastifyCookie, {});
+
 		// Prevent cache
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
@@ -79,6 +82,7 @@ export class ApiServerService {
 				}>('/' + endpoint.name, (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
+						reply.send();
 						return;
 					}
 		
@@ -89,9 +93,10 @@ export class ApiServerService {
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, (request, reply) => {
+				}>('/' + endpoint.name, { bodyLimit: 1024 * 32 }, (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
+						reply.send();
 						return;
 					}
 		
@@ -135,6 +140,9 @@ export class ApiServerService {
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({
 				select: ['host'],
+				where: {
+					isSuspended: false,
+				},
 			});
 
 			return instances.map(instance => instance.host);

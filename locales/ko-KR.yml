@@ -13,6 +13,7 @@ fetchingAsApObject: "연합에서 조회 중"
 ok: "확인"
 gotIt: "알겠어요"
 cancel: "취소"
+noThankYou: "나중에"
 enterUsername: "유저명 입력"
 renotedBy: "{user}님의 리노트"
 noNotes: "노트가 없습니다"
@@ -48,6 +49,7 @@ deleteAndEdit: "삭제 후 편집"
 deleteAndEditConfirm: "이 노트를 삭제한 뒤 다시 편집하시겠습니까? 이 노트에 대한 리액션, 리노트, 답글 또한 모두 삭제됩니다."
 addToList: "리스트에 추가"
 sendMessage: "메시지 보내기"
+copyRSS: "RSS 복사"
 copyUsername: "유저명 복사"
 searchUser: "사용자 검색"
 reply: "답글"
@@ -455,7 +457,8 @@ language: "언어"
 uiLanguage: "UI 표시 언어"
 groupInvited: "그룹에 초대되었습니다"
 aboutX: "{x}에 대하여"
-useOsNativeEmojis: "OS 기본 이모지를 사용"
+emojiStyle: "이모지 스타일"
+native: "네이티브"
 disableDrawer: "드로어 메뉴를 사용하지 않기"
 youHaveNoGroups: "그룹이 없습니다"
 joinOrCreateGroup: "다른 그룹의 초대를 받거나, 직접 새 그룹을 만들어 보세요."
@@ -508,6 +511,7 @@ deleteAll: "모두 삭제"
 showFixedPostForm: "타임라인 상단에 글 작성란을 표시"
 newNoteRecived: "새 노트가 있습니다"
 sounds: "소리"
+sound: "소리"
 listen: "듣기"
 none: "없음"
 showInPage: "페이지로 보기"
@@ -713,6 +717,7 @@ accentColor: "강조 색상"
 textColor: "문자 색"
 saveAs: "다른 이름으로 저장"
 advanced: "고급"
+advancedSettings: "고급 설정"
 value: "값"
 createdAt: "생성된 날짜"
 updatedAt: "수정한 날짜"
@@ -898,6 +903,19 @@ navbar: "내비게이션 바"
 shuffle: "셔플"
 account: "계정"
 move: "이동"
+pushNotification: "푸시 알림"
+subscribePushNotification: "푸시 알림 켜기"
+unsubscribePushNotification: "푸시 알림 끄기"
+pushNotificationAlreadySubscribed: "푸시 알림이 이미 켜져 있습니다"
+pushNotificationNotSupported: "브라우저나 인스턴스에서 푸시 알림이 지원되지 않습니다"
+sendPushNotificationReadMessage: "푸시 알림이니 메시지를 읽으면 푸시 알림을 삭제합니다"
+sendPushNotificationReadMessageCaption: "「{emptyPushNotificationMessage}」이라는 알림이 잠깐 표시됩니다. 기기의 전력 소비량이 증가할 수 있습니다."
+windowMaximize: "최대화"
+windowRestore: "복구"
+caption: "캡션"
+loggedInAsBot: "봇 계정으로 로그인중"
+tools: "도구"
+cannotLoad: "불러오지 못했습니다"
 _sensitiveMediaDetection:
   description: "기계학습을 통해 자동으로 민감한 미디어를 탐지하여, 모더레이션에 참고할 수 있도록 합니다. 서버의 부하를 약간 증가시킵니다."
   sensitivity: "탐지 민감도"
@@ -1208,6 +1226,9 @@ _tutorial:
   step7_1: "이것으로 Misskey의 기본 튜토리얼을 마치겠습니다. 수고하셨습니다!"
   step7_2: "Misskey에 대해 더 알고 싶으시다면 {help}를 참고해 주세요."
   step7_3: "그럼 Misskey를 즐기세요! 🚀"
+  step8_1: "마지막으로, 푸시 알림을 활성화해 보지 않으실래요?"
+  step8_2: "푸시 알림을 활성화하면, Misskey를 열지 않았을 때에도 리액션이나 팔로우, 멘션 등을 확인할 수 있습니다."
+  step8_3: "알림 설정은 나중에도 변경할 수 있습니다."
 _2fa:
   alreadyRegistered: "이미 설정이 완료되었습니다."
   registerDevice: "디바이스 등록"
@@ -1295,6 +1316,9 @@ _widgets:
   serverMetric: "서버 통계"
   aiscript: "AiScript 콘솔"
   aichan: "아이"
+  userList: "사용자 목록"
+  _userList:
+    chooseList: "리스트 선택"
 _cw:
   hide: "숨기기"
   show: "더 보기"
@@ -1430,8 +1454,6 @@ _pages:
   eyeCatchingImageRemove: "아이캐치 이미지를 삭제"
   chooseBlock: "블록 추가"
   selectType: "종류 선택"
-  enterVariableName: "변수명을 지정해주세요"
-  variableNameIsAlreadyUsed: "해당 변수명은 이미 사용중입니다"
   contentBlocks: "콘텐츠"
   inputBlocks: "입력"
   specialBlocks: "특수"
@@ -1441,249 +1463,11 @@ _pages:
     section: "섹션"
     image: "이미지"
     button: "버튼"
-    if: "조건문"
-    _if:
-      variable: "변수"
-    post: "글 입력란"
-    _post:
-      text: "내용"
-      attachCanvasImage: "캔버스의 이미지와 함께 게시하기"
-      canvasId: "캔버스 ID"
-    textInput: "텍스트 입력"
-    _textInput:
-      name: "변수명"
-      text: "제목"
-      default: "기본값"
-    textareaInput: "여러 줄 텍스트 입력"
-    _textareaInput:
-      name: "변수명"
-      text: "제목"
-      default: "기본값"
-    numberInput: "수치 입력"
-    _numberInput:
-      name: "변수명"
-      text: "제목"
-      default: "기본값"
-    canvas: "캔버스"
-    _canvas:
-      id: "캔버스 ID"
-      width: "폭"
-      height: "높이"
     note: "노트필기"
     _note:
       id: "노트 ID"
       idDescription: "노트 URL을 붙여넣어 설정할 수도 있습니다."
       detailed: "세부 정보 보기"
-    switch: "스위치"
-    _switch:
-      name: "변수명"
-      text: "제목"
-      default: "기본값"
-    counter: "카운터"
-    _counter:
-      name: "변수명"
-      text: "제목"
-      inc: "증가치"
-    _button:
-      text: "제목"
-      colored: "색 입히기"
-      action: "버튼을 눌렀을 때의 동작"
-      _action:
-        dialog: "대화상자를 표시"
-        _dialog:
-          content: "내용"
-        resetRandom: "난수를 초기화"
-        pushEvent: "이벤트 보내기"
-        _pushEvent:
-          event: "이벤트 이름"
-          message: "눌렀을 때 표시할 페이지"
-          variable: "보낼 변수"
-          no-variable: "없음"
-        callAiScript: "AiScript 호출"
-        _callAiScript:
-          functionName: "함수명"
-    radioButton: "선택지"
-    _radioButton:
-      name: "변수명"
-      title: "제목"
-      values: "줄바꿈으로 구분된 선택지"
-      default: "기본값"
-  script:
-    categories:
-      flow: "흐름 제어"
-      logical: "논리 연산"
-      operation: "계산"
-      comparison: "비교"
-      random: "랜덤"
-      value: "값"
-      fn: "함수"
-      text: "텍스트 조작"
-      convert: "변환"
-      list: "리스트"
-    blocks:
-      text: "텍스트"
-      multiLineText: "텍스트 (여러 줄)"
-      textList: "텍스트 목록"
-      _textList:
-        info: "각각을 줄바꿈으로 구분해주세요"
-      strLen: "텍스트의 길이"
-      _strLen:
-        arg1: "텍스트"
-      strPick: "문자 추출"
-      _strPick:
-        arg1: "텍스트"
-        arg2: "문자 위치"
-      strReplace: "텍스트 대체"
-      _strReplace:
-        arg1: "텍스트"
-        arg2: "대체될 텍스트"
-        arg3: "대체할 텍스트"
-      strReverse: "텍스트 뒤집기"
-      _strReverse:
-        arg1: "텍스트"
-      join: "텍스트 합치기"
-      _join:
-        arg1: "리스트"
-        arg2: "구분자"
-      add: "더하기"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "빼기"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "곱하기"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "나누기"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "나눈 나머지"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "소수점을 반올림"
-      _round:
-        arg1: "수치"
-      eq: "A와 B가 동일"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A와 B가 다름"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A와 B가 둘 다 참"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A, B중 하나 이상이 참"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A가 B보다 작음"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A가 B보다 큼"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A가 B보다 작거나 같음"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A가 B보다 크거나 같음"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "분기"
-      _if:
-        arg1: "조건문"
-        arg2: "참일 경우"
-        arg3: "거짓일 경우"
-      not: "부정"
-      _not:
-        arg1: "부정"
-      random: "랜덤"
-      _random:
-        arg1: "확률"
-      rannum: "난수"
-      _rannum:
-        arg1: "최솟값"
-        arg2: "최댓값"
-      randomPick: "목록에서 임의로 선택"
-      _randomPick:
-        arg1: "리스트"
-      dailyRandom: "랜덤 (하루동안 결과 유지)"
-      _dailyRandom:
-        arg1: "확률"
-      dailyRannum: "난수 (하루동안 결과 유지)"
-      _dailyRannum:
-        arg1: "최솟값"
-        arg2: "최댓값"
-      dailyRandomPick: "목록에서 임의로 선택 (하루동안 결과 유지)"
-      _dailyRandomPick:
-        arg1: "리스트"
-      seedRandom: "무작위 (시드)"
-      _seedRandom:
-        arg1: "시드"
-        arg2: "확률"
-      seedRannum: "난수 (시드)"
-      _seedRannum:
-        arg1: "시드"
-        arg2: "최솟값"
-        arg3: "최댓값"
-      seedRandomPick: "목록에서 무작위로 선택 (시드)"
-      _seedRandomPick:
-        arg1: "시드"
-        arg2: "리스트"
-      DRPWPM: "확률형 목록에서 임의로 선택 (하루동안 결과 유지)"
-      _DRPWPM:
-        arg1: "텍스트 목록"
-      pick: "목록에서 선택"
-      _pick:
-        arg1: "리스트"
-        arg2: "위치"
-      listLen: "리스트의 길이 가져오기"
-      _listLen:
-        arg1: "리스트"
-      number: "수치"
-      stringToNumber: "텍스트를 수치로"
-      _stringToNumber:
-        arg1: "텍스트"
-      numberToString: "수치를 텍스트로"
-      _numberToString:
-        arg1: "수치"
-      splitStrByLine: "텍스트를 행 단위로 분할"
-      _splitStrByLine:
-        arg1: "텍스트"
-      ref: "변수"
-      aiScriptVar: "AiScript 변수"
-      fn: "함수"
-      _fn:
-        slots: "슬롯"
-        slots-info: "각 슬롯을 줄바꿈으로 구분하여 주세요"
-        arg1: "출력"
-      for: "반복"
-      _for:
-        arg1: "횟수"
-        arg2: "처리"
-    typeError: "슬롯 {slot}은 \"{expect}\"를 사용할 수 있지만 \"{actual}이 들어있습니다!"
-    thereIsEmptySlot: "슬롯 {slot}이(가) 비었습니다!"
-    types:
-      string: "텍스트"
-      number: "수치"
-      boolean: "플래그"
-      array: "리스트"
-      stringArray: "텍스트 목록"
-    emptySlot: "빈 슬롯"
-    enviromentVariables: "환경 변수"
-    pageVariables: "페이지 요소"
-    argVariables: "입력 슬롯"
 _relayStatus:
   requesting: "대기 중"
   accepted: "승인됨"
@@ -1702,6 +1486,7 @@ _notification:
   yourFollowRequestAccepted: "팔로우 요청이 수락되었습니다"
   youWereInvitedToGroup: "그룹에 초대되었습니다"
   pollEnded: "투표 결과가 발표되었습니다"
+  unreadAntennaNote: "안테나 {name}"
   emptyPushNotificationMessage: "푸시 알림이 갱신되었습니다"
   _types:
     all: "전부"

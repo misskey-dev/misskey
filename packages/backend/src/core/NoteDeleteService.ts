@@ -49,13 +49,13 @@ export class NoteDeleteService {
 	 * @param user 投稿者
 	 * @param note 投稿
 	 */
-	async delete(user: { id: User['id']; uri: User['uri']; host: User['host']; }, note: Note, quiet = false) {
+	async delete(user: { id: User['id']; uri: User['uri']; host: User['host']; isBot: User['isBot']; }, note: Note, quiet = false) {
 		const deletedAt = new Date();
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 		if (note.renoteId && (await this.noteEntityService.countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
 			this.notesRepository.decrement({ id: note.renoteId }, 'renoteCount', 1);
-			this.notesRepository.decrement({ id: note.renoteId }, 'score', 1);
+			if (!user.isBot) this.notesRepository.decrement({ id: note.renoteId }, 'score', 1);
 		}
 
 		if (note.replyId) {
@@ -100,7 +100,7 @@ export class NoteDeleteService {
 			this.perUserNotesChart.update(user, note, false);
 
 			if (this.userEntityService.isRemoteUser(user)) {
-				this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
+				this.federatedInstanceService.fetch(user.host).then(i => {
 					this.instancesRepository.decrement({ id: i.id }, 'notesCount', 1);
 					this.instanceChart.updateNote(i.host, note, false);
 				});

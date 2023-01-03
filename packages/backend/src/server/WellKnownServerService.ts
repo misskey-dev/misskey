@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull, MoreThan } from 'typeorm';
 import vary from 'vary';
 import { DI } from '@/di-symbols.js';
@@ -11,6 +10,8 @@ import * as Acct from '@/misc/acct.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import type { FindOptionsWhere } from 'typeorm';
 import { bindThis } from '@/decorators.js';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import fastifyAccepts from '@fastify/accepts';
 
 @Injectable()
 export class WellKnownServerService {
@@ -40,6 +41,8 @@ export class WellKnownServerService {
 		const webFingerPath = '/.well-known/webfinger';
 		const jrd = 'application/jrd+json';
 		const xrd = 'application/xrd+xml';
+
+		fastify.register(fastifyAccepts);
 
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Access-Control-Allow-Headers', 'Accept');

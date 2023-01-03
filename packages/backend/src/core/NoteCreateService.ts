@@ -41,6 +41,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -198,6 +199,7 @@ export class NoteCreateService {
 		host: User['host'];
 		isSilenced: User['isSilenced'];
 		createdAt: User['createdAt'];
+		isBot: User['isBot'];
 	}, data: Option, silent = false): Promise<Note> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
@@ -258,6 +260,9 @@ export class NoteCreateService {
 		}
 
 		if (data.text) {
+			if (data.text.length > DB_MAX_NOTE_TEXT_LENGTH) {
+				data.text = data.text.slice(0, DB_MAX_NOTE_TEXT_LENGTH);
+			}
 			data.text = data.text.trim();
 		} else {
 			data.text = null;
@@ -415,6 +420,7 @@ export class NoteCreateService {
 		host: User['host'];
 		isSilenced: User['isSilenced'];
 		createdAt: User['createdAt'];
+		isBot: User['isBot'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		// 統計を更新
 		this.notesChart.update(note, true);
@@ -422,7 +428,7 @@ export class NoteCreateService {
 
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
-			this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
+			this.federatedInstanceService.fetch(user.host).then(i => {
 				this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
 				this.instanceChart.updateNote(i.host, note, true);
 			});
@@ -484,7 +490,7 @@ export class NoteCreateService {
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 		if (data.renote && (await this.noteEntityService.countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
-			this.incRenoteCount(data.renote);
+			if (!user.isBot) this.incRenoteCount(data.renote);
 		}
 
 		if (data.poll && data.poll.expiresAt) {

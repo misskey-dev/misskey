@@ -16,6 +16,7 @@ import { DaemonModule } from '@/daemons/DaemonModule.js';
 import { JanitorService } from '@/daemons/JanitorService.js';
 import { QueueStatsService } from '@/daemons/QueueStatsService.js';
 import { ServerStatsService } from '@/daemons/ServerStatsService.js';
+import { NestLogger } from '@/NestLogger.js';
 import { envOption } from '../env.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -78,7 +79,9 @@ export async function masterMain() {
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
 
 	if (!envOption.noDaemons) {
-		const daemons = await NestFactory.createApplicationContext(DaemonModule);
+		const daemons = await NestFactory.createApplicationContext(DaemonModule, {
+			logger: new NestLogger(),
+		});
 		daemons.enableShutdownHooks();
 		daemons.get(JanitorService).start();
 		daemons.get(QueueStatsService).start();

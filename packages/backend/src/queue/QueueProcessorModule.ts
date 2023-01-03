@@ -29,6 +29,8 @@ import { ImportMutingProcessorService } from './processors/ImportMutingProcessor
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
+import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
+import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 
 @Module({
 	imports: [
@@ -44,6 +46,7 @@ import { TickChartsProcessorService } from './processors/TickChartsProcessorServ
 		DeleteDriveFilesProcessorService,
 		ExportCustomEmojisProcessorService,
 		ExportNotesProcessorService,
+		ExportFavoritesProcessorService,
 		ExportFollowingProcessorService,
 		ExportMutingProcessorService,
 		ExportBlockingProcessorService,
@@ -63,6 +66,7 @@ import { TickChartsProcessorService } from './processors/TickChartsProcessorServ
 		EndedPollNotificationProcessorService,
 		DeliverProcessorService,
 		InboxProcessorService,
+		AggregateRetentionProcessorService,
 		QueueProcessorService,
 	],
 	exports: [
