@@ -226,10 +226,6 @@ onBeforeUnmount(() => {
 			border-radius: 6px;
 		}
 
-		> * {
-			position: relative;
-		}
-
 		&:not(:disabled):hover {
 			color: var(--accent);
 			text-decoration: none;

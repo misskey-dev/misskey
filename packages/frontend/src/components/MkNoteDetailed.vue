@@ -70,7 +70,7 @@
 					</div>
 					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" class="url-preview"/>
-					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote"/></div>
+					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote" class="note"/></div>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
@@ -491,7 +491,7 @@ if (appearNote.replyId) {
 					> .renote {
 						padding: 8px 0;
 
-						> * {
+						> .note {
 							padding: 16px;
 							border: dashed 1px var(--renote);
 							border-radius: 8px;

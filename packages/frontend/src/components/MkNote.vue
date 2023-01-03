@@ -59,7 +59,7 @@
 					</div>
 					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
-					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote"/></div>
+					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote" class="note"/></div>
 					<button v-if="isLong && collapsed" class="fade _button" @click="collapsed = false">
 						<span>{{ i18n.ts.showMore }}</span>
 					</button>
@@ -529,7 +529,7 @@ function readPromo() {
 					> .renote {
 						padding: 8px 0;
 
-						> * {
+						> .note {
 							padding: 16px;
 							border: dashed 1px var(--renote);
 							border-radius: 8px;
