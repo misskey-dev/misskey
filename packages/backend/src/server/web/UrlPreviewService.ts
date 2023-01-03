@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as summaly from 'summaly';
+import summaly from 'summaly';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';

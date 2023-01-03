@@ -9,6 +9,8 @@ import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
 import * as undici from 'undici';
 import { LookupFunction } from 'node:net';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 
 // true to allow, false to deny
 export type IpChecker = (ip: string) => boolean;
@@ -32,27 +34,61 @@ export class UndiciFetcher {
 	private proxyBypassHosts: string[];
 	private userAgent: string | undefined;
 
-	constructor(args: {
-		agentOptions: undici.Agent.Options;
-		proxy?: {
-			uri: string;
-			options?: undici.Agent.Options; // Override of agentOptions
+	private logger: Logger | undefined;
+
+	constructor(
+		args: {
+			agentOptions: undici.Agent.Options;
+			proxy?: {
+				uri: string;
+				options?: undici.Agent.Options; // Override of agentOptions
+			},
+			proxyBypassHosts?: string[];
+			userAgent?: string;
 		},
-		proxyBypassHosts?: string[];
-		userAgent?: string;
-	}) {
+		logger?: Logger,
+	) {
+		this.logger = logger;
+		this.logger?.debug('UndiciFetcher constructor', args);
+
 		this.proxyBypassHosts = args.proxyBypassHosts ?? [];
 		this.userAgent = args.userAgent;
 
 		this.nonProxiedAgent = new undici.Agent({
 			...args.agentOptions,
+			connect: (process.env.NODE_ENV !== 'production' && typeof args.agentOptions.connect !== 'function')
+				? (options, cb) => {
+					undici.buildConnector(args.agentOptions.connect as undici.buildConnector.BuildOptions)(options, (err, socket) => {
+						if (err) {
+							this.logger?.debug(`Socket error`, err);
+							cb(new Error(`Error while socket connecting\n${err}`), null);
+							return;
+						}
+						this.logger?.debug(`Socket connected: ${socket.localPort} => ${socket.remoteAddress}`);
+						cb(null, socket);
+					});
+				} : args.agentOptions.connect,
 		});
+
 		this.agent = args.proxy
 			? new undici.ProxyAgent({
 				...args.agentOptions,
 				...args.proxy.options,
 
 				uri: args.proxy.uri,
+
+				connect: (process.env.NODE_ENV !== 'production' && typeof (args.proxy?.options?.connect ?? args.agentOptions.connect) !== 'function')
+					? (options, cb) => {
+						undici.buildConnector((args.proxy?.options?.connect ?? args.agentOptions.connect) as undici.buildConnector.BuildOptions)(options, (err, socket) => {
+							if (err) {
+								this.logger?.debug(`Socket error`, err);
+								cb(new Error(`Error while socket connecting\n${err}`), null);
+								return;
+							}
+							this.logger?.debug(`Socket connected: ${socket.localPort} => ${socket.remoteAddress}`);
+							cb(null, socket);
+						});
+					} : (args.proxy?.options?.connect ?? args.agentOptions.connect),
 			})
 			: this.nonProxiedAgent;
 	}
@@ -144,10 +180,15 @@ export class HttpRequestService {
 	public readonly clientDefaults: undici.Agent.Options;
 	private maxSockets: number;
 
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('http-request');
+
 		this.dnsCache = new CacheableLookup({
 			maxTtl: 3600,	// 1hours
 			errorTtl: 30,	// 30secs
@@ -172,14 +213,14 @@ export class HttpRequestService {
 
 		this.maxSockets = Math.max(256, this.config.deliverJobConcurrency ?? 128);
 
-		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherConstructorOption());
+		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherConstructorOption(), this.logger);
 
 		this.fetch = this.defaultFetcher.fetch;
 		this.getHtml = this.defaultFetcher.getHtml;
 
 		this.defaultJsonFetcher = new UndiciFetcher(this.getStandardUndiciFetcherConstructorOption({
 			maxResponseSize: 1024 * 256,
-		}));
+		}), this.logger);
 
 		this.getJson = this.defaultJsonFetcher.getJson;
 
@@ -263,25 +304,30 @@ export class HttpRequestService {
 	@bindThis
 	public getConnectorWithIpCheck(connector: undici.buildConnector.connector, checkIp: IpChecker): undici.buildConnector.connectorAsync {
 		return (options, cb) => {
+			this.logger.debug('socket connecting...')
 			connector(options, (err, socket) => {
 				if (err) {
-					cb(err, null);
+					this.logger.error(`Socket error`, err)
+					cb(new Error(`Error while socket connecting\n${err}`), null);
 					return;
 				}
 
 				if (socket.remoteAddress == undefined) {
+					this.logger.error(`Socket error: remoteAddress is undefined`);
 					cb(new Error('remoteAddress is undefined (maybe socket destroyed)'), null);
 					return;
 				}
 
 				// allow
 				if (checkIp(socket.remoteAddress)) {
+					this.logger.debug(`Socket connected (ip ok): ${socket.localPort} => ${socket.remoteAddress}`);
 					cb(null, socket);
 					return;
 				}
 
-				socket.destroy();
+				this.logger.error('IP is not allowed', socket);
 				cb(new StatusError('IP is not allowed', 403, 'IP is not allowed'), null);
+				socket.destroy();
 			});
 		};
 	}
