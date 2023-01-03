@@ -21,7 +21,7 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class DownloadService {
 	private logger: Logger;
-	private undiciFetcher: UndiciFetcher:;
+	private undiciFetcher: UndiciFetcher;
 
 	constructor(
 		@Inject(DI.config)
