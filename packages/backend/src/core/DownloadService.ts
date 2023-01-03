@@ -32,15 +32,23 @@ export class DownloadService {
 	) {
 		this.logger = this.loggerService.getLogger('download');
 
-		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherConstructorOption({
-			connect: this.httpRequestService.getConnectorWithIpCheck(
-				buildConnector({
-					...this.httpRequestService.clientDefaults.connect,
-				}),
-				(ip) => !this.isPrivateIp(ip)
-			),
-			bodyTimeout: 30 * 1000,
-		}));
+		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherConstructorOption(
+			{
+				connect: process.env.NODE_ENV === 'development' ?
+					this.httpRequestService.clientDefaults.connect
+					:
+					this.httpRequestService.getConnectorWithIpCheck(
+						buildConnector({
+							...this.httpRequestService.clientDefaults.connect,
+						}),
+						(ip) => !this.isPrivateIp(ip)
+					),
+				bodyTimeout: 30 * 1000,
+			},
+			{
+				connect: this.httpRequestService.clientDefaults.connect,
+			}
+		), this.logger);
 	}
 
 	@bindThis
@@ -88,7 +96,7 @@ export class DownloadService {
 			cleanup();
 		}
 	}
-	
+
 	@bindThis
 	private isPrivateIp(ip: string): boolean {
 		for (const net of this.config.allowedPrivateNetworks ?? []) {

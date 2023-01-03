@@ -272,7 +272,7 @@ export class HttpRequestService {
 	 * @param bypassProxy Allways bypass proxy
 	 */
 	@bindThis
-	public getStandardUndiciFetcherConstructorOption(opts: undici.Agent.Options = {}) {
+	public getStandardUndiciFetcherConstructorOption(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}) {
 		return {
 			agentOptions: {
 				...this.clientDefaults,
@@ -283,6 +283,7 @@ export class HttpRequestService {
 				uri: this.config.proxy,
 				options: {
 					connections: this.maxSockets,
+					...proxyOpts,
 				}
 			}
 			} : {}),
@@ -310,7 +311,7 @@ export class HttpRequestService {
 	public getConnectorWithIpCheck(connector: undici.buildConnector.connector, checkIp: IpChecker): undici.buildConnector.connectorAsync {
 		return (options, cb) => {
 			connector(options, (err, socket) => {
-				this.logger.debug('Socket connector called', socket);
+				this.logger.debug('Socket connector (with ip checker) called', socket);
 				if (err) {
 					this.logger.error(`Socket error`, err)
 					cb(new Error(`Error while socket connecting\n${err}`), null);
