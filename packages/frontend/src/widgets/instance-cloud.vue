@@ -45,7 +45,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let cloud = $ref<InstanceType<typeof MkTagCloud> | null>();
+let cloud = $shallowRef<InstanceType<typeof MkTagCloud> | null>();
 let activeInstances = $shallowRef(null);
 
 function onInstanceClick(i) {

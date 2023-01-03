@@ -29,7 +29,7 @@ const pagination = {
 	limit: 10,
 };
 
-const pagingComponent = $ref<InstanceType<typeof MkPagination>>();
+const pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
 async function create() {
 	const { canceled, result } = await os.form(i18n.ts.createNewClip, {

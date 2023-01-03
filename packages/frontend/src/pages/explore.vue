@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
 });
 
 let tab = $ref(props.initialTab);
-let tagsEl = $ref<InstanceType<typeof MkFolder>>();
+let tagsEl = $shallowRef<InstanceType<typeof MkFolder>>();
 let searchQuery = $ref(null);
 let searchOrigin = $ref('combined');
 

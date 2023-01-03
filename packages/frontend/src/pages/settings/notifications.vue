@@ -34,7 +34,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 
-let allowButton = $ref<InstanceType<typeof MkPushNotificationAllowButton>>();
+let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);
 let sendReadMessage = $computed(() => pushRegistrationInServer?.sendReadMessage || false);
 

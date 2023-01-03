@@ -82,7 +82,7 @@ let itemsEl = $shallowRef<HTMLDivElement>();
 
 let items2: InnerMenuItem[] = $ref([]);
 
-let child = $ref<InstanceType<typeof XChild>>();
+let child = $shallowRef<InstanceType<typeof XChild>>();
 
 let keymap = $computed(() => ({
 	'up|k|shift+tab': focusUp,

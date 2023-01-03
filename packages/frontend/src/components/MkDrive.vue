@@ -118,7 +118,7 @@ const emit = defineEmits<{
 	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
-const loadMoreFiles = ref<InstanceType<typeof MkButton>>();
+const loadMoreFiles = shallowRef<InstanceType<typeof MkButton>>();
 const fileInput = shallowRef<HTMLInputElement>();
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);

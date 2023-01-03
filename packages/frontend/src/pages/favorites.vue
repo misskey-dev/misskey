@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :content-max="800">
-		<MkPagination ref="pagingComponent" :pagination="pagination">
+		<MkPagination :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
 					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -32,8 +32,6 @@ const pagination = {
 	endpoint: 'i/favorites' as const,
 	limit: 10,
 };
-
-const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 
 definePageMetadata({
 	title: i18n.ts.favorites,

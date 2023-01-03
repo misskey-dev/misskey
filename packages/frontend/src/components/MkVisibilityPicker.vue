@@ -48,7 +48,7 @@ import * as misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n';
 
-const modal = $ref<InstanceType<typeof MkModal>>();
+const modal = $shallowRef<InstanceType<typeof MkModal>>();
 
 const props = withDefaults(defineProps<{
 	currentVisibility: typeof misskey.noteVisibilities[number];

@@ -65,7 +65,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date';
 
-let paginationComponent = $ref<InstanceType<typeof MkPagination>>();
+let paginationComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
 let sort = $ref('+createdAt');
 let state = $ref('all');

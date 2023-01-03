@@ -41,7 +41,7 @@ const keymap = {
 	't': focus,
 };
 
-const tlComponent = $ref<InstanceType<typeof XTimeline>>();
+const tlComponent = $shallowRef<InstanceType<typeof XTimeline>>();
 const rootEl = $shallowRef<HTMLElement>();
 
 let queue = $ref(0);
