@@ -83,10 +83,15 @@ export class DeliverProcessorService {
 			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content);
 
 			// Update stats
-			this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
-				this.instancesRepository.update(i.id, {
-					isNotResponding: false,
-				});
+			this.federatedInstanceService.fetch(host).then(i => {
+				if (i.isNotResponding) {
+					this.instancesRepository.update(i.id, {
+						isNotResponding: false,
+					});
+					this.federatedInstanceService.updateCachePartial(host, {
+						isNotResponding: false,
+					});
+				}
 
 				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 
@@ -98,10 +103,15 @@ export class DeliverProcessorService {
 			return 'Success';
 		} catch (res) {
 			// Update stats
-			this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
-				this.instancesRepository.update(i.id, {
-					isNotResponding: true,
-				});
+			this.federatedInstanceService.fetch(host).then(i => {
+				if (!i.isNotResponding) {
+					this.instancesRepository.update(i.id, {
+						isNotResponding: true,
+					});
+					this.federatedInstanceService.updateCachePartial(host, {
+						isNotResponding: true,
+					});
+				}
 
 				this.instanceChart.requestSent(i.host, false);
 				this.apRequestChart.deliverFail();
