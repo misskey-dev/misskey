@@ -25,7 +25,7 @@ export class UndiciFetcher {
 	 * Get http non-proxy agent (undici)
 	 */
 	public nonProxiedAgent: undici.Agent;
-  
+
 	/**
 	 * Get http proxy or non-proxy agent (undici)
 	 */
