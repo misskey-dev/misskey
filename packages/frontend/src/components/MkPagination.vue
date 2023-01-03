@@ -65,7 +65,7 @@ const props = withDefaults(defineProps<{
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
 }>(), {
-	displayLimit: 30,
+	displayLimit: 20,
 });
 
 const emit = defineEmits<{
