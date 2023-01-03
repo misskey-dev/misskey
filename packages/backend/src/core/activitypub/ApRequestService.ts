@@ -152,12 +152,14 @@ export class ApRequestService {
 			},
 		});
 
-		await this.httpRequestService.fetch({
+		await this.httpRequestService.fetch(
 			url,
-			method: req.request.method,
-			headers: req.request.headers,
-			body,
-		});
+			{
+				method: req.request.method,
+				headers: req.request.headers,
+				body,
+			}
+		);
 	}
 
 	/**
