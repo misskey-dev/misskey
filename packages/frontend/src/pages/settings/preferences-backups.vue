@@ -62,7 +62,6 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'loadRawImages',
 	'imageNewTab',
 	'disableShowingAnimatedImages',
-	'disablePagesScript',
 	'emojiStyle',
 	'disableDrawer',
 	'useBlurEffectForModal',

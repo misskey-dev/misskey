@@ -14,7 +14,6 @@ import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
@@ -28,8 +27,8 @@ const props = defineProps<{
 	user: misskey.entities.User;
 }>();
 
-const rootEl = $ref<HTMLDivElement>(null);
-const chartEl = $ref<HTMLCanvasElement>(null);
+const rootEl = $shallowRef<HTMLDivElement>(null);
+const chartEl = $shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
 let fetching = $ref(true);

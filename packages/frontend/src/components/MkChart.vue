@@ -1,6 +1,7 @@
 <template>
 <div class="cbbedffa">
 	<canvas ref="chartEl"></canvas>
+	<MkChartLegend ref="legendEl" style="margin-top: 8px;"/>
 	<div v-if="fetching" class="fetching">
 		<MkLoading/>
 	</div>
@@ -13,9 +14,8 @@
   id-denylist violation when setting it. This is causing about 60+ lint issues.
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
-import { onMounted, ref, watch, PropType, onUnmounted } from 'vue';
+import { onMounted, ref, shallowRef, watch, PropType, onUnmounted } from 'vue';
 import { Chart } from 'chart.js';
-import 'chartjs-adapter-date-fns';
 import { enUS } from 'date-fns/locale';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
@@ -25,6 +25,8 @@ import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import date from '@/filters/date';
 import { initChart } from '@/scripts/init-chart';
+import { chartLegend } from '@/scripts/chart-legend';
+import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
 
@@ -68,6 +70,8 @@ const props = defineProps({
 	},
 });
 
+let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
+
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
 
@@ -102,7 +106,7 @@ let chartData: {
 	}[];
 } = null;
 
-const chartEl = ref<HTMLCanvasElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 const fetching = ref(true);
 
 const getDate = (ago: number) => {
@@ -221,11 +225,7 @@ const render = () => {
 			},
 			plugins: {
 				legend: {
-					display: props.detailed,
-					position: 'bottom',
-					labels: {
-						boxWidth: 16,
-					},
+					display: false,
 				},
 				tooltip: {
 					enabled: false,
@@ -265,7 +265,7 @@ const render = () => {
 				gradient,
 			},
 		},
-		plugins: [chartVLine(vLineColor)],
+		plugins: [chartVLine(vLineColor), ...(props.detailed ? [chartLegend(legendEl)] : [])],
 	});
 };
 

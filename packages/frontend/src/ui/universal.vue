@@ -86,7 +86,7 @@ window.addEventListener('resize', () => {
 });
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsEl = $ref<HTMLElement>();
+const widgetsEl = $shallowRef<HTMLElement>();
 const widgetsShowing = $ref(false);
 
 provide('router', mainRouter);
@@ -287,7 +287,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		z-index: 1000;
 		bottom: 0;
 		left: 0;
-		padding: 12px 12px max(12px, calc(env(safe-area-inset-bottom, 0px) + 8px)) 12px;
+		padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 		grid-gap: 8px;
@@ -332,6 +332,11 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 				> .icon {
 					opacity: 0.5;
 				}
+			}
+
+			&.post {
+				background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+				color: var(--fgOnAccent);
 			}
 		}
 	}

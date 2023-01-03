@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { nextTick, onMounted, onUnmounted, reactive, ref, shallowRef } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
@@ -49,8 +49,8 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 
 const images = ref([]);
 const fetching = ref(true);
-const slideA = ref<HTMLElement>();
-const slideB = ref<HTMLElement>();
+const slideA = shallowRef<HTMLElement>();
+const slideB = shallowRef<HTMLElement>();
 
 const change = () => {
 	if (images.value.length === 0) return;

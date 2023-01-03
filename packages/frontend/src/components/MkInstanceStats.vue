@@ -94,8 +94,8 @@ const chartLimit = 500;
 let chartSpan = $ref<'hour' | 'day'>('hour');
 let chartSrc = $ref('active-users');
 let heatmapSrc = $ref('active-users');
-let subDoughnutEl = $ref<HTMLCanvasElement>();
-let pubDoughnutEl = $ref<HTMLCanvasElement>();
+let subDoughnutEl = $shallowRef<HTMLCanvasElement>();
+let pubDoughnutEl = $shallowRef<HTMLCanvasElement>();
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',

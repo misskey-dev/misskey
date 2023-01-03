@@ -14,8 +14,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, nextTick, ref } from 'vue';
-import { AiScript, parse } from '@syuilo/aiscript';
-import { serialize } from '@syuilo/aiscript/built/serializer';
+import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormButton from '@/components/MkButton.vue';
@@ -26,23 +25,41 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const parser = new Parser();
 const code = ref(null);
 
-function installPlugin({ id, meta, ast, token }) {
+function installPlugin({ id, meta, src, token }) {
 	ColdDeviceStorage.set('plugins', ColdDeviceStorage.get('plugins').concat({
 		...meta,
 		id,
 		active: true,
 		configData: {},
 		token: token,
-		ast: ast,
+		src: src,
 	}));
 }
 
 async function install() {
+	if (code.value == null) return;
+
+	const lv = utils.getLangVersion(code.value);
+	if (lv == null) {
+		os.alert({
+			type: 'error',
+			text: 'No language version annotation found :(',
+		});
+		return;
+	} else if (lv !== '0.12.0') {
+		os.alert({
+			type: 'error',
+			text: `aiscript version '${lv}' is not supported :(`,
+		});
+		return;
+	}
+
 	let ast;
 	try {
-		ast = parse(code.value);
+		ast = parser.parse(code.value);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -51,7 +68,7 @@ async function install() {
 		return;
 	}
 
-	const meta = AiScript.collectMetadata(ast);
+	const meta = Interpreter.collectMetadata(ast);
 	if (meta == null) {
 		os.alert({
 			type: 'error',
@@ -103,7 +120,7 @@ async function install() {
 			name, version, author, description, permissions, config,
 		},
 		token,
-		ast: serialize(ast),
+		src: code.value,
 	});
 
 	os.success();

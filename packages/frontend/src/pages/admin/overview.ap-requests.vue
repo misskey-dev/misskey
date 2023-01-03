@@ -34,8 +34,8 @@ import { initChart } from '@/scripts/init-chart';
 initChart();
 
 const chartLimit = 50;
-const chartEl = $ref<HTMLCanvasElement>();
-const chartEl2 = $ref<HTMLCanvasElement>();
+const chartEl = $shallowRef<HTMLCanvasElement>();
+const chartEl2 = $shallowRef<HTMLCanvasElement>();
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();

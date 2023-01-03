@@ -12,11 +12,10 @@ import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick, w
 import { Chart } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
+import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import * as os from '@/os';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import { initChart } from '@/scripts/init-chart';
@@ -27,8 +26,8 @@ const props = defineProps<{
 	src: string;
 }>();
 
-const rootEl = $ref<HTMLDivElement>(null);
-const chartEl = $ref<HTMLCanvasElement>(null);
+const rootEl = $shallowRef<HTMLDivElement>(null);
+const chartEl = $shallowRef<HTMLCanvasElement>(null);
 const now = new Date();
 let chartInstance: Chart = null;
 let fetching = $ref(true);

@@ -32,7 +32,7 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const dialog = $ref<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
 
 function onClose() {
 	emit('cancelled');

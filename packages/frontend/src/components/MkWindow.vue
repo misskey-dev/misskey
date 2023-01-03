@@ -88,7 +88,7 @@ const emit = defineEmits<{
 
 provide('inWindow', true);
 
-let rootEl = $ref<HTMLElement | null>();
+let rootEl = $shallowRef<HTMLElement | null>();
 let showing = $ref(true);
 let beforeClickedAt = 0;
 let maximized = $ref(false);
