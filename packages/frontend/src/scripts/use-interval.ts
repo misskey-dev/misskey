@@ -3,8 +3,8 @@ import { onMounted, onUnmounted } from 'vue';
 export function useInterval(fn: () => void, interval: number, options: {
 	immediate: boolean;
 	afterMounted: boolean;
-}): void {
-	if (Number.isNaN(interval)) return;
+}): number | null {
+	if (Number.isNaN(interval)) return null;
 
 	let intervalId: number | null = null;
 
@@ -21,4 +21,6 @@ export function useInterval(fn: () => void, interval: number, options: {
 	onUnmounted(() => {
 		if (intervalId) window.clearInterval(intervalId);
 	});
+
+	return intervalId;
 }

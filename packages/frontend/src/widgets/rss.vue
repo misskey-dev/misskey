@@ -23,6 +23,7 @@ import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import { url as base } from '@/config';
 import { i18n } from '@/i18n';
+import { useInterval } from '@/scripts/use-interval';
 
 const name = 'rss';
 
@@ -67,7 +68,7 @@ const fetchEndpoint = computed(() => {
 	url.searchParams.set('url', widgetProps.url);
 	return url;
 });
-let interval = $ref<number | undefined>();
+let interval = $ref<number | null>(null);
 
 const tick = () => {
 	window.fetch(fetchEndpoint.value, {})
@@ -78,12 +79,15 @@ const tick = () => {
 	});
 };
 
-watch(() => fetchEndpoint, tick, { immediate: true });
+watch(() => fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
 	if (interval) {
 		clearInterval(interval);
 	}
-	interval = setInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000));
+	interval = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+		immediate: true,
+		afterMounted: true,
+	});
 }, { immediate: true });
 
 defineExpose<WidgetComponentExpose>({
