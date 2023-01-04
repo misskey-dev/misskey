@@ -44,15 +44,23 @@ export type AsUiButtons = AsUiComponentBase & {
 
 export type AsUiSwitch = AsUiComponentBase & {
 	type: 'switch';
-	onChange?: () => void;
+	onChange?: (v: boolean) => void;
 	default?: boolean;
+	label?: string;
+	caption?: string;
+};
+
+export type AsUiTextarea = AsUiComponentBase & {
+	type: 'textarea';
+	onInput?: (v: string) => void;
+	default?: string;
 	label?: string;
 	caption?: string;
 };
 
 export type AsUiTextInput = AsUiComponentBase & {
 	type: 'textInput';
-	onInput?: () => void;
+	onInput?: (v: string) => void;
 	default?: string;
 	label?: string;
 	caption?: string;
@@ -60,7 +68,7 @@ export type AsUiTextInput = AsUiComponentBase & {
 
 export type AsUiNumberInput = AsUiComponentBase & {
 	type: 'numberInput';
-	onInput?: () => void;
+	onInput?: (v: number) => void;
 	default?: number;
 	label?: string;
 	caption?: string;
@@ -80,7 +88,7 @@ export type AsUiContainer = AsUiComponentBase & {
 	hidden?: boolean;
 };
 
-export type AsUiComponent = AsUiRoot | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextInput | AsUiNumberInput | AsUiContainer;
+export type AsUiComponent = AsUiRoot | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiContainer;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
@@ -185,6 +193,28 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 }
 
 function getTextInputOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiTextInput, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const onInput = def.value.get('onInput');
+	if (onInput) utils.assertFunction(onInput);
+	const defaultValue = def.value.get('default');
+	if (defaultValue) utils.assertString(defaultValue);
+	const label = def.value.get('label');
+	if (label) utils.assertString(label);
+	const caption = def.value.get('caption');
+	if (caption) utils.assertString(caption);
+
+	return {
+		onInput: (v) => {
+			if (onInput) call(onInput, [utils.jsToVal(v)]);
+		},
+		default: defaultValue?.value,
+		label: label?.value,
+		caption: caption?.value,
+	};
+}
+
+function getTextareaOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiTextarea, 'id' | 'type'> {
 	utils.assertObject(def);
 
 	const onInput = def.value.get('onInput');
@@ -372,6 +402,10 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 
 		'Ui:C:mfm': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('mfm', def, id, getMfmOptions, opts.call);
+		}),
+
+		'Ui:C:textarea': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('textarea', def, id, getTextareaOptions, opts.call);
 		}),
 
 		'Ui:C:textInput': values.FN_NATIVE(async ([def, id], opts) => {

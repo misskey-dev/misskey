@@ -15,6 +15,10 @@
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkSwitch>
+	<MkTextarea v-else-if="c.type === 'textarea'" :model-value="c.default" @update:model-value="c.onInput">
+		<template v-if="c.label" #label>{{ c.label }}</template>
+		<template v-if="c.caption" #caption>{{ c.caption }}</template>
+	</MkTextarea>
 	<MkInput v-else-if="c.type === 'textInput'" :small="size === 'small'" :model-value="c.default" @update:model-value="c.onInput">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
@@ -37,6 +41,7 @@ import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
+import MkTextarea from '@/components/form/textarea.vue';
 import { AsUiComponent } from '@/scripts/aiscript/ui';
 
 const props = withDefaults(defineProps<{
