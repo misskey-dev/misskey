@@ -38,10 +38,13 @@ export const paramDef = {
 	properties: {
 		flashId: { type: 'string', format: 'misskey:id' },
 		title: { type: 'string' },
-		summary: { type: 'string', nullable: true },
+		summary: { type: 'string' },
 		script: { type: 'string' },
+		permissions: { type: 'array', items: {
+			type: 'string',
+		} },
 	},
-	required: ['flashId', 'title', 'summary', 'script'],
+	required: ['flashId', 'title', 'summary', 'script', 'permissions'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -68,6 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				title: ps.title,
 				summary: ps.summary,
 				script: ps.script,
+				permissions: ps.permissions,
 			});
 		});
 	}
