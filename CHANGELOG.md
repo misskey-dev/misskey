@@ -73,6 +73,8 @@ You should also include the user name that made the change.
 - Server: trim long text of note from ap @syuilo
 - Server: Ap inboxの最大ペイロードサイズを64kbに制限 @syuilo
 - Server: アンテナの作成数上限を追加 @syuilo
+- Server: pages/likeのエラーIDが重複しているのを修正 @syuilo
+- Server: pages/updateのパラメータによってはsummaryの値が更新されないのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
