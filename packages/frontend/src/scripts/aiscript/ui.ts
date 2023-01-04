@@ -2,77 +2,73 @@ import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import { ref, Ref } from 'vue';
 
-export type AsUiRoot = {
+export type AsUiComponentBase = {
 	id: string;
+	hidden?: boolean;
+};
+
+export type AsUiRoot = AsUiComponentBase & {
 	type: 'root';
 	children: AsUiComponent['id'][];
 };
 
-export type AsUiText = {
-	id: string;
+export type AsUiText = AsUiComponentBase & {
 	type: 'text';
-	text: string;
+	text?: string;
 	size?: number;
 	bold?: boolean;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
 };
 
-export type AsUiMfm = {
-	id: string;
+export type AsUiMfm = AsUiComponentBase & {
 	type: 'mfm';
-	text: string;
+	text?: string;
 	size?: number;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
 };
 
-export type AsUiButton = {
-	id: string;
+export type AsUiButton = AsUiComponentBase & {
 	type: 'button';
-	text: string;
-	onClick: () => void;
+	text?: string;
+	onClick?: () => void;
 	primary?: boolean;
 	rounded?: boolean;
 };
 
-export type AsUiButtons = {
-	id: string;
+export type AsUiButtons = AsUiComponentBase & {
 	type: 'buttons';
-	buttons: AsUiButton[];
+	buttons?: AsUiButton[];
 };
 
-export type AsUiSwitch = {
-	id: string;
+export type AsUiSwitch = AsUiComponentBase & {
 	type: 'switch';
-	onChange: () => void;
+	onChange?: () => void;
 	default?: boolean;
 	label?: string;
 	caption?: string;
 };
 
-export type AsUiTextInput = {
-	id: string;
+export type AsUiTextInput = AsUiComponentBase & {
 	type: 'textInput';
-	onInput: () => void;
+	onInput?: () => void;
 	default?: string;
 	label?: string;
 	caption?: string;
 };
 
-export type AsUiNumberInput = {
-	id: string;
+export type AsUiNumberInput = AsUiComponentBase & {
 	type: 'numberInput';
-	onInput: () => void;
+	onInput?: () => void;
 	default?: number;
 	label?: string;
 	caption?: string;
 };
 
-export type AsUiContainer = {
-	id: string;
+export type AsUiContainer = AsUiComponentBase & {
 	type: 'container';
-	children: AsUiComponent['id'][];
+	children?: AsUiComponent['id'][];
 	align?: 'left' | 'center' | 'right';
 	bgColor?: string;
 	fgColor?: string;
@@ -81,6 +77,7 @@ export type AsUiContainer = {
 	borderColor?: string;
 	padding?: number;
 	rounded?: boolean;
+	hidden?: boolean;
 };
 
 export type AsUiComponent = AsUiRoot | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextInput | AsUiNumberInput | AsUiContainer;
@@ -107,7 +104,7 @@ function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer,
 	utils.assertObject(def);
 
 	const children = def.value.get('children');
-	utils.assertArray(children);
+	if (children) utils.assertArray(children);
 	const align = def.value.get('align');
 	if (align) utils.assertString(align);
 	const bgColor = def.value.get('bgColor');
@@ -124,12 +121,14 @@ function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer,
 	if (padding) utils.assertNumber(padding);
 	const rounded = def.value.get('rounded');
 	if (rounded) utils.assertBoolean(rounded);
+	const hidden = def.value.get('hidden');
+	if (hidden) utils.assertBoolean(hidden);
 
 	return {
-		children: children.value.map(v => {
+		children: children ? children.value.map(v => {
 			utils.assertObject(v);
 			return v.value.get('id').value;
-		}),
+		}) : [],
 		align: align?.value,
 		fgColor: fgColor?.value,
 		bgColor: bgColor?.value,
@@ -138,6 +137,7 @@ function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer,
 		borderColor: borderColor?.value,
 		padding: padding?.value,
 		rounded: rounded?.value,
+		hidden: hidden?.value,
 	};
 }
 
@@ -145,7 +145,7 @@ function getTextOptions(def: values.Value | undefined): Omit<AsUiText, 'id' | 't
 	utils.assertObject(def);
 
 	const text = def.value.get('text');
-	utils.assertString(text);
+	if (text) utils.assertString(text);
 	const size = def.value.get('size');
 	if (size) utils.assertNumber(size);
 	const bold = def.value.get('bold');
@@ -156,7 +156,7 @@ function getTextOptions(def: values.Value | undefined): Omit<AsUiText, 'id' | 't
 	if (font) utils.assertString(font);
 
 	return {
-		text: text.value,
+		text: text?.value,
 		size: size?.value,
 		bold: bold?.value,
 		color: color?.value,
@@ -168,7 +168,7 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	utils.assertObject(def);
 
 	const text = def.value.get('text');
-	utils.assertString(text);
+	if (text) utils.assertString(text);
 	const size = def.value.get('size');
 	if (size) utils.assertNumber(size);
 	const color = def.value.get('color');
@@ -177,7 +177,7 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	if (font) utils.assertString(font);
 
 	return {
-		text: text.value,
+		text: text?.value,
 		size: size?.value,
 		color: color?.value,
 		font: font?.value,
@@ -188,7 +188,7 @@ function getTextInputOptions(def: values.Value | undefined, call: (fn: values.VF
 	utils.assertObject(def);
 
 	const onInput = def.value.get('onInput');
-	utils.assertFunction(onInput);
+	if (onInput) utils.assertFunction(onInput);
 	const defaultValue = def.value.get('default');
 	if (defaultValue) utils.assertString(defaultValue);
 	const label = def.value.get('label');
@@ -198,7 +198,7 @@ function getTextInputOptions(def: values.Value | undefined, call: (fn: values.VF
 
 	return {
 		onInput: (v) => {
-			call(onInput, [utils.jsToVal(v)]);
+			if (onInput) call(onInput, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,
@@ -210,7 +210,7 @@ function getNumberInputOptions(def: values.Value | undefined, call: (fn: values.
 	utils.assertObject(def);
 
 	const onInput = def.value.get('onInput');
-	utils.assertFunction(onInput);
+	if (onInput) utils.assertFunction(onInput);
 	const defaultValue = def.value.get('default');
 	if (defaultValue) utils.assertNumber(defaultValue);
 	const label = def.value.get('label');
@@ -220,7 +220,7 @@ function getNumberInputOptions(def: values.Value | undefined, call: (fn: values.
 
 	return {
 		onInput: (v) => {
-			call(onInput, [utils.jsToVal(v)]);
+			if (onInput) call(onInput, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,
@@ -232,18 +232,18 @@ function getButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	utils.assertObject(def);
 
 	const text = def.value.get('text');
-	utils.assertString(text);
+	if (text) utils.assertString(text);
 	const onClick = def.value.get('onClick');
-	utils.assertFunction(onClick);
+	if (onClick) utils.assertFunction(onClick);
 	const primary = def.value.get('primary');
 	if (primary) utils.assertBoolean(primary);
 	const rounded = def.value.get('rounded');
 	if (rounded) utils.assertBoolean(rounded);
 
 	return {
-		text: text.value,
+		text: text?.value,
 		onClick: () => {
-			call(onClick, []);
+			if (onClick) call(onClick, []);
 		},
 		primary: primary?.value,
 		rounded: rounded?.value,
@@ -254,10 +254,10 @@ function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn,
 	utils.assertObject(def);
 
 	const buttons = def.value.get('buttons');
-	utils.assertArray(buttons);
+	if (buttons) utils.assertArray(buttons);
 
 	return {
-		buttons: buttons.value.map(button => {
+		buttons: buttons ? buttons.value.map(button => {
 			utils.assertObject(button);
 			const text = button.value.get('text');
 			utils.assertString(text);
@@ -276,7 +276,7 @@ function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn,
 				primary: primary?.value,
 				rounded: rounded?.value,
 			};
-		}),
+		}) : [],
 	};
 }
 
@@ -284,7 +284,7 @@ function getSwitchOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	utils.assertObject(def);
 
 	const onChange = def.value.get('onChange');
-	utils.assertFunction(onChange);
+	if (onChange) utils.assertFunction(onChange);
 	const defaultValue = def.value.get('default');
 	if (defaultValue) utils.assertBoolean(defaultValue);
 	const label = def.value.get('label');
@@ -294,7 +294,7 @@ function getSwitchOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 
 	return {
 		onChange: (v) => {
-			call(onChange, [utils.jsToVal(v)]);
+			if (onChange) call(onChange, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,
@@ -317,8 +317,10 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 		const instance = values.OBJ(new Map([
 			['id', values.STR(_id)],
 			['update', values.FN_NATIVE(async ([def], opts) => {
+				utils.assertObject(def);
 				const updates = getOptions(def, call);
-				for (const update in updates) {
+				for (const update of def.value.keys()) {
+					if (!Object.hasOwn(updates, update)) continue;
 					component.value[update] = updates[update];
 				}
 			})],
