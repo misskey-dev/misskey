@@ -2,13 +2,13 @@
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-aiscriptApp">
 	<template #header>App</template>
 	<div :class="$style.root">
-		<MkAsUi :definition="ui" size="small"/>
+		<MkAsUi :ids="root" :components="components" size="small"/>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
@@ -17,7 +17,7 @@ import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { $i } from '@/account';
 import MkAsUi from '@/components/MkAsUi.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import { AsUiComponent, patch, render } from '@/scripts/aiscript/ui';
+import { AsUiComponent, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
 
 const name = 'aiscriptApp';
 
@@ -49,7 +49,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const parser = new Parser();
 
-let ui = $ref<AsUiComponent[]>();
+const root = ref<AsUiComponent['id'][]>([]);
+const components: Ref<AsUiComponent>[] = [];
 
 const run = async () => {
 	const aiscript = new Interpreter({
@@ -57,15 +58,7 @@ const run = async () => {
 			storageKey: 'widget',
 			token: $i?.token,
 		}),
-		'Mk:Ui:render': values.FN_NATIVE(async ([defs], opts) => {
-			utils.assertArray(defs);
-			ui = render(defs.value, opts.call);
-		}),
-		'Mk:Ui:patch': values.FN_NATIVE(async ([id, val], opts) => {
-			utils.assertString(id);
-			utils.assertArray(val);
-			patch(id.value, val.value, opts.call);
-		}),
+		...registerAsUiLib(root, components),
 	}, {
 		in: (q) => {
 			return new Promise(ok => {

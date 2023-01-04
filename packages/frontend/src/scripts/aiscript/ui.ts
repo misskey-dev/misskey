@@ -1,4 +1,6 @@
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
+import { v4 as uuid } from 'uuid';
+import { ref, Ref } from 'vue';
 
 export type AsUiText = {
 	id: string;
@@ -64,7 +66,7 @@ export type AsUiNumberInput = {
 export type AsUiContainer = {
 	id: string;
 	type: 'container';
-	children: AsUiComponent[];
+	children: AsUiComponent['id'][];
 	align?: 'left' | 'center' | 'right';
 	bgColor?: string;
 	fgColor?: string;
@@ -77,239 +79,286 @@ export type AsUiContainer = {
 
 export type AsUiComponent = AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextInput | AsUiNumberInput | AsUiContainer;
 
-export function render(defs: values.Value[], call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
-	const res = [] as AsUiComponent[];
-
-	for (const def of defs) {
-		utils.assertObject(def);
-		const type = def.value.get('type');
-		utils.assertString(type);
-
-		switch (type.value) {
-			case 'text': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const text = def.value.get('text');
-				utils.assertString(text);
-				const size = def.value.get('size');
-				if (size) utils.assertNumber(size);
-				const bold = def.value.get('bold');
-				if (bold) utils.assertBoolean(bold);
-				const color = def.value.get('color');
-				if (color) utils.assertString(color);
-				const font = def.value.get('font');
-				if (font) utils.assertString(font);
-
-				res.push({
-					id: id.value,
-					type: 'text',
-					text: text.value,
-					size: size?.value,
-					bold: bold?.value,
-					color: color?.value,
-					font: font?.value,
-				});
-				break;
-			}
-
-			case 'mfm': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const text = def.value.get('text');
-				utils.assertString(text);
-				const size = def.value.get('size');
-				if (size) utils.assertNumber(size);
-				const color = def.value.get('color');
-				if (color) utils.assertString(color);
-				const font = def.value.get('font');
-				if (font) utils.assertString(font);
-
-				res.push({
-					id: id.value,
-					type: 'text',
-					text: text.value,
-					size: size?.value,
-					color: color?.value,
-					font: font?.value,
-				});
-				break;
-			}
-		
-			case 'switch': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const onChange = def.value.get('onChange');
-				utils.assertFunction(onChange);
-				const defaultValue = def.value.get('default');
-				if (defaultValue) utils.assertBoolean(defaultValue);
-				const label = def.value.get('label');
-				if (label) utils.assertString(label);
-				const caption = def.value.get('caption');
-				if (caption) utils.assertString(caption);
-
-				res.push({
-					id: id.value,
-					type: 'switch',
-					onChange: (v) => {
-						call(onChange, [utils.jsToVal(v)]);
-					},
-					default: defaultValue?.value,
-					label: label?.value,
-					caption: caption?.value,
-				});
-				break;
-			}
-
-			case 'textInput': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const onInput = def.value.get('onInput');
-				utils.assertFunction(onInput);
-				const defaultValue = def.value.get('default');
-				if (defaultValue) utils.assertString(defaultValue);
-				const label = def.value.get('label');
-				if (label) utils.assertString(label);
-				const caption = def.value.get('caption');
-				if (caption) utils.assertString(caption);
-
-				res.push({
-					id: id.value,
-					type: 'textInput',
-					onInput: (v) => {
-						call(onInput, [utils.jsToVal(v)]);
-					},
-					default: defaultValue?.value,
-					label: label?.value,
-					caption: caption?.value,
-				});
-				break;
-			}
-
-			case 'numberInput': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const onInput = def.value.get('onInput');
-				utils.assertFunction(onInput);
-				const defaultValue = def.value.get('default');
-				if (defaultValue) utils.assertString(defaultValue);
-				const label = def.value.get('label');
-				if (label) utils.assertString(label);
-				const caption = def.value.get('caption');
-				if (caption) utils.assertString(caption);
-
-				res.push({
-					id: id.value,
-					type: 'numberInput',
-					onInput: (v) => {
-						call(onInput, [utils.jsToVal(v)]);
-					},
-					default: defaultValue?.value,
-					label: label?.value,
-					caption: caption?.value,
-				});
-				break;
-			}
-
-			case 'button': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const text = def.value.get('text');
-				utils.assertString(text);
-				const onClick = def.value.get('onClick');
-				utils.assertFunction(onClick);
-				const primary = def.value.get('primary');
-				if (primary) utils.assertBoolean(primary);
-				const rounded = def.value.get('rounded');
-				if (rounded) utils.assertBoolean(rounded);
-
-				res.push({
-					id: id.value,
-					type: 'button',
-					text: text.value,
-					onClick: () => {
-						call(onClick, []);
-					},
-					primary: primary?.value,
-					rounded: rounded?.value,
-				});
-				break;
-			}
-
-			case 'buttons': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const buttons = def.value.get('buttons');
-				utils.assertArray(buttons);
-
-				res.push({
-					id: id.value,
-					type: 'buttons',
-					buttons: buttons.value.map(button => {
-						utils.assertObject(button);
-						const text = button.value.get('text');
-						utils.assertString(text);
-						const onClick = button.value.get('onClick');
-						utils.assertFunction(onClick);
-						const primary = button.value.get('primary');
-						if (primary) utils.assertBoolean(primary);
-						const rounded = button.value.get('rounded');
-						if (rounded) utils.assertBoolean(rounded);
-
-						return {
-							text: text.value,
-							onClick: () => {
-								call(onClick, []);
-							},
-							primary: primary?.value,
-							rounded: rounded?.value,
-						};
-					}),
-				});
-				break;
-			}
-
-			case 'container': {
-				const id = def.value.get('id');
-				utils.assertString(id);
-				const children = def.value.get('children');
-				utils.assertArray(children);
-				const align = def.value.get('align');
-				if (align) utils.assertString(align);
-				const bgColor = def.value.get('bgColor');
-				if (bgColor) utils.assertString(bgColor);
-				const fgColor = def.value.get('fgColor');
-				if (fgColor) utils.assertString(fgColor);
-				const font = def.value.get('font');
-				if (font) utils.assertString(font);
-				const borderWidth = def.value.get('borderWidth');
-				if (borderWidth) utils.assertNumber(borderWidth);
-				const borderColor = def.value.get('borderColor');
-				if (borderColor) utils.assertString(borderColor);
-				const padding = def.value.get('padding');
-				if (padding) utils.assertNumber(padding);
-				const rounded = def.value.get('rounded');
-				if (rounded) utils.assertBoolean(rounded);
-
-				res.push({
-					id: id.value,
-					type: 'container',
-					children: render(children.value, call),
-					align: align?.value,
-					fgColor: fgColor?.value,
-					bgColor: bgColor?.value,
-					font: font?.value,
-					borderWidth: borderWidth?.value,
-					borderColor: borderColor?.value,
-					padding: padding?.value,
-					rounded: rounded?.value,
-				});
-				break;
-			}
-		}
-	}
-	return res;
-}
-
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
+}
+
+function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const children = def.value.get('children');
+	utils.assertArray(children);
+	const align = def.value.get('align');
+	if (align) utils.assertString(align);
+	const bgColor = def.value.get('bgColor');
+	if (bgColor) utils.assertString(bgColor);
+	const fgColor = def.value.get('fgColor');
+	if (fgColor) utils.assertString(fgColor);
+	const font = def.value.get('font');
+	if (font) utils.assertString(font);
+	const borderWidth = def.value.get('borderWidth');
+	if (borderWidth) utils.assertNumber(borderWidth);
+	const borderColor = def.value.get('borderColor');
+	if (borderColor) utils.assertString(borderColor);
+	const padding = def.value.get('padding');
+	if (padding) utils.assertNumber(padding);
+	const rounded = def.value.get('rounded');
+	if (rounded) utils.assertBoolean(rounded);
+
+	return {
+		children: children.value.map(v => {
+			utils.assertObject(v);
+			return v.value.get('id').value;
+		}),
+		align: align?.value,
+		fgColor: fgColor?.value,
+		bgColor: bgColor?.value,
+		font: font?.value,
+		borderWidth: borderWidth?.value,
+		borderColor: borderColor?.value,
+		padding: padding?.value,
+		rounded: rounded?.value,
+	};
+}
+
+function getTextOptions(def: values.Value | undefined): Omit<AsUiText, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const text = def.value.get('text');
+	utils.assertString(text);
+	const size = def.value.get('size');
+	if (size) utils.assertNumber(size);
+	const bold = def.value.get('bold');
+	if (bold) utils.assertBoolean(bold);
+	const color = def.value.get('color');
+	if (color) utils.assertString(color);
+	const font = def.value.get('font');
+	if (font) utils.assertString(font);
+
+	return {
+		text: text.value,
+		size: size?.value,
+		bold: bold?.value,
+		color: color?.value,
+		font: font?.value,
+	};
+}
+
+function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const text = def.value.get('text');
+	utils.assertString(text);
+	const size = def.value.get('size');
+	if (size) utils.assertNumber(size);
+	const color = def.value.get('color');
+	if (color) utils.assertString(color);
+	const font = def.value.get('font');
+	if (font) utils.assertString(font);
+
+	return {
+		text: text.value,
+		size: size?.value,
+		color: color?.value,
+		font: font?.value,
+	};
+}
+
+function getTextInputOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiTextInput, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const onInput = def.value.get('onInput');
+	utils.assertFunction(onInput);
+	const defaultValue = def.value.get('default');
+	if (defaultValue) utils.assertString(defaultValue);
+	const label = def.value.get('label');
+	if (label) utils.assertString(label);
+	const caption = def.value.get('caption');
+	if (caption) utils.assertString(caption);
+
+	return {
+		onInput: (v) => {
+			call(onInput, [utils.jsToVal(v)]);
+		},
+		default: defaultValue?.value,
+		label: label?.value,
+		caption: caption?.value,
+	};
+}
+
+function getNumberInputOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiNumberInput, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const onInput = def.value.get('onInput');
+	utils.assertFunction(onInput);
+	const defaultValue = def.value.get('default');
+	if (defaultValue) utils.assertNumber(defaultValue);
+	const label = def.value.get('label');
+	if (label) utils.assertString(label);
+	const caption = def.value.get('caption');
+	if (caption) utils.assertString(caption);
+
+	return {
+		onInput: (v) => {
+			call(onInput, [utils.jsToVal(v)]);
+		},
+		default: defaultValue?.value,
+		label: label?.value,
+		caption: caption?.value,
+	};
+}
+
+function getButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiButton, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const text = def.value.get('text');
+	utils.assertString(text);
+	const onClick = def.value.get('onClick');
+	utils.assertFunction(onClick);
+	const primary = def.value.get('primary');
+	if (primary) utils.assertBoolean(primary);
+	const rounded = def.value.get('rounded');
+	if (rounded) utils.assertBoolean(rounded);
+
+	return {
+		text: text.value,
+		onClick: () => {
+			call(onClick, []);
+		},
+		primary: primary?.value,
+		rounded: rounded?.value,
+	};
+}
+
+function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiButtons, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const buttons = def.value.get('buttons');
+	utils.assertArray(buttons);
+
+	return {
+		buttons: buttons.value.map(button => {
+			utils.assertObject(button);
+			const text = button.value.get('text');
+			utils.assertString(text);
+			const onClick = button.value.get('onClick');
+			utils.assertFunction(onClick);
+			const primary = button.value.get('primary');
+			if (primary) utils.assertBoolean(primary);
+			const rounded = button.value.get('rounded');
+			if (rounded) utils.assertBoolean(rounded);
+
+			return {
+				text: text.value,
+				onClick: () => {
+					call(onClick, []);
+				},
+				primary: primary?.value,
+				rounded: rounded?.value,
+			};
+		}),
+	};
+}
+
+function getSwitchOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiSwitch, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const onChange = def.value.get('onChange');
+	utils.assertFunction(onChange);
+	const defaultValue = def.value.get('default');
+	if (defaultValue) utils.assertBoolean(defaultValue);
+	const label = def.value.get('label');
+	if (label) utils.assertString(label);
+	const caption = def.value.get('caption');
+	if (caption) utils.assertString(caption);
+
+	return {
+		onChange: (v) => {
+			call(onChange, [utils.jsToVal(v)]);
+		},
+		default: defaultValue?.value,
+		label: label?.value,
+		caption: caption?.value,
+	};
+}
+
+export function registerAsUiLib(root: Ref<AsUiComponent['id'][]>, components: Ref<AsUiComponent>[]) {
+	const instances = {};
+
+	function createComponentInstance(type: AsUiComponent['type'], def: values.Value | undefined, id: values.Value | undefined, getOptions: (def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) => any, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
+		if (id) utils.assertString(id);
+		const _id = id?.value ?? uuid();
+		const component = ref({
+			...getOptions(def, call),
+			type,
+			id: _id,
+		});
+		components.push(component);
+		const instance = values.OBJ(new Map([
+			['id', values.STR(_id)],
+			['update', values.FN_NATIVE(async ([def], opts) => {
+				const updates = getOptions(def, call);
+				for (const update in updates) {
+					component.value[update] = updates[update];
+				}
+			})],
+		]));
+		instances[_id] = instance;
+		return instance;
+	}
+
+	return {
+		'Mk:Ui:render': values.FN_NATIVE(async ([_components], opts) => {
+			utils.assertArray(_components);
+			root.value = _components.value.map(v => v.value.get('id').value);
+		}),
+
+		'Mk:Ui:patch': values.FN_NATIVE(async ([id, val], opts) => {
+			utils.assertString(id);
+			utils.assertArray(val);
+			patch(id.value, val.value, opts.call);
+		}),
+
+		'Mk:Ui:get': values.FN_NATIVE(async ([id], opts) => {
+			utils.assertString(id);
+			const instance = instances[id.value];
+			if (instance) {
+				return instance;
+			} else {
+				return values.NULL;
+			}
+		}),
+
+		'Mk:Ui:Component:container': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('container', def, id, getContainerOptions, opts.call);
+		}),
+
+		'Mk:Ui:Component:text': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('text', def, id, getTextOptions, opts.call);
+		}),
+
+		'Mk:Ui:Component:mfm': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('mfm', def, id, getMfmOptions, opts.call);
+		}),
+
+		'Mk:Ui:Component:textInput': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('textInput', def, id, getTextInputOptions, opts.call);
+		}),
+
+		'Mk:Ui:Component:numberInput': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('numberInput', def, id, getNumberInputOptions, opts.call);
+		}),
+
+		'Mk:Ui:Component:button': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('button', def, id, getButtonOptions, opts.call);
+		}),
+
+		'Mk:Ui:Component:buttons': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('buttons', def, id, getButtonsOptions, opts.call);
+		}),
+
+		'Mk:Ui:Component:switch': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('switch', def, id, getSwitchOptions, opts.call);
+		}),
+	};
 }
