@@ -100,7 +100,17 @@ export type AsUiSelect = AsUiComponentBase & {
 	caption?: string;
 };
 
-export type AsUiComponent = AsUiRoot | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiContainer;
+export type AsUiPostFormButton = AsUiComponentBase & {
+	type: 'postFormButton';
+	text?: string;
+	primary?: boolean;
+	rounded?: boolean;
+	form?: {
+		text: string;
+	};
+};
+
+export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiPostFormButton;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
@@ -379,6 +389,36 @@ function getSelectOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	};
 }
 
+function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiPostFormButton, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const text = def.value.get('text');
+	if (text) utils.assertString(text);
+	const primary = def.value.get('primary');
+	if (primary) utils.assertBoolean(primary);
+	const rounded = def.value.get('rounded');
+	if (rounded) utils.assertBoolean(rounded);
+	const form = def.value.get('form');
+	if (form) utils.assertObject(form);
+
+	const getForm = () => {
+		const text = form!.value.get('text');
+		utils.assertString(text);
+		return {
+			text: text.value,
+		};
+	};
+
+	return {
+		text: text?.value,
+		primary: primary?.value,
+		rounded: rounded?.value,
+		form: form ? getForm() : {
+			text: '',
+		},
+	};
+}
+
 export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: Ref<AsUiRoot>) => void) {
 	const instances = {};
 
@@ -477,6 +517,10 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 
 		'Ui:C:select': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('select', def, id, getSelectOptions, opts.call);
+		}),
+
+		'Ui:C:postFormButton': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('postFormButton', def, id, getPostFormButtonOptions, opts.call);
 		}),
 	};
 }

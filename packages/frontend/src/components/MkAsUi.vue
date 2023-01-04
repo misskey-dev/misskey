@@ -32,6 +32,7 @@
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 	</MkSelect>
+	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" @click="openPostForm">{{ c.text }}</MkButton>
 	<div v-else-if="c.type === 'container'" :class="[$style.container, { [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace', [$style.containerCenter]: c.align === 'center' }]" :style="{ backgroundColor: c.bgColor ?? null, color: c.fgColor ?? null, borderWidth: c.borderWidth ? `${c.borderWidth}px` : 0, borderColor: c.borderColor ?? 'var(--divider)', padding: c.padding ? `${c.padding}px` : 0, borderRadius: c.rounded ? '8px' : 0 }">
 		<template v-for="child in c.children" :key="child">
 			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size"/>
@@ -69,6 +70,13 @@ let valueForSwitch = $ref(c.default ?? false);
 function onSwitchUpdate(v) {
 	valueForSwitch = v;
 	if (c.onChange) c.onChange(v);
+}
+
+function openPostForm() {
+	os.post({
+		initialText: c.form.text,
+		instant: true,
+	});
 }
 </script>
 
