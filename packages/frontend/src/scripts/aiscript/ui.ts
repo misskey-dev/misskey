@@ -2,6 +2,12 @@ import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import { ref, Ref } from 'vue';
 
+export type AsUiRoot = {
+	id: string;
+	type: 'root';
+	children: AsUiComponent['id'][];
+};
+
 export type AsUiText = {
 	id: string;
 	type: 'text';
@@ -77,10 +83,24 @@ export type AsUiContainer = {
 	rounded?: boolean;
 };
 
-export type AsUiComponent = AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextInput | AsUiNumberInput | AsUiContainer;
+export type AsUiComponent = AsUiRoot | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextInput | AsUiNumberInput | AsUiContainer;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
+}
+
+function getRootOptions(def: values.Value | undefined): Omit<AsUiRoot, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const children = def.value.get('children');
+	utils.assertArray(children);
+
+	return {
+		children: children.value.map(v => {
+			utils.assertObject(v);
+			return v.value.get('id').value;
+		}),
+	};
 }
 
 function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer, 'id' | 'type'> {
@@ -282,7 +302,7 @@ function getSwitchOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	};
 }
 
-export function registerAsUiLib(root: Ref<AsUiComponent['id'][]>, components: Ref<AsUiComponent>[]) {
+export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: Ref<AsUiRoot>) => void) {
 	const instances = {};
 
 	function createComponentInstance(type: AsUiComponent['type'], def: values.Value | undefined, id: values.Value | undefined, getOptions: (def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) => any, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
@@ -307,11 +327,12 @@ export function registerAsUiLib(root: Ref<AsUiComponent['id'][]>, components: Re
 		return instance;
 	}
 
+	const rootInstance = createComponentInstance('root', utils.jsToVal({ children: [] }), utils.jsToVal('___root___'), getRootOptions, () => {});
+	const rootComponent = components[0] as Ref<AsUiRoot>;
+	done(rootComponent);
+
 	return {
-		'Mk:Ui:render': values.FN_NATIVE(async ([_components], opts) => {
-			utils.assertArray(_components);
-			root.value = _components.value.map(v => v.value.get('id').value);
-		}),
+		'Mk:Ui:root': rootInstance,
 
 		'Mk:Ui:patch': values.FN_NATIVE(async ([id, val], opts) => {
 			utils.assertString(id);
@@ -327,6 +348,16 @@ export function registerAsUiLib(root: Ref<AsUiComponent['id'][]>, components: Re
 			} else {
 				return values.NULL;
 			}
+		}),
+
+		// Mk:Ui:root.update({ children: [...] }) の糖衣構文
+		'Mk:Ui:render': values.FN_NATIVE(async ([children], opts) => {
+			utils.assertArray(children);
+		
+			rootComponent.value.children = children.value.map(v => {
+				utils.assertObject(v);
+				return v.value.get('id').value;
+			});
 		}),
 
 		'Mk:Ui:Component:container': values.FN_NATIVE(async ([def, id], opts) => {

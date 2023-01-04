@@ -2,7 +2,7 @@
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-aiscriptApp">
 	<template #header>App</template>
 	<div :class="$style.root">
-		<MkAsUi :ids="root" :components="components" size="small"/>
+		<MkAsUi v-if="root" :component="root" :components="components" size="small"/>
 	</div>
 </MkContainer>
 </template>
@@ -17,7 +17,7 @@ import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { $i } from '@/account';
 import MkAsUi from '@/components/MkAsUi.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import { AsUiComponent, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
+import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
 
 const name = 'aiscriptApp';
 
@@ -49,7 +49,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const parser = new Parser();
 
-const root = ref<AsUiComponent['id'][]>([]);
+const root = ref<AsUiRoot>();
 const components: Ref<AsUiComponent>[] = [];
 
 const run = async () => {
@@ -58,7 +58,9 @@ const run = async () => {
 			storageKey: 'widget',
 			token: $i?.token,
 		}),
-		...registerAsUiLib(root, components),
+		...registerAsUiLib(components, (_root) => {
+			root.value = _root.value;
+		}),
 	}, {
 		in: (q) => {
 			return new Promise(ok => {
