@@ -10,7 +10,7 @@
 		<div v-else>
 			<Transition :name="$style.change" mode="default" appear>
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
-					<span v-for="item in items" :class="$style.item">
+					<span v-for="item in items" :class="$style.item" :key="item.link">
 						<a :class="$style.link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
 				</MarqueeText>
@@ -103,6 +103,8 @@ let interval = $ref<number | null>(null);
 let key = $ref(0);
 
 const tick = () => {
+	if (document.visibilityState === 'hidden') return;
+
 	window.fetch(fetchEndpoint.value, {})
 	.then(res => res.json())
 	.then(feed => {
