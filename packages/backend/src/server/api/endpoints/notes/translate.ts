@@ -96,7 +96,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 				{
 					noOkError: false,
-					bypassProxy: true,
 				}
 			);
 

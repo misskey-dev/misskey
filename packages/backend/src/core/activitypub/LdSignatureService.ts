@@ -126,7 +126,6 @@ class LdSignature {
 			},
 			{
 				noOkError: true,
-				bypassProxy: false,
 			}
 		).then(res => {
 			if (!res.ok) {

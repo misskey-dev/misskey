@@ -38,7 +38,6 @@ export class CaptchaService {
 			},
 			{
 				noOkError: true,
-				bypassProxy: true,
 			}
 		).catch(err => {
 			throw `${err.message ?? err}`;
