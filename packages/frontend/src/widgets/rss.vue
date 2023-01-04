@@ -68,7 +68,7 @@ const fetchEndpoint = computed(() => {
 	url.searchParams.set('url', widgetProps.url);
 	return url;
 });
-let interval = $ref<number | null>(null);
+let intervalClear = $ref<(() => void) | undefined>();
 
 const tick = () => {
 	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
@@ -83,10 +83,10 @@ const tick = () => {
 
 watch(() => fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
-	if (interval) {
-		clearInterval(interval);
+	if (intervalClear) {
+		intervalClear();
 	}
-	interval = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+	intervalClear = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});
