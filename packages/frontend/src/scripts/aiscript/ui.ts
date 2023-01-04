@@ -334,15 +334,15 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 	done(rootComponent);
 
 	return {
-		'Mk:Ui:root': rootInstance,
+		'Ui:root': rootInstance,
 
-		'Mk:Ui:patch': values.FN_NATIVE(async ([id, val], opts) => {
+		'Ui:patch': values.FN_NATIVE(async ([id, val], opts) => {
 			utils.assertString(id);
 			utils.assertArray(val);
 			patch(id.value, val.value, opts.call);
 		}),
 
-		'Mk:Ui:get': values.FN_NATIVE(async ([id], opts) => {
+		'Ui:get': values.FN_NATIVE(async ([id], opts) => {
 			utils.assertString(id);
 			const instance = instances[id.value];
 			if (instance) {
@@ -352,8 +352,8 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 			}
 		}),
 
-		// Mk:Ui:root.update({ children: [...] }) の糖衣構文
-		'Mk:Ui:render': values.FN_NATIVE(async ([children], opts) => {
+		// Ui:root.update({ children: [...] }) の糖衣構文
+		'Ui:render': values.FN_NATIVE(async ([children], opts) => {
 			utils.assertArray(children);
 		
 			rootComponent.value.children = children.value.map(v => {
@@ -362,35 +362,35 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 			});
 		}),
 
-		'Mk:Ui:Component:container': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:container': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('container', def, id, getContainerOptions, opts.call);
 		}),
 
-		'Mk:Ui:Component:text': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:text': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('text', def, id, getTextOptions, opts.call);
 		}),
 
-		'Mk:Ui:Component:mfm': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:mfm': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('mfm', def, id, getMfmOptions, opts.call);
 		}),
 
-		'Mk:Ui:Component:textInput': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:textInput': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('textInput', def, id, getTextInputOptions, opts.call);
 		}),
 
-		'Mk:Ui:Component:numberInput': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:numberInput': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('numberInput', def, id, getNumberInputOptions, opts.call);
 		}),
 
-		'Mk:Ui:Component:button': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:button': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('button', def, id, getButtonOptions, opts.call);
 		}),
 
-		'Mk:Ui:Component:buttons': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:buttons': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('buttons', def, id, getButtonsOptions, opts.call);
 		}),
 
-		'Mk:Ui:Component:switch': values.FN_NATIVE(async ([def, id], opts) => {
+		'Ui:C:switch': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('switch', def, id, getSwitchOptions, opts.call);
 		}),
 	};
