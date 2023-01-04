@@ -71,7 +71,7 @@ const fetchEndpoint = computed(() => {
 let interval = $ref<number | null>(null);
 
 const tick = () => {
-	if (document.visibilityState === 'hidden' || rawItems.value.length !== 0) return;
+	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
 
 	window.fetch(fetchEndpoint.value, {})
 	.then(res => res.json())
