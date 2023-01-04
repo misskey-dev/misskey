@@ -4,7 +4,7 @@ import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
@@ -17,6 +17,7 @@ import type { IObject, ICollection, IOrderedCollection } from './type.js';
 export class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
+	private undiciFetcher: UndiciFetcher;
 
 	constructor(
 		private config: Config,
@@ -34,6 +35,7 @@ export class Resolver {
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
+		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption());
 	}
 
 	@bindThis
@@ -97,7 +99,7 @@ export class Resolver {
 
 		const object = (this.user
 			? await this.apRequestService.signedGet(value, this.user) as IObject
-			: await this.httpRequestService.getJson<IObject>(value, 'application/activity+json, application/ld+json'));
+			: await this.undiciFetcher.getJson<IObject>(value, 'application/activity+json, application/ld+json'));
 
 		if (object == null || (
 			Array.isArray(object['@context']) ?

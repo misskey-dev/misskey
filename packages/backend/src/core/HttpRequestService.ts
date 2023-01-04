@@ -58,6 +58,7 @@ export class UndiciFetcher {
 			...args.agentOptions,
 			connect: (process.env.NODE_ENV !== 'production' && typeof args.agentOptions.connect !== 'function')
 				? (options, cb) => {
+					// Custom connector for debug
 					undici.buildConnector(args.agentOptions.connect as undici.buildConnector.BuildOptions)(options, (err, socket) => {
 						this.logger?.debug('Socket connector called', socket);
 						if (err) {
@@ -65,7 +66,7 @@ export class UndiciFetcher {
 							cb(new Error(`Error while socket connecting\n${err}`), null);
 							return;
 						}
-						this.logger?.debug(`Socket connected: ${socket.localPort} => ${socket.remoteAddress}`);
+						this.logger?.debug(`Socket connected: port ${socket.localPort} => remote ${socket.remoteAddress}`);
 						cb(null, socket);
 					});
 				} : args.agentOptions.connect,
@@ -80,14 +81,15 @@ export class UndiciFetcher {
 
 				connect: (process.env.NODE_ENV !== 'production' && typeof (args.proxy?.options?.connect ?? args.agentOptions.connect) !== 'function')
 					? (options, cb) => {
+						// Custom connector for debug
 						undici.buildConnector((args.proxy?.options?.connect ?? args.agentOptions.connect) as undici.buildConnector.BuildOptions)(options, (err, socket) => {
-							this.logger?.debug('Socket connector called', socket);
+							this.logger?.debug('Socket connector called (secure)', socket);
 							if (err) {
 								this.logger?.debug(`Socket error`, err);
 								cb(new Error(`Error while socket connecting\n${err}`), null);
 								return;
 							}
-							this.logger?.debug(`Socket connected: ${socket.localPort} => ${socket.remoteAddress}`);
+							this.logger?.debug(`Socket connected (secure): port ${socket.localPort} => remote ${socket.remoteAddress}`);
 							cb(null, socket);
 						});
 					} : (args.proxy?.options?.connect ?? args.agentOptions.connect),
@@ -218,12 +220,12 @@ export class HttpRequestService {
 
 		this.maxSockets = Math.max(256, this.config.deliverJobConcurrency ?? 128);
 
-		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherConstructorOption(), this.logger);
+		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherOption(), this.logger);
 
 		this.fetch = this.defaultFetcher.fetch;
 		this.getHtml = this.defaultFetcher.getHtml;
 
-		this.defaultJsonFetcher = new UndiciFetcher(this.getStandardUndiciFetcherConstructorOption({
+		this.defaultJsonFetcher = new UndiciFetcher(this.getStandardUndiciFetcherOption({
 			maxResponseSize: 1024 * 256,
 		}), this.logger);
 
@@ -272,7 +274,7 @@ export class HttpRequestService {
 	 * @param bypassProxy Allways bypass proxy
 	 */
 	@bindThis
-	public getStandardUndiciFetcherConstructorOption(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}) {
+	public getStandardUndiciFetcherOption(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}) {
 		return {
 			agentOptions: {
 				...this.clientDefaults,

@@ -32,7 +32,7 @@ export class DownloadService {
 	) {
 		this.logger = this.loggerService.getLogger('download');
 
-		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherConstructorOption(
+		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption(
 			{
 				connect: process.env.NODE_ENV === 'development' ?
 					this.httpRequestService.clientDefaults.connect
