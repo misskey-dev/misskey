@@ -27,6 +27,11 @@
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
+	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :model-value="c.default" @update:model-value="c.onChange">
+		<template v-if="c.label" #label>{{ c.label }}</template>
+		<template v-if="c.caption" #caption>{{ c.caption }}</template>
+		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
+	</MkSelect>
 	<div v-else-if="c.type === 'container'" :class="[$style.container, { [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace', [$style.containerCenter]: c.align === 'center' }]" :style="{ backgroundColor: c.bgColor ?? null, color: c.fgColor ?? null, borderWidth: c.borderWidth ? `${c.borderWidth}px` : 0, borderColor: c.borderColor ?? 'var(--divider)', padding: c.padding ? `${c.padding}px` : 0, borderRadius: c.rounded ? '8px' : 0 }">
 		<template v-for="child in c.children" :key="child">
 			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size"/>
@@ -42,6 +47,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import MkTextarea from '@/components/form/textarea.vue';
+import MkSelect from '@/components/form/select.vue';
 import { AsUiComponent } from '@/scripts/aiscript/ui';
 
 const props = withDefaults(defineProps<{

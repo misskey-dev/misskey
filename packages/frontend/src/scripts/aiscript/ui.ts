@@ -12,6 +12,20 @@ export type AsUiRoot = AsUiComponentBase & {
 	children: AsUiComponent['id'][];
 };
 
+export type AsUiContainer = AsUiComponentBase & {
+	type: 'container';
+	children?: AsUiComponent['id'][];
+	align?: 'left' | 'center' | 'right';
+	bgColor?: string;
+	fgColor?: string;
+	font?: 'serif' | 'sans-serif' | 'monospace';
+	borderWidth?: number;
+	borderColor?: string;
+	padding?: number;
+	rounded?: boolean;
+	hidden?: boolean;
+};
+
 export type AsUiText = AsUiComponentBase & {
 	type: 'text';
 	text?: string;
@@ -74,21 +88,19 @@ export type AsUiNumberInput = AsUiComponentBase & {
 	caption?: string;
 };
 
-export type AsUiContainer = AsUiComponentBase & {
-	type: 'container';
-	children?: AsUiComponent['id'][];
-	align?: 'left' | 'center' | 'right';
-	bgColor?: string;
-	fgColor?: string;
-	font?: 'serif' | 'sans-serif' | 'monospace';
-	borderWidth?: number;
-	borderColor?: string;
-	padding?: number;
-	rounded?: boolean;
-	hidden?: boolean;
+export type AsUiSelect = AsUiComponentBase & {
+	type: 'select';
+	items?: {
+		text: string;
+		value: string;
+	}[];
+	onChange?: (v: string) => void;
+	default?: string;
+	label?: string;
+	caption?: string;
 };
 
-export type AsUiComponent = AsUiRoot | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiContainer;
+export type AsUiComponent = AsUiRoot | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiContainer;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
@@ -332,6 +344,41 @@ function getSwitchOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	};
 }
 
+function getSelectOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiSelect, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const items = def.value.get('items');
+	if (items) utils.assertArray(items);
+	const onChange = def.value.get('onChange');
+	if (onChange) utils.assertFunction(onChange);
+	const defaultValue = def.value.get('default');
+	if (defaultValue) utils.assertString(defaultValue);
+	const label = def.value.get('label');
+	if (label) utils.assertString(label);
+	const caption = def.value.get('caption');
+	if (caption) utils.assertString(caption);
+
+	return {
+		items: items ? items.value.map(item => {
+			utils.assertObject(item);
+			const text = item.value.get('text');
+			utils.assertString(text);
+			const value = item.value.get('value');
+			utils.assertString(value);
+			return {
+				text: text.value,
+				value: value.value,
+			};
+		}) : [],
+		onChange: (v) => {
+			if (onChange) call(onChange, [utils.jsToVal(v)]);
+		},
+		default: defaultValue?.value,
+		label: label?.value,
+		caption: caption?.value,
+	};
+}
+
 export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: Ref<AsUiRoot>) => void) {
 	const instances = {};
 
@@ -426,6 +473,10 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 
 		'Ui:C:switch': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('switch', def, id, getSwitchOptions, opts.call);
+		}),
+
+		'Ui:C:select': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('select', def, id, getSelectOptions, opts.call);
 		}),
 	};
 }

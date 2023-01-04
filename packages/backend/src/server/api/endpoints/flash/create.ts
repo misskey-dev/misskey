@@ -6,8 +6,8 @@ import { Page } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['flash'],
@@ -57,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				summary: ps.summary,
 				script: ps.script,
 				permissions: ps.permissions,
-			})).then(x => this.flashsRepository.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.flashsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return await this.flashEntityService.pack(flash);
 		});
