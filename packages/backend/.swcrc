@@ -18,7 +18,8 @@
 			"@/*": [
 				"./src/*"
 			]
-		}
+		},
+		"target": "es2021"
   },
   "minify": false
 }
