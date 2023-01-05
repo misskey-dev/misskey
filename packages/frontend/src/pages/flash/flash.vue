@@ -10,20 +10,16 @@
 							<MkAsUi v-if="root" :component="root" :components="components"/>
 						</div>
 						<div class="actions _panel">
-							<div class="like">
-								<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="flash.likedCount > 0" class="count">{{ flash.likedCount }}</span></MkButton>
-								<MkButton v-else v-tooltip="i18n.ts.like" class="button" @click="like()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" class="count">{{ flash.likedCount }}</span></MkButton>
-							</div>
-							<div class="other">
-								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
-							</div>
+							<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" as-like class="button" rounded primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="flash.likedCount > 0" class="count">{{ flash.likedCount }}</span></MkButton>
+							<MkButton v-else v-tooltip="i18n.ts.like" as-like class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" class="count">{{ flash.likedCount }}</span></MkButton>
+							<MkButton v-tooltip="i18n.ts.shareWithNote" class="button" rounded @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></MkButton>
+							<MkButton v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
 						</div>
 					</div>
 					<div v-else :class="$style.ready" class="_panel">
 						<div class="title">{{ flash.title }}</div>
 						<div class="summary">{{ flash.summary }}</div>
-						<MkButton class="start" gradate rounded @click="start">Play</MkButton>
+						<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
 						<div class="info">
 							<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
 						</div>
@@ -39,7 +35,6 @@
 						<MkUserName :user="flash.user" style="display: block;"/>
 						<MkAcct :user="flash.user"/>
 					</div>
-					<MkFollowButton v-if="!$i || $i.id != flash.user.id" :user="flash.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 				</div>
 				<FormFolder class="_formBlock">
 					<template #icon><i class="ti ti-code"></i></template>
@@ -250,7 +245,11 @@ definePageMetadata(computed(() => flash ? {
 		}
 
 		> .actions {
+			display: flex;
+			justify-content: center;
+			gap: 12px;
 			margin-top: 16px;
+			padding: 16px;
 		}
 	}
 }
