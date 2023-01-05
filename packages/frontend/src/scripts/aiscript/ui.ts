@@ -100,6 +100,13 @@ export type AsUiSelect = AsUiComponentBase & {
 	caption?: string;
 };
 
+export type AsUiFolder = AsUiComponentBase & {
+	type: 'folder';
+	children?: AsUiComponent['id'][];
+	title?: string;
+	opened?: boolean;
+};
+
 export type AsUiPostFormButton = AsUiComponentBase & {
 	type: 'postFormButton';
 	text?: string;
@@ -110,7 +117,7 @@ export type AsUiPostFormButton = AsUiComponentBase & {
 	};
 };
 
-export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiPostFormButton;
+export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiFolder | AsUiPostFormButton;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
@@ -389,6 +396,26 @@ function getSelectOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	};
 }
 
+function getFolderOptions(def: values.Value | undefined): Omit<AsUiFolder, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const children = def.value.get('children');
+	if (children) utils.assertArray(children);
+	const title = def.value.get('title');
+	if (title) utils.assertString(title);
+	const opened = def.value.get('opened');
+	if (opened) utils.assertBoolean(opened);
+
+	return {
+		children: children ? children.value.map(v => {
+			utils.assertObject(v);
+			return v.value.get('id').value;
+		}) : [],
+		title: title?.value ?? '',
+		opened: opened?.value ?? true,
+	};
+}
+
 function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiPostFormButton, 'id' | 'type'> {
 	utils.assertObject(def);
 
@@ -517,6 +544,10 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 
 		'Ui:C:select': values.FN_NATIVE(async ([def, id], opts) => {
 			return createComponentInstance('select', def, id, getSelectOptions, opts.call);
+		}),
+
+		'Ui:C:folder': values.FN_NATIVE(async ([def, id], opts) => {
+			return createComponentInstance('folder', def, id, getFolderOptions, opts.call);
 		}),
 
 		'Ui:C:postFormButton': values.FN_NATIVE(async ([def, id], opts) => {
