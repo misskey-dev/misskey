@@ -111,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				updatedAt: new Date(),
 				title: ps.title,
 				name: ps.name === undefined ? page.name : ps.name,
-				summary: ps.name === undefined ? page.summary : ps.summary,
+				summary: ps.summary === undefined ? page.summary : ps.summary,
 				content: ps.content,
 				variables: ps.variables,
 				script: ps.script,

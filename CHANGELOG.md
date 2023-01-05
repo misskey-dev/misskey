@@ -12,18 +12,23 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### Changes
+#### For sabakans
 - Node.js 18.x or later is required
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
-- ノートのウォッチ機能が削除されました
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+
+#### For users
+- ノートのウォッチ機能が削除されました
 - 新たに動的なPagesを作ることはできなくなりました
-	- 代わりに今後AiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能の実装を予定しています。
-- AiScriptが0.12.0にアップデートされました
-	- 0.12.0の変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
-	- 0.12.0未満のプラグインは読み込むことはできません
+	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
+- AiScriptが0.12.1にアップデートされました
+	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
+	- 0.12.1未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
+
+#### For developers
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
@@ -33,12 +38,13 @@ You should also include the user name that made the change.
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
 
 ### Improvements
-- Push notification of Antenna note @tamaina
-- AVIF support @tamaina
-- Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- Misskey Play @syuilo
 - Introduce retention-rate aggregation @syuilo
 - Make possible to export favorited notes @syuilo
 - Add per user pv chart @syuilo
+- Push notification of Antenna note @tamaina
+- AVIF support @tamaina
+- Add Cloudflare Turnstile CAPTCHA support @CyberRex0
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: improve note scoring for featured notes @CyberRex0
@@ -47,6 +53,7 @@ You should also include the user name that made the change.
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
 - Server: improve activitypub deliver performance @syuilo
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
+- Client: Add AiScript App widget
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
@@ -57,6 +64,7 @@ You should also include the user name that made the change.
 - Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: Implement the button to subscribe push notification @tamaina
 - Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
+- Client: Improve RSS widget @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
 - Client: add user list widget @syuilo
@@ -73,6 +81,8 @@ You should also include the user name that made the change.
 - Server: trim long text of note from ap @syuilo
 - Server: Ap inboxの最大ペイロードサイズを64kbに制限 @syuilo
 - Server: アンテナの作成数上限を追加 @syuilo
+- Server: pages/likeのエラーIDが重複しているのを修正 @syuilo
+- Server: pages/updateのパラメータによってはsummaryの値が更新されないのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo

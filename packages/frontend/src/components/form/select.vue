@@ -64,8 +64,8 @@ const prefixEl = ref(null);
 const suffixEl = ref(null);
 const container = ref(null);
 const height =
-	props.small ? 35 :
-	props.large ? 39 :
+	props.small ? 34 :
+	props.large ? 40 :
 	37;
 
 const focus = () => inputEl.value.focus();
@@ -126,7 +126,7 @@ const onClick = (ev: MouseEvent) => {
 	const pushOption = (option: VNode) => {
 		menu.push({
 			text: option.children,
-			active: v.value === option.props.value,
+			active: computed(() => v.value === option.props.value),
 			action: () => {
 				v.value = option.props.value;
 			},

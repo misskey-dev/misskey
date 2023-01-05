@@ -47,26 +47,6 @@ function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pus
 	return body;
 }
 
-function truncateUnreadAntennaNote(notification: pushNotificationsTypes['unreadAntennaNote']): pushNotificationsTypes['unreadAntennaNote'] {
-	if (notification.note) {
-		return {
-			...notification,
-			note: {
-				...notification.note,
-				// textをgetNoteSummaryしたものに置き換える
-				text: getNoteSummary(('type' in notification && notification.type === 'renote') ? notification.note.renote as Packed<'Note'> : notification.note),
-
-				cw: undefined,
-				reply: undefined,
-				renote: undefined,
-				user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる アンテナの場合も不要なのでいらない
-			},
-		};
-	}
-
-	return notification;
-}
-
 @Injectable()
 export class PushNotificationService {
 	constructor(

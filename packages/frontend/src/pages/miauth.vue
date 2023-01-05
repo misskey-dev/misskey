@@ -44,7 +44,6 @@ import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { $i, login } from '@/account';
-import { appendQuery, query } from '@/scripts/url';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -70,9 +69,9 @@ async function accept(): Promise<void> {
 
 	state = 'accepted';
 	if (props.callback) {
-		location.href = appendQuery(props.callback, query({
-			session: props.session,
-		}));
+		const cbUrl = new URL(props.callback);
+		cbUrl.searchParams.set('session', props.session);
+		location.href = cbUrl.href;
 	}
 }
 

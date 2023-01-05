@@ -17,14 +17,14 @@
 					:is="navbarItemDef[item].to ? 'MkA' : 'button'"
 					v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
 					v-click-anime
-					v-tooltip.noDelay.right="i18n.ts[navbarItemDef[item].title]"
+					v-tooltip.noDelay.right="navbarItemDef[item].title"
 					class="item _button"
 					:class="[item, { active: navbarItemDef[item].active }]"
 					active-class="active"
 					:to="navbarItemDef[item].to"
 					v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
 				>
-					<i class="icon ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ i18n.ts[navbarItemDef[item].title] }}</span>
+					<i class="icon ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
 					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
 				</component>
 			</template>

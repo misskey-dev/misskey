@@ -22,6 +22,7 @@ export default function(app: App) {
 	app.component('MkwInstanceCloud', defineAsyncComponent(() => import('./instance-cloud.vue')));
 	app.component('MkwButton', defineAsyncComponent(() => import('./button.vue')));
 	app.component('MkwAiscript', defineAsyncComponent(() => import('./aiscript.vue')));
+	app.component('MkwAiscriptApp', defineAsyncComponent(() => import('./aiscript-app.vue')));
 	app.component('MkwAichan', defineAsyncComponent(() => import('./aichan.vue')));
 	app.component('MkwUserList', defineAsyncComponent(() => import('./user-list.vue')));
 }
@@ -48,6 +49,7 @@ export const widgets = [
 	'jobQueue',
 	'button',
 	'aiscript',
+	'aiscriptApp',
 	'aichan',
 	'userList',
 ];

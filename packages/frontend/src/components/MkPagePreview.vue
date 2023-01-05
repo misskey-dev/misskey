@@ -14,22 +14,15 @@
 </MkA>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as misskey from 'misskey-js';
 import { userName } from '@/filters/user';
 import * as os from '@/os';
 
-export default defineComponent({
-	props: {
-		page: {
-			type: Object,
-			required: true,
-		},
-	},
-	methods: {
-		userName,
-	},
-});
+const props = defineProps<{
+	page: misskey.entities.Page;
+}>();
 </script>
 
 <style lang="scss" scoped>

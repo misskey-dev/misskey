@@ -265,6 +265,15 @@ import * as ep___pages_like from './endpoints/pages/like.js';
 import * as ep___pages_show from './endpoints/pages/show.js';
 import * as ep___pages_unlike from './endpoints/pages/unlike.js';
 import * as ep___pages_update from './endpoints/pages/update.js';
+import * as ep___flash_create from './endpoints/flash/create.js';
+import * as ep___flash_delete from './endpoints/flash/delete.js';
+import * as ep___flash_featured from './endpoints/flash/featured.js';
+import * as ep___flash_like from './endpoints/flash/like.js';
+import * as ep___flash_show from './endpoints/flash/show.js';
+import * as ep___flash_unlike from './endpoints/flash/unlike.js';
+import * as ep___flash_update from './endpoints/flash/update.js';
+import * as ep___flash_my from './endpoints/flash/my.js';
+import * as ep___flash_myLikes from './endpoints/flash/my-likes.js';
 import * as ep___ping from './endpoints/ping.js';
 import * as ep___pinnedUsers from './endpoints/pinned-users.js';
 import * as ep___promo_read from './endpoints/promo/read.js';
@@ -584,6 +593,15 @@ const eps = [
 	['pages/show', ep___pages_show],
 	['pages/unlike', ep___pages_unlike],
 	['pages/update', ep___pages_update],
+	['flash/create', ep___flash_create],
+	['flash/delete', ep___flash_delete],
+	['flash/featured', ep___flash_featured],
+	['flash/like', ep___flash_like],
+	['flash/show', ep___flash_show],
+	['flash/unlike', ep___flash_unlike],
+	['flash/update', ep___flash_update],
+	['flash/my', ep___flash_my],
+	['flash/my-likes', ep___flash_myLikes],
 	['ping', ep___ping],
 	['pinned-users', ep___pinnedUsers],
 	['promo/read', ep___promo_read],
