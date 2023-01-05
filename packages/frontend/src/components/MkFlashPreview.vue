@@ -1,14 +1,13 @@
 <template>
-<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj _block" tabindex="-1">
-	<div v-if="page.eyeCatchingImage" class="thumbnail" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
+<MkA :to="`/play/${flash.id}`" class="vhpxefrk _block" tabindex="-1">
 	<article>
 		<header>
-			<h1 :title="page.title">{{ page.title }}</h1>
+			<h1 :title="flash.title">{{ flash.title }}</h1>
 		</header>
-		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
+		<p v-if="flash.summary" :title="flash.summary">{{ flash.summary.length > 85 ? flash.summary.slice(0, 85) + '…' : flash.summary }}</p>
 		<footer>
-			<img class="icon" :src="page.user.avatarUrl"/>
-			<p>{{ userName(page.user) }}</p>
+			<img class="icon" :src="flash.user.avatarUrl"/>
+			<p>{{ userName(flash.user) }}</p>
 		</footer>
 	</article>
 </MkA>
@@ -21,42 +20,18 @@ import { userName } from '@/filters/user';
 import * as os from '@/os';
 
 const props = defineProps<{
-	page: misskey.entities.Page;
+	//flash: misskey.entities.Flash;
+	flash: any;
 }>();
 </script>
 
 <style lang="scss" scoped>
-.vhpxefrj {
+.vhpxefrk {
 	display: block;
 
 	&:hover {
 		text-decoration: none;
 		color: var(--accent);
-	}
-
-	> .thumbnail {
-		width: 100%;
-		height: 200px;
-		background-position: center;
-		background-size: cover;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		> button {
-			font-size: 3.5em;
-			opacity: 0.7;
-
-			&:hover {
-				font-size: 4em;
-				opacity: 0.9;
-			}
-		}
-
-		& + article {
-			left: 100px;
-			width: calc(100% - 100px);
-		}
 	}
 
 	> article {
@@ -102,24 +77,10 @@ const props = defineProps<{
 	}
 
 	@media (max-width: 700px) {
-		> .thumbnail {
-			position: relative;
-			width: 100%;
-			height: 100px;
-
-			& + article {
-				left: 0;
-				width: 100%;
-			}
-		}
 	}
 
 	@media (max-width: 550px) {
 		font-size: 12px;
-
-		> .thumbnail {
-			height: 80px;
-		}
 
 		> article {
 			padding: 12px;
@@ -128,11 +89,7 @@ const props = defineProps<{
 
 	@media (max-width: 500px) {
 		font-size: 10px;
-
-		> .thumbnail {
-			height: 70px;
-		}
-
+		
 		> article {
 			padding: 8px;
 
