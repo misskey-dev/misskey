@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_autoGap">
 	<FormSuspense :p="init">
 		<FormButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</FormButton>
 

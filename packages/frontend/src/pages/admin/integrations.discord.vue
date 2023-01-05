@@ -1,25 +1,25 @@
 <template>
 <FormSuspense :p="init">
-	<div class="_formRoot">
-		<FormSwitch v-model="enableDiscordIntegration" class="_formBlock">
+	<div class="_autoGap">
+		<FormSwitch v-model="enableDiscordIntegration">
 			<template #label>{{ i18n.ts.enable }}</template>
 		</FormSwitch>
 
 		<template v-if="enableDiscordIntegration">
-			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
+			<FormInfo>Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
-			<FormInput v-model="discordClientId" class="_formBlock">
+			<FormInput v-model="discordClientId">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client ID</template>
 			</FormInput>
 
-			<FormInput v-model="discordClientSecret" class="_formBlock">
+			<FormInput v-model="discordClientSecret">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client Secret</template>
 			</FormInput>
 		</template>
 
-		<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+		<FormButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </FormSuspense>
 </template>

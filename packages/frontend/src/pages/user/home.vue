@@ -86,7 +86,7 @@
 			</div>
 
 			<div class="contents">
-				<div v-if="user.pinnedNotes.length > 0" class="_gap">
+				<div v-if="user.pinnedNotes.length > 0" class="_margin">
 					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>

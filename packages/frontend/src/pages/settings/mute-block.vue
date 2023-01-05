@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_autoGap">
 	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
 		<option value="mute">{{ i18n.ts.mutedUsers }}</option>
 		<option value="block">{{ i18n.ts.blockedUsers }}</option>

@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_autoGap">
 	<FormSection>
 		<template #label><i class="ti ti-pencil"></i> {{ i18n.ts._exportOrImport.allNotes }}</template>
 		<FormFolder>
@@ -18,18 +18,18 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.followingList }}</template>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
-			<FormSwitch v-model="excludeMutingUsers" class="_formBlock">
+			<FormSwitch v-model="excludeMutingUsers">
 				{{ i18n.ts._exportOrImport.excludeMutingUsers }}
 			</FormSwitch>
-			<FormSwitch v-model="excludeInactiveUsers" class="_formBlock">
+			<FormSwitch v-model="excludeInactiveUsers">
 				{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
 			</FormSwitch>
 			<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.import }}</template>
 			<template #icon><i class="ti ti-upload"></i></template>
 			<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -37,12 +37,12 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.userLists }}</template>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
 			<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.import }}</template>
 			<template #icon><i class="ti ti-upload"></i></template>
 			<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -50,12 +50,12 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.muteList }}</template>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
 			<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.import }}</template>
 			<template #icon><i class="ti ti-upload"></i></template>
 			<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -63,12 +63,12 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.blockingList }}</template>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
 			<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 		</FormFolder>
-		<FormFolder class="_formBlock">
+		<FormFolder>
 			<template #label>{{ i18n.ts.import }}</template>
 			<template #icon><i class="ti ti-upload"></i></template>
 			<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>

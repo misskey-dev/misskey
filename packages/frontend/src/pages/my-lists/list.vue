@@ -14,7 +14,7 @@
 			</Transition>
 
 			<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
-				<div v-if="list" class="_section members _gap">
+				<div v-if="list" class="_section members _margin">
 					<div class="_title">{{ i18n.ts.members }}</div>
 					<div class="_content">
 						<div class="users">

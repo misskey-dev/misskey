@@ -1,14 +1,14 @@
 <template>
-<div class="_formRoot">
-	<FormInput v-model="name" class="_formBlock">
+<div class="_autoGap">
+	<FormInput v-model="name">
 		<template #label>Name</template>
 	</FormInput>
 
-	<FormInput v-model="url" type="url" class="_formBlock">
+	<FormInput v-model="url" type="url">
 		<template #label>URL</template>
 	</FormInput>
 
-	<FormInput v-model="secret" class="_formBlock">
+	<FormInput v-model="secret">
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
 	</FormInput>
@@ -16,16 +16,18 @@
 	<FormSection>
 		<template #label>Events</template>
 
-		<FormSwitch v-model="event_follow" class="_formBlock">Follow</FormSwitch>
-		<FormSwitch v-model="event_followed" class="_formBlock">Followed</FormSwitch>
-		<FormSwitch v-model="event_note" class="_formBlock">Note</FormSwitch>
-		<FormSwitch v-model="event_reply" class="_formBlock">Reply</FormSwitch>
-		<FormSwitch v-model="event_renote" class="_formBlock">Renote</FormSwitch>
-		<FormSwitch v-model="event_reaction" class="_formBlock">Reaction</FormSwitch>
-		<FormSwitch v-model="event_mention" class="_formBlock">Mention</FormSwitch>
+		<div class="_autoGap_half">
+			<FormSwitch v-model="event_follow">Follow</FormSwitch>
+			<FormSwitch v-model="event_followed">Followed</FormSwitch>
+			<FormSwitch v-model="event_note">Note</FormSwitch>
+			<FormSwitch v-model="event_reply">Reply</FormSwitch>
+			<FormSwitch v-model="event_renote">Renote</FormSwitch>
+			<FormSwitch v-model="event_reaction">Reaction</FormSwitch>
+			<FormSwitch v-model="event_mention">Mention</FormSwitch>
+		</div>
 	</FormSection>
 
-	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+	<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 		<FormButton primary inline @click="create"><i class="ti ti-check"></i> {{ i18n.ts.create }}</FormButton>
 	</div>
 </div>

@@ -2,13 +2,13 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="token" :content-max="700" :margin-min="16" :margin-max="32">
-		<div class="_formRoot">
-			<FormInput v-model="password" type="password" class="_formBlock">
+		<div class="_autoGap">
+			<FormInput v-model="password" type="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #label>{{ i18n.ts.newPassword }}</template>
 			</FormInput>
 		
-			<FormButton primary class="_formBlock" @click="save">{{ i18n.ts.save }}</FormButton>
+			<FormButton primary @click="save">{{ i18n.ts.save }}</FormButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>

@@ -13,21 +13,21 @@
 	<template #header>{{ title || $ts.generateAccessToken }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="_formRoot">
-			<div v-if="information" class="_formBlock">
+		<div class="_autoGap">
+			<div v-if="information">
 				<MkInfo warn>{{ information }}</MkInfo>
 			</div>
-			<div class="_formBlock">
+			<div>
 				<MkInput v-model="name">
 					<template #label>{{ $ts.name }}</template>
 				</MkInput>
 			</div>
-			<div class="_formBlock"><b>{{ $ts.permission }}</b></div>
+			<div><b>{{ $ts.permission }}</b></div>
 			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
-			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]" class="_formBlock">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
+			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
 		</div>
 	</MkSpacer>
 </XModalWindow>

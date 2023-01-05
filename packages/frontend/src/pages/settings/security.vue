@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_autoGap">
 	<FormSection>
 		<template #label>{{ i18n.ts.password }}</template>
 		<FormButton primary @click="change()">{{ i18n.ts.changePassword }}</FormButton>

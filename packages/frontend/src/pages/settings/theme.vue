@@ -1,6 +1,6 @@
 <template>
-<div class="_formRoot rsljpzjq">
-	<div v-adaptive-border class="rfqxtzch _panel _formBlock">
+<div class="_autoGap rsljpzjq">
+	<div v-adaptive-border class="rfqxtzch _panel">
 		<div class="toggle">
 			<div class="toggleWrapper">
 				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
@@ -26,7 +26,7 @@
 		</div>
 	</div>
 
-	<div class="selects _formBlock">
+	<div class="selects">
 		<FormSelect v-model="lightThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForLightMode }}</template>
 			<template #prefix><i class="ti ti-sun"></i></template>
@@ -60,8 +60,8 @@
 		</div>
 	</FormSection>
 
-	<FormButton v-if="wallpaper == null" class="_formBlock" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</FormButton>
-	<FormButton v-else class="_formBlock" @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</FormButton>
+	<FormButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</FormButton>
+	<FormButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</FormButton>
 </div>
 </template>
 

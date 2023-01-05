@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_autoGap">
 	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
@@ -8,20 +8,20 @@
 			</div>
 		</template>
 		<template #default="{items}">
-			<div v-for="token in items" :key="token.id" class="_panel _formBlock bfomjevm">
+			<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
 				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>
-					<MkKeyValue class="_formBlock" oneline>
+					<MkKeyValue oneline>
 						<template #key>{{ i18n.ts.installedDate }}</template>
 						<template #value><MkTime :time="token.createdAt"/></template>
 					</MkKeyValue>
-					<MkKeyValue class="_formBlock" oneline>
+					<MkKeyValue oneline>
 						<template #key>{{ i18n.ts.lastUsedDate }}</template>
 						<template #value><MkTime :time="token.lastUsedAt"/></template>
 					</MkKeyValue>
-					<details class="_formBlock">
+					<details>
 						<summary>{{ i18n.ts.details }}</summary>
 						<ul>
 							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>

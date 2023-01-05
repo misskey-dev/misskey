@@ -1,6 +1,6 @@
 <template>
-<div class="_formRoot">
-	<FormFolder v-for="x in statusbars" :key="x.id" class="_formBlock">
+<div class="_autoGap">
+	<FormFolder v-for="x in statusbars" :key="x.id">
 		<template #label>{{ x.type ?? i18n.ts.notSet }}</template>
 		<template #suffix>{{ x.name }}</template>
 		<XStatusbar :_id="x.id" :user-lists="userLists"/>

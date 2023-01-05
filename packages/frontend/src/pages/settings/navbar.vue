@@ -1,11 +1,11 @@
 <template>
-<div class="_formRoot">
-	<FormTextarea v-model="items" tall manual-save class="_formBlock">
+<div class="_autoGap">
+	<FormTextarea v-model="items" tall manual-save>
 		<template #label>{{ i18n.ts.navbar }}</template>
 		<template #caption><button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button></template>
 	</FormTextarea>
 
-	<FormRadios v-model="menuDisplay" class="_formBlock">
+	<FormRadios v-model="menuDisplay">
 		<template #label>{{ i18n.ts.display }}</template>
 		<option value="sideFull">{{ i18n.ts._menuDisplay.sideFull }}</option>
 		<option value="sideIcon">{{ i18n.ts._menuDisplay.sideIcon }}</option>
@@ -13,7 +13,7 @@
 		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ i18n.ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</FormRadios>
 
-	<FormButton danger class="_formBlock" @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
+	<FormButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
 </div>
 </template>
 
