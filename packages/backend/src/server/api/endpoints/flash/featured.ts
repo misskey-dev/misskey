@@ -37,7 +37,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.flashsRepository.createQueryBuilder('flash')
-				.where('flash.visibility = \'public\'')
 				.andWhere('flash.likedCount > 0')
 				.orderBy('flash.likedCount', 'DESC');
 

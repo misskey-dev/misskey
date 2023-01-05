@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkFlashHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div v-if="tab === 'featured'" class="">
 			<MkPagination v-slot="{items}" :pagination="featuredFlashsPagination">
@@ -31,7 +31,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
-import { defineFlashMetadata } from '@/scripts/flash-metadata';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const router = useRouter();
 
@@ -74,7 +74,7 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-heart',
 }]);
 
-defineFlashMetadata(computed(() => ({
+definePageMetadata(computed(() => ({
 	title: 'Play',
 	icon: 'ti ti-player-play',
 })));
