@@ -11,7 +11,10 @@
 		<MkTextarea v-model="script" class="_formBlock _monospace" tall spellcheck="false">
 			<template #label>{{ i18n.ts._play.script }}</template>
 		</MkTextarea>
-		<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
+		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -79,6 +82,16 @@ async function save() {
 			script,
 		});
 		router.push('/play/' + created.id + '/edit');
+	}
+}
+
+function show() {
+	if (flash == null) {
+		os.alert({
+			text: 'Please save',
+		});
+	} else {
+		os.pageWindow(`/play/${flash.id}`);
 	}
 }
 
