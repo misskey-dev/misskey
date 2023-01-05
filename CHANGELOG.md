@@ -12,18 +12,23 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### Changes
+#### For sabakans
 - Node.js 18.x or later is required
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
-- ノートのウォッチ機能が削除されました
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+
+#### For users
+- ノートのウォッチ機能が削除されました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.0にアップデートされました
 	- 0.12.0の変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
 	- 0.12.0未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
+
+#### For developers
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
