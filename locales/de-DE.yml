@@ -916,6 +916,8 @@ loggedInAsBot: "Momentan als Bot angemeldet"
 tools: "Werkzeuge"
 cannotLoad: "Kann nicht geladen werden"
 numberOfProfileView: "Profilaufrufe"
+like: "Gefällt mir"
+show: "Anzeigeart"
 _sensitiveMediaDetection:
   description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
@@ -1420,6 +1422,12 @@ _timelines:
   local: "Lokal"
   social: "Sozial"
   global: "Global"
+_play:
+  viewSource: "Quelltext anzeigen"
+  featured: "Beliebt"
+  title: "Titel"
+  script: "Skript"
+  summary: "Beschreibung"
 _pages:
   newPage: "Seite erstellen"
   editPage: "Seite bearbeiten"
