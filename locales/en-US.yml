@@ -916,6 +916,8 @@ loggedInAsBot: "Currently logged in as bot"
 tools: "Tools"
 cannotLoad: "Unable to load"
 numberOfProfileView: "Profile views"
+like: "Like"
+show: "Display"
 _sensitiveMediaDetection:
   description: "Reduces the effort of server moderation through automatically recognizing NSFW media via Machine Learning. This will slightly increase the load on the server."
   sensitivity: "Detection sensitivity"
@@ -1420,6 +1422,12 @@ _timelines:
   local: "Local"
   social: "Social"
   global: "Global"
+_play:
+  viewSource: "View source"
+  featured: "Popular"
+  title: "Title"
+  script: "Script"
+  summary: "Description"
 _pages:
   newPage: "Create a new Page"
   editPage: "Edit this Page"
