@@ -917,6 +917,8 @@ tools: "도구"
 cannotLoad: "불러오지 못했습니다"
 numberOfProfileView: "프로필 뷰 수"
 like: "좋아요!"
+unlike: "좋아요 취소"
+numberOfLikes: "좋아요 수"
 show: "표시"
 _sensitiveMediaDetection:
   description: "기계학습을 통해 자동으로 민감한 미디어를 탐지하여, 모더레이션에 참고할 수 있도록 합니다. 서버의 부하를 약간 증가시킵니다."
@@ -1317,6 +1319,7 @@ _widgets:
   jobQueue: "작업 대기열"
   serverMetric: "서버 통계"
   aiscript: "AiScript 콘솔"
+  aiscriptApp: "AiScript 앱"
   aichan: "아이"
   userList: "사용자 목록"
   _userList:
