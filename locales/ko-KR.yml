@@ -916,6 +916,8 @@ loggedInAsBot: "봇 계정으로 로그인중"
 tools: "도구"
 cannotLoad: "불러오지 못했습니다"
 numberOfProfileView: "프로필 뷰 수"
+like: "좋아요!"
+show: "표시"
 _sensitiveMediaDetection:
   description: "기계학습을 통해 자동으로 민감한 미디어를 탐지하여, 모더레이션에 참고할 수 있도록 합니다. 서버의 부하를 약간 증가시킵니다."
   sensitivity: "탐지 민감도"
@@ -1420,6 +1422,12 @@ _timelines:
   local: "로컬"
   social: "소셜"
   global: "글로벌"
+_play:
+  viewSource: "소스 보기"
+  featured: "인기"
+  title: "제목"
+  script: "스크립트"
+  summary: "설명"
 _pages:
   newPage: "페이지 만들기"
   editPage: "페이지 수정"
