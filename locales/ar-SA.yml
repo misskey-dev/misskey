@@ -814,6 +814,7 @@ colored: "ملوّن"
 label: "التسمية"
 localOnly: "المحلي فقط"
 account: "الحسابات"
+cannotLoad: "تعذر التحميل"
 like: "أعجبني"
 show: "المظهر"
 _emailUnavailable:
@@ -1301,6 +1302,7 @@ _notification:
   yourFollowRequestAccepted: "قُبل طلب المتابعة"
   youWereInvitedToGroup: "دُعيت إلى فريقٍ"
   pollEnded: "ظهرت نتائج الاستطلاع"
+  unreadAntennaNote: "هوائي {name}"
   _types:
     all: "الكل"
     follow: "متابِعون جدد"
