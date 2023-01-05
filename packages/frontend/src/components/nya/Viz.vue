@@ -6,13 +6,13 @@
 >
 	<canvas ref="vizplayer" class="vizplayer"/>
 	<div ref="cover" class="cover">
-		<div ref="coverIcon" class="cover-icon fas fa-music"/>
+		<div ref="coverIcon" class="cover-icon ti ti-music"/>
 	</div>
 	<div class="control-bar">
 		<div class="button" @click="togglePlay">
-			<i v-if="isLoading" class="fa fa-spinner fa-spin"/>
-			<i v-else-if="isPlaying" class="fas fa-pause"/>
-			<i v-else class="fas fa-play"/>
+			<i v-if="isLoading" class="ti ti-loader-2 spin"/>
+			<i v-else-if="isPlaying" class="ti ti-player-pause"/>
+			<i v-else class="ti ti-player-play"/>
 		</div>
 		<div class="time">
 			<span ref="timeNow" class="now">00:00</span>
@@ -40,8 +40,8 @@
 			<div v-show="!isMuted" ref="barVolumeNow" class="bar now"/>
 		</div>
 		<div class="mute-button" @click="toggleMute">
-			<i v-if="isMuted" class="fas fa-volume-off"/>
-			<i v-else class="fas fa-volume-high"/>
+			<i v-if="isMuted" class="ti ti-volume-3"/>
+			<i v-else class="ti ti-volume"/>
 		</div>
 	</div>
 </div>
@@ -752,5 +752,18 @@ const drawFragment = (fragmentProps: FragmentProps) => {
   .volume-control {
     opacity: 1;
   }
+}
+
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.spin {
+	animation: spinner 0.5s linear infinite;
 }
 </style>
