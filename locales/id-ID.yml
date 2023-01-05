@@ -855,6 +855,8 @@ colored: "Diwarnai"
 label: "Label"
 localOnly: "Hanya lokal"
 account: "Akun"
+like: "Suka"
+show: "Tampilkan"
 _emailUnavailable:
   used: "Alamat surel ini telah digunakan"
   format: "Format tidak valid."
@@ -1323,6 +1325,12 @@ _timelines:
   local: "Lokal"
   social: "Sosial"
   global: "Global"
+_play:
+  viewSource: "Lihat sumber"
+  featured: "Populer"
+  title: "Judul"
+  script: "Script"
+  summary: "Deskripsi"
 _pages:
   newPage: "Buat halaman baru"
   editPage: "Sunting halaman"
