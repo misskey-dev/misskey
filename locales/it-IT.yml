@@ -916,6 +916,8 @@ loggedInAsBot: "Connessione come Bot"
 tools: "Strumenti"
 cannotLoad: "Caricamento impossibile"
 numberOfProfileView: "Visualizzazioni profilo"
+like: "Mi piace!"
+show: "Visualizza"
 _sensitiveMediaDetection:
   description: "L'apprendimento automatico può essere utilizzato per individuare automaticamente i media sensibili da moderare. Il carico del server aumenta leggermente."
   sensitivity: "Sensibilità di rilevamento"
@@ -1420,6 +1422,12 @@ _timelines:
   local: "Locale"
   social: "Sociale"
   global: "Federata"
+_play:
+  viewSource: "Visualizza sorgente"
+  featured: "Popolari"
+  title: "Titolo"
+  script: "Script"
+  summary: "Descrizione"
 _pages:
   newPage: "Crea pagina"
   editPage: "Modifica pagina"
