@@ -1,5 +1,5 @@
 <template>
-<div class="dwzlatin" :class="{ opened }">
+<div ref="rootEl" class="dwzlatin" :class="{ opened }">
 	<div class="header _button" @click="toggle">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot name="label"></slot></span>
@@ -9,7 +9,7 @@
 			<i v-else class="ti ti-chevron-down icon"></i>
 		</span>
 	</div>
-	<div v-if="openedAtLeastOnce" class="body">
+	<div v-if="openedAtLeastOnce" class="body" :class="{ bgSame }">
 		<Transition
 			:name="$store.state.animation ? 'folder-toggle' : ''"
 			@enter="enter"
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick } from 'vue';
+import { nextTick, onMounted } from 'vue';
 
 const props = withDefaults(defineProps<{
 	defaultOpen: boolean;
@@ -38,6 +38,17 @@ const props = withDefaults(defineProps<{
 	defaultOpen: false,
 });
 
+const getBgColor = (el: HTMLElement) => {
+	const style = window.getComputedStyle(el);
+	if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
+		return style.backgroundColor;
+	} else {
+		return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
+	}
+};
+
+let rootEl = $ref<HTMLElement>();
+let bgSame = $ref(false);
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);
 
@@ -72,6 +83,13 @@ function toggle() {
 		opened = !opened;
 	});
 }
+
+onMounted(() => {
+	const computedStyle = getComputedStyle(document.documentElement);
+	const parentBg = getBgColor(rootEl.parentElement);
+	const myBg = computedStyle.getPropertyValue('--panel');
+	bgSame = parentBg === myBg;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -142,6 +160,10 @@ function toggle() {
 		background: var(--panel);
 		border-radius: 0 0 6px 6px;
 		container-type: inline-size;
+
+		&.bgSame {
+			background: var(--bg);
+		}
 	}
 
 	&.opened {
