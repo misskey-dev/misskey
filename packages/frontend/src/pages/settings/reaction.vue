@@ -1,6 +1,6 @@
 <template>
-<div class="_formRoot">
-	<FromSlot class="_formBlock">
+<div class="_autoGap">
+	<FromSlot>
 		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
 		<div v-panel style="border-radius: 6px;">
 			<Sortable v-model="reactions" class="zoaiodol" :item-key="item => item" :animation="150" :delay="100" :delay-on-touch-only="true">
@@ -17,13 +17,13 @@
 		<template #caption>{{ i18n.ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ i18n.ts.preview }}</button></template>
 	</FromSlot>
 
-	<FormRadios v-model="reactionPickerSize" class="_formBlock">
+	<FormRadios v-model="reactionPickerSize">
 		<template #label>{{ i18n.ts.size }}</template>
 		<option :value="1">{{ i18n.ts.small }}</option>
 		<option :value="2">{{ i18n.ts.medium }}</option>
 		<option :value="3">{{ i18n.ts.large }}</option>
 	</FormRadios>
-	<FormRadios v-model="reactionPickerWidth" class="_formBlock">
+	<FormRadios v-model="reactionPickerWidth">
 		<template #label>{{ i18n.ts.numberOfColumn }}</template>
 		<option :value="1">5</option>
 		<option :value="2">6</option>
@@ -31,7 +31,7 @@
 		<option :value="4">8</option>
 		<option :value="5">9</option>
 	</FormRadios>
-	<FormRadios v-model="reactionPickerHeight" class="_formBlock">
+	<FormRadios v-model="reactionPickerHeight">
 		<template #label>{{ i18n.ts.height }}</template>
 		<option :value="1">{{ i18n.ts.small }}</option>
 		<option :value="2">{{ i18n.ts.medium }}</option>
@@ -39,7 +39,7 @@
 		<option :value="4">{{ i18n.ts.large }}+</option>
 	</FormRadios>
 
-	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">
+	<FormSwitch v-model="reactionPickerUseDrawerForMobile">
 		{{ i18n.ts.useDrawerReactionPickerForMobile }}
 		<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 	</FormSwitch>

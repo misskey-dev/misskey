@@ -11,20 +11,25 @@
 	@ok="ok()"
 >
 	<template #header>{{ title || $ts.generateAccessToken }}</template>
-	<div v-if="information" class="_section">
-		<MkInfo warn>{{ information }}</MkInfo>
-	</div>
-	<div class="_section">
-		<MkInput v-model="name">
-			<template #label>{{ $ts.name }}</template>
-		</MkInput>
-	</div>
-	<div class="_section">
-		<div style="margin-bottom: 16px;"><b>{{ $ts.permission }}</b></div>
-		<MkButton inline @click="disableAll">{{ $ts.disableAll }}</MkButton>
-		<MkButton inline @click="enableAll">{{ $ts.enableAll }}</MkButton>
-		<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
-	</div>
+
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<div class="_autoGap">
+			<div v-if="information">
+				<MkInfo warn>{{ information }}</MkInfo>
+			</div>
+			<div>
+				<MkInput v-model="name">
+					<template #label>{{ $ts.name }}</template>
+				</MkInput>
+			</div>
+			<div><b>{{ $ts.permission }}</b></div>
+			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
+				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
+			</div>
+			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
+		</div>
+	</MkSpacer>
 </XModalWindow>
 </template>
 
@@ -36,6 +41,7 @@ import MkSwitch from './form/switch.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import XModalWindow from '@/components/MkModalWindow.vue';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;

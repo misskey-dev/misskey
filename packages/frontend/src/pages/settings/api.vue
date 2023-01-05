@@ -1,8 +1,8 @@
 <template>
-<div class="_formRoot">
-	<FormButton primary class="_formBlock" @click="generateToken">{{ i18n.ts.generateAccessToken }}</FormButton>
-	<FormLink to="/settings/apps" class="_formBlock">{{ i18n.ts.manageAccessTokens }}</FormLink>
-	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null" class="_formBlock">API console</FormLink>
+<div class="_autoGap">
+	<FormButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</FormButton>
+	<FormLink to="/settings/apps">{{ i18n.ts.manageAccessTokens }}</FormLink>
+	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
 </div>
 </template>
 

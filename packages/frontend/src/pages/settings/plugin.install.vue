@@ -1,12 +1,12 @@
 <template>
-<div class="_formRoot">
-	<FormInfo warn class="_formBlock">{{ i18n.ts._plugin.installWarn }}</FormInfo>
+<div class="_autoGap">
+	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<FormTextarea v-model="code" tall class="_formBlock">
+	<FormTextarea v-model="code" tall>
 		<template #label>{{ i18n.ts.code }}</template>
 	</FormTextarea>
 
-	<div class="_formBlock">
+	<div>
 		<FormButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</FormButton>
 	</div>
 </div>

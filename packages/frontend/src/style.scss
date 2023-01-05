@@ -252,6 +252,7 @@ hr {
 	overflow: clip;
 }
 
+// TODO: 廃止
 ._block {
 	@extend ._panel;
 
@@ -260,8 +261,20 @@ hr {
 	}
 }
 
-._gap {
+._margin {
 	margin: var(--margin) 0;
+}
+
+._autoGap {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5em;
+}
+
+._autoGap_half {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75em;
 }
 
 // TODO: 廃止
@@ -368,20 +381,6 @@ hr {
 	background: var(--acrylicPanel);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-}
-
-._formBlock {
-	margin: 1.5em 0;
-}
-
-._formRoot {
-	> ._formBlock:first-child {
-		margin-top: 0;
-	}
-
-	> ._formBlock:last-child {
-		margin-bottom: 0;
-	}
 }
 
 ._formLinksGrid {
@@ -534,7 +533,7 @@ hr {
 	transition: transform 0.1s ease;
 }
 
-@keyframes bounce{
+@keyframes bounce {
   0% {
     transform:  scaleX(0.90) scaleY(0.90) ;
   }

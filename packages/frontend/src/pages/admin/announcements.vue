@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="ztgjmzrw">
-			<section v-for="announcement in announcements" class="_card _gap announcements">
+			<section v-for="announcement in announcements" class="_card _margin announcements">
 				<div class="_content announcement">
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>

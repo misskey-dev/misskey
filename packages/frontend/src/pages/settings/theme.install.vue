@@ -1,10 +1,10 @@
 <template>
-<div class="_formRoot">
-	<FormTextarea v-model="installThemeCode" class="_formBlock">
+<div class="_autoGap">
+	<FormTextarea v-model="installThemeCode">
 		<template #label>{{ i18n.ts._theme.code }}</template>
 	</FormTextarea>
 
-	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+	<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 		<FormButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
 		<FormButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</FormButton>
 	</div>

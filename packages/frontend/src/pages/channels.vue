@@ -4,18 +4,18 @@
 	<MkSpacer :content-max="700">
 		<div v-if="tab === 'featured'" class="_content grwlizim featured">
 			<MkPagination v-slot="{items}" :pagination="featuredPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'following'" class="_content grwlizim following">
 			<MkPagination v-slot="{items}" :pagination="followingPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'" class="_content grwlizim owned">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="ownedPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
 	</MkSpacer>

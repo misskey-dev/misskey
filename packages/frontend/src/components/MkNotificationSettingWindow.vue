@@ -12,20 +12,20 @@
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="_formRoot">
+		<div class="_autoGap">
 			<template v-if="showGlobalToggle">
-				<MkSwitch v-model="useGlobalSetting" class="_formBlock">
+				<MkSwitch v-model="useGlobalSetting">
 					{{ i18n.ts.useGlobalSetting }}
 					<template #caption>{{ i18n.ts.useGlobalSettingDesc }}</template>
 				</MkSwitch>
 			</template>
 			<template v-if="!useGlobalSetting">
-				<MkInfo class="_formBlock">{{ i18n.ts.notificationSettingDesc }}</MkInfo>
+				<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
 				<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
 					<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 					<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 				</div>
-				<MkSwitch v-for="ntype in notificationTypes" class="_formBlock" :key="ntype" v-model="typesMap[ntype]">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
+				<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype]">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
 			</template>
 		</div>
 	</MkSpacer>
