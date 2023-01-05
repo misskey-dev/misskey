@@ -92,7 +92,7 @@ const headerTabs = $computed(() => user ? [{
 	key: 'gallery',
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
-}] : null);
+}] : []);
 
 definePageMetadata(computed(() => user ? {
 	icon: 'ti ti-user',

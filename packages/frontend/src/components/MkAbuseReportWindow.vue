@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XWindow from '@/components/MkWindow.vue';
 import MkTextarea from '@/components/form/textarea.vue';
@@ -40,7 +40,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const uiWindow = ref<InstanceType<typeof XWindow>>();
+const uiWindow = shallowRef<InstanceType<typeof XWindow>>();
 const comment = ref(props.initialComment || '');
 
 function send() {

@@ -64,10 +64,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
 const particles = ref([]);
-const el = ref<HTMLElement>();
+const el = shallowRef<HTMLElement>();
 const width = ref(0);
 const height = ref(0);
 const colors = ['#FF1493', '#00FFFF', '#FFE202', '#FFE202', '#FFE202'];

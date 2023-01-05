@@ -37,12 +37,13 @@ const relative = $computed(() => {
 });
 
 function tick() {
-	// TODO: パフォーマンス向上のため、このコンポーネントが画面内に表示されている場合のみ更新する
 	now = new Date();
+	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
+	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
 	tickId = window.setTimeout(() => {
 		window.requestAnimationFrame(tick);
-	}, 10000);
+	}, next);
 }
 
 let tickId: number;

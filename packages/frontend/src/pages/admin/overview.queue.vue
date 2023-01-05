@@ -43,10 +43,10 @@ const activeSincePrevTick = ref(0);
 const active = ref(0);
 const delayed = ref(0);
 const waiting = ref(0);
-let chartProcess = $ref<InstanceType<typeof XChart>>();
-let chartActive = $ref<InstanceType<typeof XChart>>();
-let chartDelayed = $ref<InstanceType<typeof XChart>>();
-let chartWaiting = $ref<InstanceType<typeof XChart>>();
+let chartProcess = $shallowRef<InstanceType<typeof XChart>>();
+let chartActive = $shallowRef<InstanceType<typeof XChart>>();
+let chartDelayed = $shallowRef<InstanceType<typeof XChart>>();
+let chartWaiting = $shallowRef<InstanceType<typeof XChart>>();
 
 const props = defineProps<{
 	domain: string;

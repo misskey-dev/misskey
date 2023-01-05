@@ -31,8 +31,8 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let modal = $ref<InstanceType<typeof MkModal>>();
-let form = $ref<InstanceType<typeof MkPostForm>>();
+let modal = $shallowRef<InstanceType<typeof MkModal>>();
+let form = $shallowRef<InstanceType<typeof MkPostForm>>();
 
 function onPosted() {
 	modal.close({

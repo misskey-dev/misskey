@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 import XNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
@@ -29,7 +29,7 @@ const props = defineProps<{
 	noGap?: boolean;
 }>();
 
-const pagingComponent = ref<InstanceType<typeof MkPagination>>();
+const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 defineExpose({
 	pagingComponent,

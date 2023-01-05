@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import number from '@/filters/number';
 import { defaultStore } from '@/store';
@@ -16,10 +16,7 @@ const props = defineProps<{
 	data: { name: string; value: number; color: string; onClick?: () => void }[];
 }>();
 
-const chartEl = ref<HTMLCanvasElement>(null);
-
-// フォントカラー
-Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',
