@@ -126,7 +126,7 @@ const onClick = (ev: MouseEvent) => {
 	const pushOption = (option: VNode) => {
 		menu.push({
 			text: option.children,
-			active: v.value === option.props.value,
+			active: computed(() => v.value === option.props.value),
 			action: () => {
 				v.value = option.props.value;
 			},
