@@ -1,0 +1,98 @@
+<template>
+<MkStickyContainer>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :content-max="700">
+		<MkInput v-model="title" class="_formBlock">
+			<template #label>{{ i18n.ts._play.title }}</template>
+		</MkInput>
+		<MkTextarea v-model="summary" class="_formBlock">
+			<template #label>{{ i18n.ts._play.summary }}</template>
+		</MkTextarea>
+		<MkTextarea v-model="script" class="_formBlock _monospace" tall spellcheck="false">
+			<template #label>{{ i18n.ts._play.script }}</template>
+		</MkTextarea>
+		<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
+	</MkSpacer>
+</MkStickyContainer>
+</template>
+
+<script lang="ts" setup>
+import { computed, onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
+import MkButton from '@/components/MkButton.vue';
+import * as os from '@/os';
+import { url } from '@/config';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import MkTextarea from '@/components/form/textarea.vue';
+import MkInput from '@/components/form/input.vue';
+import { useRouter } from '@/router';
+
+const router = useRouter();
+
+const props = defineProps<{
+	id?: string;
+}>();
+
+let flash = $ref(null);
+
+if (props.id) {
+	flash = await os.api('flash/show', {
+		flashId: props.id,
+	});
+}
+
+let title = $ref(flash?.title ?? 'New Play');
+let summary = $ref(flash?.summary ?? '');
+let permissions = $ref(flash?.permissions ?? []);
+let script = $ref(flash?.script ?? `/// @ 0.12.0
+
+var name = ""
+
+Ui:render([
+	Ui:C:textInput({
+		label: "Your name"
+		onInput: @(v) { name = v }
+	})
+	Ui:C:button({
+		text: "Hello"
+		onClick: @() {
+			Mk:dialog(null \`Hello, {name}!\`)
+		}
+	})
+])
+`);
+
+async function save() {
+	if (flash) {
+		os.apiWithDialog('flash/update', {
+			flashId: props.id,
+			title,
+			summary,
+			permissions,
+			script,
+		});
+	} else {
+		const created = await os.apiWithDialog('flash/create', {
+			title,
+			summary,
+			permissions,
+			script,
+		});
+		router.push('/play/' + created.id + '/edit');
+	}
+}
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
+
+definePageMetadata(computed(() => flash ? {
+	title: i18n.ts._play.edit + ': ' + flash.title,
+} : {
+	title: i18n.ts._play.new,
+}));
+</script>
+
+<style lang="scss" scoped>
+
+</style>

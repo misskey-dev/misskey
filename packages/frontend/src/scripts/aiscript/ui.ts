@@ -374,10 +374,10 @@ function getSelectOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 			const text = item.value.get('text');
 			utils.assertString(text);
 			const value = item.value.get('value');
-			utils.assertString(value);
+			if (value) utils.assertString(value);
 			return {
 				text: text.value,
-				value: value.value,
+				value: value ? value.value : text.value,
 			};
 		}) : [],
 		onChange: (v) => {

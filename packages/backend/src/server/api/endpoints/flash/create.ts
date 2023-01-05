@@ -51,6 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const flash = await this.flashsRepository.insert({
 				id: this.idService.genId(),
+				userId: me.id,
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				title: ps.title,

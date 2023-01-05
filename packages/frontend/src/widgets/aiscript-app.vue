@@ -52,7 +52,7 @@ const parser = new Parser();
 const root = ref<AsUiRoot>();
 const components: Ref<AsUiComponent>[] = [];
 
-const run = async () => {
+async function run() {
 	const aiscript = new Interpreter({
 		...createAiScriptEnv({
 			storageKey: 'widget',
@@ -98,7 +98,7 @@ const run = async () => {
 			text: err.message,
 		});
 	}
-};
+}
 
 watch(() => widgetProps.script, () => {
 	run();
