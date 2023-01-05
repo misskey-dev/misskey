@@ -8,28 +8,28 @@
 			</div>
 		</template>
 		<template #default="{items}">
-			<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
+			<div v-for="token in items" :key="token.id" class="_panel _formBlock bfomjevm">
 				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>
-					<div class="">
-						<div>{{ i18n.ts.installedDate }}:</div>
-						<div><MkTime :time="token.createdAt"/></div>
-					</div>
-					<div class="">
-						<div>{{ i18n.ts.lastUsedDate }}:</div>
-						<div><MkTime :time="token.lastUsedAt"/></div>
-					</div>
-					<div class="actions">
-						<button class="_button" @click="revoke(token)"><i class="ti ti-trash"></i></button>
-					</div>
-					<details>
+					<MkKeyValue class="_formBlock" oneline>
+						<template #key>{{ i18n.ts.installedDate }}</template>
+						<template #value><MkTime :time="token.createdAt"/></template>
+					</MkKeyValue>
+					<MkKeyValue class="_formBlock" oneline>
+						<template #key>{{ i18n.ts.lastUsedDate }}</template>
+						<template #value><MkTime :time="token.lastUsedAt"/></template>
+					</MkKeyValue>
+					<details class="_formBlock">
 						<summary>{{ i18n.ts.details }}</summary>
 						<ul>
 							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 						</ul>
 					</details>
+					<div class="actions">
+						<MkButton inline danger @click="revoke(token)"><i class="ti ti-trash"></i></MkButton>
+					</div>
 				</div>
 			</div>
 		</template>
@@ -43,6 +43,8 @@ import FormPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const list = ref<any>(null);
 
