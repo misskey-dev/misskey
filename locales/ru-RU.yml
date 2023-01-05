@@ -864,6 +864,8 @@ enableAutoSensitiveDescription: "Если доступно, используйт
 account: "Учётные записи"
 windowMaximize: "Развернуть"
 windowRestore: "Восстановить"
+like: "Нравится!"
+show: "Отображение"
 _sensitiveMediaDetection:
   description: "Машинное обучение может быть использовано для автоматического обнаружения чувствительных медиа для модерации. Нагрузка на сервер увеличивается незначительно."
   setSensitiveFlagAutomatically: "Установить флаг NSFW"
@@ -1332,6 +1334,12 @@ _timelines:
   local: "Местная"
   social: "Социальная"
   global: "Всеобщая"
+_play:
+  viewSource: "Просмотр исходника"
+  featured: "Популярные"
+  title: "Заголовок"
+  script: "Скрипт"
+  summary: "Описание"
 _pages:
   newPage: "Создать страницу"
   editPage: "Править страницу"
