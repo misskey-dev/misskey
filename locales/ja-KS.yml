@@ -915,6 +915,8 @@ caption: "キャプション"
 loggedInAsBot: "Botアカウントでログイン中やで"
 tools: "ツール"
 cannotLoad: "読み込めへんで"
+like: "ええやん！"
+show: "表示"
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出して、モデレーションに役立てることができるで。サーバーの負荷が少し増えてまうなあ。"
   sensitivity: "検出感度やで"
@@ -1418,6 +1420,12 @@ _timelines:
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
+_play:
+  viewSource: "ソースを表示"
+  featured: "人気"
+  title: "タイトル"
+  script: "スクリプト"
+  summary: "説明"
 _pages:
   newPage: "ページを作る"
   editPage: "ページの編集"
