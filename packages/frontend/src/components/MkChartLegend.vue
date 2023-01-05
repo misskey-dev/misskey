@@ -59,7 +59,7 @@ defineExpose({
 
 			&.disabled {
 				text-decoration: line-through;
-				opacity: 0.6;
+				opacity: 0.5;
 			}
 
 			> .box {

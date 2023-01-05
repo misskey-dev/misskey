@@ -62,6 +62,8 @@ import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
+import { Flash } from '@/models/entities/Flash.js';
+import { FlashLike } from '@/models/entities/FlashLike.js';
 import type { Repository } from 'typeorm';
 
 export {
@@ -129,6 +131,8 @@ export {
 	Webhook,
 	Channel,
 	RetentionAggregation,
+	Flash,
+	FlashLike,
 };
 
 export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
@@ -195,3 +199,5 @@ export type UserSecurityKeysRepository = Repository<UserSecurityKey>;
 export type WebhooksRepository = Repository<Webhook>;
 export type ChannelsRepository = Repository<Channel>;
 export type RetentionAggregationsRepository = Repository<RetentionAggregation>;
+export type FlashsRepository = Repository<Flash>;
+export type FlashLikesRepository = Repository<FlashLike>;
