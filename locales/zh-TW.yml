@@ -917,6 +917,7 @@ tools: "工具"
 cannotLoad: "無法載入"
 numberOfProfileView: "個人檔案檢視次數"
 like: "讚"
+unlike: "收回讚"
 show: "檢視"
 _sensitiveMediaDetection:
   description: "您可以使用機器學習自動檢測敏感媒體並將其用於審核。 伺服器的負荷會稍微增加。"
