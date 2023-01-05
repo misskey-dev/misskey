@@ -22,7 +22,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let modal = $ref<InstanceType<typeof MkModal>>();
+let modal = $shallowRef<InstanceType<typeof MkModal>>();
 </script>
 
 <style lang="scss" scoped>

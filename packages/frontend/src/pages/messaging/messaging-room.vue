@@ -71,9 +71,9 @@ const props = defineProps<{
 	groupId?: string;
 }>();
 
-let rootEl = $ref<HTMLDivElement>();
-let formEl = $ref<InstanceType<typeof XForm>>();
-let pagingComponent = $ref<InstanceType<typeof MkPagination>>();
+let rootEl = $shallowRef<HTMLDivElement>();
+let formEl = $shallowRef<InstanceType<typeof XForm>>();
+let pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
 let fetching = $ref(true);
 let user: Misskey.entities.UserDetailed | null = $ref(null);

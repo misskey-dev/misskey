@@ -125,7 +125,7 @@ function showSettings() {
 	os.pageWindow('/settings/deck');
 }
 
-let columnsEl = $ref<HTMLElement>();
+let columnsEl = $shallowRef<HTMLElement>();
 
 const addColumn = async (ev) => {
 	const columns = [

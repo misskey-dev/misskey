@@ -34,7 +34,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', v: boolean): void;
 }>();
 
-let button = $ref<HTMLElement>();
+let button = $shallowRef<HTMLElement>();
 const checked = toRefs(props).modelValue;
 const toggle = () => {
 	if (props.disabled) return;

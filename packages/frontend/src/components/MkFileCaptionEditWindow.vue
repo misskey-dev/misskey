@@ -37,7 +37,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = $ref<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
 
 let caption = $ref(props.default);
 

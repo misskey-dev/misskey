@@ -49,7 +49,7 @@ router.addListener('push', ctx => {
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let rootEl = $ref();
-let modal = $ref<InstanceType<typeof MkModal>>();
+let modal = $shallowRef<InstanceType<typeof MkModal>>();
 let path = $ref(props.initialPath);
 let width = $ref(860);
 let height = $ref(660);

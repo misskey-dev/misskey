@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, shallowRef } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 
@@ -32,7 +32,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const live2d = ref<HTMLIFrameElement>();
+const live2d = shallowRef<HTMLIFrameElement>();
 
 const touched = () => {
 	//if (this.live2d) this.live2d.changeExpression('gurugurume');

@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -95,7 +95,7 @@ const props = withDefaults(defineProps<{
 	full: false,
 });
 
-const elRef = ref<HTMLElement>(null);
+const elRef = shallowRef<HTMLElement>(null);
 const reactionRef = ref(null);
 
 let readObserver: IntersectionObserver | undefined;

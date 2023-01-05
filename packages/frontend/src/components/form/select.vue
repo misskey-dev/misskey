@@ -64,8 +64,8 @@ const prefixEl = ref(null);
 const suffixEl = ref(null);
 const container = ref(null);
 const height =
-	props.small ? 35 :
-	props.large ? 39 :
+	props.small ? 34 :
+	props.large ? 40 :
 	37;
 
 const focus = () => inputEl.value.focus();

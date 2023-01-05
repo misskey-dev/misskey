@@ -41,8 +41,8 @@ const keymap = {
 	't': focus,
 };
 
-const tlComponent = $ref<InstanceType<typeof XTimeline>>();
-const rootEl = $ref<HTMLElement>();
+const tlComponent = $shallowRef<InstanceType<typeof XTimeline>>();
+const rootEl = $shallowRef<HTMLElement>();
 
 let queue = $ref(0);
 const src = $computed({ get: () => defaultStore.reactiveState.tl.value.src, set: (x) => saveSrc(x) });

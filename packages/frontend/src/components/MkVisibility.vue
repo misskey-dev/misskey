@@ -22,7 +22,7 @@ const props = defineProps<{
 	},
 }>();
 
-const specified = $ref<HTMLElement>();
+const specified = $shallowRef<HTMLElement>();
 
 if (props.note.visibility === 'specified') {
 	useTooltip($$(specified), async (showing) => {
