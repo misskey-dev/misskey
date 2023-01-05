@@ -16,32 +16,30 @@
 							<MkButton v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
 						</div>
 					</div>
-					<div v-else :class="$style.ready" class="_panel">
-						<div class="title">{{ flash.title }}</div>
-						<div class="summary">{{ flash.summary }}</div>
-						<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
-						<div class="info">
-							<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
+					<div v-else :class="$style.ready">
+						<div class="_panel main">
+							<div class="title">{{ flash.title }}</div>
+							<div class="summary">{{ flash.summary }}</div>
+							<MkButton class="start" gradate rounded large @click="start">Play</MkButton>
+							<div class="info">
+								<span v-tooltip="i18n.ts.numberOfLikes"><i class="ti ti-heart"></i> {{ flash.likedCount }}</span>
+							</div>
 						</div>
 					</div>
 				</Transition>
-				<div :class="$style.footer">
-					<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="flash.createdAt" mode="detail"/></div>
-					<div v-if="flash.createdAt != flash.updatedAt"><i class="ti ti-clock"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="flash.updatedAt" mode="detail"/></div>
-				</div>
-				<div class="user">
-					<MkAvatar :user="flash.user" class="avatar"/>
-					<div class="name">
-						<MkUserName :user="flash.user" style="display: block;"/>
-						<MkAcct :user="flash.user"/>
-					</div>
-				</div>
 				<FormFolder class="_formBlock">
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
 					<MkTextarea :model-value="flash.script" readonly tall class="_monospace" spellcheck="false"></MkTextarea>
 				</FormFolder>
+				<div :class="$style.footer">
+					<Mfm :text="`By @${flash.user.username}`"/>
+					<div class="date">
+						<div v-if="flash.createdAt != flash.updatedAt"><i class="ti ti-clock"></i> {{ i18n.ts.updatedAt }}: <MkTime :time="flash.updatedAt" mode="detail"/></div>
+						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="flash.createdAt" mode="detail"/></div>
+					</div>
+				</div>
 				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--accent);">{{ i18n.ts._play.editThisPage }}</MkA>
 				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 			</div>
@@ -213,27 +211,40 @@ definePageMetadata(computed(() => flash ? {
 
 <style lang="scss" module>
 .ready {
-	padding: 32px;
+	&:global {
+		> .main {
+			padding: 32px;
+
+			> .title {
+				font-size: 1.4em;
+				font-weight: bold;
+				margin-bottom: 1rem;
+				text-align: center;
+			}
+
+			> .summary {
+				font-size: 1.1em;
+				text-align: center;
+			}
+
+			> .start {
+				margin: 1em auto 1em auto;
+			}
+
+			> .info {
+				text-align: center;
+			}
+		}
+	}
+}
+
+.footer {
+	margin-top: 16px;
 
 	&:global {
-		> .title {
-			font-size: 1.4em;
-			font-weight: bold;
-			margin-bottom: 1rem;
-			text-align: center;
-		}
-
-		> .summary {
-			font-size: 1.1em;
-			text-align: center;
-		}
-
-		> .start {
-			margin: 1em auto 1em auto;
-		}
-
-		> .info {
-			text-align: center;
+		> .date {
+			margin: 8px 0;
+			opacity: 0.6;
 		}
 	}
 }
@@ -252,10 +263,6 @@ definePageMetadata(computed(() => flash ? {
 			padding: 16px;
 		}
 	}
-}
-
-.footer {
-	margin-top: 16px;
 }
 </style>
 
