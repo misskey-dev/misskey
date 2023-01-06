@@ -12,7 +12,7 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### Changes
-#### For sabakans
+#### For server admins
 - Node.js 18.x or later is required
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
@@ -27,8 +27,9 @@ You should also include the user name that made the change.
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
 	- 0.12.1未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
+- Firefox109以下はサポートされなくなりました
 
-#### For developers
+#### For app developers
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
