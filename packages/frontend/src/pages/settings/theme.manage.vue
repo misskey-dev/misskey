@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSelect v-model="selectedThemeId">
 		<template #label>{{ i18n.ts.theme }}</template>
 		<optgroup :label="i18n.ts._theme.installedThemes">

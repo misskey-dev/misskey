@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_autoGap">
+			<div class="_gaps_m">
 				<FormFolder>
 					<template #icon><i class="ti ti-shield"></i></template>
 					<template #label>{{ i18n.ts.botProtection }}</template>
@@ -23,7 +23,7 @@
 					<template v-else-if="sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
 					<template v-else #suffix>{{ i18n.ts.none }}</template>
 
-					<div class="_autoGap">
+					<div class="_gaps_m">
 						<span>{{ i18n.ts._sensitiveMediaDetection.description }}</span>
 
 						<FormRadios v-model="sensitiveMediaDetection">
@@ -63,7 +63,7 @@
 					<template v-if="enableActiveEmailValidation" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
 
-					<div class="_autoGap">
+					<div class="_gaps_m">
 						<span>{{ i18n.ts.activeEmailValidationDescription }}</span>
 						<FormSwitch v-model="enableActiveEmailValidation" @update:model-value="save">
 							<template #label>Enable</template>
@@ -76,7 +76,7 @@
 					<template v-if="enableIpLogging" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
 
-					<div class="_autoGap">
+					<div class="_gaps_m">
 						<FormSwitch v-model="enableIpLogging" @update:model-value="save">
 							<template #label>Enable</template>
 						</FormSwitch>
@@ -86,7 +86,7 @@
 				<FormFolder>
 					<template #label>Summaly Proxy</template>
 
-					<div class="_autoGap">
+					<div class="_gaps_m">
 						<FormInput v-model="summalyProxy">
 							<template #prefix><i class="ti ti-link"></i></template>
 							<template #label>Summaly Proxy URL</template>

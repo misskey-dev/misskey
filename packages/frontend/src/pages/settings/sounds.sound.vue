@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSelect v-model="type">
 		<template #label>{{ i18n.ts.sound }}</template>
 		<option v-for="x in soundsTypes" :key="x" :value="x">{{ x == null ? i18n.ts.none : x }}</option>

@@ -2,8 +2,8 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_autoGap">
-			<div class="_autoGap">
+		<div class="_gaps_m">
+			<div class="_gaps_m">
 				<MkInput v-model="endpoint" :datalist="endpoints" @update:model-value="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>

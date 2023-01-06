@@ -1,7 +1,7 @@
 <template>
 <div>
 	<FormSuspense :p="init">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<FormRadios v-model="provider">
 				<option :value="null">{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</option>
 				<option value="hcaptcha">hCaptcha</option>

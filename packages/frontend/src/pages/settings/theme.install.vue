@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormTextarea v-model="installThemeCode">
 		<template #label>{{ i18n.ts._theme.code }}</template>
 	</FormTextarea>

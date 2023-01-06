@@ -2,9 +2,9 @@
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
-		<div class="ztgjmzrw _autoGap">
+		<div class="ztgjmzrw _gaps_m">
 			<section v-for="announcement in announcements" class="">
-				<div class="_panel _autoGap" style="padding: 24px;">
+				<div class="_panel _gaps_m" style="padding: 24px;">
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>

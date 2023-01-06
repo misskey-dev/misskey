@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSection first>
 		<template #label><i class="ti ti-pencil"></i> {{ i18n.ts._exportOrImport.allNotes }}</template>
 		<FormFolder>
@@ -18,11 +18,11 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.followingList }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
-				<div class="_autoGap_half">
+				<div class="_gaps_s">
 					<FormSwitch v-model="excludeMutingUsers">
 						{{ i18n.ts._exportOrImport.excludeMutingUsers }}
 					</FormSwitch>
@@ -41,7 +41,7 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.userLists }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
@@ -56,7 +56,7 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.muteList }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
@@ -71,7 +71,7 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.blockingList }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>

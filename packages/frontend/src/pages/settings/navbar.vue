@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormTextarea v-model="items" tall manual-save>
 		<template #label>{{ i18n.ts.navbar }}</template>
 		<template #caption><button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button></template>

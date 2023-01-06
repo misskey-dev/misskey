@@ -1,8 +1,8 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormLink @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
 	<FormSection>
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
 			<FormLink @click="readAllMessagingMessages">{{ i18n.ts.markAsReadAllTalkMessages }}</FormLink>
@@ -11,7 +11,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
 
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<MkPushNotificationAllowButton ref="allowButton"/>
 			<FormSwitch :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
 				<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>

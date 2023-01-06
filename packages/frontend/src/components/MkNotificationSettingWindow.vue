@@ -12,7 +12,7 @@
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<template v-if="showGlobalToggle">
 				<MkSwitch v-model="useGlobalSetting">
 					{{ i18n.ts.useGlobalSetting }}

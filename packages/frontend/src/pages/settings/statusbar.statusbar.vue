@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSelect v-model="statusbar.type" placeholder="Please select">
 		<template #label>{{ i18n.ts.type }}</template>
 		<option value="rss">RSS</option>

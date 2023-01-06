@@ -10,7 +10,7 @@
 	<template #header>:{{ emoji.name }}:</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="yigymqpb _autoGap">
+		<div class="yigymqpb _gaps_m">
 			<img :src="`/emoji/${emoji.name}.webp`" class="img"/>
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>

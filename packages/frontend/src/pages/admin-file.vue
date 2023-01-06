@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="file" :content-max="600" :margin-min="16" :margin-max="32">
-		<div v-if="tab === 'overview'" class="cxqhhsmd _autoGap">
+		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
 			<a class="thumbnail" :href="file.url" target="_blank">
 				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 			</a>
@@ -39,7 +39,7 @@
 				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
-		<div v-else-if="tab === 'ip' && info" class="_autoGap">
+		<div v-else-if="tab === 'ip' && info" class="_gaps_m">
 			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
 			<MkKeyValue v-if="info.requestIp" class="_monospace" :copy="info.requestIp" oneline>
 				<template #key>IP</template>
@@ -53,7 +53,7 @@
 				</MkKeyValue>
 			</FormSection>
 		</div>
-		<div v-else-if="tab === 'raw'" class="_autoGap">
+		<div v-else-if="tab === 'raw'" class="_gaps_m">
 			<MkObjectView v-if="info" tall :value="info">
 			</MkObjectView>
 		</div>

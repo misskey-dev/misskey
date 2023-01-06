@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'overview'" :content-max="600" :margin-min="20">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<div class="fwhjspax" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 				<div class="content">
 					<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
@@ -18,7 +18,7 @@
 			</MkKeyValue>
 
 			<FormSection>
-				<div class="_autoGap">
+				<div class="_gaps_m">
 					<MkKeyValue :copy="version">
 						<template #key>Misskey</template>
 						<template #value>{{ version }}</template>
@@ -30,7 +30,7 @@
 			</FormSection>
 
 			<FormSection>
-				<div class="_autoGap">
+				<div class="_gaps_m">
 					<FormSplit>
 						<MkKeyValue>
 							<template #key>{{ i18n.ts.administrator }}</template>

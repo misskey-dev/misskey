@@ -1,12 +1,12 @@
 <template>
 <MkSpacer :content-max="narrow ? 800 : 1100">
 	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
-		<div class="main _autoGap">
+		<div class="main _gaps">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
-			<div class="profile _autoGap">
+			<div class="profile _gaps">
 				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
@@ -85,23 +85,23 @@
 				</div>
 			</div>
 
-			<div class="contents">
-				<div v-if="user.pinnedNotes.length > 0" class="_autoGap_half">
+			<div class="contents _gaps">
+				<div v-if="user.pinnedNotes.length > 0" class="_gaps">
 					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
 					<XPhotos :key="user.id" :user="user"/>
-					<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
+					<XActivity :key="user.id" :user="user"/>
 				</template>
 			</div>
 			<div>
 				<XUserTimeline :user="user"/>
 			</div>
 		</div>
-		<div v-if="!narrow" class="sub" style="container-type: inline-size;">
+		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
 			<XPhotos :key="user.id" :user="user"/>
-			<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
+			<XActivity :key="user.id" :user="user"/>
 		</div>
 	</div>
 </MkSpacer>

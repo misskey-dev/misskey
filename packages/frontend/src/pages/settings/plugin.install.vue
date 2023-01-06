@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
 	<FormTextarea v-model="code" tall>

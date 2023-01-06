@@ -1,10 +1,10 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.manage }}</template>
-		<div v-for="plugin in plugins" :key="plugin.id" class="_panel _autoGap_half" style="padding: 20px;">
+		<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_s" style="padding: 20px;">
 			<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
 			<FormSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</FormSwitch>

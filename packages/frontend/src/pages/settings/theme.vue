@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap rsljpzjq">
+<div class="_gaps_m rsljpzjq">
 	<div v-adaptive-border class="rfqxtzch _panel">
 		<div class="toggle">
 			<div class="toggleWrapper">

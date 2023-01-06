@@ -4,7 +4,7 @@
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<FormSuspense :p="init">
-				<div class="_autoGap">
+				<div class="_gaps_m">
 					<FormInput v-model="name">
 						<template #label>{{ i18n.ts.instanceName }}</template>
 					</FormInput>
@@ -35,7 +35,7 @@
 					</FormTextarea>
 
 					<FormSection>
-						<div class="_autoGap_half">
+						<div class="_gaps_s">
 							<FormSwitch v-model="enableRegistration">
 								<template #label>{{ i18n.ts.enableRegistration }}</template>
 							</FormSwitch>
@@ -47,7 +47,7 @@
 					</FormSection>
 
 					<FormSection>
-						<div class="_autoGap_half">
+						<div class="_gaps_s">
 							<FormSwitch v-model="enableLocalTimeline">{{ i18n.ts.enableLocalTimeline }}</FormSwitch>
 							<FormSwitch v-model="enableGlobalTimeline">{{ i18n.ts.enableGlobalTimeline }}</FormSwitch>
 							<FormInfo>{{ i18n.ts.disablingTimelinesInfo }}</FormInfo>
@@ -57,7 +57,7 @@
 					<FormSection>
 						<template #label>{{ i18n.ts.theme }}</template>
 
-						<div class="_autoGap">
+						<div class="_gaps_m">
 							<FormInput v-model="iconUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.iconUrl }}</template>
@@ -94,7 +94,7 @@
 					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
 
-						<div class="_autoGap">
+						<div class="_gaps_m">
 							<FormSwitch v-model="cacheRemoteFiles">
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
@@ -119,7 +119,7 @@
 					<FormSection>
 						<template #label>ServiceWorker</template>
 
-						<div class="_autoGap">
+						<div class="_gaps_m">
 							<FormSwitch v-model="enableServiceWorker">
 								<template #label>{{ i18n.ts.enableServiceworker }}</template>
 								<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
@@ -142,7 +142,7 @@
 					<FormSection>
 						<template #label>DeepL Translation</template>
 
-						<div class="_autoGap">
+						<div class="_gaps_m">
 							<FormInput v-model="deeplAuthKey">
 								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label>DeepL Auth Key</template>

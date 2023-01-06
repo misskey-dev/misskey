@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="token" :content-max="700" :margin-min="16" :margin-max="32">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<FormInput v-model="password" type="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #label>{{ i18n.ts.newPassword }}</template>

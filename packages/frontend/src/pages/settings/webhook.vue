@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormLink :to="`/settings/webhook/new`">
 		Create webhook
 	</FormLink>

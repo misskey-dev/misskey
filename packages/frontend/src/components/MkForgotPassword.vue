@@ -9,7 +9,7 @@
 	<template #header>{{ i18n.ts.forgotPassword }}</template>
 
 	<form v-if="instance.enableEmail" class="bafeceda" @submit.prevent="onSubmit">
-		<div class="main _autoGap">
+		<div class="main _gaps_m">
 			<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
 				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>

@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div v-if="tab === 'overview'" class="_autoGap">
+			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="aeakzknw">
 					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 					<div class="body">
@@ -55,7 +55,7 @@
 				<FormSection>
 					<template #label>ActivityPub</template>
 
-					<div class="_autoGap">
+					<div class="_gaps_m">
 						<div style="display: flex; flex-direction: column; gap: 1em;">
 							<MkKeyValue v-if="user.host" oneline>
 								<template #key>{{ i18n.ts.instanceInfo }}</template>
@@ -86,7 +86,7 @@
 					</div>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'moderation'" class="_autoGap">
+			<div v-else-if="tab === 'moderation'" class="_gaps_m">
 				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
 				<FormSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
 				<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
@@ -126,7 +126,7 @@
 					</FormInput>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'chart'" class="_autoGap">
+			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
 					<div class="selects">
 						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -141,7 +141,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else-if="tab === 'raw'" class="_autoGap">
+			<div v-else-if="tab === 'raw'" class="_gaps_m">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
 

@@ -1,11 +1,11 @@
 <template>
 <form class="eppvobhk" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
-	<div class="auth _autoGap">
+	<div class="auth _gaps_m">
 		<div v-show="withAvatar" class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null, marginBottom: message ? '1.5em' : null }"></div>
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
-		<div v-if="!totpLogin" class="normal-signin _autoGap">
+		<div v-if="!totpLogin" class="normal-signin _gaps_m">
 			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required data-cy-signin-username @update:model-value="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>

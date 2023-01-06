@@ -1,6 +1,6 @@
 <template>
 <FormSuspense :p="init">
-	<div class="_autoGap">
+	<div class="_gaps_m">
 		<FormSwitch v-model="enableGithubIntegration">
 			<template #label>{{ i18n.ts.enable }}</template>
 		</FormSwitch>

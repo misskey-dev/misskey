@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormInput v-model="name">
 		<template #label>Name</template>
 	</FormInput>
@@ -16,7 +16,7 @@
 	<FormSection>
 		<template #label>Events</template>
 
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormSwitch v-model="event_follow">Follow</FormSwitch>
 			<FormSwitch v-model="event_followed">Followed</FormSwitch>
 			<FormSwitch v-model="event_note">Note</FormSwitch>

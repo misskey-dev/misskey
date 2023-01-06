@@ -9,7 +9,7 @@
 		</I18n>
 	</template>
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="dpvffvvy _autoGap">
+		<div class="dpvffvvy _gaps_m">
 			<div class="">
 				<MkTextarea v-model="comment">
 					<template #label>{{ i18n.ts.details }}</template>

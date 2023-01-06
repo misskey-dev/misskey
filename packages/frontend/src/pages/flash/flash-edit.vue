@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
 			</MkInput>

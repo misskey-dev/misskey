@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="uqshojas">
-			<div v-for="ad in ads" class="_panel _autoGap ad">
+			<div v-for="ad in ads" class="_panel _gaps_m ad">
 				<MkAd v-if="ad.url" :specify="ad"/>
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>

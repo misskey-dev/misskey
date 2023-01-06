@@ -13,7 +13,7 @@
 	<template #header>{{ title || $ts.generateAccessToken }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<div v-if="information">
 				<MkInfo warn>{{ information }}</MkInfo>
 			</div>

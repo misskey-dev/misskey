@@ -10,7 +10,7 @@
 		</div>
 
 		<div v-if="tab === 'settings'">
-			<div class="_autoGap">
+			<div class="_gaps_m">
 				<MkInput v-model="title">
 					<template #label>{{ $ts._pages.title }}</template>
 				</MkInput>

@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormFolder v-for="x in statusbars" :key="x.id">
 		<template #label>{{ x.type ?? i18n.ts.notSet }}</template>
 		<template #suffix>{{ x.name }}</template>
