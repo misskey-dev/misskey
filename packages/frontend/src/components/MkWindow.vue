@@ -489,6 +489,7 @@ defineExpose({
 			flex: 1;
 			overflow: auto;
 			background: var(--panel);
+			container-type: inline-size;
 		}
 	}
 
