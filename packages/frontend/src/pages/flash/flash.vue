@@ -147,6 +147,8 @@ async function run() {
 		...registerAsUiLib(components, (_root) => {
 			root.value = _root.value;
 		}),
+		THIS_ID: values.STR(flash.id),
+		THIS_URL: values.STR(`${url}/play/${flash.id}`),
 	}, {
 		in: (q) => {
 			return new Promise(ok => {
