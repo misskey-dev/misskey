@@ -1,6 +1,6 @@
 <template>
 <div class="_autoGap">
-	<FormSection>
+	<FormSection first>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
 		<FormInput v-model="emailAddress" type="email" manual-save>
 			<template #prefix><i class="ti ti-mail"></i></template>

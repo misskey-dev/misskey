@@ -1,6 +1,6 @@
 <template>
 <div class="_autoGap">
-	<FormSection>
+	<FormSection first>
 		<template #label>{{ i18n.ts.password }}</template>
 		<MkButton primary @click="change()">{{ i18n.ts.changePassword }}</MkButton>
 	</FormSection>
