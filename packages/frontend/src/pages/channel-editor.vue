@@ -2,12 +2,12 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_formRoot">
-			<MkInput v-model="name" class="_formBlock">
+		<div class="_gaps_m">
+			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="description" class="_formBlock">
+			<MkTextarea v-model="description">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
@@ -18,7 +18,7 @@
 					<MkButton @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
-			<div class="_formBlock">
+			<div>
 				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
 			</div>
 		</div>

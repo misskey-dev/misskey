@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div v-if="channel">
-			<div class="wpgynlbz _panel _gap" :class="{ hide: !showBanner }">
+			<div class="wpgynlbz _panel _margin" :class="{ hide: !showBanner }">
 				<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 				<button class="_button toggle" @click="() => showBanner = !showBanner">
 					<template v-if="showBanner"><i class="ti ti-chevron-up"></i></template>
@@ -23,9 +23,9 @@
 				</div>
 			</div>
 
-			<XPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
+			<XPostForm v-if="$i" :channel="channel" class="post-form _panel _margin" fixed/>
 
-			<XTimeline :key="channelId" class="_gap" src="channel" :channel="channelId" @before="before" @after="after"/>
+			<XTimeline :key="channelId" class="_margin" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>

@@ -2,23 +2,23 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_formRoot">
-			<div class="_formBlock">
-				<MkInput v-model="endpoint" :datalist="endpoints" class="_formBlock" @update:model-value="onEndpointChange()">
+		<div class="_gaps_m">
+			<div class="_gaps_m">
+				<MkInput v-model="endpoint" :datalist="endpoints" @update:model-value="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
-				<MkTextarea v-model="body" class="_formBlock" code>
+				<MkTextarea v-model="body" code>
 					<template #label>Params (JSON or JSON5)</template>
 				</MkTextarea>
-				<MkSwitch v-model="withCredential" class="_formBlock">
+				<MkSwitch v-model="withCredential">
 					With credential
 				</MkSwitch>
-				<MkButton class="_formBlock" primary :disabled="sending" @click="send">
+				<MkButton primary :disabled="sending" @click="send">
 					<template v-if="sending"><MkEllipsis/></template>
 					<template v-else><i class="ti ti-send"></i> Send</template>
 				</MkButton>
 			</div>
-			<div v-if="res" class="_formBlock">
+			<div v-if="res">
 				<MkTextarea v-model="res" code readonly tall>
 					<template #label>Response</template>
 				</MkTextarea>

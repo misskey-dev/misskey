@@ -12,7 +12,7 @@
 					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
 						<template #label>Select mode</template>
 					</MkSwitch>
-					<div v-if="selectMode" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>

@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="370"
 	:with-ok-button="true"
@@ -9,28 +9,28 @@
 >
 	<template #header>:{{ emoji.name }}:</template>
 
-	<div class="_monolithic_">
-		<div class="yigymqpb _section">
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<div class="yigymqpb _gaps_m">
 			<img :src="`/emoji/${emoji.name}.webp`" class="img"/>
-			<MkInput v-model="name" class="_formBlock">
+			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
-			<MkInput v-model="category" class="_formBlock" :datalist="categories">
+			<MkInput v-model="category" :datalist="categories">
 				<template #label>{{ i18n.ts.category }}</template>
 			</MkInput>
-			<MkInput v-model="aliases" class="_formBlock">
+			<MkInput v-model="aliases">
 				<template #label>{{ i18n.ts.tags }}</template>
 				<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 			</MkInput>
 			<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
-	</div>
-</XModalWindow>
+	</MkSpacer>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';

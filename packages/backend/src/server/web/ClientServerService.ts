@@ -26,9 +26,10 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, EmojisRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { ChannelsRepository, ClipsRepository, EmojisRepository, FlashsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
+import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -73,6 +74,10 @@ export class ClientServerService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.flashsRepository)
+		private flashsRepository: FlashsRepository,
+
+		private flashEntityService: FlashEntityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private pageEntityService: PageEntityService,
@@ -246,6 +251,10 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
+			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+			return await reply.redirect(301, emoji.publicUrl || emoji.originalUrl);
+
+			/* https://github.com/misskey-dev/misskey/pull/9431#issuecomment-1373006446
 			const url = new URL('/proxy/emoji.webp', this.config.url);
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
@@ -256,6 +265,7 @@ export class ClientServerService {
 				301,
 				url.toString(),
 			);
+			*/
 		});
 
 		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
@@ -536,6 +546,30 @@ export class ClientServerService {
 					page: _page,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: page.userId })),
+					instanceName: meta.name ?? 'Misskey',
+					icon: meta.iconUrl,
+					themeColor: meta.themeColor,
+				});
+			} else {
+				return await renderBase(reply);
+			}
+		});
+
+		// Flash
+		fastify.get<{ Params: { id: string; } }>('/play/:id', async (request, reply) => {
+			const flash = await this.flashsRepository.findOneBy({
+				id: request.params.id,
+			});
+
+			if (flash) {
+				const _flash = await this.flashEntityService.pack(flash);
+				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: flash.userId });
+				const meta = await this.metaService.fetch();
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('flash', {
+					flash: _flash,
+					profile,
+					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: flash.userId })),
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,

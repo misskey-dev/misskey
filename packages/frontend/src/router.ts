@@ -263,6 +263,20 @@ export const routes = [{
 	path: '/pages',
 	component: page(() => import('./pages/pages.vue')),
 }, {
+	path: '/play/:id/edit',
+	component: page(() => import('./pages/flash/flash-edit.vue')),
+	loginRequired: true,
+}, {
+	path: '/play/new',
+	component: page(() => import('./pages/flash/flash-edit.vue')),
+	loginRequired: true,
+}, {
+	path: '/play/:id',
+	component: page(() => import('./pages/flash/flash.vue')),
+}, {
+	path: '/play',
+	component: page(() => import('./pages/flash/flash-index.vue')),
+}, {
 	path: '/gallery/:postId/edit',
 	component: page(() => import('./pages/gallery/edit.vue')),
 	loginRequired: true,

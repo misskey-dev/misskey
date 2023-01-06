@@ -1,13 +1,15 @@
 <template>
 <MkSpacer :content-max="700">
-	<MkFolder class="item">
-		<template #header>Heatmap</template>
-		<XHeatmap :user="user" :src="'notes'"/>
-	</MkFolder>
-	<MkFolder class="item">
-		<template #header>PV</template>
-		<XPv :user="user"/>
-	</MkFolder>
+	<div class="_gaps">
+		<MkFolder class="item">
+			<template #header>Heatmap</template>
+			<XHeatmap :user="user" :src="'notes'"/>
+		</MkFolder>
+		<MkFolder class="item">
+			<template #header>PV</template>
+			<XPv :user="user"/>
+		</MkFolder>
+	</div>
 </MkSpacer>
 </template>
 

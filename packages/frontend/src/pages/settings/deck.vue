@@ -1,10 +1,10 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<FormSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</FormSwitch>
 
-	<FormSwitch v-model="alwaysShowMainColumn" class="_formBlock">{{ i18n.ts._deck.alwaysShowMainColumn }}</FormSwitch>
+	<FormSwitch v-model="alwaysShowMainColumn">{{ i18n.ts._deck.alwaysShowMainColumn }}</FormSwitch>
 
-	<FormRadios v-model="columnAlign" class="_formBlock">
+	<FormRadios v-model="columnAlign">
 		<template #label>{{ i18n.ts._deck.columnAlign }}</template>
 		<option value="left">{{ i18n.ts.left }}</option>
 		<option value="center">{{ i18n.ts.center }}</option>

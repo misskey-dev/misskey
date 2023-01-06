@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="1400">
 		<div class="_root">
 			<div v-if="tab === 'explore'">
-				<MkFolder class="_gap">
+				<MkFolder class="_margin">
 					<template #header><i class="ti ti-clock"></i>{{ i18n.ts.recentPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="recentPostsPagination" :disable-auto-load="true">
 						<div class="vfpdbgtk">
@@ -12,7 +12,7 @@
 						</div>
 					</MkPagination>
 				</MkFolder>
-				<MkFolder class="_gap">
+				<MkFolder class="_margin">
 					<template #header><i class="ti ti-comet"></i>{{ i18n.ts.popularPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="popularPostsPagination" :disable-auto-load="true">
 						<div class="vfpdbgtk">

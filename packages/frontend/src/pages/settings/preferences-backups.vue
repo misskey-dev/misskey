@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<div :class="$style.buttons">
 		<MkButton inline primary @click="saveNew">{{ ts._preferencesBackups.saveNew }}</MkButton>
 		<MkButton inline @click="loadFile">{{ ts._preferencesBackups.loadFile }}</MkButton>
@@ -8,17 +8,19 @@
 	<FormSection>
 		<template #label>{{ ts._preferencesBackups.list }}</template>
 		<template v-if="profiles && Object.keys(profiles).length > 0">
-			<div
-				v-for="(profile, id) in profiles"
-				:key="id"
-				class="_formBlock _panel"
-				:class="$style.profile"
-				@click="$event => menu($event, id)"
-				@contextmenu.prevent.stop="$event => menu($event, id)"
-			>
-				<div :class="$style.profileName">{{ profile.name }}</div>
-				<div :class="$style.profileTime">{{ t('_preferencesBackups.createdAt', { date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
-				<div v-if="profile.updatedAt" :class="$style.profileTime">{{ t('_preferencesBackups.updatedAt', { date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
+			<div class="_gaps_s">
+				<div
+					v-for="(profile, id) in profiles"
+					:key="id"
+					class="_panel"
+					:class="$style.profile"
+					@click="$event => menu($event, id)"
+					@contextmenu.prevent.stop="$event => menu($event, id)"
+				>
+					<div :class="$style.profileName">{{ profile.name }}</div>
+					<div :class="$style.profileTime">{{ t('_preferencesBackups.createdAt', { date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
+					<div v-if="profile.updatedAt" :class="$style.profileTime">{{ t('_preferencesBackups.updatedAt', { date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
+				</div>
 			</div>
 		</template>
 		<div v-else-if="profiles">
