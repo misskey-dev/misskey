@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 import { defaultStore } from '@/store';
@@ -48,8 +48,8 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = ref<InstanceType<typeof MkModal>>();
-const picker = ref<InstanceType<typeof MkEmojiPicker>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
+const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
 function chosen(emoji: any) {
 	emit('done', emoji);

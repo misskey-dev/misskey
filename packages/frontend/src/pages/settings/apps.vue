@@ -13,11 +13,11 @@
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>
-					<div class="_keyValue">
+					<div class="">
 						<div>{{ i18n.ts.installedDate }}:</div>
 						<div><MkTime :time="token.createdAt"/></div>
 					</div>
-					<div class="_keyValue">
+					<div class="">
 						<div>{{ i18n.ts.lastUsedDate }}:</div>
 						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>

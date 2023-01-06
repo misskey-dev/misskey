@@ -30,15 +30,13 @@
 				<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
 				<option value="+caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
 				<option value="-caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+lastCommunicatedAt">{{ i18n.ts.lastCommunication }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-lastCommunicatedAt">{{ i18n.ts.lastCommunication }} ({{ i18n.ts.ascendingOrder }})</option>
 			</MkSelect>
 		</FormSplit>
 	</div>
 
 	<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
 		<div class="dqokceoi">
-			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Last communicated: ${dateString(instance.lastCommunicatedAt)}\nStatus: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
+			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
 				<MkInstanceCardMini :instance="instance"/>
 			</MkA>
 		</div>

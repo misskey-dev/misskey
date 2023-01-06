@@ -46,8 +46,8 @@ const props = defineProps<{
 	group?: Misskey.entities.UserGroup | null;
 }>();
 
-let textEl = $ref<HTMLTextAreaElement>();
-let fileEl = $ref<HTMLInputElement>();
+let textEl = $shallowRef<HTMLTextAreaElement>();
+let fileEl = $shallowRef<HTMLInputElement>();
 
 let text = $ref<string>('');
 let file = $ref<Misskey.entities.DriveFile | null>(null);

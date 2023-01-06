@@ -122,10 +122,12 @@ id: 'aid'
 # Proxy for HTTP/HTTPS
 #proxy: http://127.0.0.1:3128
 
-#proxyBypassHosts: [
-#  'example.com',
-#  '192.0.2.8'
-#]
+proxyBypassHosts:
+  - api.deepl.com
+  - api-free.deepl.com
+  - www.recaptcha.net
+  - hcaptcha.com
+  - challenges.cloudflare.com
 
 # Proxy for SMTP/SMTPS
 #proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT

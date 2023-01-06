@@ -27,16 +27,19 @@ export class CaptchaService {
 			response,
 		});
 	
-		const res = await fetch(url, {
-			method: 'POST',
-			body: params,
-			headers: {
-				'User-Agent': this.config.userAgent,
+		const res = await this.httpRequestService.fetch(
+			url,
+			{
+				method: 'POST',
+				body: params,
+				headers: {
+					'User-Agent': this.config.userAgent,
+				},
 			},
-			// TODO
-			//timeout: 10 * 1000,
-			agent: (url, bypassProxy) => this.httpRequestService.getAgentByUrl(url, bypassProxy),
-		}).catch(err => {
+			{
+				noOkError: true,
+			}
+		).catch(err => {
 			throw `${err.message ?? err}`;
 		});
 	

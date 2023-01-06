@@ -5,7 +5,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 
 type Request = {
@@ -28,6 +28,8 @@ type PrivateKey = {
 
 @Injectable()
 export class ApRequestService {
+	private undiciFetcher: UndiciFetcher;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -35,6 +37,9 @@ export class ApRequestService {
 		private userKeypairStoreService: UserKeypairStoreService,
 		private httpRequestService: HttpRequestService,
 	) {
+		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
+			maxRedirections: 0,
+		}));
 	}
 
 	@bindThis
@@ -152,12 +157,14 @@ export class ApRequestService {
 			},
 		});
 
-		await this.httpRequestService.getResponse({
+		await this.undiciFetcher.fetch(
 			url,
-			method: req.request.method,
-			headers: req.request.headers,
-			body,
-		});
+			{
+				method: req.request.method,
+				headers: req.request.headers,
+				body,
+			}
+		);
 	}
 
 	/**
@@ -180,11 +187,13 @@ export class ApRequestService {
 			},
 		});
 
-		const res = await this.httpRequestService.getResponse({
+		const res = await this.httpRequestService.fetch(
 			url,
-			method: req.request.method,
-			headers: req.request.headers,
-		});
+			{
+				method: req.request.method,
+				headers: req.request.headers,
+			}
+		);
 
 		return await res.json();
 	}

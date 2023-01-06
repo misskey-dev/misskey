@@ -152,7 +152,7 @@ onMounted(async () => {
 				padding: 2px 0;
 
 				> .value {
-					font-size: 1.25em;
+					font-size: 1.2em;
 					font-weight: bold;
 
 					> .diff {

@@ -77,12 +77,11 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import 'chartjs-adapter-date-fns';
 import { defaultStore } from '@/store';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
-const rootEl = $ref<HTMLElement>();
+const rootEl = $shallowRef<HTMLElement>();
 let serverInfo: any = $ref(null);
 let topSubInstancesForPie: any = $ref(null);
 let topPubInstancesForPie: any = $ref(null);
@@ -153,7 +152,7 @@ onMounted(async () => {
 	});
 
 	os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
+		sort: '+latestRequestReceivedAt',
 		limit: 25,
 	}).then(res => {
 		activeInstances = res;

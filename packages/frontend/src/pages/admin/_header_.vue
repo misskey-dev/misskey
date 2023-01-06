@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, inject, watch, nextTick } from 'vue';
+import { computed, onMounted, onUnmounted, ref, shallowRef, inject, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
 import { url } from '@/config';
@@ -64,9 +64,9 @@ const emit = defineEmits<{
 
 const metadata = injectPageMetadata();
 
-const el = ref<HTMLElement>(null);
+const el = shallowRef<HTMLElement>(null);
 const tabRefs = {};
-const tabHighlightEl = $ref<HTMLElement | null>(null);
+const tabHighlightEl = $shallowRef<HTMLElement | null>(null);
 const bg = ref(null);
 const height = ref(0);
 const hasTabs = computed(() => {

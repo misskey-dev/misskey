@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<{
 
 let includingTypes = $computed(() => props.includingTypes || []);
 
-const dialog = $ref<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
 
 let typesMap = $ref<Record<typeof notificationTypes[number], boolean>>({});
 let useGlobalSetting = $ref((includingTypes === null || includingTypes.length === 0) && props.showGlobalToggle);

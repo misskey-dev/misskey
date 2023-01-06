@@ -54,7 +54,7 @@ const emit = defineEmits<{
 	(ev: 'done', result: { name: string | null, permissions: string[] }): void;
 }>();
 
-const dialog = $ref<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
 let name = $ref(props.initialName);
 let permissions = $ref({});
 

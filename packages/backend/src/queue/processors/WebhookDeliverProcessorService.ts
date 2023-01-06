@@ -33,24 +33,26 @@ export class WebhookDeliverProcessorService {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
 	
-			const res = await this.httpRequestService.getResponse({
-				url: job.data.to,
-				method: 'POST',
-				headers: {
-					'User-Agent': 'Misskey-Hooks',
-					'X-Misskey-Host': this.config.host,
-					'X-Misskey-Hook-Id': job.data.webhookId,
-					'X-Misskey-Hook-Secret': job.data.secret,
-				},
-				body: JSON.stringify({
-					hookId: job.data.webhookId,
-					userId: job.data.userId,
-					eventId: job.data.eventId,
-					createdAt: job.data.createdAt,
-					type: job.data.type,
-					body: job.data.content,
-				}),
-			});
+			const res = await this.httpRequestService.fetch(
+				job.data.to,
+				{
+					method: 'POST',
+					headers: {
+						'User-Agent': 'Misskey-Hooks',
+						'X-Misskey-Host': this.config.host,
+						'X-Misskey-Hook-Id': job.data.webhookId,
+						'X-Misskey-Hook-Secret': job.data.secret,
+					},
+					body: JSON.stringify({
+						hookId: job.data.webhookId,
+						userId: job.data.userId,
+						eventId: job.data.eventId,
+						createdAt: job.data.createdAt,
+						type: job.data.type,
+						body: job.data.content,
+					}),
+				}
+			);
 	
 			this.webhooksRepository.update({ id: job.data.webhookId }, {
 				latestSentAt: new Date(),

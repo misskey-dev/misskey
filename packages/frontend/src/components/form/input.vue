@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval';
@@ -74,9 +74,9 @@ const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = ref<HTMLElement>();
-const prefixEl = ref<HTMLElement>();
-const suffixEl = ref<HTMLElement>();
+const inputEl = shallowRef<HTMLElement>();
+const prefixEl = shallowRef<HTMLElement>();
+const suffixEl = shallowRef<HTMLElement>();
 const height =
 	props.small ? 35 :
 	props.large ? 39 :
