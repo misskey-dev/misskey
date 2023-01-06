@@ -1,7 +1,7 @@
 <template>
 <div
 	ref="rootEl"
-	class="_section root"
+	class="root"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >

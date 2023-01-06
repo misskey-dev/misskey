@@ -3,62 +3,62 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_formRoot">
-				<FormSwitch v-model="useObjectStorage" class="_formBlock">{{ i18n.ts.useObjectStorage }}</FormSwitch>
+			<div class="_gaps_m">
+				<FormSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</FormSwitch>
 
 				<template v-if="useObjectStorage">
-					<FormInput v-model="objectStorageBaseUrl" class="_formBlock">
+					<FormInput v-model="objectStorageBaseUrl">
 						<template #label>{{ i18n.ts.objectStorageBaseUrl }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
 					</FormInput>
 
-					<FormInput v-model="objectStorageBucket" class="_formBlock">
+					<FormInput v-model="objectStorageBucket">
 						<template #label>{{ i18n.ts.objectStorageBucket }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBucketDesc }}</template>
 					</FormInput>
 
-					<FormInput v-model="objectStoragePrefix" class="_formBlock">
+					<FormInput v-model="objectStoragePrefix">
 						<template #label>{{ i18n.ts.objectStoragePrefix }}</template>
 						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
 					</FormInput>
 
-					<FormInput v-model="objectStorageEndpoint" class="_formBlock">
+					<FormInput v-model="objectStorageEndpoint">
 						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
 						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
 					</FormInput>
 
-					<FormInput v-model="objectStorageRegion" class="_formBlock">
+					<FormInput v-model="objectStorageRegion">
 						<template #label>{{ i18n.ts.objectStorageRegion }}</template>
 						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
 					</FormInput>
 
 					<FormSplit :min-width="280">
-						<FormInput v-model="objectStorageAccessKey" class="_formBlock">
+						<FormInput v-model="objectStorageAccessKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
 						</FormInput>
 
-						<FormInput v-model="objectStorageSecretKey" class="_formBlock">
+						<FormInput v-model="objectStorageSecretKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Secret key</template>
 						</FormInput>
 					</FormSplit>
 
-					<FormSwitch v-model="objectStorageUseSSL" class="_formBlock">
+					<FormSwitch v-model="objectStorageUseSSL">
 						<template #label>{{ i18n.ts.objectStorageUseSSL }}</template>
 						<template #caption>{{ i18n.ts.objectStorageUseSSLDesc }}</template>
 					</FormSwitch>
 
-					<FormSwitch v-model="objectStorageUseProxy" class="_formBlock">
+					<FormSwitch v-model="objectStorageUseProxy">
 						<template #label>{{ i18n.ts.objectStorageUseProxy }}</template>
 						<template #caption>{{ i18n.ts.objectStorageUseProxyDesc }}</template>
 					</FormSwitch>
 
-					<FormSwitch v-model="objectStorageSetPublicRead" class="_formBlock">
+					<FormSwitch v-model="objectStorageSetPublicRead">
 						<template #label>{{ i18n.ts.objectStorageSetPublicRead }}</template>
 					</FormSwitch>
 
-					<FormSwitch v-model="objectStorageS3ForcePathStyle" class="_formBlock">
+					<FormSwitch v-model="objectStorageS3ForcePathStyle">
 						<template #label>s3ForcePathStyle</template>
 					</FormSwitch>
 				</template>

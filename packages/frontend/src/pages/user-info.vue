@@ -3,8 +3,8 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div v-if="tab === 'overview'" class="_formRoot">
-				<div class="_formBlock aeakzknw">
+			<div v-if="tab === 'overview'" class="_gaps_m">
+				<div class="aeakzknw">
 					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 					<div class="body">
 						<span class="name"><MkUserName class="name" :user="user"/></span>
@@ -17,36 +17,36 @@
 					</div>
 				</div>
 
-				<MkInfo v-if="user.username.includes('.')" class="_formBlock">{{ i18n.ts.isSystemAccount }}</MkInfo>
+				<MkInfo v-if="user.username.includes('.')">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
-				<div v-if="user.url" class="_formLinksGrid _formBlock">
+				<div v-if="user.url" class="_formLinksGrid">
 					<FormLink :to="userPage(user)">Profile</FormLink>
 					<FormLink :to="user.url" :external="true">Profile (remote)</FormLink>
 				</div>
-				<FormLink v-else class="_formBlock" :to="userPage(user)">Profile</FormLink>
+				<FormLink v-else :to="userPage(user)">Profile</FormLink>
 
-				<FormLink v-if="user.host" class="_formBlock" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
+				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
 
-				<div class="_formBlock">
-					<MkKeyValue :copy="user.id" oneline style="margin: 1em 0;">
+				<div style="display: flex; flex-direction: column; gap: 1em;">
+					<MkKeyValue :copy="user.id" oneline>
 						<template #key>ID</template>
 						<template #value><span class="_monospace">{{ user.id }}</span></template>
 					</MkKeyValue>
 					<!-- 要る？
-					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline style="margin: 1em 0;">
+					<MkKeyValue v-if="ips.length > 0" :copy="user.id" oneline>
 						<template #key>IP (recent)</template>
 						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
 					</MkKeyValue>
 					-->
-					<MkKeyValue oneline style="margin: 1em 0;">
+					<MkKeyValue oneline>
 						<template #key>{{ i18n.ts.createdAt }}</template>
 						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
 					</MkKeyValue>
-					<MkKeyValue v-if="info" oneline style="margin: 1em 0;">
+					<MkKeyValue v-if="info" oneline>
 						<template #key>{{ i18n.ts.lastActiveDate }}</template>
 						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
 					</MkKeyValue>
-					<MkKeyValue v-if="info" oneline style="margin: 1em 0;">
+					<MkKeyValue v-if="info" oneline>
 						<template #key>{{ i18n.ts.email }}</template>
 						<template #value><span class="_monospace">{{ info.email }}</span></template>
 					</MkKeyValue>
@@ -55,48 +55,50 @@
 				<FormSection>
 					<template #label>ActivityPub</template>
 
-					<div class="_formBlock">
-						<MkKeyValue v-if="user.host" oneline style="margin: 1em 0;">
-							<template #key>{{ i18n.ts.instanceInfo }}</template>
-							<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="ti ti-chevron-right"></i></MkA></template>
-						</MkKeyValue>
-						<MkKeyValue v-else oneline style="margin: 1em 0;">
-							<template #key>{{ i18n.ts.instanceInfo }}</template>
-							<template #value>(Local user)</template>
-						</MkKeyValue>
-						<MkKeyValue oneline style="margin: 1em 0;">
-							<template #key>{{ i18n.ts.updatedAt }}</template>
-							<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
-						</MkKeyValue>
-						<MkKeyValue v-if="ap" oneline style="margin: 1em 0;">
-							<template #key>Type</template>
-							<template #value><span class="_monospace">{{ ap.type }}</span></template>
-						</MkKeyValue>
+					<div class="_gaps_m">
+						<div style="display: flex; flex-direction: column; gap: 1em;">
+							<MkKeyValue v-if="user.host" oneline>
+								<template #key>{{ i18n.ts.instanceInfo }}</template>
+								<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="ti ti-chevron-right"></i></MkA></template>
+							</MkKeyValue>
+							<MkKeyValue v-else oneline>
+								<template #key>{{ i18n.ts.instanceInfo }}</template>
+								<template #value>(Local user)</template>
+							</MkKeyValue>
+							<MkKeyValue oneline>
+								<template #key>{{ i18n.ts.updatedAt }}</template>
+								<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+							</MkKeyValue>
+							<MkKeyValue v-if="ap" oneline>
+								<template #key>Type</template>
+								<template #value><span class="_monospace">{{ ap.type }}</span></template>
+							</MkKeyValue>
+						</div>
+
+						<MkButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</MkButton>
+
+						<FormFolder>
+							<template #label>Raw</template>
+
+							<MkObjectView v-if="ap" tall :value="ap">
+							</MkObjectView>
+						</FormFolder>
 					</div>
-
-					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</FormButton>
-
-					<FormFolder class="_formBlock">
-						<template #label>Raw</template>
-
-						<MkObjectView v-if="ap" tall :value="ap">
-						</MkObjectView>
-					</FormFolder>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'moderation'" class="_formRoot">
-				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
-				<FormSwitch v-model="silenced" class="_formBlock" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
-				<FormSwitch v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
+			<div v-else-if="tab === 'moderation'" class="_gaps_m">
+				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
+				<FormSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
+				<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
-				<div class="_formBlock">
-					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</FormButton>
-					<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</FormButton>
+				<div>
+					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
-				<FormTextarea v-model="moderationNote" manual-save class="_formBlock">
+				<FormTextarea v-model="moderationNote" manual-save>
 					<template #label>Moderation note</template>
 				</FormTextarea>
-				<FormFolder class="_formBlock">
+				<FormFolder>
 					<template #label>IP</template>
 					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
 					<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
@@ -107,7 +109,7 @@
 						</div>
 					</template>
 				</FormFolder>
-				<FormFolder class="_formBlock">
+				<FormFolder>
 					<template #label>{{ i18n.ts.files }}</template>
 
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
@@ -124,7 +126,7 @@
 					</FormInput>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'chart'" class="_formRoot">
+			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
 					<div class="selects">
 						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -139,7 +141,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else-if="tab === 'raw'" class="_formRoot">
+			<div v-else-if="tab === 'raw'" class="_gaps_m">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
 
@@ -160,7 +162,7 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';

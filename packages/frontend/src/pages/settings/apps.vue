@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
@@ -13,23 +13,23 @@
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>
-					<div class="">
-						<div>{{ i18n.ts.installedDate }}:</div>
-						<div><MkTime :time="token.createdAt"/></div>
-					</div>
-					<div class="">
-						<div>{{ i18n.ts.lastUsedDate }}:</div>
-						<div><MkTime :time="token.lastUsedAt"/></div>
-					</div>
-					<div class="actions">
-						<button class="_button" @click="revoke(token)"><i class="ti ti-trash"></i></button>
-					</div>
+					<MkKeyValue oneline>
+						<template #key>{{ i18n.ts.installedDate }}</template>
+						<template #value><MkTime :time="token.createdAt"/></template>
+					</MkKeyValue>
+					<MkKeyValue oneline>
+						<template #key>{{ i18n.ts.lastUsedDate }}</template>
+						<template #value><MkTime :time="token.lastUsedAt"/></template>
+					</MkKeyValue>
 					<details>
 						<summary>{{ i18n.ts.details }}</summary>
 						<ul>
 							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 						</ul>
 					</details>
+					<div class="actions">
+						<MkButton inline danger @click="revoke(token)"><i class="ti ti-trash"></i></MkButton>
+					</div>
 				</div>
 			</div>
 		</template>
@@ -43,6 +43,8 @@ import FormPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkButton from '@/components/MkButton.vue';
 
 const list = ref<any>(null);
 

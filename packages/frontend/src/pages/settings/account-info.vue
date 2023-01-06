@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<MkKeyValue>
 		<template #key>ID</template>
 		<template #value><span class="_monospace">{{ $i.id }}</span></template>

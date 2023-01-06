@@ -11,7 +11,6 @@
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { Chart } from 'chart.js';
-import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import * as misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
@@ -65,6 +64,8 @@ async function renderChart() {
 
 	const colorUser = '#3498db';
 	const colorVisitor = '#2ecc71';
+	const colorUser2 = '#3498db88';
+	const colorVisitor2 = '#2ecc7188';
 
 	chartInstance = new Chart(chartEl, {
 		type: 'bar',
@@ -79,8 +80,9 @@ async function renderChart() {
 				borderRadius: 4,
 				backgroundColor: colorUser,
 				barPercentage: 0.7,
-				categoryPercentage: 1,
+				categoryPercentage: 0.7,
 				fill: true,
+				stack: 'u',
 			}, {
 				parsing: false,
 				label: 'UPV (visitor)',
@@ -91,8 +93,35 @@ async function renderChart() {
 				borderRadius: 4,
 				backgroundColor: colorVisitor,
 				barPercentage: 0.7,
-				categoryPercentage: 1,
+				categoryPercentage: 0.7,
 				fill: true,
+				stack: 'u',
+			}, {
+				parsing: false,
+				label: 'NPV (user)',
+				data: format(raw.pv.user).slice().reverse(),
+				pointRadius: 0,
+				borderWidth: 0,
+				borderJoinStyle: 'round',
+				borderRadius: 4,
+				backgroundColor: colorUser2,
+				barPercentage: 0.7,
+				categoryPercentage: 0.7,
+				fill: true,
+				stack: 'n',
+			}, {
+				parsing: false,
+				label: 'NPV (visitor)',
+				data: format(raw.pv.visitor).slice().reverse(),
+				pointRadius: 0,
+				borderWidth: 0,
+				borderJoinStyle: 'round',
+				borderRadius: 4,
+				backgroundColor: colorVisitor2,
+				barPercentage: 0.7,
+				categoryPercentage: 0.7,
+				fill: true,
+				stack: 'n',
 			}],
 		},
 		options: {
@@ -113,6 +142,10 @@ async function renderChart() {
 					time: {
 						stepSize: 1,
 						unit: 'day',
+						displayFormats: {
+							day: 'M/d',
+							month: 'Y/M',
+						},
 					},
 					grid: {
 						display: false,
@@ -121,11 +154,6 @@ async function renderChart() {
 						display: true,
 						maxRotation: 0,
 						autoSkipPadding: 8,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 				},
 				y: {
@@ -148,7 +176,7 @@ async function renderChart() {
 			plugins: {
 				title: {
 					display: true,
-					text: 'Unique PV',
+					text: 'Unique/Natural PV',
 					padding: {
 						left: 0,
 						right: 0,

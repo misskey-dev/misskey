@@ -1,10 +1,10 @@
 <template>
-<form class="qlvuhzng _formRoot" autocomplete="new-password" @submit.prevent="onSubmit">
-	<MkInput v-if="instance.disableRegistration" v-model="invitationCode" class="_formBlock" type="text" :spellcheck="false" required>
+<form class="qlvuhzng _gaps_m" autocomplete="new-password" @submit.prevent="onSubmit">
+	<MkInput v-if="instance.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
 		<template #label>{{ i18n.ts.invitationCode }}</template>
 		<template #prefix><i class="ti ti-key"></i></template>
 	</MkInput>
-	<MkInput v-model="username" class="_formBlock" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-signup-username @update:model-value="onChangeUsername">
+	<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-signup-username @update:model-value="onChangeUsername">
 		<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="ti ti-question-circle"></i></div></template>
 		<template #prefix>@</template>
 		<template #suffix>@{{ host }}</template>
@@ -18,7 +18,7 @@
 			<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
 		</template>
 	</MkInput>
-	<MkInput v-if="instance.emailRequiredForSignup" v-model="email" class="_formBlock" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:model-value="onChangeEmail">
+	<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:model-value="onChangeEmail">
 		<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ti ti-question-circle"></i></div></template>
 		<template #prefix><i class="ti ti-mail"></i></template>
 		<template #caption>
@@ -33,7 +33,7 @@
 			<span v-else-if="emailState === 'error'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.error }}</span>
 		</template>
 	</MkInput>
-	<MkInput v-model="password" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password @update:model-value="onChangePassword">
+	<MkInput v-model="password" type="password" autocomplete="new-password" required data-cy-signup-password @update:model-value="onChangePassword">
 		<template #label>{{ i18n.ts.password }}</template>
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #caption>
@@ -42,7 +42,7 @@
 			<span v-if="passwordStrength == 'high'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.strongPassword }}</span>
 		</template>
 	</MkInput>
-	<MkInput v-model="retypedPassword" class="_formBlock" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:model-value="onChangePasswordRetype">
+	<MkInput v-model="retypedPassword" type="password" autocomplete="new-password" required data-cy-signup-password-retype @update:model-value="onChangePasswordRetype">
 		<template #label>{{ i18n.ts.password }} ({{ i18n.ts.retype }})</template>
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #caption>
@@ -50,17 +50,17 @@
 			<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.passwordNotMatched }}</span>
 		</template>
 	</MkInput>
-	<MkSwitch v-if="instance.tosUrl" v-model="ToSAgreement" class="_formBlock tou">
+	<MkSwitch v-if="instance.tosUrl" v-model="ToSAgreement" class="tou">
 		<I18n :src="i18n.ts.agreeTo">
 			<template #0>
 				<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.tos }}</a>
 			</template>
 		</I18n>
 	</MkSwitch>
-	<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="_formBlock captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
-	<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="_formBlock captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
-	<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" class="_formBlock captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
-	<MkButton class="_formBlock" type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ i18n.ts.start }}</MkButton>
+	<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
+	<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
+	<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" class="captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
+	<MkButton type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ i18n.ts.start }}</MkButton>
 </form>
 </template>
 

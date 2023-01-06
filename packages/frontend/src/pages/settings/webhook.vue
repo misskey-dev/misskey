@@ -1,15 +1,13 @@
 <template>
-<div class="_formRoot">
-	<FormSection>
-		<FormLink :to="`/settings/webhook/new`">
-			Create webhook
-		</FormLink>
-	</FormSection>
-	
+<div class="_gaps_m">
+	<FormLink :to="`/settings/webhook/new`">
+		Create webhook
+	</FormLink>
+
 	<FormSection>
 		<MkPagination :pagination="pagination">
 			<template #default="{items}">
-				<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`" class="_formBlock">
+				<FormLink v-for="webhook in items" :key="webhook.id" :to="`/settings/webhook/edit/${webhook.id}`" class="_margin">
 					<template #icon>
 						<i v-if="webhook.active === false" class="ti ti-player-pause"></i>
 						<i v-else-if="webhook.latestStatus === null" class="ti ti-circle"></i>

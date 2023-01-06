@@ -2,11 +2,11 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="file" :content-max="600" :margin-min="16" :margin-max="32">
-		<div v-if="tab === 'overview'" class="cxqhhsmd _formRoot">
-			<a class="_formBlock thumbnail" :href="file.url" target="_blank">
+		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
+			<a class="thumbnail" :href="file.url" target="_blank">
 				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 			</a>
-			<div class="_formBlock">
+			<div>
 				<MkKeyValue :copy="file.type" oneline style="margin: 1em 0;">
 					<template #key>MIME Type</template>
 					<template #value><span class="_monospace">{{ file.type }}</span></template>
@@ -31,29 +31,29 @@
 			<MkA v-if="file.user" class="user" :to="`/user-info/${file.user.id}`">
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
-			<div class="_formBlock">
+			<div>
 				<MkSwitch v-model="isSensitive" @update:model-value="toggleIsSensitive">NSFW</MkSwitch>
 			</div>
 
-			<div class="_formBlock">
+			<div>
 				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
-		<div v-else-if="tab === 'ip' && info" class="_formRoot">
+		<div v-else-if="tab === 'ip' && info" class="_gaps_m">
 			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
-			<MkKeyValue v-if="info.requestIp" class="_formBlock _monospace" :copy="info.requestIp" oneline>
+			<MkKeyValue v-if="info.requestIp" class="_monospace" :copy="info.requestIp" oneline>
 				<template #key>IP</template>
 				<template #value>{{ info.requestIp }}</template>
 			</MkKeyValue>
 			<FormSection v-if="info.requestHeaders">
 				<template #label>Headers</template>
-				<MkKeyValue v-for="(v, k) in info.requestHeaders" :key="k" class="_formBlock _monospace">
+				<MkKeyValue v-for="(v, k) in info.requestHeaders" :key="k" class="_monospace">
 					<template #key>{{ k }}</template>
 					<template #value>{{ v }}</template>
 				</MkKeyValue>
 			</FormSection>
 		</div>
-		<div v-else-if="tab === 'raw'" class="_formRoot">
+		<div v-else-if="tab === 'raw'" class="_gaps_m">
 			<MkObjectView v-if="info" tall :value="info">
 			</MkObjectView>
 		</div>

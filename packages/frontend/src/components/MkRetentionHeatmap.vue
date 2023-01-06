@@ -10,7 +10,6 @@
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { Chart } from 'chart.js';
-import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import * as os from '@/os';
@@ -40,7 +39,7 @@ async function renderChart() {
 	const wide = rootEl.offsetWidth > 600;
 	const narrow = rootEl.offsetWidth < 400;
 
-	const maxDays = wide ? 20 : narrow ? 7 : 14;
+	const maxDays = wide ? 15 : narrow ? 5 : 10;
 
 	const raw = await os.api('retention', { });
 

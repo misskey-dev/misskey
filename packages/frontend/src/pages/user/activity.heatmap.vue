@@ -1,7 +1,7 @@
 <template>
 <div ref="rootEl">
 	<MkLoading v-if="fetching"/>
-	<div v-else>
+	<div v-else :class="$style.root" class="_panel">
 		<canvas ref="chartEl"></canvas>
 	</div>
 </div>
@@ -10,7 +10,6 @@
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { Chart } from 'chart.js';
-import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
@@ -138,7 +137,9 @@ async function renderChart() {
 						round: 'week',
 						isoWeekday: 0,
 						displayFormats: {
-							week: 'MMM dd',
+							day: 'M/d',
+							month: 'Y/M',
+							week: 'M/d',
 						},
 					},
 					grid: {
@@ -204,3 +205,9 @@ onMounted(async () => {
 	renderChart();
 });
 </script>
+
+<style lang="scss" module>
+.root {
+	padding: 20px;
+}
+</style>

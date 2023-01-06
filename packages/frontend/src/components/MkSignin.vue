@@ -1,20 +1,20 @@
 <template>
-<form class="eppvobhk _monolithic_" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
-	<div class="auth _section _formRoot">
+<form class="eppvobhk" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
+	<div class="auth _gaps_m">
 		<div v-show="withAvatar" class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null, marginBottom: message ? '1.5em' : null }"></div>
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
-		<div v-if="!totpLogin" class="normal-signin">
-			<MkInput v-model="username" class="_formBlock" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required data-cy-signin-username @update:model-value="onUsernameChange">
+		<div v-if="!totpLogin" class="normal-signin _gaps_m">
+			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required data-cy-signin-username @update:model-value="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" class="_formBlock" :placeholder="i18n.ts.password" type="password" :with-password-toggle="true" required data-cy-signin-password>
+			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" :with-password-toggle="true" required data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkButton class="_formBlock" type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
+			<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
@@ -40,10 +40,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="social _section">
-		<a v-if="meta && meta.enableTwitterIntegration" class="_borderButton _gap" :href="`${apiUrl}/signin/twitter`"><i class="ti ti-brand-twitter" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
-		<a v-if="meta && meta.enableGithubIntegration" class="_borderButton _gap" :href="`${apiUrl}/signin/github`"><i class="ti ti-brand-github" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
-		<a v-if="meta && meta.enableDiscordIntegration" class="_borderButton _gap" :href="`${apiUrl}/signin/discord`"><i class="ti ti-brand-discord" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Discord' }) }}</a>
+	<div class="social">
+		<a v-if="meta && meta.enableTwitterIntegration" class="_borderButton _margin" :href="`${apiUrl}/signin/twitter`"><i class="ti ti-brand-twitter" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
+		<a v-if="meta && meta.enableGithubIntegration" class="_borderButton _margin" :href="`${apiUrl}/signin/github`"><i class="ti ti-brand-github" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
+		<a v-if="meta && meta.enableDiscordIntegration" class="_borderButton _margin" :href="`${apiUrl}/signin/discord`"><i class="ti ti-brand-discord" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Discord' }) }}</a>
 	</div>
 </form>
 </template>

@@ -1,13 +1,13 @@
 <template>
-<div class="_formRoot">
-	<FormInfo warn class="_formBlock">{{ i18n.ts._plugin.installWarn }}</FormInfo>
+<div class="_gaps_m">
+	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<FormTextarea v-model="code" tall class="_formBlock">
+	<FormTextarea v-model="code" tall>
 		<template #label>{{ i18n.ts.code }}</template>
 	</FormTextarea>
 
-	<div class="_formBlock">
-		<FormButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</FormButton>
+	<div>
+		<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
 </div>
 </template>
@@ -17,7 +17,7 @@ import { defineAsyncComponent, nextTick, ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
@@ -49,7 +49,7 @@ async function install() {
 			text: 'No language version annotation found :(',
 		});
 		return;
-	} else if (lv !== '0.12.0') {
+	} else if (!lv.startsWith('0.12.')) {
 		os.alert({
 			type: 'error',
 			text: `aiscript version '${lv}' is not supported :(`,

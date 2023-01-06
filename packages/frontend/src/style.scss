@@ -252,64 +252,32 @@ hr {
 	overflow: clip;
 }
 
-._block {
-	@extend ._panel;
-
-	& + ._block {
-		margin-top: var(--margin);
-	}
-}
-
-._gap {
+._margin {
 	margin: var(--margin) 0;
 }
 
-// TODO: 廃止
-._card {
-	@extend ._panel;
+._gaps_m {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5em;
+}
 
-	// TODO: _cardTitle に
-	> ._title {
-		margin: 0;
-		padding: 22px 32px;
-		font-size: 1em;
-		border-bottom: solid 1px var(--panelHeaderDivider);
-		font-weight: bold;
-		background: var(--panelHeaderBg);
-		color: var(--panelHeaderFg);
+._gaps_s {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75em;
+}
 
-		@media (max-width: 500px) {
-			padding: 16px;
-			font-size: 1em;
-		}
-	}
+._gaps {
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin);
+}
 
-	// TODO: _cardContent に
-	> ._content {
-		padding: 32px;
-
-		@media (max-width: 500px) {
-			padding: 16px;
-		}
-
-		&._noPad {
-			padding: 0 !important;
-		}
-
-		& + ._content {
-			border-top: solid 0.5px var(--divider);
-		}
-	}
-
-	// TODO: _cardFooter に
-	> ._footer {
-		border-top: solid 0.5px var(--divider);
-		padding: 24px 32px;
-
-		@media (max-width: 500px) {
-			padding: 16px;
-		}
-	}
+._buttons {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
 }
 
 ._borderButton {
@@ -333,55 +301,10 @@ hr {
 	contain: content;
 }
 
-// TODO: 廃止
-._monolithic_ {
-	._section:not(:empty) {
-		box-sizing: border-box;
-		padding: var(--root-margin, 32px);
-	
-		@media (max-width: 500px) {
-			--root-margin: 10px;
-		}
-	
-		& + ._section:not(:empty) {
-			border-top: solid 0.5px var(--divider);
-		}
-	}
-}
-
-._narrow_ ._card {
-	> ._title {
-		padding: 16px;
-		font-size: 1em;
-	}
-
-	> ._content {
-		padding: 16px;
-	}
-
-	> ._footer {
-		padding: 16px;
-	}
-}
-
 ._acrylic {
 	background: var(--acrylicPanel);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-}
-
-._formBlock {
-	margin: 1.5em 0;
-}
-
-._formRoot {
-	> ._formBlock:first-child {
-		margin-top: 0;
-	}
-
-	> ._formBlock:last-child {
-		margin-bottom: 0;
-	}
 }
 
 ._formLinksGrid {
@@ -534,7 +457,7 @@ hr {
 	transition: transform 0.1s ease;
 }
 
-@keyframes bounce{
+@keyframes bounce {
   0% {
     transform:  scaleX(0.90) scaleY(0.90) ;
   }

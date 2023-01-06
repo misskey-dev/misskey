@@ -3,8 +3,8 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="lcixvhis">
-			<div class="_section reports">
-				<div class="_content">
+			<div class="reports">
+				<div class="">
 					<div class="inputs" style="display: flex;">
 						<MkSelect v-model="state" style="margin: 0; flex: 1;">
 							<template #label>{{ i18n.ts.state }}</template>

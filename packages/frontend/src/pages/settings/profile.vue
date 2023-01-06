@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
@@ -8,37 +8,37 @@
 		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<FormInput v-model="profile.name" :max="30" manual-save class="_formBlock">
+	<FormInput v-model="profile.name" :max="30" manual-save>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</FormInput>
 
-	<FormTextarea v-model="profile.description" :max="500" tall manual-save class="_formBlock">
+	<FormTextarea v-model="profile.description" :max="500" tall manual-save>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
-	<FormInput v-model="profile.location" manual-save class="_formBlock">
+	<FormInput v-model="profile.location" manual-save>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</FormInput>
 
-	<FormInput v-model="profile.birthday" type="date" manual-save class="_formBlock">
+	<FormInput v-model="profile.birthday" type="date" manual-save>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
 	</FormInput>
 
-	<FormSelect v-model="profile.lang" class="_formBlock">
+	<FormSelect v-model="profile.lang">
 		<template #label>{{ i18n.ts.language }}</template>
 		<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
 	</FormSelect>
 
-	<FormSlot class="_formBlock">
+	<FormSlot>
 		<FormFolder>
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div class="_formRoot">
-				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
+			<div class="_gaps_m">
+				<FormSplit v-for="(record, i) in fields" :min-width="250">
 					<FormInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
 					</FormInput>
@@ -46,8 +46,10 @@
 						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
 					</FormInput>
 				</FormSplit>
-				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-				<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<div>
+					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				</div>
 			</div>
 		</FormFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -56,13 +58,13 @@
 	<FormFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
 
-		<div class="_formRoot">
-			<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
-			<FormSwitch v-model="profile.isBot" class="_formBlock">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></FormSwitch>
+		<div class="_gaps_m">
+			<FormSwitch v-model="profile.isCat">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
+			<FormSwitch v-model="profile.isBot">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></FormSwitch>
 		</div>
 	</FormFolder>
 
-	<FormSwitch v-model="profile.showTimelineReplies" class="_formBlock">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></FormSwitch>
+	<FormSwitch v-model="profile.showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></FormSwitch>
 </div>
 </template>
 

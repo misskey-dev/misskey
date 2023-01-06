@@ -1,15 +1,15 @@
 <template>
-<div class="_formRoot">
-	<FormButton primary class="_formBlock" @click="generateToken">{{ i18n.ts.generateAccessToken }}</FormButton>
-	<FormLink to="/settings/apps" class="_formBlock">{{ i18n.ts.manageAccessTokens }}</FormLink>
-	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null" class="_formBlock">API console</FormLink>
+<div class="_gaps_m">
+	<MkButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
+	<FormLink to="/settings/apps">{{ i18n.ts.manageAccessTokens }}</FormLink>
+	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

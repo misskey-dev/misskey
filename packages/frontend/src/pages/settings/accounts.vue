@@ -1,7 +1,7 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<FormSuspense :p="init">
-		<FormButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</FormButton>
+		<MkButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</MkButton>
 
 		<div v-for="account in accounts" :key="account.id" class="_panel _button lcjjdxlm" @click="menu(account, $event)">
 			<div class="avatar">
@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i } from '@/account';
 import { i18n } from '@/i18n';

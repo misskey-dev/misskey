@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="800">
 		<div class="mwysmxbg">
 			<div>{{ i18n.ts._mfm.intro }}</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.mention }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.mentionDescription }}</p>
@@ -14,7 +14,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.hashtag }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.hashtagDescription }}</p>
@@ -24,7 +24,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.url }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.urlDescription }}</p>
@@ -34,7 +34,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.link }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.linkDescription }}</p>
@@ -44,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.emoji }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.emojiDescription }}</p>
@@ -54,7 +54,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.bold }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.boldDescription }}</p>
@@ -64,7 +64,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.small }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.smallDescription }}</p>
@@ -74,7 +74,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.quote }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.quoteDescription }}</p>
@@ -84,7 +84,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.center }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.centerDescription }}</p>
@@ -94,7 +94,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.inlineCode }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.inlineCodeDescription }}</p>
@@ -104,7 +104,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.blockCode }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.blockCodeDescription }}</p>
@@ -114,7 +114,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.inlineMath }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.inlineMathDescription }}</p>
@@ -125,7 +125,7 @@
 				</div>
 			</div>
 			<!-- deprecated
-		<div class="section _block">
+		<div class="section">
 			<div class="title">{{ i18n.ts._mfm.search }}</div>
 			<div class="content">
 				<p>{{ i18n.ts._mfm.searchDescription }}</p>
@@ -136,7 +136,7 @@
 			</div>
 		</div>
 		-->
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.flip }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.flipDescription }}</p>
@@ -146,7 +146,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.font }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.fontDescription }}</p>
@@ -156,7 +156,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.x2 }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.x2Description }}</p>
@@ -166,7 +166,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.x3 }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.x3Description }}</p>
@@ -176,7 +176,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.x4 }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.x4Description }}</p>
@@ -186,7 +186,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.blur }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.blurDescription }}</p>
@@ -196,7 +196,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.jelly }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.jellyDescription }}</p>
@@ -206,7 +206,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.tada }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.tadaDescription }}</p>
@@ -216,7 +216,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.jump }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.jumpDescription }}</p>
@@ -226,7 +226,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.bounce }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.bounceDescription }}</p>
@@ -236,7 +236,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.spin }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.spinDescription }}</p>
@@ -246,7 +246,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.shake }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.shakeDescription }}</p>
@@ -256,7 +256,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.twitch }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.twitchDescription }}</p>
@@ -266,7 +266,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.rainbow }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.rainbowDescription }}</p>
@@ -276,7 +276,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.sparkle }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.sparkleDescription }}</p>
@@ -286,7 +286,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.rotate }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.rotateDescription }}</p>
@@ -296,7 +296,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="section _block">
+			<div class="section">
 				<div class="title">{{ i18n.ts._mfm.plain }}</div>
 				<div class="content">
 					<p>{{ i18n.ts._mfm.plainDescription }}</p>
