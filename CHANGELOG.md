@@ -21,6 +21,8 @@ You should also include the user name that made the change.
 ### Changes
 #### For server admins
 - Node.js 18.x or later is required
+- PostgreSQL 15.x is required
+	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
