@@ -362,7 +362,7 @@ export class ClientServerService {
 			const name = meta.name || 'Misskey';
 			let content = '';
 			content += '<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">';
-			content += `<ShortName>${name} Search</ShortName>`;
+			content += `<ShortName>${name}</ShortName>`;
 			content += `<Description>${name} Search</Description>`;
 			content += '<InputEncoding>UTF-8</InputEncoding>';
 			content += `<Image width="16" height="16" type="image/x-icon">${this.config.url}/favicon.ico</Image>`;
