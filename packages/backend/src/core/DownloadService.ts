@@ -94,7 +94,7 @@ export class DownloadService {
 
 	@bindThis
 	public async downloadUrl(url: string, path: string): Promise<void> {
-		await this.pipeRequestToFile(this.gotUrl(url), path);
+		await this.pipeRequestToFile(this.fetchUrl(url), path);
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 
