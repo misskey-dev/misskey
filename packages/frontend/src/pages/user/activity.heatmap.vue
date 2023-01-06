@@ -1,7 +1,7 @@
 <template>
 <div ref="rootEl">
 	<MkLoading v-if="fetching"/>
-	<div v-else>
+	<div v-else :class="$style.root" class="_panel">
 		<canvas ref="chartEl"></canvas>
 	</div>
 </div>
@@ -205,3 +205,9 @@ onMounted(async () => {
 	renderChart();
 });
 </script>
+
+<style lang="scss" module>
+.root {
+	padding: 20px;
+}
+</style>
