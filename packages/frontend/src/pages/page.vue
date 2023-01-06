@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="700">
 		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="page" :key="page.id" class="xcukqgmh">
-				<div class="_block main">
+				<div class="main">
 					<!--
 				<div class="header">
 					<h1>{{ page.title }}</h1>

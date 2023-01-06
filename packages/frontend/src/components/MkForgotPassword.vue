@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="370"
 	:height="400"
@@ -9,7 +9,7 @@
 	<template #header>{{ i18n.ts.forgotPassword }}</template>
 
 	<form v-if="instance.enableEmail" class="bafeceda" @submit.prevent="onSubmit">
-		<div class="main _autoGap">
+		<div class="main _gaps_m">
 			<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
 				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>
@@ -29,12 +29,12 @@
 	<div v-else class="bafecedb">
 		{{ i18n.ts._forgotPassword.contactAdmin }}
 	</div>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
@@ -46,7 +46,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let dialog: InstanceType<typeof XModalWindow> = $ref();
+let dialog: InstanceType<typeof MkModalWindow> = $ref();
 
 let username = $ref('');
 let email = $ref('');

@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSwitch v-model="$i.injectFeaturedNote" @update:model-value="onChangeInjectFeaturedNote">
 		{{ i18n.ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>

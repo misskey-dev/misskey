@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<div :class="$style.buttons">
 		<MkButton inline primary @click="saveNew">{{ ts._preferencesBackups.saveNew }}</MkButton>
 		<MkButton inline @click="loadFile">{{ ts._preferencesBackups.loadFile }}</MkButton>
@@ -8,7 +8,7 @@
 	<FormSection>
 		<template #label>{{ ts._preferencesBackups.list }}</template>
 		<template v-if="profiles && Object.keys(profiles).length > 0">
-			<div class="_autoGap_half">
+			<div class="_gaps_s">
 				<div
 					v-for="(profile, id) in profiles"
 					:key="id"

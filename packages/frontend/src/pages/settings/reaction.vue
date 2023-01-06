@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FromSlot>
 		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
 		<div v-panel style="border-radius: 6px;">
@@ -45,9 +45,9 @@
 	</FormSwitch>
 
 	<FormSection>
-		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<FormButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
-			<FormButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
+		<div class="_buttons">
+			<MkButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+			<MkButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 		</div>
 	</FormSection>
 </div>
@@ -59,7 +59,7 @@ import Sortable from 'vuedraggable';
 import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';

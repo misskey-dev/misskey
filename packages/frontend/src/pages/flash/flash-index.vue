@@ -4,20 +4,26 @@
 	<MkSpacer :content-max="700">
 		<div v-if="tab === 'featured'" class="">
 			<MkPagination v-slot="{items}" :pagination="featuredFlashsPagination">
-				<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
+				<div class="_gaps_s">
+					<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
+				</div>
 			</MkPagination>
 		</div>
 
 		<div v-else-if="tab === 'my'" class="my">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
-				<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
+				<div class="_gaps_s">
+					<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
+				</div>
 			</MkPagination>
 		</div>
 
 		<div v-else-if="tab === 'liked'" class="">
 			<MkPagination v-slot="{items}" :pagination="likedFlashsPagination">
-				<MkFlashPreview v-for="like in items" :key="like.flash.id" class="" :flash="like.flash"/>
+				<div class="_gaps_s">
+					<MkFlashPreview v-for="like in items" :key="like.flash.id" class="" :flash="like.flash"/>
+				</div>
 			</MkPagination>
 		</div>
 	</MkSpacer>

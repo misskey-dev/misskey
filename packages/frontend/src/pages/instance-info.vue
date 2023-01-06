@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="instance" :content-max="600" :margin-min="16" :margin-max="32">
-		<div v-if="tab === 'overview'" class="_autoGap">
+		<div v-if="tab === 'overview'" class="_gaps_m">
 			<div class="fnfelxur">
 				<img :src="faviconUrl" alt="" class="icon"/>
 				<span class="name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
@@ -28,7 +28,7 @@
 
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
-				<div class="_autoGap_half">
+				<div class="_gaps_s">
 					<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
 					<FormSwitch v-model="isBlocked" @update:model-value="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
 					<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
@@ -70,7 +70,7 @@
 				<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
 			</FormSection>
 		</div>
-		<div v-else-if="tab === 'chart'" class="_autoGap">
+		<div v-else-if="tab === 'chart'" class="_gaps_m">
 			<div class="cmhjzshl">
 				<div class="selects">
 					<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -95,14 +95,14 @@
 				</div>
 			</div>
 		</div>
-		<div v-else-if="tab === 'users'" class="_autoGap">
+		<div v-else-if="tab === 'users'" class="_gaps_m">
 			<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
 				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/user-info/${user.id}`">
 					<MkUserCardMini :user="user"/>
 				</MkA>
 			</MkPagination>
 		</div>
-		<div v-else-if="tab === 'raw'" class="_autoGap">
+		<div v-else-if="tab === 'raw'" class="_gaps_m">
 			<MkObjectView tall :value="instance">
 			</MkObjectView>
 		</div>

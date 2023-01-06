@@ -1,6 +1,6 @@
 <template>
 <FormSuspense :p="init">
-	<div class="_autoGap">
+	<div class="_gaps_m">
 		<FormSwitch v-model="enableGithubIntegration">
 			<template #label>{{ i18n.ts.enable }}</template>
 		</FormSwitch>
@@ -19,7 +19,7 @@
 			</FormInput>
 		</template>
 
-		<FormButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+		<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </FormSuspense>
 </template>
@@ -28,7 +28,7 @@
 import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';

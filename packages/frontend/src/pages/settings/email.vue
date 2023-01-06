@@ -1,6 +1,6 @@
 <template>
-<div class="_autoGap">
-	<FormSection>
+<div class="_gaps_m">
+	<FormSection first>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
 		<FormInput v-model="emailAddress" type="email" manual-save>
 			<template #prefix><i class="ti ti-mail"></i></template>
@@ -18,7 +18,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.emailNotification }}</template>
 
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormSwitch v-model="emailNotification_mention">
 				{{ i18n.ts._notification._types.mention }}
 			</FormSwitch>

@@ -1,7 +1,7 @@
 <template>
 <form class="mk-setup" @submit.prevent="submit()">
 	<h1>Welcome to Misskey!</h1>
-	<div class="_autoGap">
+	<div class="_gaps_m">
 		<p>{{ $ts.intro }}</p>
 		<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
 			<template #label>{{ $ts.username }}</template>

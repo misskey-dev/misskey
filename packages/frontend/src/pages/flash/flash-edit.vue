@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
 			</MkInput>
@@ -12,7 +12,7 @@
 			<MkTextarea v-model="script" class="_monospace" tall spellcheck="false">
 				<template #label>{{ i18n.ts._play.script }}</template>
 			</MkTextarea>
-			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<div class="_buttons">
 				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 			</div>

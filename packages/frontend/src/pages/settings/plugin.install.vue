@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
 	<FormTextarea v-model="code" tall>
@@ -7,7 +7,7 @@
 	</FormTextarea>
 
 	<div>
-		<FormButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</FormButton>
+		<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
 </div>
 </template>
@@ -17,7 +17,7 @@ import { defineAsyncComponent, nextTick, ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';

@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSwitch v-model="isLocked" @update:model-value="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></FormSwitch>
 	<FormSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:model-value="save()">{{ i18n.ts.autoAcceptFollowed }}</FormSwitch>
 
@@ -30,7 +30,7 @@
 	</FormSwitch>
 
 	<FormSection>
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<FormSwitch v-model="rememberNoteVisibility" @update:model-value="save()">{{ i18n.ts.rememberNoteVisibility }}</FormSwitch>
 			<FormFolder v-if="!rememberNoteVisibility">
 				<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
@@ -39,7 +39,7 @@
 				<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
 				<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
 
-				<div class="_autoGap">
+				<div class="_gaps_m">
 					<FormSelect v-model="defaultNoteVisibility">
 						<option value="public">{{ i18n.ts._visibility.public }}</option>
 						<option value="home">{{ i18n.ts._visibility.home }}</option>

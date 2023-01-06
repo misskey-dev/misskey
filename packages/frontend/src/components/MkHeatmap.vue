@@ -10,7 +10,6 @@
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { Chart } from 'chart.js';
-import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import * as os from '@/os';
@@ -149,7 +148,9 @@ async function renderChart() {
 						round: 'week',
 						isoWeekday: 0,
 						displayFormats: {
-							week: 'MMM dd',
+							day: 'M/d',
+							month: 'Y/M',
+							week: 'M/d',
 						},
 					},
 					grid: {

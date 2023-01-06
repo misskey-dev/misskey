@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSelect v-model="statusbar.type" placeholder="Please select">
 		<template #label>{{ i18n.ts.type }}</template>
 		<option value="rss">RSS</option>
@@ -74,8 +74,8 @@
 		</MkSwitch>
 	</template>
 
-	<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton danger @click="del">{{ i18n.ts.remove }}</FormButton>
+	<div class="_buttons">
+		<MkButton danger @click="del">{{ i18n.ts.remove }}</MkButton>
 	</div>
 </div>
 </template>
@@ -86,7 +86,7 @@ import FormSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormRange from '@/components/form/range.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';

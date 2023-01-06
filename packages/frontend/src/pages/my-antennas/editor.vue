@@ -1,7 +1,7 @@
 <template>
 <MkSpacer :content-max="700">
 	<div class="shaynizk">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>

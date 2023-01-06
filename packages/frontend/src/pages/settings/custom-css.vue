@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
 
 	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">

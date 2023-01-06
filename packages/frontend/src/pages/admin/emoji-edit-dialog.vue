@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="370"
 	:with-ok-button="true"
@@ -10,7 +10,7 @@
 	<template #header>:{{ emoji.name }}:</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="yigymqpb _autoGap">
+		<div class="yigymqpb _gaps_m">
 			<img :src="`/emoji/${emoji.name}.webp`" class="img"/>
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
@@ -25,12 +25,12 @@
 			<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';

@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
-		<div class="cwepdizn _autoGap">
+		<div class="cwepdizn _gaps_m">
 			<FormFolder :default-open="true">
 				<template #label>{{ i18n.ts.backgroundColor }}</template>
 				<div class="cwepdizn-colors">
@@ -45,18 +45,18 @@
 				<template #icon><i class="ti ti-code"></i></template>
 				<template #label>{{ i18n.ts.editCode }}</template>
 
-				<div class="_autoGap">
+				<div class="_gaps_m">
 					<FormTextarea v-model="themeCode" tall>
 						<template #label>{{ i18n.ts._theme.code }}</template>
 					</FormTextarea>
-					<FormButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</FormButton>
+					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
 				</div>
 			</FormFolder>
 
 			<FormFolder :default-open="false">
 				<template #label>{{ i18n.ts.addDescription }}</template>
 
-				<div class="_autoGap">
+				<div class="_gaps_m">
 					<FormTextarea v-model="description">
 						<template #label>{{ i18n.ts._theme.description }}</template>
 					</FormTextarea>
@@ -74,7 +74,7 @@ import tinycolor from 'tinycolor2';
 import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormFolder from '@/components/form/folder.vue';
 

@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="450"
 	:can-close="false"
@@ -15,7 +15,7 @@
 	</template>
 
 	<MkSpacer :margin-min="20" :margin-max="32">
-		<div class="xkpnjxcv _autoGap">
+		<div class="xkpnjxcv _gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 				<FormInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
@@ -51,7 +51,7 @@
 			</template>
 		</div>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts">
@@ -63,11 +63,11 @@ import FormSelect from './form/select.vue';
 import FormRange from './form/range.vue';
 import MkButton from './MkButton.vue';
 import FormRadios from './form/radios.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 
 export default defineComponent({
 	components: {
-		XModalWindow,
+		MkModalWindow,
 		FormInput,
 		FormTextarea,
 		FormSwitch,

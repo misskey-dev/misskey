@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<MkInfo>{{ i18n.ts._instanceMute.title }}</MkInfo>
 	<FormTextarea v-model="instanceMutes">
 		<template #label>{{ i18n.ts._instanceMute.heading }}</template>

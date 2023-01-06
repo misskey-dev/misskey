@@ -1,9 +1,9 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSection v-if="!fetching" first>
 		<template #label>{{ i18n.ts.usageAmount }}</template>
 
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<div class="uawsfosz">
 				<div class="meter"><div :style="meterStyle"></div></div>
 			</div>
@@ -26,7 +26,7 @@
 	</FormSection>
 
 	<FormSection>
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<FormLink @click="chooseUploadFolder()">
 				{{ i18n.ts.uploadFolder }}
 				<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>

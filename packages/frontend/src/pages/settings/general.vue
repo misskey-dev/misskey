@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSelect v-model="lang">
 		<template #label>{{ i18n.ts.uiLanguage }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
@@ -25,8 +25,8 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.behavior }}</template>
 
-		<div class="_autoGap">
-			<div class="_autoGap_half">
+		<div class="_gaps_m">
+			<div class="_gaps_s">
 				<FormSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</FormSwitch>
 				<FormSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</FormSwitch>
 				<FormSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</FormSwitch>
@@ -43,8 +43,8 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.appearance }}</template>
 
-		<div class="_autoGap">
-			<div class="_autoGap_half">
+		<div class="_gaps_m">
+			<div class="_gaps_s">
 				<FormSwitch v-model="disableAnimatedMfm">{{ i18n.ts.disableAnimatedMfm }}</FormSwitch>
 				<FormSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</FormSwitch>
 				<FormSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</FormSwitch>

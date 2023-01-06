@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div v-if="tab === 'overview'" class="_autoGap">
+			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="aeakzknw">
 					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 					<div class="body">
@@ -55,7 +55,7 @@
 				<FormSection>
 					<template #label>ActivityPub</template>
 
-					<div class="_autoGap">
+					<div class="_gaps_m">
 						<div style="display: flex; flex-direction: column; gap: 1em;">
 							<MkKeyValue v-if="user.host" oneline>
 								<template #key>{{ i18n.ts.instanceInfo }}</template>
@@ -75,7 +75,7 @@
 							</MkKeyValue>
 						</div>
 
-						<FormButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</FormButton>
+						<MkButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</MkButton>
 
 						<FormFolder>
 							<template #label>Raw</template>
@@ -86,14 +86,14 @@
 					</div>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'moderation'" class="_autoGap">
+			<div v-else-if="tab === 'moderation'" class="_gaps_m">
 				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
 				<FormSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
 				<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div>
-					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</FormButton>
-					<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</FormButton>
+					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
 				<FormTextarea v-model="moderationNote" manual-save>
 					<template #label>Moderation note</template>
@@ -126,7 +126,7 @@
 					</FormInput>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'chart'" class="_autoGap">
+			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
 					<div class="selects">
 						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -141,7 +141,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else-if="tab === 'raw'" class="_autoGap">
+			<div v-else-if="tab === 'raw'" class="_gaps_m">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
 
@@ -162,7 +162,7 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';

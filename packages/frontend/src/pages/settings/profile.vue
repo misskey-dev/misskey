@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
@@ -37,7 +37,7 @@
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div class="_autoGap">
+			<div class="_gaps_m">
 				<FormSplit v-for="(record, i) in fields" :min-width="250">
 					<FormInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
@@ -58,7 +58,7 @@
 	<FormFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
 
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<FormSwitch v-model="profile.isCat">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
 			<FormSwitch v-model="profile.isBot">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></FormSwitch>
 		</div>

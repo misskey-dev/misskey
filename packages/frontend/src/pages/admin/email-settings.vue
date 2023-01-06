@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_autoGap">
+			<div class="_gaps_m">
 				<FormSwitch v-model="enableEmail">
 					<template #label>{{ i18n.ts.enableEmail }} ({{ i18n.ts.recommended }})</template>
 					<template #caption>{{ i18n.ts.emailConfigInfo }}</template>
@@ -17,7 +17,7 @@
 					<FormSection>
 						<template #label>{{ i18n.ts.smtpConfig }}</template>
 
-						<div class="_autoGap">
+						<div class="_gaps_m">
 							<FormSplit :min-width="280">
 								<FormInput v-model="smtpHost">
 									<template #label>{{ i18n.ts.smtpHost }}</template>

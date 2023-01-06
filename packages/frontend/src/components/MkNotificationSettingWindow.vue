@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="400"
 	:height="450"
@@ -12,7 +12,7 @@
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<template v-if="showGlobalToggle">
 				<MkSwitch v-model="useGlobalSetting">
 					{{ i18n.ts.useGlobalSetting }}
@@ -21,7 +21,7 @@
 			</template>
 			<template v-if="!useGlobalSetting">
 				<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
-				<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+				<div class="_buttons">
 					<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 					<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 				</div>
@@ -29,7 +29,7 @@
 			</template>
 		</div>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
@@ -38,7 +38,7 @@ import { notificationTypes } from 'misskey-js';
 import MkSwitch from './form/switch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
 const emit = defineEmits<{
@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<{
 
 let includingTypes = $computed(() => props.includingTypes || []);
 
-const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
 let typesMap = $ref<Record<typeof notificationTypes[number], boolean>>({});
 let useGlobalSetting = $ref((includingTypes === null || includingTypes.length === 0) && props.showGlobalToggle);

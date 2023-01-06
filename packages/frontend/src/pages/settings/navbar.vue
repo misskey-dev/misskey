@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormTextarea v-model="items" tall manual-save>
 		<template #label>{{ i18n.ts.navbar }}</template>
 		<template #caption><button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button></template>
@@ -13,7 +13,7 @@
 		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ i18n.ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</FormRadios>
 
-	<FormButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
+	<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 </div>
 </template>
 
@@ -21,7 +21,7 @@
 import { computed, ref, watch } from 'vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store';

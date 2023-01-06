@@ -10,7 +10,6 @@
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { Chart } from 'chart.js';
-import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
@@ -113,11 +112,6 @@ async function renderChart() {
 						display: true,
 						maxRotation: 0,
 						autoSkipPadding: 8,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 				},
 				y: {

@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">

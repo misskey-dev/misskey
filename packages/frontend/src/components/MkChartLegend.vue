@@ -72,4 +72,11 @@ defineExpose({
 		}
 	}
 }
+
+@container (max-width: 500px) {
+	.root {
+		font-size: 90%;
+		gap: 6px;
+	}
+}
 </style>

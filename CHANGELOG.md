@@ -11,9 +11,18 @@ You should also include the user name that made the change.
 
 ## 13.0.0 (unreleased)
 
+### TL;DR
+- New features (Play, new widgets, new charts, etc)
+- Rewriten backend
+- Better performance (backend and frontend)
+- Various usability improvements
+- Various UI tweaks
+
 ### Changes
-#### For sabakans
+#### For server admins
 - Node.js 18.x or later is required
+- PostgreSQL 15.x is required
+	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
@@ -27,8 +36,9 @@ You should also include the user name that made the change.
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
 	- 0.12.1未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
+- Firefox109以下はサポートされなくなりました
 
-#### For developers
+#### For app developers
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
@@ -70,6 +80,7 @@ You should also include the user name that made the change.
 - Client: add user list widget @syuilo
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
+- Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
