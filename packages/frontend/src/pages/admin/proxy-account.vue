@@ -9,7 +9,7 @@
 				<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : i18n.ts.none }}</template>
 			</MkKeyValue>
 
-			<FormButton primary @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</FormButton>
+			<MkButton primary @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</MkButton>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';

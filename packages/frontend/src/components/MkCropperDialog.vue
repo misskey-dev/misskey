@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialogEl"
 	:width="800"
 	:height="500"
@@ -22,7 +22,7 @@
 			</div>
 		</div>
 	</template>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
@@ -30,7 +30,7 @@ import { nextTick, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
@@ -50,7 +50,7 @@ const props = defineProps<{
 }>();
 
 const imgUrl = getProxiedImageUrl(props.file.url);
-let dialogEl = $shallowRef<InstanceType<typeof XModalWindow>>();
+let dialogEl = $shallowRef<InstanceType<typeof MkModalWindow>>();
 let imgEl = $shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;
 let loading = $ref(true);

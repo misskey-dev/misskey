@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="370"
 	:height="400"
@@ -29,12 +29,12 @@
 	<div v-else class="bafecedb">
 		{{ i18n.ts._forgotPassword.contactAdmin }}
 	</div>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
@@ -46,7 +46,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let dialog: InstanceType<typeof XModalWindow> = $ref();
+let dialog: InstanceType<typeof MkModalWindow> = $ref();
 
 let username = $ref('');
 let email = $ref('');

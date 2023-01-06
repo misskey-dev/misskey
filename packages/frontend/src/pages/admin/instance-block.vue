@@ -8,7 +8,7 @@
 				<template #caption>{{ i18n.ts.blockedInstancesDescription }}</template>
 			</FormTextarea>
 
-			<FormButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+			<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';

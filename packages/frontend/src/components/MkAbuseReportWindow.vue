@@ -8,14 +8,14 @@
 			</template>
 		</I18n>
 	</template>
-	<div class="dpvffvvy _monolithic_">
-		<div class="_section">
+	<div class="dpvffvvy _autoGap">
+		<div class="">
 			<MkTextarea v-model="comment">
 				<template #label>{{ i18n.ts.details }}</template>
 				<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
 			</MkTextarea>
 		</div>
-		<div class="_section">
+		<div class="">
 			<MkButton primary full :disabled="comment.length === 0" @click="send">{{ i18n.ts.send }}</MkButton>
 		</div>
 	</div>

@@ -75,7 +75,7 @@
 							</MkKeyValue>
 						</div>
 
-						<FormButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</FormButton>
+						<MkButton v-if="user.host != null" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</MkButton>
 
 						<FormFolder>
 							<template #label>Raw</template>
@@ -92,8 +92,8 @@
 				<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div>
-					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</FormButton>
-					<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</FormButton>
+					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
 				<FormTextarea v-model="moderationNote" manual-save>
 					<template #label>Moderation note</template>
@@ -162,7 +162,7 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';

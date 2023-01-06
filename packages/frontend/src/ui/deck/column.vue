@@ -1,7 +1,7 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 <section
-	v-hotkey="keymap" class="dnpfarvg _narrow_"
+	v-hotkey="keymap" class="dnpfarvg"
 	:class="{ paged: isMainColumn, naked, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"

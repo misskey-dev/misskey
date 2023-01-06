@@ -8,7 +8,7 @@
 				<template #label>{{ i18n.ts.newPassword }}</template>
 			</FormInput>
 		
-			<FormButton primary @click="save">{{ i18n.ts.save }}</FormButton>
+			<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted } from 'vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';

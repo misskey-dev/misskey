@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="370"
 	:with-ok-button="true"
@@ -25,12 +25,12 @@
 			<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';

@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="400"
 	:height="450"
@@ -23,14 +23,14 @@
 				</MkInput>
 			</div>
 			<div><b>{{ $ts.permission }}</b></div>
-			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<div class="_buttons">
 				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
 			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
 		</div>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
@@ -40,7 +40,7 @@ import MkInput from './form/input.vue';
 import MkSwitch from './form/switch.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
@@ -60,7 +60,7 @@ const emit = defineEmits<{
 	(ev: 'done', result: { name: string | null, permissions: string[] }): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 let name = $ref(props.initialName);
 let permissions = $ref({});
 

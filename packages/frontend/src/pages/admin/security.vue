@@ -54,7 +54,7 @@
 						</FormSwitch>
 						-->
 
-						<FormButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</FormFolder>
 
@@ -92,7 +92,7 @@
 							<template #label>Summaly Proxy URL</template>
 						</FormInput>
 
-						<FormButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</FormFolder>
 			</div>
@@ -112,7 +112,7 @@ import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormRange from '@/components/form/range.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';

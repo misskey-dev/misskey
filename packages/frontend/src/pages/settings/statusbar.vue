@@ -5,7 +5,7 @@
 		<template #suffix>{{ x.name }}</template>
 		<XStatusbar :_id="x.id" :user-lists="userLists"/>
 	</FormFolder>
-	<FormButton primary @click="add">{{ i18n.ts.add }}</FormButton>
+	<MkButton primary @click="add">{{ i18n.ts.add }}</MkButton>
 </div>
 </template>
 
@@ -15,7 +15,7 @@ import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormFolder from '@/components/form/folder.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';

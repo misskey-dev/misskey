@@ -252,15 +252,6 @@ hr {
 	overflow: clip;
 }
 
-// TODO: 廃止
-._block {
-	@extend ._panel;
-
-	& + ._block {
-		margin-top: var(--margin);
-	}
-}
-
 ._margin {
 	margin: var(--margin) 0;
 }
@@ -277,52 +268,10 @@ hr {
 	gap: 0.75em;
 }
 
-// TODO: 廃止
-._card {
-	@extend ._panel;
-
-	// TODO: _cardTitle に
-	> ._title {
-		margin: 0;
-		padding: 22px 32px;
-		font-size: 1em;
-		border-bottom: solid 1px var(--panelHeaderDivider);
-		font-weight: bold;
-		background: var(--panelHeaderBg);
-		color: var(--panelHeaderFg);
-
-		@media (max-width: 500px) {
-			padding: 16px;
-			font-size: 1em;
-		}
-	}
-
-	// TODO: _cardContent に
-	> ._content {
-		padding: 32px;
-
-		@media (max-width: 500px) {
-			padding: 16px;
-		}
-
-		&._noPad {
-			padding: 0 !important;
-		}
-
-		& + ._content {
-			border-top: solid 0.5px var(--divider);
-		}
-	}
-
-	// TODO: _cardFooter に
-	> ._footer {
-		border-top: solid 0.5px var(--divider);
-		padding: 24px 32px;
-
-		@media (max-width: 500px) {
-			padding: 16px;
-		}
-	}
+._buttons {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
 }
 
 ._borderButton {
@@ -344,37 +293,6 @@ hr {
 	background: var(--popup);
 	border-radius: var(--radius);
 	contain: content;
-}
-
-// TODO: 廃止
-._monolithic_ {
-	._section:not(:empty) {
-		box-sizing: border-box;
-		padding: var(--root-margin, 32px);
-	
-		@media (max-width: 500px) {
-			--root-margin: 10px;
-		}
-	
-		& + ._section:not(:empty) {
-			border-top: solid 0.5px var(--divider);
-		}
-	}
-}
-
-._narrow_ ._card {
-	> ._title {
-		padding: 16px;
-		font-size: 1em;
-	}
-
-	> ._content {
-		padding: 16px;
-	}
-
-	> ._footer {
-		padding: 16px;
-	}
 }
 
 ._acrylic {

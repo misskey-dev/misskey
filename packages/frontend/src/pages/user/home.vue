@@ -9,7 +9,7 @@
 			<div class="profile">
 				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
 
-				<div :key="user.id" class="_block main">
+				<div :key="user.id" class="main">
 					<div class="banner-container" :style="style">
 						<div ref="bannerEl" class="banner" :style="style"></div>
 						<div class="fade"></div>
@@ -87,7 +87,7 @@
 
 			<div class="contents">
 				<div v-if="user.pinnedNotes.length > 0" class="_margin">
-					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
+					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note" :note="note" :pinned="true"/>
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">

@@ -52,7 +52,7 @@
 				</FormSlot>
 			</template>
 
-			<FormButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+			<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</div>
 	</FormSuspense>
 </div>
@@ -62,7 +62,7 @@
 import { defineAsyncComponent } from 'vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';

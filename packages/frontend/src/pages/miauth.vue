@@ -1,32 +1,32 @@
 <template>
 <MkSpacer :content-max="800">
 	<div v-if="$i">
-		<div v-if="state == 'waiting'" class="waiting _section">
-			<div class="_content">
+		<div v-if="state == 'waiting'" class="waiting">
+			<div class="">
 				<MkLoading/>
 			</div>
 		</div>
-		<div v-if="state == 'denied'" class="denied _section">
-			<div class="_content">
+		<div v-if="state == 'denied'" class="denied">
+			<div class="">
 				<p>{{ i18n.ts._auth.denied }}</p>
 			</div>
 		</div>
-		<div v-else-if="state == 'accepted'" class="accepted _section">
-			<div class="_content">
+		<div v-else-if="state == 'accepted'" class="accepted">
+			<div class="">
 				<p v-if="callback">{{ i18n.ts._auth.callback }}<MkEllipsis/></p>
 				<p v-else>{{ i18n.ts._auth.pleaseGoBack }}</p>
 			</div>
 		</div>
-		<div v-else class="_section">
-			<div v-if="name" class="_title">{{ $t('_auth.shareAccess', { name: name }) }}</div>
-			<div v-else class="_title">{{ i18n.ts._auth.shareAccessAsk }}</div>
-			<div class="_content">
+		<div v-else class="">
+			<div v-if="name" class="">{{ $t('_auth.shareAccess', { name: name }) }}</div>
+			<div v-else class="">{{ i18n.ts._auth.shareAccessAsk }}</div>
+			<div class="">
 				<p>{{ i18n.ts._auth.permissionAsk }}</p>
 				<ul>
 					<li v-for="p in _permissions" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 				</ul>
 			</div>
-			<div class="_footer">
+			<div class="">
 				<MkButton inline @click="deny">{{ i18n.ts.cancel }}</MkButton>
 				<MkButton inline primary @click="accept">{{ i18n.ts.accept }}</MkButton>
 			</div>

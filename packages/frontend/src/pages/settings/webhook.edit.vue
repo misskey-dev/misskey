@@ -29,8 +29,8 @@
 
 	<FormSwitch v-model="active">Active</FormSwitch>
 
-	<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</FormButton>
+	<div class="_buttons">
+		<MkButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
@@ -40,7 +40,7 @@ import { } from 'vue';
 import FormInput from '@/components/form/input.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

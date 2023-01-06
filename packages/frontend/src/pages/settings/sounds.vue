@@ -16,7 +16,7 @@
 		</div>
 	</FormSection>
 
-	<FormButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
+	<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 </div>
 </template>
 
@@ -24,7 +24,7 @@
 import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import FormRange from '@/components/form/range.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormFolder from '@/components/form/folder.vue';

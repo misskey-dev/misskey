@@ -22,7 +22,7 @@
 				<template #value>{{ plugin.permission }}</template>
 			</MkKeyValue>
 
-			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<div class="_buttons">
 				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
 				<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 			</div>

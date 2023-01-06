@@ -1,6 +1,6 @@
 <template>
-<div class="_card">
-	<div class="_content">
+<div class="">
+	<div class="">
 		<MkInput v-model="text">
 			<template #label>Text</template>
 		</MkInput>
@@ -15,10 +15,10 @@
 		<MkButton inline>This is</MkButton>
 		<MkButton inline primary>the button</MkButton>
 	</div>
-	<div class="_content" style="pointer-events: none;">
+	<div class="" style="pointer-events: none;">
 		<Mfm :text="mfm"/>
 	</div>
-	<div class="_content">
+	<div class="">
 		<MkButton inline primary @click="openMenu">Open menu</MkButton>
 		<MkButton inline primary @click="openDialog">Open dialog</MkButton>
 		<MkButton inline primary @click="openForm">Open form</MkButton>

@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="450"
 	:can-close="false"
@@ -51,7 +51,7 @@
 			</template>
 		</div>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts">
@@ -63,11 +63,11 @@ import FormSelect from './form/select.vue';
 import FormRange from './form/range.vue';
 import MkButton from './MkButton.vue';
 import FormRadios from './form/radios.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 
 export default defineComponent({
 	components: {
-		XModalWindow,
+		MkModalWindow,
 		FormInput,
 		FormTextarea,
 		FormSwitch,

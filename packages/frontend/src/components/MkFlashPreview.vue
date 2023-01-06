@@ -1,5 +1,5 @@
 <template>
-<MkA :to="`/play/${flash.id}`" class="vhpxefrk _block" tabindex="-1">
+<MkA :to="`/play/${flash.id}`" class="vhpxefrk" tabindex="-1">
 	<article>
 		<header>
 			<h1 :title="flash.title">{{ flash.title }}</h1>
