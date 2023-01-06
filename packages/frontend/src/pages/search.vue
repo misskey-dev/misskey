@@ -12,11 +12,33 @@ import { computed } from 'vue';
 import XNotes from '@/components/MkNotes.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os';
+import { mainRouter } from '@/router';
 
 const props = defineProps<{
 	query: string;
 	channel?: string;
 }>();
+
+const query = props.query;
+
+if (localStorage.getItem('account') != null) {
+	if (query.startsWith('https://') || (query.startsWith('@') && !query.includes(' '))) {
+		const promise = os.api('ap/show', {
+			uri: props.query,
+		});
+
+		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+
+		const res = await promise;
+
+		if (res.type === 'User') {
+			mainRouter.replace(`/@${res.object.username}@${res.object.host}`);
+		} else if (res.type === 'Note') {
+			mainRouter.replace(`/notes/${res.object.id}`);
+		}
+	}
+}
 
 const pagination = {
 	endpoint: 'notes/search' as const,
