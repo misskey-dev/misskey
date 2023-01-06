@@ -26,7 +26,9 @@ const whatIsNew = () => {
 };
 
 onMounted(() => {
-	confetti();
+	confetti({
+		duration: 1000 * 3,
+	});
 });
 </script>
 
