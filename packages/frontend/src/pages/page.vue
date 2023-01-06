@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="700">
 		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="page" :key="page.id" class="xcukqgmh">
-				<div class="_block main">
+				<div class="main">
 					<!--
 				<div class="header">
 					<h1>{{ page.title }}</h1>
@@ -51,7 +51,7 @@
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #header><i class="ti ti-clock"></i> {{ i18n.ts.recentPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_gap"/>
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
 					</MkPagination>
 				</MkContainer>
 			</div>

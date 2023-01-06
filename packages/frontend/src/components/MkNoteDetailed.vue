@@ -4,7 +4,7 @@
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
-	class="lxwezrsl _block"
+	class="lxwezrsl"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
 >

@@ -6,7 +6,7 @@
 			<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
 
-		<MkContainer v-if="root && components.length > 0" :key="uiKey" :foldable="true">
+		<MkContainer v-if="root && components.length > 1" :key="uiKey" :foldable="true">
 			<template #header>UI</template>
 			<div :class="$style.ui">
 				<MkAsUi :component="root" :components="components" size="small"/>

@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<XNotes class="_content" :pagination="pagination"/>
+		<XNotes class="" :pagination="pagination"/>
 	</MkSpacer>
 </MkStickyContainer>
 </template>

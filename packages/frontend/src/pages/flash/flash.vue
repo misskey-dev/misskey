@@ -27,7 +27,7 @@
 						</div>
 					</div>
 				</Transition>
-				<FormFolder class="_formBlock">
+				<FormFolder class="_margin">
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 

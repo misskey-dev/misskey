@@ -2,18 +2,20 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<MkInput v-model="title" class="_formBlock">
-			<template #label>{{ i18n.ts._play.title }}</template>
-		</MkInput>
-		<MkTextarea v-model="summary" class="_formBlock">
-			<template #label>{{ i18n.ts._play.summary }}</template>
-		</MkTextarea>
-		<MkTextarea v-model="script" class="_formBlock _monospace" tall spellcheck="false">
-			<template #label>{{ i18n.ts._play.script }}</template>
-		</MkTextarea>
-		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-			<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+		<div class="_autoGap">
+			<MkInput v-model="title">
+				<template #label>{{ i18n.ts._play.title }}</template>
+			</MkInput>
+			<MkTextarea v-model="summary">
+				<template #label>{{ i18n.ts._play.summary }}</template>
+			</MkTextarea>
+			<MkTextarea v-model="script" class="_monospace" tall spellcheck="false">
+				<template #label>{{ i18n.ts._play.script }}</template>
+			</MkTextarea>
+			<div class="_buttons">
+				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+			</div>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
