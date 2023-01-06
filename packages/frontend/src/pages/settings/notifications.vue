@@ -1,22 +1,27 @@
 <template>
-<div class="_formRoot">
-	<FormLink class="_formBlock" @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
+<div class="_gaps_m">
+	<FormLink @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
 	<FormSection>
-		<FormLink class="_formBlock" @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-		<FormLink class="_formBlock" @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
-		<FormLink class="_formBlock" @click="readAllMessagingMessages">{{ i18n.ts.markAsReadAllTalkMessages }}</FormLink>
+		<div class="_gaps_m">
+			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
+			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
+			<FormLink @click="readAllMessagingMessages">{{ i18n.ts.markAsReadAllTalkMessages }}</FormLink>
+		</div>
 	</FormSection>
 	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
-		<MkPushNotificationAllowButton ref="allowButton" />
-		<FormSwitch class="_formBlock" :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
-			<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
-			<template #caption>
-				<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
-					<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
-				</I18n>
-			</template>
-		</FormSwitch>
+
+		<div class="_gaps_m">
+			<MkPushNotificationAllowButton ref="allowButton"/>
+			<FormSwitch :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
+				<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
+				<template #caption>
+					<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
+						<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
+					</I18n>
+				</template>
+			</FormSwitch>
+		</div>
 	</FormSection>
 </div>
 </template>
@@ -24,7 +29,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSwitch from '@/components/form/switch.vue';

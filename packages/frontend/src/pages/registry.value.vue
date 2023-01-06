@@ -2,37 +2,39 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="600" :margin-min="16">
-		<FormInfo warn>{{ i18n.ts.editTheseSettingsMayBreakAccount }}</FormInfo>
+		<div class="_gaps_m">
+			<FormInfo warn>{{ i18n.ts.editTheseSettingsMayBreakAccount }}</FormInfo>
 
-		<template v-if="value">
-			<FormSplit>
-				<MkKeyValue class="_formBlock">
-					<template #key>{{ i18n.ts._registry.domain }}</template>
-					<template #value>{{ i18n.ts.system }}</template>
+			<template v-if="value">
+				<FormSplit>
+					<MkKeyValue>
+						<template #key>{{ i18n.ts._registry.domain }}</template>
+						<template #value>{{ i18n.ts.system }}</template>
+					</MkKeyValue>
+					<MkKeyValue>
+						<template #key>{{ i18n.ts._registry.scope }}</template>
+						<template #value>{{ scope.join('/') }}</template>
+					</MkKeyValue>
+					<MkKeyValue>
+						<template #key>{{ i18n.ts._registry.key }}</template>
+						<template #value>{{ key }}</template>
+					</MkKeyValue>
+				</FormSplit>
+				
+				<FormTextarea v-model="valueForEditor" tall class="_monospace">
+					<template #label>{{ i18n.ts.value }} (JSON)</template>
+				</FormTextarea>
+
+				<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.updatedAt }}</template>
+					<template #value><MkTime :time="value.updatedAt" mode="detail"/></template>
 				</MkKeyValue>
-				<MkKeyValue class="_formBlock">
-					<template #key>{{ i18n.ts._registry.scope }}</template>
-					<template #value>{{ scope.join('/') }}</template>
-				</MkKeyValue>
-				<MkKeyValue class="_formBlock">
-					<template #key>{{ i18n.ts._registry.key }}</template>
-					<template #value>{{ key }}</template>
-				</MkKeyValue>
-			</FormSplit>
-			
-			<FormTextarea v-model="valueForEditor" tall class="_formBlock _monospace">
-				<template #label>{{ i18n.ts.value }} (JSON)</template>
-			</FormTextarea>
 
-			<MkButton class="_formBlock" primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-
-			<MkKeyValue class="_formBlock">
-				<template #key>{{ i18n.ts.updatedAt }}</template>
-				<template #value><MkTime :time="value.updatedAt" mode="detail"/></template>
-			</MkKeyValue>
-
-			<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-		</template>
+				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			</template>
+		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>

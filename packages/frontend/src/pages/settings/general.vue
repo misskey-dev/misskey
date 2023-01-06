@@ -1,6 +1,6 @@
 <template>
-<div class="_formRoot">
-	<FormSelect v-model="lang" class="_formBlock">
+<div class="_gaps_m">
+	<FormSelect v-model="lang">
 		<template #label>{{ i18n.ts.uiLanguage }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 		<template #caption>
@@ -12,7 +12,7 @@
 		</template>
 	</FormSelect>
 
-	<FormRadios v-model="overridedDeviceKind" class="_formBlock">
+	<FormRadios v-model="overridedDeviceKind">
 		<template #label>{{ i18n.ts.overridedDeviceKind }}</template>
 		<option :value="null">{{ i18n.ts.auto }}</option>
 		<option value="smartphone"><i class="ti ti-device-mobile"/> {{ i18n.ts.smartphone }}</option>
@@ -20,80 +20,88 @@
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 	</FormRadios>
 
-	<FormSwitch v-model="showFixedPostForm" class="_formBlock">{{ i18n.ts.showFixedPostForm }}</FormSwitch>
+	<FormSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</FormSwitch>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.behavior }}</template>
-		<FormSwitch v-model="imageNewTab" class="_formBlock">{{ i18n.ts.openImageInNewTab }}</FormSwitch>
-		<FormSwitch v-model="enableInfiniteScroll" class="_formBlock">{{ i18n.ts.enableInfiniteScroll }}</FormSwitch>
-		<FormSwitch v-model="useReactionPickerForContextMenu" class="_formBlock">{{ i18n.ts.useReactionPickerForContextMenu }}</FormSwitch>
 
-		<FormSelect v-model="serverDisconnectedBehavior" class="_formBlock">
-			<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
-			<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
-			<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
-			<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-		</FormSelect>
+		<div class="_gaps_m">
+			<div class="_gaps_s">
+				<FormSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</FormSwitch>
+				<FormSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</FormSwitch>
+				<FormSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</FormSwitch>
+			</div>
+			<FormSelect v-model="serverDisconnectedBehavior">
+				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
+				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+			</FormSelect>
+		</div>
 	</FormSection>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.appearance }}</template>
-		<FormSwitch v-model="disableAnimatedMfm" class="_formBlock">{{ i18n.ts.disableAnimatedMfm }}</FormSwitch>
-		<FormSwitch v-model="reduceAnimation" class="_formBlock">{{ i18n.ts.reduceUiAnimation }}</FormSwitch>
-		<FormSwitch v-model="useBlurEffect" class="_formBlock">{{ i18n.ts.useBlurEffect }}</FormSwitch>
-		<FormSwitch v-model="useBlurEffectForModal" class="_formBlock">{{ i18n.ts.useBlurEffectForModal }}</FormSwitch>
-		<FormSwitch v-model="showGapBetweenNotesInTimeline" class="_formBlock">{{ i18n.ts.showGapBetweenNotesInTimeline }}</FormSwitch>
-		<FormSwitch v-model="loadRawImages" class="_formBlock">{{ i18n.ts.loadRawImages }}</FormSwitch>
-		<FormSwitch v-model="disableShowingAnimatedImages" class="_formBlock">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
-		<FormSwitch v-model="squareAvatars" class="_formBlock">{{ i18n.ts.squareAvatars }}</FormSwitch>
-		<FormSwitch v-model="useSystemFont" class="_formBlock">{{ i18n.ts.useSystemFont }}</FormSwitch>
-		<div class="_formBlock">
-			<FormRadios v-model="emojiStyle">
-				<template #label>{{ i18n.ts.emojiStyle }}</template>
-				<option value="native">{{ i18n.ts.native }}</option>
-				<option value="fluentEmoji">Fluent Emoji</option>
-				<option value="twemoji">Twemoji</option>
+
+		<div class="_gaps_m">
+			<div class="_gaps_s">
+				<FormSwitch v-model="disableAnimatedMfm">{{ i18n.ts.disableAnimatedMfm }}</FormSwitch>
+				<FormSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</FormSwitch>
+				<FormSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</FormSwitch>
+				<FormSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</FormSwitch>
+				<FormSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</FormSwitch>
+				<FormSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</FormSwitch>
+				<FormSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
+				<FormSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</FormSwitch>
+				<FormSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</FormSwitch>
+				<FormSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</FormSwitch>
+			</div>
+			<div>
+				<FormRadios v-model="emojiStyle">
+					<template #label>{{ i18n.ts.emojiStyle }}</template>
+					<option value="native">{{ i18n.ts.native }}</option>
+					<option value="fluentEmoji">Fluent Emoji</option>
+					<option value="twemoji">Twemoji</option>
+				</FormRadios>
+				<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
+			</div>
+
+			<FormRadios v-model="fontSize">
+				<template #label>{{ i18n.ts.fontSize }}</template>
+				<option :value="null"><span style="font-size: 14px;">Aa</span></option>
+				<option value="1"><span style="font-size: 15px;">Aa</span></option>
+				<option value="2"><span style="font-size: 16px;">Aa</span></option>
+				<option value="3"><span style="font-size: 17px;">Aa</span></option>
 			</FormRadios>
-			<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</div>
-
-		<FormSwitch v-model="disableDrawer" class="_formBlock">{{ i18n.ts.disableDrawer }}</FormSwitch>
-
-		<FormRadios v-model="fontSize" class="_formBlock">
-			<template #label>{{ i18n.ts.fontSize }}</template>
-			<option :value="null"><span style="font-size: 14px;">Aa</span></option>
-			<option value="1"><span style="font-size: 15px;">Aa</span></option>
-			<option value="2"><span style="font-size: 16px;">Aa</span></option>
-			<option value="3"><span style="font-size: 17px;">Aa</span></option>
-		</FormRadios>
 	</FormSection>
 
 	<FormSection>
 		<FormSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</FormSwitch>
 	</FormSection>
 
-	<FormSelect v-model="instanceTicker" class="_formBlock">
+	<FormSelect v-model="instanceTicker">
 		<template #label>{{ i18n.ts.instanceTicker }}</template>
 		<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
 		<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
 		<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
 	</FormSelect>
 
-	<FormSelect v-model="nsfw" class="_formBlock">
+	<FormSelect v-model="nsfw">
 		<template #label>{{ i18n.ts.nsfw }}</template>
 		<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
 		<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
 		<option value="force">{{ i18n.ts._nsfw.force }}</option>
 	</FormSelect>
 
-	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing class="_formBlock">
+	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
 		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 	</FormRange>
 
-	<FormLink to="/settings/deck" class="_formBlock">{{ i18n.ts.deck }}</FormLink>
+	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 
-	<FormLink to="/settings/custom-css" class="_formBlock"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
+	<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 </div>
 </template>
 

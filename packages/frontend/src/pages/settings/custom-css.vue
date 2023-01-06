@@ -1,8 +1,8 @@
 <template>
-<div class="_formRoot">
-	<FormInfo warn class="_formBlock">{{ i18n.ts.customCssWarn }}</FormInfo>
+<div class="_gaps_m">
+	<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
 
-	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace _formBlock" style="tab-size: 2;">
+	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
 		<template #label>CSS</template>
 	</FormTextarea>
 </div>

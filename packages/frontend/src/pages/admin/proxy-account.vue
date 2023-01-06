@@ -1,22 +1,24 @@
-<template><MkStickyContainer>
+<template>
+<MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
-	<FormSuspense :p="init">
-		<MkInfo class="_formBlock">{{ i18n.ts.proxyAccountDescription }}</MkInfo>
-		<MkKeyValue class="_formBlock">
-			<template #key>{{ i18n.ts.proxyAccount }}</template>
-			<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : i18n.ts.none }}</template>
-		</MkKeyValue>
+	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+		<FormSuspense :p="init">
+			<MkInfo>{{ i18n.ts.proxyAccountDescription }}</MkInfo>
+			<MkKeyValue>
+				<template #key>{{ i18n.ts.proxyAccount }}</template>
+				<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : i18n.ts.none }}</template>
+			</MkKeyValue>
 
-		<FormButton primary class="_formBlock" @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</FormButton>
-	</FormSuspense>
-</MkSpacer></MkStickyContainer>
+			<MkButton primary @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</MkButton>
+		</FormSuspense>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';

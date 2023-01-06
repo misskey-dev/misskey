@@ -3,13 +3,15 @@
 	<template #header><i class="ti ti-rss"></i>RSS</template>
 	<template #func><button class="_button" @click="configure"><i class="ti ti-settings"></i></button></template>
 
-	<div class="ekmkgxbk">
-		<MkLoading v-if="fetching"/>
-		<div v-else class="feed">
-			<Transition name="change" mode="default">
+	<div :class="$style.feed">
+		<div v-if="fetching" :class="$style.loading">
+			<MkEllipsis/>
+		</div>
+		<div v-else>
+			<Transition :name="$style.change" mode="default" appear>
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
-					<span v-for="item in items" class="item">
-						<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
+					<span v-for="item in items" :class="$style.item" :key="item.link">
+						<a :class="$style.link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
 				</MarqueeText>
 			</Transition>
@@ -19,14 +21,14 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import MarqueeText from '@/components/MkMarquee.vue';
 import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
-import { useInterval } from '@/scripts/use-interval';
 import { shuffle } from '@/scripts/shuffle';
+import { url as base } from '@/config';
+import { useInterval } from '@/scripts/use-interval';
 
 const name = 'rssTicker';
 
@@ -42,6 +44,10 @@ const widgetPropsDef = {
 	refreshIntervalSec: {
 		type: 'number' as const,
 		default: 60,
+	},
+	maxEntries: {
+		type: 'number' as const,
+		default: 15,
 	},
 	duration: {
 		type: 'range' as const,
@@ -78,29 +84,49 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const items = ref([]);
+const rawItems = ref([]);
+const items = computed(() => {
+	const newItems = rawItems.value.slice(0, widgetProps.maxEntries)
+	if (widgetProps.shuffle) {
+		shuffle(newItems);
+	}
+	return newItems;
+});
 const fetching = ref(true);
+const fetchEndpoint = computed(() => {
+	const url = new URL('/api/fetch-rss', base);
+	url.searchParams.set('url', widgetProps.url);
+	return url;
+});
+let intervalClear = $ref<(() => void) | undefined>();
+
 let key = $ref(0);
 
 const tick = () => {
-	window.fetch(`/api/fetch-rss?url=${widgetProps.url}`, {}).then(res => {
-		res.json().then(feed => {
-			if (widgetProps.shuffle) {
-				shuffle(feed.items);
-			}
-			items.value = feed.items;
-			fetching.value = false;
-			key++;
-		});
+	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
+
+	window.fetch(fetchEndpoint.value, {})
+	.then(res => res.json())
+	.then(feed => {
+		if (widgetProps.shuffle) {
+			shuffle(feed.items);
+		}
+		rawItems.value = feed.items;
+		fetching.value = false;
+		key++;
 	});
 };
 
-watch(() => widgetProps.url, tick);
-
-useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
-	immediate: true,
-	afterMounted: true,
-});
+watch(() => fetchEndpoint, tick);
+watch(() => widgetProps.refreshIntervalSec, () => {
+	if (intervalClear) {
+		intervalClear();
+	}
+	intervalClear = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+		immediate: true,
+		afterMounted: true,
+	});
+}, { immediate: true });
 
 defineExpose<WidgetComponentExpose>({
 	name,
@@ -109,44 +135,49 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.change-enter-active, .change-leave-active {
-	position: absolute;
-	top: 0;
-  transition: all 1s ease;
-}
-.change-enter-from {
-  opacity: 0;
-	transform: translateY(-100%);
-}
-.change-leave-to {
-  opacity: 0;
-	transform: translateY(100%);
-}
-
-.ekmkgxbk {
-	> .feed {
-		--height: 42px;
-		padding: 0;
-		font-size: 0.9em;
-		line-height: var(--height);
-		height: var(--height);
-		contain: strict;
-
-		::v-deep(.item) {
-			display: inline-flex;
-			align-items: center;
-			vertical-align: bottom;
-			color: var(--fg);
-
-			> .divider {
-				display: inline-block;
-				width: 0.5px;
-				height: 16px;
-				margin: 0 1em;
-				background: var(--divider);
-			}
-		}
+<style lang="scss" module>
+.change {
+	&:global(-enter-active),
+	&:global(-leave-active) {
+		position: absolute;
+		top: 0;
+		transition: all 1s ease;
 	}
+	&:global(-enter-from) {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+	&:global(-leave-to) {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+}
+
+.feed {
+	--height: 42px;
+	padding: 0;
+	font-size: 0.9em;
+	line-height: var(--height);
+	height: var(--height);
+	contain: strict;
+}
+
+.loading {
+	text-align: center;
+}
+
+.item {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: bottom;
+	color: var(--fg);
+}
+
+.divider {
+	display: inline-block;
+	width: 0.5px;
+	height: 16px;
+	margin: 0 1em;
+	background: var(--divider);
 }
 </style>

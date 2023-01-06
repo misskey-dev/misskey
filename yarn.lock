@@ -2004,15 +2004,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@syuilo/aiscript@npm:0.12.0":
-  version: 0.12.0
-  resolution: "@syuilo/aiscript@npm:0.12.0"
+"@syuilo/aiscript@npm:0.12.1":
+  version: 0.12.1
+  resolution: "@syuilo/aiscript@npm:0.12.1"
   dependencies:
     autobind-decorator: 2.4.0
     seedrandom: 3.0.5
     stringz: 2.1.0
-    uuid: 8.3.2
-  checksum: 82b52a6c602a8c3090b9457a0e9de99898b03cd8f054855b2f57439534257ef2780013a53eaeeef68c9893d96d3ec02fc6d0ede56396c2bcf054cf43b2297b67
+    uuid: 9.0.0
+  checksum: 0bee3031cbc8358e159fc8fde6e1ab7204e1a8e17e07f394f337d70cd3a8558e591145ca03afe37c76bbb91f84b2b2af70b892935e9c98507f9d1455c7be1107
   languageName: node
   linkType: hard
 
@@ -4964,6 +4964,13 @@ __metadata:
   version: 1.0.8
   resolution: "canonicalize@npm:1.0.8"
   checksum: c31ea64160171bbcd7ac0dc081058fbcff055410a1d532d7b3959e7b02a3001c5d5f4f8bad934ed5246eafc9a928d333cc0c29846c16fb6d0be97b8fb444de3c
+  languageName: node
+  linkType: hard
+
+"canvas-confetti@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "canvas-confetti@npm:1.6.0"
+  checksum: be19e3be736ab28aa8af7b53cba9f4146f5714edadbf4d5a7d7b1899914dc59a8ac5574260fe6b7d9995c51df5787b0b707adfbb72dbacbc61fc03f9f2b25291
   languageName: node
   linkType: hard
 
@@ -8442,7 +8449,7 @@ __metadata:
     "@rollup/plugin-alias": 4.0.2
     "@rollup/plugin-json": 6.0.0
     "@rollup/pluginutils": 5.0.2
-    "@syuilo/aiscript": 0.12.0
+    "@syuilo/aiscript": 0.12.1
     "@tabler/icons": ^1.118.0
     "@types/escape-regexp": 0.0.1
     "@types/glob": 8.0.0
@@ -8468,6 +8475,7 @@ __metadata:
     blurhash: 2.0.4
     broadcast-channel: 4.19.1
     browser-image-resizer: "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3"
+    canvas-confetti: ^1.6.0
     chart.js: 4.1.1
     chartjs-adapter-date-fns: 3.0.0
     chartjs-chart-matrix: ^1.3.0
@@ -17813,15 +17821,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:8.3.2, uuid@npm:^8.3.0, uuid@npm:^8.3.2":
-  version: 8.3.2
-  resolution: "uuid@npm:8.3.2"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
-  languageName: node
-  linkType: hard
-
 "uuid@npm:9.0.0":
   version: 9.0.0
   resolution: "uuid@npm:9.0.0"
@@ -17837,6 +17836,15 @@ __metadata:
   bin:
     uuid: ./bin/uuid
   checksum: 58de2feed61c59060b40f8203c0e4ed7fd6f99d42534a499f1741218a1dd0c129f4aa1de797bcf822c8ea5da7e4137aa3673431a96dae729047f7aca7b27866f
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^8.3.0, uuid@npm:^8.3.2":
+  version: 8.3.2
+  resolution: "uuid@npm:8.3.2"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
   languageName: node
   linkType: hard
 

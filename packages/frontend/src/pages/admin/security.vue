@@ -3,8 +3,8 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_formRoot">
-				<FormFolder class="_formBlock">
+			<div class="_gaps_m">
+				<FormFolder>
 					<template #icon><i class="ti ti-shield"></i></template>
 					<template #label>{{ i18n.ts.botProtection }}</template>
 					<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
@@ -15,7 +15,7 @@
 					<XBotProtection/>
 				</FormFolder>
 
-				<FormFolder class="_formBlock">
+				<FormFolder>
 					<template #icon><i class="ti ti-eye-off"></i></template>
 					<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
 					<template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
@@ -23,76 +23,76 @@
 					<template v-else-if="sensitiveMediaDetection === 'remote'" #suffix>{{ i18n.ts.remoteOnly }}</template>
 					<template v-else #suffix>{{ i18n.ts.none }}</template>
 
-					<div class="_formRoot">
-						<span class="_formBlock">{{ i18n.ts._sensitiveMediaDetection.description }}</span>
+					<div class="_gaps_m">
+						<span>{{ i18n.ts._sensitiveMediaDetection.description }}</span>
 
-						<FormRadios v-model="sensitiveMediaDetection" class="_formBlock">
+						<FormRadios v-model="sensitiveMediaDetection">
 							<option value="none">{{ i18n.ts.none }}</option>
 							<option value="all">{{ i18n.ts.all }}</option>
 							<option value="local">{{ i18n.ts.localOnly }}</option>
 							<option value="remote">{{ i18n.ts.remoteOnly }}</option>
 						</FormRadios>
 
-						<FormRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`" class="_formBlock">
+						<FormRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
 						</FormRange>
 
-						<FormSwitch v-model="enableSensitiveMediaDetectionForVideos" class="_formBlock">
+						<FormSwitch v-model="enableSensitiveMediaDetectionForVideos">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</template>
 						</FormSwitch>
 
-						<FormSwitch v-model="setSensitiveFlagAutomatically" class="_formBlock">
+						<FormSwitch v-model="setSensitiveFlagAutomatically">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }} ({{ i18n.ts.notRecommended }})</template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</template>
 						</FormSwitch>
 
 						<!-- 現状 false positive が多すぎて実用に耐えない
-						<FormSwitch v-model="disallowUploadWhenPredictedAsPorn" class="_formBlock">
+						<FormSwitch v-model="disallowUploadWhenPredictedAsPorn">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
 						</FormSwitch>
 						-->
 
-						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</FormFolder>
 
-				<FormFolder class="_formBlock">
+				<FormFolder>
 					<template #label>Active Email Validation</template>
 					<template v-if="enableActiveEmailValidation" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
 
-					<div class="_formRoot">
-						<span class="_formBlock">{{ i18n.ts.activeEmailValidationDescription }}</span>
-						<FormSwitch v-model="enableActiveEmailValidation" class="_formBlock" @update:model-value="save">
+					<div class="_gaps_m">
+						<span>{{ i18n.ts.activeEmailValidationDescription }}</span>
+						<FormSwitch v-model="enableActiveEmailValidation" @update:model-value="save">
 							<template #label>Enable</template>
 						</FormSwitch>
 					</div>
 				</FormFolder>
 
-				<FormFolder class="_formBlock">
+				<FormFolder>
 					<template #label>Log IP address</template>
 					<template v-if="enableIpLogging" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
 
-					<div class="_formRoot">
-						<FormSwitch v-model="enableIpLogging" class="_formBlock" @update:model-value="save">
+					<div class="_gaps_m">
+						<FormSwitch v-model="enableIpLogging" @update:model-value="save">
 							<template #label>Enable</template>
 						</FormSwitch>
 					</div>
 				</FormFolder>
 
-				<FormFolder class="_formBlock">
+				<FormFolder>
 					<template #label>Summaly Proxy</template>
 
-					<div class="_formRoot">
-						<FormInput v-model="summalyProxy" class="_formBlock">
+					<div class="_gaps_m">
+						<FormInput v-model="summalyProxy">
 							<template #prefix><i class="ti ti-link"></i></template>
 							<template #label>Summaly Proxy URL</template>
 						</FormInput>
 
-						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
 				</FormFolder>
 			</div>
@@ -112,7 +112,7 @@ import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormRange from '@/components/form/range.vue';
 import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';

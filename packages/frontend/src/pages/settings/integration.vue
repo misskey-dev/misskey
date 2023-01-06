@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<FormSection v-if="instance.enableTwitterIntegration">
 		<template #label><i class="ti ti-brand-twitter"></i> Twitter</template>
 		<p v-if="integrations.twitter">{{ i18n.ts.connectedTo }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>

@@ -172,6 +172,7 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 		app.config.performance = true;
 	}
 
+	// TODO: 廃止
 	app.config.globalProperties = {
 		$i,
 		$store: defaultStore,

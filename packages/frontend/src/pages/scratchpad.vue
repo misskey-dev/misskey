@@ -1,25 +1,34 @@
 <template>
-<div class="iltifgqe">
-	<div class="editor _panel _gap">
-		<PrismEditor v-model="code" class="_code code" :highlight="highlighter" :line-numbers="false"/>
-		<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
-	</div>
-
-	<MkContainer :foldable="true" class="_gap">
-		<template #header>{{ i18n.ts.output }}</template>
-		<div class="bepmlvbi">
-			<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+<MkSpacer :content-max="800">
+	<div :class="$style.root">
+		<div :class="$style.editor" class="_panel">
+			<PrismEditor v-model="code" class="_code code" :highlight="highlighter" :line-numbers="false"/>
+			<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
-	</MkContainer>
 
-	<div class="_gap">
-		{{ i18n.ts.scratchpadDescription }}
+		<MkContainer v-if="root && components.length > 1" :key="uiKey" :foldable="true">
+			<template #header>UI</template>
+			<div :class="$style.ui">
+				<MkAsUi :component="root" :components="components" size="small"/>
+			</div>
+		</MkContainer>
+
+		<MkContainer :foldable="true" class="">
+			<template #header>{{ i18n.ts.output }}</template>
+			<div :class="$style.logs">
+				<div v-for="log in logs" :key="log.id" class="log" :class="{ print: log.print }">{{ log.text }}</div>
+			</div>
+		</MkContainer>
+
+		<div class="">
+			{{ i18n.ts.scratchpadDescription }}
+		</div>
 	</div>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -35,11 +44,16 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
+import MkAsUi from '@/components/MkAsUi.vue';
 
 const parser = new Parser();
-
+let aiscript: Interpreter;
 const code = ref('');
 const logs = ref<any[]>([]);
+const root = ref<AsUiRoot>();
+let components: Ref<AsUiComponent>[] = [];
+let uiKey = $ref(0);
 
 const saved = localStorage.getItem('scratchpad');
 if (saved) {
@@ -51,10 +65,19 @@ watch(code, () => {
 });
 
 async function run() {
+	if (aiscript) aiscript.abort();
+	root.value = undefined;
+	components = [];
+	uiKey++;
 	logs.value = [];
-	const aiscript = new Interpreter(createAiScriptEnv({
-		storageKey: 'scratchpad',
-		token: $i?.token,
+	aiscript = new Interpreter(({
+		...createAiScriptEnv({
+			storageKey: 'widget',
+			token: $i?.token,
+		}),
+		...registerAsUiLib(components, (_root) => {
+			root.value = _root.value;
+		}),
 	}), {
 		in: (q) => {
 			return new Promise(ok => {
@@ -96,10 +119,11 @@ async function run() {
 	}
 	try {
 		await aiscript.exec(ast);
-	} catch (error: any) {
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
-			text: error.message,
+			title: 'AiScript Error',
+			text: err.message,
 		});
 	}
 }
@@ -107,6 +131,14 @@ async function run() {
 function highlighter(code) {
 	return highlight(code, languages.js, 'javascript');
 }
+
+onDeactivated(() => {
+	if (aiscript) aiscript.abort();
+});
+
+onUnmounted(() => {
+	if (aiscript) aiscript.abort();
+});
 
 const headerActions = $computed(() => []);
 
@@ -118,21 +150,29 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.iltifgqe {
-	padding: 16px;
-
-	> .editor {
-		position: relative;
-	}
+<style lang="scss" module>
+.root {
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin);
 }
 
-.bepmlvbi {
+.editor {
+	position: relative;
+}
+
+.ui {
+	padding: 32px;
+}
+
+.logs {
 	padding: 16px;
 
-	> .log {
-		&:not(.print) {
-			opacity: 0.7;
+	&:global {
+		> .log {
+			&:not(.print) {
+				opacity: 0.7;
+			}
 		}
 	}
 }

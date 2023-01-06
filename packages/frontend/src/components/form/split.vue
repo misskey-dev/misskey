@@ -1,5 +1,5 @@
 <template>
-<div class="terlnhxf _formBlock">
+<div class="terlnhxf">
 	<slot></slot>
 </div>
 </template>

@@ -10,29 +10,29 @@
 		</div>
 
 		<div v-if="tab === 'settings'">
-			<div class="_formRoot">
-				<MkInput v-model="title" class="_formBlock">
+			<div class="_gaps_m">
+				<MkInput v-model="title">
 					<template #label>{{ $ts._pages.title }}</template>
 				</MkInput>
 
-				<MkInput v-model="summary" class="_formBlock">
+				<MkInput v-model="summary">
 					<template #label>{{ $ts._pages.summary }}</template>
 				</MkInput>
 
-				<MkInput v-model="name" class="_formBlock">
+				<MkInput v-model="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<template #label>{{ $ts._pages.url }}</template>
 				</MkInput>
 
-				<MkSwitch v-model="alignCenter" class="_formBlock">{{ $ts._pages.alignCenter }}</MkSwitch>
+				<MkSwitch v-model="alignCenter">{{ $ts._pages.alignCenter }}</MkSwitch>
 
-				<MkSelect v-model="font" class="_formBlock">
+				<MkSelect v-model="font">
 					<template #label>{{ $ts._pages.font }}</template>
 					<option value="serif">{{ $ts._pages.fontSerif }}</option>
 					<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
 				</MkSelect>
 
-				<MkSwitch v-model="hideTitleWhenPinned" class="_formBlock">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
+				<MkSwitch v-model="hideTitleWhenPinned">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 				<div class="eyeCatch">
 					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ti ti-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>

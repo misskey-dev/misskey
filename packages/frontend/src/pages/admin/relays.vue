@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel _block" style="padding: 16px;">
+		<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel" style="padding: 16px;">
 			<div>{{ relay.inbox }}</div>
 			<div class="status">
 				<i v-if="relay.status === 'accepted'" class="ti ti-check icon accepted"></i>

@@ -1,18 +1,18 @@
 <template>
-<div class="_formRoot">
-	<FormSwitch v-model="$i.injectFeaturedNote" class="_formBlock" @update:model-value="onChangeInjectFeaturedNote">
+<div class="_gaps_m">
+	<FormSwitch v-model="$i.injectFeaturedNote" @update:model-value="onChangeInjectFeaturedNote">
 		{{ i18n.ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
 
 	<!--
-	<FormSwitch v-model="reportError" class="_formBlock">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></FormSwitch>
+	<FormSwitch v-model="reportError">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></FormSwitch>
 	-->
 
-	<FormLink to="/settings/account-info" class="_formBlock">{{ i18n.ts.accountInfo }}</FormLink>
+	<FormLink to="/settings/account-info">{{ i18n.ts.accountInfo }}</FormLink>
 
-	<FormLink to="/registry" class="_formBlock"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
+	<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
 
-	<FormLink to="/settings/delete-account" class="_formBlock"><template #icon><i class="ti ti-alert-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
+	<FormLink to="/settings/delete-account"><template #icon><i class="ti ti-alert-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
 </div>
 </template>
 
