@@ -18,7 +18,7 @@ import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
-import { PassThrough, pipeline } from 'node:stream';
+import { PassThrough, Readable, pipeline } from 'node:stream';
 import { Request } from 'got';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -67,21 +67,20 @@ export class MediaProxyServerService {
 	@bindThis
 	private async handler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {
 		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
-	
+
 		if (typeof url !== 'string') {
 			reply.code(400);
 			return;
 		}
-	
+
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-		const got = this.downloadService.gotUrl(url);
-	
-		try {
-			const fileSaving = this.downloadService.pipeRequestToFile(got, path);
-			const streamCopy = got.pipe(new PassThrough());
+		const response = await this.downloadService.fetchUrl(url);
 
-			let { mime, ext } = await this.fileInfoService.detectRequestType(got);
+		try {
+			const fileSaving = this.downloadService.pipeRequestToFile(response, path);
+
+			let { mime, ext } = await this.fileInfoService.detectRequestType(response);
 			if (mime === 'application/octet-stream' || mime === 'application/xml') {
 				await fileSaving;
 				if (await this.fileInfoService.checkSvg(path)) {
@@ -90,11 +89,11 @@ export class MediaProxyServerService {
 				}
 			}
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
-	
-			let image: IImageStreamable;
+
+			let image: IImageStreamable | null = null;
 			if ('emoji' in request.query && isConvertibleImage) {
 				const data = pipeline(
-					streamCopy,
+					Readable.fromWeb(response.body),
 					sharp({ animated: !('static' in request.query) })
 						.resize({
 							height: 128,
@@ -109,9 +108,9 @@ export class MediaProxyServerService {
 					type: 'image/webp',
 				};
 			} else if ('static' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 498, 280);
+				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 200, 200);
+				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 200, 200);
 			} else if ('badge' in request.query) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
@@ -150,24 +149,24 @@ export class MediaProxyServerService {
 					type: 'image/png',
 				};
 			} else if (mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 2048, 2048);
+				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 2048, 2048);
 			} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
-			} else {
+			}
+
+			if (!image) {
 				image = {
-					data: streamCopy,
+					data: Readable.fromWeb(response.body),
 					ext,
 					type: mime,
 				};
 			}
-	
+
 			reply.header('Content-Type', image.type);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			return image.data;
 		} catch (err) {
 			this.logger.error(`${err}`);
-
-			if (!got.closed) got.destroy();
 
 			if ('fallback' in request.query) {
 				return reply.sendFile('/dummy.png', assets);
@@ -181,5 +180,6 @@ export class MediaProxyServerService {
 		} finally {
 			cleanup();
 		}
+		return; // Not all code paths return a value. 対策
 	}
 }

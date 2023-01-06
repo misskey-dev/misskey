@@ -20,7 +20,7 @@ import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
-import { PassThrough } from 'node:stream';
+import { PassThrough, Readable } from 'node:stream';
 import sharp from 'sharp';
 import { Request } from 'got';
 
@@ -109,13 +109,12 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (file.isLink && file.uri) {	// 期限切れリモートファイル
 				const [path, cleanup] = await createTemp();
-				const got = this.downloadService.gotUrl(file.uri);;
+				const response = await this.downloadService.fetchUrl(file.uri);;
 
 				try {
-					const fileSaving = this.downloadService.pipeRequestToFile(got, path);
-					const streamCopy = got.pipe(new PassThrough());
+					const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
-					let { mime, ext } = await this.fileInfoService.detectRequestType(got);
+					let { mime, ext } = await this.fileInfoService.detectRequestType(response);
 					if (mime === 'application/octet-stream' || mime === 'application/xml') {
 						await fileSaving;
 						if (await this.fileInfoService.checkSvg(path)) {
@@ -127,7 +126,7 @@ export class FileServerService {
 					const convertFile = async () => {
 						if (isThumbnail) {
 							if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(mime)) {
-								return this.imageProcessingService.convertSharpToWebpStreamObj(streamCopy.pipe(sharp()), 498, 280);
+								return this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 498, 280);
 							} else if (mime.startsWith('video/')) {
 								await fileSaving;
 								return await this.videoProcessingService.generateVideoThumbnail(path);
@@ -137,7 +136,7 @@ export class FileServerService {
 						if (isWebpublic) {
 							if (['image/svg+xml'].includes(mime)) {
 								return {
-									data: this.imageProcessingService.convertSharpToWebpStream(streamCopy.pipe(sharp()), 2048, 2048, { ...webpDefault, lossless: true }),
+									data: this.imageProcessingService.convertSharpToWebpStream(Readable.fromWeb(response.body).pipe(sharp()), 2048, 2048, { ...webpDefault, lossless: true }),
 									ext: 'webp',
 									type: 'image/webp',
 								};
@@ -145,7 +144,7 @@ export class FileServerService {
 						}
 
 						return {
-							data: streamCopy,
+							data: Readable.fromWeb(response.body),
 							ext,
 							type: mime,
 						};
@@ -158,7 +157,6 @@ export class FileServerService {
 				} catch (err) {
 					this.logger.error(`${err}`);
 
-					if (!got.closed) got.destroy();
 					if (err instanceof StatusError && err.isClientError) {
 						reply.code(err.statusCode);
 						reply.header('Cache-Control', 'max-age=86400');

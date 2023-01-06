@@ -14,9 +14,12 @@ import { StatusError } from '@/misc/status-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { buildConnector } from 'undici';
+import type { Response } from 'undici';
 
 const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
+
+type NonNullBodyResponse = Response & { body: ReadableStream };
 
 @Injectable()
 export class DownloadService {
@@ -52,7 +55,7 @@ export class DownloadService {
 	}
 
 	@bindThis
-	public fetchUrl(url: string): any {
+	public async fetchUrl(url: string): Promise<NonNullBodyResponse> {
 		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
 	
 		const timeout = 30 * 1000;
@@ -75,11 +78,16 @@ export class DownloadService {
 	
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 
-		return response;
+		return response as NonNullBodyResponse;
 	}
 
 	@bindThis
-	public async pipeRequestToFile(response: any, path: string): Promise<void> {
+	public async pipeRequestToFile(_response: Response, path: string): Promise<void> {
+		const response = _response.clone();
+		if (response.body === null) {
+			throw new StatusError('No body', 400, 'No body');
+		}
+
 		try {
 			this.logger.info(`Saving File to ${chalk.cyanBright(path)} from downloading ...`);
 			await pipeline(stream.Readable.fromWeb(response.body), fs.createWriteStream(path));
@@ -94,7 +102,7 @@ export class DownloadService {
 
 	@bindThis
 	public async downloadUrl(url: string, path: string): Promise<void> {
-		await this.pipeRequestToFile(this.fetchUrl(url), path);
+		await this.pipeRequestToFile(await this.fetchUrl(url), path);
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 
