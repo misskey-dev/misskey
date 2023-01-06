@@ -39,7 +39,7 @@ async function renderChart() {
 	const wide = rootEl.offsetWidth > 600;
 	const narrow = rootEl.offsetWidth < 400;
 
-	const maxDays = wide ? 20 : narrow ? 7 : 14;
+	const maxDays = wide ? 15 : narrow ? 5 : 10;
 
 	const raw = await os.api('retention', { });
 
