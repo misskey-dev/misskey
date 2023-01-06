@@ -188,7 +188,9 @@ onMounted(() => {
 		const bm = parseInt(props.user.birthday.split('-')[1]);
 		const bd = parseInt(props.user.birthday.split('-')[2]);
 		if (m === bm && d === bd) {
-			confetti();
+			confetti({
+				duration: 1000 * 4
+			});
 		}
 	}
 });

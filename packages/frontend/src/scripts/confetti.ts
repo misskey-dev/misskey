@@ -2,7 +2,7 @@ import _confetti from 'canvas-confetti';
 import * as os from '@/os';
 
 export function confetti(options: { duration?: number; } = {}) {
-	const duration = options.duration ?? 1000 * 5;
+	const duration = options.duration ?? 1000 * 4;
 	const animationEnd = Date.now() + duration;
 	const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: os.claimZIndex('high') };
 
