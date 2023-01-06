@@ -54,8 +54,6 @@ const props = defineProps<{
 }
 
 .urempief {
-	margin-top: var(--margin);
-
 	&.list {
 		> .file {
 			display: flex;
@@ -89,7 +87,6 @@ const props = defineProps<{
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
 		grid-gap: 12px;
-		margin: var(--margin) 0;
 
 		> .file {
 			position: relative;

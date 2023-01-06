@@ -6,7 +6,7 @@
 			<MkButton primary class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="list">
-				<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
+				<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _margin">
 					<b>{{ item.name }}</b>
 					<div v-if="item.description" class="description">{{ item.description }}</div>
 				</MkA>

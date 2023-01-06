@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="370"
 	:height="400"
@@ -8,14 +8,16 @@
 >
 	<template #header>{{ i18n.ts.login }}</template>
 
-	<MkSignin :auto-set="autoSet" :message="message" @login="onLogin"/>
-</XModalWindow>
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<MkSignin :auto-set="autoSet" :message="message" @login="onLogin"/>
+	</MkSpacer>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
@@ -32,7 +34,7 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
 function onClose() {
 	emit('cancelled');

@@ -383,7 +383,6 @@ defineExpose({
 			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
 			overflow: auto;
 			display: flex;
-			container-type: inline-size;
 
 			@media (max-width: 500px) {
 				padding: 16px;

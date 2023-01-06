@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="800"
 	:height="500"
@@ -15,14 +15,14 @@
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
 	<XDrive :multiple="multiple" :select="type" @change-selection="onChangeSelection" @selected="ok()"/>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
 
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof XModalWindow>>();
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const selected = ref<Misskey.entities.DriveFile[]>([]);
 

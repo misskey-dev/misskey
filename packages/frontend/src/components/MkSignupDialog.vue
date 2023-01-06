@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="366"
 	:height="500"
@@ -8,18 +8,16 @@
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 
-	<div class="_monolithic_">
-		<div class="_section">
-			<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
-		</div>
-	</div>
-</XModalWindow>
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
+	</MkSpacer>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import XSignup from '@/components/MkSignup.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
@@ -33,7 +31,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
 function onSignup(res) {
 	emit('done', res);

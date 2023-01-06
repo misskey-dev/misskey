@@ -1,15 +1,15 @@
 <template>
 <MkSpacer :content-max="narrow ? 800 : 1100">
 	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
-		<div class="main">
+		<div class="main _autoGap">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
-			<div class="profile">
+			<div class="profile _autoGap">
 				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
 
-				<div :key="user.id" class="_block main">
+				<div :key="user.id" class="main _panel">
 					<div class="banner-container" :style="style">
 						<div ref="bannerEl" class="banner" :style="style"></div>
 						<div class="fade"></div>
@@ -86,8 +86,8 @@
 			</div>
 
 			<div class="contents">
-				<div v-if="user.pinnedNotes.length > 0" class="_gap">
-					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
+				<div v-if="user.pinnedNotes.length > 0" class="_autoGap_half">
+					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
