@@ -3,8 +3,8 @@
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="headerTabs" :display-my-avatar="true"/></template>
 	<MkSpacer :content-max="800">
 		<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
-			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial"/>
-			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form" fixed/>
+			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _panel" style="margin-bottom: var(--margin);"/>
+			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
 			<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div class="tl">
