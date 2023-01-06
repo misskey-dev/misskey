@@ -211,6 +211,7 @@ export class HttpRequestService {
 			bodyTimeout: 10 * 1000,
 			maxHeaderSize: 16364, // default
 			maxResponseSize: 10 * 1024 * 1024,
+			maxRedirections: 3,
 			connect: {
 				timeout: 10 * 1000, // コネクションが確立するまでのタイムアウト
 				maxCachedSessions: 300, // TLSセッションのキャッシュ数 https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L80

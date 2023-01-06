@@ -37,7 +37,9 @@ export class ApRequestService {
 		private userKeypairStoreService: UserKeypairStoreService,
 		private httpRequestService: HttpRequestService,
 	) {
-		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption());
+		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
+			maxRedirections: 0,
+		}));
 	}
 
 	@bindThis
