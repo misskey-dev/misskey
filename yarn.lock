@@ -4833,6 +4833,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"canvas-confetti@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "canvas-confetti@npm:1.6.0"
+  checksum: be19e3be736ab28aa8af7b53cba9f4146f5714edadbf4d5a7d7b1899914dc59a8ac5574260fe6b7d9995c51df5787b0b707adfbb72dbacbc61fc03f9f2b25291
+  languageName: node
+  linkType: hard
+
 "caseless@npm:~0.12.0":
   version: 0.12.0
   resolution: "caseless@npm:0.12.0"
@@ -8052,6 +8059,7 @@ __metadata:
     blurhash: 2.0.4
     broadcast-channel: 4.19.1
     browser-image-resizer: "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3"
+    canvas-confetti: ^1.6.0
     chart.js: 4.1.1
     chartjs-adapter-date-fns: 3.0.0
     chartjs-chart-matrix: ^1.3.0

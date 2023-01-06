@@ -20,6 +20,7 @@
 		"blurhash": "2.0.4",
 		"broadcast-channel": "4.19.1",
 		"browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
+		"canvas-confetti": "^1.6.0",
 		"chart.js": "4.1.1",
 		"chartjs-adapter-date-fns": "3.0.0",
 		"chartjs-chart-matrix": "^1.3.0",
