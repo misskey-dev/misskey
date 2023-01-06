@@ -110,7 +110,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
 import calcAge from 's-age';
-import confetti from 'canvas-confetti';
 import * as misskey from 'misskey-js';
 import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/MkNote.vue';
@@ -129,6 +128,7 @@ import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { dateString } from '@/filters/date';
+import { confetti } from '@/scripts/confetti';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -155,29 +155,6 @@ const style = $computed(() => {
 const age = $computed(() => {
 	return calcAge(props.user.birthday);
 });
-
-function birthdayEffect() {
-	const duration = 1000 * 5;
-	const animationEnd = Date.now() + duration;
-	const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: os.claimZIndex('high') };
-
-	function randomInRange(min, max) {
-		return Math.random() * (max - min) + min;
-	}
-
-	const interval = setInterval(() => {
-		const timeLeft = animationEnd - Date.now();
-
-		if (timeLeft <= 0) {
-			return clearInterval(interval);
-		}
-
-		const particleCount = 50 * (timeLeft / duration);
-		// since particles fall down, start a bit higher than random
-		confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-		confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-	}, 250);
-}
 
 function menu(ev) {
 	os.popupMenu(getUserMenu(props.user, router), ev.currentTarget ?? ev.target);
@@ -211,7 +188,7 @@ onMounted(() => {
 		const bm = parseInt(props.user.birthday.split('-')[1]);
 		const bd = parseInt(props.user.birthday.split('-')[2]);
 		if (m === bm && d === bd) {
-			birthdayEffect();
+			confetti();
 		}
 	}
 });
