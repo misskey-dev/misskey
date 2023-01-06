@@ -11,6 +11,13 @@ You should also include the user name that made the change.
 
 ## 13.0.0 (unreleased)
 
+### TL;DR
+- New features (Play, new widgets, new charts, etc)
+- Rewriten backend
+- Better performance (backend and frontend)
+- Various usability improvements
+- Various UI tweaks
+
 ### Changes
 #### For server admins
 - Node.js 18.x or later is required
