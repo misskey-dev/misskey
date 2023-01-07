@@ -84,6 +84,7 @@ provideMetadataReceiver((info) => {
 });
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
+provide('forceSpacerMin', true);
 
 const contextmenu = $computed(() => ([{
 	icon: 'ti ti-player-eject',
@@ -136,5 +137,7 @@ defineExpose({
 .yrolvcoq {
 	min-height: 100%;
 	background: var(--bg);
+
+	--margin: var(--marginHalf);
 }
 </style>
