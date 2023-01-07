@@ -14,6 +14,7 @@ export type Theme = {
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
 import { deepClone } from './clone';
+import { miLocalStorage } from '@/local-storage';
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
@@ -84,8 +85,8 @@ export function applyTheme(theme: Theme, persist = true) {
 	document.documentElement.style.setProperty('color-schema', colorSchema);
 
 	if (persist) {
-		localStorage.setItem('theme', JSON.stringify(props));
-		localStorage.setItem('colorSchema', colorSchema);
+		miLocalStorage.setItem('theme', JSON.stringify(props));
+		miLocalStorage.setItem('colorSchema', colorSchema);
 	}
 
 	// 色計算など再度行えるようにクライアント全体に通知

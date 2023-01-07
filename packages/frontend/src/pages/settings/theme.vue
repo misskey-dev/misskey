@@ -82,6 +82,7 @@ import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -120,7 +121,7 @@ const lightThemeId = computed({
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
-const wallpaper = ref(localStorage.getItem('wallpaper'));
+const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
@@ -131,9 +132,9 @@ watch(syncDeviceDarkMode, () => {
 
 watch(wallpaper, () => {
 	if (wallpaper.value == null) {
-		localStorage.removeItem('wallpaper');
+		miLocalStorage.removeItem('wallpaper');
 	} else {
-		localStorage.setItem('wallpaper', wallpaper.value);
+		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
 	location.reload();
 });

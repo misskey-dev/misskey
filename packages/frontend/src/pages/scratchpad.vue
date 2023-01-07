@@ -46,6 +46,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
 import MkAsUi from '@/components/MkAsUi.vue';
+import { miLocalStorage } from '@/local-storage';
 
 const parser = new Parser();
 let aiscript: Interpreter;
@@ -55,13 +56,13 @@ const root = ref<AsUiRoot>();
 let components: Ref<AsUiComponent>[] = [];
 let uiKey = $ref(0);
 
-const saved = localStorage.getItem('scratchpad');
+const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
 	code.value = saved;
 }
 
 watch(code, () => {
-	localStorage.setItem('scratchpad', code.value);
+	miLocalStorage.setItem('scratchpad', code.value);
 });
 
 async function run() {
