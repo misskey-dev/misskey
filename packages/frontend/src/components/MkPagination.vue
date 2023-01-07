@@ -14,14 +14,14 @@
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
+		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
 			<MkButton v-if="!moreFetching" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMoreAhead">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
+		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
 			<MkButton v-if="!moreFetching" v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>

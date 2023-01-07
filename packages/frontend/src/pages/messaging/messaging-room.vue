@@ -1,11 +1,11 @@
 <template>
 <div
 	ref="rootEl"
-	class="_section"
+	class=""
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<div class="_content mk-messaging-room">
+	<div class="mk-messaging-room">
 		<div class="body">
 			<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
 				<template #empty>

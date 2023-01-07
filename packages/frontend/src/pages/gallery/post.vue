@@ -10,7 +10,7 @@
 							<img :src="file.url"/>
 						</div>
 					</div>
-					<div class="body _block">
+					<div class="body">
 						<div class="title">{{ post.title }}</div>
 						<div class="description"><Mfm :text="post.description"/></div>
 						<div class="info">

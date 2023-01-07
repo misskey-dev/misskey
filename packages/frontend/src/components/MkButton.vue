@@ -2,7 +2,7 @@
 <button
 	v-if="!link"
 	ref="el" class="bghgjjyj _button"
-	:class="{ inline, primary, gradate, danger, rounded, full, small }"
+	:class="{ inline, primary, gradate, danger, rounded, full, small, large, asLike }"
 	:type="type"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
@@ -41,6 +41,8 @@ const props = defineProps<{
 	danger?: boolean;
 	full?: boolean;
 	small?: boolean;
+	large?: boolean;
+	asLike?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -131,6 +133,11 @@ function onMousedown(evt: MouseEvent): void {
 		padding: 6px 12px;
 	}
 
+	&.large {
+		font-size: 100%;
+		padding: 8px 16px;
+	}
+
 	&.full {
 		width: 100%;
 	}
@@ -150,6 +157,37 @@ function onMousedown(evt: MouseEvent): void {
 
 		&:not(:disabled):active {
 			background: var(--X8);
+		}
+	}
+
+	&.asLike {
+		background: rgba(255, 86, 125, 0.07);
+		color: #ff002f;
+
+		&:not(:disabled):hover {
+			background: rgba(255, 74, 116, 0.11);
+		}
+
+		&:not(:disabled):active {
+			background: rgba(224, 57, 96, 0.125);
+		}
+
+		> .ripples {
+			::v-deep(div) {
+				background: rgba(255, 60, 106, 0.15);
+			}
+		}
+
+		&.primary {
+			background: rgb(241 97 132);
+
+			&:not(:disabled):hover {
+				background: rgb(241 92 128);
+			}
+
+			&:not(:disabled):active {
+				background: rgb(241 92 128);
+			}
 		}
 	}
 

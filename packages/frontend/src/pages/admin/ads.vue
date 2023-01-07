@@ -3,15 +3,15 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="uqshojas">
-			<div v-for="ad in ads" class="_panel _formRoot ad">
+			<div v-for="ad in ads" class="_panel _gaps_m ad">
 				<MkAd v-if="ad.url" :specify="ad"/>
-				<MkInput v-model="ad.url" type="url" class="_formBlock">
+				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
 				</MkInput>
-				<MkInput v-model="ad.imageUrl" class="_formBlock">
+				<MkInput v-model="ad.imageUrl">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
-				<FormRadios v-model="ad.place" class="_formBlock">
+				<FormRadios v-model="ad.place">
 					<template #label>Form</template>
 					<option value="square">square</option>
 					<option value="horizontal">horizontal</option>
@@ -33,10 +33,10 @@
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
 				</FormSplit>
-				<MkTextarea v-model="ad.memo" class="_formBlock">
+				<MkTextarea v-model="ad.memo">
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
-				<div class="buttons _formBlock">
+				<div class="buttons">
 					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					<MkButton class="button" inline danger @click="remove(ad)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 				</div>

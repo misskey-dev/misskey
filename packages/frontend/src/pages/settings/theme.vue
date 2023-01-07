@@ -1,6 +1,6 @@
 <template>
-<div class="_formRoot rsljpzjq">
-	<div v-adaptive-border class="rfqxtzch _panel _formBlock">
+<div class="_gaps_m rsljpzjq">
+	<div v-adaptive-border class="rfqxtzch _panel">
 		<div class="toggle">
 			<div class="toggleWrapper">
 				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
@@ -26,7 +26,7 @@
 		</div>
 	</div>
 
-	<div class="selects _formBlock">
+	<div class="selects">
 		<FormSelect v-model="lightThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForLightMode }}</template>
 			<template #prefix><i class="ti ti-sun"></i></template>
@@ -60,8 +60,8 @@
 		</div>
 	</FormSection>
 
-	<FormButton v-if="wallpaper == null" class="_formBlock" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</FormButton>
-	<FormButton v-else class="_formBlock" @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</FormButton>
+	<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
+	<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
 </div>
 </template>
 
@@ -72,7 +72,7 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import { getBuiltinThemesRef } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
@@ -82,6 +82,7 @@ import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -120,7 +121,7 @@ const lightThemeId = computed({
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
-const wallpaper = ref(localStorage.getItem('wallpaper'));
+const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
@@ -131,9 +132,9 @@ watch(syncDeviceDarkMode, () => {
 
 watch(wallpaper, () => {
 	if (wallpaper.value == null) {
-		localStorage.removeItem('wallpaper');
+		miLocalStorage.removeItem('wallpaper');
 	} else {
-		localStorage.setItem('wallpaper', wallpaper.value);
+		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
 	location.reload();
 });

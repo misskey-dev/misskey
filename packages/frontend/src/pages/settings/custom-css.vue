@@ -1,8 +1,8 @@
 <template>
-<div class="_formRoot">
-	<FormInfo warn class="_formBlock">{{ i18n.ts.customCssWarn }}</FormInfo>
+<div class="_gaps_m">
+	<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
 
-	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace _formBlock" style="tab-size: 2;">
+	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
 		<template #label>CSS</template>
 	</FormTextarea>
 </div>
@@ -16,11 +16,12 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
-const localCustomCss = ref(localStorage.getItem('customCss') ?? '');
+const localCustomCss = ref(miLocalStorage.getItem('customCss') ?? '');
 
 async function apply() {
-	localStorage.setItem('customCss', localCustomCss.value);
+	miLocalStorage.setItem('customCss', localCustomCss.value);
 
 	const { canceled } = await os.confirm({
 		type: 'info',

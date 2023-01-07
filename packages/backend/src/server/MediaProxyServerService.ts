@@ -89,24 +89,33 @@ export class MediaProxyServerService {
 				}
 			}
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
+			const isAnimationConvertibleImage = isMimeImage(mime, 'sharp-animation-convertible-image');
 
 			let image: IImageStreamable | null = null;
 			if ('emoji' in request.query && isConvertibleImage) {
-				const data = pipeline(
-					Readable.fromWeb(response.body),
-					sharp({ animated: !('static' in request.query) })
-						.resize({
-							height: 128,
-							withoutEnlargement: true,
-						})
-						.webp(webpDefault),
-				);
+				if (!isAnimationConvertibleImage && !('static' in request.query)) {
+					image = {
+						data: Readable.fromWeb(response.body),
+						ext,
+						type: mime,
+					};
+				} else {
+					const data = pipeline(
+						Readable.fromWeb(response.body),
+						sharp({ animated: !('static' in request.query) })
+							.resize({
+								height: 128,
+								withoutEnlargement: true,
+							})
+							.webp(webpDefault),
+					);
 
-				image = {
-					data,
-					ext: 'webp',
-					type: 'image/webp',
-				};
+					image = {
+						data,
+						ext: 'webp',
+						type: 'image/webp',
+					};
+				}
 			} else if ('static' in request.query && isConvertibleImage) {
 				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {

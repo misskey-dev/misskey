@@ -11,18 +11,18 @@
 		<div v-else-if="tab === 'search'">
 			<MkSpacer :content-max="1200">
 				<div>
-					<MkInput v-model="searchQuery" :debounce="true" type="search" class="_formBlock">
+					<MkInput v-model="searchQuery" :debounce="true" type="search">
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.searchUser }}</template>
 					</MkInput>
-					<MkRadios v-model="searchOrigin" class="_formBlock">
+					<MkRadios v-model="searchOrigin">
 						<option value="combined">{{ i18n.ts.all }}</option>
 						<option value="local">{{ i18n.ts.local }}</option>
 						<option value="remote">{{ i18n.ts.remote }}</option>
 					</MkRadios>
 				</div>
 
-				<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
+				<XUserList v-if="searchQuery" ref="searchEl" class="_margin" :pagination="searchPagination"/>
 			</MkSpacer>
 		</div>
 	</div>

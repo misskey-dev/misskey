@@ -164,7 +164,6 @@ annotation: "Adnotări"
 federation: "Federație"
 instances: "Instanțe"
 registeredAt: "Înregistrat în"
-latestRequestSentAt: "Ultima cerere trimisă"
 latestRequestReceivedAt: "Ultima cerere primită"
 latestStatus: "Ultimul status"
 storageUsage: "Utilizare stocare"
@@ -648,6 +647,7 @@ middle: "Mediu"
 sent: "Trimite"
 searchByGoogle: "Caută"
 file: "Fișiere"
+show: "Arată"
 _email:
   _follow:
     title: "te-a urmărit"
@@ -691,6 +691,9 @@ _charts:
   federation: "Federație"
 _timelines:
   home: "Acasă"
+_play:
+  script: "Script"
+  summary: "Descriere"
 _pages:
   blocks:
     image: "Imagini"

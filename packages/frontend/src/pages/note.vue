@@ -5,19 +5,19 @@
 		<div class="fcuexfpr">
 			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note" class="note">
-					<div v-if="showNext" class="_gap">
-						<XNotes class="_content" :pagination="nextPagination" :no-gap="true"/>
+					<div v-if="showNext" class="_margin">
+						<XNotes class="" :pagination="nextPagination" :no-gap="true"/>
 					</div>
 
-					<div class="main _gap">
+					<div class="main _margin">
 						<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
-						<div class="note _gap">
+						<div class="note _margin">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
 							<XNoteDetailed :key="note.id" v-model:note="note" class="note"/>
 						</div>
-						<div v-if="clips && clips.length > 0" class="_content clips _gap">
+						<div v-if="clips && clips.length > 0" class="clips _margin">
 							<div class="title">{{ i18n.ts.clip }}</div>
-							<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
+							<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _margin">
 								<b>{{ item.name }}</b>
 								<div v-if="item.description" class="description">{{ item.description }}</div>
 								<div class="user">
@@ -28,8 +28,8 @@
 						<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
 					</div>
 
-					<div v-if="showPrev" class="_gap">
-						<XNotes class="_content" :pagination="prevPagination" :no-gap="true"/>
+					<div v-if="showPrev" class="_margin">
+						<XNotes class="" :pagination="prevPagination" :no-gap="true"/>
 					</div>
 				</div>
 				<MkError v-else-if="error" @retry="fetch()"/>

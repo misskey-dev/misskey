@@ -1,20 +1,23 @@
 <template>
-<div class="_formRoot">
-	<FormSection v-if="!fetching">
+<div class="_gaps_m">
+	<FormSection v-if="!fetching" first>
 		<template #label>{{ i18n.ts.usageAmount }}</template>
-		<div class="_formBlock uawsfosz">
-			<div class="meter"><div :style="meterStyle"></div></div>
+
+		<div class="_gaps_m">
+			<div class="uawsfosz">
+				<div class="meter"><div :style="meterStyle"></div></div>
+			</div>
+			<FormSplit>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.capacity }}</template>
+					<template #value>{{ bytes(capacity, 1) }}</template>
+				</MkKeyValue>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.inUse }}</template>
+					<template #value>{{ bytes(usage, 1) }}</template>
+				</MkKeyValue>
+			</FormSplit>
 		</div>
-		<FormSplit>
-			<MkKeyValue class="_formBlock">
-				<template #key>{{ i18n.ts.capacity }}</template>
-				<template #value>{{ bytes(capacity, 1) }}</template>
-			</MkKeyValue>
-			<MkKeyValue class="_formBlock">
-				<template #key>{{ i18n.ts.inUse }}</template>
-				<template #value>{{ bytes(usage, 1) }}</template>
-			</MkKeyValue>
-		</FormSplit>
 	</FormSection>
 
 	<FormSection>
@@ -23,22 +26,24 @@
 	</FormSection>
 
 	<FormSection>
-		<FormLink @click="chooseUploadFolder()">
-			{{ i18n.ts.uploadFolder }}
-			<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
-			<template #suffixIcon><i class="fas fa-folder-open"></i></template>
-		</FormLink>
-		<FormSwitch v-model="keepOriginalUploading" class="_formBlock">
-			<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
-			<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
-		</FormSwitch>
-		<FormSwitch v-model="alwaysMarkNsfw" class="_formBlock" @update:model-value="saveProfile()">
-			<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
-		</FormSwitch>
-		<FormSwitch v-model="autoSensitive" class="_formBlock" @update:model-value="saveProfile()">
-			<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
-			<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
-		</FormSwitch>
+		<div class="_gaps_m">
+			<FormLink @click="chooseUploadFolder()">
+				{{ i18n.ts.uploadFolder }}
+				<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
+				<template #suffixIcon><i class="fas fa-folder-open"></i></template>
+			</FormLink>
+			<FormSwitch v-model="keepOriginalUploading">
+				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
+				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
+			</FormSwitch>
+			<FormSwitch v-model="alwaysMarkNsfw" @update:model-value="saveProfile()">
+				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
+			</FormSwitch>
+			<FormSwitch v-model="autoSensitive" @update:model-value="saveProfile()">
+				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
+				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
+			</FormSwitch>
+		</div>
 	</FormSection>
 </div>
 </template>

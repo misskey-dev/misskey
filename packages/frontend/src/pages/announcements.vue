@@ -2,14 +2,14 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<MkPagination v-slot="{items}" :pagination="pagination" class="ruryvtyk _content">
-			<section v-for="(announcement, i) in items" :key="announcement.id" class="_card announcement">
-				<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
-				<div class="_content">
+		<MkPagination v-slot="{items}" :pagination="pagination" class="ruryvtyk _gaps_m">
+			<section v-for="(announcement, i) in items" :key="announcement.id" class="announcement _panel">
+				<div class="header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
+				<div class="content">
 					<Mfm :text="announcement.text"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 				</div>
-				<div v-if="$i && !announcement.isRead" class="_footer">
+				<div v-if="$i && !announcement.isRead" class="footer">
 					<MkButton primary @click="read(items, announcement, i)"><i class="ti ti-check"></i> {{ $ts.gotIt }}</MkButton>
 				</div>
 			</section>
@@ -53,16 +53,23 @@ definePageMetadata({
 <style lang="scss" scoped>
 .ruryvtyk {
 	> .announcement {
-		&:not(:last-child) {
-			margin-bottom: var(--margin);
+		> .header {
+			padding: 16px;
+			font-weight: bold;
 		}
 
-		> ._content {
+		> .content {
+			padding: 0 16px;
+		
 			> img {
 				display: block;
 				max-height: 300px;
 				max-width: 100%;
 			}
+		}
+
+		> .footer {
+			padding: 16px;
 		}
 	}
 }

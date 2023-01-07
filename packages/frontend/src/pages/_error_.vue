@@ -26,6 +26,7 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
 const props = withDefaults(defineProps<{
 	error?: Error;
@@ -42,7 +43,7 @@ os.api('meta', {
 	loaded = true;
 	serverIsDead = false;
 	meta = res;
-	localStorage.setItem('v', res.version);
+	miLocalStorage.setItem('v', res.version);
 }, () => {
 	loaded = true;
 	serverIsDead = true;

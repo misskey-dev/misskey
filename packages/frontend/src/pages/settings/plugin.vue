@@ -1,28 +1,28 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.manage }}</template>
-		<div v-for="plugin in plugins" :key="plugin.id" class="_formBlock _panel" style="padding: 20px;">
+		<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_s" style="padding: 20px;">
 			<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
-			<FormSwitch class="_formBlock" :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</FormSwitch>
+			<FormSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</FormSwitch>
 
-			<MkKeyValue class="_formBlock">
+			<MkKeyValue>
 				<template #key>{{ i18n.ts.author }}</template>
 				<template #value>{{ plugin.author }}</template>
 			</MkKeyValue>
-			<MkKeyValue class="_formBlock">
+			<MkKeyValue>
 				<template #key>{{ i18n.ts.description }}</template>
 				<template #value>{{ plugin.description }}</template>
 			</MkKeyValue>
-			<MkKeyValue class="_formBlock">
+			<MkKeyValue>
 				<template #key>{{ i18n.ts.permission }}</template>
 				<template #value>{{ plugin.permission }}</template>
 			</MkKeyValue>
 
-			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<div class="_buttons">
 				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
 				<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 			</div>

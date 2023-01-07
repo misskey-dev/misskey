@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="400"
 	:height="450"
@@ -16,13 +16,13 @@
 			<template #label>{{ i18n.ts.caption }}</template>
 		</MkTextarea>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { i18n } from '@/i18n';
@@ -37,7 +37,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
 let caption = $ref(props.default);
 

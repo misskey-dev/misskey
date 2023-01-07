@@ -2,25 +2,27 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="600" :margin-min="16">
-		<FormSplit>
-			<MkKeyValue class="_formBlock">
-				<template #key>{{ i18n.ts._registry.domain }}</template>
-				<template #value>{{ i18n.ts.system }}</template>
-			</MkKeyValue>
-			<MkKeyValue class="_formBlock">
-				<template #key>{{ i18n.ts._registry.scope }}</template>
-				<template #value>{{ scope.join('/') }}</template>
-			</MkKeyValue>
-		</FormSplit>
-		
-		<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
+		<div class="_gaps_m">
+			<FormSplit>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts._registry.domain }}</template>
+					<template #value>{{ i18n.ts.system }}</template>
+				</MkKeyValue>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts._registry.scope }}</template>
+					<template #value>{{ scope.join('/') }}</template>
+				</MkKeyValue>
+			</FormSplit>
+			
+			<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
-		<FormSection v-if="keys">
-			<template #label>{{ i18n.ts.keys }}</template>
-			<div class="_formLinks">
-				<FormLink v-for="key in keys" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
-			</div>
-		</FormSection>
+			<FormSection v-if="keys">
+				<template #label>{{ i18n.ts.keys }}</template>
+				<div class="_formLinks">
+					<FormLink v-for="key in keys" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
+				</div>
+			</FormSection>
+		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>

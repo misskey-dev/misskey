@@ -1,11 +1,11 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<MkInfo>{{ i18n.ts._instanceMute.title }}</MkInfo>
-	<FormTextarea v-model="instanceMutes" class="_formBlock">
+	<FormTextarea v-model="instanceMutes">
 		<template #label>{{ i18n.ts._instanceMute.heading }}</template>
 		<template #caption>{{ i18n.ts._instanceMute.instanceMuteDescription }}<br>{{ i18n.ts._instanceMute.instanceMuteDescription2 }}</template>
 	</FormTextarea>
-	<MkButton primary :disabled="!changed" class="_formBlock" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton primary :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
