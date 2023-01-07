@@ -98,6 +98,7 @@ You should also include the user name that made the change.
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: Page編集でブロックの移動が行えない問題を修正 @syuilo
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo
