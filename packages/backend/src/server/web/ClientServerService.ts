@@ -251,10 +251,6 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			return await reply.redirect(301, emoji.publicUrl || emoji.originalUrl);
-
-			/* https://github.com/misskey-dev/misskey/pull/9431#issuecomment-1373006446
 			const url = new URL('/proxy/emoji.webp', this.config.url);
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
@@ -265,7 +261,6 @@ export class ClientServerService {
 				301,
 				url.toString(),
 			);
-			*/
 		});
 
 		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
@@ -362,7 +357,7 @@ export class ClientServerService {
 			const name = meta.name || 'Misskey';
 			let content = '';
 			content += '<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">';
-			content += `<ShortName>${name} Search</ShortName>`;
+			content += `<ShortName>${name}</ShortName>`;
 			content += `<Description>${name} Search</Description>`;
 			content += '<InputEncoding>UTF-8</InputEncoding>';
 			content += `<Image width="16" height="16" type="image/x-icon">${this.config.url}/favicon.ico</Image>`;
