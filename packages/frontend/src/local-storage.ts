@@ -4,6 +4,8 @@ type Keys =
 	'instance' |
 	'account' |
 	'accounts' |
+	'latestDonationInfoShownAt' |
+	'neverShowDonationInfo' |
 	'lastUsed' |
 	'lang' |
 	'drafts' |

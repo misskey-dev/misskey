@@ -86,14 +86,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: [] as string[],
 	},
-	latestDonateDialogShowAt: {
-		where: 'account',
-		default: null,
-	},
-	neverShowDonateDialog: {
-		where: 'account',
-		default: false,
-	},
 
 	menu: {
 		where: 'deviceAccount',

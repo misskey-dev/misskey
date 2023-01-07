@@ -920,6 +920,10 @@ like: "いいね！"
 unlike: "いいねを解除"
 numberOfLikes: "いいね数"
 show: "表示"
+neverShow: "今後表示しない"
+remindMeLater: "また後で"
+didYouLikeMisskey: "Misskeyを気に入っていただけましたか？"
+pleaseDonate: "Misskeyは{host}が使用している無料のソフトウェアです。これからも開発を続けられるように、ぜひ寄付をお願いします！"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
