@@ -23,12 +23,12 @@
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
 				<div class="_gaps_s">
-					<FormSwitch v-model="excludeMutingUsers">
+					<MkSwitch v-model="excludeMutingUsers">
 						{{ i18n.ts._exportOrImport.excludeMutingUsers }}
-					</FormSwitch>
-					<FormSwitch v-model="excludeInactiveUsers">
+					</MkSwitch>
+					<MkSwitch v-model="excludeInactiveUsers">
 						{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
-					</FormSwitch>
+					</MkSwitch>
 					<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 				</div>
 			</FormFolder>
@@ -92,7 +92,7 @@ import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormFolder from '@/components/form/folder.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import { i18n } from '@/i18n';

@@ -10,33 +10,33 @@
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch :model-value="$i.receiveAnnouncementEmail" @update:model-value="onChangeReceiveAnnouncementEmail">
+		<MkSwitch :model-value="$i.receiveAnnouncementEmail" @update:model-value="onChangeReceiveAnnouncementEmail">
 			{{ i18n.ts.receiveAnnouncementFromInstance }}
-		</FormSwitch>
+		</MkSwitch>
 	</FormSection>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.emailNotification }}</template>
 
 		<div class="_gaps_s">
-			<FormSwitch v-model="emailNotification_mention">
+			<MkSwitch v-model="emailNotification_mention">
 				{{ i18n.ts._notification._types.mention }}
-			</FormSwitch>
-			<FormSwitch v-model="emailNotification_reply">
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_reply">
 				{{ i18n.ts._notification._types.reply }}
-			</FormSwitch>
-			<FormSwitch v-model="emailNotification_quote">
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_quote">
 				{{ i18n.ts._notification._types.quote }}
-			</FormSwitch>
-			<FormSwitch v-model="emailNotification_follow">
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_follow">
 				{{ i18n.ts._notification._types.follow }}
-			</FormSwitch>
-			<FormSwitch v-model="emailNotification_receiveFollowRequest">
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_receiveFollowRequest">
 				{{ i18n.ts._notification._types.receiveFollowRequest }}
-			</FormSwitch>
-			<FormSwitch v-model="emailNotification_groupInvited">
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_groupInvited">
 				{{ i18n.ts._notification._types.groupInvited }}
-			</FormSwitch>
+			</MkSwitch>
 		</div>
 	</FormSection>
 </div>
@@ -46,7 +46,7 @@
 import { onMounted, ref, watch } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import FormInput from '@/components/form/input.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';

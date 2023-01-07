@@ -20,16 +20,16 @@
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 	</FormRadios>
 
-	<FormSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</FormSwitch>
+	<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
-				<FormSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</FormSwitch>
-				<FormSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</FormSwitch>
-				<FormSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</FormSwitch>
+				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
+				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
+				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
 			</div>
 			<FormSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -45,16 +45,16 @@
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
-				<FormSwitch v-model="disableAnimatedMfm">{{ i18n.ts.disableAnimatedMfm }}</FormSwitch>
-				<FormSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</FormSwitch>
-				<FormSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</FormSwitch>
-				<FormSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</FormSwitch>
-				<FormSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</FormSwitch>
-				<FormSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</FormSwitch>
-				<FormSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
-				<FormSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</FormSwitch>
-				<FormSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</FormSwitch>
-				<FormSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</FormSwitch>
+				<MkSwitch v-model="disableAnimatedMfm">{{ i18n.ts.disableAnimatedMfm }}</MkSwitch>
+				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
+				<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
+				<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>
+				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
+				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+				<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
+				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
+				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
+				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 			</div>
 			<div>
 				<FormRadios v-model="emojiStyle">
@@ -77,7 +77,7 @@
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</FormSwitch>
+		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
 	</FormSection>
 
 	<FormSelect v-model="instanceTicker">
@@ -107,7 +107,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormRange from '@/components/form/range.vue';

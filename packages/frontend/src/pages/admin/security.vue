@@ -38,20 +38,20 @@
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
 						</FormRange>
 
-						<FormSwitch v-model="enableSensitiveMediaDetectionForVideos">
+						<MkSwitch v-model="enableSensitiveMediaDetectionForVideos">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.analyzeVideosDescription }}</template>
-						</FormSwitch>
+						</MkSwitch>
 
-						<FormSwitch v-model="setSensitiveFlagAutomatically">
+						<MkSwitch v-model="setSensitiveFlagAutomatically">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomatically }} ({{ i18n.ts.notRecommended }})</template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.setSensitiveFlagAutomaticallyDescription }}</template>
-						</FormSwitch>
+						</MkSwitch>
 
 						<!-- 現状 false positive が多すぎて実用に耐えない
-						<FormSwitch v-model="disallowUploadWhenPredictedAsPorn">
+						<MkSwitch v-model="disallowUploadWhenPredictedAsPorn">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.disallowUploadWhenPredictedAsPorn }}</template>
-						</FormSwitch>
+						</MkSwitch>
 						-->
 
 						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -65,9 +65,9 @@
 
 					<div class="_gaps_m">
 						<span>{{ i18n.ts.activeEmailValidationDescription }}</span>
-						<FormSwitch v-model="enableActiveEmailValidation" @update:model-value="save">
+						<MkSwitch v-model="enableActiveEmailValidation" @update:model-value="save">
 							<template #label>Enable</template>
-						</FormSwitch>
+						</MkSwitch>
 					</div>
 				</FormFolder>
 
@@ -77,9 +77,9 @@
 					<template v-else #suffix>Disabled</template>
 
 					<div class="_gaps_m">
-						<FormSwitch v-model="enableIpLogging" @update:model-value="save">
+						<MkSwitch v-model="enableIpLogging" @update:model-value="save">
 							<template #label>Enable</template>
-						</FormSwitch>
+						</MkSwitch>
 					</div>
 				</FormFolder>
 
@@ -107,7 +107,7 @@ import XBotProtection from './bot-protection.vue';
 import XHeader from './_header_.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormRadios from '@/components/form/radios.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormRange from '@/components/form/range.vue';

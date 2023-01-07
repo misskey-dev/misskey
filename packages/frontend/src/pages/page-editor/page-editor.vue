@@ -62,7 +62,7 @@ import XBlocks from './page-editor.blocks.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/form/input.vue';
 import { url } from '@/config';
 import * as os from '@/os';

@@ -51,7 +51,7 @@
 import { ref, watch } from 'vue';
 import MkInput from './form/input.vue';
 import MkSelect from './form/select.vue';
-import MkSwitch from './form/switch.vue';
+import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string';
 import { addTime } from '@/scripts/time';

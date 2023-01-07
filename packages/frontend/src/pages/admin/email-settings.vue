@@ -4,10 +4,10 @@
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
-				<FormSwitch v-model="enableEmail">
+				<MkSwitch v-model="enableEmail">
 					<template #label>{{ i18n.ts.enableEmail }} ({{ i18n.ts.recommended }})</template>
 					<template #caption>{{ i18n.ts.emailConfigInfo }}</template>
-				</FormSwitch>
+				</MkSwitch>
 
 				<template v-if="enableEmail">
 					<FormInput v-model="email" type="email">
@@ -35,10 +35,10 @@
 								</FormInput>
 							</FormSplit>
 							<FormInfo>{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
-							<FormSwitch v-model="smtpSecure">
+							<MkSwitch v-model="smtpSecure">
 								<template #label>{{ i18n.ts.smtpSecure }}</template>
 								<template #caption>{{ i18n.ts.smtpSecureInfo }}</template>
-							</FormSwitch>
+							</MkSwitch>
 						</div>
 					</FormSection>
 				</template>
@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';

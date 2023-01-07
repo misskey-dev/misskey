@@ -36,20 +36,20 @@
 
 					<FormSection>
 						<div class="_gaps_s">
-							<FormSwitch v-model="enableRegistration">
+							<MkSwitch v-model="enableRegistration">
 								<template #label>{{ i18n.ts.enableRegistration }}</template>
-							</FormSwitch>
+							</MkSwitch>
 
-							<FormSwitch v-model="emailRequiredForSignup">
+							<MkSwitch v-model="emailRequiredForSignup">
 								<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
-							</FormSwitch>
+							</MkSwitch>
 						</div>
 					</FormSection>
 
 					<FormSection>
 						<div class="_gaps_s">
-							<FormSwitch v-model="enableLocalTimeline">{{ i18n.ts.enableLocalTimeline }}</FormSwitch>
-							<FormSwitch v-model="enableGlobalTimeline">{{ i18n.ts.enableGlobalTimeline }}</FormSwitch>
+							<MkSwitch v-model="enableLocalTimeline">{{ i18n.ts.enableLocalTimeline }}</MkSwitch>
+							<MkSwitch v-model="enableGlobalTimeline">{{ i18n.ts.enableGlobalTimeline }}</MkSwitch>
 							<FormInfo>{{ i18n.ts.disablingTimelinesInfo }}</FormInfo>
 						</div>
 					</FormSection>
@@ -95,10 +95,10 @@
 						<template #label>{{ i18n.ts.files }}</template>
 
 						<div class="_gaps_m">
-							<FormSwitch v-model="cacheRemoteFiles">
+							<MkSwitch v-model="cacheRemoteFiles">
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
-							</FormSwitch>
+							</MkSwitch>
 
 							<FormSplit :min-width="280">
 								<FormInput v-model="localDriveCapacityMb" type="number">
@@ -120,10 +120,10 @@
 						<template #label>ServiceWorker</template>
 
 						<div class="_gaps_m">
-							<FormSwitch v-model="enableServiceWorker">
+							<MkSwitch v-model="enableServiceWorker">
 								<template #label>{{ i18n.ts.enableServiceworker }}</template>
 								<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
-							</FormSwitch>
+							</MkSwitch>
 
 							<template v-if="enableServiceWorker">
 								<FormInput v-model="swPublicKey">
@@ -147,9 +147,9 @@
 								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label>DeepL Auth Key</template>
 							</FormInput>
-							<FormSwitch v-model="deeplIsPro">
+							<MkSwitch v-model="deeplIsPro">
 								<template #label>Pro account</template>
-							</FormSwitch>
+							</MkSwitch>
 						</div>
 					</FormSection>
 				</div>
@@ -162,7 +162,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormInfo from '@/components/MkInfo.vue';

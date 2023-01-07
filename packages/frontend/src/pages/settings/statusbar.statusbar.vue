@@ -84,7 +84,7 @@
 import { computed, reactive, ref, watch } from 'vue';
 import FormSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormRadios from '@/components/form/radios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormRange from '@/components/form/range.vue';

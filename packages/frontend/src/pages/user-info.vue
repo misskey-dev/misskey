@@ -87,9 +87,9 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_gaps_m">
-				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
-				<FormSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
-				<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
+				<MkSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</MkSwitch>
+				<MkSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</MkSwitch>
+				<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div>
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
@@ -159,7 +159,7 @@ import * as misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormTextarea from '@/components/form/textarea.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';

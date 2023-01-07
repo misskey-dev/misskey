@@ -39,10 +39,10 @@
 		<option :value="4">{{ i18n.ts.large }}+</option>
 	</FormRadios>
 
-	<FormSwitch v-model="reactionPickerUseDrawerForMobile">
+	<MkSwitch v-model="reactionPickerUseDrawerForMobile">
 		{{ i18n.ts.useDrawerReactionPickerForMobile }}
 		<template #caption>{{ i18n.ts.needReloadToApply }}</template>
-	</FormSwitch>
+	</MkSwitch>
 
 	<FormSection>
 		<div class="_buttons">
@@ -61,7 +61,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';

@@ -29,10 +29,10 @@
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</FormTextarea>
-				<FormSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
+				<MkSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
 					<span v-text="form[item].label || item"></span>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormSwitch>
+				</MkSwitch>
 				<FormSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
@@ -58,7 +58,7 @@
 import { defineComponent } from 'vue';
 import FormInput from './form/input.vue';
 import FormTextarea from './form/textarea.vue';
-import FormSwitch from './form/switch.vue';
+import MkSwitch from './MkSwitch.vue';
 import FormSelect from './form/select.vue';
 import FormRange from './form/range.vue';
 import MkButton from './MkButton.vue';
@@ -70,7 +70,7 @@ export default defineComponent({
 		MkModalWindow,
 		FormInput,
 		FormTextarea,
-		FormSwitch,
+		MkSwitch,
 		FormSelect,
 		FormRange,
 		MkButton,

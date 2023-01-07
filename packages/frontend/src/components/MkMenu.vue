@@ -31,7 +31,7 @@
 				<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 			<span v-else-if="item.type === 'switch'" :tabindex="i" class="item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
+				<MkSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</MkSwitch>
 			</span>
 			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button item parent" :class="{ childShowing: childShowingItem === item }" @mouseenter="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>
@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<div class="sync">
-			<FormSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</FormSwitch>
+			<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
 		</div>
 	</div>
 
@@ -68,7 +68,7 @@
 <script lang="ts" setup>
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';

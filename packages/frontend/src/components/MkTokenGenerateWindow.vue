@@ -37,7 +37,7 @@
 import { } from 'vue';
 import { permissions as kinds } from 'misskey-js';
 import MkInput from './form/input.vue';
-import MkSwitch from './form/switch.vue';
+import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';

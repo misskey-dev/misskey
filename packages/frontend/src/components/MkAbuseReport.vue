@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import { acct, userPage } from '@/filters/user';
 import * as os from '@/os';

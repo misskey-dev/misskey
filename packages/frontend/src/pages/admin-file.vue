@@ -64,7 +64,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';

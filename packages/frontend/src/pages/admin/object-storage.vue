@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
-				<FormSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</FormSwitch>
+				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
 
 				<template v-if="useObjectStorage">
 					<FormInput v-model="objectStorageBaseUrl">
@@ -44,23 +44,23 @@
 						</FormInput>
 					</FormSplit>
 
-					<FormSwitch v-model="objectStorageUseSSL">
+					<MkSwitch v-model="objectStorageUseSSL">
 						<template #label>{{ i18n.ts.objectStorageUseSSL }}</template>
 						<template #caption>{{ i18n.ts.objectStorageUseSSLDesc }}</template>
-					</FormSwitch>
+					</MkSwitch>
 
-					<FormSwitch v-model="objectStorageUseProxy">
+					<MkSwitch v-model="objectStorageUseProxy">
 						<template #label>{{ i18n.ts.objectStorageUseProxy }}</template>
 						<template #caption>{{ i18n.ts.objectStorageUseProxyDesc }}</template>
-					</FormSwitch>
+					</MkSwitch>
 
-					<FormSwitch v-model="objectStorageSetPublicRead">
+					<MkSwitch v-model="objectStorageSetPublicRead">
 						<template #label>{{ i18n.ts.objectStorageSetPublicRead }}</template>
-					</FormSwitch>
+					</MkSwitch>
 
-					<FormSwitch v-model="objectStorageS3ForcePathStyle">
+					<MkSwitch v-model="objectStorageS3ForcePathStyle">
 						<template #label>s3ForcePathStyle</template>
-					</FormSwitch>
+					</MkSwitch>
 				</template>
 			</div>
 		</FormSuspense>
@@ -71,7 +71,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';

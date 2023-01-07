@@ -1,9 +1,9 @@
 <template>
 <FormSuspense :p="init">
 	<div class="_gaps_m">
-		<FormSwitch v-model="enableGithubIntegration">
+		<MkSwitch v-model="enableGithubIntegration">
 			<template #label>{{ i18n.ts.enable }}</template>
-		</FormSwitch>
+		</MkSwitch>
 
 		<template v-if="enableGithubIntegration">
 			<FormInfo>Callback URL: {{ `${uri}/api/gh/cb` }}</FormInfo>
@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormInput from '@/components/form/input.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
