@@ -1,17 +1,17 @@
 <template>
 <div class="_gaps_m">
-	<FormInput v-model="name">
+	<MkInput v-model="name">
 		<template #label>Name</template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="url" type="url">
+	<MkInput v-model="url" type="url">
 		<template #label>URL</template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="secret">
+	<MkInput v-model="secret">
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
-	</FormInput>
+	</MkInput>
 
 	<FormSection>
 		<template #label>Events</template>
@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';

@@ -8,15 +8,15 @@
 		<template v-if="enableDiscordIntegration">
 			<FormInfo>Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
-			<FormInput v-model="discordClientId">
+			<MkInput v-model="discordClientId">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client ID</template>
-			</FormInput>
+			</MkInput>
 
-			<FormInput v-model="discordClientSecret">
+			<MkInput v-model="discordClientSecret">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client Secret</template>
-			</FormInput>
+			</MkInput>
 		</template>
 
 		<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';

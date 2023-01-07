@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import MkHeatmap from '@/components/MkHeatmap.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 let src = $ref('active-users');
 </script>

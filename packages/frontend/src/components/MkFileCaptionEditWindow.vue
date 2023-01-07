@@ -23,7 +23,7 @@
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { i18n } from '@/i18n';
 

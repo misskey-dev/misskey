@@ -10,29 +10,29 @@
 				</MkSwitch>
 
 				<template v-if="enableEmail">
-					<FormInput v-model="email" type="email">
+					<MkInput v-model="email" type="email">
 						<template #label>{{ i18n.ts.emailAddress }}</template>
-					</FormInput>
+					</MkInput>
 
 					<FormSection>
 						<template #label>{{ i18n.ts.smtpConfig }}</template>
 
 						<div class="_gaps_m">
 							<FormSplit :min-width="280">
-								<FormInput v-model="smtpHost">
+								<MkInput v-model="smtpHost">
 									<template #label>{{ i18n.ts.smtpHost }}</template>
-								</FormInput>
-								<FormInput v-model="smtpPort" type="number">
+								</MkInput>
+								<MkInput v-model="smtpPort" type="number">
 									<template #label>{{ i18n.ts.smtpPort }}</template>
-								</FormInput>
+								</MkInput>
 							</FormSplit>
 							<FormSplit :min-width="280">
-								<FormInput v-model="smtpUser">
+								<MkInput v-model="smtpUser">
 									<template #label>{{ i18n.ts.smtpUser }}</template>
-								</FormInput>
-								<FormInput v-model="smtpPass" type="password">
+								</MkInput>
+								<MkInput v-model="smtpPass" type="password">
 									<template #label>{{ i18n.ts.smtpPass }}</template>
-								</FormInput>
+								</MkInput>
 							</FormSplit>
 							<FormInfo>{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
 							<MkSwitch v-model="smtpSecure">
@@ -52,7 +52,7 @@
 import { } from 'vue';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';

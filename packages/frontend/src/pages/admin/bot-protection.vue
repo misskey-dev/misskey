@@ -2,50 +2,50 @@
 <div>
 	<FormSuspense :p="init">
 		<div class="_gaps_m">
-			<FormRadios v-model="provider">
+			<MkRadios v-model="provider">
 				<option :value="null">{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</option>
 				<option value="hcaptcha">hCaptcha</option>
 				<option value="recaptcha">reCAPTCHA</option>
 				<option value="turnstile">Turnstile</option>
-			</FormRadios>
+			</MkRadios>
 
 			<template v-if="provider === 'hcaptcha'">
-				<FormInput v-model="hcaptchaSiteKey">
+				<MkInput v-model="hcaptchaSiteKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSiteKey }}</template>
-				</FormInput>
-				<FormInput v-model="hcaptchaSecretKey">
+				</MkInput>
+				<MkInput v-model="hcaptchaSecretKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
-				</FormInput>
+				</MkInput>
 				<FormSlot>
 					<template #label>{{ i18n.ts.preview }}</template>
 					<MkCaptcha provider="hcaptcha" :sitekey="hcaptchaSiteKey || '10000000-ffff-ffff-ffff-000000000001'"/>
 				</FormSlot>
 			</template>
 			<template v-else-if="provider === 'recaptcha'">
-				<FormInput v-model="recaptchaSiteKey">
+				<MkInput v-model="recaptchaSiteKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSiteKey }}</template>
-				</FormInput>
-				<FormInput v-model="recaptchaSecretKey">
+				</MkInput>
+				<MkInput v-model="recaptchaSecretKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSecretKey }}</template>
-				</FormInput>
+				</MkInput>
 				<FormSlot v-if="recaptchaSiteKey">
 					<template #label>{{ i18n.ts.preview }}</template>
 					<MkCaptcha provider="recaptcha" :sitekey="recaptchaSiteKey"/>
 				</FormSlot>
 			</template>
 			<template v-else-if="provider === 'turnstile'">
-				<FormInput v-model="turnstileSiteKey">
+				<MkInput v-model="turnstileSiteKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSiteKey }}</template>
-				</FormInput>
-				<FormInput v-model="turnstileSecretKey">
+				</MkInput>
+				<MkInput v-model="turnstileSecretKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
-				</FormInput>
+				</MkInput>
 				<FormSlot>
 					<template #label>{{ i18n.ts.preview }}</template>
 					<MkCaptcha provider="turnstile" :sitekey="turnstileSiteKey || '1x00000000000000000000AA'"/>
@@ -60,8 +60,8 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormInput from '@/components/form/input.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSlot from '@/components/form/slot.vue';

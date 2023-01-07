@@ -2,11 +2,11 @@
 <div class="_gaps_m">
 	<FormSection first>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
-		<FormInput v-model="emailAddress" type="email" manual-save>
+		<MkInput v-model="emailAddress" type="email" manual-save>
 			<template #prefix><i class="ti ti-mail"></i></template>
 			<template v-if="$i.email && !$i.emailVerified" #caption>{{ i18n.ts.verificationEmailSent }}</template>
 			<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="ti ti-check" style="color: var(--success);"></i> {{ i18n.ts.emailVerified }}</template>
-		</FormInput>
+		</MkInput>
 	</FormSection>
 
 	<FormSection>
@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 import FormSection from '@/components/form/section.vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { $i } from '@/account';

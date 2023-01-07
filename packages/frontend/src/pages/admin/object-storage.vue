@@ -7,41 +7,41 @@
 				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
 
 				<template v-if="useObjectStorage">
-					<FormInput v-model="objectStorageBaseUrl">
+					<MkInput v-model="objectStorageBaseUrl">
 						<template #label>{{ i18n.ts.objectStorageBaseUrl }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStorageBucket">
+					<MkInput v-model="objectStorageBucket">
 						<template #label>{{ i18n.ts.objectStorageBucket }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBucketDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStoragePrefix">
+					<MkInput v-model="objectStoragePrefix">
 						<template #label>{{ i18n.ts.objectStoragePrefix }}</template>
 						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStorageEndpoint">
+					<MkInput v-model="objectStorageEndpoint">
 						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
 						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStorageRegion">
+					<MkInput v-model="objectStorageRegion">
 						<template #label>{{ i18n.ts.objectStorageRegion }}</template>
 						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
-					</FormInput>
+					</MkInput>
 
 					<FormSplit :min-width="280">
-						<FormInput v-model="objectStorageAccessKey">
+						<MkInput v-model="objectStorageAccessKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
-						</FormInput>
+						</MkInput>
 
-						<FormInput v-model="objectStorageSecretKey">
+						<MkInput v-model="objectStorageSecretKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Secret key</template>
-						</FormInput>
+						</MkInput>
 					</FormSplit>
 
 					<MkSwitch v-model="objectStorageUseSSL">
@@ -72,7 +72,7 @@
 import { } from 'vue';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';

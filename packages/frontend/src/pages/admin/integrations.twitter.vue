@@ -8,15 +8,15 @@
 		<template v-if="enableTwitterIntegration">
 			<FormInfo>Callback URL: {{ `${uri}/api/tw/cb` }}</FormInfo>
 		
-			<FormInput v-model="twitterConsumerKey">
+			<MkInput v-model="twitterConsumerKey">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Consumer Key</template>
-			</FormInput>
+			</MkInput>
 
-			<FormInput v-model="twitterConsumerSecret">
+			<MkInput v-model="twitterConsumerSecret">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Consumer Secret</template>
-			</FormInput>
+			</MkInput>
 		</template>
 
 		<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { defineComponent } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';

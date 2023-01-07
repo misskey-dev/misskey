@@ -1,6 +1,6 @@
 <template>
 <div class="_gaps_m">
-	<FormSelect v-model="lang">
+	<MkSelect v-model="lang">
 		<template #label>{{ i18n.ts.uiLanguage }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 		<template #caption>
@@ -10,15 +10,15 @@
 				</template>
 			</I18n>
 		</template>
-	</FormSelect>
+	</MkSelect>
 
-	<FormRadios v-model="overridedDeviceKind">
+	<MkRadios v-model="overridedDeviceKind">
 		<template #label>{{ i18n.ts.overridedDeviceKind }}</template>
 		<option :value="null">{{ i18n.ts.auto }}</option>
 		<option value="smartphone"><i class="ti ti-device-mobile"/> {{ i18n.ts.smartphone }}</option>
 		<option value="tablet"><i class="ti ti-device-tablet"/> {{ i18n.ts.tablet }}</option>
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
-	</FormRadios>
+	</MkRadios>
 
 	<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 
@@ -31,12 +31,12 @@
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
 			</div>
-			<FormSelect v-model="serverDisconnectedBehavior">
+			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
 				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
 				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
 				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-			</FormSelect>
+			</MkSelect>
 		</div>
 	</FormSection>
 
@@ -57,22 +57,22 @@
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 			</div>
 			<div>
-				<FormRadios v-model="emojiStyle">
+				<MkRadios v-model="emojiStyle">
 					<template #label>{{ i18n.ts.emojiStyle }}</template>
 					<option value="native">{{ i18n.ts.native }}</option>
 					<option value="fluentEmoji">Fluent Emoji</option>
 					<option value="twemoji">Twemoji</option>
-				</FormRadios>
+				</MkRadios>
 				<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 			</div>
 
-			<FormRadios v-model="fontSize">
+			<MkRadios v-model="fontSize">
 				<template #label>{{ i18n.ts.fontSize }}</template>
 				<option :value="null"><span style="font-size: 14px;">Aa</span></option>
 				<option value="1"><span style="font-size: 15px;">Aa</span></option>
 				<option value="2"><span style="font-size: 16px;">Aa</span></option>
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
-			</FormRadios>
+			</MkRadios>
 		</div>
 	</FormSection>
 
@@ -80,24 +80,24 @@
 		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
 	</FormSection>
 
-	<FormSelect v-model="instanceTicker">
+	<MkSelect v-model="instanceTicker">
 		<template #label>{{ i18n.ts.instanceTicker }}</template>
 		<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
 		<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
 		<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-	</FormSelect>
+	</MkSelect>
 
-	<FormSelect v-model="nsfw">
+	<MkSelect v-model="nsfw">
 		<template #label>{{ i18n.ts.nsfw }}</template>
 		<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
 		<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
 		<option value="force">{{ i18n.ts._nsfw.force }}</option>
-	</FormSelect>
+	</MkSelect>
 
-	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+	<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
 		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-	</FormRange>
+	</MkRange>
 
 	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 
@@ -108,9 +108,9 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormRange from '@/components/form/range.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkRange from '@/components/MkRange.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';

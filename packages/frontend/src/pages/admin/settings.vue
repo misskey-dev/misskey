@@ -5,34 +5,34 @@
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<FormInput v-model="name">
+					<MkInput v-model="name">
 						<template #label>{{ i18n.ts.instanceName }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormTextarea v-model="description">
+					<MkTextarea v-model="description">
 						<template #label>{{ i18n.ts.instanceDescription }}</template>
-					</FormTextarea>
+					</MkTextarea>
 
-					<FormInput v-model="tosUrl">
+					<MkInput v-model="tosUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.tosUrl }}</template>
-					</FormInput>
+					</MkInput>
 
 					<FormSplit :min-width="300">
-						<FormInput v-model="maintainerName">
+						<MkInput v-model="maintainerName">
 							<template #label>{{ i18n.ts.maintainerName }}</template>
-						</FormInput>
+						</MkInput>
 
-						<FormInput v-model="maintainerEmail" type="email">
+						<MkInput v-model="maintainerEmail" type="email">
 							<template #prefix><i class="ti ti-mail"></i></template>
 							<template #label>{{ i18n.ts.maintainerEmail }}</template>
-						</FormInput>
+						</MkInput>
 					</FormSplit>
 
-					<FormTextarea v-model="pinnedUsers">
+					<MkTextarea v-model="pinnedUsers">
 						<template #label>{{ i18n.ts.pinnedUsers }}</template>
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
-					</FormTextarea>
+					</MkTextarea>
 
 					<FormSection>
 						<div class="_gaps_s">
@@ -58,36 +58,36 @@
 						<template #label>{{ i18n.ts.theme }}</template>
 
 						<div class="_gaps_m">
-							<FormInput v-model="iconUrl">
+							<MkInput v-model="iconUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.iconUrl }}</template>
-							</FormInput>
+							</MkInput>
 
-							<FormInput v-model="bannerUrl">
+							<MkInput v-model="bannerUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.bannerUrl }}</template>
-							</FormInput>
+							</MkInput>
 
-							<FormInput v-model="backgroundImageUrl">
+							<MkInput v-model="backgroundImageUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
-							</FormInput>
+							</MkInput>
 
-							<FormInput v-model="themeColor">
+							<MkInput v-model="themeColor">
 								<template #prefix><i class="ti ti-palette"></i></template>
 								<template #label>{{ i18n.ts.themeColor }}</template>
 								<template #caption>#RRGGBB</template>
-							</FormInput>
+							</MkInput>
 
-							<FormTextarea v-model="defaultLightTheme">
+							<MkTextarea v-model="defaultLightTheme">
 								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
 								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</FormTextarea>
+							</MkTextarea>
 
-							<FormTextarea v-model="defaultDarkTheme">
+							<MkTextarea v-model="defaultDarkTheme">
 								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
 								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</FormTextarea>
+							</MkTextarea>
 						</div>
 					</FormSection>
 
@@ -101,17 +101,17 @@
 							</MkSwitch>
 
 							<FormSplit :min-width="280">
-								<FormInput v-model="localDriveCapacityMb" type="number">
+								<MkInput v-model="localDriveCapacityMb" type="number">
 									<template #label>{{ i18n.ts.driveCapacityPerLocalAccount }}</template>
 									<template #suffix>MB</template>
 									<template #caption>{{ i18n.ts.inMb }}</template>
-								</FormInput>
+								</MkInput>
 
-								<FormInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
+								<MkInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
 									<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
 									<template #suffix>MB</template>
 									<template #caption>{{ i18n.ts.inMb }}</template>
-								</FormInput>
+								</MkInput>
 							</FormSplit>
 						</div>
 					</FormSection>
@@ -126,15 +126,15 @@
 							</MkSwitch>
 
 							<template v-if="enableServiceWorker">
-								<FormInput v-model="swPublicKey">
+								<MkInput v-model="swPublicKey">
 									<template #prefix><i class="ti ti-key"></i></template>
 									<template #label>Public key</template>
-								</FormInput>
+								</MkInput>
 
-								<FormInput v-model="swPrivateKey">
+								<MkInput v-model="swPrivateKey">
 									<template #prefix><i class="ti ti-key"></i></template>
 									<template #label>Private key</template>
-								</FormInput>
+								</MkInput>
 							</template>
 						</div>
 					</FormSection>
@@ -143,10 +143,10 @@
 						<template #label>DeepL Translation</template>
 
 						<div class="_gaps_m">
-							<FormInput v-model="deeplAuthKey">
+							<MkInput v-model="deeplAuthKey">
 								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label>DeepL Auth Key</template>
-							</FormInput>
+							</MkInput>
 							<MkSwitch v-model="deeplIsPro">
 								<template #label>Pro account</template>
 							</MkSwitch>
@@ -163,8 +163,8 @@
 import { } from 'vue';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';

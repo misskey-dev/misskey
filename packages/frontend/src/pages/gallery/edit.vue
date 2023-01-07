@@ -3,13 +3,13 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<FormInput v-model="title">
+			<MkInput v-model="title">
 				<template #label>{{ i18n.ts.title }}</template>
-			</FormInput>
+			</MkInput>
 
-			<FormTextarea v-model="description" :max="500">
+			<MkTextarea v-model="description" :max="500">
 				<template #label>{{ i18n.ts.description }}</template>
-			</FormTextarea>
+			</MkTextarea>
 
 			<div class="">
 				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
@@ -33,8 +33,8 @@
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file';

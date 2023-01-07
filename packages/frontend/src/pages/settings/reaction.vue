@@ -17,27 +17,27 @@
 		<template #caption>{{ i18n.ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ i18n.ts.preview }}</button></template>
 	</FromSlot>
 
-	<FormRadios v-model="reactionPickerSize">
+	<MkRadios v-model="reactionPickerSize">
 		<template #label>{{ i18n.ts.size }}</template>
 		<option :value="1">{{ i18n.ts.small }}</option>
 		<option :value="2">{{ i18n.ts.medium }}</option>
 		<option :value="3">{{ i18n.ts.large }}</option>
-	</FormRadios>
-	<FormRadios v-model="reactionPickerWidth">
+	</MkRadios>
+	<MkRadios v-model="reactionPickerWidth">
 		<template #label>{{ i18n.ts.numberOfColumn }}</template>
 		<option :value="1">5</option>
 		<option :value="2">6</option>
 		<option :value="3">7</option>
 		<option :value="4">8</option>
 		<option :value="5">9</option>
-	</FormRadios>
-	<FormRadios v-model="reactionPickerHeight">
+	</MkRadios>
+	<MkRadios v-model="reactionPickerHeight">
 		<template #label>{{ i18n.ts.height }}</template>
 		<option :value="1">{{ i18n.ts.small }}</option>
 		<option :value="2">{{ i18n.ts.medium }}</option>
 		<option :value="3">{{ i18n.ts.large }}</option>
 		<option :value="4">{{ i18n.ts.large }}+</option>
-	</FormRadios>
+	</MkRadios>
 
 	<MkSwitch v-model="reactionPickerUseDrawerForMobile">
 		{{ i18n.ts.useDrawerReactionPickerForMobile }}
@@ -56,8 +56,8 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
 import Sortable from 'vuedraggable';
-import FormInput from '@/components/form/input.vue';
-import FormRadios from '@/components/form/radios.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import FromSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';

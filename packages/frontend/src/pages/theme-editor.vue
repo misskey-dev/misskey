@@ -46,9 +46,9 @@
 				<template #label>{{ i18n.ts.editCode }}</template>
 
 				<div class="_gaps_m">
-					<FormTextarea v-model="themeCode" tall>
+					<MkTextarea v-model="themeCode" tall>
 						<template #label>{{ i18n.ts._theme.code }}</template>
-					</FormTextarea>
+					</MkTextarea>
 					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
 				</div>
 			</FormFolder>
@@ -57,9 +57,9 @@
 				<template #label>{{ i18n.ts.addDescription }}</template>
 
 				<div class="_gaps_m">
-					<FormTextarea v-model="description">
+					<MkTextarea v-model="description">
 						<template #label>{{ i18n.ts._theme.description }}</template>
-					</FormTextarea>
+					</MkTextarea>
 				</div>
 			</FormFolder>
 		</div>
@@ -75,7 +75,7 @@ import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
 
 import MkButton from '@/components/MkButton.vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import FormFolder from '@/components/form/folder.vue';
 
 import { $i } from '@/account';

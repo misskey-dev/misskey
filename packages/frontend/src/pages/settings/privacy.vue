@@ -8,13 +8,13 @@
 		<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
 	</MkSwitch>
 		
-	<FormSelect v-model="ffVisibility" @update:model-value="save()">
+	<MkSelect v-model="ffVisibility" @update:model-value="save()">
 		<template #label>{{ i18n.ts.ffVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 		<template #caption>{{ i18n.ts.ffVisibilityDescription }}</template>
-	</FormSelect>
+	</MkSelect>
 		
 	<MkSwitch v-model="hideOnlineStatus" @update:model-value="save()">
 		{{ i18n.ts.hideOnlineStatus }}
@@ -40,12 +40,12 @@
 				<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
 
 				<div class="_gaps_m">
-					<FormSelect v-model="defaultNoteVisibility">
+					<MkSelect v-model="defaultNoteVisibility">
 						<option value="public">{{ i18n.ts._visibility.public }}</option>
 						<option value="home">{{ i18n.ts._visibility.home }}</option>
 						<option value="followers">{{ i18n.ts._visibility.followers }}</option>
 						<option value="specified">{{ i18n.ts._visibility.specified }}</option>
-					</FormSelect>
+					</MkSelect>
 					<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.localOnly }}</MkSwitch>
 				</div>
 			</FormFolder>
@@ -59,7 +59,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormFolder from '@/components/form/folder.vue';
 import * as os from '@/os';

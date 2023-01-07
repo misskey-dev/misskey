@@ -27,7 +27,7 @@
 	</div>
 
 	<div class="selects">
-		<FormSelect v-model="lightThemeId" large class="select">
+		<MkSelect v-model="lightThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForLightMode }}</template>
 			<template #prefix><i class="ti ti-sun"></i></template>
 			<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
@@ -37,8 +37,8 @@
 			<optgroup :label="i18n.ts._theme.builtinThemes">
 				<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
-		</FormSelect>
-		<FormSelect v-model="darkThemeId" large class="select">
+		</MkSelect>
+		<MkSelect v-model="darkThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
 			<template #prefix><i class="ti ti-moon"></i></template>
 			<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
@@ -48,7 +48,7 @@
 			<optgroup :label="i18n.ts._theme.builtinThemes">
 				<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
-		</FormSelect>
+		</MkSelect>
 	</div>
 
 	<FormSection>
@@ -69,7 +69,7 @@
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';

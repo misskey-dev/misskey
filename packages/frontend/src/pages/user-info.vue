@@ -95,9 +95,9 @@
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
-				<FormTextarea v-model="moderationNote" manual-save>
+				<MkTextarea v-model="moderationNote" manual-save>
 					<template #label>Moderation note</template>
-				</FormTextarea>
+				</MkTextarea>
 				<FormFolder>
 					<template #label>IP</template>
 					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
@@ -117,13 +117,13 @@
 				<FormSection>
 					<template #label>Drive Capacity Override</template>
 
-					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
+					<MkInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
 						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
 						<template #suffix>MB</template>
 						<template #caption>
 							{{ i18n.ts.driveCapOverrideCaption }}
 						</template>
-					</FormInput>
+					</MkInput>
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
@@ -158,16 +158,16 @@ import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';

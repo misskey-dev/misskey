@@ -13,7 +13,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
-import FormRadios from '@/components/form/radios.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';

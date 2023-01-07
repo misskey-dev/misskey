@@ -70,7 +70,7 @@ import { hostname } from '@/config';
 import { byteify, hexify, stringify } from '@/scripts/2fa';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { $i } from '@/account';

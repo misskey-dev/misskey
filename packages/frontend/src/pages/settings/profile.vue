@@ -8,29 +8,29 @@
 		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<FormInput v-model="profile.name" :max="30" manual-save>
+	<MkInput v-model="profile.name" :max="30" manual-save>
 		<template #label>{{ i18n.ts._profile.name }}</template>
-	</FormInput>
+	</MkInput>
 
-	<FormTextarea v-model="profile.description" :max="500" tall manual-save>
+	<MkTextarea v-model="profile.description" :max="500" tall manual-save>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-	</FormTextarea>
+	</MkTextarea>
 
-	<FormInput v-model="profile.location" manual-save>
+	<MkInput v-model="profile.location" manual-save>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="profile.birthday" type="date" manual-save>
+	<MkInput v-model="profile.birthday" type="date" manual-save>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
-	</FormInput>
+	</MkInput>
 
-	<FormSelect v-model="profile.lang">
+	<MkSelect v-model="profile.lang">
 		<template #label>{{ i18n.ts.language }}</template>
 		<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
-	</FormSelect>
+	</MkSelect>
 
 	<FormSlot>
 		<FormFolder>
@@ -39,12 +39,12 @@
 
 			<div class="_gaps_m">
 				<FormSplit v-for="(record, i) in fields" :min-width="250">
-					<FormInput v-model="record.name" small>
+					<MkInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
-					</FormInput>
-					<FormInput v-model="record.value" small>
+					</MkInput>
+					<MkInput v-model="record.value" small>
 						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
-					</FormInput>
+					</MkInput>
 				</FormSplit>
 				<div>
 					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
@@ -71,10 +71,10 @@
 <script lang="ts" setup>
 import { reactive, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormSlot from '@/components/form/slot.vue';

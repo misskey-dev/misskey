@@ -66,7 +66,7 @@ import MkAsUi from '@/components/MkAsUi.vue';
 import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import FormFolder from '@/components/form/folder.vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const props = defineProps<{
 	id: string;

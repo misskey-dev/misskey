@@ -26,17 +26,17 @@
 					<div class="_gaps_m">
 						<span>{{ i18n.ts._sensitiveMediaDetection.description }}</span>
 
-						<FormRadios v-model="sensitiveMediaDetection">
+						<MkRadios v-model="sensitiveMediaDetection">
 							<option value="none">{{ i18n.ts.none }}</option>
 							<option value="all">{{ i18n.ts.all }}</option>
 							<option value="local">{{ i18n.ts.localOnly }}</option>
 							<option value="remote">{{ i18n.ts.remoteOnly }}</option>
-						</FormRadios>
+						</MkRadios>
 
-						<FormRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`">
+						<MkRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
-						</FormRange>
+						</MkRange>
 
 						<MkSwitch v-model="enableSensitiveMediaDetectionForVideos">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.analyzeVideos }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
@@ -87,10 +87,10 @@
 					<template #label>Summaly Proxy</template>
 
 					<div class="_gaps_m">
-						<FormInput v-model="summalyProxy">
+						<MkInput v-model="summalyProxy">
 							<template #prefix><i class="ti ti-link"></i></template>
 							<template #label>Summaly Proxy URL</template>
-						</FormInput>
+						</MkInput>
 
 						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
@@ -106,12 +106,12 @@ import { } from 'vue';
 import XBotProtection from './bot-protection.vue';
 import XHeader from './_header_.vue';
 import FormFolder from '@/components/form/folder.vue';
-import FormRadios from '@/components/form/radios.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import FormRange from '@/components/form/range.vue';
-import FormInput from '@/components/form/input.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
