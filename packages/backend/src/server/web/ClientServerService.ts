@@ -1,6 +1,5 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PathOrFileDescriptor, readFileSync } from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
@@ -70,9 +69,6 @@ export class ClientServerService {
 
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
-
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
 
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
@@ -223,44 +219,6 @@ export class ClientServerService {
 
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
 			return reply.sendFile('/apple-touch-icon.png', staticAssets);
-		});
-
-		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
-			const path = request.params.path;
-
-			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
-				reply.code(404);
-				return;
-			}
-
-			reply.header('Cache-Control', 'public, max-age=86400');
-
-			const name = path.split('@')[0].replace('.webp', '');
-			const host = path.split('@')[1]?.replace('.webp', '');
-
-			const emoji = await this.emojisRepository.findOneBy({
-				// `@.` is the spec of ReactionService.decodeReaction
-				host: (host == null || host === '.') ? IsNull() : host,
-				name: name,
-			});
-
-			if (emoji == null) {
-				reply.code(404);
-				return;
-			}
-
-			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
-
-			const url = new URL('/proxy/emoji.webp', this.config.url);
-			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
-			url.searchParams.set('emoji', '1');
-			if ('static' in request.query) url.searchParams.set('static', '1');
-
-			return await reply.redirect(
-				301,
-				url.toString(),
-			);
 		});
 
 		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
