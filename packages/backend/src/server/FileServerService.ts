@@ -11,7 +11,7 @@ import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
-import { DownloadService } from '@/core/DownloadService.js';
+import { DownloadService, NonNullBodyResponse } from '@/core/DownloadService.js';
 import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
@@ -109,9 +109,9 @@ export class FileServerService {
 		if (!file.storedInternal) {
 			if (file.isLink && file.uri) {	// 期限切れリモートファイル
 				const [path, cleanup] = await createTemp();
-				const response = await this.downloadService.fetchUrl(file.uri);;
-
 				try {
+					const _response = await this.downloadService.fetchUrl(file.uri);;
+					const response = _response.clone() as NonNullBodyResponse;
 					const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
 					let { mime, ext } = await this.fileInfoService.detectRequestType(response);

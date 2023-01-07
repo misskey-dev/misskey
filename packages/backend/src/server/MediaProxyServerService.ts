@@ -8,7 +8,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { createTemp } from '@/misc/create-temp.js';
-import { DownloadService } from '@/core/DownloadService.js';
+import { DownloadService, NonNullBodyResponse } from '@/core/DownloadService.js';
 import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
@@ -75,9 +75,9 @@ export class MediaProxyServerService {
 
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-		const response = await this.downloadService.fetchUrl(url);
-
 		try {
+			const _response = await this.downloadService.fetchUrl(url);	
+			const response = _response.clone() as NonNullBodyResponse;
 			const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
 			let { mime, ext } = await this.fileInfoService.detectRequestType(response);

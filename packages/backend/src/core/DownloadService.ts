@@ -19,7 +19,10 @@ import type { Response } from 'undici';
 const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
 
-type NonNullBodyResponse = Response & { body: ReadableStream };
+export type NonNullBodyResponse = Response & {
+	body: ReadableStream;
+	clone: () => NonNullBodyResponse;
+};
 
 @Injectable()
 export class DownloadService {
