@@ -1,5 +1,5 @@
 <template>
-<XWindow
+<MkWindow
 	ref="windowEl"
 	:initial-width="500"
 	:initial-height="500"
@@ -20,13 +20,13 @@
 	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
 		<RouterView :router="router"/>
 	</div>
-</XWindow>
+</MkWindow>
 </template>
 
 <script lang="ts" setup>
 import { ComputedRef, inject, provide } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
-import XWindow from '@/components/MkWindow.vue';
+import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
@@ -47,7 +47,7 @@ defineEmits<{
 const router = new Router(routes, props.initialPath);
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-let windowEl = $shallowRef<InstanceType<typeof XWindow>>();
+let windowEl = $shallowRef<InstanceType<typeof MkWindow>>();
 const history = $ref<{ path: string; key: any; }[]>([{
 	path: router.getCurrentPath(),
 	key: router.getCurrentKey(),
@@ -84,6 +84,7 @@ provideMetadataReceiver((info) => {
 });
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
+provide('forceSpacerMin', true);
 
 const contextmenu = $computed(() => ([{
 	icon: 'ti ti-player-eject',
@@ -136,5 +137,7 @@ defineExpose({
 .yrolvcoq {
 	min-height: 100%;
 	background: var(--bg);
+
+	--margin: var(--marginHalf);
 }
 </style>

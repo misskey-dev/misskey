@@ -1,0 +1,31 @@
+extends ./base
+
+block vars
+	- const user = flash.user;
+	- const title = flash.title;
+	- const url = `${config.url}/play/${flash.id}`;
+
+block title
+	= `${title} | ${instanceName}`
+
+block desc
+	meta(name='description' content= flash.summary)
+
+block og
+	meta(property='og:type'        content='article')
+	meta(property='og:title'       content= title)
+	meta(property='og:description' content= flash.summary)
+	meta(property='og:url'         content= url)
+	meta(property='og:image'       content= avatarUrl)
+
+block meta
+	if profile.noCrawle
+		meta(name='robots' content='noindex')
+
+	meta(name='misskey:user-username' content=user.username)
+	meta(name='misskey:user-id' content=user.id)
+	meta(name='misskey:flash-id' content=flash.id)
+
+	// todo
+	if user.twitter
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)

@@ -12,7 +12,7 @@
 					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
 						<template #label>Select mode</template>
 					</MkSwitch>
-					<div v-if="selectMode" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
@@ -71,10 +71,10 @@
 import { computed, defineAsyncComponent, defineComponent, ref, shallowRef } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkTab from '@/components/MkTab.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';

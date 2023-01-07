@@ -32,8 +32,8 @@
 import { defineComponent, computed } from 'vue';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';

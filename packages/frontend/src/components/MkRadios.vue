@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
-import MkRadio from './radio.vue';
+import MkRadio from './MkRadio.vue';
 
 export default defineComponent({
 	components: {

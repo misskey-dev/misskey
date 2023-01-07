@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<div :class="$style.buttons">
 		<MkButton inline primary @click="saveNew">{{ ts._preferencesBackups.saveNew }}</MkButton>
 		<MkButton inline @click="loadFile">{{ ts._preferencesBackups.loadFile }}</MkButton>
@@ -8,17 +8,19 @@
 	<FormSection>
 		<template #label>{{ ts._preferencesBackups.list }}</template>
 		<template v-if="profiles && Object.keys(profiles).length > 0">
-			<div
-				v-for="(profile, id) in profiles"
-				:key="id"
-				class="_formBlock _panel"
-				:class="$style.profile"
-				@click="$event => menu($event, id)"
-				@contextmenu.prevent.stop="$event => menu($event, id)"
-			>
-				<div :class="$style.profileName">{{ profile.name }}</div>
-				<div :class="$style.profileTime">{{ t('_preferencesBackups.createdAt', { date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
-				<div v-if="profile.updatedAt" :class="$style.profileTime">{{ t('_preferencesBackups.updatedAt', { date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
+			<div class="_gaps_s">
+				<div
+					v-for="(profile, id) in profiles"
+					:key="id"
+					class="_panel"
+					:class="$style.profile"
+					@click="$event => menu($event, id)"
+					@contextmenu.prevent.stop="$event => menu($event, id)"
+				>
+					<div :class="$style.profileName">{{ profile.name }}</div>
+					<div :class="$style.profileTime">{{ t('_preferencesBackups.createdAt', { date: (new Date(profile.createdAt)).toLocaleDateString(), time: (new Date(profile.createdAt)).toLocaleTimeString() }) }}</div>
+					<div v-if="profile.updatedAt" :class="$style.profileTime">{{ t('_preferencesBackups.updatedAt', { date: (new Date(profile.updatedAt)).toLocaleDateString(), time: (new Date(profile.updatedAt)).toLocaleTimeString() }) }}</div>
+				</div>
 			</div>
 		</template>
 		<div v-else-if="profiles">
@@ -43,6 +45,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 const { t, ts } = i18n;
 
 useCssModule();
@@ -168,9 +171,9 @@ function getSettings(): Profile['settings'] {
 	return {
 		hot,
 		cold,
-		fontSize: localStorage.getItem('fontSize'),
-		useSystemFont: localStorage.getItem('useSystemFont') as 't' | null,
-		wallpaper: localStorage.getItem('wallpaper'),
+		fontSize: miLocalStorage.getItem('fontSize'),
+		useSystemFont: miLocalStorage.getItem('useSystemFont') as 't' | null,
+		wallpaper: miLocalStorage.getItem('wallpaper'),
 	};
 }
 
@@ -277,23 +280,23 @@ async function applyProfile(id: string): Promise<void> {
 
 	// fontSize
 	if (settings.fontSize) {
-		localStorage.setItem('fontSize', settings.fontSize);
+		miLocalStorage.setItem('fontSize', settings.fontSize);
 	} else {
-		localStorage.removeItem('fontSize');
+		miLocalStorage.removeItem('fontSize');
 	}
 
 	// useSystemFont
 	if (settings.useSystemFont) {
-		localStorage.setItem('useSystemFont', settings.useSystemFont);
+		miLocalStorage.setItem('useSystemFont', settings.useSystemFont);
 	} else {
-		localStorage.removeItem('useSystemFont');
+		miLocalStorage.removeItem('useSystemFont');
 	}
 
 	// wallpaper
 	if (settings.wallpaper != null) {
-		localStorage.setItem('wallpaper', settings.wallpaper);
+		miLocalStorage.setItem('wallpaper', settings.wallpaper);
 	} else {
-		localStorage.removeItem('wallpaper');
+		miLocalStorage.removeItem('wallpaper');
 	}
 
 	const { canceled: cancel2 } = await os.confirm({

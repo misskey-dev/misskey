@@ -3,64 +3,64 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_formRoot">
-				<FormSwitch v-model="useObjectStorage" class="_formBlock">{{ i18n.ts.useObjectStorage }}</FormSwitch>
+			<div class="_gaps_m">
+				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
 
 				<template v-if="useObjectStorage">
-					<FormInput v-model="objectStorageBaseUrl" class="_formBlock">
+					<MkInput v-model="objectStorageBaseUrl">
 						<template #label>{{ i18n.ts.objectStorageBaseUrl }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStorageBucket" class="_formBlock">
+					<MkInput v-model="objectStorageBucket">
 						<template #label>{{ i18n.ts.objectStorageBucket }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBucketDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStoragePrefix" class="_formBlock">
+					<MkInput v-model="objectStoragePrefix">
 						<template #label>{{ i18n.ts.objectStoragePrefix }}</template>
 						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStorageEndpoint" class="_formBlock">
+					<MkInput v-model="objectStorageEndpoint">
 						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
 						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormInput v-model="objectStorageRegion" class="_formBlock">
+					<MkInput v-model="objectStorageRegion">
 						<template #label>{{ i18n.ts.objectStorageRegion }}</template>
 						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
-					</FormInput>
+					</MkInput>
 
 					<FormSplit :min-width="280">
-						<FormInput v-model="objectStorageAccessKey" class="_formBlock">
+						<MkInput v-model="objectStorageAccessKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
-						</FormInput>
+						</MkInput>
 
-						<FormInput v-model="objectStorageSecretKey" class="_formBlock">
+						<MkInput v-model="objectStorageSecretKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Secret key</template>
-						</FormInput>
+						</MkInput>
 					</FormSplit>
 
-					<FormSwitch v-model="objectStorageUseSSL" class="_formBlock">
+					<MkSwitch v-model="objectStorageUseSSL">
 						<template #label>{{ i18n.ts.objectStorageUseSSL }}</template>
 						<template #caption>{{ i18n.ts.objectStorageUseSSLDesc }}</template>
-					</FormSwitch>
+					</MkSwitch>
 
-					<FormSwitch v-model="objectStorageUseProxy" class="_formBlock">
+					<MkSwitch v-model="objectStorageUseProxy">
 						<template #label>{{ i18n.ts.objectStorageUseProxy }}</template>
 						<template #caption>{{ i18n.ts.objectStorageUseProxyDesc }}</template>
-					</FormSwitch>
+					</MkSwitch>
 
-					<FormSwitch v-model="objectStorageSetPublicRead" class="_formBlock">
+					<MkSwitch v-model="objectStorageSetPublicRead">
 						<template #label>{{ i18n.ts.objectStorageSetPublicRead }}</template>
-					</FormSwitch>
+					</MkSwitch>
 
-					<FormSwitch v-model="objectStorageS3ForcePathStyle" class="_formBlock">
+					<MkSwitch v-model="objectStorageS3ForcePathStyle">
 						<template #label>s3ForcePathStyle</template>
-					</FormSwitch>
+					</MkSwitch>
 				</template>
 			</div>
 		</FormSuspense>
@@ -71,8 +71,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormInput from '@/components/form/input.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSection from '@/components/form/section.vue';

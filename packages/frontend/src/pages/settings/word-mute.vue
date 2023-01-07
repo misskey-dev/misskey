@@ -1,24 +1,24 @@
 <template>
-<div class="_formRoot">
-	<MkTab v-model="tab" class="_formBlock">
+<div class="_gaps_m">
+	<MkTab v-model="tab">
 		<option value="soft">{{ i18n.ts._wordMute.soft }}</option>
 		<option value="hard">{{ i18n.ts._wordMute.hard }}</option>
 	</MkTab>
-	<div class="_formBlock">
-		<div v-show="tab === 'soft'">
-			<MkInfo class="_formBlock">{{ i18n.ts._wordMute.softDescription }}</MkInfo>
-			<FormTextarea v-model="softMutedWords" class="_formBlock">
+	<div>
+		<div v-show="tab === 'soft'" class="_gaps_m">
+			<MkInfo>{{ i18n.ts._wordMute.softDescription }}</MkInfo>
+			<MkTextarea v-model="softMutedWords">
 				<span>{{ i18n.ts._wordMute.muteWords }}</span>
 				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
-			</FormTextarea>
+			</MkTextarea>
 		</div>
-		<div v-show="tab === 'hard'">
-			<MkInfo class="_formBlock">{{ i18n.ts._wordMute.hardDescription }} {{ i18n.ts.reflectMayTakeTime }}</MkInfo>
-			<FormTextarea v-model="hardMutedWords" class="_formBlock">
+		<div v-show="tab === 'hard'" class="_gaps_m">
+			<MkInfo>{{ i18n.ts._wordMute.hardDescription }} {{ i18n.ts.reflectMayTakeTime }}</MkInfo>
+			<MkTextarea v-model="hardMutedWords">
 				<span>{{ i18n.ts._wordMute.muteWords }}</span>
 				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
-			</FormTextarea>
-			<MkKeyValue v-if="hardWordMutedNotesCount != null" class="_formBlock">
+			</MkTextarea>
+			<MkKeyValue v-if="hardWordMutedNotesCount != null">
 				<template #key>{{ i18n.ts._wordMute.mutedNotes }}</template>
 				<template #value>{{ number(hardWordMutedNotesCount) }}</template>
 			</MkKeyValue>
@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';

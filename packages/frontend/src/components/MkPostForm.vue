@@ -98,6 +98,7 @@ import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account'
 import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { miLocalStorage } from '@/local-storage';
 
 const modal = inject('modal');
 
@@ -156,7 +157,7 @@ let autocomplete = $ref(null);
 let draghover = $ref(false);
 let quoteId = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
-let recentHashtags = $ref(JSON.parse(localStorage.getItem('hashtags') || '[]'));
+let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') || '[]'));
 let imeText = $ref('');
 
 const typing = throttle(3000, () => {
@@ -543,7 +544,7 @@ function onDrop(ev): void {
 }
 
 function saveDraft() {
-	const draftData = JSON.parse(localStorage.getItem('drafts') || '{}');
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') || '{}');
 
 	draftData[draftKey] = {
 		updatedAt: new Date(),
@@ -558,15 +559,15 @@ function saveDraft() {
 		},
 	};
 
-	localStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
 function deleteDraft() {
-	const draftData = JSON.parse(localStorage.getItem('drafts') ?? '{}');
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
 	delete draftData[draftKey];
 
-	localStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
 async function post(ev?: MouseEvent) {
@@ -622,8 +623,8 @@ async function post(ev?: MouseEvent) {
 			emit('posted');
 			if (postData.text && postData.text !== '') {
 				const hashtags_ = mfm.parse(postData.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
-				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
+				const history = JSON.parse(miLocalStorage.getItem('hashtags') || '[]') as string[];
+				miLocalStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting = false;
 			postAccount = null;
@@ -698,7 +699,7 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
-			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[draftKey];
+			const draft = JSON.parse(miLocalStorage.getItem('drafts') || '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;
 				useCw = draft.data.useCw;

@@ -16,7 +16,6 @@
 */
 import { onMounted, ref, shallowRef, watch, PropType, onUnmounted } from 'vue';
 import { Chart } from 'chart.js';
-import { enUS } from 'date-fns/locale';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -186,6 +185,10 @@ const render = () => {
 					time: {
 						stepSize: 1,
 						unit: props.span === 'day' ? 'month' : 'day',
+						displayFormats: {
+							day: 'M/d',
+							month: 'Y/M',
+						},
 					},
 					grid: {
 					},
@@ -193,11 +196,6 @@ const render = () => {
 						display: props.detailed,
 						maxRotation: 0,
 						autoSkipPadding: 16,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 					min: getDate(props.limit).getTime(),
 				},

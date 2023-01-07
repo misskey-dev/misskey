@@ -62,7 +62,7 @@ export default defineComponent({
 				align-items: center;
 				width: 100%;
 				box-sizing: border-box;
-				padding: 10px 16px 10px 8px;
+				padding: 9px 16px 9px 8px;
 				border-radius: 9px;
 				font-size: 0.9em;
 
@@ -141,8 +141,8 @@ export default defineComponent({
 						margin-right: 0;
 						margin-bottom: 6px;
 						font-size: 1.5em;
-						width: 54px;
-						height: 54px;
+						width: 60px;
+						height: 60px;
 						aspect-ratio: 1;
 						background: var(--panel);
 						border-radius: 100%;

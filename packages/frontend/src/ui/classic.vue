@@ -51,6 +51,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { miLocalStorage } from '@/local-storage';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
@@ -62,7 +63,7 @@ let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let widgetsShowing = $ref(false);
 let fullView = $ref(false);
 let globalHeaderHeight = $ref(0);
-const wallpaper = localStorage.getItem('wallpaper') != null;
+const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 const showMenuOnTop = $computed(() => defaultStore.state.menuDisplay === 'top');
 let live2d = $shallowRef<HTMLIFrameElement>();
 let widgetsLeft = $ref();
@@ -123,7 +124,7 @@ function onAiClick(ev) {
 }
 
 if (window.innerWidth < 1024) {
-	localStorage.setItem('ui', 'default');
+	miLocalStorage.setItem('ui', 'default');
 	location.reload();
 }
 
