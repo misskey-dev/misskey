@@ -14,6 +14,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	query: string;
@@ -22,7 +23,7 @@ const props = defineProps<{
 
 const query = props.query;
 
-if (localStorage.getItem('account') != null) {
+if ($i != null) {
 	if (query.startsWith('https://') || (query.startsWith('@') && !query.includes(' '))) {
 		const promise = os.api('ap/show', {
 			uri: props.query,
