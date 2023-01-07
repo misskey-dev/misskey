@@ -269,11 +269,6 @@ export class HttpRequestService {
 		//#endregion
 	}
 
-	/**
-	 * Get http agent by URL
-	 * @param url URL
-	 * @param bypassProxy Allways bypass proxy
-	 */
 	@bindThis
 	public getStandardUndiciFetcherOption(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}) {
 		return {
