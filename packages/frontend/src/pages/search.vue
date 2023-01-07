@@ -13,8 +13,10 @@ import XNotes from '@/components/MkNotes.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import { mainRouter } from '@/router';
+import { useRouter } from '@/router';
 import { $i } from '@/account';
+
+const router = useRouter();
 
 const props = defineProps<{
 	query: string;
@@ -34,9 +36,9 @@ if ($i != null) {
 		const res = await promise;
 
 		if (res.type === 'User') {
-			mainRouter.replace(`/@${res.object.username}@${res.object.host}`);
+			router.replace(`/@${res.object.username}@${res.object.host}`);
 		} else if (res.type === 'Note') {
-			mainRouter.replace(`/notes/${res.object.id}`);
+			router.replace(`/notes/${res.object.id}`);
 		}
 	}
 }
