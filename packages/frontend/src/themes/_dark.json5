@@ -61,7 +61,7 @@
 		buttonGradateA: '@accent',
 		buttonGradateB: ':hue<20<@accent',
 		swutchOffBg: 'rgba(255, 255, 255, 0.1)',
-		swutchOffFg: '@fg',
+		swutchOffFg: ':alpha<0.8<@fg',
 		swutchOnBg: '@accentedBg',
 		swutchOnFg: '@accent',
 		inputBorder: 'rgba(255, 255, 255, 0.1)',
