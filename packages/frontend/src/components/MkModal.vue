@@ -267,9 +267,8 @@ defineExpose({
 	}
 
 	> .content {
-		transform-style: preserve-3d;
-    transform: perspective(50cm) translateZ(0px) translateY(0px) rotateX(0deg);
-		transition: opacity 0.4s cubic-bezier(.5,-0.5,.75,1), transform 0.4s cubic-bezier(.5,-0.5,.75,1) !important;
+    transform: translateY(0px);
+		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
 	}
 }
 .send-enter-from, .send-leave-to {
@@ -280,8 +279,7 @@ defineExpose({
 	> .content {
 		pointer-events: none;
 		opacity: 0;
-		transform-style: preserve-3d;
-		transform: perspective(50cm) translateZ(-300px) translateY(-200px) rotateX(40deg);
+		transform: translateY(-300px);
 	}
 }
 
