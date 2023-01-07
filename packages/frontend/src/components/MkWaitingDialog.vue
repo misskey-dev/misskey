@@ -9,10 +9,10 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref } from 'vue';
+import { watch, shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 
-const modal = ref<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const props = defineProps<{
 	success: boolean;

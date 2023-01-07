@@ -2,9 +2,9 @@
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
-		<div class="ztgjmzrw">
-			<section v-for="announcement in announcements" class="_card _gap announcements">
-				<div class="_content announcement">
+		<div class="ztgjmzrw _gaps_m">
+			<section v-for="announcement in announcements" class="">
+				<div class="_panel _gaps_m" style="padding: 24px;">
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
@@ -15,9 +15,9 @@
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
-					<div class="buttons">
+					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-						<MkButton class="button" inline @click="remove(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+						<MkButton class="button" inline danger @click="remove(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 					</div>
 				</div>
 			</section>
@@ -30,8 +30,8 @@
 import { } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

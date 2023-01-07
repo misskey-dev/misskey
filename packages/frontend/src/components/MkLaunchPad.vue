@@ -44,13 +44,13 @@ const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'pop
 	deviceKind === 'smartphone' ? 'drawer' :
 	'dialog';
 
-const modal = $ref<InstanceType<typeof MkModal>>();
+const modal = $shallowRef<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 
 const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k => navbarItemDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 	type: def.to ? 'link' : 'button',
-	text: i18n.ts[def.title],
+	text: def.title,
 	icon: def.icon,
 	to: def.to,
 	action: def.action,

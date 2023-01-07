@@ -1,7 +1,7 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 <section
-	v-hotkey="keymap" class="dnpfarvg _narrow_"
+	v-hotkey="keymap" class="dnpfarvg"
 	:class="{ paged: isMainColumn, naked, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
@@ -40,7 +40,7 @@ import { MenuItem } from '@/types/menu';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
-provide('shouldSpacerMin', true);
+provide('forceSpacerMin', true);
 
 const props = withDefaults(defineProps<{
 	column: Column;
@@ -59,7 +59,7 @@ const emit = defineEmits<{
 	(ev: 'change-active-state', v: boolean): void;
 }>();
 
-let body = $ref<HTMLDivElement>();
+let body = $shallowRef<HTMLDivElement>();
 
 let dragging = $ref(false);
 watch($$(dragging), v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));

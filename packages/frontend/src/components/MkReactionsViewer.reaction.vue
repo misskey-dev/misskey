@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
@@ -28,7 +28,7 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const buttonRef = ref<HTMLElement>();
+const buttonRef = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
@@ -61,7 +61,7 @@ const anime = () => {
 	const rect = buttonRef.value.getBoundingClientRect();
 	const x = rect.left + (buttonRef.value.offsetWidth / 2);
 	const y = rect.top + (buttonRef.value.offsetHeight / 2);
-	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
+	os.popup(MkPlusOneEffect, { reaction: props.reaction, x, y }, {}, 'end');
 };
 
 watch(() => props.count, (newCount, oldCount) => {

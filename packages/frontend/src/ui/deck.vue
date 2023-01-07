@@ -125,7 +125,7 @@ function showSettings() {
 	os.pageWindow('/settings/deck');
 }
 
-let columnsEl = $ref<HTMLElement>();
+let columnsEl = $shallowRef<HTMLElement>();
 
 const addColumn = async (ev) => {
 	const columns = [
@@ -249,7 +249,6 @@ async function deleteProfile() {
 .mk-deck {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
-	// TODO: ここではなくて、各カラムで自身の幅に応じて上書きするようにしたい
 	--margin: var(--marginHalf);
 
 	--deckDividerThickness: 5px;

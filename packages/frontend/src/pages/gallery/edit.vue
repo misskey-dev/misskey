@@ -3,28 +3,28 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<FormInput v-model="title">
+			<MkInput v-model="title">
 				<template #label>{{ i18n.ts.title }}</template>
-			</FormInput>
+			</MkInput>
 
-			<FormTextarea v-model="description" :max="500">
+			<MkTextarea v-model="description" :max="500">
 				<template #label>{{ i18n.ts.description }}</template>
-			</FormTextarea>
+			</MkTextarea>
 
 			<div class="">
 				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
 					<div class="name">{{ file.name }}</div>
 					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 				</div>
-				<FormButton primary @click="selectFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</FormButton>
+				<MkButton primary @click="selectFile"><i class="ti ti-plus"></i> {{ i18n.ts.attachFile }}</MkButton>
 			</div>
 
-			<FormSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</FormSwitch>
+			<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
 
-			<FormButton v-if="postId" primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
-			<FormButton v-else primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.publish }}</FormButton>
+			<MkButton v-if="postId" primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+			<MkButton v-else primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.publish }}</MkButton>
 
-			<FormButton v-if="postId" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</FormButton>
+			<MkButton v-if="postId" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
@@ -32,10 +32,10 @@
 
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
-import FormButton from '@/components/MkButton.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import { selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';

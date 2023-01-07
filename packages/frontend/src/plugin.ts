@@ -1,16 +1,17 @@
-import { AiScript, utils, values } from '@syuilo/aiscript';
-import { deserialize } from '@syuilo/aiscript/built/serializer';
-import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
+import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { inputText } from '@/os';
 import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions } from '@/store';
 
-const pluginContexts = new Map<string, AiScript>();
+const parser = new Parser();
+const pluginContexts = new Map<string, Interpreter>();
 
 export function install(plugin) {
+	// 後方互換性のため
+	if (plugin.src == null) return;
 	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 
-	const aiscript = new AiScript(createPluginEnv({
+	const aiscript = new Interpreter(createPluginEnv({
 		plugin: plugin,
 		storageKey: 'plugins:' + plugin.id,
 	}), {
@@ -32,13 +33,13 @@ export function install(plugin) {
 
 	initPlugin({ plugin, aiscript });
 
-	aiscript.exec(deserialize(plugin.ast));
+	aiscript.exec(parser.parse(plugin.src));
 }
 
 function createPluginEnv(opts) {
 	const config = new Map();
 	for (const [k, v] of Object.entries(opts.plugin.config || {})) {
-		config.set(k, jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
+		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
 	return {

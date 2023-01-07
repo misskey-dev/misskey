@@ -35,14 +35,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { shallowRef, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const paginationComponent = ref<InstanceType<typeof MkPagination>>();
+const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const pagination = {
 	endpoint: 'following/requests/list' as const,

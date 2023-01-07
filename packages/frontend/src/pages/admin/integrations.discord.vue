@@ -1,34 +1,34 @@
 <template>
 <FormSuspense :p="init">
-	<div class="_formRoot">
-		<FormSwitch v-model="enableDiscordIntegration" class="_formBlock">
+	<div class="_gaps_m">
+		<MkSwitch v-model="enableDiscordIntegration">
 			<template #label>{{ i18n.ts.enable }}</template>
-		</FormSwitch>
+		</MkSwitch>
 
 		<template v-if="enableDiscordIntegration">
-			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
+			<FormInfo>Callback URL: {{ `${uri}/api/dc/cb` }}</FormInfo>
 		
-			<FormInput v-model="discordClientId" class="_formBlock">
+			<MkInput v-model="discordClientId">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client ID</template>
-			</FormInput>
+			</MkInput>
 
-			<FormInput v-model="discordClientSecret" class="_formBlock">
+			<MkInput v-model="discordClientSecret">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client Secret</template>
-			</FormInput>
+			</MkInput>
 		</template>
 
-		<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+		<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </FormSuspense>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormInput from '@/components/form/input.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os';

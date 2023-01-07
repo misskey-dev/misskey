@@ -8,7 +8,7 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: false,
+	requireCredential: true,
 	requireModerator: true,
 
 	res: {

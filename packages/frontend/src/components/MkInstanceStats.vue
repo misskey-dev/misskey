@@ -78,7 +78,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import { Chart } from 'chart.js';
-import MkSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import * as os from '@/os';
@@ -94,8 +94,8 @@ const chartLimit = 500;
 let chartSpan = $ref<'hour' | 'day'>('hour');
 let chartSrc = $ref('active-users');
 let heatmapSrc = $ref('active-users');
-let subDoughnutEl = $ref<HTMLCanvasElement>();
-let pubDoughnutEl = $ref<HTMLCanvasElement>();
+let subDoughnutEl = $shallowRef<HTMLCanvasElement>();
+let pubDoughnutEl = $shallowRef<HTMLCanvasElement>();
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',

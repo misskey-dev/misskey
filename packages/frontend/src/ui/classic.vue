@@ -51,6 +51,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { miLocalStorage } from '@/local-storage';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
@@ -62,9 +63,9 @@ let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let widgetsShowing = $ref(false);
 let fullView = $ref(false);
 let globalHeaderHeight = $ref(0);
-const wallpaper = localStorage.getItem('wallpaper') != null;
+const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 const showMenuOnTop = $computed(() => defaultStore.state.menuDisplay === 'top');
-let live2d = $ref<HTMLIFrameElement>();
+let live2d = $shallowRef<HTMLIFrameElement>();
 let widgetsLeft = $ref();
 let widgetsRight = $ref();
 
@@ -76,7 +77,7 @@ provideMetadataReceiver((info) => {
 	}
 });
 provide('shouldHeaderThin', showMenuOnTop);
-provide('shouldSpacerMin', true);
+provide('forceSpacerMin', true);
 
 function attachSticky(el) {
 	const sticky = new StickySidebar(el, defaultStore.state.menuDisplay === 'top' ? 0 : 16, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
@@ -123,7 +124,7 @@ function onAiClick(ev) {
 }
 
 if (window.innerWidth < 1024) {
-	localStorage.setItem('ui', 'default');
+	miLocalStorage.setItem('ui', 'default');
 	location.reload();
 }
 

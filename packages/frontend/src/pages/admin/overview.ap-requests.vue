@@ -18,7 +18,6 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
@@ -34,8 +33,8 @@ import { initChart } from '@/scripts/init-chart';
 initChart();
 
 const chartLimit = 50;
-const chartEl = $ref<HTMLCanvasElement>();
-const chartEl2 = $ref<HTMLCanvasElement>();
+const chartEl = $shallowRef<HTMLCanvasElement>();
+const chartEl2 = $shallowRef<HTMLCanvasElement>();
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
@@ -68,16 +67,12 @@ onMounted(async () => {
 
 	const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
 
-	const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	const succColor = '#87e000';
 	const failColor = '#ff4400';
 
 	const succMax = Math.max(...raw.deliverSucceeded);
 	const failMax = Math.max(...raw.deliverFailed);
-
-	// フォントカラー
-	Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 	new Chart(chartEl, {
 		type: 'line',
@@ -133,18 +128,11 @@ onMounted(async () => {
 					},
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
 						maxRotation: 0,
 						autoSkipPadding: 16,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 					min: getDate(chartLimit).getTime(),
 				},
@@ -154,8 +142,6 @@ onMounted(async () => {
 					suggestedMax: 10,
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: true,
@@ -174,7 +160,6 @@ onMounted(async () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,
@@ -229,21 +214,18 @@ onMounted(async () => {
 					time: {
 						stepSize: 1,
 						unit: 'day',
+						displayFormats: {
+							day: 'M/d',
+							month: 'Y/M',
+						},
 					},
 					grid: {
 						display: false,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: false,
 						maxRotation: 0,
 						autoSkipPadding: 16,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 					min: getDate(chartLimit).getTime(),
 				},
@@ -252,8 +234,6 @@ onMounted(async () => {
 					suggestedMax: 10,
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 				},
 			},
@@ -267,7 +247,6 @@ onMounted(async () => {
 					hoverBorderWidth: 2,
 				},
 			},
-			animation: false,
 			plugins: {
 				legend: {
 					display: false,

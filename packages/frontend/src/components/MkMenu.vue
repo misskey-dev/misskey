@@ -31,7 +31,7 @@
 				<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 			<span v-else-if="item.type === 'switch'" :tabindex="i" class="item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
+				<MkSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</MkSwitch>
 			</span>
 			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button item parent" :class="{ childShowing: childShowingItem === item }" @mouseenter="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>
@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -78,11 +78,11 @@ const emit = defineEmits<{
 	(ev: 'close', actioned?: boolean): void;
 }>();
 
-let itemsEl = $ref<HTMLDivElement>();
+let itemsEl = $shallowRef<HTMLDivElement>();
 
 let items2: InnerMenuItem[] = $ref([]);
 
-let child = $ref<InstanceType<typeof XChild>>();
+let child = $shallowRef<InstanceType<typeof XChild>>();
 
 let keymap = $computed(() => ({
 	'up|k|shift+tab': focusUp,
@@ -112,7 +112,7 @@ watch(() => props.items, () => {
 });
 
 let childMenu = $ref<MenuItem[] | null>();
-let childTarget = $ref<HTMLElement | null>();
+let childTarget = $shallowRef<HTMLElement | null>();
 
 function closeChild() {
 	childMenu = null;
@@ -203,7 +203,7 @@ onBeforeUnmount(() => {
 	> .item {
 		display: block;
 		position: relative;
-		padding: 6px 16px;
+		padding: 5px 16px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
@@ -217,6 +217,7 @@ onBeforeUnmount(() => {
 			content: "";
 			display: block;
 			position: absolute;
+			z-index: -1;
 			top: 0;
 			left: 0;
 			right: 0;
@@ -224,10 +225,6 @@ onBeforeUnmount(() => {
 			width: calc(100% - 16px);
 			height: 100%;
 			border-radius: 6px;
-		}
-
-		> * {
-			position: relative;
 		}
 
 		&:not(:disabled):hover {

@@ -1,11 +1,11 @@
 <template>
 <div
 	ref="rootEl"
-	class="_section"
+	class=""
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<div class="_content mk-messaging-room">
+	<div class="mk-messaging-room">
 		<div class="body">
 			<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
 				<template #empty>
@@ -71,9 +71,9 @@ const props = defineProps<{
 	groupId?: string;
 }>();
 
-let rootEl = $ref<HTMLDivElement>();
-let formEl = $ref<InstanceType<typeof XForm>>();
-let pagingComponent = $ref<InstanceType<typeof MkPagination>>();
+let rootEl = $shallowRef<HTMLDivElement>();
+let formEl = $shallowRef<InstanceType<typeof XForm>>();
+let pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
 let fetching = $ref(true);
 let user: Misskey.entities.UserDetailed | null = $ref(null);

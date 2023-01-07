@@ -1,3 +1,5 @@
+import { Plugin } from 'chart.js';
+
 export const chartVLine = (vLineColor: string) => ({
 	id: 'vLine',
 	beforeDraw(chart, args, options) {
@@ -18,4 +20,4 @@ export const chartVLine = (vLineColor: string) => ({
 			ctx.restore();
 		}
 	},
-});
+}) as Plugin;

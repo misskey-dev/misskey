@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
+import { defineComponent, markRaw, onUnmounted, onMounted, computed, shallowRef } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
@@ -33,7 +33,7 @@ const props = defineProps<{
 	unreadOnly?: boolean;
 }>();
 
-const pagingComponent = ref<InstanceType<typeof MkPagination>>();
+const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
