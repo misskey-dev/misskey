@@ -49,7 +49,7 @@ if (props.id) {
 let title = $ref(flash?.title ?? 'New Play');
 let summary = $ref(flash?.summary ?? '');
 let permissions = $ref(flash?.permissions ?? []);
-let script = $ref(flash?.script ?? `/// @ 0.12.1
+let script = $ref(flash?.script ?? `/// @ 0.12.2
 
 var name = ""
 

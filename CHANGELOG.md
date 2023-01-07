@@ -32,9 +32,9 @@ You should also include the user name that made the change.
 - ノートのウォッチ機能が削除されました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
-- AiScriptが0.12.1にアップデートされました
+- AiScriptが0.12.2にアップデートされました
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
-	- 0.12.1未満のプラグインは読み込むことはできません
+	- 0.12.x未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
 - Firefox109以下はサポートされなくなりました
 

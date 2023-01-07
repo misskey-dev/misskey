@@ -11,7 +11,7 @@
 		"@rollup/plugin-alias": "4.0.2",
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/pluginutils": "5.0.2",
-		"@syuilo/aiscript": "0.12.1",
+		"@syuilo/aiscript": "0.12.2",
 		"@tabler/icons": "^1.118.0",
 		"@vitejs/plugin-vue": "4.0.0",
 		"@vue/compiler-sfc": "3.2.45",

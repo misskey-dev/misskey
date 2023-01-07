@@ -1971,15 +1971,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@syuilo/aiscript@npm:0.12.1":
-  version: 0.12.1
-  resolution: "@syuilo/aiscript@npm:0.12.1"
+"@syuilo/aiscript@npm:0.12.2":
+  version: 0.12.2
+  resolution: "@syuilo/aiscript@npm:0.12.2"
   dependencies:
     autobind-decorator: 2.4.0
     seedrandom: 3.0.5
     stringz: 2.1.0
     uuid: 9.0.0
-  checksum: 0bee3031cbc8358e159fc8fde6e1ab7204e1a8e17e07f394f337d70cd3a8558e591145ca03afe37c76bbb91f84b2b2af70b892935e9c98507f9d1455c7be1107
+  checksum: 66c93157fe19d89c565db6a5576fd3b6f832d45d5b1ef62dc04ddd2fe11cbfb2f53e938f6566da82a562d4b4016208d50039de1301e62ff42cbab26bc6805e15
   languageName: node
   linkType: hard
 
@@ -8043,7 +8043,7 @@ __metadata:
     "@rollup/plugin-alias": 4.0.2
     "@rollup/plugin-json": 6.0.0
     "@rollup/pluginutils": 5.0.2
-    "@syuilo/aiscript": 0.12.1
+    "@syuilo/aiscript": 0.12.2
     "@tabler/icons": ^1.118.0
     "@types/escape-regexp": 0.0.1
     "@types/glob": 8.0.0
