@@ -85,14 +85,26 @@
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
-				<MkRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
-				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
+				<button
+					v-if="canRenote"
+					ref="renoteButton"
+					class="button _button"
+					@click="renote()"
+					@mousedown="renote()"
+				>
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" class="count">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else class="button _button" disabled>
+					<i class="ti ti-ban"></i>
+				</button>
+				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()" @mousedown="react()">
 					<i class="ti ti-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
 				</button>
-				<button ref="menuButton" class="button _button" @click="menu()">
+				<button ref="menuButton" class="button _button" @click="menu()" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
 			</footer>
@@ -121,7 +133,7 @@ import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import MkRenoteButton from '@/components/MkRenoteButton.vue';
+import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import MkVisibility from '@/components/MkVisibility.vue';
@@ -138,6 +150,7 @@ import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
+import { useTooltip } from '@/scripts/use-tooltip';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -168,7 +181,7 @@ const isRenote = (
 
 const el = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();
-const renoteButton = shallowRef<InstanceType<typeof MkRenoteButton>>();
+const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
@@ -182,6 +195,7 @@ const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : n
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<misskey.entities.Note[]>([]);
 const replies = ref<misskey.entities.Note[]>([]);
+const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
 
 const keymap = {
 	'r': () => reply(true),
@@ -197,6 +211,47 @@ useNoteCapture({
 	note: $$(appearNote),
 	isDeletedRef: isDeleted,
 });
+
+useTooltip(renoteButton, async (showing) => {
+	const renotes = await os.api('notes/renotes', {
+		noteId: appearNote.id,
+		limit: 11,
+	});
+
+	const users = renotes.map(x => x.user);
+
+	if (users.length < 1) return;
+
+	os.popup(MkUsersTooltip, {
+		showing,
+		users,
+		count: appearNote.renoteCount,
+		targetElement: renoteButton.value,
+	}, {}, 'closed');
+});
+
+function renote(viaKeyboard = false) {
+	pleaseLogin();
+	os.popupMenu([{
+		text: i18n.ts.renote,
+		icon: 'ti ti-repeat',
+		action: () => {
+			os.api('notes/create', {
+				renoteId: appearNote.id,
+			});
+		},
+	}, {
+		text: i18n.ts.quote,
+		icon: 'ti ti-quote',
+		action: () => {
+			os.post({
+				renote: appearNote,
+			});
+		},
+	}], renoteButton.value, {
+		viaKeyboard,
+	});
+}
 
 function reply(viaKeyboard = false): void {
 	pleaseLogin();
