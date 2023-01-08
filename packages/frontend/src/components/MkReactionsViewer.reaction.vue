@@ -1,6 +1,6 @@
 <template>
 <button
-	ref="buttonRef"
+	ref="buttonEl"
 	v-ripple="canToggle"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
@@ -28,7 +28,7 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const buttonRef = shallowRef<HTMLElement>();
+const buttonEl = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
@@ -58,9 +58,9 @@ const toggleReaction = () => {
 const anime = () => {
 	if (document.hidden) return;
 
-	const rect = buttonRef.value.getBoundingClientRect();
-	const x = rect.left + (buttonRef.value.offsetWidth / 2);
-	const y = rect.top + (buttonRef.value.offsetHeight / 2);
+	const rect = buttonEl.value.getBoundingClientRect();
+	const x = rect.left + 16;
+	const y = rect.top + (buttonEl.value.offsetHeight / 2);
 	os.popup(MkPlusOneEffect, { reaction: props.reaction, x, y }, {}, 'end');
 };
 
@@ -72,7 +72,7 @@ onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
-useTooltip(buttonRef, async (showing) => {
+useTooltip(buttonEl, async (showing) => {
 	const reactions = await os.apiGet('notes/reactions', {
 		noteId: props.note.id,
 		type: props.reaction,
@@ -87,7 +87,7 @@ useTooltip(buttonRef, async (showing) => {
 		reaction: props.reaction,
 		users,
 		count: props.count,
-		targetElement: buttonRef.value,
+		targetElement: buttonEl.value,
 	}, {}, 'closed');
 }, 100);
 </script>
