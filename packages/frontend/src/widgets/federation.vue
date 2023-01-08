@@ -8,7 +8,7 @@
 			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
 				<img :src="getInstanceIcon(instance)" alt=""/>
 				<div class="body">
-					<a class="a" :href="'https://' + instance.host" target="_blank" :title="instance.host">{{ instance.host }}</a>
+					<MkA class="a" :to="`/instance-info/${instance.host}`" behavior="window" :title="instance.host">{{ instance.host }}</MkA>
 					<p>{{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</p>
 				</div>
 				<MkMiniChart class="chart" :src="charts[i].requests.received"/>

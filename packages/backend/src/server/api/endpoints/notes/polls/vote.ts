@@ -162,13 +162,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 			});
 
-			// Notify
-			this.createNotificationService.createNotification(note.userId, 'pollVote', {
-				notifierId: me.id,
-				noteId: note.id,
-				choice: ps.choice,
-			});
-
 			// リモート投票の場合リプライ送信
 			if (note.userHost != null) {
 				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as IRemoteUser;

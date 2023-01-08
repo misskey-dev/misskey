@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormSection first>
 		<template #label><i class="ti ti-pencil"></i> {{ i18n.ts._exportOrImport.allNotes }}</template>
 		<FormFolder>
@@ -18,17 +18,17 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.followingList }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
-				<div class="_autoGap_half">
-					<FormSwitch v-model="excludeMutingUsers">
+				<div class="_gaps_s">
+					<MkSwitch v-model="excludeMutingUsers">
 						{{ i18n.ts._exportOrImport.excludeMutingUsers }}
-					</FormSwitch>
-					<FormSwitch v-model="excludeInactiveUsers">
+					</MkSwitch>
+					<MkSwitch v-model="excludeInactiveUsers">
 						{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
-					</FormSwitch>
+					</MkSwitch>
 					<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 				</div>
 			</FormFolder>
@@ -41,7 +41,7 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.userLists }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
@@ -56,7 +56,7 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.muteList }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
@@ -71,7 +71,7 @@
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.blockingList }}</template>
-		<div class="_autoGap_half">
+		<div class="_gaps_s">
 			<FormFolder>
 				<template #label>{{ i18n.ts.export }}</template>
 				<template #icon><i class="ti ti-download"></i></template>
@@ -92,7 +92,7 @@ import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormFolder from '@/components/form/folder.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import { i18n } from '@/i18n';

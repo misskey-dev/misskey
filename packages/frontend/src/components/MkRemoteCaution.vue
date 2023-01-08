@@ -16,6 +16,8 @@ defineProps<{
 	padding: 16px;
 	background: var(--infoWarnBg);
 	color: var(--infoWarnFg);
+	border-radius: var(--radius);
+	overflow: clip;
 
 	> .link {
 		margin-left: 4px;

@@ -1,7 +1,7 @@
 <template>
 <form class="mk-setup" @submit.prevent="submit()">
 	<h1>Welcome to Misskey!</h1>
-	<div class="_autoGap">
+	<div class="_gaps_m">
 		<p>{{ $ts.intro }}</p>
 		<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
 			<template #label>{{ $ts.username }}</template>
@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import { host } from '@/config';
 import * as os from '@/os';
 import { login } from '@/account';

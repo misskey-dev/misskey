@@ -92,13 +92,6 @@ export class PollService {
 			choice: choice,
 			userId: user.id,
 		});
-	
-		// Notify
-		this.createNotificationService.createNotification(note.userId, 'pollVote', {
-			notifierId: user.id,
-			noteId: note.id,
-			choice: choice,
-		});
 	}
 
 	@bindThis

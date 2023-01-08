@@ -1,5 +1,5 @@
 <template>
-<div class="_autoGap">
+<div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
 	<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
 	<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount">{{ i18n.ts._accountDelete.requestAccountDelete }}</MkButton>

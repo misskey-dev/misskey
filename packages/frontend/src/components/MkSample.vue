@@ -30,10 +30,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSwitch from '@/components/form/switch.vue';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkRadio from '@/components/form/radio.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkRadio from '@/components/MkRadio.vue';
 import * as os from '@/os';
 import * as config from '@/config';
 

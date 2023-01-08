@@ -78,7 +78,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import { Chart } from 'chart.js';
-import MkSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import * as os from '@/os';

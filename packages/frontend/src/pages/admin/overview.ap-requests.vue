@@ -18,7 +18,6 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
@@ -135,11 +134,6 @@ onMounted(async () => {
 						maxRotation: 0,
 						autoSkipPadding: 16,
 					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
-					},
 					min: getDate(chartLimit).getTime(),
 				},
 				y: {
@@ -220,6 +214,10 @@ onMounted(async () => {
 					time: {
 						stepSize: 1,
 						unit: 'day',
+						displayFormats: {
+							day: 'M/d',
+							month: 'Y/M',
+						},
 					},
 					grid: {
 						display: false,
@@ -228,11 +226,6 @@ onMounted(async () => {
 						display: false,
 						maxRotation: 0,
 						autoSkipPadding: 16,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 					min: getDate(chartLimit).getTime(),
 				},

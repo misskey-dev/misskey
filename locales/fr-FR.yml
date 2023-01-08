@@ -910,6 +910,8 @@ caption: "Libellé"
 loggedInAsBot: "Connecté actuellement en tant que bot"
 tools: "Outils"
 cannotLoad: "Chargement impossible"
+like: "J'aime"
+show: "Affichage"
 _sensitiveMediaDetection:
   description: "L'apprentissage automatique peut être utilisé pour détecter automatiquement les médias sensibles à modérer. La sollicitation des serveurs augmente légèrement."
   sensitivity: "Sensibilité de la détection"
@@ -1411,6 +1413,12 @@ _timelines:
   local: "Local"
   social: "Social"
   global: "Global"
+_play:
+  viewSource: "Afficher la source"
+  featured: "Populaire"
+  title: "Titre"
+  script: "Script"
+  summary: "Description"
 _pages:
   newPage: "Créer une page"
   editPage: "Modifier une page"

@@ -38,13 +38,13 @@ const forceSpacerMin = inject('forceSpacerMin', false) || deviceKind === 'smartp
 	container-type: inline-size;
 }
 
-@container (max-width: 360px) {
+@container (max-width: 450px) {
 	.root {
 		padding: v-bind('props.marginMin + "px"');
 	}
 }
 
-@container (min-width: 361px) {
+@container (min-width: 451px) {
 	.root {
 		padding: v-bind('props.marginMax + "px"');
 	}

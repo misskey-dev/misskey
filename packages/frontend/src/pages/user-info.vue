@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div v-if="tab === 'overview'" class="_autoGap">
+			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="aeakzknw">
 					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 					<div class="body">
@@ -55,7 +55,7 @@
 				<FormSection>
 					<template #label>ActivityPub</template>
 
-					<div class="_autoGap">
+					<div class="_gaps_m">
 						<div style="display: flex; flex-direction: column; gap: 1em;">
 							<MkKeyValue v-if="user.host" oneline>
 								<template #key>{{ i18n.ts.instanceInfo }}</template>
@@ -86,18 +86,18 @@
 					</div>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'moderation'" class="_autoGap">
-				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
-				<FormSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
-				<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
+			<div v-else-if="tab === 'moderation'" class="_gaps_m">
+				<MkSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</MkSwitch>
+				<MkSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</MkSwitch>
+				<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div>
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
-				<FormTextarea v-model="moderationNote" manual-save>
+				<MkTextarea v-model="moderationNote" manual-save>
 					<template #label>Moderation note</template>
-				</FormTextarea>
+				</MkTextarea>
 				<FormFolder>
 					<template #label>IP</template>
 					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
@@ -117,16 +117,16 @@
 				<FormSection>
 					<template #label>Drive Capacity Override</template>
 
-					<FormInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
+					<MkInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
 						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
 						<template #suffix>MB</template>
 						<template #caption>
 							{{ i18n.ts.driveCapOverrideCaption }}
 						</template>
-					</FormInput>
+					</MkInput>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'chart'" class="_autoGap">
+			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
 					<div class="selects">
 						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -141,7 +141,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else-if="tab === 'raw'" class="_autoGap">
+			<div v-else-if="tab === 'raw'" class="_gaps_m">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>
 
@@ -158,16 +158,16 @@ import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';

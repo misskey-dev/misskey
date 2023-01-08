@@ -1,6 +1,6 @@
 <template>
 <header class="kkwtjztg">
-	<MkA v-user-preview="note.user.id" class="name" :to="userPage(note.user)">
+	<MkA v-once v-user-preview="note.user.id" class="name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" class="is-bot">bot</div>
@@ -9,7 +9,12 @@
 		<MkA class="created-at" :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
 		</MkA>
-		<MkVisibility :note="note"/>
+		<span v-if="note.visibility !== 'public'" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility[note.visibility]">
+			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
+			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock-open"></i>
+			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+		</span>
+		<span v-if="note.localOnly" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 	</div>
 </header>
 </template>
@@ -17,7 +22,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
-import MkVisibility from '@/components/MkVisibility.vue';
+import { i18n } from '@/i18n';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 

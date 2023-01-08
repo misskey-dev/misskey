@@ -1,5 +1,5 @@
 <template>
-<form class="qlvuhzng _autoGap" autocomplete="new-password" @submit.prevent="onSubmit">
+<form class="qlvuhzng _gaps_m" autocomplete="new-password" @submit.prevent="onSubmit">
 	<MkInput v-if="instance.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
 		<template #label>{{ i18n.ts.invitationCode }}</template>
 		<template #prefix><i class="ti ti-key"></i></template>
@@ -69,8 +69,8 @@ import { } from 'vue';
 import getPasswordStrength from 'syuilo-password-strength';
 import { toUnicode } from 'punycode/';
 import MkButton from './MkButton.vue';
-import MkInput from './form/input.vue';
-import MkSwitch from './form/switch.vue';
+import MkInput from './MkInput.vue';
+import MkSwitch from './MkSwitch.vue';
 import MkCaptcha from '@/components/MkCaptcha.vue';
 import * as config from '@/config';
 import * as os from '@/os';

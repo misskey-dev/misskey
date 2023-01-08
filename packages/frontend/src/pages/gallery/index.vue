@@ -45,7 +45,7 @@
 import { computed, defineComponent, watch } from 'vue';
 import XUserList from '@/components/MkUserList.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkPagination from '@/components/MkPagination.vue';

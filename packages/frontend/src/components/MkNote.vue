@@ -13,7 +13,7 @@
 	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
 	<div v-if="appearNote._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
 	<div v-if="isRenote" class="renote">
-		<MkAvatar class="avatar" :user="note.user"/>
+		<MkAvatar v-once class="avatar" :user="note.user"/>
 		<i class="ti ti-repeat"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
@@ -27,11 +27,16 @@
 				<i v-if="isMyRenote" class="ti ti-dots dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<MkVisibility :note="note"/>
+			<span v-if="note.visibility !== 'public'" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility[note.visibility]">
+				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
+				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock-open"></i>
+				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+			</span>
+			<span v-if="note.localOnly" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
-		<MkAvatar class="avatar" :user="appearNote.user"/>
+		<MkAvatar v-once class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<MkNoteHeader class="header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
@@ -44,7 +49,7 @@
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i"/>
+						<Mfm v-if="appearNote.text" v-once :text="appearNote.text" :author="appearNote.user" :i="$i"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
 						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
@@ -75,14 +80,25 @@
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
-				<MkRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
-				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
+				<button
+					v-if="canRenote"
+					ref="renoteButton"
+					class="button _button"
+					@mousedown="renote()"
+				>
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" class="count">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else class="button _button" disabled>
+					<i class="ti ti-ban"></i>
+				</button>
+				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @mousedown="react()">
 					<i class="ti ti-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
 				</button>
-				<button ref="menuButton" class="button _button" @click="menu()">
+				<button ref="menuButton" class="button _button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
 			</footer>
@@ -111,10 +127,9 @@ import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import MkRenoteButton from '@/components/MkRenoteButton.vue';
+import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import MkVisibility from '@/components/MkVisibility.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { checkWordMute } from '@/scripts/check-word-mute';
@@ -128,6 +143,7 @@ import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
+import { useTooltip } from '@/scripts/use-tooltip';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -158,7 +174,7 @@ const isRenote = (
 
 const el = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();
-const renoteButton = shallowRef<InstanceType<typeof MkRenoteButton>>();
+const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
@@ -175,6 +191,7 @@ const translation = ref(null);
 const translating = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
+const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
 
 const keymap = {
 	'r': () => reply(true),
@@ -192,6 +209,47 @@ useNoteCapture({
 	note: $$(appearNote),
 	isDeletedRef: isDeleted,
 });
+
+useTooltip(renoteButton, async (showing) => {
+	const renotes = await os.api('notes/renotes', {
+		noteId: appearNote.id,
+		limit: 11,
+	});
+
+	const users = renotes.map(x => x.user);
+
+	if (users.length < 1) return;
+
+	os.popup(MkUsersTooltip, {
+		showing,
+		users,
+		count: appearNote.renoteCount,
+		targetElement: renoteButton.value,
+	}, {}, 'closed');
+});
+
+function renote(viaKeyboard = false) {
+	pleaseLogin();
+	os.popupMenu([{
+		text: i18n.ts.renote,
+		icon: 'ti ti-repeat',
+		action: () => {
+			os.api('notes/create', {
+				renoteId: appearNote.id,
+			});
+		},
+	}, {
+		text: i18n.ts.quote,
+		icon: 'ti ti-quote',
+		action: () => {
+			os.post({
+				renote: appearNote,
+			});
+		},
+	}], renoteButton.value, {
+		viaKeyboard,
+	});
+}
 
 function reply(viaKeyboard = false): void {
 	pleaseLogin();

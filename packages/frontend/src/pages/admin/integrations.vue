@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_autoGap">
+			<div class="_gaps_m">
 				<FormFolder>
 					<template #icon><i class="ti ti-brand-twitter"></i></template>
 					<template #label>Twitter</template>

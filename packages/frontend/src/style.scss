@@ -256,16 +256,22 @@ hr {
 	margin: var(--margin) 0;
 }
 
-._autoGap {
+._gaps_m {
 	display: flex;
 	flex-direction: column;
 	gap: 1.5em;
 }
 
-._autoGap_half {
+._gaps_s {
 	display: flex;
 	flex-direction: column;
 	gap: 0.75em;
+}
+
+._gaps {
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin);
 }
 
 ._buttons {

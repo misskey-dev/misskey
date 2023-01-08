@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
 			</MkInput>
@@ -28,8 +28,8 @@ import * as os from '@/os';
 import { url } from '@/config';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkInput from '@/components/form/input.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkInput from '@/components/MkInput.vue';
 import { useRouter } from '@/router';
 
 const router = useRouter();
@@ -49,7 +49,7 @@ if (props.id) {
 let title = $ref(flash?.title ?? 'New Play');
 let summary = $ref(flash?.summary ?? '');
 let permissions = $ref(flash?.permissions ?? []);
-let script = $ref(flash?.script ?? `/// @ 0.12.1
+let script = $ref(flash?.script ?? `/// @ 0.12.2
 
 var name = ""
 

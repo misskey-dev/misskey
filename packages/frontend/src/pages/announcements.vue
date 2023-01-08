@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<MkPagination v-slot="{items}" :pagination="pagination" class="ruryvtyk _autoGap">
+		<MkPagination v-slot="{items}" :pagination="pagination" class="ruryvtyk _gaps_m">
 			<section v-for="(announcement, i) in items" :key="announcement.id" class="announcement _panel">
 				<div class="header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 				<div class="content">
@@ -53,14 +53,14 @@ definePageMetadata({
 <style lang="scss" scoped>
 .ruryvtyk {
 	> .announcement {
+		padding: 16px;
+
 		> .header {
-			padding: 16px;
+			margin-bottom: 16px;
 			font-weight: bold;
 		}
 
 		> .content {
-			padding: 0 16px;
-		
 			> img {
 				display: block;
 				max-height: 300px;
@@ -69,7 +69,7 @@ definePageMetadata({
 		}
 
 		> .footer {
-			padding: 16px;
+			margin-top: 16px;
 		}
 	}
 }

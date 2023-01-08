@@ -13,7 +13,7 @@
 	<template #header>{{ title || $ts.generateAccessToken }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<div v-if="information">
 				<MkInfo warn>{{ information }}</MkInfo>
 			</div>
@@ -36,8 +36,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { permissions as kinds } from 'misskey-js';
-import MkInput from './form/input.vue';
-import MkSwitch from './form/switch.vue';
+import MkInput from './MkInput.vue';
+import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';

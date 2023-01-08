@@ -36,23 +36,21 @@ const relative = $computed(() => {
 		i18n.ts._ago.future);
 });
 
+let tickId: number;
+
 function tick() {
 	now = new Date();
 	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
-	tickId = window.setTimeout(() => {
-		window.requestAnimationFrame(tick);
-	}, next);
+	tickId = window.setTimeout(tick, next);
 }
 
-let tickId: number;
-
 if (props.mode === 'relative' || props.mode === 'detail') {
-	tickId = window.requestAnimationFrame(tick);
+	tick();
 
 	onUnmounted(() => {
-		window.cancelAnimationFrame(tickId);
+		window.clearTimeout(tickId);
 	});
 }
 </script>
