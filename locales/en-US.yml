@@ -1328,6 +1328,7 @@ _widgets:
   userList: "User list"
   _userList:
     chooseList: "Select a list"
+  clicker: "Clicker"
 _cw:
   hide: "Hide"
   show: "Show content"
