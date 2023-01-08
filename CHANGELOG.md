@@ -12,7 +12,7 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, etc)
+- New features (Play, new widgets, new charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
