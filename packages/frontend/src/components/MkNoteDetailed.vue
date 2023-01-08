@@ -99,7 +99,6 @@
 					v-if="canRenote"
 					ref="renoteButton"
 					class="button _button"
-					@click="renote()"
 					@mousedown="renote()"
 				>
 					<i class="ti ti-repeat"></i>
@@ -108,13 +107,13 @@
 				<button v-else class="button _button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()" @mousedown="react()">
+				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @mousedown="react()">
 					<i class="ti ti-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
 				</button>
-				<button ref="menuButton" class="button _button" @click="menu()" @mousedown="menu()">
+				<button ref="menuButton" class="button _button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
 			</footer>

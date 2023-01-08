@@ -1,7 +1,7 @@
 <template>
 <div class="vblkjoeq">
 	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" class="input" :class="{ inline, disabled, focused }" @click.prevent="show" @mousedown.prevent="show">
+	<div ref="container" class="input" :class="{ inline, disabled, focused }" @mousedown.prevent="show">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
 		<select
 			ref="inputEl"
