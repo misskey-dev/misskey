@@ -1328,6 +1328,7 @@ _widgets:
   userList: "사용자 목록"
   _userList:
     chooseList: "리스트 선택"
+  clicker: "클리커"
 _cw:
   hide: "숨기기"
   show: "더 보기"
