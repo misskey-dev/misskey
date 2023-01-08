@@ -379,7 +379,7 @@ export class DriveService {
 
 	// Expire oldest file (without avatar or banner) of remote user
 	@bindThis
-	private async expireOldFile(user: IRemoteUser): Promise<number | null> {
+	private async expireOldFile(user: IRemoteUser, driveCapacity: number) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -392,16 +392,17 @@ export class DriveService {
 			q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
 		}
 
+		//This selete is hard coded, be careful if change database schema
+		q.addSelect('SUM("file"."size") OVER (ORDER BY "file"."id" DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)', 'acc_usage');
 		q.orderBy('file.id', 'ASC');
 
-		const oldFile = await q.getOne();
+		const fileList = await q.getRawMany();
+		const exceedFileIds = fileList.filter((x: any) => x.acc_usage > driveCapacity).map((x: any) => x.file_id);
 
-		if (oldFile) {
-			this.deleteFile(oldFile, true);
-			return oldFile.size;
+		for (const fileId of exceedFileIds) {
+			const file = await this.driveFilesRepository.findOneBy({ id: fileId });
+			this.deleteFile(file, true);
 		}
-
-		return null;
 	}
 
 	/**
@@ -482,20 +483,12 @@ export class DriveService {
 
 			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
-			let excess = usage + info.size - driveCapacity;
-
 			// If usage limit exceeded
-			while (excess > 0) {
+			if (driveCapacity < usage + info.size) {
 				if (isLocalUser) {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				}
-
-				const deletedFileSize = await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
-				// No more files to delete
-				if (deletedFileSize === null) {
-					break;
-				}
-				excess = excess - deletedFileSize;
+				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser, driveCapacity - info.size);
 			}
 		}
 		//#endregion
