@@ -30,6 +30,7 @@ You should also include the user name that made the change.
 
 #### For users
 - ノートのウォッチ機能が削除されました
+- アンケートに投票された際に通知が作成されなくなりました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.2にアップデートされました

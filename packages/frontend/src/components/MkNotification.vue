@@ -13,7 +13,6 @@
 			<i v-else-if="notification.type === 'reply'" class="ti ti-arrow-back-up"></i>
 			<i v-else-if="notification.type === 'mention'" class="ti ti-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
-			<i v-else-if="notification.type === 'pollVote'" class="ti ti-chart-arrows"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
 			<XReactionIcon
@@ -50,11 +49,6 @@
 		</MkA>
 		<MkA v-if="notification.type === 'quote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
-		</MkA>
-		<MkA v-if="notification.type === 'pollVote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<i class="ti ti-quote"></i>
-			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
-			<i class="ti ti-quote"></i>
 		</MkA>
 		<MkA v-if="notification.type === 'pollEnded'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<i class="ti ti-quote"></i>
@@ -234,12 +228,6 @@ useTooltip(reactionRef, (showing) => {
 			}
 
 			&.mention {
-				padding: 3px;
-				background: #88a6b7;
-				pointer-events: none;
-			}
-
-			&.pollVote {
 				padding: 3px;
 				background: #88a6b7;
 				pointer-events: none;
