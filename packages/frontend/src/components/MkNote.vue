@@ -13,7 +13,7 @@
 	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
 	<div v-if="appearNote._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
 	<div v-if="isRenote" class="renote">
-		<MkAvatar class="avatar" :user="note.user"/>
+		<MkAvatar v-once class="avatar" :user="note.user"/>
 		<i class="ti ti-repeat"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
@@ -27,11 +27,16 @@
 				<i v-if="isMyRenote" class="ti ti-dots dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<MkVisibility :note="note"/>
+			<span v-if="note.visibility !== 'public'" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility[note.visibility]">
+				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
+				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock-open"></i>
+				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+			</span>
+			<span v-if="note.localOnly" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
-		<MkAvatar class="avatar" :user="appearNote.user"/>
+		<MkAvatar v-once class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<MkNoteHeader class="header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
@@ -126,7 +131,6 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import MkVisibility from '@/components/MkVisibility.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { checkWordMute } from '@/scripts/check-word-mute';

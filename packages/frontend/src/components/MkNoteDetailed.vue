@@ -25,7 +25,12 @@
 				<i v-if="isMyRenote" class="ti ti-dots dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<MkVisibility :note="note"/>
+			<span v-if="note.visibility !== 'public'" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility[note.visibility]">
+				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
+				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock-open"></i>
+				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+			</span>
+			<span v-if="note.localOnly" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -38,7 +43,12 @@
 					</MkA>
 					<span v-if="appearNote.user.isBot" class="is-bot">bot</span>
 					<div class="info">
-						<MkVisibility :note="appearNote"/>
+						<span v-if="appearNote.visibility !== 'public'" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility[appearNote.visibility]">
+							<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
+							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock-open"></i>
+							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+						</span>
+						<span v-if="appearNote.localOnly" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 					</div>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
@@ -136,7 +146,6 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import MkVisibility from '@/components/MkVisibility.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { checkWordMute } from '@/scripts/check-word-mute';
 import { userPage } from '@/filters/user';
