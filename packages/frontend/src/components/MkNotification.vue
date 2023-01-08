@@ -15,7 +15,7 @@
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
-			<XReactionIcon
+			<MkReactionIcon
 				v-else-if="notification.type === 'reaction'"
 				ref="reactionRef"
 				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
@@ -71,7 +71,7 @@
 <script lang="ts" setup>
 import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import XReactionTooltip from '@/components/MkReactionTooltip.vue';
 import { getNoteSummary } from '@/scripts/get-note-summary';

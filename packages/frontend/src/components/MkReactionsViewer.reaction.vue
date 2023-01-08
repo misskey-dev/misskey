@@ -6,7 +6,7 @@
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction()"
 >
-	<XReactionIcon class="icon" :reaction="reaction"/>
+	<MkReactionIcon class="icon" :reaction="reaction"/>
 	<span class="count">{{ count }}</span>
 </button>
 </template>
@@ -15,7 +15,7 @@
 import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';

@@ -1,7 +1,7 @@
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
 	<span class="text" :class="{ up }">
-		<XReactionIcon class="icon" :reaction="reaction"/>
+		<MkReactionIcon class="icon" :reaction="reaction"/>
 	</span>
 </div>
 </template>
@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as os from '@/os';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
 const props = withDefaults(defineProps<{
 	reaction: string;
