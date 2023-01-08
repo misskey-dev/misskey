@@ -313,7 +313,7 @@
 
 <script lang="ts" setup>
 import { defineComponent } from 'vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';

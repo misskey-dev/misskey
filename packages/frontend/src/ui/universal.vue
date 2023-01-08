@@ -71,6 +71,7 @@ import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
+import { miLocalStorage } from '@/local-storage';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -170,7 +171,7 @@ function top() {
 	window.scroll({ top: 0, behavior: 'smooth' });
 }
 
-const wallpaper = localStorage.getItem('wallpaper') != null;
+const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 </script>
 
 <style lang="scss" scoped>

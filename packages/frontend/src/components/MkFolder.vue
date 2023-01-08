@@ -1,7 +1,7 @@
 <template>
 <div class="ssazuxis">
 	<header class="_button" :style="{ background: bg }" @click="showBody = !showBody">
-		<div class="title"><slot name="header"></slot></div>
+		<div class="title"><div><slot name="header"></slot></div></div>
 		<div class="divider"></div>
 		<button class="_button">
 			<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
@@ -25,8 +25,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import tinycolor from 'tinycolor2';
+import { miLocalStorage } from '@/local-storage';
 
-const localStoragePrefix = 'ui:folder:';
+const miLocalStoragePrefix = 'ui:folder:' as const;
 
 export default defineComponent({
 	props: {
@@ -44,13 +45,13 @@ export default defineComponent({
 	data() {
 		return {
 			bg: null,
-			showBody: (this.persistKey && localStorage.getItem(localStoragePrefix + this.persistKey)) ? localStorage.getItem(localStoragePrefix + this.persistKey) === 't' : this.expanded,
+			showBody: (this.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${this.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${this.persistKey}`) === 't') : this.expanded,
 		};
 	},
 	watch: {
 		showBody() {
 			if (this.persistKey) {
-				localStorage.setItem(localStoragePrefix + this.persistKey, this.showBody ? 't' : 'f');
+				miLocalStorage.setItem(`${miLocalStoragePrefix}${this.persistKey}`, this.showBody ? 't' : 'f');
 			}
 		},
 	},
@@ -126,14 +127,6 @@ export default defineComponent({
 			place-content: center;
 			margin: 0;
 			padding: 12px 16px 12px 0;
-
-			> i {
-				margin-right: 6px;
-			}
-
-			&:empty {
-				display: none;
-			}
 		}
 
 		> .divider {

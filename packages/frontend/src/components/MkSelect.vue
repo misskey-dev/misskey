@@ -1,7 +1,7 @@
 <template>
 <div class="vblkjoeq">
 	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" class="input" :class="{ inline, disabled, focused }" @click.prevent="onClick">
+	<div ref="container" class="input" :class="{ inline, disabled, focused }" @mousedown.prevent="show">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
 		<select
 			ref="inputEl"
@@ -118,7 +118,7 @@ onMounted(() => {
 	});
 });
 
-const onClick = (ev: MouseEvent) => {
+function show(ev: MouseEvent) {
 	focused.value = true;
 	opening.value = true;
 
@@ -166,7 +166,7 @@ const onClick = (ev: MouseEvent) => {
 	}).then(() => {
 		focused.value = false;
 	});
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -285,7 +285,7 @@ const onClick = (ev: MouseEvent) => {
 
 <style lang="scss" module>
 .chevron {
-	transition: transform 0.5s ease;
+	transition: transform 0.1s ease-out;
 }
 
 .chevronOpening {

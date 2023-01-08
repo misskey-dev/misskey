@@ -2,8 +2,8 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_autoGap">
-			<div class="_autoGap">
+		<div class="_gaps_m">
+			<div class="_gaps_m">
 				<MkInput v-model="endpoint" :datalist="endpoints" @update:model-value="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
@@ -33,9 +33,9 @@ import { ref } from 'vue';
 import JSON5 from 'json5';
 import { Endpoints } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

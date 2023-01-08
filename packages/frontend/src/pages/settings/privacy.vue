@@ -1,37 +1,37 @@
 <template>
-<div class="_autoGap">
-	<FormSwitch v-model="isLocked" @update:model-value="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></FormSwitch>
-	<FormSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:model-value="save()">{{ i18n.ts.autoAcceptFollowed }}</FormSwitch>
+<div class="_gaps_m">
+	<MkSwitch v-model="isLocked" @update:model-value="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
+	<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:model-value="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
 
-	<FormSwitch v-model="publicReactions" @update:model-value="save()">
+	<MkSwitch v-model="publicReactions" @update:model-value="save()">
 		{{ i18n.ts.makeReactionsPublic }}
 		<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
-	</FormSwitch>
+	</MkSwitch>
 		
-	<FormSelect v-model="ffVisibility" @update:model-value="save()">
+	<MkSelect v-model="ffVisibility" @update:model-value="save()">
 		<template #label>{{ i18n.ts.ffVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 		<template #caption>{{ i18n.ts.ffVisibilityDescription }}</template>
-	</FormSelect>
+	</MkSelect>
 		
-	<FormSwitch v-model="hideOnlineStatus" @update:model-value="save()">
+	<MkSwitch v-model="hideOnlineStatus" @update:model-value="save()">
 		{{ i18n.ts.hideOnlineStatus }}
 		<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
-	</FormSwitch>
-	<FormSwitch v-model="noCrawle" @update:model-value="save()">
+	</MkSwitch>
+	<MkSwitch v-model="noCrawle" @update:model-value="save()">
 		{{ i18n.ts.noCrawle }}
 		<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
-	</FormSwitch>
-	<FormSwitch v-model="isExplorable" @update:model-value="save()">
+	</MkSwitch>
+	<MkSwitch v-model="isExplorable" @update:model-value="save()">
 		{{ i18n.ts.makeExplorable }}
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
-	</FormSwitch>
+	</MkSwitch>
 
 	<FormSection>
-		<div class="_autoGap">
-			<FormSwitch v-model="rememberNoteVisibility" @update:model-value="save()">{{ i18n.ts.rememberNoteVisibility }}</FormSwitch>
+		<div class="_gaps_m">
+			<MkSwitch v-model="rememberNoteVisibility" @update:model-value="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
 			<FormFolder v-if="!rememberNoteVisibility">
 				<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
 				<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
@@ -39,27 +39,27 @@
 				<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
 				<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
 
-				<div class="_autoGap">
-					<FormSelect v-model="defaultNoteVisibility">
+				<div class="_gaps_m">
+					<MkSelect v-model="defaultNoteVisibility">
 						<option value="public">{{ i18n.ts._visibility.public }}</option>
 						<option value="home">{{ i18n.ts._visibility.home }}</option>
 						<option value="followers">{{ i18n.ts._visibility.followers }}</option>
 						<option value="specified">{{ i18n.ts._visibility.specified }}</option>
-					</FormSelect>
-					<FormSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.localOnly }}</FormSwitch>
+					</MkSelect>
+					<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.localOnly }}</MkSwitch>
 				</div>
 			</FormFolder>
 		</div>
 	</FormSection>
 
-	<FormSwitch v-model="keepCw" @update:model-value="save()">{{ i18n.ts.keepCw }}</FormSwitch>
+	<MkSwitch v-model="keepCw" @update:model-value="save()">{{ i18n.ts.keepCw }}</MkSwitch>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormFolder from '@/components/form/folder.vue';
 import * as os from '@/os';

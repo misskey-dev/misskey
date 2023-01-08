@@ -51,10 +51,10 @@
 import { computed, defineAsyncComponent, onMounted, onUnmounted, Ref } from 'vue';
 import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSwitch from '@/components/form/switch.vue';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import { AsUiComponent } from '@/scripts/aiscript/ui';
 import FormFolder from '@/components/form/folder.vue';
 

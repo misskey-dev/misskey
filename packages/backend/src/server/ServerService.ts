@@ -1,12 +1,11 @@
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import * as http from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import Fastify from 'fastify';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
-import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { EmojisRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { envOption } from '@/env.js';
@@ -38,6 +37,9 @@ export class ServerService {
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
 
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
@@ -76,6 +78,43 @@ export class ServerService {
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
+
+		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
+			const path = request.params.path;
+
+			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
+				reply.code(404);
+				return;
+			}
+
+			reply.header('Cache-Control', 'public, max-age=86400');
+
+			const name = path.split('@')[0].replace('.webp', '');
+			const host = path.split('@')[1]?.replace('.webp', '');
+
+			const emoji = await this.emojisRepository.findOneBy({
+				// `@.` is the spec of ReactionService.decodeReaction
+				host: (host == null || host === '.') ? IsNull() : host,
+				name: name,
+			});
+
+			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+
+			if (emoji == null) {
+				return await reply.redirect('/static-assets/emoji-unknown.png');
+			}
+
+			const url = new URL('/proxy/emoji.webp', this.config.url);
+			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+			url.searchParams.set('emoji', '1');
+			if ('static' in request.query) url.searchParams.set('static', '1');
+
+			return await reply.redirect(
+				301,
+				url.toString(),
+			);
+		});
 
 		fastify.get<{ Params: { acct: string } }>('/avatar/@:acct', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.acct);

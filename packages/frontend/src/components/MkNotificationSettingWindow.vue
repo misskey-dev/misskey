@@ -12,7 +12,7 @@
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<template v-if="showGlobalToggle">
 				<MkSwitch v-model="useGlobalSetting">
 					{{ i18n.ts.useGlobalSetting }}
@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkSwitch from './form/switch.vue';
+import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';

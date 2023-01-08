@@ -10,8 +10,8 @@
 							<MkAsUi v-if="root" :component="root" :components="components"/>
 						</div>
 						<div class="actions _panel">
-							<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" as-like class="button" rounded primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="flash.likedCount > 0" class="count">{{ flash.likedCount }}</span></MkButton>
-							<MkButton v-else v-tooltip="i18n.ts.like" as-like class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" class="count">{{ flash.likedCount }}</span></MkButton>
+							<MkButton v-if="flash.isLiked" v-tooltip="i18n.ts.unlike" as-like class="button" rounded primary @click="unlike()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
+							<MkButton v-else v-tooltip="i18n.ts.like" as-like class="button" rounded @click="like()"><i class="ti ti-heart"></i><span v-if="flash.likedCount > 0" style="margin-left: 6px;">{{ flash.likedCount }}</span></MkButton>
 							<MkButton v-tooltip="i18n.ts.shareWithNote" class="button" rounded @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></MkButton>
 							<MkButton v-tooltip="i18n.ts.share" class="button" rounded @click="share"><i class="ti ti-share ti-fw"></i></MkButton>
 						</div>
@@ -66,7 +66,7 @@ import MkAsUi from '@/components/MkAsUi.vue';
 import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import FormFolder from '@/components/form/folder.vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const props = defineProps<{
 	id: string;
@@ -147,6 +147,8 @@ async function run() {
 		...registerAsUiLib(components, (_root) => {
 			root.value = _root.value;
 		}),
+		THIS_ID: values.STR(flash.id),
+		THIS_URL: values.STR(`${url}/play/${flash.id}`),
 	}, {
 		in: (q) => {
 			return new Promise(ok => {

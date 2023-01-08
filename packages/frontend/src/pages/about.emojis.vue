@@ -22,7 +22,7 @@
 	<MkFolder v-for="category in customEmojiCategories" :key="category" class="emojis">
 		<template #header>{{ category || $ts.other }}</template>
 		<div class="zuvgdzyt">
-			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
+			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" v-once :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
 	</MkFolder>
 </div>
@@ -32,8 +32,8 @@
 import { defineComponent, computed } from 'vue';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';

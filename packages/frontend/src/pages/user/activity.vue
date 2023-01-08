@@ -1,13 +1,23 @@
 <template>
 <MkSpacer :content-max="700">
-	<MkFolder class="item">
-		<template #header>Heatmap</template>
-		<XHeatmap :user="user" :src="'notes'"/>
-	</MkFolder>
-	<MkFolder class="item">
-		<template #header>PV</template>
-		<XPv :user="user"/>
-	</MkFolder>
+	<div class="_gaps">
+		<MkFolder class="item">
+			<template #header><i class="ti ti-activity"></i> Heatmap</template>
+			<XHeatmap :user="user" :src="'notes'"/>
+		</MkFolder>
+		<MkFolder class="item">
+			<template #header><i class="ti ti-pencil"></i> Notes</template>
+			<XNotes :user="user"/>
+		</MkFolder>
+		<MkFolder class="item">
+			<template #header><i class="ti ti-users"></i> Following</template>
+			<XFollowing :user="user"/>
+		</MkFolder>
+		<MkFolder class="item">
+			<template #header><i class="ti ti-eye"></i> PV</template>
+			<XPv :user="user"/>
+		</MkFolder>
+	</div>
 </MkSpacer>
 </template>
 
@@ -16,6 +26,8 @@ import { computed } from 'vue';
 import * as misskey from 'misskey-js';
 import XHeatmap from './activity.heatmap.vue';
 import XPv from './activity.pv.vue';
+import XNotes from './activity.notes.vue';
+import XFollowing from './activity.following.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{

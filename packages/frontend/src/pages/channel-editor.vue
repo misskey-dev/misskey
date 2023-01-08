@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
@@ -28,9 +28,9 @@
 
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { useRouter } from '@/router';

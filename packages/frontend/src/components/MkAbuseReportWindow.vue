@@ -9,7 +9,7 @@
 		</I18n>
 	</template>
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="dpvffvvy _autoGap">
+		<div class="dpvffvvy _gaps_m">
 			<div class="">
 				<MkTextarea v-model="comment">
 					<template #label>{{ i18n.ts.details }}</template>
@@ -28,7 +28,7 @@
 import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

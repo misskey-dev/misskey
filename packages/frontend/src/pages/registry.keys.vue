@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="600" :margin-min="16">
-		<div class="_autoGap">
+		<div class="_gaps_m">
 			<FormSplit>
 				<MkKeyValue>
 					<template #key>{{ i18n.ts._registry.domain }}</template>

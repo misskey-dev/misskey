@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="uqshojas">
-			<div v-for="ad in ads" class="_panel _autoGap ad">
+			<div v-for="ad in ads" class="_panel _gaps_m ad">
 				<MkAd v-if="ad.url" :specify="ad"/>
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
@@ -11,12 +11,12 @@
 				<MkInput v-model="ad.imageUrl">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
-				<FormRadios v-model="ad.place">
+				<MkRadios v-model="ad.place">
 					<template #label>Form</template>
 					<option value="square">square</option>
 					<option value="horizontal">horizontal</option>
 					<option value="horizontal-big">horizontal-big</option>
-				</FormRadios>
+				</MkRadios>
 				<!--
 			<div style="margin: 32px 0;">
 				{{ i18n.ts.priority }}
@@ -50,9 +50,9 @@
 import { } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkTextarea from '@/components/form/textarea.vue';
-import FormRadios from '@/components/form/radios.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

@@ -11,9 +11,18 @@ You should also include the user name that made the change.
 
 ## 13.0.0 (unreleased)
 
+### TL;DR
+- New features (Play, new widgets, new charts, etc)
+- Rewriten backend
+- Better performance (backend and frontend)
+- Various usability improvements
+- Various UI tweaks
+
 ### Changes
-#### For sabakans
+#### For server admins
 - Node.js 18.x or later is required
+- PostgreSQL 15.x is required
+	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
@@ -21,14 +30,16 @@ You should also include the user name that made the change.
 
 #### For users
 - ノートのウォッチ機能が削除されました
+- アンケートに投票された際に通知が作成されなくなりました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
-- AiScriptが0.12.1にアップデートされました
+- AiScriptが0.12.2にアップデートされました
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
-	- 0.12.1未満のプラグインは読み込むことはできません
+	- 0.12.x未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
+- Firefox109以下はサポートされなくなりました
 
-#### For developers
+#### For app developers
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
@@ -67,9 +78,13 @@ You should also include the user name that made the change.
 - Client: Improve RSS widget @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
+- Client: Support remote objects in search @SoniEx2
+- Client: user activity page @syuilo
 - Client: add user list widget @syuilo
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
+- Client: add new theme @syuilo
+- Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
@@ -87,6 +102,7 @@ You should also include the user name that made the change.
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: Page編集でブロックの移動が行えない問題を修正 @syuilo
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo

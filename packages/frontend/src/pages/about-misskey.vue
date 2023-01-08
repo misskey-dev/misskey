@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div style="overflow: clip;">
 		<MkSpacer :content-max="600" :margin-min="20">
-			<div class="_autoGap znqjceqz">
+			<div class="_gaps_m znqjceqz">
 				<div ref="containerEl" v-panel class="about" :class="{ playing: easterEggEngine != null }">
 					<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
 					<div class="misskey">Misskey</div>
