@@ -12,6 +12,9 @@ export default {
 		target.classList.add('_anime_bounce_standBy');
 
 		el.addEventListener('mousedown', () => {
+			target.classList.remove('_anime_bounce_ready');
+			target.classList.remove('_anime_bounce');
+
 			target.classList.add('_anime_bounce_standBy');
 			target.classList.add('_anime_bounce_ready');
 
