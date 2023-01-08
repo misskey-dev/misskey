@@ -1328,6 +1328,7 @@ _widgets:
   userList: "使用者列表"
   _userList:
     chooseList: "選擇清單"
+  clicker: "點擊器"
 _cw:
   hide: "隱藏"
   show: "瀏覽更多"
