@@ -89,7 +89,7 @@ async function renderChart() {
 				makeDataset('UPV (user)', format(raw.upv.user).slice().reverse(), { backgroundColor: colorUser, stack: 'u' }),
 				makeDataset('UPV (visitor)', format(raw.upv.visitor).slice().reverse(), { backgroundColor: colorVisitor, stack: 'u' }),
 				makeDataset('NPV (user)', format(raw.pv.user).slice().reverse(), { backgroundColor: colorUser2, stack: 'n' }),
-				makeDataset('UPV (visitor)', format(raw.pv.visitor).slice().reverse(), { backgroundColor: colorVisitor2, stack: 'n' }),
+				makeDataset('NPV (visitor)', format(raw.pv.visitor).slice().reverse(), { backgroundColor: colorVisitor2, stack: 'n' }),
 			],
 		},
 		options: {
