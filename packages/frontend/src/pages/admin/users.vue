@@ -41,7 +41,7 @@
 					</div>
 
 					<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination" class="users">
-						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/user-info/${user.id}`">
+						<MkA v-for="user in items" v-once :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/user-info/${user.id}`">
 							<MkUserCardMini :user="user"/>
 						</MkA>
 					</MkPagination>

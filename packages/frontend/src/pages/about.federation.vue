@@ -36,7 +36,7 @@
 
 	<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
 		<div class="dqokceoi">
-			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
+			<MkA v-for="instance in items" v-once :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
 				<MkInstanceCardMini :instance="instance"/>
 			</MkA>
 		</div>
