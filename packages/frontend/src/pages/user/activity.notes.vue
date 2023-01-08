@@ -14,6 +14,7 @@ import { Chart, ChartDataset } from 'chart.js';
 import tinycolor from 'tinycolor2';
 import * as misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
+import { satisfies } from 'compare-versions';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
@@ -33,7 +34,7 @@ const chartEl = $shallowRef<HTMLCanvasElement>(null);
 let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
 const now = new Date();
 let chartInstance: Chart = null;
-const chartLimit = 30;
+const chartLimit = 50;
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
@@ -58,14 +59,14 @@ async function renderChart() {
 		}));
 	};
 
-	const raw = await os.api('charts/user/pv', { userId: props.user.id, limit: chartLimit, span: 'day' });
+	const raw = await os.api('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
 
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
-	const colorUser = '#3498db';
-	const colorVisitor = '#2ecc71';
-	const colorUser2 = '#3498db88';
-	const colorVisitor2 = '#2ecc7188';
+	const colorNormal = '#008FFB';
+	const colorReply = '#FEB019';
+	const colorRenote = '#00E396';
+	const colorFile = '#e300db';
 
 	function makeDataset(label: string, data: ChartDataset['data'], extra: Partial<ChartDataset> = {}): ChartDataset {
 		return Object.assign({
@@ -76,8 +77,7 @@ async function renderChart() {
 			borderWidth: 0,
 			borderJoinStyle: 'round',
 			borderRadius: 4,
-			barPercentage: 0.7,
-			categoryPercentage: 0.7,
+			barPercentage: 0.9,
 			fill: true,
 		} satisfies ChartDataset, extra);
 	}
@@ -86,10 +86,10 @@ async function renderChart() {
 		type: 'bar',
 		data: {
 			datasets: [
-				makeDataset('UPV (user)', format(raw.upv.user).slice().reverse(), { backgroundColor: colorUser, stack: 'u' }),
-				makeDataset('UPV (visitor)', format(raw.upv.visitor).slice().reverse(), { backgroundColor: colorVisitor, stack: 'u' }),
-				makeDataset('NPV (user)', format(raw.pv.user).slice().reverse(), { backgroundColor: colorUser2, stack: 'n' }),
-				makeDataset('UPV (visitor)', format(raw.pv.visitor).slice().reverse(), { backgroundColor: colorVisitor2, stack: 'n' }),
+				makeDataset('Normal', format(raw.diffs.normal).slice().reverse(), { backgroundColor: colorNormal }),
+				makeDataset('Reply', format(raw.diffs.reply).slice().reverse(), { backgroundColor: colorReply }),
+				makeDataset('Renote', format(raw.diffs.renote).slice().reverse(), { backgroundColor: colorRenote }),
+				makeDataset('File', format(raw.diffs.withFile).slice().reverse(), { backgroundColor: colorFile }),
 			],
 		},
 		options: {
@@ -142,16 +142,6 @@ async function renderChart() {
 				mode: 'index',
 			},
 			plugins: {
-				title: {
-					display: true,
-					text: 'Unique/Natural PV',
-					padding: {
-						left: 0,
-						right: 0,
-						top: 0,
-						bottom: 12,
-					},
-				},
 				legend: {
 					display: false,
 				},

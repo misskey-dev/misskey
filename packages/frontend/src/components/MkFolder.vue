@@ -1,7 +1,7 @@
 <template>
 <div class="ssazuxis">
 	<header class="_button" :style="{ background: bg }" @click="showBody = !showBody">
-		<div class="title"><slot name="header"></slot></div>
+		<div class="title"><div><slot name="header"></slot></div></div>
 		<div class="divider"></div>
 		<button class="_button">
 			<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
@@ -127,14 +127,6 @@ export default defineComponent({
 			place-content: center;
 			margin: 0;
 			padding: 12px 16px 12px 0;
-
-			> i {
-				margin-right: 6px;
-			}
-
-			&:empty {
-				display: none;
-			}
 		}
 
 		> .divider {
