@@ -36,3 +36,18 @@ export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> 
 export type pushNotificationDataMap = {
 	[K in keyof pushNotificationDataSourceMap]: pushNotificationData<K>;
 };
+
+export type badgeNames = 
+	'null'
+	| 'antenna'
+	| 'arrow-back-up'
+	| 'at'
+	| 'chart-arrows'
+	| 'circle-check'
+	| 'messages'
+	| 'plus'
+	| 'quote'
+	| 'repeat'
+	| 'user-plus'
+	| 'users'
+	;
