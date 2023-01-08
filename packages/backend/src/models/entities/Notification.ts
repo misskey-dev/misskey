@@ -55,11 +55,11 @@ export class Notification {
 	 * 通知の種類。
 	 * follow - フォローされた
 	 * mention - 投稿で自分が言及された
-	 * reply - (自分または自分がWatchしている)投稿が返信された
-	 * renote - (自分または自分がWatchしている)投稿がRenoteされた
-	 * quote - (自分または自分がWatchしている)投稿が引用Renoteされた
-	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
-	 * pollVote - (自分または自分がWatchしている)投稿のアンケートに投票された
+	 * reply - 投稿に返信された
+	 * renote - 投稿がRenoteされた
+	 * quote - 投稿が引用Renoteされた
+	 * reaction - 投稿にリアクションされた
+	 * pollVote - 投稿のアンケートに投票された (廃止)
 	 * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
 	 * receiveFollowRequest - フォローリクエストされた
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された

@@ -1,6 +1,5 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PathOrFileDescriptor, readFileSync } from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
@@ -26,9 +25,10 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { ChannelsRepository, ClipsRepository, EmojisRepository, FlashsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
+import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -38,8 +38,8 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const staticAssets = `${_dirname}/../../../assets/`;
-const clientAssets = `${_dirname}/../../../../client/assets/`;
-const assets = `${_dirname}/../../../../../built/_client_dist_/`;
+const clientAssets = `${_dirname}/../../../../frontend/assets/`;
+const assets = `${_dirname}/../../../../../built/_frontend_dist_/`;
 const swAssets = `${_dirname}/../../../../../built/_sw_dist_/`;
 const viteOut = `${_dirname}/../../../../../built/_vite_/`;
 
@@ -70,6 +70,10 @@ export class ClientServerService {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
+		@Inject(DI.flashsRepository)
+		private flashsRepository: FlashsRepository,
+
+		private flashEntityService: FlashEntityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private pageEntityService: PageEntityService,
@@ -217,6 +221,21 @@ export class ClientServerService {
 			return reply.sendFile('/apple-touch-icon.png', staticAssets);
 		});
 
+		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
+			const path = request.params.path;
+
+			if (!path.match(/^[0-9a-f-]+\.png$/)) {
+				reply.code(404);
+				return;
+			}
+
+			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+
+			return await reply.sendFile(path, `${_dirname}/../../../../../fluent-emojis/dist/`, {
+				maxAge: ms('30 days'),
+			});
+		});
+
 		fastify.get<{ Params: { path: string } }>('/twemoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
@@ -289,6 +308,24 @@ export class ClientServerService {
 			return await reply.sendFile('/robots.txt', staticAssets);
 		});
 
+		// OpenSearch XML
+		fastify.get('/opensearch.xml', async (request, reply) => {
+			const meta = await this.metaService.fetch();
+
+			const name = meta.name || 'Misskey';
+			let content = '';
+			content += '<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">';
+			content += `<ShortName>${name}</ShortName>`;
+			content += `<Description>${name} Search</Description>`;
+			content += '<InputEncoding>UTF-8</InputEncoding>';
+			content += `<Image width="16" height="16" type="image/x-icon">${this.config.url}/favicon.ico</Image>`;
+			content += `<Url type="text/html" template="${this.config.url}/search?q={searchTerms}"/>`;
+			content += '</OpenSearchDescription>';
+
+			reply.header('Content-Type', 'application/opensearchdescription+xml');
+			return await reply.send(content);
+		});
+
 		//#endregion
 
 		const renderBase = async (reply: FastifyReply) => {
@@ -298,6 +335,7 @@ export class ClientServerService {
 				img: meta.bannerUrl,
 				title: meta.name ?? 'Misskey',
 				instanceName: meta.name ?? 'Misskey',
+				url: this.config.url,
 				desc: meta.description,
 				icon: meta.iconUrl,
 				themeColor: meta.themeColor,
@@ -461,6 +499,30 @@ export class ClientServerService {
 					page: _page,
 					profile,
 					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: page.userId })),
+					instanceName: meta.name ?? 'Misskey',
+					icon: meta.iconUrl,
+					themeColor: meta.themeColor,
+				});
+			} else {
+				return await renderBase(reply);
+			}
+		});
+
+		// Flash
+		fastify.get<{ Params: { id: string; } }>('/play/:id', async (request, reply) => {
+			const flash = await this.flashsRepository.findOneBy({
+				id: request.params.id,
+			});
+
+			if (flash) {
+				const _flash = await this.flashEntityService.pack(flash);
+				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: flash.userId });
+				const meta = await this.metaService.fetch();
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('flash', {
+					flash: _flash,
+					profile,
+					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: flash.userId })),
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,

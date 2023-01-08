@@ -58,8 +58,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: userDetail.isFollowing ? [] : [
 							{
 								action: 'follow',
-								title: t('_notification._actions.followBack')
-							}
+								title: t('_notification._actions.followBack'),
+							},
 						],
 					}];
 				}
@@ -73,8 +73,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: [
 							{
 								action: 'reply',
-								title: t('_notification._actions.reply')
-							}
+								title: t('_notification._actions.reply'),
+							},
 						],
 					}];
 
@@ -87,8 +87,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: [
 							{
 								action: 'reply',
-								title: t('_notification._actions.reply')
-							}
+								title: t('_notification._actions.reply'),
+							},
 						],
 					}];
 
@@ -101,8 +101,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: [
 							{
 								action: 'showUser',
-								title: getUserName(data.body.user)
-							}
+								title: getUserName(data.body.user),
+							},
 						],
 					}];
 
@@ -115,14 +115,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: [
 							{
 								action: 'reply',
-								title: t('_notification._actions.reply')
+								title: t('_notification._actions.reply'),
 							},
 							...((data.body.note.visibility === 'public' || data.body.note.visibility === 'home') ? [
-							{
-								action: 'renote',
-								title: t('_notification._actions.renote')
-							}
-							] : [])
+								{
+									action: 'renote',
+									title: t('_notification._actions.renote'),
+								},
+							] : []),
 						],
 					}];
 
@@ -144,10 +144,11 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 								u.searchParams.set('badge', '1');
 								badge = u.href;
 							} else {
-								const dummy = `${u.host}${u.pathname}`;	// 拡張子がないとキャッシュしてくれないCDNがあるので
+								// 拡張子がないとキャッシュしてくれないCDNがあるので
+								const dummy = `${encodeURIComponent(`${u.host}${u.pathname}`)}.png`;
 								badge = `${origin}/proxy/${dummy}?${url.query({
 									url: u.href,
-									badge: '1'
+									badge: '1',
 								})}`;
 							}
 						}
@@ -168,20 +169,11 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: [
 							{
 								action: 'showUser',
-								title: getUserName(data.body.user)
-							}
+								title: getUserName(data.body.user),
+							},
 						],
 					}];
 				}
-
-				case 'pollVote':
-					return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
-						body: data.body.note.text || '',
-						icon: data.body.user.avatarUrl,
-						badge: iconUrl('chart-arrows'),
-						tag: `poll:${data.body.note.id}`,
-						data,
-					}];
 
 				case 'pollEnded':
 					return [t('_notification.pollEnded'), {
@@ -200,12 +192,12 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: [
 							{
 								action: 'accept',
-								title: t('accept')
+								title: t('accept'),
 							},
 							{
 								action: 'reject',
-								title: t('reject')
-							}
+								title: t('reject'),
+							},
 						],
 					}];
 
@@ -225,21 +217,21 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						actions: [
 							{
 								action: 'accept',
-								title: t('accept')
+								title: t('accept'),
 							},
 							{
 								action: 'reject',
-								title: t('reject')
-							}
+								title: t('reject'),
+							},
 						],
 					}];
 
 				case 'app':
-						return [data.body.header || data.body.body, {
-							body: data.body.header && data.body.body,
-							icon: data.body.icon,
-							data
-						}];
+					return [data.body.header || data.body.body, {
+						body: data.body.header && data.body.body,
+						icon: data.body.icon,
+						data,
+					}];
 
 				default:
 					return null;
@@ -287,7 +279,7 @@ export async function createEmptyNotification() {
 				silent: true,
 				badge: iconUrl('null'),
 				tag: 'read_notification',
-			}
+			},
 		);
 
 		res();
@@ -296,7 +288,7 @@ export async function createEmptyNotification() {
 			for (const n of
 				[
 					...(await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
-					...(await self.registration.getNotifications({ tag: 'read_notification' }))
+					...(await self.registration.getNotifications({ tag: 'read_notification' })),
 				]
 			) {
 				n.close();

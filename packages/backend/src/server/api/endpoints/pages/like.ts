@@ -28,7 +28,7 @@ export const meta = {
 		alreadyLiked: {
 			message: 'The page has already been liked.',
 			code: 'ALREADY_LIKED',
-			id: 'cc98a8a2-0dc3-4123-b198-62c71df18ed3',
+			id: 'd4c1edbe-7da2-4eae-8714-1acfd2d63941',
 		},
 	},
 } as const;

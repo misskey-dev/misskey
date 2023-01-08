@@ -11,12 +11,12 @@ import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
@@ -300,7 +300,6 @@ export class NoteEntityService implements OnModuleInit {
 			repliesCount: note.repliesCount,
 			reactions: this.reactionService.convertLegacyReactions(note.reactions),
 			tags: note.tags.length > 0 ? note.tags : undefined,
-			emojis: this.customEmojiService.populateEmojis(note.emojis.concat(reactionEmojiNames), host),
 			fileIds: note.fileIds,
 			files: this.driveFileEntityService.packMany(note.fileIds),
 			replyId: note.replyId,
@@ -384,8 +383,6 @@ export class NoteEntityService implements OnModuleInit {
 				myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) ?? null);
 			}
 		}
-
-		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,

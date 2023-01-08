@@ -438,9 +438,9 @@ export class ActivityPubServerService {
 		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 
 		//#region Routing
-		// inbox
-		fastify.post('/inbox', async (request, reply) => await this.inbox(request, reply));
-		fastify.post('/users/:user/inbox', async (request, reply) => await this.inbox(request, reply));
+		// inbox (limit: 64kb)
+		fastify.post('/inbox', { bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
+		fastify.post('/users/:user/inbox', { bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));
 
 		// note
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {

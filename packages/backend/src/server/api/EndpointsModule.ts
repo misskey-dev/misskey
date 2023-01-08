@@ -99,6 +99,7 @@ import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
 import * as ep___charts_user_following from './endpoints/charts/user/following.js';
 import * as ep___charts_user_notes from './endpoints/charts/user/notes.js';
+import * as ep___charts_user_pv from './endpoints/charts/user/pv.js';
 import * as ep___charts_user_reactions from './endpoints/charts/user/reactions.js';
 import * as ep___charts_users from './endpoints/charts/users.js';
 import * as ep___clips_addNote from './endpoints/clips/add-note.js';
@@ -176,6 +177,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
@@ -264,6 +266,15 @@ import * as ep___pages_like from './endpoints/pages/like.js';
 import * as ep___pages_show from './endpoints/pages/show.js';
 import * as ep___pages_unlike from './endpoints/pages/unlike.js';
 import * as ep___pages_update from './endpoints/pages/update.js';
+import * as ep___flash_create from './endpoints/flash/create.js';
+import * as ep___flash_delete from './endpoints/flash/delete.js';
+import * as ep___flash_featured from './endpoints/flash/featured.js';
+import * as ep___flash_like from './endpoints/flash/like.js';
+import * as ep___flash_show from './endpoints/flash/show.js';
+import * as ep___flash_unlike from './endpoints/flash/unlike.js';
+import * as ep___flash_update from './endpoints/flash/update.js';
+import * as ep___flash_my from './endpoints/flash/my.js';
+import * as ep___flash_myLikes from './endpoints/flash/my-likes.js';
 import * as ep___ping from './endpoints/ping.js';
 import * as ep___pinnedUsers from './endpoints/pinned-users.js';
 import * as ep___promo_read from './endpoints/promo/read.js';
@@ -315,6 +326,7 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
+import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -417,6 +429,7 @@ const $charts_notes: Provider = { provide: 'ep:charts/notes', useClass: ep___cha
 const $charts_user_drive: Provider = { provide: 'ep:charts/user/drive', useClass: ep___charts_user_drive.default };
 const $charts_user_following: Provider = { provide: 'ep:charts/user/following', useClass: ep___charts_user_following.default };
 const $charts_user_notes: Provider = { provide: 'ep:charts/user/notes', useClass: ep___charts_user_notes.default };
+const $charts_user_pv: Provider = { provide: 'ep:charts/user/pv', useClass: ep___charts_user_pv.default };
 const $charts_user_reactions: Provider = { provide: 'ep:charts/user/reactions', useClass: ep___charts_user_reactions.default };
 const $charts_users: Provider = { provide: 'ep:charts/users', useClass: ep___charts_users.default };
 const $clips_addNote: Provider = { provide: 'ep:clips/add-note', useClass: ep___clips_addNote.default };
@@ -494,6 +507,7 @@ const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass:
 const $i_exportFollowing: Provider = { provide: 'ep:i/export-following', useClass: ep___i_exportFollowing.default };
 const $i_exportMute: Provider = { provide: 'ep:i/export-mute', useClass: ep___i_exportMute.default };
 const $i_exportNotes: Provider = { provide: 'ep:i/export-notes', useClass: ep___i_exportNotes.default };
+const $i_exportFavorites: Provider = { provide: 'ep:i/export-favorites', useClass: ep___i_exportFavorites.default };
 const $i_exportUserLists: Provider = { provide: 'ep:i/export-user-lists', useClass: ep___i_exportUserLists.default };
 const $i_favorites: Provider = { provide: 'ep:i/favorites', useClass: ep___i_favorites.default };
 const $i_gallery_likes: Provider = { provide: 'ep:i/gallery/likes', useClass: ep___i_gallery_likes.default };
@@ -582,6 +596,15 @@ const $pages_like: Provider = { provide: 'ep:pages/like', useClass: ep___pages_l
 const $pages_show: Provider = { provide: 'ep:pages/show', useClass: ep___pages_show.default };
 const $pages_unlike: Provider = { provide: 'ep:pages/unlike', useClass: ep___pages_unlike.default };
 const $pages_update: Provider = { provide: 'ep:pages/update', useClass: ep___pages_update.default };
+const $flash_create: Provider = { provide: 'ep:flash/create', useClass: ep___flash_create.default };
+const $flash_delete: Provider = { provide: 'ep:flash/delete', useClass: ep___flash_delete.default };
+const $flash_featured: Provider = { provide: 'ep:flash/featured', useClass: ep___flash_featured.default };
+const $flash_like: Provider = { provide: 'ep:flash/like', useClass: ep___flash_like.default };
+const $flash_show: Provider = { provide: 'ep:flash/show', useClass: ep___flash_show.default };
+const $flash_unlike: Provider = { provide: 'ep:flash/unlike', useClass: ep___flash_unlike.default };
+const $flash_update: Provider = { provide: 'ep:flash/update', useClass: ep___flash_update.default };
+const $flash_my: Provider = { provide: 'ep:flash/my', useClass: ep___flash_my.default };
+const $flash_myLikes: Provider = { provide: 'ep:flash/my-likes', useClass: ep___flash_myLikes.default };
 const $ping: Provider = { provide: 'ep:ping', useClass: ep___ping.default };
 const $pinnedUsers: Provider = { provide: 'ep:pinned-users', useClass: ep___pinnedUsers.default };
 const $promo_read: Provider = { provide: 'ep:promo/read', useClass: ep___promo_read.default };
@@ -633,6 +656,7 @@ const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_s
 const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
 const $admin_driveCapOverride: Provider = { provide: 'ep:admin/drive-capacity-override', useClass: ep___admin_driveCapOverride.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
+const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
 @Module({
 	imports: [
@@ -739,6 +763,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$charts_user_drive,
 		$charts_user_following,
 		$charts_user_notes,
+		$charts_user_pv,
 		$charts_user_reactions,
 		$charts_users,
 		$clips_addNote,
@@ -816,6 +841,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_favorites,
 		$i_gallery_likes,
@@ -904,6 +930,15 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$pages_show,
 		$pages_unlike,
 		$pages_update,
+		$flash_create,
+		$flash_delete,
+		$flash_featured,
+		$flash_like,
+		$flash_show,
+		$flash_unlike,
+		$flash_update,
+		$flash_my,
+		$flash_myLikes,
 		$ping,
 		$pinnedUsers,
 		$promo_read,
@@ -955,6 +990,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$users_stats,
 		$admin_driveCapOverride,
 		$fetchRss,
+		$retention,
 	],
 	exports: [
 		$admin_meta,
@@ -1055,6 +1091,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$charts_user_drive,
 		$charts_user_following,
 		$charts_user_notes,
+		$charts_user_pv,
 		$charts_user_reactions,
 		$charts_users,
 		$clips_addNote,
@@ -1132,6 +1169,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$i_exportFollowing,
 		$i_exportMute,
 		$i_exportNotes,
+		$i_exportFavorites,
 		$i_exportUserLists,
 		$i_favorites,
 		$i_gallery_likes,
@@ -1220,6 +1258,15 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$pages_show,
 		$pages_unlike,
 		$pages_update,
+		$flash_create,
+		$flash_delete,
+		$flash_featured,
+		$flash_like,
+		$flash_show,
+		$flash_unlike,
+		$flash_update,
+		$flash_my,
+		$flash_myLikes,
 		$ping,
 		$pinnedUsers,
 		$promo_read,
@@ -1269,6 +1316,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$users_stats,
 		$admin_driveCapOverride,
 		$fetchRss,
+		$retention,
 	],
 })
 export class EndpointsModule {}

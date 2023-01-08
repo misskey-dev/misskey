@@ -41,6 +41,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -259,6 +260,9 @@ export class NoteCreateService {
 		}
 
 		if (data.text) {
+			if (data.text.length > DB_MAX_NOTE_TEXT_LENGTH) {
+				data.text = data.text.slice(0, DB_MAX_NOTE_TEXT_LENGTH);
+			}
 			data.text = data.text.trim();
 		} else {
 			data.text = null;
@@ -424,7 +428,7 @@ export class NoteCreateService {
 
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
-			this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
+			this.federatedInstanceService.fetch(user.host).then(i => {
 				this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
 				this.instanceChart.updateNote(i.host, note, true);
 			});

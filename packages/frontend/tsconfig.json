@@ -1,0 +1,47 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"noEmitOnError": false,
+		"noImplicitAny": false,
+		"noImplicitReturns": true,
+		"noUnusedParameters": false,
+		"noUnusedLocals": true,
+		"noFallthroughCasesInSwitch": true,
+		"declaration": false,
+		"sourceMap": false,
+		"target": "es2021",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"removeComments": false,
+		"noLib": false,
+		"strict": true,
+		"strictNullChecks": true,
+		"experimentalDecorators": true,
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"useDefineForClassFields": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+		},
+		"typeRoots": [
+			"node_modules/@types",
+			"@types",
+		],
+		"types": [
+			"vite/client",
+		],
+		"lib": [
+			"esnext",
+			"dom"
+		],
+		"jsx": "preserve"
+	},
+	"compileOnSave": false,
+	"include": [
+		".eslintrc.js",
+		"./**/*.ts",
+		"./**/*.vue"
+	]
+}
