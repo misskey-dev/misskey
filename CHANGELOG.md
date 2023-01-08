@@ -9,6 +9,11 @@
 You should also include the user name that made the change.
 -->
 
+## 12.x.x (unreleased)
+
+### Bugfixes
+- Server: 特定のPNG画像のアップロードに失敗する問題を修正
+
 ## 12.119.2 (2022/12/04)
 ### Bugfixes
 - Server: Backported versions mitigate isn't working @mei23
