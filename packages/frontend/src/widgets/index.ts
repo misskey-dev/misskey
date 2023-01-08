@@ -25,6 +25,7 @@ export default function(app: App) {
 	app.component('MkwAiscriptApp', defineAsyncComponent(() => import('./aiscript-app.vue')));
 	app.component('MkwAichan', defineAsyncComponent(() => import('./aichan.vue')));
 	app.component('MkwUserList', defineAsyncComponent(() => import('./user-list.vue')));
+	app.component('MkwClicker', defineAsyncComponent(() => import('./clicker.vue')));
 }
 
 export const widgets = [
@@ -52,4 +53,5 @@ export const widgets = [
 	'aiscriptApp',
 	'aichan',
 	'userList',
+	'clicker',
 ];

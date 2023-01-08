@@ -41,6 +41,11 @@ export function openInstanceMenu(ev: MouseEvent) {
 			to: '/api-console',
 			text: 'API Console',
 			icon: 'ti ti-terminal-2',
+		}, {
+			type: 'link',
+			to: '/clicker',
+			text: '🍪👈',
+			icon: 'ti ti-cookie',
 		}],
 	}, null, {
 		type: 'parent',
