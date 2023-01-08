@@ -23,7 +23,7 @@ const emit = defineEmits<{
 }>();
 
 let up = $ref(false);
-const zIndex = os.claimZIndex('veryLow');
+const zIndex = os.claimZIndex('middle');
 const angle = (90 - (Math.random() * 180)) + 'deg';
 
 onMounted(() => {
