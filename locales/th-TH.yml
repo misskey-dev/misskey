@@ -1324,6 +1324,7 @@ _widgets:
   userList: "รายชื่อผู้ใช้"
   _userList:
     chooseList: "เลือกรายการ"
+  clicker: "คลิกเกอร์"
 _cw:
   hide: "ซ่อน"
   show: "โหลดเพิ่มเติม"
