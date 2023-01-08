@@ -74,7 +74,7 @@ function onMousedown(evt: Event) {
 }
 
 .fade-enter-active, .fade-leave-active {
-	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 	transform-origin: left top;
 }
 
