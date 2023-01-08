@@ -1,14 +1,18 @@
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
-	<span class="text" :class="{ up }">+1</span>
+	<span class="text" :class="{ up }">
+		<MkReactionIcon class="icon" :reaction="reaction"/>
+	</span>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as os from '@/os';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
 const props = withDefaults(defineProps<{
+	reaction: string;
 	x: number;
 	y: number;
 }>(), {
@@ -20,7 +24,7 @@ const emit = defineEmits<{
 
 let up = $ref(false);
 const zIndex = os.claimZIndex('middle');
-const angle = (45 - (Math.random() * 90)) + 'deg';
+const angle = (90 - (Math.random() * 180)) + 'deg';
 
 onMounted(() => {
 	window.setTimeout(() => {
@@ -51,11 +55,10 @@ onMounted(() => {
 			right: 0;
 			bottom: 0;
 			margin: auto;
-			color: #fff;
-			text-shadow: 0 0 6px #000;
+			color: var(--accent);
 			font-size: 18px;
 			font-weight: bold;
-			transform: translateY(0px);
+			transform: translateY(-30px);
 			transition: transform 1s cubic-bezier(0,.5,0,1), opacity 1s cubic-bezier(.5,0,1,.5);
 			will-change: opacity, transform;
 

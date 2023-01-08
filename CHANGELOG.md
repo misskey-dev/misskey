@@ -88,6 +88,7 @@ You should also include the user name that made the change.
 - Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
+- Client: clicker game @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468

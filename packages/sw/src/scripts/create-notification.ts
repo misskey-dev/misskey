@@ -3,14 +3,21 @@
  */
 import { swLang } from '@/scripts/lang';
 import { cli } from '@/scripts/operations';
-import { pushNotificationDataMap } from '@/types';
+import { badgeNames, pushNotificationDataMap } from '@/types';
 import getUserName from '@/scripts/get-user-name';
 import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { char2fileName } from '@/scripts/twemoji-base';
 import * as url from '@/scripts/url';
 
-const iconUrl = (name: string) => `/static-assets/notification-badges/${name}.png`;
+const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`;
+/* How to add a new badge:
+ * 1. Find the icon and download png from https://tabler-icons.io/
+ * 2. vips resize ~/Downloads/icon-name.png vipswork.png 0.4; vips scRGB2BW vipswork.png ~/icon-name.png"[compression=9,strip]"; rm vipswork.png;
+ * 3. mv ~/icon-name.png ~/misskey/packages/backend/assets/tabler-badges/
+ * 4. Add 'icon-name' to badgeNames
+ * 5. Add `badge: iconUrl('icon-name'),`
+ */
 
 export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
 	const n = await composeNotification(data);
@@ -75,7 +82,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
-						badge: iconUrl('reply'),
+						badge: iconUrl('arrow-back-up'),
 						data,
 						actions: [
 							{
@@ -89,7 +96,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
-						badge: iconUrl('retweet'),
+						badge: iconUrl('repeat'),
 						data,
 						actions: [
 							{
@@ -103,7 +110,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text || '',
 						icon: data.body.user.avatarUrl,
-						badge: iconUrl('quote-right'),
+						badge: iconUrl('quote'),
 						data,
 						actions: [
 							{
@@ -171,7 +178,8 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 				case 'pollEnded':
 					return [t('_notification.pollEnded'), {
 						body: data.body.note.text || '',
-						badge: iconUrl('clipboard-check-solid'),
+						badge: iconUrl('chart-arrows'),
+						tag: `poll:${data.body.note.id}`,
 						data,
 					}];
 
@@ -179,7 +187,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
-						badge: iconUrl('clock'),
+						badge: iconUrl('user-plus'),
 						data,
 						actions: [
 							{
@@ -197,14 +205,14 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.yourFollowRequestAccepted'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
-						badge: iconUrl('check'),
+						badge: iconUrl('circle-check'),
 						data,
 					}];
 
 				case 'groupInvited':
 					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
 						body: data.body.invitation.group.name,
-						badge: iconUrl('id-card-alt'),
+						badge: iconUrl('users'),
 						data,
 						actions: [
 							{
@@ -232,7 +240,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 			if (data.body.groupId === null) {
 				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
 					icon: data.body.user.avatarUrl,
-					badge: iconUrl('comments'),
+					badge: iconUrl('messages'),
 					tag: `messaging:user:${data.body.userId}`,
 					data,
 					renotify: true,
@@ -240,7 +248,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 			}
 			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group.name }), {
 				icon: data.body.user.avatarUrl,
-				badge: iconUrl('comments'),
+				badge: iconUrl('messages'),
 				tag: `messaging:group:${data.body.groupId}`,
 				data,
 				renotify: true,
@@ -249,7 +257,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text || ''}`,
 				icon: data.body.note.user.avatarUrl,
-				badge: iconUrl('satellite'),
+				badge: iconUrl('antenna'),
 				tag: `antenna:${data.body.antenna.id}`,
 				data,
 				renotify: true,

@@ -19,7 +19,7 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
-import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
+import MkReactionEffect from '@/components/MkReactionEffect.vue';
 
 const props = defineProps<{
 	reaction: string;
@@ -61,7 +61,7 @@ const anime = () => {
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
 	const y = rect.top + (buttonEl.value.offsetHeight / 2);
-	os.popup(MkPlusOneEffect, { reaction: props.reaction, x, y }, {}, 'end');
+	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
 };
 
 watch(() => props.count, (newCount, oldCount) => {
