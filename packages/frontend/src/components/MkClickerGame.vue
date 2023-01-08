@@ -31,6 +31,8 @@ let prevCookies = $ref(0);
 
 function onClick(ev: MouseEvent) {
 	saveData.value!.cookies++;
+	saveData.value!.totalCookies++;
+	saveData.value!.totalHandmadeCookies++;
 	saveData.value!.clicked++;
 
 	const x = ev.clientX;
