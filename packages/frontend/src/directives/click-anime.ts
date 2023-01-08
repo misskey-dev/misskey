@@ -12,7 +12,6 @@ export default {
 		target.classList.add('_anime_bounce_standBy');
 
 		el.addEventListener('mousedown', () => {
-			target.classList.remove('_anime_bounce_ready');
 			target.classList.remove('_anime_bounce');
 
 			target.classList.add('_anime_bounce_standBy');
@@ -25,10 +24,10 @@ export default {
 
 		el.addEventListener('click', () => {
 			target.classList.add('_anime_bounce');
+			target.classList.remove('_anime_bounce_ready');
 		});
 
 		el.addEventListener('animationend', () => {
-			target.classList.remove('_anime_bounce_ready');
 			target.classList.remove('_anime_bounce');
 			target.classList.add('_anime_bounce_standBy');
 		});
