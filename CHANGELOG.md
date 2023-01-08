@@ -78,6 +78,7 @@ You should also include the user name that made the change.
 - Client: Improve RSS widget @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
+- Client: Support remote objects in search @SoniEx2
 - Client: add user list widget @syuilo
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
