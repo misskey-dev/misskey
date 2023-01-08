@@ -187,7 +187,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
 						icon: data.body.user.avatarUrl,
-						// badge: iconUrl('clock'), TODO, see https://github.com/misskey-dev/misskey/issues/9405
+						badge: iconUrl('user-plus'),
 						data,
 						actions: [
 							{
