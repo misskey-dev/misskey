@@ -344,6 +344,7 @@ _antennaSources:
   userGroup: "Σημειώματα από μέλη καθορισμένης ομάδας"
 _widgets:
   profile: "Προφίλ"
+  instanceInfo: "Πληροφορίες του instance"
   notifications: "Ειδοποιήσεις"
   timeline: "Χρονολόγιο"
   calendar: "Ημερολόγιο"
