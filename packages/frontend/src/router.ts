@@ -340,6 +340,10 @@ export const routes = [{
 		name: 'files',
 		component: page(() => import('./pages/admin/files.vue')),
 	}, {
+		path: '/federation',
+		name: 'federation',
+		component: page(() => import('./pages/admin/federation.vue')),
+	}, {
 		path: '/announcements',
 		name: 'announcements',
 		component: page(() => import('./pages/admin/announcements.vue')),
