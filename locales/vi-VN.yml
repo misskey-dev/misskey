@@ -1271,6 +1271,7 @@ _weekday:
   friday: "Thứ Sáu"
   saturday: "Thứ Bảy"
 _widgets:
+  profile: "Trang cá nhân"
   memo: "Tút đã ghim"
   notifications: "Thông báo"
   timeline: "Bảng tin"
