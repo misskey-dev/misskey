@@ -488,6 +488,7 @@ _sfx:
   notification: "Notificações"
   chat: "Chat"
 _widgets:
+  profile: "Perfil"
   notifications: "Notificações"
   timeline: "Timeline"
   activity: "atividade"
