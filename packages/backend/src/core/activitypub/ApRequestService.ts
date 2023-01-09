@@ -195,6 +195,6 @@ export class ApRequestService {
 			}
 		);
 
-		return await res.json();
+		return res.json();
 	}
 }
