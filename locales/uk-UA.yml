@@ -1230,6 +1230,7 @@ _weekday:
   saturday: "Субота"
 _widgets:
   profile: "Профіль"
+  instanceInfo: "Про цей інстанс"
   memo: "Нагадування"
   notifications: "Сповіщення"
   timeline: "Стрічка"
