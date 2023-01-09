@@ -694,6 +694,7 @@ _weekday:
   friday: "Pátek"
   saturday: "Sobota"
 _widgets:
+  profile: "Váš profil"
   notifications: "Oznámení"
   timeline: "Časová osa"
   calendar: "Kalendář"
