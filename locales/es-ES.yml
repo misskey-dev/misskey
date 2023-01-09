@@ -1297,6 +1297,7 @@ _weekday:
   saturday: "Sábado"
 _widgets:
   profile: "Perfil"
+  instanceInfo: "información de la instancia"
   memo: "Nota adhesiva"
   notifications: "Notificaciones"
   timeline: "Linea de tiempo"
