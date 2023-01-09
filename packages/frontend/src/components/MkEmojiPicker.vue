@@ -1,7 +1,7 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
 	<input ref="search" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
-	<div ref="emojis" class="emojis">
+	<div v-if="customEmojis != null && customEmojiCategories != null" ref="emojisEl" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
 				<button
@@ -104,9 +104,17 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
-const customEmojis = await getCustomEmojis();
+let customEmojis = $ref(null);
+getCustomEmojis().then((x) => {
+	customEmojis = x;
+});
+let customEmojiCategories = $ref(null);
+getCustomEmojiCategories().then((x) => {
+	customEmojiCategories = x;
+});
+
 const search = shallowRef<HTMLInputElement>();
-const emojis = shallowRef<HTMLDivElement>();
+const emojisEl = shallowRef<HTMLDivElement>();
 
 const {
 	reactions: pinned,
@@ -120,14 +128,13 @@ const {
 const size = computed(() => props.asReactionPicker ? reactionPickerSize.value : 1);
 const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
-const customEmojiCategories = await getCustomEmojiCategories();
 const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
 watch(q, () => {
-	if (emojis.value) emojis.value.scrollTop = 0;
+	if (emojisEl.value) emojisEl.value.scrollTop = 0;
 
 	if (q.value === '') {
 		searchResultCustom.value = [];
@@ -276,7 +283,7 @@ function focus() {
 }
 
 function reset() {
-	if (emojis.value) emojis.value.scrollTop = 0;
+	if (emojisEl.value) emojisEl.value.scrollTop = 0;
 	q.value = '';
 }
 
