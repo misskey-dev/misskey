@@ -53,6 +53,7 @@ export default defineConfig(({ command, mode }) => {
 				},
 				output: {
 					manualChunks: {
+						vue: ['vue'],
 					},
 				},
 			},
