@@ -1289,6 +1289,7 @@ _weekday:
   friday: "Vendredi"
   saturday: "Samedi"
 _widgets:
+  profile: "Profil"
   memo: "Note collante"
   notifications: "Notifications"
   timeline: "Fil"
