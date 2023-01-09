@@ -1302,6 +1302,7 @@ _weekday:
   friday: "Friday"
   saturday: "Saturday"
 _widgets:
+  profile: "Profile"
   memo: "Sticky notes"
   notifications: "Notifications"
   timeline: "Timeline"
