@@ -417,6 +417,10 @@ function readPromo() {
 	line-height: 28px;
 	white-space: pre;
 	color: var(--renote);
+
+	& + .article {
+		padding-top: 8px;
+	}
 }
 
 .renoteAvatar {
@@ -451,10 +455,6 @@ function readPromo() {
 
 .renoteMenu {
 	margin-right: 4px;
-}
-
-.renoteInfo + .article {
-	padding-top: 8px;
 }
 
 .article {
