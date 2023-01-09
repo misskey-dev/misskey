@@ -1117,6 +1117,7 @@ _weekday:
   friday: "الجمعة"
   saturday: "السبت"
 _widgets:
+  profile: "الملف التعريفي"
   memo: "ملاحظة لاصقة"
   notifications: "الإشعارات"
   timeline: "الخيط الزمني"
