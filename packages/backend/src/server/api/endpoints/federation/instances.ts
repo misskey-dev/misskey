@@ -4,6 +4,7 @@ import type { InstancesRepository } from '@/models/index.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -120,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.host) {
-				query.andWhere('instance.host like :host', { host: '%' + ps.host.toLowerCase() + '%' });
+				query.andWhere('instance.host like :host', { host: '%' + sqlLikeEscape(ps.host.toLowerCase()) + '%' });
 			}
 
 			const instances = await query.take(ps.limit).skip(ps.offset).getMany();

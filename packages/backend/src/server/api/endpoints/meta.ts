@@ -4,7 +4,6 @@ import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/
 import { MAX_NOTE_TEXT_LENGTH, DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -152,43 +151,6 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
-			emojis: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						id: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'id',
-						},
-						aliases: {
-							type: 'array',
-							optional: false, nullable: false,
-							items: {
-								type: 'string',
-								optional: false, nullable: false,
-							},
-						},
-						category: {
-							type: 'string',
-							optional: false, nullable: true,
-						},
-						host: {
-							type: 'string',
-							optional: false, nullable: true,
-							description: 'The local host is represented with `null`.',
-						},
-						url: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'url',
-						},
-					},
-				},
-			},
 			ads: {
 				type: 'array',
 				optional: false, nullable: false,
@@ -326,29 +288,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
-
 		private userEntityService: UserEntityService,
-		private emojiEntityService: EmojiEntityService,
 		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
-
-			const emojis = await this.emojisRepository.find({
-				where: {
-					host: IsNull(),
-				},
-				order: {
-					category: 'ASC',
-					name: 'ASC',
-				},
-				cache: {
-					id: 'meta_emojis',
-					milliseconds: 3600000,	// 1 hour
-				},
-			});
 
 			const ads = await this.adsRepository.find({
 				where: {
@@ -390,7 +334,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
 				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-				emojis: await this.emojiEntityService.packMany(emojis),
 				defaultLightTheme: instance.defaultLightTheme,
 				defaultDarkTheme: instance.defaultDarkTheme,
 				ads: ads.map(ad => ({

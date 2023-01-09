@@ -36,7 +36,7 @@ import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os';
 import { unique } from '@/scripts/array';
 import { i18n } from '@/i18n';
-import { emojiCategories } from '@/instance';
+import { getCustomEmojiCategories } from '@/custom-emojis';
 
 const props = defineProps<{
 	emoji: any,
@@ -46,7 +46,7 @@ let dialog = $ref(null);
 let name: string = $ref(props.emoji.name);
 let category: string = $ref(props.emoji.category);
 let aliases: string = $ref(props.emoji.aliases.join(' '));
-let categories: string[] = $ref(emojiCategories);
+const categories = await getCustomEmojiCategories();
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean, updated?: any }): void,

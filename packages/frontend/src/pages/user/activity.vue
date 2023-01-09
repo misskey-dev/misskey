@@ -1,22 +1,22 @@
 <template>
 <MkSpacer :content-max="700">
 	<div class="_gaps">
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header><i class="ti ti-activity"></i> Heatmap</template>
 			<XHeatmap :user="user" :src="'notes'"/>
-		</MkFolder>
-		<MkFolder class="item">
+		</MkFoldableSection>
+		<MkFoldableSection class="item">
 			<template #header><i class="ti ti-pencil"></i> Notes</template>
 			<XNotes :user="user"/>
-		</MkFolder>
-		<MkFolder class="item">
+		</MkFoldableSection>
+		<MkFoldableSection class="item">
 			<template #header><i class="ti ti-users"></i> Following</template>
 			<XFollowing :user="user"/>
-		</MkFolder>
-		<MkFolder class="item">
+		</MkFoldableSection>
+		<MkFoldableSection class="item">
 			<template #header><i class="ti ti-eye"></i> PV</template>
 			<XPv :user="user"/>
-		</MkFolder>
+		</MkFoldableSection>
 	</div>
 </MkSpacer>
 </template>
@@ -28,7 +28,7 @@ import XHeatmap from './activity.heatmap.vue';
 import XPv from './activity.pv.vue';
 import XNotes from './activity.notes.vue';
 import XFollowing from './activity.following.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const props = defineProps<{
 	user: misskey.entities.User;

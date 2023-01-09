@@ -7,12 +7,12 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.sounds }}</template>
 		<div class="_gaps_s">
-			<FormFolder v-for="type in Object.keys(sounds)" :key="type">
+			<MkFolder v-for="type in Object.keys(sounds)" :key="type">
 				<template #label>{{ $t('_sfx.' + type) }}</template>
 				<template #suffix>{{ sounds[type].type ?? i18n.ts.none }}</template>
 
 				<XSound :type="sounds[type].type" :volume="sounds[type].volume" @update="(res) => updated(type, res)"/>
-			</FormFolder>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -27,7 +27,7 @@ import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
 import { playFile } from '@/scripts/sound';

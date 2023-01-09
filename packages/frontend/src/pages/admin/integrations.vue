@@ -4,24 +4,24 @@
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
-				<FormFolder>
+				<MkFolder>
 					<template #icon><i class="ti ti-brand-twitter"></i></template>
 					<template #label>Twitter</template>
 					<template #suffix>{{ enableTwitterIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 					<XTwitter/>
-				</FormFolder>
-				<FormFolder>
+				</MkFolder>
+				<MkFolder>
 					<template #icon><i class="ti ti-brand-github"></i></template>
 					<template #label>GitHub</template>
 					<template #suffix>{{ enableGithubIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 					<XGithub/>
-				</FormFolder>
-				<FormFolder>
+				</MkFolder>
+				<MkFolder>
 					<template #icon><i class="ti ti-brand-discord"></i></template>
 					<template #label>Discord</template>
 					<template #suffix>{{ enableDiscordIntegration ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 					<XDiscord/>
-				</FormFolder>
+				</MkFolder>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -34,7 +34,7 @@ import XTwitter from './integrations.twitter.vue';
 import XGithub from './integrations.github.vue';
 import XDiscord from './integrations.discord.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

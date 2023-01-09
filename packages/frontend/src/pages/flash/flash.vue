@@ -27,12 +27,12 @@
 						</div>
 					</div>
 				</Transition>
-				<FormFolder class="_margin">
+				<MkFolder class="_margin">
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
 					<MkTextarea :model-value="flash.script" readonly tall class="_monospace" spellcheck="false"></MkTextarea>
-				</FormFolder>
+				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>
 					<div class="date">
@@ -65,7 +65,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 
 const props = defineProps<{
