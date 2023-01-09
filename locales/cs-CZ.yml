@@ -695,6 +695,7 @@ _weekday:
   saturday: "Sobota"
 _widgets:
   profile: "Váš profil"
+  instanceInfo: "Informace o instanci"
   notifications: "Oznámení"
   timeline: "Časová osa"
   calendar: "Kalendář"
