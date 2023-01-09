@@ -668,6 +668,7 @@ _sfx:
   chat: "Chat"
 _widgets:
   profile: "Profil"
+  instanceInfo: "Informații despre instanță"
   notifications: "Notificări"
   timeline: "Cronologie"
   activity: "Activitate"
