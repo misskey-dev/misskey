@@ -34,7 +34,7 @@ const chartEl = $shallowRef<HTMLCanvasElement>(null);
 let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
 const now = new Date();
 let chartInstance: Chart = null;
-const chartLimit = 50;
+const chartLimit = 30;
 let fetching = $ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
@@ -77,7 +77,8 @@ async function renderChart() {
 			borderWidth: 0,
 			borderJoinStyle: 'round',
 			borderRadius: 4,
-			barPercentage: 0.9,
+			barPercentage: 0.7,
+			categoryPercentage: 0.7,
 			fill: true,
 		} satisfies ChartDataset, extra);
 	}
@@ -86,10 +87,10 @@ async function renderChart() {
 		type: 'bar',
 		data: {
 			datasets: [
-				makeDataset('Follow (local)', format(raw.local.followings.inc).slice().reverse(), { backgroundColor: colorFollowLocal }),
-				makeDataset('Follow (remote)', format(raw.remote.followings.inc).slice().reverse(), { backgroundColor: colorFollowRemote }),
-				makeDataset('Followed (local)', format(raw.local.followers.inc).slice().reverse(), { backgroundColor: colorFollowedLocal }),
-				makeDataset('Followed (remote)', format(raw.remote.followers.inc).slice().reverse(), { backgroundColor: colorFollowedRemote }),
+				makeDataset('Follow (local)', format(raw.local.followings.inc).slice().reverse(), { backgroundColor: colorFollowLocal, stack: 'follow' }),
+				makeDataset('Follow (remote)', format(raw.remote.followings.inc).slice().reverse(), { backgroundColor: colorFollowRemote, stack: 'follow' }),
+				makeDataset('Followed (local)', format(raw.local.followers.inc).slice().reverse(), { backgroundColor: colorFollowedLocal, stack: 'followed' }),
+				makeDataset('Followed (remote)', format(raw.remote.followers.inc).slice().reverse(), { backgroundColor: colorFollowedRemote, stack: 'followed' }),
 			],
 		},
 		options: {

@@ -9,12 +9,12 @@
 		<MkA class="created-at" :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
 		</MkA>
-		<span v-if="note.visibility !== 'public'" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility[note.visibility]">
+		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
-			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock-open"></i>
+			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 		</span>
-		<span v-if="note.localOnly" style="{ margin-left: 0.5em; }" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
+		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 	</div>
 </header>
 </template>

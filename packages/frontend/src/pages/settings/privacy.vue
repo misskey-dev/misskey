@@ -32,7 +32,7 @@
 	<FormSection>
 		<div class="_gaps_m">
 			<MkSwitch v-model="rememberNoteVisibility" @update:model-value="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
-			<FormFolder v-if="!rememberNoteVisibility">
+			<MkFolder v-if="!rememberNoteVisibility">
 				<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
 				<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
 				<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
@@ -48,7 +48,7 @@
 					</MkSelect>
 					<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.localOnly }}</MkSwitch>
 				</div>
-			</FormFolder>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -61,7 +61,7 @@ import { } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';

@@ -4,22 +4,22 @@
 	<MkSpacer :content-max="1400">
 		<div class="_root">
 			<div v-if="tab === 'explore'">
-				<MkFolder class="_margin">
+				<MkFoldableSection class="_margin">
 					<template #header><i class="ti ti-clock"></i>{{ i18n.ts.recentPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="recentPostsPagination" :disable-auto-load="true">
 						<div class="vfpdbgtk">
 							<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 						</div>
 					</MkPagination>
-				</MkFolder>
-				<MkFolder class="_margin">
+				</MkFoldableSection>
+				<MkFoldableSection class="_margin">
 					<template #header><i class="ti ti-comet"></i>{{ i18n.ts.popularPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="popularPostsPagination" :disable-auto-load="true">
 						<div class="vfpdbgtk">
 							<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 						</div>
 					</MkPagination>
-				</MkFolder>
+				</MkFoldableSection>
 			</div>
 			<div v-else-if="tab === 'liked'">
 				<MkPagination v-slot="{items}" :pagination="likedPostsPagination">
@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import { computed, defineComponent, watch } from 'vue';
 import XUserList from '@/components/MkUserList.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTab from '@/components/MkTab.vue';

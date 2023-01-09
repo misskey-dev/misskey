@@ -18,7 +18,7 @@ const name = 'clicker';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean' as const,
-		default: true,
+		default: false,
 	},
 };
 
