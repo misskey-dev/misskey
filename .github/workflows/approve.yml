@@ -1,0 +1,31 @@
+name: Approve
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  approve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    if: >-
+      ${{
+        github.event.label.name == 'Bypass Approve' &&
+        github.event.pull_request.user.login == 'na2na-p'
+      }}
+    env:
+      NUMBER: ${{ github.event.number }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Generate github token
+        id: generate_token
+        uses: ./.github/actions/github-app-token
+        with:
+          app_id: ${{ secrets.ZNAZ_APP_ID }}
+          private_key: ${{ secrets.ZNAZ_PRIVATE_KEY }}
+      - name: Approve
+        run: gh pr review ${{ env.NUMBER }} --approve
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
