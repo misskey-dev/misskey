@@ -667,6 +667,7 @@ _sfx:
   notification: "Notificări"
   chat: "Chat"
 _widgets:
+  profile: "Profil"
   notifications: "Notificări"
   timeline: "Cronologie"
   activity: "Activitate"
