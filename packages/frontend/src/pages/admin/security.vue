@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
-				<FormFolder>
+				<MkFolder>
 					<template #icon><i class="ti ti-shield"></i></template>
 					<template #label>{{ i18n.ts.botProtection }}</template>
 					<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
@@ -13,9 +13,9 @@
 					<template v-else #suffix>{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</template>
 
 					<XBotProtection/>
-				</FormFolder>
+				</MkFolder>
 
-				<FormFolder>
+				<MkFolder>
 					<template #icon><i class="ti ti-eye-off"></i></template>
 					<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
 					<template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
@@ -56,9 +56,9 @@
 
 						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
-				</FormFolder>
+				</MkFolder>
 
-				<FormFolder>
+				<MkFolder>
 					<template #label>Active Email Validation</template>
 					<template v-if="enableActiveEmailValidation" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
@@ -69,9 +69,9 @@
 							<template #label>Enable</template>
 						</MkSwitch>
 					</div>
-				</FormFolder>
+				</MkFolder>
 
-				<FormFolder>
+				<MkFolder>
 					<template #label>Log IP address</template>
 					<template v-if="enableIpLogging" #suffix>Enabled</template>
 					<template v-else #suffix>Disabled</template>
@@ -81,9 +81,9 @@
 							<template #label>Enable</template>
 						</MkSwitch>
 					</div>
-				</FormFolder>
+				</MkFolder>
 
-				<FormFolder>
+				<MkFolder>
 					<template #label>Summaly Proxy</template>
 
 					<div class="_gaps_m">
@@ -94,7 +94,7 @@
 
 						<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 					</div>
-				</FormFolder>
+				</MkFolder>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
@@ -105,7 +105,7 @@
 import { } from 'vue';
 import XBotProtection from './bot-protection.vue';
 import XHeader from './_header_.vue';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormInfo from '@/components/MkInfo.vue';

@@ -115,7 +115,7 @@ import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkInfo from '@/components/MkInfo.vue';

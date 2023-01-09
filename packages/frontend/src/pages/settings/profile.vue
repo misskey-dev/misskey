@@ -33,7 +33,7 @@
 	</MkSelect>
 
 	<FormSlot>
-		<FormFolder>
+		<MkFolder>
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
@@ -51,18 +51,18 @@
 					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</div>
 			</div>
-		</FormFolder>
+		</MkFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
 
-	<FormFolder>
+	<MkFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
 
 		<div class="_gaps_m">
 			<MkSwitch v-model="profile.isCat">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></MkSwitch>
 			<MkSwitch v-model="profile.isBot">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></MkSwitch>
 		</div>
-	</FormFolder>
+	</MkFolder>
 
 	<MkSwitch v-model="profile.showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 </div>
@@ -76,7 +76,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
 import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';

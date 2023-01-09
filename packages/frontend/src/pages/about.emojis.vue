@@ -12,19 +12,19 @@
 		-->
 	</div>
 
-	<MkFolder v-if="searchEmojis" class="emojis">
+	<MkFoldableSection v-if="searchEmojis" class="emojis">
 		<template #header>{{ $ts.searchResult }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
-	</MkFolder>
+	</MkFoldableSection>
 	
-	<MkFolder v-for="category in customEmojiCategories" v-once :key="category" class="emojis">
+	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category" class="emojis">
 		<template #header>{{ category || $ts.other }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
-	</MkFolder>
+	</MkFoldableSection>
 </div>
 </template>
 
@@ -34,7 +34,7 @@ import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
 import { emojiCategories, emojiTags } from '@/instance';
@@ -44,7 +44,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkSelect,
-		MkFolder,
+		MkFoldableSection,
 		MkTab,
 		XEmoji,
 	},
