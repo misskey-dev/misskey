@@ -1303,6 +1303,7 @@ _weekday:
   saturday: "Saturday"
 _widgets:
   profile: "Profile"
+  instanceInfo: "Instance Information"
   memo: "Sticky notes"
   notifications: "Notifications"
   timeline: "Timeline"
