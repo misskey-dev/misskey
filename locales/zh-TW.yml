@@ -1303,6 +1303,7 @@ _weekday:
   saturday: "週六"
 _widgets:
   profile: "個人檔案"
+  instanceInfo: "實例資訊"
   memo: "備忘錄"
   notifications: "通知"
   timeline: "時間軸"
