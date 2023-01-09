@@ -1213,6 +1213,7 @@ _weekday:
   friday: "Пятница"
   saturday: "Суббота"
 _widgets:
+  profile: "Профиль"
   memo: "Напоминания"
   notifications: "Уведомления"
   timeline: "Лента"
