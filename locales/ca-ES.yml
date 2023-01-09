@@ -400,6 +400,7 @@ _antennaSources:
   userGroup: "Publicacions d'usuaris d'un grup"
 _widgets:
   profile: "Perfil"
+  instanceInfo: "Informació del fitxer d'instal·lació"
   notifications: "Notificacions"
   timeline: "Línia de temps"
   activity: "Activitat"
