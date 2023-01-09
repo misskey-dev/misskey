@@ -10,7 +10,7 @@
 	
 	@media (max-width: 500px) {
 		--margin: var(--marginHalf);
-		--minBottomSpacing: calc(84px + env(safe-area-inset-bottom, 0px));
+		--minBottomSpacing: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
 	}
 
 	//--ad: rgb(255 169 0 / 10%);
