@@ -1214,6 +1214,7 @@ _weekday:
   saturday: "Суббота"
 _widgets:
   profile: "Профиль"
+  instanceInfo: "Информация об инстансе"
   memo: "Напоминания"
   notifications: "Уведомления"
   timeline: "Лента"
