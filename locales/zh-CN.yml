@@ -1303,6 +1303,7 @@ _weekday:
   saturday: "星期六"
 _widgets:
   profile: "个人资料"
+  instanceInfo: "实例信息"
   memo: "便签"
   notifications: "通知"
   timeline: "时间线"
