@@ -440,6 +440,7 @@ _sfx:
   notification: "Meldingen"
   chat: "Chat"
 _widgets:
+  profile: "Profiel"
   notifications: "Meldingen"
   timeline: "Tijdlijn"
   activity: "Activiteit"
