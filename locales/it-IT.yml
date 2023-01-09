@@ -1296,6 +1296,7 @@ _weekday:
   friday: "Venerdì"
   saturday: "Sabato"
 _widgets:
+  profile: "Profilo"
   memo: "Promemoria"
   notifications: "Notifiche"
   timeline: "Timeline"
