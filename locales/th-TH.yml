@@ -1303,6 +1303,7 @@ _weekday:
   saturday: "วันเสาร์"
 _widgets:
   profile: "โปรไฟล์"
+  instanceInfo: "ข้อมูล อินสแตนซ์"
   memo: "โน้ตแปะ"
   notifications: "การเเจ้งเตือน"
   timeline: "ไทม์ไลน์"
