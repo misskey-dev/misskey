@@ -1,15 +1,13 @@
 <template>
 <div class="_panel">
-	<div :class="$style.container" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-		<div :class="$style.avatarContainer">
-			<MkAvatar :class="$style.avatar" :user="$i" :disable-link="true" :disable-preview="true"/>
+	<div :class="$style.container" :style="{ backgroundImage: $instance.bannerUrl ? `url(${ $instance.bannerUrl })` : null }">
+		<div :class="$style.iconContainer">
+			<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.icon"/>
 		</div>
 		<div :class="$style.bodyContainer">
 			<div :class="$style.body">
-				<MkA :class="$style.name" :to="userPage($i)">
-					<MkUserName :user="$i"/>
-				</MkA>
-				<div :class="$style.username"><MkAcct :user="$i" detail/></div>
+				<MkA :class="$style.name" to="/about" behavior="window">{{ $instance.name }}</MkA>
+				<div :class="$style.host">{{ host }}</div>
 			</div>
 		</div>
 	</div>
@@ -20,10 +18,9 @@
 import { onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import { $i } from '@/account';
-import { userPage } from '@/filters/user';
+import { host } from '@/config';
 
-const name = 'profile';
+const name = 'instanceInfo';
 
 const widgetPropsDef = {
 };
@@ -57,16 +54,17 @@ defineExpose<WidgetComponentExpose>({
 	display: flex;
 }
 
-.avatarContainer {
+.iconContainer {
 	display: inline-block;
 	text-align: center;
 	padding: 16px;
 }
 
-.avatar {
+.icon {
 	display: inline-block;
 	width: 60px;
 	height: 60px;
+	border-radius: 8px;
 	box-sizing: border-box;
 	border: solid 3px #fff;
 }
@@ -89,7 +87,7 @@ defineExpose<WidgetComponentExpose>({
 	font-weight: bold;
 }
 
-.username {
+.host {
 	color: #fff;
 	filter: drop-shadow(0 0 4px #000);
 }

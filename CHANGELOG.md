@@ -66,7 +66,6 @@ You should also include the user name that made the change.
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
 - Server: improve activitypub deliver performance @syuilo
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
-- Client: Add AiScript App widget
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
@@ -74,16 +73,18 @@ You should also include the user name that made the change.
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
-- Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: Implement the button to subscribe push notification @tamaina
 - Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
-- Client: Improve RSS widget @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
 - Client: Support remote objects in search @SoniEx2
 - Client: user activity page @syuilo
+- Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: add user list widget @syuilo
+- Client: Add AiScript App widget
 - Client: add profile widget @syuilo
+- Client: add instance info widget @syuilo
+- Client: Improve RSS widget @tamaina
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: add new theme @syuilo
