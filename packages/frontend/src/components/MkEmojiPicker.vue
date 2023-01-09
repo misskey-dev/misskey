@@ -1,7 +1,7 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
 	<input ref="search" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
-	<div v-if="customEmojis != null && customEmojiCategories != null" ref="emojisEl" class="emojis">
+	<div ref="emojisEl" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
 				<button
@@ -88,7 +88,7 @@ import { deviceKind } from '@/scripts/device-kind';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
-import { getCustomEmojiCategories, getCustomEmojis } from '@/custom-emojis';
+import { getCustomEmojiCategories, customEmojis } from '@/custom-emojis';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -104,15 +104,7 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
-let customEmojis = $ref(null);
-getCustomEmojis().then((x) => {
-	customEmojis = x;
-});
-let customEmojiCategories = $ref(null);
-getCustomEmojiCategories().then((x) => {
-	customEmojiCategories = x;
-});
-
+const customEmojiCategories = getCustomEmojiCategories();
 const search = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 

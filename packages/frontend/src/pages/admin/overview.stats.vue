@@ -63,9 +63,7 @@ import number from '@/filters/number';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n';
-import { getCustomEmojis } from '@/custom-emojis';
-
-const customEmojis = await getCustomEmojis();
+import { customEmojis } from '@/custom-emojis';
 
 let stats: any = $ref(null);
 let usersComparedToThePrevDay = $ref<number>();

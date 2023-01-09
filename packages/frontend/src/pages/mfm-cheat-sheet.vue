@@ -317,9 +317,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
-import { getCustomEmojis } from '@/custom-emojis';
-
-const customEmojis = await getCustomEmojis();
+import { customEmojis } from '@/custom-emojis';
 
 let preview_mention = $ref('@example');
 let preview_hashtag = $ref('#test');
