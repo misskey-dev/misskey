@@ -19,10 +19,10 @@
 		</div>
 	</MkFolder>
 	
-	<MkFolder v-for="category in customEmojiCategories" :key="category" class="emojis">
+	<MkFolder v-for="category in customEmojiCategories" v-once :key="category" class="emojis">
 		<template #header>{{ category || $ts.other }}</template>
 		<div class="zuvgdzyt">
-			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" v-once :key="emoji.name" class="emoji" :emoji="emoji"/>
+			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
 	</MkFolder>
 </div>
