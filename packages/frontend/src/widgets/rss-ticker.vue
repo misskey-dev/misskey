@@ -108,9 +108,6 @@ const tick = () => {
 	window.fetch(fetchEndpoint.value, {})
 	.then(res => res.json())
 	.then(feed => {
-		if (widgetProps.shuffle) {
-			shuffle(feed.items);
-		}
 		rawItems.value = feed.items ?? [];
 		fetching.value = false;
 		key++;
