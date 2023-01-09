@@ -1302,6 +1302,7 @@ _weekday:
   friday: "週五"
   saturday: "週六"
 _widgets:
+  profile: "個人檔案"
   memo: "備忘錄"
   notifications: "通知"
   timeline: "時間軸"
