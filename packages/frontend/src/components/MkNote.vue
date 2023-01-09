@@ -39,12 +39,12 @@
 		<div :class="$style.main">
 			<MkNoteHeader :class="$style.header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :class="$style.ticker" :instance="appearNote.user.instance"/>
-			<div :class="$style.body">
+			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
-					<Mfm v-if="appearNote.cw != ''" :class="$style.cwText" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
+					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
 					<MkCwButton v-model="showContent" :note="appearNote"/>
 				</p>
-				<div v-show="appearNote.cw == null || showContent" :class="[$style.content, { [$style.contentCollapsed]: collapsed, [$style.contentIsLong]: isLong }]">
+				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
@@ -478,26 +478,12 @@ function readPromo() {
 	min-width: 0;
 }
 
-.body {
-	container-type: inline-size;
-}
-
 .cw {
 	cursor: default;
 	display: block;
 	margin: 0;
 	padding: 0;
 	overflow-wrap: break-word;
-}
-
-.cwText {
-	margin-right: 8px;
-}
-
-.content {
-}
-
-.contentIsLong {
 }
 
 .showLess {
