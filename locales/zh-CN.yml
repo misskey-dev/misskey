@@ -923,6 +923,7 @@ show: "显示"
 neverShow: "不再显示"
 remindMeLater: "稍后提醒我"
 didYouLikeMisskey: "你在Misskey玩得还开心吗？"
+pleaseDonate: "Misskey是{host}所使用的免费软件。为了今后也能够维持Misskey的开发，请在有余力的情况下进行捐助！"
 _sensitiveMediaDetection:
   description: "可以使用机器学习技术自动检测敏感媒体，以便进行审核。服务器负载将略微增加。"
   sensitivity: "检测敏感度"
