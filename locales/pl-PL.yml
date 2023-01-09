@@ -1213,6 +1213,7 @@ _weekday:
   friday: "Piątek"
   saturday: "Sobota"
 _widgets:
+  profile: "Profil"
   memo: "Przypięte notatki"
   notifications: "Powiadomienia"
   timeline: "Oś czasu"
