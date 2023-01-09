@@ -1,6 +1,6 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="search" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
+	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
 	<div ref="emojisEl" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
@@ -105,7 +105,7 @@ const emit = defineEmits<{
 }>();
 
 const customEmojiCategories = getCustomEmojiCategories();
-const search = shallowRef<HTMLInputElement>();
+const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 
 const {
@@ -268,7 +268,7 @@ watch(q, () => {
 
 function focus() {
 	if (!['smartphone', 'tablet'].includes(deviceKind) && !isTouchUsing) {
-		search.value?.focus({
+		searchEl.value?.focus({
 			preventScroll: true,
 		});
 	}
@@ -308,7 +308,7 @@ function input(): void {
 	// Using custom input event instead of v-model to respond immediately on
 	// Android, where composition happens on all languages
 	// (v-model does not update during composition)
-	q.value = search.value?.value.trim() ?? '';
+	q.value = searchEl.value?.value.trim() ?? '';
 }
 
 function paste(event: ClipboardEvent): void {
