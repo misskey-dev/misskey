@@ -47,6 +47,9 @@ import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { miLocalStorage } from '@/local-storage';
+import { getCustomEmojis } from '@/custom-emojis';
+
+const customEmojis = await getCustomEmojis();
 
 type EmojiDef = {
 	emoji: string;
@@ -86,7 +89,6 @@ for (const x of lib) {
 emjdb.sort((a, b) => a.name.length - b.name.length);
 
 //#region Construct Emoji DB
-const customEmojis = instance.emojis;
 const emojiDefinitions: EmojiDef[] = [];
 
 for (const x of customEmojis) {
@@ -117,7 +119,6 @@ export default {
 	emojiDb,
 	emojiDefinitions,
 	emojilist,
-	customEmojis,
 };
 </script>
 

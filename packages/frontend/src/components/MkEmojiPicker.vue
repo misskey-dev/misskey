@@ -6,7 +6,7 @@
 			<div v-if="searchResultCustom.length > 0" class="body">
 				<button
 					v-for="emoji in searchResultCustom"
-					:key="emoji.id"
+					:key="emoji.name"
 					class="_button item"
 					:title="emoji.name"
 					tabindex="0"
@@ -85,9 +85,10 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
-import { emojiCategories, instance } from '@/instance';
+import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { getCustomEmojiCategories, getCustomEmojis } from '@/custom-emojis';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -103,6 +104,7 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
+const customEmojis = await getCustomEmojis();
 const search = shallowRef<HTMLInputElement>();
 const emojis = shallowRef<HTMLDivElement>();
 
@@ -118,8 +120,7 @@ const {
 const size = computed(() => props.asReactionPicker ? reactionPickerSize.value : 1);
 const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
-const customEmojiCategories = emojiCategories;
-const customEmojis = instance.emojis;
+const customEmojiCategories = await getCustomEmojiCategories();
 const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);

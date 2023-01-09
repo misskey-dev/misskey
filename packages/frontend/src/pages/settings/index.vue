@@ -183,6 +183,8 @@ const menuDef = computed(() => [{
 		action: () => {
 			miLocalStorage.removeItem('locale');
 			miLocalStorage.removeItem('theme');
+			miLocalStorage.removeItem('emojis');
+			miLocalStorage.removeItem('lastEmojisFetchedAt');
 			unisonReload();
 		},
 	}, {

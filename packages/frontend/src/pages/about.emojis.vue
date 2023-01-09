@@ -7,7 +7,7 @@
 
 		<!-- たくさんあると邪魔
 		<div class="tags">
-			<span class="tag _button" v-for="tag in tags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
+			<span class="tag _button" v-for="tag in customEmojiTags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
 		</div>
 		-->
 	</div>
@@ -28,8 +28,8 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script lang="ts" setup>
+import { defineComponent, computed, watch } from 'vue';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -37,62 +37,43 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
-import { emojiCategories, emojiTags } from '@/instance';
+import { getCustomEmojis, getCustomEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		MkInput,
-		MkSelect,
-		MkFoldableSection,
-		MkTab,
-		XEmoji,
-	},
+const customEmojis = await getCustomEmojis();
+const customEmojiCategories = await getCustomEmojiCategories();
+const customEmojiTags = await getCustomEmojiTags();
+let q = $ref('');
+let searchEmojis = $ref(null);
+let selectedTags = $ref(new Set());
 
-	data() {
-		return {
-			q: '',
-			customEmojiCategories: emojiCategories,
-			customEmojis: this.$instance.emojis,
-			tags: emojiTags,
-			selectedTags: new Set(),
-			searchEmojis: null,
-		};
-	},
+function search() {
+	if ((q === '' || q == null) && selectedTags.size === 0) {
+		searchEmojis = null;
+		return;
+	}
 
-	watch: {
-		q() { this.search(); },
-		selectedTags: {
-			handler() {
-				this.search();
-			},
-			deep: true,
-		},
-	},
+	if (selectedTags.size === 0) {
+		searchEmojis = customEmojis.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+	} else {
+		searchEmojis = customEmojis.filter(emoji => (emoji.name.includes(q) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
+	}
+}
 
-	methods: {
-		search() {
-			if ((this.q === '' || this.q == null) && this.selectedTags.size === 0) {
-				this.searchEmojis = null;
-				return;
-			}
+function toggleTag(tag) {
+	if (selectedTags.has(tag)) {
+		selectedTags.delete(tag);
+	} else {
+		selectedTags.add(tag);
+	}
+}
 
-			if (this.selectedTags.size === 0) {
-				this.searchEmojis = this.customEmojis.filter(emoji => emoji.name.includes(this.q) || emoji.aliases.includes(this.q));
-			} else {
-				this.searchEmojis = this.customEmojis.filter(emoji => (emoji.name.includes(this.q) || emoji.aliases.includes(this.q)) && [...this.selectedTags].every(t => emoji.aliases.includes(t)));
-			}
-		},
-
-		toggleTag(tag) {
-			if (this.selectedTags.has(tag)) {
-				this.selectedTags.delete(tag);
-			} else {
-				this.selectedTags.add(tag);
-			}
-		},
-	},
+watch($$(q), () => {
+	search();
 });
+
+watch($$(selectedTags), () => {
+	search();
+}, { deep: true });
 </script>
 
 <style lang="scss" scoped>

@@ -40,6 +40,8 @@ You should also include the user name that made the change.
 - Firefox109以下はサポートされなくなりました
 
 #### For app developers
+- API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
+	- カスタム絵文字一覧情報を取得するには、`emojis`エンドポイントにリクエストします
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
