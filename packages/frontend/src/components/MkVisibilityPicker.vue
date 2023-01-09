@@ -16,7 +16,7 @@
 			</div>
 		</button>
 		<button key="followers" class="_button item" :class="{ active: v === 'followers' }" data-index="3" @click="choose('followers')">
-			<div class="icon"><i class="ti ti-lock-open"></i></div>
+			<div class="icon"><i class="ti ti-lock"></i></div>
 			<div class="body">
 				<span>{{ i18n.ts._visibility.followers }}</span>
 				<span>{{ i18n.ts._visibility.followersDescription }}</span>
