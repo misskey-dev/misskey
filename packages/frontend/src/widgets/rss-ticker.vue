@@ -111,7 +111,7 @@ const tick = () => {
 		if (widgetProps.shuffle) {
 			shuffle(feed.items);
 		}
-		rawItems.value = feed.items;
+		rawItems.value = feed.items ?? [];
 		fetching.value = false;
 		key++;
 	});
