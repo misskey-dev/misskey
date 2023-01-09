@@ -1296,6 +1296,7 @@ _weekday:
   friday: "Viernes"
   saturday: "Sábado"
 _widgets:
+  profile: "Perfil"
   memo: "Nota adhesiva"
   notifications: "Notificaciones"
   timeline: "Linea de tiempo"
