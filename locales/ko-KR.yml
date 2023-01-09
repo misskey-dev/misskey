@@ -1328,6 +1328,7 @@ _widgets:
   userList: "사용자 목록"
   _userList:
     chooseList: "리스트 선택"
+  clicker: "클리커"
 _cw:
   hide: "숨기기"
   show: "더 보기"
@@ -1503,7 +1504,6 @@ _notification:
   youGotReply: "{name}님이 답글함"
   youGotQuote: "{name}님이 인용함"
   youRenoted: "{name}님이 Renote"
-  youGotPoll: "{name}님이 투표함"
   youGotMessagingMessageFromUser: "{name} 님이 보낸 채팅이 있어요"
   youGotMessagingMessageFromGroup: "{name}에서 보낸 채팅이 있어요"
   youWereFollowed: "새로운 팔로워가 있습니다"
@@ -1521,7 +1521,6 @@ _notification:
     renote: "리노트"
     quote: "인용"
     reaction: "리액션"
-    pollVote: "투표 참여"
     pollEnded: "투표가 종료됨"
     receiveFollowRequest: "팔로우 요청을 받았을 때"
     followRequestAccepted: "팔로우 요청이 승인되었을 때"

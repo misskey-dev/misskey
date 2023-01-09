@@ -1328,6 +1328,7 @@ _widgets:
   userList: "User list"
   _userList:
     chooseList: "Select a list"
+  clicker: "Clicker"
 _cw:
   hide: "Hide"
   show: "Show content"
@@ -1503,7 +1504,6 @@ _notification:
   youGotReply: "{name} replied to you"
   youGotQuote: "{name} quoted you"
   youRenoted: "Renote from {name}"
-  youGotPoll: "{name} voted on your poll"
   youGotMessagingMessageFromUser: "{name} sent you a chat message"
   youGotMessagingMessageFromGroup: "A chat message was sent to the {name} group"
   youWereFollowed: "followed you"
@@ -1521,7 +1521,6 @@ _notification:
     renote: "Renotes"
     quote: "Quotes"
     reaction: "Reactions"
-    pollVote: "Votes on polls"
     pollEnded: "Polls ending"
     receiveFollowRequest: "Received follow requests"
     followRequestAccepted: "Accepted follow requests"
