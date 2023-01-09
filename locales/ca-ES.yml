@@ -399,6 +399,7 @@ _antennaSources:
   userList: "Publicacions d'una llista d'usuaris"
   userGroup: "Publicacions d'usuaris d'un grup"
 _widgets:
+  profile: "Perfil"
   notifications: "Notificacions"
   timeline: "Línia de temps"
   activity: "Activitat"
