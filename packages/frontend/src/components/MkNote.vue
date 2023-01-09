@@ -4,7 +4,7 @@
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
-	:class="[$style.root, { [$style.isRenote]: isRenote }]"
+	:class="$style.root"
 	:tabindex="!isDeleted ? '-1' : null"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
