@@ -105,6 +105,7 @@ You should also include the user name that made the change.
 - Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
 - Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
