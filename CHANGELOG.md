@@ -83,6 +83,7 @@ You should also include the user name that made the change.
 - Client: Support remote objects in search @SoniEx2
 - Client: user activity page @syuilo
 - Client: add user list widget @syuilo
+- Client: add profile widget @syuilo
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: add new theme @syuilo
