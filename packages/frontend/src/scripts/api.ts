@@ -1,4 +1,5 @@
 import * as Misskey from 'misskey-js';
+import { ref } from 'vue';
 import { apiUrl, url } from '@/config';
 import { $i } from '@/account';
 export const pendingApiRequestsCount = ref(0);
@@ -14,7 +15,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise((resolve, reject) => {
+	const promise = new Promise<any>((resolve, reject) => {
 		// Append a credential
 		if ($i) (data as any).i = $i.token;
 		if (token !== undefined) (data as any).i = token;
