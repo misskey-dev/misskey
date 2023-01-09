@@ -312,7 +312,7 @@ export class ClientServerService {
 		fastify.get('/opensearch.xml', async (request, reply) => {
 			const meta = await this.metaService.fetch();
 
-			const name = meta.name || 'Misskey';
+			const name = meta.name ?? 'Misskey';
 			let content = '';
 			content += '<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">';
 			content += `<ShortName>${name}</ShortName>`;
@@ -533,13 +533,12 @@ export class ClientServerService {
 		});
 
 		// Clip
-		// TODO: 非publicなclipのハンドリング
 		fastify.get<{ Params: { clip: string; } }>('/clips/:clip', async (request, reply) => {
 			const clip = await this.clipsRepository.findOneBy({
 				id: request.params.clip,
 			});
 
-			if (clip) {
+			if (clip && clip.isPublic) {
 				const _clip = await this.clipEntityService.pack(clip);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
 				const meta = await this.metaService.fetch();

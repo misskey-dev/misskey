@@ -100,6 +100,7 @@ You should also include the user name that made the change.
 - Server: pages/likeのエラーIDが重複しているのを修正 @syuilo
 - Server: pages/updateのパラメータによってはsummaryの値が更新されないのを修正 @syuilo
 - Server: Escape SQL LIKE @mei23
+- Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
