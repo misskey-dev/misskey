@@ -1,7 +1,7 @@
 <template>
 <Transition :name="transitionName" :duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
@@ -63,6 +63,7 @@ let transformOrigin = $ref('center');
 let showing = $ref(true);
 let content = $shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
+let useSendAnime = $ref(false);
 const type = $computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
 		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
@@ -74,15 +75,34 @@ const type = $computed<ModalTypes>(() => {
 		return props.preferType!;
 	}
 });
-let transitionName = $ref(defaultStore.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : '');
-let transitionDuration = $ref(defaultStore.state.animation ? 200 : 0);
+let transitionName = $computed((() =>
+	defaultStore.state.animation
+		? useSendAnime
+			? 'send'
+			: type === 'drawer'
+				? 'modal-drawer'
+				: type === 'popup'
+					? 'modal-popup'
+					: 'modal'
+		: ''
+));
+let transitionDuration = $computed((() =>
+	transitionName === 'send'
+		? 400
+		: transitionName === 'modal-popup'
+			? 100
+			: transitionName === 'modal'
+				? 200
+				: transitionName === 'modal-drawer'
+					? 200
+					: 0
+));
 
 let contentClicking = false;
 
 function close(opts: { useSendAnimation?: boolean } = {}) {
 	if (opts.useSendAnimation) {
-		transitionName = 'send';
-		transitionDuration = 400;
+		useSendAnime = true;
 	}
 
 	// eslint-disable-next-line vue/no-mutating-props
@@ -308,12 +328,12 @@ defineExpose({
 
 .modal-popup-enter-active, .modal-popup-leave-active {
 	> .bg {
-		transition: opacity 0.2s !important;
+		transition: opacity 0.1s !important;
 	}
 
 	> .content {
 		transform-origin: var(--transformOrigin);
-		transition: opacity 0.2s cubic-bezier(0, 0, 0.2, 1), transform 0.2s cubic-bezier(0, 0, 0.2, 1) !important;
+		transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1), transform 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
 .modal-popup-enter-from, .modal-popup-leave-to {

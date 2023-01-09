@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
 		<div class="cwepdizn _gaps_m">
-			<FormFolder :default-open="true">
+			<MkFolder :default-open="true">
 				<template #label>{{ i18n.ts.backgroundColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -17,9 +17,9 @@
 						</button>
 					</div>
 				</div>
-			</FormFolder>
+			</MkFolder>
 
-			<FormFolder :default-open="true">
+			<MkFolder :default-open="true">
 				<template #label>{{ i18n.ts.accentColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -28,9 +28,9 @@
 						</button>
 					</div>
 				</div>
-			</FormFolder>
+			</MkFolder>
 
-			<FormFolder :default-open="true">
+			<MkFolder :default-open="true">
 				<template #label>{{ i18n.ts.textColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -39,9 +39,9 @@
 						</button>
 					</div>
 				</div>
-			</FormFolder>
+			</MkFolder>
 
-			<FormFolder :default-open="false">
+			<MkFolder :default-open="false">
 				<template #icon><i class="ti ti-code"></i></template>
 				<template #label>{{ i18n.ts.editCode }}</template>
 
@@ -51,9 +51,9 @@
 					</MkTextarea>
 					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
 				</div>
-			</FormFolder>
+			</MkFolder>
 
-			<FormFolder :default-open="false">
+			<MkFolder :default-open="false">
 				<template #label>{{ i18n.ts.addDescription }}</template>
 
 				<div class="_gaps_m">
@@ -61,7 +61,7 @@
 						<template #label>{{ i18n.ts._theme.description }}</template>
 					</MkTextarea>
 				</div>
-			</FormFolder>
+			</MkFolder>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -76,7 +76,7 @@ import JSON5 from 'json5';
 
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 import { $i } from '@/account';
 import { Theme, applyTheme } from '@/scripts/theme';

@@ -3,6 +3,7 @@ import type { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -68,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.username) {
-				query.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' });
+				query.andWhere('user.usernameLower like :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' });
 			}
 
 			if (ps.hostname) {

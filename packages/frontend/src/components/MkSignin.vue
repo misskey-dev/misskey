@@ -14,7 +14,7 @@
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
+			<MkButton type="submit" large primary rounded :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
@@ -36,7 +36,7 @@
 					<template #label>{{ i18n.ts.token }}</template>
 					<template #prefix><i class="ti ti-123"></i></template>
 				</MkInput>
-				<MkButton type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
+				<MkButton type="submit" :disabled="signing" large primary rounded style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 			</div>
 		</div>
 	</div>

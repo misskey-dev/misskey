@@ -5,6 +5,7 @@ import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['users'],
@@ -57,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (isUsername) {
 				const usernameQuery = this.usersRepository.createQueryBuilder('user')
-					.where('user.usernameLower LIKE :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+					.where('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.query.replace('@', '').toLowerCase()) + '%' })
 					.andWhere(new Brackets(qb => { qb
 						.where('user.updatedAt IS NULL')
 						.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
@@ -78,11 +79,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			} else {
 				const nameQuery = this.usersRepository.createQueryBuilder('user')
 					.where(new Brackets(qb => { 
-						qb.where('user.name ILIKE :query', { query: '%' + ps.query + '%' });
+						qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
 						// Also search username if it qualifies as username
 						if (this.userEntityService.validateLocalUsername(ps.query)) {
-							qb.orWhere('user.usernameLower LIKE :username', { username: '%' + ps.query.toLowerCase() + '%' });
+							qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(ps.query.toLowerCase()) + '%' });
 						}
 					}))
 					.andWhere(new Brackets(qb => { qb
@@ -106,7 +107,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (users.length < ps.limit) {
 					const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
 						.select('prof.userId')
-						.where('prof.description ILIKE :query', { query: '%' + ps.query + '%' });
+						.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
 					if (ps.origin === 'local') {
 						profQuery.andWhere('prof.userHost IS NULL');

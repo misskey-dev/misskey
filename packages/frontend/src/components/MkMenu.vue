@@ -251,17 +251,18 @@ onBeforeUnmount(() => {
 				color: #fff;
 
 				&:before {
-					background: #d42e2e;
+					background: #d42e2e !important;
 				}
 			}
 		}
 
+		&:active,
 		&.active {
-			color: var(--fgOnAccent);
+			color: var(--fgOnAccent) !important;
 			opacity: 1;
 
 			&:before {
-				background: var(--accent);
+				background: var(--accent) !important;
 			}
 		}
 
