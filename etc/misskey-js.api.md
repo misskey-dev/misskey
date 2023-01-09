@@ -270,6 +270,11 @@ type DateString = string;
 
 // @public (undocumented)
 type DetailedInstanceMetadata = LiteInstanceMetadata & {
+    pinnedPages: string[];
+    pinnedClipId: string | null;
+    cacheRemoteFiles: boolean;
+    requireSetup: boolean;
+    proxyAccountName: string | null;
     features: Record<string, any>;
 };
 
@@ -285,6 +290,7 @@ type DriveFile = {
     size: number;
     md5: string;
     blurhash: string;
+    comment: string | null;
     properties: Record<string, any>;
 };
 
@@ -2264,17 +2270,30 @@ type LiteInstanceMetadata = {
     name: string | null;
     uri: string;
     description: string | null;
+    langs: string[];
     tosUrl: string | null;
+    repositoryUrl: string;
+    feedbackUrl: string;
     disableRegistration: boolean;
     disableLocalTimeline: boolean;
     disableGlobalTimeline: boolean;
     driveCapacityPerLocalUserMb: number;
     driveCapacityPerRemoteUserMb: number;
+    emailRequiredForSignup: boolean;
     enableHcaptcha: boolean;
     hcaptchaSiteKey: string | null;
     enableRecaptcha: boolean;
     recaptchaSiteKey: string | null;
+    enableTurnstile: boolean;
+    turnstileSiteKey: string | null;
     swPublickey: string | null;
+    themeColor: string | null;
+    mascotImageUrl: string | null;
+    bannerUrl: string | null;
+    errorImageUrl: string | null;
+    iconUrl: string | null;
+    backgroundImageUrl: string | null;
+    logoImageUrl: string | null;
     maxNoteTextLength: number;
     enableEmail: boolean;
     enableTwitterIntegration: boolean;
@@ -2282,6 +2301,8 @@ type LiteInstanceMetadata = {
     enableDiscordIntegration: boolean;
     enableServiceWorker: boolean;
     emojis: CustomEmoji[];
+    defaultDarkTheme: string | null;
+    defaultLightTheme: string | null;
     ads: {
         id: ID;
         ratio: number;
@@ -2289,6 +2310,7 @@ type LiteInstanceMetadata = {
         url: string;
         imageUrl: string;
     }[];
+    translatorAvailable: boolean;
 };
 
 // @public (undocumented)
@@ -2459,7 +2481,7 @@ type Notification_2 = {
 });
 
 // @public (undocumented)
-export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
+export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
 
 // @public (undocumented)
 type OriginType = 'combined' | 'local' | 'remote';

@@ -260,17 +260,30 @@ export type LiteInstanceMetadata = {
 	name: string | null;
 	uri: string;
 	description: string | null;
+	langs: string[];
 	tosUrl: string | null;
+	repositoryUrl: string;
+	feedbackUrl: string;
 	disableRegistration: boolean;
 	disableLocalTimeline: boolean;
 	disableGlobalTimeline: boolean;
 	driveCapacityPerLocalUserMb: number;
 	driveCapacityPerRemoteUserMb: number;
+	emailRequiredForSignup: boolean;
 	enableHcaptcha: boolean;
 	hcaptchaSiteKey: string | null;
 	enableRecaptcha: boolean;
 	recaptchaSiteKey: string | null;
+	enableTurnstile: boolean;
+	turnstileSiteKey: string | null;
 	swPublickey: string | null;
+	themeColor: string | null;
+	mascotImageUrl: string | null;
+	bannerUrl: string | null;
+	errorImageUrl: string | null;
+	iconUrl: string | null;
+	backgroundImageUrl: string | null;
+	logoImageUrl: string | null;
 	maxNoteTextLength: number;
 	enableEmail: boolean;
 	enableTwitterIntegration: boolean;
@@ -278,6 +291,8 @@ export type LiteInstanceMetadata = {
 	enableDiscordIntegration: boolean;
 	enableServiceWorker: boolean;
 	emojis: CustomEmoji[];
+	defaultDarkTheme: string | null;
+	defaultLightTheme: string | null;
 	ads: {
 		id: ID;
 		ratio: number;
@@ -285,9 +300,15 @@ export type LiteInstanceMetadata = {
 		url: string;
 		imageUrl: string;
 	}[];
+	translatorAvailable: boolean;
 };
 
 export type DetailedInstanceMetadata = LiteInstanceMetadata & {
+	pinnedPages: string[];
+	pinnedClipId: string | null;
+	cacheRemoteFiles: boolean;
+	requireSetup: boolean;
+	proxyAccountName: string | null;
 	features: Record<string, any>;
 };
 
