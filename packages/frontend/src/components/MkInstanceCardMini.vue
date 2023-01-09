@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended }]">
-	<img class="icon" :src="getInstanceIcon(instance)" alt=""/>
+	<img class="icon" :src="getInstanceIcon(instance)" alt="" loading="lazy"/>
 	<div class="body">
 		<span class="host">{{ instance.name ?? instance.host }}</span>
 		<span class="sub _monospace"><b>{{ instance.host }}</b> / {{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</span>
