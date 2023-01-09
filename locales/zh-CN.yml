@@ -1302,6 +1302,7 @@ _weekday:
   friday: "星期五"
   saturday: "星期六"
 _widgets:
+  profile: "个人资料"
   memo: "便签"
   notifications: "通知"
   timeline: "时间线"
