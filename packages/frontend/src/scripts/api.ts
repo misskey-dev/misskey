@@ -42,7 +42,7 @@ export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(en
 	promise.then(onFinally, onFinally);
 
 	return promise;
-};
+}
 
 // Implements Misskey.api.ApiClient.request
 export function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Endpoints[E]['res']> {
@@ -76,4 +76,4 @@ export function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>
 	promise.then(onFinally, onFinally);
 
 	return promise;
-};
+}
