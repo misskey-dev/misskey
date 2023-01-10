@@ -59,7 +59,11 @@ export default defineConfig(({ command, mode }) => {
 		css: {
 			modules: {
 				generateScopedName: (name, filename, css) => {
-					return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4);
+					if (process.env.NODE_ENV === 'production') {
+						return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4);
+					} else {
+						return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4) + '-' + name;
+					}
 				},
 			},
 		},

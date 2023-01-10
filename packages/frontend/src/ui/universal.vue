@@ -13,7 +13,7 @@
 	</MkStickyContainer>
 
 	<div v-if="isDesktop" ref="widgetsEl" :class="$style.widgets">
-		<XWidgets @mounted="attachSticky"/>
+		<XWidgets :margin-top="'var(--margin)'" @mounted="attachSticky"/>
 	</div>
 
 	<button v-if="!isDesktop && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
@@ -26,7 +26,12 @@
 		<button :class="$style.navButton" class="_button post" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
-	<Transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
+	<Transition
+		:enter-active-class="$store.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leave-active-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enter-from-class="$store.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leave-to-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+	>
 		<div
 			v-if="drawerMenuShowing"
 			:class="$style.menuDrawerBg"
@@ -36,11 +41,21 @@
 		></div>
 	</Transition>
 
-	<Transition :name="$store.state.animation ? 'menuDrawer' : ''">
+	<Transition
+		:enter-active-class="$store.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leave-active-class="$store.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+	>
 		<XDrawerMenu v-if="drawerMenuShowing" :class="$style.menuDrawer"/>
 	</Transition>
 
-	<Transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
+	<Transition
+		:enter-active-class="$store.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+		:leave-active-class="$store.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+		:enter-from-class="$store.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+	>
 		<div
 			v-if="widgetsShowing"
 			:class="$style.widgetsDrawerBg"
@@ -50,8 +65,15 @@
 		></div>
 	</Transition>
 
-	<Transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
-		<XWidgets v-if="widgetsShowing" :class="$style.widgetsDrawer"/>
+	<Transition
+		:enter-active-class="$store.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+		:leave-active-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+		:enter-from-class="$store.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+	>
+		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
+			<XWidgets/>
+		</div>
 	</Transition>
 
 	<XCommon/>
@@ -176,55 +198,53 @@ function top() {
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 </script>
 
-<style lang="scss" scoped>
-.widgetsDrawer-enter-active,
-.widgetsDrawer-leave-active {
-	opacity: 1;
-	transform: translateX(0);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.widgetsDrawer-enter-from,
-.widgetsDrawer-leave-active {
-	opacity: 0;
-	transform: translateX(240px);
-}
+<style lang="scss" module>
+$ui-font-size: 1em; // TODO: どこかに集約したい
+$widgets-hide-threshold: 1090px;
 
-.widgetsDrawer-back-enter-active,
-.widgetsDrawer-back-leave-active {
+.transition_menuDrawerBg_enterActive,
+.transition_menuDrawerBg_leaveActive {
 	opacity: 1;
 	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.widgetsDrawer-back-enter-from,
-.widgetsDrawer-back-leave-active {
+.transition_menuDrawerBg_enterFrom,
+.transition_menuDrawerBg_leaveTo {
 	opacity: 0;
 }
 
-.menuDrawer-enter-active,
-.menuDrawer-leave-active {
+.transition_menuDrawer_enterActive,
+.transition_menuDrawer_leaveActive {
 	opacity: 1;
 	transform: translateX(0);
 	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.menuDrawer-enter-from,
-.menuDrawer-leave-active {
+.transition_menuDrawer_enterFrom,
+.transition_menuDrawer_leaveTo {
 	opacity: 0;
 	transform: translateX(-240px);
 }
 
-.menuDrawer-back-enter-active,
-.menuDrawer-back-leave-active {
+.transition_widgetsDrawerBg_enterActive,
+.transition_widgetsDrawerBg_leaveActive {
 	opacity: 1;
 	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.menuDrawer-back-enter-from,
-.menuDrawer-back-leave-active {
+.transition_widgetsDrawerBg_enterFrom,
+.transition_widgetsDrawerBg_leaveTo {
 	opacity: 0;
 }
-</style>
 
-<style lang="scss" module>
-$ui-font-size: 1em; // TODO: どこかに集約したい
-$widgets-hide-threshold: 1090px;
+.transition_widgetsDrawer_enterActive,
+.transition_widgetsDrawer_leaveActive {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_widgetsDrawer_enterFrom,
+.transition_widgetsDrawer_leaveTo {
+	opacity: 0;
+	transform: translateX(240px);
+}
 
 .root {
 	min-height: 100dvh;
