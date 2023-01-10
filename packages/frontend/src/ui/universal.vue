@@ -337,21 +337,25 @@ $widgets-hide-threshold: 1090px;
 	color: var(--fg);
 
 	&:hover {
-		background: var(--X2);
+		background: var(--panelHighlight);
 	}
 
-	&:disabled {
-		cursor: default;
-
-		> .navButtonIcon {
-			opacity: 0.5;
-		}
+	&:active {
+		background: var(--X2);
 	}
 }
 
 .postButton {
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 	color: var(--fgOnAccent);
+
+	&:hover {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
+	}
+
+	&:active {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
+	}
 }
 
 .navButtonIcon {
