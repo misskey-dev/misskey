@@ -9,8 +9,7 @@
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
 					v-if="ids.length > 1"
-					:class="$style.column"
-					class="folder"
+					:class="[$style.column, $style.folder]"
 					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 				>
 					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
@@ -50,7 +49,7 @@
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
-		<button :class="$style.navButton" class="_button post" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
+		<button :class="[$style.navButton, $style.postButton]" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
 	<Transition :name="$store.state.animation ? 'menu-back' : ''">
@@ -296,14 +295,14 @@ async function deleteProfile() {
 	&:first-of-type {
 		border-left: solid var(--deckDividerThickness) var(--deckDivider);
 	}
+}
 
-	&.folder {
-		display: flex;
-		flex-direction: column;
+.folder {
+	display: flex;
+	flex-direction: column;
 
-		> *:not(:last-of-type) {
-			border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
-		}
+	> *:not(:last-of-type) {
+		border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
 	}
 }
 
@@ -400,11 +399,11 @@ async function deleteProfile() {
 			opacity: 0.5;
 		}
 	}
+}
 
-	&.post {
-		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-		color: var(--fgOnAccent);
-	}
+.postButton {
+	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	color: var(--fgOnAccent);
 }
 
 .navButtonIcon {

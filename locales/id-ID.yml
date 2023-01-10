@@ -1206,6 +1206,8 @@ _weekday:
   friday: "Jumat"
   saturday: "Sabtu"
 _widgets:
+  profile: "Profil"
+  instanceInfo: "Informasi Instansi"
   memo: "Catatan memo"
   notifications: "Pemberitahuan"
   timeline: "Linimasa"
