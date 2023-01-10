@@ -1,6 +1,12 @@
 <template>
-<Transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
-	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
+<Transition
+	:enter-active-class="$store.state.animation ? $style.transition_tooltip_enterActive : ''"
+	:leave-active-class="$store.state.animation ? $style.transition_tooltip_leaveActive : ''"
+	:enter-from-class="$store.state.animation ? $style.transition_tooltip_enterFrom : ''"
+	:leave-to-class="$store.state.animation ? $style.transition_tooltip_leaveTo : ''"
+	appear @after-leave="emit('closed')"
+>
+	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
 			<Mfm v-if="asMfm" :text="text"/>
 			<span v-else>{{ text }}</span>
@@ -74,20 +80,20 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.tooltip-enter-active,
-.tooltip-leave-active {
+<style lang="scss" module>
+.transition_tooltip_enterActive,
+.transition_tooltip_leaveActive {
 	opacity: 1;
 	transform: scale(1);
 	transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.tooltip-enter-from,
-.tooltip-leave-active {
+.transition_tooltip_enterFrom,
+.transition_tooltip_leaveTo {
 	opacity: 0;
 	transform: scale(0.75);
 }
 
-.buebdbiu {
+.root {
 	position: absolute;
 	font-size: 0.8em;
 	padding: 8px 12px;
