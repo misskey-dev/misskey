@@ -59,14 +59,16 @@ export default defineComponent({
 				new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
 			) {
 				const separator = h('div', {
-					class: 'separator',
+					class: $style.separator,
 					key: item.id + ':separator',
 				}, h('p', {
-					class: 'date',
+					class: $style.date,
 				}, [
-					h('span', [
+					h('span', {
+						class: (i === 0 || i === props.items.length - 1) ? $style.dateItemMargin : undefined,
+					}, [
 						h('i', {
-							class: 'ti ti-chevron-up icon',
+							class: `ti ti-chevron-up icon${(i === 0 || i === props.items.length - 1) ? ` ${$style.dateItemMarginIcon}` : ''}`,
 						}),
 						getDateText(item.createdAt),
 					]),
@@ -123,6 +125,8 @@ export default defineComponent({
 
 <style lang="scss" module>
 .root {
+	container-type: inline-size;
+
 	&:global {
 	> .list-move {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
@@ -152,7 +156,6 @@ export default defineComponent({
 		}
 	}
 	}
-	container-type: inline-size;
 
 	> *:empty {
 		display: none;
@@ -205,20 +208,12 @@ export default defineComponent({
 	color: var(--dateLabelFg);
 }
 
-.date-item {
-	&:first-child {
-		margin-right: 8px;
-		> .icon {
-			margin-right: 8px;
-		}
-	}
+.date-item-margin {
+	margin-right: 8px;
+}
 
-	&:last-child {
-		margin-left: 8px;
-		> .icon {
-			margin-left: 8px;
-		}
-	}
+.date-item-margin-icon {
+	margin-right: 8px;
 }
 </style>
 
