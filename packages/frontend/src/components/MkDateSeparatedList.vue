@@ -59,23 +59,25 @@ export default defineComponent({
 				new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
 			) {
 				const separator = h('div', {
-					class: $style.separator,
+					class: $style['separator'],
 					key: item.id + ':separator',
 				}, h('p', {
-					class: $style.date,
+					class: $style['date'],
 				}, [
 					h('span', {
-						class: (i === 0 || i === props.items.length - 1) ? $style.dateItemMargin : undefined,
+						class: $style['date-1'],
 					}, [
 						h('i', {
-							class: `ti ti-chevron-up icon${(i === 0 || i === props.items.length - 1) ? ` ${$style.dateItemMarginIcon}` : ''}`,
+							class: `ti ti-chevron-up ${$style['date-1-icon']}`,
 						}),
 						getDateText(item.createdAt),
 					]),
-					h('span', [
+					h('span', {
+						class: $style['date-2'],
+					}, [
 						getDateText(props.items[i + 1].createdAt),
 						h('i', {
-							class: 'ti ti-chevron-down icon',
+							class: `ti ti-chevron-down ${$style['date-2-icon']}`,
 						}),
 					]),
 				]));
@@ -106,11 +108,12 @@ export default defineComponent({
 			defaultStore.state.animation ? TransitionGroup : 'div',
 			{
 					class: {
-						'sqadhkmv': true,
-						'noGap': props.noGap
+						[$style['date-separated-list']]: true,
+						[$style['date-separated-list-nogap']]: props.noGap,
+						[$style['reversed']]: props.reversed,
+						[$style['direction-down']]: props.direction === 'down',
+						[$style['direction-up']]: props.direction === 'up',
 					},
-					'data-direction': props.direction,
-					'data-reversed': props.reversed ? 'true' : 'false',
 					...(defaultStore.state.animation ? {
 						name: 'list',
 						tag: 'div',
@@ -124,7 +127,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" module>
-.root {
+.date-separated-list {
 	container-type: inline-size;
 
 	&:global {
@@ -148,15 +151,6 @@ export default defineComponent({
 		position: absolute !important;
 	}
 
-	&[data-direction="up"] {
-		> .list-enter-from,
-		> .list-leave-to {
-			opacity: 0;
-			transform: translateY(64px);
-		}
-	}
-	}
-
 	> *:empty {
 		display: none;
 	}
@@ -164,33 +158,44 @@ export default defineComponent({
 	> *:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
+	}
+}
 
+.date-separated-list-nogap {
+	> * {
+		margin: 0 !important;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
 
-	&[data-direction="down"] {
-		> .list-enter-from,
-		> .list-leave-to {
-			opacity: 0;
-			transform: translateY(-64px);
+		&:not(:last-child) {
+			border-bottom: solid 0.5px var(--divider);
 		}
 	}
+}
 
-	&[data-reversed="true"] {
-		display: flex;
-		flex-direction: column-reverse;
+.direction-up {
+	&:global {
+	> .list-enter-from,
+	> .list-leave-to {
+		opacity: 0;
+		transform: translateY(64px);
 	}
-
-	&.noGap {
-		> * {
-			margin: 0 !important;
-			border: none;
-			border-radius: 0;
-			box-shadow: none;
-
-			&:not(:last-child) {
-				border-bottom: solid 0.5px var(--divider);
-			}
-		}
 	}
+}
+.direction-down {
+	&:global {
+	> .list-enter-from,
+	> .list-leave-to {
+		opacity: 0;
+		transform: translateY(-64px);
+	}
+	}
+}
+
+.reversed {
+	display: flex;
+	flex-direction: column-reverse;
 }
 
 .separator {
@@ -208,12 +213,20 @@ export default defineComponent({
 	color: var(--dateLabelFg);
 }
 
-.date-item-margin {
+.date-1 {
 	margin-right: 8px;
 }
 
-.date-item-margin-icon {
+.date-1-icon {
 	margin-right: 8px;
+}
+
+.date-2 {
+	margin-left: 8px;
+}
+
+.date-2-icon {
+	margin-left: 8px;
 }
 </style>
 
