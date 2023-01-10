@@ -47,7 +47,9 @@
 		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
 		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
-		<XDrawerMenu v-if="drawerMenuShowing" :class="$style.menuDrawer"/>
+		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
+			<XDrawerMenu/>
+		</div>
 	</Transition>
 
 	<Transition
