@@ -1,5 +1,7 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
+import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api';
+export { pendingApiRequestsCount, api, apiGet };
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -14,8 +16,6 @@ import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
-import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api';
-export { pendingApiRequestsCount, api, apiGet };
 
 export const apiWithDialog = ((
 	endpoint: string,

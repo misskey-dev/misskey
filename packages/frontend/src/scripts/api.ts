@@ -5,7 +5,7 @@ import { $i } from '@/account';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined): Promise<Endpoints[E]['res']> {
+export const api = <E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined): Promise<Endpoints[E]['res']> => {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -45,7 +45,7 @@ export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(en
 }
 
 // Implements Misskey.api.ApiClient.request
-export function apiGet<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Endpoints[E]['res']> {
+export const apiGet = <E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Endpoints[E]['res']> => {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
