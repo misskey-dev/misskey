@@ -4,7 +4,6 @@ import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
-import { apiUrl, url } from '@/config';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue'
@@ -15,85 +14,8 @@ import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
-import { $i } from '@/account';
-
-export const pendingApiRequestsCount = ref(0);
-
-const apiClient = new Misskey.api.APIClient({
-	origin: url,
-});
-
-export const api = ((endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) => {
-	pendingApiRequestsCount.value++;
-
-	const onFinally = () => {
-		pendingApiRequestsCount.value--;
-	};
-
-	const promise = new Promise((resolve, reject) => {
-		// Append a credential
-		if ($i) (data as any).i = $i.token;
-		if (token !== undefined) (data as any).i = token;
-
-		// Send request
-		window.fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
-			method: 'POST',
-			body: JSON.stringify(data),
-			credentials: 'omit',
-			cache: 'no-cache',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		}).then(async (res) => {
-			const body = res.status === 204 ? null : await res.json();
-
-			if (res.status === 200) {
-				resolve(body);
-			} else if (res.status === 204) {
-				resolve();
-			} else {
-				reject(body.error);
-			}
-		}).catch(reject);
-	});
-
-	promise.then(onFinally, onFinally);
-
-	return promise;
-}) as typeof apiClient.request;
-
-export const apiGet = ((endpoint: string, data: Record<string, any> = {}) => {
-	pendingApiRequestsCount.value++;
-
-	const onFinally = () => {
-		pendingApiRequestsCount.value--;
-	};
-
-	const query = new URLSearchParams(data);
-
-	const promise = new Promise((resolve, reject) => {
-		// Send request
-		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
-			method: 'GET',
-			credentials: 'omit',
-			cache: 'default',
-		}).then(async (res) => {
-			const body = res.status === 204 ? null : await res.json();
-
-			if (res.status === 200) {
-				resolve(body);
-			} else if (res.status === 204) {
-				resolve();
-			} else {
-				reject(body.error);
-			}
-		}).catch(reject);
-	});
-
-	promise.then(onFinally, onFinally);
-
-	return promise;
-}) as typeof apiClient.request;
+import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api';
+export { pendingApiRequestsCount, api, apiGet };
 
 export const apiWithDialog = ((
 	endpoint: string,
@@ -111,12 +33,12 @@ export const apiWithDialog = ((
 	return promise;
 }) as typeof api;
 
-export function promiseDialog<T extends Promise<any>>(
+export const promiseDialog = <T extends Promise<any>>(
 	promise: T,
 	onSuccess?: ((res: any) => void) | null,
 	onFailure?: ((err: Error) => void) | null,
 	text?: string,
-): T {
+): T => {
 	const showing = ref(true);
 	const success = ref(false);
 
@@ -165,12 +87,13 @@ const zIndexes = {
 	middle: 2000000,
 	high: 3000000,
 };
-export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
+
+export const claimZIndex = (priority: keyof typeof zIndexes = 'low'): number => {
 	zIndexes[priority] += 100;
 	return zIndexes[priority];
 }
 
-export async function popup(component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) {
+export const popup = async (component: Component, props: Record<string, any>, events = {}, disposeEvent?: string) => {
 	markRaw(component);
 
 	const id = ++popupIdCount;
@@ -197,29 +120,29 @@ export async function popup(component: Component, props: Record<string, any>, ev
 	};
 }
 
-export function pageWindow(path: string) {
+export const pageWindow = (path: string) => {
 	popup(MkPageWindow, {
 		initialPath: path,
 	}, {}, 'closed');
 }
 
-export function modalPageWindow(path: string) {
+export const modalPageWindow = (path: string) => {
 	popup(defineAsyncComponent(() => import('@/components/MkModalPageWindow.vue')), {
 		initialPath: path,
 	}, {}, 'closed');
 }
 
-export function toast(message: string) {
+export const toast = (message: string) => {
 	popup(MkToast, {
 		message,
 	}, {}, 'closed');
 }
 
-export function alert(props: {
+export const alert = (props: {
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
-}): Promise<void> {
+}): Promise<void> => {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, props, {
 			done: result => {
@@ -229,11 +152,11 @@ export function alert(props: {
 	});
 }
 
-export function confirm(props: {
+export const confirm = (props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
-}): Promise<{ canceled: boolean }> {
+}): Promise<{ canceled: boolean }> => {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			...props,
@@ -246,7 +169,7 @@ export function confirm(props: {
 	});
 }
 
-export function inputText(props: {
+export const inputText = (props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string | null;
 	text?: string | null;
@@ -254,7 +177,7 @@ export function inputText(props: {
 	default?: string | null;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: string;
-}> {
+}> => {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			title: props.title,
@@ -272,14 +195,14 @@ export function inputText(props: {
 	});
 }
 
-export function inputNumber(props: {
+export const inputNumber = (props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
 	default?: number | null;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: number;
-}> {
+}> => {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			title: props.title,
@@ -297,14 +220,14 @@ export function inputNumber(props: {
 	});
 }
 
-export function inputDate(props: {
+export const inputDate = (props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
 	default?: Date | null;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: Date;
-}> {
+}> => {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			title: props.title,
@@ -322,7 +245,7 @@ export function inputDate(props: {
 	});
 }
 
-export function select<C = any>(props: {
+export const select = <C = any>(props: {
 	title?: string | null;
 	text?: string | null;
 	default?: string | null;
@@ -341,7 +264,7 @@ export function select<C = any>(props: {
 	}[];
 })): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: C;
-}> {
+}> => {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			title: props.title,
@@ -359,7 +282,7 @@ export function select<C = any>(props: {
 	});
 }
 
-export function success() {
+export const success = () => {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
 		window.setTimeout(() => {
@@ -374,7 +297,7 @@ export function success() {
 	});
 }
 
-export function waiting() {
+export const waiting = () => {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
 		popup(MkWaitingDialog, {
@@ -386,7 +309,7 @@ export function waiting() {
 	});
 }
 
-export function form(title, form) {
+export const form = (title, form) => {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form }, {
 			done: result => {
@@ -396,7 +319,7 @@ export function form(title, form) {
 	});
 }
 
-export async function selectUser() {
+export const selectUser = () => {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {}, {
 			ok: user => {
@@ -406,7 +329,7 @@ export async function selectUser() {
 	});
 }
 
-export async function selectDriveFile(multiple: boolean) {
+export const selectDriveFile = (multiple: boolean) => {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'file',
@@ -421,7 +344,7 @@ export async function selectDriveFile(multiple: boolean) {
 	});
 }
 
-export async function selectDriveFolder(multiple: boolean) {
+export const selectDriveFolder = (multiple: boolean) => {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'folder',
@@ -436,7 +359,7 @@ export async function selectDriveFolder(multiple: boolean) {
 	});
 }
 
-export async function pickEmoji(src: HTMLElement | null, opts) {
+export const pickEmoji = (src: HTMLElement | null, opts) => {
 	return new Promise((resolve, reject) => {
 		popup(MkEmojiPickerDialog, {
 			src,
@@ -449,9 +372,9 @@ export async function pickEmoji(src: HTMLElement | null, opts) {
 	});
 }
 
-export async function cropImage(image: Misskey.entities.DriveFile, options: {
+export const cropImage = (image: Misskey.entities.DriveFile, options: {
 	aspectRatio: number;
-}): Promise<Misskey.entities.DriveFile> {
+}): Promise<Misskey.entities.DriveFile> => {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {
 			file: image,
@@ -470,7 +393,7 @@ type AwaitType<T> =
 	T;
 let openingEmojiPicker: AwaitType<ReturnType<typeof popup>> | null = null;
 let activeTextarea: HTMLTextAreaElement | HTMLInputElement | null = null;
-export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: typeof activeTextarea) {
+export const openEmojiPicker = async (src?: HTMLElement, opts, initialTextarea: typeof activeTextarea) => {
 	if (openingEmojiPicker) return;
 
 	activeTextarea = initialTextarea;
@@ -518,12 +441,12 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	});
 }
 
-export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement, options?: {
+export const popupMenu = (items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement, options?: {
 	align?: string;
 	width?: number;
 	viaKeyboard?: boolean;
 	onClosing?: () => void;
-}) {
+}) => {
 	return new Promise((resolve, reject) => {
 		let dispose;
 		popup(MkPopupMenu, {
@@ -546,7 +469,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	});
 }
 
-export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent) {
+export const contextMenu = (items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent) => {
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
@@ -564,7 +487,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	});
 }
 
-export function post(props: Record<string, any> = {}) {
+export const post = (props: Record<string, any> = {}) => {
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
 		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、
@@ -586,7 +509,7 @@ export function post(props: Record<string, any> = {}) {
 export const deckGlobalEvents = new EventEmitter();
 
 /*
-export function checkExistence(fileData: ArrayBuffer): Promise<any> {
+export const checkExistence = (fileData: ArrayBuffer): Promise<any> => {
 	return new Promise((resolve, reject) => {
 		const data = new FormData();
 		data.append('md5', getMD5(fileData));
