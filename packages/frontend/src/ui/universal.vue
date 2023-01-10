@@ -74,6 +74,7 @@
 		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
 	>
 		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
+			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
 			<XWidgets/>
 		</div>
 	</Transition>
@@ -308,6 +309,18 @@ $widgets-hide-threshold: 1090px;
 	overflow: auto;
 	overscroll-behavior: contain;
 	background: var(--bg);
+}
+
+.widgetsCloseButton {
+	padding: 8px;
+	display: block;
+	margin: 0 auto;
+}
+
+@media (min-width: 370px) {
+	.widgetsCloseButton {
+		display: none;
+	}
 }
 
 .nav {

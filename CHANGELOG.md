@@ -112,6 +112,7 @@ You should also include the user name that made the change.
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
+- Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
