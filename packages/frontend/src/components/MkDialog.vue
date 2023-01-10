@@ -1,10 +1,10 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="done(true)" @closed="emit('closed')">
-	<div class="mk-dialog">
-		<div v-if="icon" class="icon">
+	<div :class="$style.root">
+		<div v-if="icon" :class="$style.icon">
 			<i :class="icon"></i>
 		</div>
-		<div v-else-if="!input && !select" class="icon" :class="type">
+		<div v-else-if="!input && !select" :class="[$style.icon, type]">
 			<i v-if="type === 'success'" class="ti ti-check"></i>
 			<i v-else-if="type === 'error'" class="ti ti-circle-x"></i>
 			<i v-else-if="type === 'warning'" class="ti ti-alert-triangle"></i>
@@ -12,8 +12,8 @@
 			<i v-else-if="type === 'question'" class="ti ti-question-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :em="true"/>
 		</div>
-		<header v-if="title"><Mfm :text="title"/></header>
-		<div v-if="text" class="body"><Mfm :text="text"/></div>
+		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
+		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 		</MkInput>
@@ -27,11 +27,11 @@
 				</optgroup>
 			</template>
 		</MkSelect>
-		<div v-if="(showOkButton || showCancelButton) && !actions" class="buttons">
+		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
 			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok">{{ (showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ i18n.ts.cancel }}</MkButton>
 		</div>
-		<div v-if="actions" class="buttons">
+		<div v-if="actions" :class="$style.buttons">
 			<MkButton v-for="action in actions" :key="action.text" inline :primary="action.primary" @click="() => { action.callback(); close(); }">{{ action.text }}</MkButton>
 		</div>
 	</div>
@@ -143,8 +143,8 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.mk-dialog {
+<style lang="scss" module>
+.root {
 	position: relative;
 	padding: 32px;
 	min-width: 320px;
@@ -153,56 +153,56 @@ onBeforeUnmount(() => {
 	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
+}
 
-	> .icon {
-		font-size: 24px;
+.icon {
+	font-size: 24px;
 
-		&.info {
-			color: #55c4dd;
-		}
-
-		&.success {
-			color: var(--success);
-		}
-
-		&.error {
-			color: var(--error);
-		}
-
-		&.warning {
-			color: var(--warn);
-		}
-
-		> * {
-			display: block;
-			margin: 0 auto;
-		}
-
-		& + header {
-			margin-top: 8px;
-		}
+	&.info {
+		color: #55c4dd;
 	}
 
-	> header {
-		margin: 0 0 8px 0;
-		font-weight: bold;
-		font-size: 1.1em;
-
-		& + .body {
-			margin-top: 8px;
-		}
+	&.success {
+		color: var(--success);
 	}
 
-	> .body {
-		margin: 16px 0 0 0;
+	&.error {
+		color: var(--error);
 	}
 
-	> .buttons {
-		margin-top: 16px;
-
-		> * {
-			margin: 0 8px;
-		}
+	&.warning {
+		color: var(--warn);
 	}
+
+	> * {
+		display: block;
+		margin: 0 auto;
+	}
+
+	& + .title {
+		margin-top: 8px;
+	}
+}
+
+.title {
+	margin: 0 0 8px 0;
+	font-weight: bold;
+	font-size: 1.1em;
+
+	& + .text {
+		margin-top: 8px;
+	}
+}
+
+.text {
+	margin: 16px 0 0 0;
+}
+
+.buttons {
+	margin-top: 16px;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 </style>
