@@ -4,27 +4,26 @@
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
-	class="tkcbzcuz"
+	:class="$style.root"
 	:tabindex="!isDeleted ? '-1' : null"
-	:class="{ renote: isRenote }"
 >
-	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
-	<div v-if="pinned" class="info"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
-	<div v-if="appearNote._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
-	<div v-if="isRenote" class="renote">
-		<MkAvatar v-once class="avatar" :user="note.user"/>
-		<i class="ti ti-repeat"></i>
-		<I18n :src="i18n.ts.renotedBy" tag="span">
+	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
+	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
+	<!--<div v-if="appearNote._prId_" class="tip"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
+	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
+	<div v-if="isRenote" :class="$style.renote">
+		<MkAvatar v-once :class="$style.renoteAvatar" :user="note.user"/>
+		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
+		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
-				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
+				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
 		</I18n>
-		<div class="info">
-			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="ti ti-dots dropdownIcon"></i>
+		<div :class="$style.renoteInfo">
+			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
+				<i v-if="isMyRenote" class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
@@ -35,80 +34,80 @@
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 		</div>
 	</div>
-	<article class="article" @contextmenu.stop="onContextmenu">
-		<MkAvatar v-once class="avatar" :user="appearNote.user"/>
-		<div class="main">
-			<MkNoteHeader class="header" :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
-			<div class="body">
-				<p v-if="appearNote.cw != null" class="cw">
-					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
+	<article :class="$style.article" @contextmenu.stop="onContextmenu">
+		<MkAvatar v-once :class="$style.avatar" :user="appearNote.user"/>
+		<div :class="$style.main">
+			<MkNoteHeader :class="$style.header" :note="appearNote" :mini="true"/>
+			<MkInstanceTicker v-if="showTicker" :class="$style.ticker" :instance="appearNote.user.instance"/>
+			<div style="container-type: inline-size;">
+				<p v-if="appearNote.cw != null" :class="$style.cw">
+					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
 					<MkCwButton v-model="showContent" :note="appearNote"/>
 				</p>
-				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed, isLong }">
-					<div class="text">
+				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
+					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 						<Mfm v-if="appearNote.text" v-once :text="appearNote.text" :author="appearNote.user" :i="$i"/>
-						<a v-if="appearNote.renote != null" class="rp">RN:</a>
-						<div v-if="translating || translation" class="translation">
+						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
-							<div v-else class="translated">
+							<div v-else :class="$style.translated">
 								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
 								<Mfm :text="translation.text" :author="appearNote.user" :i="$i"/>
 							</div>
 						</div>
 					</div>
-					<div v-if="appearNote.files.length > 0" class="files">
+					<div v-if="appearNote.files.length > 0" :class="$style.files">
 						<MkMediaList :media-list="appearNote.files"/>
 					</div>
-					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
-					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
-					<div v-if="appearNote.renote" class="renote"><MkNoteSimple :note="appearNote.renote" class="note"/></div>
-					<button v-if="isLong && collapsed" class="fade _button" @click="collapsed = false">
-						<span>{{ i18n.ts.showMore }}</span>
+					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" :class="$style.poll"/>
+					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
+					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
+					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
+						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
 					</button>
-					<button v-else-if="isLong && !collapsed" class="showLess _button" @click="collapsed = true">
-						<span>{{ i18n.ts.showLess }}</span>
+					<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
+						<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
 					</button>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<footer class="footer">
+			<footer :class="$style.footer">
 				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
-				<button class="button _button" @click="reply()">
+				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
-					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
+					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
 				</button>
 				<button
 					v-if="canRenote"
 					ref="renoteButton"
-					class="button _button"
+					:class="$style.footerButton"
+					class="_button"
 					@mousedown="renote()"
 				>
 					<i class="ti ti-repeat"></i>
-					<p v-if="appearNote.renoteCount > 0" class="count">{{ appearNote.renoteCount }}</p>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button v-else class="button _button" disabled>
+				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @mousedown="react()">
+				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
 					<i class="ti ti-plus"></i>
 				</button>
-				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
+				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
 				</button>
-				<button ref="menuButton" class="button _button" @mousedown="menu()">
+				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
 			</footer>
 		</div>
 	</article>
 </div>
-<div v-else class="muted" @click="muted = false">
+<div v-else :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
@@ -349,8 +348,8 @@ function readPromo() {
 }
 </script>
 
-<style lang="scss" scoped>
-.tkcbzcuz {
+<style lang="scss" module>
+.root {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
@@ -387,322 +386,259 @@ function readPromo() {
 		}
 	}
 
-	&:hover > .article > .main > .footer > .button {
+	&:hover > .article > .main > .footer > .footerButton {
 		opacity: 1;
-	}
-
-	> .info {
-		display: flex;
-		align-items: center;
-		padding: 16px 32px 8px 32px;
-		line-height: 24px;
-		font-size: 90%;
-		white-space: pre;
-		color: #d28a3f;
-
-		> i {
-			margin-right: 4px;
-		}
-
-		> .hide {
-			margin-left: auto;
-			color: inherit;
-		}
-	}
-
-	> .info + .article {
-		padding-top: 8px;
-	}
-
-	> .reply-to {
-		opacity: 0.7;
-		padding-bottom: 0;
-	}
-
-	> .renote {
-		display: flex;
-		align-items: center;
-		padding: 16px 32px 8px 32px;
-		line-height: 28px;
-		white-space: pre;
-		color: var(--renote);
-
-		> .avatar {
-			flex-shrink: 0;
-			display: inline-block;
-			width: 28px;
-			height: 28px;
-			margin: 0 8px 0 0;
-			border-radius: 6px;
-		}
-
-		> i {
-			margin-right: 4px;
-		}
-
-		> span {
-			overflow: hidden;
-			flex-shrink: 1;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-
-			> .name {
-				font-weight: bold;
-			}
-		}
-
-		> .info {
-			margin-left: auto;
-			font-size: 0.9em;
-
-			> .time {
-				flex-shrink: 0;
-				color: inherit;
-
-				> .dropdownIcon {
-					margin-right: 4px;
-				}
-			}
-		}
-	}
-
-	> .renote + .article {
-		padding-top: 8px;
-	}
-
-	> .article {
-		display: flex;
-		padding: 28px 32px 18px;
-
-		> .avatar {
-			flex-shrink: 0;
-			display: block;
-			margin: 0 14px 8px 0;
-			width: 58px;
-			height: 58px;
-			position: sticky;
-			top: calc(22px + var(--stickyTop, 0px));
-			left: 0;
-		}
-
-		> .main {
-			flex: 1;
-			min-width: 0;
-
-			> .body {
-				container-type: inline-size;
-
-				> .cw {
-					cursor: default;
-					display: block;
-					margin: 0;
-					padding: 0;
-					overflow-wrap: break-word;
-
-					> .text {
-						margin-right: 8px;
-					}
-				}
-
-				> .content {
-					&.isLong {
-						> .showLess {
-							width: 100%;
-							margin-top: 1em;
-							position: sticky;
-							bottom: 1em;
-
-							> span {
-								display: inline-block;
-								background: var(--popup);
-								padding: 6px 10px;
-								font-size: 0.8em;
-								border-radius: 999px;
-								box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-							}
-						}
-					}
-
-					&.collapsed {
-						position: relative;
-						max-height: 9em;
-						overflow: clip;
-
-						> .fade {
-							display: block;
-							position: absolute;
-							bottom: 0;
-							left: 0;
-							width: 100%;
-							height: 64px;
-							background: linear-gradient(0deg, var(--panel), var(--X15));
-
-							> span {
-								display: inline-block;
-								background: var(--panel);
-								padding: 6px 10px;
-								font-size: 0.8em;
-								border-radius: 999px;
-								box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-							}
-
-							&:hover {
-								> span {
-									background: var(--panelHighlight);
-								}
-							}
-						}
-					}
-
-					> .text {
-						overflow-wrap: break-word;
-
-						> .reply {
-							color: var(--accent);
-							margin-right: 0.5em;
-						}
-
-						> .rp {
-							margin-left: 4px;
-							font-style: oblique;
-							color: var(--renote);
-						}
-
-						> .translation {
-							border: solid 0.5px var(--divider);
-							border-radius: var(--radius);
-							padding: 12px;
-							margin-top: 8px;
-						}
-					}
-
-					> .url-preview {
-						margin-top: 8px;
-					}
-
-					> .poll {
-						font-size: 80%;
-					}
-
-					> .renote {
-						padding: 8px 0;
-
-						> .note {
-							padding: 16px;
-							border: dashed 1px var(--renote);
-							border-radius: 8px;
-						}
-					}
-				}
-
-				> .channel {
-					opacity: 0.7;
-					font-size: 80%;
-				}
-			}
-
-			> .footer {
-				> .button {
-					margin: 0;
-					padding: 8px;
-					opacity: 0.7;
-
-					&:not(:last-child) {
-						margin-right: 28px;
-					}
-
-					&:hover {
-						color: var(--fgHighlighted);
-					}
-
-					> .count {
-						display: inline;
-						margin: 0 0 0 8px;
-						opacity: 0.7;
-					}
-
-					&.reacted {
-						color: var(--accent);
-					}
-				}
-			}
-		}
-	}
-
-	> .reply {
-		border-top: solid 0.5px var(--divider);
 	}
 }
 
-@container (max-width: 500px) {
-	.tkcbzcuz {
-		font-size: 0.9em;
+.tip {
+	display: flex;
+	align-items: center;
+	padding: 16px 32px 8px 32px;
+	line-height: 24px;
+	font-size: 90%;
+	white-space: pre;
+	color: #d28a3f;
+}
 
-		> .article {
-			> .avatar {
-				width: 50px;
-				height: 50px;
-			}
-		}
+.tip + .article {
+	padding-top: 8px;
+}
+
+.replyTo {
+	opacity: 0.7;
+	padding-bottom: 0;
+}
+
+.renote {
+	display: flex;
+	align-items: center;
+	padding: 16px 32px 8px 32px;
+	line-height: 28px;
+	white-space: pre;
+	color: var(--renote);
+
+	& + .article {
+		padding-top: 8px;
+	}
+}
+
+.renoteAvatar {
+	flex-shrink: 0;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	margin: 0 8px 0 0;
+	border-radius: 6px;
+}
+
+.renoteText {
+	overflow: hidden;
+	flex-shrink: 1;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.renoteUserName {
+	font-weight: bold;
+}
+
+.renoteInfo {
+	margin-left: auto;
+	font-size: 0.9em;
+}
+
+.renoteTime {
+	flex-shrink: 0;
+	color: inherit;
+}
+
+.renoteMenu {
+	margin-right: 4px;
+}
+
+.article {
+	display: flex;
+	padding: 28px 32px 18px;
+}
+
+.avatar {
+	flex-shrink: 0;
+	display: block !important;
+	margin: 0 14px 8px 0;
+	width: 58px;
+	height: 58px;
+	position: sticky !important;
+	top: calc(22px + var(--stickyTop, 0px));
+	left: 0;
+}
+
+.main {
+	flex: 1;
+	min-width: 0;
+}
+
+.cw {
+	cursor: default;
+	display: block;
+	margin: 0;
+	padding: 0;
+	overflow-wrap: break-word;
+}
+
+.showLess {
+	width: 100%;
+	margin-top: 1em;
+	position: sticky;
+	bottom: 1em;
+}
+
+.howLessLabel {
+	display: inline-block;
+	background: var(--popup);
+	padding: 6px 10px;
+	font-size: 0.8em;
+	border-radius: 999px;
+	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.contentCollapsed {
+	position: relative;
+	max-height: 9em;
+	overflow: clip;
+}
+
+.collapsed {
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 64px;
+	background: linear-gradient(0deg, var(--panel), var(--X15));
+
+	&:hover > .collapsedLabel {
+		background: var(--panelHighlight);
+	}
+}
+
+.collapsedLabel {
+	display: inline-block;
+	background: var(--panel);
+	padding: 6px 10px;
+	font-size: 0.8em;
+	border-radius: 999px;
+	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.text {
+	overflow-wrap: break-word;
+}
+
+.replyIcon {
+	color: var(--accent);
+	margin-right: 0.5em;
+}
+
+.translation {
+	border: solid 0.5px var(--divider);
+	border-radius: var(--radius);
+	padding: 12px;
+	margin-top: 8px;
+}
+
+.urlPreview {
+	margin-top: 8px;
+}
+
+.poll {
+	font-size: 80%;
+}
+
+.quote {
+	padding: 8px 0;
+}
+
+.quoteNote {
+	padding: 16px;
+	border: dashed 1px var(--renote);
+	border-radius: 8px;
+}
+
+.channel {
+	opacity: 0.7;
+	font-size: 80%;
+}
+
+.footerButton {
+	margin: 0;
+	padding: 8px;
+	opacity: 0.7;
+
+	&:not(:last-child) {
+		margin-right: 28px;
+	}
+
+	&:hover {
+		color: var(--fgHighlighted);
+	}
+}
+
+.footerButtonCount {
+	display: inline;
+	margin: 0 0 0 8px;
+	opacity: 0.7;
+}
+
+@container (max-width: 500px) {
+	.root {
+		font-size: 0.9em;
+	}
+
+	.avatar {
+		width: 50px;
+		height: 50px;
 	}
 }
 
 @container (max-width: 450px) {
-	.tkcbzcuz {
-		> .renote {
-			padding: 8px 16px 0 16px;
-		}
+	.renote {
+		padding: 8px 16px 0 16px;
+	}
 
-		> .info {
-			padding: 8px 16px 0 16px;
-		}
+	.tip {
+		padding: 8px 16px 0 16px;
+	}
 
-		> .article {
-			padding: 14px 16px 9px;
+	.article {
+		padding: 14px 16px 9px;
+	}
 
-			> .avatar {
-				margin: 0 10px 8px 0;
-				width: 46px;
-				height: 46px;
-				top: calc(14px + var(--stickyTop, 0px));
-			}
-		}
+	.avatar {
+		margin: 0 10px 8px 0;
+		width: 46px;
+		height: 46px;
+		top: calc(14px + var(--stickyTop, 0px));
 	}
 }
 
 @container (max-width: 350px) {
-	.tkcbzcuz {
-		> .article {
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 18px;
-						}
-					}
-				}
-			}
+	.footerButton {
+		&:not(:last-child) {
+			margin-right: 18px;
 		}
 	}
 }
 
 @container (max-width: 300px) {
-	.tkcbzcuz {
-		> .article {
-			> .avatar {
-				width: 44px;
-				height: 44px;
-			}
+	.avatar {
+		width: 44px;
+		height: 44px;
+	}
 
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 12px;
-						}
-					}
-				}
-			}
+	.footerButton {
+		&:not(:last-child) {
+			margin-right: 12px;
 		}
 	}
 }

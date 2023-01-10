@@ -922,7 +922,8 @@ numberOfLikes: "点赞数"
 show: "显示"
 neverShow: "不再显示"
 remindMeLater: "稍后提醒我"
-didYouLikeMisskey: "你在Misskey玩得还开心吗？"
+didYouLikeMisskey: "您喜欢Misskey吗？"
+pleaseDonate: "Misskey是{host}所使用的免费软件。为了今后也能够维持Misskey的开发，请在有余力的情况下进行捐助！"
 _sensitiveMediaDetection:
   description: "可以使用机器学习技术自动检测敏感媒体，以便进行审核。服务器负载将略微增加。"
   sensitivity: "检测敏感度"
@@ -1301,6 +1302,8 @@ _weekday:
   friday: "星期五"
   saturday: "星期六"
 _widgets:
+  profile: "个人资料"
+  instanceInfo: "实例信息"
   memo: "便签"
   notifications: "通知"
   timeline: "时间线"
@@ -1327,6 +1330,7 @@ _widgets:
   userList: "用户列表"
   _userList:
     chooseList: "选择列表"
+  clicker: "点击器"
 _cw:
   hide: "隐藏"
   show: "查看更多"

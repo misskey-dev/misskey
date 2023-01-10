@@ -1,31 +1,28 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 <section
-	v-hotkey="keymap" class="dnpfarvg"
-	:class="{ paged: isMainColumn, naked, active, isStacked, draghover, dragging, dropready }"
+	v-hotkey="keymap"
+	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.isStacked]: isStacked, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
 >
 	<header
-		:class="{ indicated }"
+		:class="[$style.header]"
 		draggable="true"
 		@click="goTop"
 		@dragstart="onDragstart"
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
 	>
-		<button v-if="isStacked && !isMainColumn" class="toggleActive _button" @click="toggleActive">
+		<button v-if="isStacked && !isMainColumn" :class="$style.toggleActive" class="_button" @click="toggleActive">
 			<template v-if="active"><i class="ti ti-chevron-up"></i></template>
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
-		<div class="action">
-			<slot name="action"></slot>
-		</div>
-		<span class="header"><slot name="header"></slot></span>
-		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
+		<span :class="$style.title"><slot name="header"></slot></span>
+		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" ref="body">
+	<div v-show="active" ref="body" :class="$style.body">
 		<slot></slot>
 	</div>
 </section>
@@ -46,12 +43,10 @@ const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
 	naked?: boolean;
-	indicated?: boolean;
 	menu?: MenuItem[];
 }>(), {
 	isStacked: false,
 	naked: false,
-	indicated: false,
 });
 
 const emit = defineEmits<{
@@ -245,8 +240,8 @@ function onDrop(ev) {
 }
 </script>
 
-<style lang="scss" scoped>
-.dnpfarvg {
+<style lang="scss" module>
+.root {
 	--root-margin: 10px;
 	--deckColumnHeaderHeight: 40px;
 
@@ -292,10 +287,6 @@ function onDrop(ev) {
 	&:not(.active) {
 		flex-basis: var(--deckColumnHeaderHeight);
 		min-height: var(--deckColumnHeaderHeight);
-
-		> header.indicated {
-			box-shadow: 4px 0px var(--accent) inset;
-		}
 	}
 
 	&.naked {
@@ -303,97 +294,78 @@ function onDrop(ev) {
 		-webkit-backdrop-filter: var(--blur, blur(10px));
 		backdrop-filter: var(--blur, blur(10px));
 
-		> header {
+		> .header {
 			background: transparent;
 			box-shadow: none;
-
-			> button {
-				color: var(--fg);
-			}
+			color: var(--fg);
 		}
 	}
 
 	&.paged {
 		background: var(--bg) !important;
 	}
+}
 
-	> header {
-		position: relative;
-		display: flex;
-		z-index: 2;
-		line-height: var(--deckColumnHeaderHeight);
-		height: var(--deckColumnHeaderHeight);
-		padding: 0 16px;
-		font-size: 0.9em;
-		color: var(--panelHeaderFg);
-		background: var(--panelHeaderBg);
-		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
-		cursor: pointer;
+.header {
+	position: relative;
+	display: flex;
+	z-index: 2;
+	line-height: var(--deckColumnHeaderHeight);
+	height: var(--deckColumnHeaderHeight);
+	padding: 0 16px;
+	font-size: 0.9em;
+	color: var(--panelHeaderFg);
+	background: var(--panelHeaderBg);
+	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
+	cursor: pointer;
 
-		&, * {
-			user-select: none;
-		}
+	&, * {
+		user-select: none;
+	}
+}
 
-		&.indicated {
-			box-shadow: 0 3px 0 0 var(--accent);
-		}
+.title {
+	display: inline-block;
+	align-items: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 100%;
+}
 
-		> .header {
-			display: inline-block;
-			align-items: center;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
+.toggleActive,
+.menu {
+	z-index: 1;
+	width: var(--deckColumnHeaderHeight);
+	line-height: var(--deckColumnHeaderHeight);
+	color: var(--faceTextButton);
 
-		> span:only-of-type {
-			width: 100%;
-		}
-
-		> .toggleActive,
-		> .action > ::v-deep(*),
-		> .menu {
-			z-index: 1;
-			width: var(--deckColumnHeaderHeight);
-			line-height: var(--deckColumnHeaderHeight);
-			color: var(--faceTextButton);
-
-			&:hover {
-				color: var(--faceTextButtonHover);
-			}
-
-			&:active {
-				color: var(--faceTextButtonActive);
-			}
-		}
-
-		> .toggleActive, > .action {
-			margin-left: -16px;
-		}
-
-		> .action {
-			z-index: 1;
-		}
-
-		> .action:empty {
-			display: none;
-		}
-
-		> .menu {
-			margin-left: auto;
-			margin-right: -16px;
-		}
+	&:hover {
+		color: var(--faceTextButtonHover);
 	}
 
-	> div {
-		height: calc(100% - var(--deckColumnHeaderHeight));
-		overflow-y: auto;
-		overflow-x: hidden; // Safari does not supports clip
-		overflow-x: clip;
-		-webkit-overflow-scrolling: touch;
-		box-sizing: border-box;
-		container-type: inline-size;
-		background-color: var(--bg);
+	&:active {
+		color: var(--faceTextButtonActive);
 	}
+}
+
+.toggleActive {
+	margin-left: -16px;
+}
+
+.menu {
+	margin-left: auto;
+	margin-right: -16px;
+}
+
+.body {
+	height: calc(100% - var(--deckColumnHeaderHeight));
+	overflow-y: auto;
+	overflow-x: hidden; // Safari does not supports clip
+	overflow-x: clip;
+	-webkit-overflow-scrolling: touch;
+	box-sizing: border-box;
+	container-type: inline-size;
+	background-color: var(--bg);
 }
 </style>

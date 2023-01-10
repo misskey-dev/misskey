@@ -1295,6 +1295,8 @@ _weekday:
   friday: "Piatok"
   saturday: "Sobota"
 _widgets:
+  profile: "Profil"
+  instanceInfo: "Informácie o serveri"
   memo: "Prilepené poznámky"
   notifications: "Oznámenia"
   timeline: "Časová os"
