@@ -33,9 +33,9 @@ import { ref } from 'vue';
 import JSON5 from 'json5';
 import { Endpoints } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

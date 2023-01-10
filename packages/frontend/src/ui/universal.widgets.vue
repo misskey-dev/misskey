@@ -1,6 +1,6 @@
 <template>
-<div class="efzpzdvf" :class="{ universal: !classic, classic }">
-	<XWidgets :edit="editMode" :widgets="widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
+<div :class="$style.root" :style="{ paddingTop: marginTop }">
+	<XWidgets :class="$style.widgets" :edit="editMode" :widgets="widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 
 	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
 	<button v-else class="_textButton mk-widget-edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ i18n.ts.editWidgets }}</button>
@@ -21,10 +21,10 @@ const props = withDefaults(defineProps<{
 	// left = place: leftだけを表示
 	// right = rightとnullを表示
 	place?: 'left' | null | 'right';
-	classic?: boolean;
+	marginTop?: string;
 }>(), {
 	place: null,
-	classic: false,
+	marginTop: '0',
 });
 
 const emit = defineEmits<{
@@ -81,31 +81,14 @@ function updateWidgets(thisWidgets) {
 }
 </script>
 
-<style lang="scss" scoped>
-.efzpzdvf {
+<style lang="scss" module>
+.root {
 	position: sticky;
 	height: min-content;
-	min-height: 100vh;
 	box-sizing: border-box;
+}
 
-	&.universal {
-		padding-top: var(--margin);
-
-		> * {
-			margin: var(--margin) 0;
-		}
-	}
-
-	> * {
-		width: 300px;
-
-		&:first-child {
-			margin-top: 0;
-		}
-	}
-
-	> .add {
-		margin: 0 auto;
-	}
+.widgets {
+	width: 300px;
 }
 </style>

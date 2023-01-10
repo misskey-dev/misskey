@@ -11,7 +11,7 @@
 
 					<div class="main _margin">
 						<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
-						<div class="note _margin">
+						<div class="note _margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
 							<XNoteDetailed :key="note.id" v-model:note="note" class="note"/>
 						</div>

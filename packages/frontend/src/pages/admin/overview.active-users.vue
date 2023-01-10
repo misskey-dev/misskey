@@ -104,6 +104,10 @@ async function renderChart() {
 					time: {
 						stepSize: 1,
 						unit: 'day',
+						displayFormats: {
+							day: 'M/d',
+							month: 'Y/M',
+						},
 					},
 					grid: {
 						display: false,

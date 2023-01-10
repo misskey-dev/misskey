@@ -28,9 +28,9 @@
 
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { useRouter } from '@/router';

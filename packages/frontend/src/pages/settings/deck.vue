@@ -1,23 +1,23 @@
 <template>
 <div class="_gaps_m">
-	<FormSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</FormSwitch>
+	<MkSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</MkSwitch>
 
-	<FormSwitch v-model="alwaysShowMainColumn">{{ i18n.ts._deck.alwaysShowMainColumn }}</FormSwitch>
+	<MkSwitch v-model="alwaysShowMainColumn">{{ i18n.ts._deck.alwaysShowMainColumn }}</MkSwitch>
 
-	<FormRadios v-model="columnAlign">
+	<MkRadios v-model="columnAlign">
 		<template #label>{{ i18n.ts._deck.columnAlign }}</template>
 		<option value="left">{{ i18n.ts.left }}</option>
 		<option value="center">{{ i18n.ts.center }}</option>
-	</FormRadios>
+	</MkRadios>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormInput from '@/components/form/input.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkInput from '@/components/MkInput.vue';
 import { deckStore } from '@/ui/deck/deck-store';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';

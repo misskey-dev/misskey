@@ -340,6 +340,10 @@ export const routes = [{
 		name: 'files',
 		component: page(() => import('./pages/admin/files.vue')),
 	}, {
+		path: '/federation',
+		name: 'federation',
+		component: page(() => import('./pages/admin/federation.vue')),
+	}, {
 		path: '/announcements',
 		name: 'announcements',
 		component: page(() => import('./pages/admin/announcements.vue')),
@@ -459,6 +463,10 @@ export const routes = [{
 }, {
 	path: '/timeline/antenna/:antennaId',
 	component: page(() => import('./pages/antenna-timeline.vue')),
+	loginRequired: true,
+}, {
+	path: '/clicker',
+	component: page(() => import('./pages/clicker.vue')),
 	loginRequired: true,
 }, {
 	name: 'index',

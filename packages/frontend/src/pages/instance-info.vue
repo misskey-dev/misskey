@@ -29,8 +29,8 @@
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
 				<div class="_gaps_s">
-					<FormSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
-					<FormSwitch v-model="isBlocked" @update:model-value="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
+					<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
+					<MkSwitch v-model="isBlocked" @update:model-value="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 					<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 				</div>
 			</FormSection>
@@ -120,8 +120,8 @@ import MkLink from '@/components/MkLink.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkSelect from '@/components/form/select.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 import bytes from '@/filters/bytes';

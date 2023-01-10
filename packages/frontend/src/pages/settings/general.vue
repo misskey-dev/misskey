@@ -1,6 +1,6 @@
 <template>
 <div class="_gaps_m">
-	<FormSelect v-model="lang">
+	<MkSelect v-model="lang">
 		<template #label>{{ i18n.ts.uiLanguage }}</template>
 		<option v-for="x in langs" :key="x[0]" :value="x[0]">{{ x[1] }}</option>
 		<template #caption>
@@ -10,33 +10,33 @@
 				</template>
 			</I18n>
 		</template>
-	</FormSelect>
+	</MkSelect>
 
-	<FormRadios v-model="overridedDeviceKind">
+	<MkRadios v-model="overridedDeviceKind">
 		<template #label>{{ i18n.ts.overridedDeviceKind }}</template>
 		<option :value="null">{{ i18n.ts.auto }}</option>
 		<option value="smartphone"><i class="ti ti-device-mobile"/> {{ i18n.ts.smartphone }}</option>
 		<option value="tablet"><i class="ti ti-device-tablet"/> {{ i18n.ts.tablet }}</option>
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
-	</FormRadios>
+	</MkRadios>
 
-	<FormSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</FormSwitch>
+	<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
-				<FormSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</FormSwitch>
-				<FormSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</FormSwitch>
-				<FormSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</FormSwitch>
+				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
+				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
+				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
 			</div>
-			<FormSelect v-model="serverDisconnectedBehavior">
+			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
 				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
 				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
 				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-			</FormSelect>
+			</MkSelect>
 		</div>
 	</FormSection>
 
@@ -45,59 +45,59 @@
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
-				<FormSwitch v-model="disableAnimatedMfm">{{ i18n.ts.disableAnimatedMfm }}</FormSwitch>
-				<FormSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</FormSwitch>
-				<FormSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</FormSwitch>
-				<FormSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</FormSwitch>
-				<FormSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</FormSwitch>
-				<FormSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</FormSwitch>
-				<FormSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</FormSwitch>
-				<FormSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</FormSwitch>
-				<FormSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</FormSwitch>
-				<FormSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</FormSwitch>
+				<MkSwitch v-model="disableAnimatedMfm">{{ i18n.ts.disableAnimatedMfm }}</MkSwitch>
+				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
+				<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
+				<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>
+				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
+				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+				<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
+				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
+				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
+				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 			</div>
 			<div>
-				<FormRadios v-model="emojiStyle">
+				<MkRadios v-model="emojiStyle">
 					<template #label>{{ i18n.ts.emojiStyle }}</template>
 					<option value="native">{{ i18n.ts.native }}</option>
 					<option value="fluentEmoji">Fluent Emoji</option>
 					<option value="twemoji">Twemoji</option>
-				</FormRadios>
+				</MkRadios>
 				<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 			</div>
 
-			<FormRadios v-model="fontSize">
+			<MkRadios v-model="fontSize">
 				<template #label>{{ i18n.ts.fontSize }}</template>
 				<option :value="null"><span style="font-size: 14px;">Aa</span></option>
 				<option value="1"><span style="font-size: 15px;">Aa</span></option>
 				<option value="2"><span style="font-size: 16px;">Aa</span></option>
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
-			</FormRadios>
+			</MkRadios>
 		</div>
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</FormSwitch>
+		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
 	</FormSection>
 
-	<FormSelect v-model="instanceTicker">
+	<MkSelect v-model="instanceTicker">
 		<template #label>{{ i18n.ts.instanceTicker }}</template>
 		<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
 		<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
 		<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-	</FormSelect>
+	</MkSelect>
 
-	<FormSelect v-model="nsfw">
+	<MkSelect v-model="nsfw">
 		<template #label>{{ i18n.ts.nsfw }}</template>
 		<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
 		<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
 		<option value="force">{{ i18n.ts._nsfw.force }}</option>
-	</FormSelect>
+	</MkSelect>
 
-	<FormRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+	<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
 		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-	</FormRange>
+	</MkRange>
 
 	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 
@@ -107,10 +107,10 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormRange from '@/components/form/range.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkRange from '@/components/MkRange.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -120,10 +120,11 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
-const lang = ref(localStorage.getItem('lang'));
-const fontSize = ref(localStorage.getItem('fontSize'));
-const useSystemFont = ref(localStorage.getItem('useSystemFont') != null);
+const lang = ref(miLocalStorage.getItem('lang'));
+const fontSize = ref(miLocalStorage.getItem('fontSize'));
+const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -157,23 +158,23 @@ const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 
 watch(lang, () => {
-	localStorage.setItem('lang', lang.value as string);
-	localStorage.removeItem('locale');
+	miLocalStorage.setItem('lang', lang.value as string);
+	miLocalStorage.removeItem('locale');
 });
 
 watch(fontSize, () => {
 	if (fontSize.value == null) {
-		localStorage.removeItem('fontSize');
+		miLocalStorage.removeItem('fontSize');
 	} else {
-		localStorage.setItem('fontSize', fontSize.value);
+		miLocalStorage.setItem('fontSize', fontSize.value);
 	}
 });
 
 watch(useSystemFont, () => {
 	if (useSystemFont.value) {
-		localStorage.setItem('useSystemFont', 't');
+		miLocalStorage.setItem('useSystemFont', 't');
 	} else {
-		localStorage.removeItem('useSystemFont');
+		miLocalStorage.removeItem('useSystemFont');
 	}
 });
 

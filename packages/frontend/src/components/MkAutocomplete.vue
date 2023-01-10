@@ -46,6 +46,8 @@ import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
+import { miLocalStorage } from '@/local-storage';
+import { customEmojis } from '@/custom-emojis';
 
 type EmojiDef = {
 	emoji: string;
@@ -85,7 +87,6 @@ for (const x of lib) {
 emjdb.sort((a, b) => a.name.length - b.name.length);
 
 //#region Construct Emoji DB
-const customEmojis = instance.emojis;
 const emojiDefinitions: EmojiDef[] = [];
 
 for (const x of customEmojis) {
@@ -116,7 +117,6 @@ export default {
 	emojiDb,
 	emojiDefinitions,
 	emojilist,
-	customEmojis,
 };
 </script>
 
@@ -208,7 +208,7 @@ function exec() {
 		}
 	} else if (props.type === 'hashtag') {
 		if (!props.q || props.q === '') {
-			hashtags.value = JSON.parse(localStorage.getItem('hashtags') || '[]');
+			hashtags.value = JSON.parse(miLocalStorage.getItem('hashtags') || '[]');
 			fetching.value = false;
 		} else {
 			const cacheKey = `autocomplete:hashtag:${props.q}`;

@@ -3,10 +3,10 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="token" :content-max="700" :margin-min="16" :margin-max="32">
 		<div class="_gaps_m">
-			<FormInput v-model="password" type="password">
+			<MkInput v-model="password" type="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #label>{{ i18n.ts.newPassword }}</template>
-			</FormInput>
+			</MkInput>
 		
 			<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
 		</div>
@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted } from 'vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

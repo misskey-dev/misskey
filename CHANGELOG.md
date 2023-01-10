@@ -12,7 +12,7 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, etc)
+- New features (Play, new widgets, new charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
@@ -30,15 +30,18 @@ You should also include the user name that made the change.
 
 #### For users
 - ノートのウォッチ機能が削除されました
+- アンケートに投票された際に通知が作成されなくなりました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
-- AiScriptが0.12.1にアップデートされました
+- AiScriptが0.12.2にアップデートされました
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
-	- 0.12.1未満のプラグインは読み込むことはできません
+	- 0.12.x未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
 - Firefox109以下はサポートされなくなりました
 
 #### For app developers
+- API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
+	- カスタム絵文字一覧情報を取得するには、`emojis`エンドポイントにリクエストします
 - API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
 	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
 	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
@@ -63,7 +66,6 @@ You should also include the user name that made the change.
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
 - Server: improve activitypub deliver performance @syuilo
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
-- Client: Add AiScript App widget
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
@@ -71,19 +73,26 @@ You should also include the user name that made the change.
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
-- Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: Implement the button to subscribe push notification @tamaina
 - Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
-- Client: Improve RSS widget @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
+- Client: Support remote objects in search @SoniEx2
+- Client: user activity page @syuilo
+- Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: add user list widget @syuilo
+- Client: Add AiScript App widget
+- Client: add profile widget @syuilo
+- Client: add instance info widget @syuilo
+- Client: Improve RSS widget @tamaina
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
+- Client: add new theme @syuilo
 - Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
+- Client: clicker game @syuilo
 
 ### Bugfixes
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
@@ -94,10 +103,16 @@ You should also include the user name that made the change.
 - Server: アンテナの作成数上限を追加 @syuilo
 - Server: pages/likeのエラーIDが重複しているのを修正 @syuilo
 - Server: pages/updateのパラメータによってはsummaryの値が更新されないのを修正 @syuilo
+- Server: Escape SQL LIKE @mei23
+- Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
+- Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
+- Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: Page編集でブロックの移動が行えない問題を修正 @syuilo
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo
