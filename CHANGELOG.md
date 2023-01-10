@@ -63,6 +63,7 @@ You should also include the user name that made the change.
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: アンケート選択肢の文字数制限を緩和 @syuilo
 - Server: improve stats api performance @syuilo
+- Server: improve nodeinfo performance @syuilo
 - Server: delete outdated notifications regularly to improve db performance @syuilo
 - Server: delete outdated hard-mutes regularly to improve db performance @syuilo
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
