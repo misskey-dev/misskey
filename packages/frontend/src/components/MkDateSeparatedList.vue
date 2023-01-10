@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h, PropType, TransitionGroup } from 'vue';
+import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
@@ -34,6 +34,7 @@ export default defineComponent({
 	},
 
 	setup(props, { slots, expose }) {
+		const $style = useCssModule();
 		function getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
@@ -120,19 +121,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.sqadhkmv {
-	display: flex;
-	container-type: inline-size;
-
-	> *:empty {
-		display: none;
-	}
-
-	> *:not(:last-child) {
-		margin-bottom: var(--margin);
-	}
-
+<style lang="scss" module>
+.root {
+	&:global {
 	> .list-move {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
@@ -160,6 +151,17 @@ export default defineComponent({
 			transform: translateY(64px);
 		}
 	}
+	}
+	container-type: inline-size;
+
+	> *:empty {
+		display: none;
+	}
+
+	> *:not(:last-child) {
+		margin-bottom: var(--margin);
+	}
+
 
 	&[data-direction="down"] {
 		> .list-enter-from,
@@ -170,44 +172,8 @@ export default defineComponent({
 	}
 
 	&[data-reversed="true"] {
+		display: flex;
 		flex-direction: column-reverse;
-	}
-
-	&[data-reversed="false"] {
-		flex-direction: column;
-	}
-
-	> .separator {
-		text-align: center;
-
-		> .date {
-			display: inline-block;
-			position: relative;
-			margin: 0;
-			padding: 0 16px;
-			line-height: 32px;
-			text-align: center;
-			font-size: 12px;
-			color: var(--dateLabelFg);
-
-			> span {
-				&:first-child {
-					margin-right: 8px;
-
-					> .icon {
-						margin-right: 8px;
-					}
-				}
-
-				&:last-child {
-					margin-left: 8px;
-
-					> .icon {
-						margin-left: 8px;
-					}
-				}
-			}
-		}
 	}
 
 	&.noGap {
@@ -223,4 +189,36 @@ export default defineComponent({
 		}
 	}
 }
+
+.separator {
+	text-align: center;
+}
+
+.date {
+	display: inline-block;
+	position: relative;
+	margin: 0;
+	padding: 0 16px;
+	line-height: 32px;
+	text-align: center;
+	font-size: 12px;
+	color: var(--dateLabelFg);
+}
+
+.date-item {
+	&:first-child {
+		margin-right: 8px;
+		> .icon {
+			margin-right: 8px;
+		}
+	}
+
+	&:last-child {
+		margin-left: 8px;
+		> .icon {
+			margin-left: 8px;
+		}
+	}
+}
 </style>
+
