@@ -48,10 +48,10 @@
 	</div>
 
 	<div v-if="isMobile" class="buttons">
-		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="ti ti-menu-2"></i><span v-if="menuIndicated" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button home _button" @click="mainRouter.push('/')"><i class="ti ti-home"></i></button>
-		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button post _button" @click="os.post()"><i class="ti ti-pencil"></i></button>
+		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="icon ti ti-menu-2"></i><span v-if="menuIndicated" class="indicator"><i class="_indicatorCircle"></i></span></button>
+		<button class="button home _button" @click="mainRouter.push('/')"><i class="icon ti ti-home"></i></button>
+		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="icon ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="_indicatorCircle"></i></span></button>
+		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
 	</div>
 
 	<Transition :name="$store.state.animation ? 'menu-back' : ''">
@@ -351,32 +351,27 @@ async function deleteProfile() {
 		z-index: 1000;
 		bottom: 0;
 		left: 0;
-		padding: 16px;
-		display: flex;
+		padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-gap: 8px;
 		width: 100%;
 		box-sizing: border-box;
+		-webkit-backdrop-filter: var(--blur, blur(32px));
+		backdrop-filter: var(--blur, blur(32px));
+		background-color: var(--header);
+		border-top: solid 0.5px var(--divider);
 
 		> .button {
 			position: relative;
-			flex: 1;
 			padding: 0;
+			aspect-ratio: 1;
+			width: 100%;
+			max-width: 60px;
 			margin: auto;
-			height: 64px;
-			border-radius: 8px;
+			border-radius: 100%;
 			background: var(--panel);
 			color: var(--fg);
-
-			&:not(:last-child) {
-				margin-right: 12px;
-			}
-
-			@media (max-width: 400px) {
-				height: 60px;
-
-				&:not(:last-child) {
-					margin-right: 8px;
-				}
-			}
 
 			&:hover {
 				background: var(--X2);
@@ -391,24 +386,21 @@ async function deleteProfile() {
 				animation: blink 1s infinite;
 			}
 
-			&:first-child {
-				margin-left: 0;
-			}
-
-			&:last-child {
-				margin-right: 0;
-			}
-
-			> * {
-				font-size: 20px;
+			> .icon {
+				font-size: 18px;
 			}
 
 			&:disabled {
 				cursor: default;
 
-				> * {
+				> .icon {
 					opacity: 0.5;
 				}
+			}
+
+			&.post {
+				background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+				color: var(--fgOnAccent);
 			}
 		}
 	}
