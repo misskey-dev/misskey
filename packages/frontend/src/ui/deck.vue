@@ -1,17 +1,16 @@
 <template>
-<div
-	class="mk-deck" :class="[{ isMobile }]"
->
+<div :class="[$style.root, { [$style.rootIsMobile]: isMobile }]">
 	<XSidebar v-if="!isMobile"/>
 
-	<div class="main">
-		<XStatusBars class="statusbars"/>
-		<div ref="columnsEl" class="columns" :class="deckStore.reactiveState.columnAlign.value" @contextmenu.self.prevent="onContextmenu">
+	<div :class="$style.main">
+		<XStatusBars/>
+		<div ref="columnsEl" :class="[$style.columns, deckStore.reactiveState.columnAlign.value]" @contextmenu.self.prevent="onContextmenu">
 			<template v-for="ids in layout">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
 					v-if="ids.length > 1"
-					class="folder column"
+					:class="$style.column"
+					class="folder"
 					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 				>
 					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
@@ -20,44 +19,45 @@
 					v-else
 					:ref="ids[0]"
 					:key="ids[0]"
-					class="column"
+					:class="$style.column"
 					:column="columns.find(c => c.id === ids[0])"
 					:is-stacked="false"
 					:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
 					@parent-focus="moveFocus(ids[0], $event)"
 				/>
 			</template>
-			<div v-if="layout.length === 0" class="intro _panel">
+			<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
 				<div>{{ i18n.ts._deck.introduction }}</div>
-				<MkButton primary class="add" @click="addColumn">{{ i18n.ts._deck.addColumn }}</MkButton>
+				<MkButton primary style="margin: 1em auto;" @click="addColumn">{{ i18n.ts._deck.addColumn }}</MkButton>
 				<div>{{ i18n.ts._deck.introduction2 }}</div>
 			</div>
-			<div class="sideMenu">
-				<div class="top">
-					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" class="_button button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
-					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" class="_button button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
+			<div :class="$style.sideMenu">
+				<div :class="$style.sideMenuTop">
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 				</div>
-				<div class="middle">
-					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="ti ti-plus"></i></button>
+				<div :class="$style.sideMenuMiddle">
+					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.sideMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
 				</div>
-				<div class="bottom">
-					<button v-tooltip.noDelay.left="i18n.ts.settings" class="_button button settings" @click="showSettings"><i class="ti ti-settings"></i></button>
+				<div :class="$style.sideMenuBottom">
+					<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.sideMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings"></i></button>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div v-if="isMobile" class="buttons">
-		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="icon ti ti-menu-2"></i><span v-if="menuIndicated" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button home _button" @click="mainRouter.push('/')"><i class="icon ti ti-home"></i></button>
-		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="icon ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
+	<div v-if="isMobile" :class="$style.nav">
+		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button post" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
 	<Transition :name="$store.state.animation ? 'menu-back' : ''">
 		<div
 			v-if="drawerMenuShowing"
-			class="menu-back _modalBg"
+			:class="$style.menuBg"
+			class="_modalBg"
 			@click="drawerMenuShowing = false"
 			@touchstart.passive="drawerMenuShowing = false"
 		></div>
@@ -245,8 +245,10 @@ async function deleteProfile() {
 .menu-back-leave-active {
 	opacity: 0;
 }
+</style>
 
-.mk-deck {
+<style lang="scss" module>
+.root {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
 	--margin: var(--marginHalf);
@@ -257,170 +259,164 @@ async function deleteProfile() {
 	height: 100dvh;
 	box-sizing: border-box;
 	flex: 1;
+}
 
-	&.isMobile {
-		padding-bottom: 100px;
+.rootIsMobile {
+	padding-bottom: 100px;
+}
+
+.main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.columns {
+	flex: 1;
+	display: flex;
+	overflow-x: auto;
+	overflow-y: clip;
+
+	&.center {
+		> .column:first-of-type {
+			margin-left: auto;
+		}
+
+		> .column:last-of-type {
+			margin-right: auto;
+		}
+	}
+}
+
+.column {
+	flex-shrink: 0;
+	border-right: solid var(--deckDividerThickness) var(--deckDivider);
+
+	&:first-of-type {
+		border-left: solid var(--deckDividerThickness) var(--deckDivider);
 	}
 
-	> .main {
-		flex: 1;
-		min-width: 0;
+	&.folder {
 		display: flex;
 		flex-direction: column;
 
-		> .columns {
-			flex: 1;
-			display: flex;
-			overflow-x: auto;
-			overflow-y: clip;
+		> *:not(:last-of-type) {
+			border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
+		}
+	}
+}
 
-			&.center {
-				> .column:first-of-type {
-					margin-left: auto;
-				}
+.onboarding {
+	padding: 32px;
+	height: min-content;
+	text-align: center;
+	margin: auto;
+}
 
-				> .column:last-of-type {
-					margin-right: auto;
-				}
-			}
+.sideMenu {
+	flex-shrink: 0;
+	margin-right: 0;
+	margin-left: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 32px;
+}
 
-			> .column {
-				flex-shrink: 0;
-				border-right: solid var(--deckDividerThickness) var(--deckDivider);
+.sideMenuButton {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1;
+}
 
-				&:first-of-type {
-					border-left: solid var(--deckDividerThickness) var(--deckDivider);
-				}
+.sideMenuTop {
+	margin-bottom: auto;
+}
 
-				&.folder {
-					display: flex;
-					flex-direction: column;
+.sideMenuMiddle {
+	margin-top: auto;
+	margin-bottom: auto;
+}
 
-					> *:not(:last-of-type) {
-						border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
-					}
-				}
-			}
+.sideMenuBottom {
+	margin-top: auto;
+}
 
-			> .intro {
-				padding: 32px;
-				height: min-content;
-				text-align: center;
-				margin: auto;
+.menuBg {
+	z-index: 1001;
+}
 
-				> .add {
-					margin: 1em auto;
-				}
-			}
+.menu {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	height: 100dvh;
+	width: 240px;
+	box-sizing: border-box;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--navBg);
+}
 
-			> .sideMenu {
-				flex-shrink: 0;
-				margin-right: 0;
-				margin-left: auto;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				width: 32px;
+.nav {
+	position: fixed;
+	z-index: 1000;
+	bottom: 0;
+	left: 0;
+	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-gap: 8px;
+	width: 100%;
+	box-sizing: border-box;
+	-webkit-backdrop-filter: var(--blur, blur(32px));
+	backdrop-filter: var(--blur, blur(32px));
+	background-color: var(--header);
+	border-top: solid 0.5px var(--divider);
+}
 
-				> .top, > .middle, > .bottom {
-					> .button {
-						display: block;
-						width: 100%;
-						aspect-ratio: 1;
-					}
-				}
+.navButton {
+	position: relative;
+	padding: 0;
+	aspect-ratio: 1;
+	width: 100%;
+	max-width: 60px;
+	margin: auto;
+	border-radius: 100%;
+	background: var(--panel);
+	color: var(--fg);
 
-				> .top {
-					margin-bottom: auto;
-				}
+	&:hover {
+		background: var(--X2);
+	}
 
-				> .middle {
-					margin-top: auto;
-					margin-bottom: auto;
-				}
+	&:disabled {
+		cursor: default;
 
-				> .bottom {
-					margin-top: auto;
-				}
-			}
+		> .navButtonIcon {
+			opacity: 0.5;
 		}
 	}
 
-	> .buttons {
-		position: fixed;
-		z-index: 1000;
-		bottom: 0;
-		left: 0;
-		padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		grid-gap: 8px;
-		width: 100%;
-		box-sizing: border-box;
-		-webkit-backdrop-filter: var(--blur, blur(32px));
-		backdrop-filter: var(--blur, blur(32px));
-		background-color: var(--header);
-		border-top: solid 0.5px var(--divider);
-
-		> .button {
-			position: relative;
-			padding: 0;
-			aspect-ratio: 1;
-			width: 100%;
-			max-width: 60px;
-			margin: auto;
-			border-radius: 100%;
-			background: var(--panel);
-			color: var(--fg);
-
-			&:hover {
-				background: var(--X2);
-			}
-
-			> .indicator {
-				position: absolute;
-				top: 0;
-				left: 0;
-				color: var(--indicator);
-				font-size: 16px;
-				animation: blink 1s infinite;
-			}
-
-			> .icon {
-				font-size: 18px;
-			}
-
-			&:disabled {
-				cursor: default;
-
-				> .icon {
-					opacity: 0.5;
-				}
-			}
-
-			&.post {
-				background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-				color: var(--fgOnAccent);
-			}
-		}
+	&.post {
+		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		color: var(--fgOnAccent);
 	}
+}
 
-	> .menu-back {
-		z-index: 1001;
-	}
+.navButtonIcon {
+	font-size: 18px;
+}
 
-	> .menu {
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 1001;
-		height: 100dvh;
-		width: 240px;
-		box-sizing: border-box;
-		contain: strict;
-		overflow: auto;
-		overscroll-behavior: contain;
-		background: var(--navBg);
-	}
+.navButtonIndicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: var(--indicator);
+	font-size: 16px;
+	animation: blink 1s infinite;
 }
 </style>

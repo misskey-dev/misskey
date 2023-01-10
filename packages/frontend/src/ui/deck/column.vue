@@ -8,7 +8,7 @@
 	@drop.prevent.stop="onDrop"
 >
 	<header
-		:class="[$style.header, { [$style.indicated]: indicated }]"
+		:class="[$style.header]"
 		draggable="true"
 		@click="goTop"
 		@dragstart="onDragstart"
@@ -43,12 +43,10 @@ const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
 	naked?: boolean;
-	indicated?: boolean;
 	menu?: MenuItem[];
 }>(), {
 	isStacked: false,
 	naked: false,
-	indicated: false,
 });
 
 const emit = defineEmits<{
@@ -289,10 +287,6 @@ function onDrop(ev) {
 	&:not(.active) {
 		flex-basis: var(--deckColumnHeaderHeight);
 		min-height: var(--deckColumnHeaderHeight);
-
-		> .header.indicated {
-			box-shadow: 4px 0px var(--accent) inset;
-		}
 	}
 
 	&.naked {
@@ -327,10 +321,6 @@ function onDrop(ev) {
 
 	&, * {
 		user-select: none;
-	}
-
-	&.indicated {
-		box-shadow: 0 3px 0 0 var(--accent);
 	}
 }
 

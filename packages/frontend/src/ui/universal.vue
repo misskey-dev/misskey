@@ -1,8 +1,8 @@
 <template>
-<div class="dkgtipfy" :class="{ wallpaper }">
-	<XSidebar v-if="!isMobile" class="sidebar"/>
+<div :class="[$style.root, { [$style.withWallpaper]: wallpaper }]">
+	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
-	<MkStickyContainer class="contents">
+	<MkStickyContainer :class="$style.contents">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
 		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
 			<div :class="$style.content" style="container-type: inline-size;">
@@ -12,44 +12,46 @@
 		</main>
 	</MkStickyContainer>
 
-	<div v-if="isDesktop" ref="widgetsEl" class="widgets">
+	<div v-if="isDesktop" ref="widgetsEl" :class="$style.widgets">
 		<XWidgets @mounted="attachSticky"/>
 	</div>
 
-	<button v-if="!isDesktop && !isMobile" class="widgetButton _button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
+	<button v-if="!isDesktop && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 
-	<div v-if="isMobile" class="buttons">
-		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="icon ti ti-menu-2"></i><span v-if="menuIndicated" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button home _button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i class="icon ti ti-home"></i></button>
-		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="icon ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button widget _button" @click="widgetsShowing = true"><i class="icon ti ti-apps"></i></button>
-		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
+	<div v-if="isMobile" :class="$style.nav">
+		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
+		<button :class="$style.navButton" class="_button post" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
 	<Transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
 		<div
 			v-if="drawerMenuShowing"
-			class="menuDrawer-back _modalBg"
+			:class="$style.menuDrawerBg"
+			class="_modalBg"
 			@click="drawerMenuShowing = false"
 			@touchstart.passive="drawerMenuShowing = false"
 		></div>
 	</Transition>
 
 	<Transition :name="$store.state.animation ? 'menuDrawer' : ''">
-		<XDrawerMenu v-if="drawerMenuShowing" class="menuDrawer"/>
+		<XDrawerMenu v-if="drawerMenuShowing" :class="$style.menuDrawer"/>
 	</Transition>
 
 	<Transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
 		<div
 			v-if="widgetsShowing"
-			class="widgetsDrawer-back _modalBg"
+			:class="$style.widgetsDrawerBg"
+			class="_modalBg"
 			@click="widgetsShowing = false"
 			@touchstart.passive="widgetsShowing = false"
 		></div>
 	</Transition>
 
 	<Transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
-		<XWidgets v-if="widgetsShowing" class="widgetsDrawer"/>
+		<XWidgets v-if="widgetsShowing" :class="$style.widgetsDrawer"/>
 	</Transition>
 
 	<XCommon/>
@@ -218,151 +220,151 @@ const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 .menuDrawer-back-leave-active {
 	opacity: 0;
 }
-
-.dkgtipfy {
-	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$widgets-hide-threshold: 1090px;
-
-	min-height: 100dvh;
-	box-sizing: border-box;
-	display: flex;
-
-	&.wallpaper {
-		background: var(--wallpaperOverlay);
-		//backdrop-filter: var(--blur, blur(4px));
-	}
-
-	> .sidebar {
-		border-right: solid 0.5px var(--divider);
-	}
-
-	> .contents {
-		width: 100%;
-		min-width: 0;
-		background: var(--bg);
-	}
-
-	> .widgets {
-		padding: 0 var(--margin);
-		border-left: solid 0.5px var(--divider);
-		background: var(--bg);
-
-		@media (max-width: $widgets-hide-threshold) {
-			display: none;
-		}
-	}
-
-	> .widgetButton {
-		display: block;
-		position: fixed;
-		z-index: 1000;
-		bottom: 32px;
-		right: 32px;
-		width: 64px;
-		height: 64px;
-		border-radius: 100%;
-		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
-		font-size: 22px;
-		background: var(--panel);
-	}
-
-	> .widgetsDrawer-back {
-		z-index: 1001;
-	}
-
-	> .widgetsDrawer {
-		position: fixed;
-		top: 0;
-		right: 0;
-		z-index: 1001;
-		height: 100dvh;
-		padding: var(--margin) !important;
-		box-sizing: border-box;
-		overflow: auto;
-		overscroll-behavior: contain;
-		background: var(--bg);
-	}
-
-	> .buttons {
-		position: fixed;
-		z-index: 1000;
-		bottom: 0;
-		left: 0;
-		padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-		grid-gap: 8px;
-		width: 100%;
-		box-sizing: border-box;
-		-webkit-backdrop-filter: var(--blur, blur(32px));
-		backdrop-filter: var(--blur, blur(32px));
-		background-color: var(--header);
-		border-top: solid 0.5px var(--divider);
-
-		> .button {
-			position: relative;
-			padding: 0;
-			aspect-ratio: 1;
-			width: 100%;
-			max-width: 60px;
-			margin: auto;
-			border-radius: 100%;
-			background: var(--panel);
-			color: var(--fg);
-
-			&:hover {
-				background: var(--X2);
-			}
-
-			> .indicator {
-				position: absolute;
-				top: 0;
-				left: 0;
-				color: var(--indicator);
-				font-size: 16px;
-				animation: blink 1s infinite;
-			}
-
-			> .icon {
-				font-size: 18px;
-			}
-
-			&:disabled {
-				cursor: default;
-
-				> .icon {
-					opacity: 0.5;
-				}
-			}
-
-			&.post {
-				background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-				color: var(--fgOnAccent);
-			}
-		}
-	}
-
-	> .menuDrawer-back {
-		z-index: 1001;
-	}
-
-	> .menuDrawer {
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 1001;
-		height: 100dvh;
-		width: 240px;
-		box-sizing: border-box;
-		contain: strict;
-		overflow: auto;
-		overscroll-behavior: contain;
-		background: var(--navBg);
-	}
-}
 </style>
 
 <style lang="scss" module>
+$ui-font-size: 1em; // TODO: どこかに集約したい
+$widgets-hide-threshold: 1090px;
+
+.root {
+	min-height: 100dvh;
+	box-sizing: border-box;
+	display: flex;
+}
+
+.withWallpaper {
+	background: var(--wallpaperOverlay);
+	//backdrop-filter: var(--blur, blur(4px));
+}
+
+.sidebar {
+	border-right: solid 0.5px var(--divider);
+}
+
+.contents {
+	width: 100%;
+	min-width: 0;
+	background: var(--bg);
+}
+
+.widgets {
+	padding: 0 var(--margin);
+	border-left: solid 0.5px var(--divider);
+	background: var(--bg);
+
+	@media (max-width: $widgets-hide-threshold) {
+		display: none;
+	}
+}
+
+.widgetButton {
+	display: block;
+	position: fixed;
+	z-index: 1000;
+	bottom: 32px;
+	right: 32px;
+	width: 64px;
+	height: 64px;
+	border-radius: 100%;
+	box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+	font-size: 22px;
+	background: var(--panel);
+}
+
+.widgetsDrawerBg {
+	z-index: 1001;
+}
+
+.widgetsDrawer {
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 1001;
+	height: 100dvh;
+	padding: var(--margin) !important;
+	box-sizing: border-box;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--bg);
+}
+
+.nav {
+	position: fixed;
+	z-index: 1000;
+	bottom: 0;
+	left: 0;
+	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-gap: 8px;
+	width: 100%;
+	box-sizing: border-box;
+	-webkit-backdrop-filter: var(--blur, blur(32px));
+	backdrop-filter: var(--blur, blur(32px));
+	background-color: var(--header);
+	border-top: solid 0.5px var(--divider);
+}
+
+.navButton {
+	position: relative;
+	padding: 0;
+	aspect-ratio: 1;
+	width: 100%;
+	max-width: 60px;
+	margin: auto;
+	border-radius: 100%;
+	background: var(--panel);
+	color: var(--fg);
+
+	&:hover {
+		background: var(--X2);
+	}
+
+	&:disabled {
+		cursor: default;
+
+		> .navButtonIcon {
+			opacity: 0.5;
+		}
+	}
+
+	&.post {
+		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		color: var(--fgOnAccent);
+	}
+}
+
+.navButtonIcon {
+	font-size: 18px;
+}
+
+.navButtonIndicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: var(--indicator);
+	font-size: 16px;
+	animation: blink 1s infinite;
+}
+
+.menuDrawerBg {
+	z-index: 1001;
+}
+
+.menuDrawer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	height: 100dvh;
+	width: 240px;
+	box-sizing: border-box;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--navBg);
+}
+
 .statusbars {
 	position: sticky;
 	top: 0;
