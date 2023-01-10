@@ -464,11 +464,11 @@ function readPromo() {
 
 .avatar {
 	flex-shrink: 0;
-	display: block;
+	display: block !important;
 	margin: 0 14px 8px 0;
 	width: 58px;
 	height: 58px;
-	position: sticky;
+	position: sticky !important;
 	top: calc(22px + var(--stickyTop, 0px));
 	left: 0;
 }
