@@ -85,7 +85,6 @@ function updateWidgets(thisWidgets) {
 .root {
 	position: sticky;
 	height: min-content;
-	min-height: 100vh;
 	box-sizing: border-box;
 }
 
