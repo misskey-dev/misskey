@@ -9,8 +9,7 @@
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
 					v-if="ids.length > 1"
-					:class="$style.column"
-					class="folder"
+					:class="[$style.column, $style.folder]"
 					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 				>
 					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
@@ -296,14 +295,14 @@ async function deleteProfile() {
 	&:first-of-type {
 		border-left: solid var(--deckDividerThickness) var(--deckDivider);
 	}
+}
 
-	&.folder {
-		display: flex;
-		flex-direction: column;
+.folder {
+	display: flex;
+	flex-direction: column;
 
-		> *:not(:last-of-type) {
-			border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
-		}
+	> *:not(:last-of-type) {
+		border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
 	}
 }
 
