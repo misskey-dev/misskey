@@ -8,6 +8,8 @@ import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import NotesChart from '@/core/chart/charts/notes.js';
+import UsersChart from '@/core/chart/charts/users.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
@@ -27,6 +29,8 @@ export class NodeinfoServerService {
 
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
+		private notesChart: NotesChart,
+		private usersChart: UsersChart,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -46,19 +50,26 @@ export class NodeinfoServerService {
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		const nodeinfo2 = async () => {
 			const now = Date.now();
+
+			const notesChart = await this.notesChart.getChart('hour', 1, null);
+			const localPosts = notesChart.local.total[0];
+
+			const usersChart = await this.usersChart.getChart('hour', 1, null);
+			const total = usersChart.local.total[0];
+
 			const [
 				meta,
-				total,
-				activeHalfyear,
-				activeMonth,
-				localPosts,
+				//activeHalfyear,
+				//activeMonth,
 			] = await Promise.all([
 				this.metaService.fetch(true),
-				this.usersRepository.count({ where: { host: IsNull() } }),
-				this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
-				this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
-				this.notesRepository.count({ where: { userHost: IsNull() } }),
+				// 重い
+				//this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
+				//this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
 			]);
+
+			const activeHalfyear = null;
+			const activeMonth = null;
 
 			const proxyAccount = meta.proxyAccountId ? await this.userEntityService.pack(meta.proxyAccountId).catch(() => null) : null;
 

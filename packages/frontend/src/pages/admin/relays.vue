@@ -2,15 +2,17 @@
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel" style="padding: 16px;">
-			<div>{{ relay.inbox }}</div>
-			<div class="status">
-				<i v-if="relay.status === 'accepted'" class="ti ti-check icon accepted"></i>
-				<i v-else-if="relay.status === 'rejected'" class="ti ti-ban icon rejected"></i>
-				<i v-else class="ti ti-clock icon requesting"></i>
-				<span>{{ $t(`_relayStatus.${relay.status}`) }}</span>
+		<div class="_gaps">
+			<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel" style="padding: 16px;">
+				<div>{{ relay.inbox }}</div>
+				<div class="status">
+					<i v-if="relay.status === 'accepted'" class="ti ti-check icon accepted"></i>
+					<i v-else-if="relay.status === 'rejected'" class="ti ti-ban icon rejected"></i>
+					<i v-else class="ti ti-clock icon requesting"></i>
+					<span>{{ $t(`_relayStatus.${relay.status}`) }}</span>
+				</div>
+				<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</div>
-			<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>

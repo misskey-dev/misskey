@@ -1,0 +1,29 @@
+{
+	id: '1100673c-f902-4ccd-93aa-7cb88be56178',
+
+	name: 'Mi Botanical Light',
+	author: 'ThinaticSystem',
+
+  base: 'light',
+	
+	props: {
+		accent: '#77b58c',
+		bg: 'e2deda',
+		fg: '#3d3d3d',
+		fgHighlighted: '#6bc9a0',
+		divider: '#cfcfcf',
+		panel: '@X14',
+		panelHeaderBg: '@panel',
+		panelHeaderDivider: '@divider',
+		header: ':alpha<0.7<@panel',
+		navBg: '@X14',
+		renote: '#229e92',
+		mention: '#da6d35',
+		mentionMe: '#d44c4c',
+		hashtag: '#4cb8d4',
+		link: '@accent',
+		buttonGradateB: ':hue<-70<@accent',
+		success: '#86b300',
+    X14: '#ebe7e5'
+	},
+}

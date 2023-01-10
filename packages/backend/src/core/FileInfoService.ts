@@ -398,13 +398,13 @@ export class FileInfoService {
 				.raw()
 				.ensureAlpha()
 				.resize(64, 64, { fit: 'inside' })
-				.toBuffer((err, buffer, { width, height }) => {
+				.toBuffer((err, buffer, info) => {
 					if (err) return reject(err);
 
 					let hash;
 
 					try {
-						hash = encode(new Uint8ClampedArray(buffer), width, height, 5, 5);
+						hash = encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 					} catch (e) {
 						return reject(e);
 					}

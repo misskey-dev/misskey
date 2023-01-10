@@ -6,6 +6,7 @@ import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['users'],
@@ -59,10 +60,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.host) {
 				const q = this.usersRepository.createQueryBuilder('user')
 					.where('user.isSuspended = FALSE')
-					.andWhere('user.host LIKE :host', { host: ps.host.toLowerCase() + '%' });
+					.andWhere('user.host LIKE :host', { host: sqlLikeEscape(ps.host.toLowerCase()) + '%' });
 
 				if (ps.username) {
-					q.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' });
+					q.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' });
 				}
 
 				q.andWhere('user.updatedAt IS NOT NULL');
@@ -83,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						.where(`user.id IN (${ followingQuery.getQuery() })`)
 						.andWhere('user.id != :meId', { meId: me.id })
 						.andWhere('user.isSuspended = FALSE')
-						.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
+						.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' })
 						.andWhere(new Brackets(qb => { qb
 							.where('user.updatedAt IS NULL')
 							.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
@@ -101,7 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 							.where(`user.id NOT IN (${ followingQuery.getQuery() })`)
 							.andWhere('user.id != :meId', { meId: me.id })
 							.andWhere('user.isSuspended = FALSE')
-							.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
+							.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' })
 							.andWhere('user.updatedAt IS NOT NULL');
 
 						otherQuery.setParameters(followingQuery.getParameters());
@@ -116,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				} else {
 					users = await this.usersRepository.createQueryBuilder('user')
 						.where('user.isSuspended = FALSE')
-						.andWhere('user.usernameLower LIKE :username', { username: ps.username.toLowerCase() + '%' })
+						.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' })
 						.andWhere('user.updatedAt IS NOT NULL')
 						.orderBy('user.updatedAt', 'DESC')
 						.take(ps.limit - users.length)

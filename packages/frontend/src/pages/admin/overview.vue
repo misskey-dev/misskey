@@ -1,60 +1,60 @@
 <template>
 <MkSpacer :content-max="1000">
 	<div ref="rootEl" class="edbbcaef">
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Stats</template>
 			<XStats/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Active users</template>
 			<XActiveUsers/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Heatmap</template>
 			<XHeatmap/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Retention rate</template>
 			<XRetention/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Moderators</template>
 			<XModerators/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Federation</template>
 			<XFederation/>
-		</MkFolder>
+		</MkFoldableSection>
 		
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Instances</template>
 			<XInstances/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Ap requests</template>
 			<XApRequests/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>New users</template>
 			<XUsers/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Deliver queue</template>
 			<XQueue domain="deliver"/>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder class="item">
+		<MkFoldableSection class="item">
 			<template #header>Inbox queue</template>
 			<XQueue domain="inbox"/>
-		</MkFolder>
+		</MkFoldableSection>
 	</div>
 </MkSpacer>
 </template>
@@ -79,7 +79,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const rootEl = $shallowRef<HTMLElement>();
 let serverInfo: any = $ref(null);

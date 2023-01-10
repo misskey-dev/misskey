@@ -63,7 +63,7 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'featured',
 	title: i18n.ts._pages.featured,
-	icon: 'fas fa-fire-alt',
+	icon: 'ti ti-flare',
 }, {
 	key: 'my',
 	title: i18n.ts._pages.my,
