@@ -1302,6 +1302,8 @@ _weekday:
   friday: "금요일"
   saturday: "토요일"
 _widgets:
+  profile: "프로필"
+  instanceInfo: "인스턴스 정보"
   memo: "스티커 메모"
   notifications: "알림"
   timeline: "타임라인"

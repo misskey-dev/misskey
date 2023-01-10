@@ -73,6 +73,7 @@ _sfx:
 _permissions:
   "write:account": "Ẓreg talɣut n umiḍan-ik·im"
 _widgets:
+  profile: "Amaɣnu"
   notifications: "Ilɣuyen"
   _userList:
     chooseList: "Fren tabdart"

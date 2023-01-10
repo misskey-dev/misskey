@@ -1200,6 +1200,8 @@ _weekday:
   friday: "শুক্রবার"
   saturday: "শনিবার"
 _widgets:
+  profile: "প্রোফাইল"
+  instanceInfo: "ইন্সট্যান্সের তথ্য"
   memo: "স্টিকি নোট"
   notifications: "বিজ্ঞপ্তি"
   timeline: "টাইমলাইন"
