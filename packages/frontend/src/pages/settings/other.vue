@@ -1,11 +1,11 @@
 <template>
 <div class="_gaps_m">
-	<FormSwitch v-model="$i.injectFeaturedNote" @update:model-value="onChangeInjectFeaturedNote">
+	<MkSwitch v-model="$i.injectFeaturedNote" @update:model-value="onChangeInjectFeaturedNote">
 		{{ i18n.ts.showFeaturedNotesInTimeline }}
-	</FormSwitch>
+	</MkSwitch>
 
 	<!--
-	<FormSwitch v-model="reportError">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></FormSwitch>
+	<MkSwitch v-model="reportError">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></MkSwitch>
 	-->
 
 	<FormLink to="/settings/account-info">{{ i18n.ts.accountInfo }}</FormLink>
@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';

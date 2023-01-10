@@ -32,17 +32,17 @@
 				<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
 				<template #suffixIcon><i class="fas fa-folder-open"></i></template>
 			</FormLink>
-			<FormSwitch v-model="keepOriginalUploading">
+			<MkSwitch v-model="keepOriginalUploading">
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
-			</FormSwitch>
-			<FormSwitch v-model="alwaysMarkNsfw" @update:model-value="saveProfile()">
+			</MkSwitch>
+			<MkSwitch v-model="alwaysMarkNsfw" @update:model-value="saveProfile()">
 				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
-			</FormSwitch>
-			<FormSwitch v-model="autoSensitive" @update:model-value="saveProfile()">
+			</MkSwitch>
+			<MkSwitch v-model="autoSensitive" @update:model-value="saveProfile()">
 				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
-			</FormSwitch>
+			</MkSwitch>
 		</div>
 	</FormSection>
 </div>
@@ -52,7 +52,7 @@
 import { computed, ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSplit from '@/components/form/split.vue';

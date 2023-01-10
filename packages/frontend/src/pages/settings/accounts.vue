@@ -1,18 +1,20 @@
 <template>
-<div class="_gaps_m">
+<div class="">
 	<FormSuspense :p="init">
-		<MkButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</MkButton>
+		<div class="_gaps">
+			<MkButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</MkButton>
 
-		<div v-for="account in accounts" :key="account.id" class="_panel _button lcjjdxlm" @click="menu(account, $event)">
-			<div class="avatar">
-				<MkAvatar :user="account" class="avatar"/>
-			</div>
-			<div class="body">
-				<div class="name">
-					<MkUserName :user="account"/>
+			<div v-for="account in accounts" :key="account.id" class="_panel _button lcjjdxlm" @click="menu(account, $event)">
+				<div class="avatar">
+					<MkAvatar :user="account" class="avatar"/>
 				</div>
-				<div class="acct">
-					<MkAcct :user="account"/>
+				<div class="body">
+					<div class="name">
+						<MkUserName :user="account"/>
+					</div>
+					<div class="acct">
+						<MkAcct :user="account"/>
+					</div>
 				</div>
 			</div>
 		</div>

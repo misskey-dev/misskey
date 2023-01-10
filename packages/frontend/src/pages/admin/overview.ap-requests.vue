@@ -214,6 +214,10 @@ onMounted(async () => {
 					time: {
 						stepSize: 1,
 						unit: 'day',
+						displayFormats: {
+							day: 'M/d',
+							month: 'Y/M',
+						},
 					},
 					grid: {
 						display: false,
@@ -222,11 +226,6 @@ onMounted(async () => {
 						display: false,
 						maxRotation: 0,
 						autoSkipPadding: 16,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 					min: getDate(chartLimit).getTime(),
 				},

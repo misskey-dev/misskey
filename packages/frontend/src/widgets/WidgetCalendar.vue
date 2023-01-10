@@ -11,19 +11,19 @@
 	</div>
 	<div class="info">
 		<div>
-			<p>{{ i18n.ts.today }}: <b>{{ dayP.toFixed(1) }}%</b></p>
+			<p>{{ i18n.ts.today }}<b>{{ dayP.toFixed(1) }}%</b></p>
 			<div class="meter">
 				<div class="val" :style="{ width: `${dayP}%` }"></div>
 			</div>
 		</div>
 		<div>
-			<p>{{ i18n.ts.thisMonth }}: <b>{{ monthP.toFixed(1) }}%</b></p>
+			<p>{{ i18n.ts.thisMonth }}<b>{{ monthP.toFixed(1) }}%</b></p>
 			<div class="meter">
 				<div class="val" :style="{ width: `${monthP}%` }"></div>
 			</div>
 		</div>
 		<div>
-			<p>{{ i18n.ts.thisYear }}: <b>{{ yearP.toFixed(1) }}%</b></p>
+			<p>{{ i18n.ts.thisYear }}<b>{{ yearP.toFixed(1) }}%</b></p>
 			<div class="meter">
 				<div class="val" :style="{ width: `${yearP}%` }"></div>
 			</div>
@@ -168,13 +168,14 @@ defineExpose<WidgetComponentExpose>({
 			}
 
 			> p {
+				display: flex;
 				margin: 0 0 2px 0;
 				font-size: 0.75em;
 				line-height: 18px;
 				opacity: 0.8;
 
 				> b {
-					margin-left: 2px;
+					margin-left: auto;
 				}
 			}
 

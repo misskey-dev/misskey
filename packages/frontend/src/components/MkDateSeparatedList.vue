@@ -80,7 +80,6 @@ export default defineComponent({
 			} else {
 				if (props.ad && item._shouldInsertAd_) {
 					return [h(MkAd, {
-						class: 'a', // advertiseの意(ブロッカー対策)
 						key: item.id + ':ad',
 						prefer: ['horizontal', 'horizontal-big'],
 					}), el];

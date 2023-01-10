@@ -1,29 +1,29 @@
 <template>
 <div class="_gaps_m">
-	<FormInput v-model="name">
+	<MkInput v-model="name">
 		<template #label>Name</template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="url" type="url">
+	<MkInput v-model="url" type="url">
 		<template #label>URL</template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="secret">
+	<MkInput v-model="secret">
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
-	</FormInput>
+	</MkInput>
 
 	<FormSection>
 		<template #label>Events</template>
 
 		<div class="_gaps_s">
-			<FormSwitch v-model="event_follow">Follow</FormSwitch>
-			<FormSwitch v-model="event_followed">Followed</FormSwitch>
-			<FormSwitch v-model="event_note">Note</FormSwitch>
-			<FormSwitch v-model="event_reply">Reply</FormSwitch>
-			<FormSwitch v-model="event_renote">Renote</FormSwitch>
-			<FormSwitch v-model="event_reaction">Reaction</FormSwitch>
-			<FormSwitch v-model="event_mention">Mention</FormSwitch>
+			<MkSwitch v-model="event_follow">Follow</MkSwitch>
+			<MkSwitch v-model="event_followed">Followed</MkSwitch>
+			<MkSwitch v-model="event_note">Note</MkSwitch>
+			<MkSwitch v-model="event_reply">Reply</MkSwitch>
+			<MkSwitch v-model="event_renote">Renote</MkSwitch>
+			<MkSwitch v-model="event_reaction">Reaction</MkSwitch>
+			<MkSwitch v-model="event_mention">Mention</MkSwitch>
 		</div>
 	</FormSection>
 
@@ -35,9 +35,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

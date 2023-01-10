@@ -61,8 +61,8 @@ function dragClear(fn) {
 }
 
 const props = withDefaults(defineProps<{
-	initialWidth?: number;
-	initialHeight?: number | null;
+	initialWidth: number;
+	initialHeight: number | null;
 	canResize?: boolean;
 	closeButton?: boolean;
 	mini?: boolean;
@@ -386,7 +386,7 @@ function onBrowserResize() {
 }
 
 onMounted(() => {
-	if (props.initialWidth) applyTransformWidth(props.initialWidth);
+	applyTransformWidth(props.initialWidth);
 	if (props.initialHeight) applyTransformHeight(props.initialHeight);
 
 	applyTransformTop((window.innerHeight / 2) - (rootEl.offsetHeight / 2));

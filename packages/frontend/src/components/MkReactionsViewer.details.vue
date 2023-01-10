@@ -2,7 +2,7 @@
 <MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div class="bqxuuuey">
 		<div class="reaction">
-			<XReactionIcon :reaction="reaction" class="icon" :no-style="true"/>
+			<MkReactionIcon :reaction="reaction" class="icon" :no-style="true"/>
 			<div class="name">{{ getReactionName(reaction) }}</div>
 		</div>
 		<div class="users">
@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { getEmojiName } from '@/scripts/emojilist';
 
 defineProps<{

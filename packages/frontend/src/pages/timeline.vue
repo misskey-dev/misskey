@@ -2,15 +2,14 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="headerTabs" :display-my-avatar="true"/></template>
 	<MkSpacer :content-max="800">
-		<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
-			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _panel" style="margin-bottom: var(--margin);"/>
-			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+		<div ref="rootEl" v-hotkey.global="keymap">
+			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
+			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
-			<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-			<div class="tl">
+			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+			<div :class="$style.tl">
 				<XTimeline
 					ref="tl" :key="src"
-					class="tl"
 					:src="src"
 					:sound="true"
 					@queue="queueUpdated"
@@ -154,30 +153,28 @@ definePageMetadata(computed(() => ({
 })));
 </script>
 
-<style lang="scss" scoped>
-.cmuxhskf {
-	> .new {
-		position: sticky;
-		top: calc(var(--stickyTop, 0px) + 16px);
-		z-index: 1000;
-		width: 100%;
+<style lang="scss" module>
+.new {
+	position: sticky;
+	top: calc(var(--stickyTop, 0px) + 16px);
+	z-index: 1000;
+	width: 100%;
 
-		> button {
-			display: block;
-			margin: var(--margin) auto 0 auto;
-			padding: 8px 16px;
-			border-radius: 32px;
-		}
+	> button {
+		display: block;
+		margin: var(--margin) auto 0 auto;
+		padding: 8px 16px;
+		border-radius: 32px;
 	}
+}
 
-	> .post-form {
-		border-radius: var(--radius);
-	}
+.postForm {
+	border-radius: var(--radius);
+}
 
-	> .tl {
-		background: var(--bg);
-		border-radius: var(--radius);
-		overflow: clip;
-	}
+.tl {
+	background: var(--bg);
+	border-radius: var(--radius);
+	overflow: clip;
 }
 </style>

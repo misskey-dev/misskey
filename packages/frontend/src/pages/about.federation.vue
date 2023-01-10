@@ -47,8 +47,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';

@@ -50,10 +50,10 @@
 import { watch } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkSelect from '@/components/form/select.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 

@@ -28,7 +28,7 @@
 import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

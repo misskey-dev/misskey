@@ -13,14 +13,14 @@
 
 		<div class="_gaps_m">
 			<MkPushNotificationAllowButton ref="allowButton"/>
-			<FormSwitch :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
+			<MkSwitch :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
 				<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
 				<template #caption>
 					<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
 						<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
 					</I18n>
 				</template>
-			</FormSwitch>
+			</MkSwitch>
 		</div>
 	</FormSection>
 </div>
@@ -32,7 +32,7 @@ import { notificationTypes } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';

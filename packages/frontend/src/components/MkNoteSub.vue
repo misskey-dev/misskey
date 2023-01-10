@@ -1,25 +1,25 @@
 <template>
-<div class="wrpstxzv" :class="{ children: depth > 1 }">
-	<div class="main">
-		<MkAvatar class="avatar" :user="note.user"/>
-		<div class="body">
-			<MkNoteHeader class="header" :note="note" :mini="true"/>
-			<div class="body">
-				<p v-if="note.cw != null" class="cw">
-					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i"/>
+<div :class="[$style.root, { [$style.children]: depth > 1 }]">
+	<div :class="$style.main">
+		<MkAvatar :class="$style.avatar" :user="note.user"/>
+		<div :class="$style.body">
+			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
+			<div>
+				<p v-if="note.cw != null" :class="$style.cw">
+					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i"/>
 					<MkCwButton v-model="showContent" :note="note"/>
 				</p>
-				<div v-show="note.cw == null || showContent" class="content">
-					<MkSubNoteContent class="text" :note="note"/>
+				<div v-show="note.cw == null || showContent">
+					<MkSubNoteContent :class="$style.text" :note="note"/>
 				</div>
 			</div>
 		</div>
 	</div>
 	<template v-if="depth < 5">
-		<MkNoteSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :depth="depth + 1"/>
+		<MkNoteSub v-for="reply in replies" :key="reply.id" :note="reply" :class="$style.reply" :detail="true" :depth="depth + 1"/>
 	</template>
-	<div v-else class="more">
-		<MkA class="text _link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
+	<div v-else :class="$style.more">
+		<MkA class="_link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
 	</div>
 </div>
 </template>
@@ -57,8 +57,8 @@ if (props.detail) {
 }
 </script>
 
-<style lang="scss" scoped>
-.wrpstxzv {
+<style lang="scss" module>
+.root {
 	padding: 16px 32px;
 	font-size: 0.9em;
 
@@ -66,62 +66,54 @@ if (props.detail) {
 		padding: 10px 0 0 16px;
 		font-size: 1em;
 	}
+}
 
-	> .main {
-		display: flex;
+.main {
+	display: flex;
+}
 
-		> .avatar {
-			flex-shrink: 0;
-			display: block;
-			margin: 0 8px 0 0;
-			width: 38px;
-			height: 38px;
-			border-radius: 8px;
-		}
+.avatar {
+	flex-shrink: 0;
+	display: block;
+	margin: 0 8px 0 0;
+	width: 38px;
+	height: 38px;
+	border-radius: 8px;
+}
 
-		> .body {
-			flex: 1;
-			min-width: 0;
+.body {
+	flex: 1;
+	min-width: 0;
+}
 
-			> .header {
-				margin-bottom: 2px;
-			}
+.header {
+	margin-bottom: 2px;
+}
 
-			> .body {
-				> .cw {
-					cursor: default;
-					display: block;
-					margin: 0;
-					padding: 0;
-					overflow-wrap: break-word;
+.cw {
+	cursor: default;
+	display: block;
+	margin: 0;
+	padding: 0;
+	overflow-wrap: break-word;
+}
 
-					> .text {
-						margin-right: 8px;
-					}
-				}
+.text {
+	margin: 0;
+	padding: 0;
+}
 
-				> .content {
-					> .text {
-						margin: 0;
-						padding: 0;
-					}
-				}
-			}
-		}
-	}
+.reply, .more {
+	border-left: solid 0.5px var(--divider);
+	margin-top: 10px;
+}
 
-	> .reply, > .more {
-		border-left: solid 0.5px var(--divider);
-		margin-top: 10px;
-	}
-
-	> .more {
-		padding: 10px 0 0 16px;
-	}
+.more {
+	padding: 10px 0 0 16px;
 }
 
 @container (max-width: 450px) {
-	.wrpstxzv {
+	.root {
 		padding: 14px 16px;
 
 		&.children {

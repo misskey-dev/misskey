@@ -16,8 +16,8 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import XCalendar from './activity.calendar.vue';
-import XChart from './activity.chart.vue';
+import XCalendar from './WidgetActivity.calendar.vue';
+import XChart from './WidgetActivity.chart.vue';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';

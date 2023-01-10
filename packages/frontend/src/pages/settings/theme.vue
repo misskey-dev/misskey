@@ -22,12 +22,12 @@
 			</div>
 		</div>
 		<div class="sync">
-			<FormSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</FormSwitch>
+			<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
 		</div>
 	</div>
 
 	<div class="selects">
-		<FormSelect v-model="lightThemeId" large class="select">
+		<MkSelect v-model="lightThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForLightMode }}</template>
 			<template #prefix><i class="ti ti-sun"></i></template>
 			<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
@@ -37,8 +37,8 @@
 			<optgroup :label="i18n.ts._theme.builtinThemes">
 				<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
-		</FormSelect>
-		<FormSelect v-model="darkThemeId" large class="select">
+		</MkSelect>
+		<MkSelect v-model="darkThemeId" large class="select">
 			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
 			<template #prefix><i class="ti ti-moon"></i></template>
 			<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
@@ -48,7 +48,7 @@
 			<optgroup :label="i18n.ts._theme.builtinThemes">
 				<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
 			</optgroup>
-		</FormSelect>
+		</MkSelect>
 	</div>
 
 	<FormSection>
@@ -68,8 +68,8 @@
 <script lang="ts" setup>
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -82,6 +82,7 @@ import { instance } from '@/instance';
 import { uniqueBy } from '@/scripts/array';
 import { fetchThemes, getThemes } from '@/theme-store';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -120,7 +121,7 @@ const lightThemeId = computed({
 });
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
-const wallpaper = ref(localStorage.getItem('wallpaper'));
+const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
@@ -131,9 +132,9 @@ watch(syncDeviceDarkMode, () => {
 
 watch(wallpaper, () => {
 	if (wallpaper.value == null) {
-		localStorage.removeItem('wallpaper');
+		miLocalStorage.removeItem('wallpaper');
 	} else {
-		localStorage.setItem('wallpaper', wallpaper.value);
+		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
 	location.reload();
 });

@@ -73,9 +73,9 @@ const toggle = () => {
 		width: 32px;
 		height: 23px;
 		outline: none;
-		background: var(--swutchOffBg);
+		background: var(--switchOffBg);
 		background-clip: content-box;
-		border: solid 1px var(--swutchOffBg);
+		border: solid 1px var(--switchOffBg);
 		border-radius: 999px;
 		cursor: pointer;
 		transition: inherit;
@@ -87,7 +87,7 @@ const toggle = () => {
 			left: 3px;
 			width: 15px;
 			height: 15px;
-			background: var(--swutchOffFg);
+			background: var(--switchOffFg);
 			border-radius: 999px;
 			transition: all 0.2s ease;
 		}
@@ -131,12 +131,12 @@ const toggle = () => {
 
 	&.checked {
 		> .button {
-			background-color: var(--swutchOnBg) !important;
-			border-color: var(--swutchOnBg) !important;
+			background-color: var(--switchOnBg) !important;
+			border-color: var(--switchOnBg) !important;
 
 			> .knob {
 				left: 12px;
-				background: var(--swutchOnFg);
+				background: var(--switchOnFg);
 			}
 		}
 	}
