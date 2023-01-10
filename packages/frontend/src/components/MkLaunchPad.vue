@@ -75,7 +75,7 @@ function close() {
 
 	&.asDrawer {
 		width: 100%;
-		padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px) 16px;
+		padding: 16px 16px max(env(safe-area-inset-bottom, 0px), 16px) 16px;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;

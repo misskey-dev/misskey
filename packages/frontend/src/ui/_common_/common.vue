@@ -98,10 +98,10 @@ if ($i) {
 		}
 	}
 
-	@media (max-width: 700px) {
+	@media (max-width: 500px) {
 		top: initial;
-		bottom: 112px;
-		padding: 0 16px;
+		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		padding: 0 var(--margin);
 		display: flex;
 		flex-direction: column-reverse;
 
@@ -111,11 +111,6 @@ if ($i) {
 				margin-bottom: 8px;
 			}
 		}
-	}
-
-	@media (max-width: 500px) {
-		bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
-		padding: 0 8px;
 	}
 }
 </style>
