@@ -55,8 +55,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import XHeader from './_header_.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';

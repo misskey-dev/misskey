@@ -104,7 +104,7 @@ const menuDef = $computed(() => [{
 	}, {
 		icon: 'ti ti-whirl',
 		text: i18n.ts.federation,
-		to: '/about#federation',
+		to: '/admin/federation',
 		active: currentPage?.route.name === 'federation',
 	}, {
 		icon: 'ti ti-clock-play',

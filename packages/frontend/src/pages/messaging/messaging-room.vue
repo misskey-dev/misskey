@@ -14,7 +14,7 @@
 				</div>
 			</template>
 			<template #default="{ items: messages, fetching: pFetching }">
-				<XList
+				<MkDateSeparatedList
 					v-if="messages.length > 0"
 					v-slot="{ item: message }"
 					:class="{ messages: true, 'deny-move-transition': pFetching }"
@@ -23,7 +23,7 @@
 					reversed
 				>
 					<XMessage :key="message.id" :message="message" :is-group="group != null"/>
-				</XList>
+				</MkDateSeparatedList>
 			</template>
 		</MkPagination>
 	</div>
@@ -52,7 +52,7 @@ import * as Misskey from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import XList from '@/components/MkDateSeparatedList.vue';
+import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { isBottomVisible, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
 import * as os from '@/os';

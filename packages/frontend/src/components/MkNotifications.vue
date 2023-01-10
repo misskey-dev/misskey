@@ -8,10 +8,10 @@
 	</template>
 
 	<template #default="{ items: notifications }">
-		<XList v-slot="{ item: notification }" class="elsfgstc" :items="notifications" :no-gap="true">
+		<MkDateSeparatedList v-slot="{ item: notification }" class="elsfgstc" :items="notifications" :no-gap="true">
 			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
 			<XNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
-		</XList>
+		</MkDateSeparatedList>
 	</template>
 </MkPagination>
 </template>
@@ -21,7 +21,7 @@ import { defineComponent, markRaw, onUnmounted, onMounted, computed, shallowRef 
 import { notificationTypes } from 'misskey-js';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
-import XList from '@/components/MkDateSeparatedList.vue';
+import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import XNote from '@/components/MkNote.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';

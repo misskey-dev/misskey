@@ -1,12 +1,12 @@
 <template>
 <div class="_gaps_m">
-	<FormSelect v-model="type">
+	<MkSelect v-model="type">
 		<template #label>{{ i18n.ts.sound }}</template>
 		<option v-for="x in soundsTypes" :key="x" :value="x">{{ x == null ? i18n.ts.none : x }}</option>
-	</FormSelect>
-	<FormRange v-model="volume" :min="0" :max="1" :step="0.05" :text-converter="(v) => `${Math.floor(v * 100)}%`">
+	</MkSelect>
+	<MkRange v-model="volume" :min="0" :max="1" :step="0.05" :text-converter="(v) => `${Math.floor(v * 100)}%`">
 		<template #label>{{ i18n.ts.volume }}</template>
-	</FormRange>
+	</MkRange>
 
 	<div class="_buttons">
 		<MkButton inline @click="listen"><i class="ti ti-player-play"></i> {{ i18n.ts.listen }}</MkButton>
@@ -17,9 +17,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormSelect from '@/components/form/select.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormRange from '@/components/form/range.vue';
+import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n';
 import { playFile, soundsTypes } from '@/scripts/sound';
 

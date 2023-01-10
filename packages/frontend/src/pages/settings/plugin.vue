@@ -7,7 +7,7 @@
 		<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_s" style="padding: 20px;">
 			<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
-			<FormSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</FormSwitch>
+			<MkSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 
 			<MkKeyValue>
 				<template #key>{{ i18n.ts.author }}</template>
@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import { nextTick, ref } from 'vue';
 import FormLink from '@/components/form/link.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';

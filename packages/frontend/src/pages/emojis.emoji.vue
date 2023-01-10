@@ -1,6 +1,6 @@
 <template>
 <button class="zuvgdzyu _button" @click="menu">
-	<img :src="`/emoji/${emoji.name}.webp`" class="img" :alt="emoji.name"/>
+	<img :src="`/emoji/${emoji.name}.webp`" class="img" loading="lazy"/>
 	<div class="body">
 		<div class="name _monospace">{{ emoji.name }}</div>
 		<div class="info">{{ emoji.aliases.join(' ') }}</div>
@@ -49,6 +49,7 @@ function menu(ev) {
 	> .img {
 		width: 42px;
 		height: 42px;
+		object-fit: contain;
 	}
 
 	> .body {

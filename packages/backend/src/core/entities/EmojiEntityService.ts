@@ -22,23 +22,25 @@ export class EmojiEntityService {
 	@bindThis
 	public async pack(
 		src: Emoji['id'] | Emoji,
+		opts: { omitHost?: boolean; omitId?: boolean; } = {},
 	): Promise<Packed<'Emoji'>> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 
 		return {
-			id: emoji.id,
+			id: opts.omitId ? undefined : emoji.id,
 			aliases: emoji.aliases,
 			name: emoji.name,
 			category: emoji.category,
-			host: emoji.host,
+			host: opts.omitHost ? undefined : emoji.host,
 		};
 	}
 
 	@bindThis
 	public packMany(
 		emojis: any[],
+		opts: { omitHost?: boolean; omitId?: boolean; } = {},
 	) {
-		return Promise.all(emojis.map(x => this.pack(x)));
+		return Promise.all(emojis.map(x => this.pack(x, opts)));
 	}
 }
 

@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import { host } from '@/config';
 import * as os from '@/os';
 import { login } from '@/account';

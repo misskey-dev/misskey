@@ -2,25 +2,26 @@
 <div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts.customCssWarn }}</FormInfo>
 
-	<FormTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
+	<MkTextarea v-model="localCustomCss" manual-save tall class="_monospace" style="tab-size: 2;">
 		<template #label>CSS</template>
-	</FormTextarea>
+	</MkTextarea>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
-const localCustomCss = ref(localStorage.getItem('customCss') ?? '');
+const localCustomCss = ref(miLocalStorage.getItem('customCss') ?? '');
 
 async function apply() {
-	localStorage.setItem('customCss', localCustomCss.value);
+	miLocalStorage.setItem('customCss', localCustomCss.value);
 
 	const { canceled } = await os.confirm({
 		type: 'info',

@@ -1,8 +1,8 @@
 <template>
 <div class="_gaps_m">
-	<FormTextarea v-model="installThemeCode">
+	<MkTextarea v-model="installThemeCode">
 		<template #label>{{ i18n.ts._theme.code }}</template>
-	</FormTextarea>
+	</MkTextarea>
 
 	<div class="_buttons">
 		<MkButton :disabled="installThemeCode == null" inline @click="() => preview(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import JSON5 from 'json5';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';

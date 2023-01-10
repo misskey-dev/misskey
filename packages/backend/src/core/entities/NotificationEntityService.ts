@@ -98,7 +98,7 @@ export class NotificationEntityService implements OnModuleInit {
 				}),
 				reaction: notification.reaction,
 			} : {}),
-			...(notification.type === 'pollVote' ? {
+			...(notification.type === 'pollVote' ? { // TODO: そのうち消す
 				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,

@@ -1,6 +1,6 @@
 <template>
 <div class="_gaps_m">
-	<FormSelect v-model="selectedThemeId">
+	<MkSelect v-model="selectedThemeId">
 		<template #label>{{ i18n.ts.theme }}</template>
 		<optgroup :label="i18n.ts._theme.installedThemes">
 			<option v-for="x in installedThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
@@ -8,18 +8,18 @@
 		<optgroup :label="i18n.ts._theme.builtinThemes">
 			<option v-for="x in builtinThemes" :key="x.id" :value="x.id">{{ x.name }}</option>
 		</optgroup>
-	</FormSelect>
+	</MkSelect>
 	<template v-if="selectedTheme">
-		<FormInput readonly :model-value="selectedTheme.author">
+		<MkInput readonly :model-value="selectedTheme.author">
 			<template #label>{{ i18n.ts.author }}</template>
-		</FormInput>
-		<FormTextarea v-if="selectedTheme.desc" readonly :model-value="selectedTheme.desc">
+		</MkInput>
+		<MkTextarea v-if="selectedTheme.desc" readonly :model-value="selectedTheme.desc">
 			<template #label>{{ i18n.ts._theme.description }}</template>
-		</FormTextarea>
-		<FormTextarea readonly tall :model-value="selectedThemeCode">
+		</MkTextarea>
+		<MkTextarea readonly tall :model-value="selectedThemeCode">
 			<template #label>{{ i18n.ts._theme.code }}</template>
 			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
-		</FormTextarea>
+		</MkTextarea>
 		<MkButton v-if="!builtinThemes.some(t => t.id == selectedTheme.id)" danger @click="uninstall()"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 	</template>
 </div>
@@ -28,9 +28,9 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormInput from '@/components/form/input.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { Theme, getBuiltinThemesRef } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';

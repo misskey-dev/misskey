@@ -17,34 +17,34 @@
 	<MkSpacer :margin-min="20" :margin-max="32">
 		<div class="xkpnjxcv _gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
-				<FormInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
+				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormInput>
-				<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text">
+				</MkInput>
+				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormInput>
-				<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]">
+				</MkInput>
+				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormTextarea>
-				<FormSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
+				</MkTextarea>
+				<MkSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
 					<span v-text="form[item].label || item"></span>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormSwitch>
-				<FormSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
+				</MkSwitch>
+				<MkSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
-				</FormSelect>
-				<FormRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
+				</MkSelect>
+				<MkRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
-				</FormRadios>
-				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter">
+				</MkRadios>
+				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormRange>
+				</MkRange>
 				<MkButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)">
 					<span v-text="form[item].content || item"></span>
 				</MkButton>
@@ -56,25 +56,25 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormInput from './form/input.vue';
-import FormTextarea from './form/textarea.vue';
-import FormSwitch from './form/switch.vue';
-import FormSelect from './form/select.vue';
-import FormRange from './form/range.vue';
+import MkInput from './MkInput.vue';
+import MkTextarea from './MkTextarea.vue';
+import MkSwitch from './MkSwitch.vue';
+import MkSelect from './MkSelect.vue';
+import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
-import FormRadios from './form/radios.vue';
+import MkRadios from './MkRadios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 
 export default defineComponent({
 	components: {
 		MkModalWindow,
-		FormInput,
-		FormTextarea,
-		FormSwitch,
-		FormSelect,
-		FormRange,
+		MkInput,
+		MkTextarea,
+		MkSwitch,
+		MkSelect,
+		MkRange,
 		MkButton,
-		FormRadios,
+		MkRadios,
 	},
 
 	props: {
