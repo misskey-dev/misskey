@@ -9,8 +9,15 @@
 
 <XUpload v-if="uploads.length > 0"/>
 
-<TransitionGroup :name="$store.state.animation ? 'notification' : ''" tag="div" class="notifications">
-	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" class="notification"/>
+<TransitionGroup
+	tag="div" :class="$style.notifications"
+	:move-class="$store.state.animation ? $style.transition_notification_move : ''"
+	:enter-active-class="$store.state.animation ? $style.transition_notification_enterActive : ''"
+	:leave-active-class="$store.state.animation ? $style.transition_notification_leaveActive : ''"
+	:enter-from-class="$store.state.animation ? $style.transition_notification_enterFrom : ''"
+	:leave-to-class="$store.state.animation ? $style.transition_notification_leaveTo : ''"
+>
+	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" :class="$style.notification"/>
 </TransitionGroup>
 
 <XStreamIndicator/>
@@ -73,11 +80,14 @@ if ($i) {
 }
 </script>
 
-<style lang="scss" scoped>
-.notification-move, .notification-enter-active, .notification-leave-active {
+<style lang="scss" module>
+.transition_notification_move,
+.transition_notification_enterActive,
+.transition_notification_leaveActive {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.notification-enter-from, .notification-leave-to {
+.transition_notification_enterFrom,
+.transition_notification_leaveTo {
 	opacity: 0;
 	transform: translateX(-250px);
 }
@@ -91,31 +101,28 @@ if ($i) {
 	padding: 0 32px;
 	pointer-events: none;
 	container-type: inline-size;
+}
 
-	> .notification {
-		& + .notification {
-			margin-top: 8px;
-		}
+.notification {
+	& + .notification {
+		margin-top: 8px;
 	}
+}
 
-	@media (max-width: 700px) {
+@media (max-width: 500px) {
+	.notifications {
 		top: initial;
-		bottom: 112px;
-		padding: 0 16px;
+		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		padding: 0 var(--margin);
 		display: flex;
 		flex-direction: column-reverse;
-
-		> .notification {
-			& + .notification {
-				margin-top: 0;
-				margin-bottom: 8px;
-			}
-		}
 	}
 
-	@media (max-width: 500px) {
-		bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
-		padding: 0 8px;
+	.notification {
+		& + .notification {
+			margin-top: 0;
+			margin-bottom: 8px;
+		}
 	}
 }
 </style>

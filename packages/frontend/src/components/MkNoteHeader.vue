@@ -1,12 +1,12 @@
 <template>
-<header class="kkwtjztg">
-	<MkA v-once v-user-preview="note.user.id" class="name" :to="userPage(note.user)">
+<header :class="$style.root">
+	<MkA v-once v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
-	<div v-if="note.user.isBot" class="is-bot">bot</div>
-	<div class="username"><MkAcct :user="note.user"/></div>
-	<div class="info">
-		<MkA class="created-at" :to="notePage(note)">
+	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
+	<div :class="$style.username"><MkAcct :user="note.user"/></div>
+	<div :class="$style.info">
+		<MkA :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
 		</MkA>
 		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
@@ -32,49 +32,49 @@ defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
-.kkwtjztg {
+<style lang="scss" module>
+.root {
 	display: flex;
 	align-items: baseline;
 	white-space: nowrap;
+}
 
-	> .name {
-		flex-shrink: 1;
-		display: block;
-		margin: 0 .5em 0 0;
-		padding: 0;
-		overflow: hidden;
-		font-size: 1em;
-		font-weight: bold;
-		text-decoration: none;
-		text-overflow: ellipsis;
+.name {
+	flex-shrink: 1;
+	display: block;
+	margin: 0 .5em 0 0;
+	padding: 0;
+	overflow: hidden;
+	font-size: 1em;
+	font-weight: bold;
+	text-decoration: none;
+	text-overflow: ellipsis;
 
-		&:hover {
-			text-decoration: underline;
-		}
+	&:hover {
+		text-decoration: underline;
 	}
+}
 
-	> .is-bot {
-		flex-shrink: 0;
-		align-self: center;
-		margin: 0 .5em 0 0;
-		padding: 1px 6px;
-		font-size: 80%;
-		border: solid 0.5px var(--divider);
-		border-radius: 3px;
-	}
+.isBot {
+	flex-shrink: 0;
+	align-self: center;
+	margin: 0 .5em 0 0;
+	padding: 1px 6px;
+	font-size: 80%;
+	border: solid 0.5px var(--divider);
+	border-radius: 3px;
+}
 
-	> .username {
-		flex-shrink: 9999999;
-		margin: 0 .5em 0 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+.username {
+	flex-shrink: 9999999;
+	margin: 0 .5em 0 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
-	> .info {
-		flex-shrink: 0;
-		margin-left: auto;
-		font-size: 0.9em;
-	}
+.info {
+	flex-shrink: 0;
+	margin-left: auto;
+	font-size: 0.9em;
 }
 </style>
