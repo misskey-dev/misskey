@@ -1,37 +1,6 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 
-const rolePermissions = [
-	'suspend',
-	'silence',
-	'viewAbuseUserReports',
-	'deleteAccount',
-	'manageAds',
-	'createAnnouncement',
-	'deleteAnnouncement',
-	'updateAnnouncement',
-	'updateEmoji',
-	'createEmoji',
-	'deleteEmoji',
-	'refreshRemoteInstanceMetadata',
-	'invite',
-	'addRelay',
-	'removeRelay',
-	'resetPassword',
-	'resolveAbuseUserReports',
-	'showUserDetails',
-	'createRole',
-	'readRole',
-	'updateole',
-	'deleteRole',
-	'assignRole',
-] as const;
-
-type RoleOption = {
-	useDefault: boolean;
-	value: any;
-};
-
 @Entity()
 export class Role {
 	@PrimaryColumn(id())
@@ -63,42 +32,10 @@ export class Role {
 	public isPublic: boolean;
 
 	@Column('jsonb', {
-		default: { useDefault: true },
+		default: { },
 	})
-	public option_userSuspend: RoleOption;
-
-	@Column('jsonb', {
-		default: { useDefault: true },
-	})
-	public option_userSilence: RoleOption;
-
-	@Column('jsonb', {
-		default: { useDefault: true },
-	})
-	public option_createRole: RoleOption;
-
-	@Column('jsonb', {
-		default: { useDefault: true },
-	})
-	public option_readRole: RoleOption;
-
-	@Column('jsonb', {
-		default: { useDefault: true },
-	})
-	public option_updateRole: RoleOption;
-
-	@Column('jsonb', {
-		default: { useDefault: true },
-	})
-	public option_deleteRole: RoleOption;
-
-	@Column('jsonb', {
-		default: { useDefault: true },
-	})
-	public option_assignRole: RoleOption;
-
-	@Column('jsonb', {
-		default: { useDefault: true },
-	})
-	public option_antennaLimit: RoleOption;
+	public definition: Record<string, {
+		useDefault: boolean;
+		value: any;
+	}>;
 }

@@ -7,6 +7,56 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
+export type RoleOptions = {
+	userSuspend: boolean;
+	userSilence: boolean;
+	createRole: boolean;
+	readRole: boolean;
+	updateRole: boolean;
+	deleteRole: boolean;
+	assignRole: boolean;
+	invite: boolean;
+	createCustomEmoji: boolean;
+	updateCustomEmoji: boolean;
+	deleteCustomEmoji: boolean;
+	viewAbuseUserReports: boolean;
+	deleteAccount: boolean;
+	manageAds: boolean;
+	createAnnouncement: boolean;
+	deleteAnnouncement: boolean;
+	updateAnnouncement: boolean;
+	refreshRemoteInstanceMetadata: boolean;
+	resetPassword: boolean;
+	resolveAbuseUserReports: boolean;
+	showUserDetails: boolean;
+	antennaLimit: number;
+};
+
+export const DEFAULT_ROLE: RoleOptions = {
+	userSuspend: false,
+	userSilence: false,
+	createRole: false,
+	readRole: false,
+	updateRole: false,
+	deleteRole: false,
+	assignRole: false,
+	invite: false,
+	createCustomEmoji: false,
+	updateCustomEmoji: false,
+	deleteCustomEmoji: false,
+	viewAbuseUserReports: false,
+	deleteAccount: false,
+	manageAds: false,
+	createAnnouncement: false,
+	deleteAnnouncement: false,
+	updateAnnouncement: false,
+	refreshRemoteInstanceMetadata: false,
+	resetPassword: false,
+	resolveAbuseUserReports: false,
+	showUserDetails: false,
+	antennaLimit: 5,
+};
+
 @Injectable()
 export class RoleService implements OnApplicationShutdown {
 	private rolesCache: Cache<Role[]>;
@@ -50,6 +100,40 @@ export class RoleService implements OnApplicationShutdown {
 		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
 		return roles.filter(r => assignedRoleIds.includes(r.id));
+	}
+
+	@bindThis
+	public async getUserRoleOptions(userId: User['id']): Promise<RoleOptions> {
+		const roles = await this.getUserRoles(userId);
+
+		function getOptionValue(role: Role, option: keyof RoleOptions) {
+			return role.definition[option] && role.definition[option].useDefault !== true ? role.definition[option].value : DEFAULT_ROLE[option];
+		}
+
+		return {
+			userSuspend: roles.map(r => getOptionValue(r, 'userSuspend')).some(v => v === true),
+			userSilence: roles.map(r => getOptionValue(r, 'userSilence')).some(v => v === true),
+			createRole: roles.map(r => getOptionValue(r, 'createRole')).some(v => v === true),
+			readRole: roles.map(r => getOptionValue(r, 'readRole')).some(v => v === true),
+			updateRole: roles.map(r => getOptionValue(r, 'updateRole')).some(v => v === true),
+			deleteRole: roles.map(r => getOptionValue(r, 'deleteRole')).some(v => v === true),
+			assignRole: roles.map(r => getOptionValue(r, 'assignRole')).some(v => v === true),
+			invite: roles.map(r => getOptionValue(r, 'invite')).some(v => v === true),
+			createCustomEmoji: roles.map(r => getOptionValue(r, 'createCustomEmoji')).some(v => v === true),
+			updateCustomEmoji: roles.map(r => getOptionValue(r, 'updateCustomEmoji')).some(v => v === true),
+			deleteCustomEmoji: roles.map(r => getOptionValue(r, 'deleteCustomEmoji')).some(v => v === true),
+			viewAbuseUserReports: roles.map(r => getOptionValue(r, 'viewAbuseUserReports')).some(v => v === true),
+			deleteAccount: roles.map(r => getOptionValue(r, 'deleteAccount')).some(v => v === true),
+			manageAds: roles.map(r => getOptionValue(r, 'manageAds')).some(v => v === true),
+			createAnnouncement: roles.map(r => getOptionValue(r, 'createAnnouncement')).some(v => v === true),
+			deleteAnnouncement: roles.map(r => getOptionValue(r, 'deleteAnnouncement')).some(v => v === true),
+			updateAnnouncement: roles.map(r => getOptionValue(r, 'updateAnnouncement')).some(v => v === true),
+			refreshRemoteInstanceMetadata: roles.map(r => getOptionValue(r, 'refreshRemoteInstanceMetadata')).some(v => v === true),
+			resetPassword: roles.map(r => getOptionValue(r, 'refreshRemoteInstanceMetadata')).some(v => v === true),
+			resolveAbuseUserReports: roles.map(r => getOptionValue(r, 'resolveAbuseUserReports')).some(v => v === true),
+			showUserDetails: roles.map(r => getOptionValue(r, 'showUserDetails')).some(v => v === true),
+			antennaLimit: Math.max(...roles.map(r => getOptionValue(r, 'antennaLimit'))),
+		};
 	}
 
 	@bindThis
