@@ -679,6 +679,11 @@ export interface IEndpointMeta {
 	readonly requireAdmin?: boolean;
 
 	/**
+	 * forModerationなロールを必要とするか
+	 */
+	readonly requireModerator?: boolean;
+
+	/**
 	 * 要求するロール権限
 	 */
 	readonly rolePermission?: string;

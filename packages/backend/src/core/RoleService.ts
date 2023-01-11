@@ -28,7 +28,6 @@ export type RoleOptions = {
 	deleteAnnouncement: boolean;
 	updateAnnouncement: boolean;
 	deleteDriveFile: boolean;
-	refreshRemoteInstanceMetadata: boolean;
 	resetPassword: boolean;
 	resolveAbuseUserReports: boolean;
 	showUserDetails: boolean;
@@ -137,8 +136,7 @@ export class RoleService implements OnApplicationShutdown {
 			createAnnouncement: roles.map(r => getOptionValue(r, 'createAnnouncement')).some(v => v === true),
 			deleteAnnouncement: roles.map(r => getOptionValue(r, 'deleteAnnouncement')).some(v => v === true),
 			updateAnnouncement: roles.map(r => getOptionValue(r, 'updateAnnouncement')).some(v => v === true),
-			refreshRemoteInstanceMetadata: roles.map(r => getOptionValue(r, 'refreshRemoteInstanceMetadata')).some(v => v === true),
-			resetPassword: roles.map(r => getOptionValue(r, 'refreshRemoteInstanceMetadata')).some(v => v === true),
+			resetPassword: roles.map(r => getOptionValue(r, 'resetPassword')).some(v => v === true),
 			resolveAbuseUserReports: roles.map(r => getOptionValue(r, 'resolveAbuseUserReports')).some(v => v === true),
 			showUserDetails: roles.map(r => getOptionValue(r, 'showUserDetails')).some(v => v === true),
 			antennaLimit: Math.max(...roles.map(r => getOptionValue(r, 'antennaLimit'))),

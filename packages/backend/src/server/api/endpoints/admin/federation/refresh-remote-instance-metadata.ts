@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'refreshRemoteInstanceMetadata',
+	requireModerator: true,
 } as const;
 
 export const paramDef = {
