@@ -4,6 +4,7 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { UsersRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -27,6 +28,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -39,6 +41,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (user.isRoot) {
 				throw new Error('cannot silence root');
+			}
+
+			const roles = await this.roleService.getUserRoles(user.id);
+			if (roles.some(r => r.isModerator || r.isAdministrator)) {
+				throw new Error('cannot silence moderator account');
 			}
 
 			await this.usersRepository.update(user.id, {

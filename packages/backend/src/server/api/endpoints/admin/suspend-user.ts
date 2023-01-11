@@ -9,6 +9,7 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -41,6 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userEntityService: UserEntityService,
 		private userFollowingService: UserFollowingService,
 		private userSuspendService: UserSuspendService,
+		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -52,7 +54,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (user.isRoot) {
-				throw new Error('cannot suspend root');
+				throw new Error('cannot suspend root account');
+			}
+
+			const roles = await this.roleService.getUserRoles(user.id);
+			if (roles.some(r => r.isModerator || r.isAdministrator)) {
+				throw new Error('cannot suspend moderator account');
 			}
 
 			await this.usersRepository.update(user.id, {
