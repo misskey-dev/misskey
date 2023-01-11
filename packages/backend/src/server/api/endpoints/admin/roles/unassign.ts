@@ -1,0 +1,85 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '@/server/api/error.js';
+import { IdService } from '@/core/IdService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+
+export const meta = {
+	tags: ['admin', 'role'],
+
+	requireCredential: true,
+	rolePermission: 'assignRole',
+
+	errors: {
+		noSuchRole: {
+			message: 'No such role.',
+			code: 'NO_SUCH_ROLE',
+			id: '6e519036-a70d-4c76-b679-bc8fb18194e2',
+		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '2b730f78-1179-461b-88ad-d24c9af1a5ce',
+		},
+
+		notAssigned: {
+			message: 'Not assigned.',
+			code: 'NOT_ASSIGNED',
+			id: 'b9060ac7-5c94-4da4-9f55-2047c953df44',
+		},
+	},
+} as const;
+
+export const paramDef = {
+	type: 'object',
+	properties: {
+		roleId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id' },
+	},
+	required: [
+		'roleId',
+		'userId',
+	],
+} as const;
+
+// eslint-disable-next-line import/no-default-export
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.rolesRepository)
+		private rolesRepository: RolesRepository,
+
+		@Inject(DI.roleAssignmentsRepository)
+		private roleAssignmentsRepository: RoleAssignmentsRepository,
+
+		private globalEventService: GlobalEventService,
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async (ps) => {
+			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
+			if (role == null) {
+				throw new ApiError(meta.errors.noSuchRole);
+			}
+
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
+			if (user == null) {
+				throw new ApiError(meta.errors.noSuchUser);
+			}
+
+			const roleAssignment = await this.roleAssignmentsRepository.findOneBy({ userId: user.id, roleId: role.id });
+			if (roleAssignment == null) {
+				throw new ApiError(meta.errors.notAssigned);
+			}
+
+			await this.roleAssignmentsRepository.delete(roleAssignment.id);
+	
+			this.globalEventService.publishInternalEvent('userRoleUnassigned', roleAssignment);
+		});
+	}
+}

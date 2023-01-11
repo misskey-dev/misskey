@@ -325,7 +325,6 @@ import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
-import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
 import * as ep___retention from './endpoints/retention.js';
 
 const eps = [
@@ -653,7 +652,6 @@ const eps = [
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
-	['admin/drive-capacity-override', ep___admin_driveCapOverride],
 	['fetch-rss', ep___fetchRss],
 	['retention', ep___retention],
 ];

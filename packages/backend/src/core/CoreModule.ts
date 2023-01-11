@@ -98,6 +98,7 @@ import { UserGroupInvitationEntityService } from './entities/UserGroupInvitation
 import { UserListEntityService } from './entities/UserListEntityService.js';
 import { FlashEntityService } from './entities/FlashEntityService.js';
 import { FlashLikeEntityService } from './entities/FlashLikeEntityService.js';
+import { RoleEntityService } from './entities/RoleEntityService.js';
 import { ApAudienceService } from './activitypub/ApAudienceService.js';
 import { ApDbResolverService } from './activitypub/ApDbResolverService.js';
 import { ApDeliverManagerService } from './activitypub/ApDeliverManagerService.js';
@@ -222,6 +223,7 @@ const $UserGroupInvitationEntityService: Provider = { provide: 'UserGroupInvitat
 const $UserListEntityService: Provider = { provide: 'UserListEntityService', useExisting: UserListEntityService };
 const $FlashEntityService: Provider = { provide: 'FlashEntityService', useExisting: FlashEntityService };
 const $FlashLikeEntityService: Provider = { provide: 'FlashLikeEntityService', useExisting: FlashLikeEntityService };
+const $RoleEntityService: Provider = { provide: 'RoleEntityService', useExisting: RoleEntityService };
 
 const $ApAudienceService: Provider = { provide: 'ApAudienceService', useExisting: ApAudienceService };
 const $ApDbResolverService: Provider = { provide: 'ApDbResolverService', useExisting: ApDbResolverService };
@@ -347,6 +349,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
+		RoleEntityService,
 		ApAudienceService,
 		ApDbResolverService,
 		ApDeliverManagerService,
@@ -467,6 +470,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
+		$RoleEntityService,
 		$ApAudienceService,
 		$ApDbResolverService,
 		$ApDeliverManagerService,
@@ -587,6 +591,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
+		RoleEntityService,
 		ApAudienceService,
 		ApDbResolverService,
 		ApDeliverManagerService,
@@ -706,6 +711,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
+		$RoleEntityService,
 		$ApAudienceService,
 		$ApDbResolverService,
 		$ApDeliverManagerService,
