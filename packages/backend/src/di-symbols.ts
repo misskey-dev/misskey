@@ -71,5 +71,7 @@ export const DI = {
 	retentionAggregationsRepository: Symbol('retentionAggregationsRepository'),
 	rolesRepository: Symbol('rolesRepository'),
 	roleAssignmentsRepository: Symbol('roleAssignmentsRepository'),
+	flashsRepository: Symbol('flashsRepository'),
+	flashLikesRepository: Symbol('flashLikesRepository'),
 	//#endregion
 };

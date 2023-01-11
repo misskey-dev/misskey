@@ -1,6 +1,6 @@
 <template>
 <div :class="$style.root">
-	<MkFolder class="item">
+	<MkFoldableSection class="item">
 		<template #header>Chart</template>
 		<div :class="$style.chart">
 			<div class="selects">
@@ -34,9 +34,9 @@
 				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="true"></MkChart>
 			</div>
 		</div>
-	</MkFolder>
+	</MkFoldableSection>
 
-	<MkFolder class="item">
+	<MkFoldableSection class="item">
 		<template #header>Active users heatmap</template>
 		<MkSelect v-model="heatmapSrc" style="margin: 0 0 12px 0;">
 			<option value="active-users">Active users</option>
@@ -48,16 +48,16 @@
 		<div class="_panel" :class="$style.heatmap">
 			<MkHeatmap :src="heatmapSrc"/>
 		</div>
-	</MkFolder>
+	</MkFoldableSection>
 
-	<MkFolder class="item">
+	<MkFoldableSection class="item">
 		<template #header>Retention rate</template>
 		<div class="_panel" :class="$style.retention">
 			<MkRetentionHeatmap/>
 		</div>
-	</MkFolder>
+	</MkFoldableSection>
 
-	<MkFolder class="item">
+	<MkFoldableSection class="item">
 		<template #header>Federation</template>
 		<div :class="$style.federation">
 			<div class="pies">
@@ -71,63 +71,31 @@
 				</div>
 			</div>
 		</div>
-	</MkFolder>
+	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	DoughnutController,
-} from 'chart.js';
-import MkSelect from '@/components/form/select.vue';
+import { Chart } from 'chart.js';
+import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkHeatmap from '@/components/MkHeatmap.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	DoughnutController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-);
+initChart();
 
 const chartLimit = 500;
 let chartSpan = $ref<'hour' | 'day'>('hour');
 let chartSrc = $ref('active-users');
 let heatmapSrc = $ref('active-users');
-let subDoughnutEl = $ref<HTMLCanvasElement>();
-let pubDoughnutEl = $ref<HTMLCanvasElement>();
+let subDoughnutEl = $shallowRef<HTMLCanvasElement>();
+let pubDoughnutEl = $shallowRef<HTMLCanvasElement>();
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',

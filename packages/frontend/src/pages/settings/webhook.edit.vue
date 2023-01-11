@@ -1,44 +1,46 @@
 <template>
-<div class="_formRoot">
-	<FormInput v-model="name" class="_formBlock">
+<div class="_gaps_m">
+	<MkInput v-model="name">
 		<template #label>Name</template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="url" type="url" class="_formBlock">
+	<MkInput v-model="url" type="url">
 		<template #label>URL</template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="secret" class="_formBlock">
+	<MkInput v-model="secret">
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>Secret</template>
-	</FormInput>
+	</MkInput>
 
 	<FormSection>
 		<template #label>Events</template>
 
-		<FormSwitch v-model="event_follow" class="_formBlock">Follow</FormSwitch>
-		<FormSwitch v-model="event_followed" class="_formBlock">Followed</FormSwitch>
-		<FormSwitch v-model="event_note" class="_formBlock">Note</FormSwitch>
-		<FormSwitch v-model="event_reply" class="_formBlock">Reply</FormSwitch>
-		<FormSwitch v-model="event_renote" class="_formBlock">Renote</FormSwitch>
-		<FormSwitch v-model="event_reaction" class="_formBlock">Reaction</FormSwitch>
-		<FormSwitch v-model="event_mention" class="_formBlock">Mention</FormSwitch>
+		<div class="_gaps_s">
+			<MkSwitch v-model="event_follow">Follow</MkSwitch>
+			<MkSwitch v-model="event_followed">Followed</MkSwitch>
+			<MkSwitch v-model="event_note">Note</MkSwitch>
+			<MkSwitch v-model="event_reply">Reply</MkSwitch>
+			<MkSwitch v-model="event_renote">Renote</MkSwitch>
+			<MkSwitch v-model="event_reaction">Reaction</MkSwitch>
+			<MkSwitch v-model="event_mention">Mention</MkSwitch>
+		</div>
 	</FormSection>
 
-	<FormSwitch v-model="active" class="_formBlock">Active</FormSwitch>
+	<MkSwitch v-model="active">Active</MkSwitch>
 
-	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</FormButton>
+	<div class="_buttons">
+		<MkButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import FormInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

@@ -428,7 +428,7 @@ export class NoteCreateService {
 
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
-			this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
+			this.federatedInstanceService.fetch(user.host).then(i => {
 				this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
 				this.instanceChart.updateNote(i.host, note, true);
 			});

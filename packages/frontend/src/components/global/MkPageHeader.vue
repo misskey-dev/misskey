@@ -65,7 +65,7 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[])
+	tabs: () => ([] as Tab[]),
 });
 
 const emit = defineEmits<{
@@ -77,9 +77,9 @@ const metadata = injectPageMetadata();
 const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = $ref<HTMLElement | undefined>(undefined);
+const el = $shallowRef<HTMLElement | undefined>(undefined);
 const tabRefs: Record<string, HTMLElement | null> = {};
-const tabHighlightEl = $ref<HTMLElement | null>(null);
+const tabHighlightEl = $shallowRef<HTMLElement | null>(null);
 const bg = ref<string | undefined>(undefined);
 let narrow = $ref(false);
 const hasTabs = $computed(() => props.tabs.length > 0);
@@ -180,7 +180,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .fdidabkb {
-	--height: 52px;
+	--height: 50px;
 	display: flex;
 	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));

@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div ref="rootEl" v-hotkey.global="keymap" class="tqmomfks">
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-		<div class="tl _block">
+		<div class="tl">
 			<XTimeline
 				ref="tlEl" :key="antennaId"
 				class="tl"
@@ -34,8 +34,8 @@ const props = defineProps<{
 
 let antenna = $ref(null);
 let queue = $ref(0);
-let rootEl = $ref<HTMLElement>();
-let tlEl = $ref<InstanceType<typeof XTimeline>>();
+let rootEl = $shallowRef<HTMLElement>();
+let tlEl = $shallowRef<InstanceType<typeof XTimeline>>();
 const keymap = $computed(() => ({
 	't': focus,
 }));

@@ -30,6 +30,7 @@ import { ImportUserListsProcessorService } from './processors/ImportUserListsPro
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
+import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 
 @Module({
 	imports: [
@@ -45,6 +46,7 @@ import { AggregateRetentionProcessorService } from './processors/AggregateRetent
 		DeleteDriveFilesProcessorService,
 		ExportCustomEmojisProcessorService,
 		ExportNotesProcessorService,
+		ExportFavoritesProcessorService,
 		ExportFollowingProcessorService,
 		ExportMutingProcessorService,
 		ExportBlockingProcessorService,

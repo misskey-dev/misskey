@@ -207,6 +207,7 @@ export const routes = [{
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/search',
 	component: page(() => import('./pages/search.vue')),
@@ -261,6 +262,20 @@ export const routes = [{
 }, {
 	path: '/pages',
 	component: page(() => import('./pages/pages.vue')),
+}, {
+	path: '/play/:id/edit',
+	component: page(() => import('./pages/flash/flash-edit.vue')),
+	loginRequired: true,
+}, {
+	path: '/play/new',
+	component: page(() => import('./pages/flash/flash-edit.vue')),
+	loginRequired: true,
+}, {
+	path: '/play/:id',
+	component: page(() => import('./pages/flash/flash.vue')),
+}, {
+	path: '/play',
+	component: page(() => import('./pages/flash/flash-index.vue')),
 }, {
 	path: '/gallery/:postId/edit',
 	component: page(() => import('./pages/gallery/edit.vue')),
@@ -324,6 +339,10 @@ export const routes = [{
 		path: '/files',
 		name: 'files',
 		component: page(() => import('./pages/admin/files.vue')),
+	}, {
+		path: '/federation',
+		name: 'federation',
+		component: page(() => import('./pages/admin/federation.vue')),
 	}, {
 		path: '/announcements',
 		name: 'announcements',
@@ -444,6 +463,10 @@ export const routes = [{
 }, {
 	path: '/timeline/antenna/:antennaId',
 	component: page(() => import('./pages/antenna-timeline.vue')),
+	loginRequired: true,
+}, {
+	path: '/clicker',
+	component: page(() => import('./pages/clicker.vue')),
 	loginRequired: true,
 }, {
 	name: 'index',

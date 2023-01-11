@@ -7,8 +7,8 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
-import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class InstanceEntityService {
@@ -33,8 +33,6 @@ export class InstanceEntityService {
 			notesCount: instance.notesCount,
 			followingCount: instance.followingCount,
 			followersCount: instance.followersCount,
-			latestRequestSentAt: instance.latestRequestSentAt ? instance.latestRequestSentAt.toISOString() : null,
-			lastCommunicatedAt: instance.lastCommunicatedAt.toISOString(),
 			isNotResponding: instance.isNotResponding,
 			isSuspended: instance.isSuspended,
 			isBlocked: meta.blockedHosts.includes(instance.host),

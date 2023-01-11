@@ -12,7 +12,7 @@
 					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
 						<template #label>Select mode</template>
 					</MkSwitch>
-					<div v-if="selectMode" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
@@ -68,20 +68,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, defineComponent, ref, toRef } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, ref, shallowRef } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkTab from '@/components/MkTab.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const emojisPaginationComponent = ref<InstanceType<typeof MkPagination>>();
+const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const tab = ref('local');
 const query = ref(null);
@@ -291,7 +291,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
-	icon: 'ti ti-mood-happy',
+	icon: 'ti ti-icons',
 })));
 </script>
 

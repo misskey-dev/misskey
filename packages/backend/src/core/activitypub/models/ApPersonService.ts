@@ -348,7 +348,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Register host
-		this.federatedInstanceService.registerOrFetchInstanceDoc(host).then(i => {
+		this.federatedInstanceService.fetch(host).then(i => {
 			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
 			this.instanceChart.newUser(i.host);
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);

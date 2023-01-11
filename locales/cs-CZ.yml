@@ -161,7 +161,6 @@ annotation: "Komentáře"
 federation: "Federace"
 instances: "Instance"
 registeredAt: "Registrován"
-latestRequestSentAt: "Poslední požadavek poslán"
 latestRequestReceivedAt: "Poslední požadavek přijat"
 latestStatus: "Poslední status"
 storageUsage: "Využití úložiště"
@@ -611,6 +610,7 @@ speed: "Rychlost"
 slow: "Pomalá"
 fast: "Rychlá"
 account: "Účty"
+show: "Zobrazit"
 _ad:
   back: "Zpět"
 _gallery:
@@ -694,6 +694,8 @@ _weekday:
   friday: "Pátek"
   saturday: "Sobota"
 _widgets:
+  profile: "Váš profil"
+  instanceInfo: "Informace o instanci"
   notifications: "Oznámení"
   timeline: "Časová osa"
   calendar: "Kalendář"
@@ -749,6 +751,9 @@ _charts:
 _timelines:
   home: "Domů"
   global: "Globální"
+_play:
+  script: "Skript"
+  summary: "Popis"
 _pages:
   newPage: "Vytvořit novou stránku"
   editPage: "Upravit stránku"

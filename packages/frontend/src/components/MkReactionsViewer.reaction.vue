@@ -1,24 +1,25 @@
 <template>
 <button
-	ref="buttonRef"
+	ref="buttonEl"
 	v-ripple="canToggle"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction()"
 >
-	<XReactionIcon class="icon" :reaction="reaction"/>
+	<MkReactionIcon class="icon" :reaction="reaction"/>
 	<span class="count">{{ count }}</span>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
+import MkReactionEffect from '@/components/MkReactionEffect.vue';
 
 const props = defineProps<{
 	reaction: string;
@@ -27,7 +28,7 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const buttonRef = ref<HTMLElement>();
+const buttonEl = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
@@ -57,7 +58,10 @@ const toggleReaction = () => {
 const anime = () => {
 	if (document.hidden) return;
 
-	// TODO: 新しくリアクションが付いたことが視覚的に分かりやすいアニメーション
+	const rect = buttonEl.value.getBoundingClientRect();
+	const x = rect.left + 16;
+	const y = rect.top + (buttonEl.value.offsetHeight / 2);
+	os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
 };
 
 watch(() => props.count, (newCount, oldCount) => {
@@ -68,7 +72,7 @@ onMounted(() => {
 	if (!props.isInitial) anime();
 });
 
-useTooltip(buttonRef, async (showing) => {
+useTooltip(buttonEl, async (showing) => {
 	const reactions = await os.apiGet('notes/reactions', {
 		noteId: props.note.id,
 		type: props.reaction,
@@ -83,7 +87,7 @@ useTooltip(buttonRef, async (showing) => {
 		reaction: props.reaction,
 		users,
 		count: props.count,
-		targetElement: buttonRef.value,
+		targetElement: buttonEl.value,
 	}, {}, 'closed');
 }, 100);
 </script>

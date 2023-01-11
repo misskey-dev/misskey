@@ -7,7 +7,7 @@
 			<XSidebar/>
 		</div>
 		<div v-else ref="widgetsLeft" class="widgets left">
-			<XWidgets place="left" @mounted="attachSticky(widgetsLeft)" :classic="true"/>
+			<XWidgets place="left" :margin-top="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
 		<main class="main" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
@@ -17,7 +17,7 @@
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="showMenuOnTop ? 'right' : null" @mounted="attachSticky(widgetsRight)" :classic="true"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" :margin-top="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 
@@ -51,6 +51,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { miLocalStorage } from '@/local-storage';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
@@ -62,9 +63,9 @@ let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let widgetsShowing = $ref(false);
 let fullView = $ref(false);
 let globalHeaderHeight = $ref(0);
-const wallpaper = localStorage.getItem('wallpaper') != null;
+const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 const showMenuOnTop = $computed(() => defaultStore.state.menuDisplay === 'top');
-let live2d = $ref<HTMLIFrameElement>();
+let live2d = $shallowRef<HTMLIFrameElement>();
 let widgetsLeft = $ref();
 let widgetsRight = $ref();
 
@@ -76,10 +77,10 @@ provideMetadataReceiver((info) => {
 	}
 });
 provide('shouldHeaderThin', showMenuOnTop);
-provide('shouldSpacerMin', true);
+provide('forceSpacerMin', true);
 
 function attachSticky(el) {
-	const sticky = new StickySidebar(el, defaultStore.state.menuDisplay === 'top' ? 0 : 16, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+	const sticky = new StickySidebar(el, 0, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 	window.addEventListener('scroll', () => {
 		sticky.calc(window.scrollY);
 	}, { passive: true });
@@ -123,24 +124,26 @@ function onAiClick(ev) {
 }
 
 if (window.innerWidth < 1024) {
-	localStorage.setItem('ui', 'default');
+	miLocalStorage.setItem('ui', 'default');
 	location.reload();
 }
 
 document.documentElement.style.overflowY = 'scroll';
 
-if (defaultStore.state.widgets.length === 0) {
-	defaultStore.set('widgets', [{
-		name: 'calendar',
-		id: 'a', place: null, data: {},
-	}, {
-		name: 'notifications',
-		id: 'b', place: null, data: {},
-	}, {
-		name: 'trends',
-		id: 'c', place: null, data: {},
-	}]);
-}
+defaultStore.ready.then(() => {
+	if (defaultStore.state.widgets.length === 0) {
+		defaultStore.set('widgets', [{
+			name: 'calendar',
+			id: 'a', place: null, data: {},
+		}, {
+			name: 'notifications',
+			id: 'b', place: null, data: {},
+		}, {
+			name: 'trends',
+			id: 'c', place: null, data: {},
+		}]);
+	}
+});
 
 onMounted(() => {
 	window.addEventListener('resize', () => {
@@ -245,7 +248,6 @@ onMounted(() => {
 		> .widgets {
 			//--panelBorder: none;
 			width: 300px;
-			margin-top: 16px;
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;

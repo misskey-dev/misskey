@@ -1,40 +1,43 @@
 <template>
-<div class="_formRoot">
-	<FormSection>
+<div class="_gaps_m">
+	<FormSection first>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
-		<FormInput v-model="emailAddress" type="email" manual-save>
+		<MkInput v-model="emailAddress" type="email" manual-save>
 			<template #prefix><i class="ti ti-mail"></i></template>
 			<template v-if="$i.email && !$i.emailVerified" #caption>{{ i18n.ts.verificationEmailSent }}</template>
 			<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="ti ti-check" style="color: var(--success);"></i> {{ i18n.ts.emailVerified }}</template>
-		</FormInput>
+		</MkInput>
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch :model-value="$i.receiveAnnouncementEmail" @update:model-value="onChangeReceiveAnnouncementEmail">
+		<MkSwitch :model-value="$i.receiveAnnouncementEmail" @update:model-value="onChangeReceiveAnnouncementEmail">
 			{{ i18n.ts.receiveAnnouncementFromInstance }}
-		</FormSwitch>
+		</MkSwitch>
 	</FormSection>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.emailNotification }}</template>
-		<FormSwitch v-model="emailNotification_mention" class="_formBlock">
-			{{ i18n.ts._notification._types.mention }}
-		</FormSwitch>
-		<FormSwitch v-model="emailNotification_reply" class="_formBlock">
-			{{ i18n.ts._notification._types.reply }}
-		</FormSwitch>
-		<FormSwitch v-model="emailNotification_quote" class="_formBlock">
-			{{ i18n.ts._notification._types.quote }}
-		</FormSwitch>
-		<FormSwitch v-model="emailNotification_follow" class="_formBlock">
-			{{ i18n.ts._notification._types.follow }}
-		</FormSwitch>
-		<FormSwitch v-model="emailNotification_receiveFollowRequest" class="_formBlock">
-			{{ i18n.ts._notification._types.receiveFollowRequest }}
-		</FormSwitch>
-		<FormSwitch v-model="emailNotification_groupInvited" class="_formBlock">
-			{{ i18n.ts._notification._types.groupInvited }}
-		</FormSwitch>
+
+		<div class="_gaps_s">
+			<MkSwitch v-model="emailNotification_mention">
+				{{ i18n.ts._notification._types.mention }}
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_reply">
+				{{ i18n.ts._notification._types.reply }}
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_quote">
+				{{ i18n.ts._notification._types.quote }}
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_follow">
+				{{ i18n.ts._notification._types.follow }}
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_receiveFollowRequest">
+				{{ i18n.ts._notification._types.receiveFollowRequest }}
+			</MkSwitch>
+			<MkSwitch v-model="emailNotification_groupInvited">
+				{{ i18n.ts._notification._types.groupInvited }}
+			</MkSwitch>
+		</div>
 	</FormSection>
 </div>
 </template>
@@ -42,8 +45,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 import FormSection from '@/components/form/section.vue';
-import FormInput from '@/components/form/input.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';

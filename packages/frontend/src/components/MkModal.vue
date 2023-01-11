@@ -1,7 +1,7 @@
 <template>
-<Transition :name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? 200 : 0" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
+<Transition :name="transitionName" :duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
@@ -61,9 +61,10 @@ let maxHeight = $ref<number>();
 let fixed = $ref(false);
 let transformOrigin = $ref('center');
 let showing = $ref(true);
-let content = $ref<HTMLElement>();
+let content = $shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
-const type = $computed(() => {
+let useSendAnime = $ref(false);
+const type = $computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
 		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
 			return 'drawer';
@@ -74,20 +75,46 @@ const type = $computed(() => {
 		return props.preferType!;
 	}
 });
+let transitionName = $computed((() =>
+	defaultStore.state.animation
+		? useSendAnime
+			? 'send'
+			: type === 'drawer'
+				? 'modal-drawer'
+				: type === 'popup'
+					? 'modal-popup'
+					: 'modal'
+		: ''
+));
+let transitionDuration = $computed((() =>
+	transitionName === 'send'
+		? 400
+		: transitionName === 'modal-popup'
+			? 100
+			: transitionName === 'modal'
+				? 200
+				: transitionName === 'modal-drawer'
+					? 200
+					: 0
+));
 
 let contentClicking = false;
 
-const close = () => {
+function close(opts: { useSendAnimation?: boolean } = {}) {
+	if (opts.useSendAnimation) {
+		useSendAnime = true;
+	}
+
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
 	emit('close');
-};
+}
 
-const onBgClick = () => {
+function onBgClick() {
 	if (contentClicking) return;
 	emit('click');
-};
+}
 
 if (type === 'drawer') {
 	maxHeight = window.innerHeight / 1.5;
@@ -254,6 +281,28 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.send-enter-active, .send-leave-active {
+	> .bg {
+		transition: opacity 0.3s !important;
+	}
+
+	> .content {
+    transform: translateY(0px);
+		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
+	}
+}
+.send-enter-from, .send-leave-to {
+	> .bg {
+		opacity: 0;
+	}
+
+	> .content {
+		pointer-events: none;
+		opacity: 0;
+		transform: translateY(-300px);
+	}
+}
+
 .modal-enter-active, .modal-leave-active {
 	> .bg {
 		transition: opacity 0.2s !important;
@@ -279,12 +328,12 @@ defineExpose({
 
 .modal-popup-enter-active, .modal-popup-leave-active {
 	> .bg {
-		transition: opacity 0.2s !important;
+		transition: opacity 0.1s !important;
 	}
 
 	> .content {
 		transform-origin: var(--transformOrigin);
-		transition: opacity 0.2s cubic-bezier(0, 0, 0.2, 1), transform 0.2s cubic-bezier(0, 0, 0.2, 1) !important;
+		transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1), transform 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
 .modal-popup-enter-from, .modal-popup-leave-to {

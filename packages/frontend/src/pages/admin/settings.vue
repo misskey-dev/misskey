@@ -4,141 +4,153 @@
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<FormSuspense :p="init">
-				<div class="_formRoot">
-					<FormInput v-model="name" class="_formBlock">
+				<div class="_gaps_m">
+					<MkInput v-model="name">
 						<template #label>{{ i18n.ts.instanceName }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormTextarea v-model="description" class="_formBlock">
+					<MkTextarea v-model="description">
 						<template #label>{{ i18n.ts.instanceDescription }}</template>
-					</FormTextarea>
+					</MkTextarea>
 
-					<FormInput v-model="tosUrl" class="_formBlock">
+					<MkInput v-model="tosUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.tosUrl }}</template>
-					</FormInput>
+					</MkInput>
 
 					<FormSplit :min-width="300">
-						<FormInput v-model="maintainerName" class="_formBlock">
+						<MkInput v-model="maintainerName">
 							<template #label>{{ i18n.ts.maintainerName }}</template>
-						</FormInput>
+						</MkInput>
 
-						<FormInput v-model="maintainerEmail" type="email" class="_formBlock">
+						<MkInput v-model="maintainerEmail" type="email">
 							<template #prefix><i class="ti ti-mail"></i></template>
 							<template #label>{{ i18n.ts.maintainerEmail }}</template>
-						</FormInput>
+						</MkInput>
 					</FormSplit>
 
-					<FormTextarea v-model="pinnedUsers" class="_formBlock">
+					<MkTextarea v-model="pinnedUsers">
 						<template #label>{{ i18n.ts.pinnedUsers }}</template>
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
-					</FormTextarea>
+					</MkTextarea>
 
 					<FormSection>
-						<FormSwitch v-model="enableRegistration" class="_formBlock">
-							<template #label>{{ i18n.ts.enableRegistration }}</template>
-						</FormSwitch>
+						<div class="_gaps_s">
+							<MkSwitch v-model="enableRegistration">
+								<template #label>{{ i18n.ts.enableRegistration }}</template>
+							</MkSwitch>
 
-						<FormSwitch v-model="emailRequiredForSignup" class="_formBlock">
-							<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
-						</FormSwitch>
+							<MkSwitch v-model="emailRequiredForSignup">
+								<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
+							</MkSwitch>
+						</div>
 					</FormSection>
 
 					<FormSection>
-						<FormSwitch v-model="enableLocalTimeline" class="_formBlock">{{ i18n.ts.enableLocalTimeline }}</FormSwitch>
-						<FormSwitch v-model="enableGlobalTimeline" class="_formBlock">{{ i18n.ts.enableGlobalTimeline }}</FormSwitch>
-						<FormInfo class="_formBlock">{{ i18n.ts.disablingTimelinesInfo }}</FormInfo>
+						<div class="_gaps_s">
+							<MkSwitch v-model="enableLocalTimeline">{{ i18n.ts.enableLocalTimeline }}</MkSwitch>
+							<MkSwitch v-model="enableGlobalTimeline">{{ i18n.ts.enableGlobalTimeline }}</MkSwitch>
+							<FormInfo>{{ i18n.ts.disablingTimelinesInfo }}</FormInfo>
+						</div>
 					</FormSection>
 
 					<FormSection>
 						<template #label>{{ i18n.ts.theme }}</template>
 
-						<FormInput v-model="iconUrl" class="_formBlock">
-							<template #prefix><i class="ti ti-link"></i></template>
-							<template #label>{{ i18n.ts.iconUrl }}</template>
-						</FormInput>
+						<div class="_gaps_m">
+							<MkInput v-model="iconUrl">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.iconUrl }}</template>
+							</MkInput>
 
-						<FormInput v-model="bannerUrl" class="_formBlock">
-							<template #prefix><i class="ti ti-link"></i></template>
-							<template #label>{{ i18n.ts.bannerUrl }}</template>
-						</FormInput>
+							<MkInput v-model="bannerUrl">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.bannerUrl }}</template>
+							</MkInput>
 
-						<FormInput v-model="backgroundImageUrl" class="_formBlock">
-							<template #prefix><i class="ti ti-link"></i></template>
-							<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
-						</FormInput>
+							<MkInput v-model="backgroundImageUrl">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
+							</MkInput>
 
-						<FormInput v-model="themeColor" class="_formBlock">
-							<template #prefix><i class="ti ti-palette"></i></template>
-							<template #label>{{ i18n.ts.themeColor }}</template>
-							<template #caption>#RRGGBB</template>
-						</FormInput>
+							<MkInput v-model="themeColor">
+								<template #prefix><i class="ti ti-palette"></i></template>
+								<template #label>{{ i18n.ts.themeColor }}</template>
+								<template #caption>#RRGGBB</template>
+							</MkInput>
 
-						<FormTextarea v-model="defaultLightTheme" class="_formBlock">
-							<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
-							<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-						</FormTextarea>
+							<MkTextarea v-model="defaultLightTheme">
+								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
+								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
+							</MkTextarea>
 
-						<FormTextarea v-model="defaultDarkTheme" class="_formBlock">
-							<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
-							<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-						</FormTextarea>
+							<MkTextarea v-model="defaultDarkTheme">
+								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
+								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
+							</MkTextarea>
+						</div>
 					</FormSection>
 
 					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
 
-						<FormSwitch v-model="cacheRemoteFiles" class="_formBlock">
-							<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
-							<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
-						</FormSwitch>
+						<div class="_gaps_m">
+							<MkSwitch v-model="cacheRemoteFiles">
+								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
+								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
+							</MkSwitch>
 
-						<FormSplit :min-width="280">
-							<FormInput v-model="localDriveCapacityMb" type="number" class="_formBlock">
-								<template #label>{{ i18n.ts.driveCapacityPerLocalAccount }}</template>
-								<template #suffix>MB</template>
-								<template #caption>{{ i18n.ts.inMb }}</template>
-							</FormInput>
+							<FormSplit :min-width="280">
+								<MkInput v-model="localDriveCapacityMb" type="number">
+									<template #label>{{ i18n.ts.driveCapacityPerLocalAccount }}</template>
+									<template #suffix>MB</template>
+									<template #caption>{{ i18n.ts.inMb }}</template>
+								</MkInput>
 
-							<FormInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles" class="_formBlock">
-								<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
-								<template #suffix>MB</template>
-								<template #caption>{{ i18n.ts.inMb }}</template>
-							</FormInput>
-						</FormSplit>
+								<MkInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
+									<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
+									<template #suffix>MB</template>
+									<template #caption>{{ i18n.ts.inMb }}</template>
+								</MkInput>
+							</FormSplit>
+						</div>
 					</FormSection>
 
 					<FormSection>
 						<template #label>ServiceWorker</template>
 
-						<FormSwitch v-model="enableServiceWorker" class="_formBlock">
-							<template #label>{{ i18n.ts.enableServiceworker }}</template>
-							<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
-						</FormSwitch>
+						<div class="_gaps_m">
+							<MkSwitch v-model="enableServiceWorker">
+								<template #label>{{ i18n.ts.enableServiceworker }}</template>
+								<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
+							</MkSwitch>
 
-						<template v-if="enableServiceWorker">
-							<FormInput v-model="swPublicKey" class="_formBlock">
-								<template #prefix><i class="ti ti-key"></i></template>
-								<template #label>Public key</template>
-							</FormInput>
+							<template v-if="enableServiceWorker">
+								<MkInput v-model="swPublicKey">
+									<template #prefix><i class="ti ti-key"></i></template>
+									<template #label>Public key</template>
+								</MkInput>
 
-							<FormInput v-model="swPrivateKey" class="_formBlock">
-								<template #prefix><i class="ti ti-key"></i></template>
-								<template #label>Private key</template>
-							</FormInput>
-						</template>
+								<MkInput v-model="swPrivateKey">
+									<template #prefix><i class="ti ti-key"></i></template>
+									<template #label>Private key</template>
+								</MkInput>
+							</template>
+						</div>
 					</FormSection>
 
 					<FormSection>
 						<template #label>DeepL Translation</template>
 
-						<FormInput v-model="deeplAuthKey" class="_formBlock">
-							<template #prefix><i class="ti ti-key"></i></template>
-							<template #label>DeepL Auth Key</template>
-						</FormInput>
-						<FormSwitch v-model="deeplIsPro" class="_formBlock">
-							<template #label>Pro account</template>
-						</FormSwitch>
+						<div class="_gaps_m">
+							<MkInput v-model="deeplAuthKey">
+								<template #prefix><i class="ti ti-key"></i></template>
+								<template #label>DeepL Auth Key</template>
+							</MkInput>
+							<MkSwitch v-model="deeplIsPro">
+								<template #label>Pro account</template>
+							</MkSwitch>
+						</div>
 					</FormSection>
 				</div>
 			</FormSuspense>
@@ -150,9 +162,9 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';

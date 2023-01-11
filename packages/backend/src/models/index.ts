@@ -64,6 +64,8 @@ import { Channel } from '@/models/entities/Channel.js';
 import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
 import { Role } from '@/models/entities/Role.js';
 import { RoleAssignment } from '@/models/entities/RoleAssignment.js';
+import { Flash } from '@/models/entities/Flash.js';
+import { FlashLike } from '@/models/entities/FlashLike.js';
 import type { Repository } from 'typeorm';
 
 export {
@@ -133,6 +135,8 @@ export {
 	RetentionAggregation,
 	Role,
 	RoleAssignment,
+	Flash,
+	FlashLike,
 };
 
 export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
@@ -201,3 +205,5 @@ export type ChannelsRepository = Repository<Channel>;
 export type RetentionAggregationsRepository = Repository<RetentionAggregation>;
 export type RolesRepository = Repository<Role>;
 export type RoleAssignmentsRepository = Repository<RoleAssignment>;
+export type FlashsRepository = Repository<Flash>;
+export type FlashLikesRepository = Repository<FlashLike>;

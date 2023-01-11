@@ -1,18 +1,18 @@
 <template>
-<section class="_section">
-	<div class="_title">{{ $t('_auth.shareAccess', { name: app.name }) }}</div>
-	<div class="_content">
+<section class="">
+	<div class="">{{ $t('_auth.shareAccess', { name: app.name }) }}</div>
+	<div class="">
 		<h2>{{ app.name }}</h2>
 		<p class="id">{{ app.id }}</p>
 		<p class="description">{{ app.description }}</p>
 	</div>
-	<div class="_content">
+	<div class="">
 		<h2>{{ $ts._auth.permissionAsk }}</h2>
 		<ul>
 			<li v-for="p in app.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 		</ul>
 	</div>
-	<div class="_footer">
+	<div class="">
 		<MkButton inline @click="cancel">{{ $ts.cancel }}</MkButton>
 		<MkButton inline primary @click="accept">{{ $ts.accept }}</MkButton>
 	</div>

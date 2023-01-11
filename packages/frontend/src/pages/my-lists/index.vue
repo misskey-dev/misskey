@@ -5,7 +5,7 @@
 		<div class="qkcjvfiv">
 			<MkButton primary class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createList }}</MkButton>
 
-			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists _content">
+			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists">
 				<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
 					<div class="name">{{ list.name }}</div>
 					<MkAvatars :user-ids="list.userIds"/>
@@ -25,7 +25,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const pagingComponent = $ref<InstanceType<typeof MkPagination>>();
+const pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
 const pagination = {
 	endpoint: 'users/lists/list' as const,
