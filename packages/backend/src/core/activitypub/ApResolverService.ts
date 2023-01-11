@@ -12,6 +12,7 @@ import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
 
 export class Resolver {
@@ -32,12 +33,13 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
+		private loggerService: LoggerService,
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
-		}));
+		}), this.loggerService.getLogger('ap-request') );
 	}
 
 	@bindThis

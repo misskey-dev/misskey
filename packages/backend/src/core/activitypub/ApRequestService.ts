@@ -6,6 +6,7 @@ import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
 import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 
 type Request = {
@@ -36,10 +37,11 @@ export class ApRequestService {
 
 		private userKeypairStoreService: UserKeypairStoreService,
 		private httpRequestService: HttpRequestService,
+		private loggerService: LoggerService,
 	) {
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
-		}));
+		}), this.loggerService.getLogger('ap-request') );
 	}
 
 	@bindThis
