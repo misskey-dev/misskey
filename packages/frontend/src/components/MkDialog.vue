@@ -4,13 +4,13 @@
 		<div v-if="icon" :class="$style.icon">
 			<i :class="icon"></i>
 		</div>
-		<div v-else-if="!input && !select" :class="[$style.icon, type]">
-			<i v-if="type === 'success'" class="ti ti-check"></i>
-			<i v-else-if="type === 'error'" class="ti ti-circle-x"></i>
-			<i v-else-if="type === 'warning'" class="ti ti-alert-triangle"></i>
-			<i v-else-if="type === 'info'" class="ti ti-info-circle"></i>
-			<i v-else-if="type === 'question'" class="ti ti-question-circle"></i>
-			<MkLoading v-else-if="type === 'waiting'" :em="true"/>
+		<div v-else-if="!input && !select" :class="[$style.icon, $style['type_' + type]]">
+			<i v-if="type === 'success'" :class="$style.iconInner" class="ti ti-check"></i>
+			<i v-else-if="type === 'error'" :class="$style.iconInner" class="ti ti-circle-x"></i>
+			<i v-else-if="type === 'warning'" :class="$style.iconInner" class="ti ti-alert-triangle"></i>
+			<i v-else-if="type === 'info'" :class="$style.iconInner" class="ti ti-info-circle"></i>
+			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-question-circle"></i>
+			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
 		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
 		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
@@ -158,30 +158,30 @@ onBeforeUnmount(() => {
 .icon {
 	font-size: 24px;
 
-	&.info {
-		color: #55c4dd;
-	}
-
-	&.success {
-		color: var(--success);
-	}
-
-	&.error {
-		color: var(--error);
-	}
-
-	&.warning {
-		color: var(--warn);
-	}
-
-	> * {
-		display: block;
-		margin: 0 auto;
-	}
-
 	& + .title {
 		margin-top: 8px;
 	}
+}
+
+.iconInner {
+	display: block;
+	margin: 0 auto;
+}
+
+.type_info {
+	color: #55c4dd;
+}
+
+.type_success {
+	color: var(--success);
+}
+
+.type_error {
+	color: var(--error);
+}
+
+.type_warning {
+	color: var(--warn);
 }
 
 .title {

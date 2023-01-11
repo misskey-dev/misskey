@@ -2445,13 +2445,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/katex@npm:0.16.0":
-  version: 0.16.0
-  resolution: "@types/katex@npm:0.16.0"
-  checksum: f93ceb2496621d18a28252264c0b7f5b0bdf125f9dc92d1adfbd9bf00942cd2918de336fae628d3929e615aaf84b7adb1781711c4e4605664be0827b1013ec14
-  languageName: node
-  linkType: hard
-
 "@types/keyv@npm:^3.1.4":
   version: 3.1.4
   resolution: "@types/keyv@npm:3.1.4"
@@ -5436,13 +5429,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^8.0.0":
-  version: 8.3.0
-  resolution: "commander@npm:8.3.0"
-  checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
-  languageName: node
-  linkType: hard
-
 "commander@npm:^9.0.0":
   version: 9.4.1
   resolution: "commander@npm:9.4.1"
@@ -8049,7 +8035,6 @@ __metadata:
     "@types/glob": 8.0.0
     "@types/gulp": 4.0.10
     "@types/gulp-rename": 2.0.1
-    "@types/katex": 0.16.0
     "@types/matter-js": 0.18.2
     "@types/punycode": 2.1.0
     "@types/sanitize-html": ^2.8.0
@@ -8090,7 +8075,6 @@ __metadata:
     insert-text-at-cursor: 0.3.0
     is-file-animated: 1.0.2
     json5: 2.2.3
-    katex: 0.16.4
     matter-js: 0.18.0
     mfm-js: 0.23.1
     misskey-js: 0.0.14
@@ -10918,17 +10902,6 @@ __metadata:
     jwa: ^2.0.0
     safe-buffer: ^5.0.1
   checksum: d68d07aa6d1b8cb35c363a9bd2b48f15064d342a5d9dc18a250dbbce8dc06bd7e4792516c50baa16b8d14f61167c19e851fd7f66b59ecc68b7f6a013759765f7
-  languageName: node
-  linkType: hard
-
-"katex@npm:0.16.4":
-  version: 0.16.4
-  resolution: "katex@npm:0.16.4"
-  dependencies:
-    commander: ^8.0.0
-  bin:
-    katex: cli.js
-  checksum: 94eaf1fbd8365792308527695c09baa6d2d84e2d0170e4af44fb12be3ed403fb3430caff2410117f2f1a9dfdb329f61ab9611d97e645d9c89ee60940698a45cc
   languageName: node
   linkType: hard
 

@@ -23,7 +23,7 @@
 		<button :class="$style.navButton" class="_button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
-		<button :class="$style.navButton" class="_button post" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
+		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
 	<Transition
@@ -47,7 +47,9 @@
 		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
 		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
-		<XDrawerMenu v-if="drawerMenuShowing" :class="$style.menuDrawer"/>
+		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
+			<XDrawerMenu/>
+		</div>
 	</Transition>
 
 	<Transition
@@ -72,6 +74,7 @@
 		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
 	>
 		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
+			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
 			<XWidgets/>
 		</div>
 	</Transition>
@@ -308,6 +311,18 @@ $widgets-hide-threshold: 1090px;
 	background: var(--bg);
 }
 
+.widgetsCloseButton {
+	padding: 8px;
+	display: block;
+	margin: 0 auto;
+}
+
+@media (min-width: 370px) {
+	.widgetsCloseButton {
+		display: none;
+	}
+}
+
 .nav {
 	position: fixed;
 	z-index: 1000;
@@ -337,20 +352,25 @@ $widgets-hide-threshold: 1090px;
 	color: var(--fg);
 
 	&:hover {
+		background: var(--panelHighlight);
+	}
+
+	&:active {
 		background: var(--X2);
 	}
+}
 
-	&:disabled {
-		cursor: default;
+.postButton {
+	composes: navButton;
+	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	color: var(--fgOnAccent);
 
-		> .navButtonIcon {
-			opacity: 0.5;
-		}
+	&:hover {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
 	}
 
-	&.post {
-		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-		color: var(--fgOnAccent);
+	&:active {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
 	}
 }
 
@@ -392,12 +412,6 @@ $widgets-hide-threshold: 1090px;
 }
 
 .spacer {
-	$widgets-hide-threshold: 1090px;
-
-	height: calc(env(safe-area-inset-bottom, 0px) + 96px);
-
-	@media (min-width: ($widgets-hide-threshold + 1px)) {
-		display: none;
-	}
+	height: calc(var(--minBottomSpacing));
 }
 </style>

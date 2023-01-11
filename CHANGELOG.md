@@ -31,6 +31,7 @@ You should also include the user name that made the change.
 #### For users
 - ノートのウォッチ機能が削除されました
 - アンケートに投票された際に通知が作成されなくなりました
+- ノートの数式埋め込みが削除されました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.2にアップデートされました
@@ -61,6 +62,9 @@ You should also include the user name that made the change.
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: improve note scoring for featured notes @CyberRex0
+- Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: improve stats api performance @syuilo
+- Server: improve nodeinfo performance @syuilo
 - Server: delete outdated notifications regularly to improve db performance @syuilo
 - Server: delete outdated hard-mutes regularly to improve db performance @syuilo
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
@@ -109,6 +113,7 @@ You should also include the user name that made the change.
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
+- Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa

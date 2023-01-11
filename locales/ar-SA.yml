@@ -1117,6 +1117,8 @@ _weekday:
   friday: "الجمعة"
   saturday: "السبت"
 _widgets:
+  profile: "الملف التعريفي"
+  instanceInfo: "معلومات مثيل الخادم"
   memo: "ملاحظة لاصقة"
   notifications: "الإشعارات"
   timeline: "الخيط الزمني"

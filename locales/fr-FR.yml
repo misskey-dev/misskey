@@ -1289,6 +1289,8 @@ _weekday:
   friday: "Vendredi"
   saturday: "Samedi"
 _widgets:
+  profile: "Profil"
+  instanceInfo: "Informations sur l’instance"
   memo: "Note collante"
   notifications: "Notifications"
   timeline: "Fil"
