@@ -55,10 +55,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot suspend admin');
 			}
 
-			if (user.isModerator) {
-				throw new Error('cannot suspend moderator');
-			}
-
 			await this.usersRepository.update(user.id, {
 				isSuspended: true,
 			});

@@ -47,13 +47,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
-			if ((_me.isModerator && !_me.isAdmin) && user.isAdmin) {
+			if (!_me.isAdmin && user.isAdmin) {
 				throw new Error('cannot show info of admin');
 			}
 
 			if (!_me.isAdmin) {
 				return {
-					isModerator: user.isModerator,
 					isSilenced: user.isSilenced,
 					isSuspended: user.isSuspended,
 				};
@@ -80,7 +79,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				mutedWords: profile.mutedWords,
 				mutedInstances: profile.mutedInstances,
 				mutingNotificationTypes: profile.mutingNotificationTypes,
-				isModerator: user.isModerator,
 				isSilenced: user.isSilenced,
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,

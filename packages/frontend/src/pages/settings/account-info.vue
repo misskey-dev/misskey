@@ -115,10 +115,6 @@
 			<template #value>{{ $i.usePasswordLessLogin ? i18n.ts.yes : i18n.ts.no }}</template>
 		</MkKeyValue>
 		<MkKeyValue oneline style="margin: 1em 0;">
-			<template #key>isModerator</template>
-			<template #value>{{ $i.isModerator ? i18n.ts.yes : i18n.ts.no }}</template>
-		</MkKeyValue>
-		<MkKeyValue oneline style="margin: 1em 0;">
 			<template #key>isAdmin</template>
 			<template #value>{{ $i.isAdmin ? i18n.ts.yes : i18n.ts.no }}</template>
 		</MkKeyValue>

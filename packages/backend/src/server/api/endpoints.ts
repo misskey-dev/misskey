@@ -37,8 +37,6 @@ import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js'
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
 import * as ep___admin_invite from './endpoints/admin/invite.js';
-import * as ep___admin_moderators_add from './endpoints/admin/moderators/add.js';
-import * as ep___admin_moderators_remove from './endpoints/admin/moderators/remove.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -365,8 +363,6 @@ const eps = [
 	['admin/get-table-stats', ep___admin_getTableStats],
 	['admin/get-user-ips', ep___admin_getUserIps],
 	['admin/invite', ep___admin_invite],
-	['admin/moderators/add', ep___admin_moderators_add],
-	['admin/moderators/remove', ep___admin_moderators_remove],
 	['admin/promo/create', ep___admin_promo_create],
 	['admin/queue/clear', ep___admin_queue_clear],
 	['admin/queue/deliver-delayed', ep___admin_queue_deliverDelayed],

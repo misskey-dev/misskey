@@ -19,6 +19,7 @@ export const paramDef = {
 		name: { type: 'string' },
 		description: { type: 'string' },
 		isPublic: { type: 'boolean' },
+		forModeration: { type: 'boolean' },
 		options: {
 			type: 'object',
 		},
@@ -27,6 +28,7 @@ export const paramDef = {
 		'name',
 		'description',
 		'isPublic',
+		'forModeration',
 		'options',
 	],
 } as const;
@@ -51,6 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: ps.name,
 				description: ps.description,
 				isPublic: ps.isPublic,
+				forModeration: ps.forModeration,
 				options: ps.options,
 			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
 	

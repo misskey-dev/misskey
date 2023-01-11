@@ -204,7 +204,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 	) {
 		const isSecure = user != null && token == null;
-		const isModerator = user != null && (user.isModerator || user.isAdmin);
 
 		if (ep.meta.secure && !isSecure) {
 			throw new ApiError(accessDenied);

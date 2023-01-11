@@ -142,12 +142,6 @@ export class User {
 	})
 	public isAdmin: boolean;
 
-	@Column('boolean', {
-		default: false,
-		comment: 'Whether the User is a moderator.',
-	})
-	public isModerator: boolean;
-
 	@Index()
 	@Column('boolean', {
 		default: true,

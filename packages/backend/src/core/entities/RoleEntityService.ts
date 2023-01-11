@@ -40,6 +40,7 @@ export class RoleEntityService {
 			name: role.name,
 			description: role.description,
 			isPublic: role.isPublic,
+			forModeration: role.forModeration,
 			options: role.options,
 		});
 	}

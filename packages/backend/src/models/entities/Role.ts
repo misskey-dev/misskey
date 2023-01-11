@@ -31,6 +31,11 @@ export class Role {
 	})
 	public isPublic: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public forModeration: boolean;
+
 	@Column('jsonb', {
 		default: { },
 	})

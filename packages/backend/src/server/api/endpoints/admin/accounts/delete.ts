@@ -45,10 +45,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot suspend admin');
 			}
 
-			if (user.isModerator) {
-				throw new Error('cannot suspend moderator');
-			}
-
 			if (this.userEntityService.isLocalUser(user)) {
 				// 物理削除する前にDelete activityを送信する
 				await this.userSuspendService.doPostSuspend(user).catch(err => {});
