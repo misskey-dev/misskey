@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
@@ -15,7 +15,7 @@
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')" @queue="queueUpdated" @note="onNote"/>
+	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
 </XColumn>
 </template>
 
@@ -40,8 +40,6 @@ const emit = defineEmits<{
 }>();
 
 let disabled = $ref(false);
-let indicated = $ref(false);
-let columnActive = $ref(true);
 
 onMounted(() => {
 	if (props.column.tl == null) {
@@ -75,26 +73,6 @@ async function setType() {
 	updateColumn(props.column.id, {
 		tl: src,
 	});
-}
-
-function queueUpdated(q) {
-	if (columnActive) {
-		indicated = q !== 0;
-	}
-}
-
-function onNote() {
-	if (!columnActive) {
-		indicated = true;
-	}
-}
-
-function onChangeActiveState(state) {
-	columnActive = state;
-
-	if (columnActive) {
-		indicated = false;
-	}
 }
 
 const menu = [{

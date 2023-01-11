@@ -114,16 +114,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="section">
-				<div class="title">{{ i18n.ts._mfm.inlineMath }}</div>
-				<div class="content">
-					<p>{{ i18n.ts._mfm.inlineMathDescription }}</p>
-					<div class="preview">
-						<Mfm :text="preview_inlineMath"/>
-						<MkTextarea v-model="preview_inlineMath"><template #label>MFM</template></MkTextarea>
-					</div>
-				</div>
-			</div>
 			<!-- deprecated
 		<div class="section">
 			<div class="title">{{ i18n.ts._mfm.search }}</div>
@@ -329,7 +319,6 @@ let preview_small = $ref(`<small>${i18n.ts._mfm.dummy}</small>`);
 let preview_center = $ref(`<center>${i18n.ts._mfm.dummy}</center>`);
 let preview_inlineCode = $ref('`<: "Hello, world!"`');
 let preview_blockCode = $ref('```\n~ (#i, 100) {\n\t<: ? ((i % 15) = 0) "FizzBuzz"\n\t\t.? ((i % 3) = 0) "Fizz"\n\t\t.? ((i % 5) = 0) "Buzz"\n\t\t. i\n}\n```');
-let preview_inlineMath = $ref('\\(x= \\frac{-b\' \\pm \\sqrt{(b\')^2-ac}}{a}\\)');
 let preview_quote = $ref(`> ${i18n.ts._mfm.dummy}`);
 let preview_search = $ref(`${i18n.ts._mfm.dummy} 検索`);
 let preview_jelly = $ref('$[jelly 🍮] $[jelly.speed=5s 🍮]');

@@ -8,10 +8,10 @@
 	</template>
 
 	<template #default="{ items: notes }">
-		<div class="giivymft" :class="{ noGap }">
-			<XList ref="notes" v-slot="{ item: note }" :items="notes" :direction="pagination.reversed ? 'up' : 'down'" :reversed="pagination.reversed" :no-gap="noGap" :ad="true" class="notes">
-				<XNote :key="note._featuredId_ || note._prId_ || note.id" class="qtqtichx" :note="note"/>
-			</XList>
+		<div :class="[$style.root, { [$style.noGap]: noGap }]">
+			<MkDateSeparatedList ref="notes" v-slot="{ item: note }" :items="notes" :direction="pagination.reversed ? 'up' : 'down'" :reversed="pagination.reversed" :no-gap="noGap" :ad="true" :class="$style.notes">
+				<XNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
+			</MkDateSeparatedList>
 		</div>
 	</template>
 </MkPagination>
@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
 import XNote from '@/components/MkNote.vue';
-import XList from '@/components/MkDateSeparatedList.vue';
+import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 
@@ -36,8 +36,8 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.giivymft {
+<style lang="scss" module>
+.root {
 	&.noGap {
 		> .notes {
 			background: var(--panel);
@@ -48,7 +48,7 @@ defineExpose({
 		> .notes {
 			background: var(--bg);
 
-			.qtqtichx {
+			.note {
 				background: var(--panel);
 				border-radius: var(--radius);
 			}

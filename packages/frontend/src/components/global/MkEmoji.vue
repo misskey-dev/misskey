@@ -1,6 +1,6 @@
 <template>
-<img v-if="isCustom" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
-<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" decoding="async" @pointerenter="computeTitle"/>
+<img v-if="isCustom" :class="[$style.root, $style.custom, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="alt" :title="alt" decoding="async"/>
+<img v-else-if="char && !useOsNativeEmojis" :class="$style.root" :src="url" :alt="alt" decoding="async" @pointerenter="computeTitle"/>
 <span v-else-if="char && useOsNativeEmojis" :alt="alt" @pointerenter="computeTitle">{{ char }}</span>
 <span v-else>{{ emoji }}</span>
 </template>
@@ -47,32 +47,32 @@ function computeTitle(event: PointerEvent): void {
 }
 </script>
 
-<style lang="scss" scoped>
-.mk-emoji {
+<style lang="scss" module>
+.root {
+	height: 1.25em;
+	vertical-align: -0.25em;
+}
+
+.custom {
+	height: 2.5em;
+	vertical-align: middle;
+	transition: transform 0.2s ease;
+
+	&:hover {
+		transform: scale(1.2);
+	}
+}
+
+.normal {
 	height: 1.25em;
 	vertical-align: -0.25em;
 
-	&.custom {
-		height: 2.5em;
-		vertical-align: middle;
-		transition: transform 0.2s ease;
-
-		&:hover {
-			transform: scale(1.2);
-		}
-
-		&.normal {
-			height: 1.25em;
-			vertical-align: -0.25em;
-
-			&:hover {
-				transform: none;
-			}
-		}
+	&:hover {
+		transform: none;
 	}
+}
 
-	&.noStyle {
-		height: auto !important;
-	}
+.noStyle {
+	height: auto !important;
 }
 </style>

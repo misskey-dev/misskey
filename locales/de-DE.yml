@@ -1302,6 +1302,8 @@ _weekday:
   friday: "Freitag"
   saturday: "Samstag"
 _widgets:
+  profile: "Profil"
+  instanceInfo: "Instanzinformationen"
   memo: "Merkzettel"
   notifications: "Benachrichtigungen"
   timeline: "Chronik"

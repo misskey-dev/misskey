@@ -31,6 +31,7 @@ You should also include the user name that made the change.
 #### For users
 - ノートのウォッチ機能が削除されました
 - アンケートに投票された際に通知が作成されなくなりました
+- ノートの数式埋め込みが削除されました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.2にアップデートされました
@@ -61,12 +62,14 @@ You should also include the user name that made the change.
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: improve note scoring for featured notes @CyberRex0
+- Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: improve stats api performance @syuilo
+- Server: improve nodeinfo performance @syuilo
 - Server: delete outdated notifications regularly to improve db performance @syuilo
 - Server: delete outdated hard-mutes regularly to improve db performance @syuilo
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
 - Server: improve activitypub deliver performance @syuilo
 - Client: use tabler-icons instead of fontawesome to better design @syuilo
-- Client: Add AiScript App widget
 - Client: Add new gabber kick sounds (thanks for noizenecio)
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
@@ -74,15 +77,18 @@ You should also include the user name that made the change.
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
-- Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: Implement the button to subscribe push notification @tamaina
 - Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
-- Client: Improve RSS widget @tamaina
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
 - Client: Support remote objects in search @SoniEx2
 - Client: user activity page @syuilo
+- Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: add user list widget @syuilo
+- Client: Add AiScript App widget
+- Client: add profile widget @syuilo
+- Client: add instance info widget @syuilo
+- Client: Improve RSS widget @tamaina
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: add new theme @syuilo
@@ -107,6 +113,7 @@ You should also include the user name that made the change.
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
+- Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
@@ -114,6 +121,11 @@ You should also include the user name that made the change.
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo
+
+### Special thanks
+- All contributors
+- All who have created instances for the beta test
+- All who participated in the beta test
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes
