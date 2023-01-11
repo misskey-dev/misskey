@@ -7,7 +7,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireAdmin: true,
+	rolePermission: 'viewUserIps',
 } as const;
 
 export const paramDef = {

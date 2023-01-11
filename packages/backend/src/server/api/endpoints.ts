@@ -674,11 +674,6 @@ export interface IEndpointMeta {
 	readonly requireCredential?: boolean;
 
 	/**
-	 * 管理者のみ使えるエンドポイントか否か
-	 */
-	readonly requireAdmin?: boolean;
-
-	/**
 	 * forModerationなロールを必要とするか
 	 */
 	readonly requireModerator?: boolean;

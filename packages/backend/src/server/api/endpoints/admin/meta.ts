@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: true,
-	requireAdmin: true,
+	rolePermission: 'viewInstanceSettings',
 
 	res: {
 		type: 'object',

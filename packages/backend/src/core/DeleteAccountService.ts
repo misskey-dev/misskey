@@ -23,6 +23,9 @@ export class DeleteAccountService {
 		id: string;
 		host: string | null;
 	}): Promise<void> {
+		const _user = await this.usersRepository.findOneByOrFail({ id: user.id });
+		if (_user.isAdmin) throw new Error('cannot delete an admin account');
+
 		// 物理削除する前にDelete activityを送信する
 		await this.userSuspendService.doPostSuspend(user).catch(e => {});
 	

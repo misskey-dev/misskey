@@ -9,6 +9,9 @@ import { MetaService } from '@/core/MetaService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RoleOptions = {
+	//#region moderation
+	editInstanceSettings: boolean;
+	viewInstanceSettings: boolean;
 	manageJobQueue: boolean;
 	userSuspend: boolean;
 	userSilence: boolean;
@@ -18,6 +21,7 @@ export type RoleOptions = {
 	deleteRole: boolean;
 	assignRole: boolean;
 	invite: boolean;
+	viewUserIps: boolean;
 	createCustomEmoji: boolean;
 	updateCustomEmoji: boolean;
 	deleteCustomEmoji: boolean;
@@ -31,6 +35,8 @@ export type RoleOptions = {
 	resetPassword: boolean;
 	resolveAbuseUserReports: boolean;
 	showUserDetails: boolean;
+	//#endregion
+
 	forceGtlAvailable: boolean;
 	forceLtlAvailable: boolean;
 	driveCapacityMb: number;

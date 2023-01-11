@@ -254,10 +254,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (!user!.isAdmin) {
-			if (ep.meta.requireAdmin) {
-				throw new ApiError(accessDenied, { reason: 'You are not the admin.' });
-			}
-
 			if (ep.meta.rolePermission) {
 				const myRole = await this.roleService.getUserRoleOptions(user!.id);
 				if (myRole[ep.meta.rolePermission] !== true) {
