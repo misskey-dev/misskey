@@ -29,6 +29,7 @@ You should also include the user name that made the change.
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - 従来のモデレーターフラグは廃止され、より高度なロール機能が導入されました
 	- これに伴い、アップデートを行うと全てのモデレーターフラグは失われます。そのため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
+	- ユーザーごとのドライブ容量設定はロール機能に統合されました
 
 #### For users
 - ノートのウォッチ機能が削除されました
