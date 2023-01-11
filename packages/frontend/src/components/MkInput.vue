@@ -17,7 +17,7 @@
 			:spellcheck="spellcheck"
 			:step="step"
 			:list="id"
-      :class="inputclass"
+      :id="inputId"
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
@@ -59,7 +59,7 @@ const props = defineProps<{
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
-  inputclass?: string;
+  inputId?: string;
 }>();
 
 const emit = defineEmits<{
