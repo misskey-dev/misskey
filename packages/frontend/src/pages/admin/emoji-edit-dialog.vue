@@ -46,7 +46,7 @@ let dialog = $ref(null);
 let name: string = $ref(props.emoji.name);
 let category: string = $ref(props.emoji.category);
 let aliases: string = $ref(props.emoji.aliases.join(' '));
-const categories = await getCustomEmojiCategories();
+const categories = getCustomEmojiCategories();
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean, updated?: any }): void,

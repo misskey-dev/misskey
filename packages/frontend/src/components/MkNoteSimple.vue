@@ -1,15 +1,15 @@
 <template>
-<div class="yohlumlk">
-	<MkAvatar class="avatar" :user="note.user"/>
-	<div class="main">
-		<MkNoteHeader class="header" :note="note" :mini="true"/>
-		<div class="body">
-			<p v-if="note.cw != null" class="cw">
-				<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$i"/>
+<div :class="$style.root">
+	<MkAvatar :class="$style.avatar" :user="note.user"/>
+	<div :class="$style.main">
+		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
+		<div>
+			<p v-if="note.cw != null" :class="$style.cw">
+				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i"/>
 				<MkCwButton v-model="showContent" :note="note"/>
 			</p>
-			<div v-show="note.cw == null || showContent" class="content">
-				<MkSubNoteContent class="text" :note="note"/>
+			<div v-show="note.cw == null || showContent">
+				<MkSubNoteContent :class="$style.text" :note="note"/>
 			</div>
 		</div>
 	</div>
@@ -31,73 +31,60 @@ const props = defineProps<{
 const showContent = $ref(false);
 </script>
 
-<style lang="scss" scoped>
-.yohlumlk {
+<style lang="scss" module>
+.root {
 	display: flex;
 	margin: 0;
 	padding: 0;
 	overflow: clip;
 	font-size: 0.95em;
+}
 
-	> .avatar {
-		flex-shrink: 0;
-		display: block;
-		margin: 0 10px 0 0;
-		width: 40px;
-		height: 40px;
-		border-radius: 8px;
-	}
+.avatar {
+	flex-shrink: 0;
+	display: block;
+	margin: 0 10px 0 0;
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+}
 
-	> .main {
-		flex: 1;
-		min-width: 0;
+.main {
+	flex: 1;
+	min-width: 0;
+}
 
-		> .header {
-			margin-bottom: 2px;
-		}
+.header {
+	margin-bottom: 2px;
+}
 
-		> .body {
+.cw {
+	cursor: default;
+	display: block;
+	margin: 0;
+	padding: 0;
+	overflow-wrap: break-word;
+}
 
-			> .cw {
-				cursor: default;
-				display: block;
-				margin: 0;
-				padding: 0;
-				overflow-wrap: break-word;
-
-				> .text {
-					margin-right: 8px;
-				}
-			}
-
-			> .content {
-				> .text {
-					cursor: default;
-					margin: 0;
-					padding: 0;
-				}
-			}
-		}
-	}
+.text {
+	cursor: default;
+	margin: 0;
+	padding: 0;
 }
 
 @container (min-width: 350px) {
-	.yohlumlk {
-		> .avatar {
-			margin: 0 10px 0 0;
-			width: 44px;
-			height: 44px;
-		}
+	.avatar {
+		margin: 0 10px 0 0;
+		width: 44px;
+		height: 44px;
 	}
 }
 
 @container (min-width: 500px) {
-	.yohlumlk {
-		> .avatar {
-			margin: 0 12px 0 0;
-			width: 48px;
-			height: 48px;
-		}
+	.avatar {
+		margin: 0 12px 0 0;
+		width: 48px;
+		height: 48px;
 	}
 }
 </style>

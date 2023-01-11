@@ -1,19 +1,19 @@
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" class="ieqqeuvs _link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel" :target="target"
+	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel" :target="target"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
-		<span class="schema">{{ schema }}//</span>
-		<span class="hostname">{{ hostname }}</span>
-		<span v-if="port != ''" class="port">:{{ port }}</span>
+		<span :class="$style.schema">{{ schema }}//</span>
+		<span :class="$style.hostname">{{ hostname }}</span>
+		<span v-if="port != ''" :class="$style.port">:{{ port }}</span>
 	</template>
 	<template v-if="pathname === '/' && self">
-		<span class="self">{{ hostname }}</span>
+		<span :class="$style.self">{{ hostname }}</span>
 	</template>
-	<span v-if="pathname != ''" class="pathname">{{ self ? pathname.substring(1) : pathname }}</span>
-	<span class="query">{{ query }}</span>
-	<span class="hash">{{ hash }}</span>
+	<span v-if="pathname != ''" :class="$style.pathname">{{ self ? pathname.substring(1) : pathname }}</span>
+	<span :class="$style.query">{{ query }}</span>
+	<span :class="$style.hash">{{ hash }}</span>
 	<i v-if="target === '_blank'" class="ti ti-external-link icon"></i>
 </component>
 </template>
@@ -53,37 +53,37 @@ const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 </script>
 
-<style lang="scss" scoped>
-.ieqqeuvs {
+<style lang="scss" module>
+.root {
 	word-break: break-all;
+}
 
-	> .icon {
-		padding-left: 2px;
-		font-size: .9em;
-	}
+.icon {
+	padding-left: 2px;
+	font-size: .9em;
+}
 
-	> .self {
-		font-weight: bold;
-	}
+.self {
+	font-weight: bold;
+}
 
-	> .schema {
-		opacity: 0.5;
-	}
+.schema {
+	opacity: 0.5;
+}
 
-	> .hostname {
-		font-weight: bold;
-	}
+.hostname {
+	font-weight: bold;
+}
 
-	> .pathname {
-		opacity: 0.8;
-	}
+.pathname {
+	opacity: 0.8;
+}
 
-	> .query {
-		opacity: 0.5;
-	}
+.query {
+	opacity: 0.5;
+}
 
-	> .hash {
-		font-style: italic;
-	}
+.hash {
+	font-style: italic;
 }
 </style>

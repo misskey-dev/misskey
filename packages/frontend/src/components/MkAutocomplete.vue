@@ -47,9 +47,7 @@ import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { miLocalStorage } from '@/local-storage';
-import { getCustomEmojis } from '@/custom-emojis';
-
-const customEmojis = await getCustomEmojis();
+import { customEmojis } from '@/custom-emojis';
 
 type EmojiDef = {
 	emoji: string;

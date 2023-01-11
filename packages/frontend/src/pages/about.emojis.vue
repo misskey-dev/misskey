@@ -37,11 +37,10 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
-import { getCustomEmojis, getCustomEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
+import { customEmojis, getCustomEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
 
-const customEmojis = await getCustomEmojis();
-const customEmojiCategories = await getCustomEmojiCategories();
-const customEmojiTags = await getCustomEmojiTags();
+const customEmojiCategories = getCustomEmojiCategories();
+const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');
 let searchEmojis = $ref(null);
 let selectedTags = $ref(new Set());

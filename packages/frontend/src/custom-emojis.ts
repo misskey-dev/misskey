@@ -2,24 +2,25 @@ import { api } from './os';
 import { miLocalStorage } from './local-storage';
 
 const storageCache = miLocalStorage.getItem('emojis');
-let cached = storageCache ? JSON.parse(storageCache) : null;
-export async function getCustomEmojis() {
+export let customEmojis = storageCache ? JSON.parse(storageCache) : [];
+
+fetchCustomEmojis();
+
+export async function fetchCustomEmojis() {
 	const now = Date.now();
 	const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');
-	if (cached && lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return cached;
+	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return;
 
 	const res = await api('emojis', {});
 
-	cached = res.emojis;
-	miLocalStorage.setItem('emojis', JSON.stringify(cached));
+	customEmojis = res.emojis;
+	miLocalStorage.setItem('emojis', JSON.stringify(customEmojis));
 	miLocalStorage.setItem('lastEmojisFetchedAt', now.toString());
 }
 
 let cachedCategories;
-export async function getCustomEmojiCategories() {
+export function getCustomEmojiCategories() {
 	if (cachedCategories) return cachedCategories;
-
-	const customEmojis = await getCustomEmojis();
 
 	const categories = new Set();
 	for (const emoji of customEmojis) {
@@ -31,10 +32,8 @@ export async function getCustomEmojiCategories() {
 }
 
 let cachedTags;
-export async function getCustomEmojiTags() {
+export function getCustomEmojiTags() {
 	if (cachedTags) return cachedTags;
-
-	const customEmojis = await getCustomEmojis();
 
 	const tags = new Set();
 	for (const emoji of customEmojis) {

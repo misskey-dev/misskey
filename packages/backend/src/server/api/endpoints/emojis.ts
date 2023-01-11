@@ -22,10 +22,9 @@ export const meta = {
 					type: 'object',
 					optional: false, nullable: false,
 					properties: {
-						id: {
+						name: {
 							type: 'string',
 							optional: false, nullable: false,
-							format: 'id',
 						},
 						aliases: {
 							type: 'array',
