@@ -219,7 +219,7 @@ export class HttpRequestService {
 			},
 		}
 
-		this.maxSockets = Math.max(256, this.config.deliverJobConcurrency ?? 128);
+		this.maxSockets = Math.max(64, this.config.deliverJobConcurrency ?? 128);
 
 		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherOption(), this.logger);
 
