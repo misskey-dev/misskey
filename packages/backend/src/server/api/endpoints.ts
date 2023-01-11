@@ -685,9 +685,9 @@ export interface IEndpointMeta {
 	readonly requireAdmin?: boolean;
 
 	/**
-	 * 管理者またはモデレーターのみ使えるエンドポイントか否か
+	 * 要求するロール権限
 	 */
-	readonly requireModerator?: boolean;
+	readonly rolePermission?: string;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ

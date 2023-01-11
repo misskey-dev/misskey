@@ -12,6 +12,7 @@ import type { UserIpsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -41,6 +42,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		private metaService: MetaService,
 		private authenticateService: AuthenticateService,
 		private rateLimiterService: RateLimiterService,
+		private roleService: RoleService,
 		private apiLoggerService: ApiLoggerService,
 	) {
 		this.logger = this.apiLoggerService.logger;
@@ -256,8 +258,15 @@ export class ApiCallService implements OnApplicationShutdown {
 			throw new ApiError(accessDenied, { reason: 'You are not the admin.' });
 		}
 
-		if (ep.meta.requireModerator && !isModerator) {
-			throw new ApiError(accessDenied, { reason: 'You are not a moderator.' });
+		if (ep.meta.rolePermission && !user!.isAdmin) {
+			const myRole = await this.roleService.getUserRoleOptions(user!.id);
+			if (myRole[ep.meta.rolePermission] !== true) {
+				throw new ApiError({
+					message: 'You are not assigned to a role with the required permission.',
+					code: 'ROLE_PERMISSION_DENIED',
+					id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+				});
+			}
 		}
 
 		if (token && ep.meta.kind && !token.permission.some(p => p === ep.meta.kind)) {
