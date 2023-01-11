@@ -27,6 +27,11 @@ const rolePermissions = [
 	'assignRole',
 ] as const;
 
+type RoleOption = {
+	useDefault: boolean;
+	value: any;
+};
+
 @Entity()
 export class Role {
 	@PrimaryColumn(id())
@@ -57,8 +62,43 @@ export class Role {
 	})
 	public isPublic: boolean;
 
-	@Column('varchar', {
-		length: 128, array: true, default: '{}',
+	@Column('jsonb', {
+		default: { useDefault: true },
 	})
-	public permissions: (typeof rolePermissions)[number][];
+	public option_userSuspend: RoleOption;
+
+	@Column('jsonb', {
+		default: { useDefault: true },
+	})
+	public option_userSilence: RoleOption;
+
+	@Column('jsonb', {
+		default: { useDefault: true },
+	})
+	public option_createRole: RoleOption;
+
+	@Column('jsonb', {
+		default: { useDefault: true },
+	})
+	public option_readRole: RoleOption;
+
+	@Column('jsonb', {
+		default: { useDefault: true },
+	})
+	public option_updateRole: RoleOption;
+
+	@Column('jsonb', {
+		default: { useDefault: true },
+	})
+	public option_deleteRole: RoleOption;
+
+	@Column('jsonb', {
+		default: { useDefault: true },
+	})
+	public option_assignRole: RoleOption;
+
+	@Column('jsonb', {
+		default: { useDefault: true },
+	})
+	public option_antennaLimit: RoleOption;
 }

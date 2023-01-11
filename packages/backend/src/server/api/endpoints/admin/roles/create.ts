@@ -12,12 +12,46 @@ export const meta = {
 	rolePermission: 'createRole',
 } as const;
 
+const optionValue = {
+	type: 'object',
+	properties: {
+		useDefault: { type: 'boolean' },
+		value: { },
+	},
+	required: [
+		'useDefault',
+		'value',
+	],
+} as const;
+
 export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { type: 'string' },
+		description: { type: 'string' },
+		isPublic: { type: 'boolean' },
+		option_userSuspend: optionValue,
+		option_userSilence: optionValue,
+		option_createRole: optionValue,
+		option_readRole: optionValue,
+		option_updateRole: optionValue,
+		option_deleteRole: optionValue,
+		option_assignRole: optionValue,
+		option_antennaLimit: optionValue,
 	},
-	required: ['name'],
+	required: [
+		'name',
+		'description',
+		'isPublic',
+		'option_userSuspend',
+		'option_userSilence',
+		'option_createRole',
+		'option_readRole',
+		'option_updateRole',
+		'option_deleteRole',
+		'option_assignRole',
+		'option_antennaLimit',
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -37,7 +71,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				createdAt: date,
 				updatedAt: date,
 				name: ps.name,
-				// TODO
+				description: ps.description,
+				isPublic: ps.isPublic,
+				option_userSuspend: ps.option_userSuspend,
+				option_userSilence: ps.option_userSilence,
+				option_createRole: ps.option_createRole,
+				option_readRole: ps.option_readRole,
+				option_updateRole: ps.option_updateRole,
+				option_deleteRole: ps.option_deleteRole,
+				option_assignRole: ps.option_assignRole,
+				option_antennaLimit: ps.option_antennaLimit,
 			});
 		});
 	}
