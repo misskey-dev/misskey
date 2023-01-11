@@ -122,6 +122,11 @@ You should also include the user name that made the change.
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo
 
+### Special thanks
+- All contributors
+- All who have created instances for the beta test
+- All who participated in the beta test
+
 ## 12.119.1 (2022/12/03)
 ### Bugfixes
 - Server: Mitigate AP reference chain DoS vector @skehmatics
