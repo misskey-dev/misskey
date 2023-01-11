@@ -12,7 +12,7 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, 🍪👈, etc)
+- New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
@@ -52,6 +52,7 @@ You should also include the user name that made the change.
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
 
 ### Improvements
+- Role system @syuilo
 - Misskey Play @syuilo
 - Introduce retention-rate aggregation @syuilo
 - Make possible to export favorited notes @syuilo
