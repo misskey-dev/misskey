@@ -42,7 +42,6 @@ export const paramDef = {
 		description: { type: 'string', nullable: true },
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
-		localDriveCapacityMb: { type: 'integer' },
 		remoteDriveCapacityMb: { type: 'integer' },
 		cacheRemoteFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
@@ -192,10 +191,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.defaultDarkTheme !== undefined) {
 				set.defaultDarkTheme = ps.defaultDarkTheme;
-			}
-
-			if (ps.localDriveCapacityMb !== undefined) {
-				set.localDriveCapacityMb = ps.localDriveCapacityMb;
 			}
 
 			if (ps.remoteDriveCapacityMb !== undefined) {

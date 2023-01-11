@@ -5,6 +5,7 @@ import { Cache } from '@/misc/cache.js';
 import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RoleOptions = {
@@ -25,10 +26,12 @@ export type RoleOptions = {
 	createAnnouncement: boolean;
 	deleteAnnouncement: boolean;
 	updateAnnouncement: boolean;
+	deleteDriveFile: boolean;
 	refreshRemoteInstanceMetadata: boolean;
 	resetPassword: boolean;
 	resolveAbuseUserReports: boolean;
 	showUserDetails: boolean;
+	driveCapacityMb: number;
 	antennaLimit: number;
 };
 
@@ -54,6 +57,7 @@ export const DEFAULT_ROLE: RoleOptions = {
 	resetPassword: false,
 	resolveAbuseUserReports: false,
 	showUserDetails: false,
+	driveCapacityMb: 100,
 	antennaLimit: 5,
 };
 
@@ -71,6 +75,8 @@ export class RoleService implements OnApplicationShutdown {
 
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
+
+		private metaService: MetaService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -105,9 +111,11 @@ export class RoleService implements OnApplicationShutdown {
 	@bindThis
 	public async getUserRoleOptions(userId: User['id']): Promise<RoleOptions> {
 		const roles = await this.getUserRoles(userId);
+		const meta = await this.metaService.fetch();
+		const baseRoleOptions = { ...DEFAULT_ROLE, ...meta.defaultRoleOverride };
 
 		function getOptionValue(role: Role, option: keyof RoleOptions) {
-			return role.definition[option] && role.definition[option].useDefault !== true ? role.definition[option].value : DEFAULT_ROLE[option];
+			return role.options[option] && role.options[option].useDefault !== true ? role.options[option].value : baseRoleOptions[option];
 		}
 
 		return {

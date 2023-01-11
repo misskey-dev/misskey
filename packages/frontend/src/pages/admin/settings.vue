@@ -100,19 +100,11 @@
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
 							</MkSwitch>
 
-							<FormSplit :min-width="280">
-								<MkInput v-model="localDriveCapacityMb" type="number">
-									<template #label>{{ i18n.ts.driveCapacityPerLocalAccount }}</template>
-									<template #suffix>MB</template>
-									<template #caption>{{ i18n.ts.inMb }}</template>
-								</MkInput>
-
-								<MkInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
-									<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
-									<template #suffix>MB</template>
-									<template #caption>{{ i18n.ts.inMb }}</template>
-								</MkInput>
-							</FormSplit>
+							<MkInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
+								<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
+								<template #suffix>MB</template>
+								<template #caption>{{ i18n.ts.inMb }}</template>
+							</MkInput>
 						</div>
 					</FormSection>
 
@@ -189,7 +181,6 @@ let enableLocalTimeline: boolean = $ref(false);
 let enableGlobalTimeline: boolean = $ref(false);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
-let localDriveCapacityMb: any = $ref(0);
 let remoteDriveCapacityMb: any = $ref(0);
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
@@ -216,7 +207,6 @@ async function init() {
 	enableGlobalTimeline = !meta.disableGlobalTimeline;
 	pinnedUsers = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles = meta.cacheRemoteFiles;
-	localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 	remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 	enableRegistration = !meta.disableRegistration;
 	emailRequiredForSignup = meta.emailRequiredForSignup;
@@ -244,7 +234,6 @@ function save() {
 		disableGlobalTimeline: !enableGlobalTimeline,
 		pinnedUsers: pinnedUsers.split('\n'),
 		cacheRemoteFiles,
-		localDriveCapacityMb: parseInt(localDriveCapacityMb, 10),
 		remoteDriveCapacityMb: parseInt(remoteDriveCapacityMb, 10),
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,

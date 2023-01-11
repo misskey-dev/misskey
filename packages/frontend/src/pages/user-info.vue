@@ -114,17 +114,6 @@
 
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</MkFolder>
-				<FormSection>
-					<template #label>Drive Capacity Override</template>
-
-					<MkInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
-						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
-						<template #suffix>MB</template>
-						<template #caption>
-							{{ i18n.ts.driveCapOverrideCaption }}
-						</template>
-					</MkInput>
-				</FormSection>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
@@ -195,7 +184,6 @@ let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
-let driveCapacityOverrideMb: number | null = $ref(0);
 let moderationNote = $ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
@@ -220,7 +208,6 @@ function createFetcher() {
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
-			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
 			moderationNote = info.moderationNote;
 
 			watch($$(moderationNote), async () => {
@@ -305,22 +292,6 @@ async function deleteAllFiles() {
 		});
 	});
 	await refreshUser();
-}
-
-async function applyDriveCapacityOverride() {
-	let driveCapOrMb = driveCapacityOverrideMb;
-	if (driveCapacityOverrideMb && driveCapacityOverrideMb < 0) {
-		driveCapOrMb = null;
-	}
-	try {
-		await os.apiWithDialog('admin/drive-capacity-override', { userId: user.id, overrideMb: driveCapOrMb });
-		await refreshUser();
-	} catch (err) {
-		os.alert({
-			type: 'error',
-			text: err.toString(),
-		});
-	}
 }
 
 async function deleteAccount() {

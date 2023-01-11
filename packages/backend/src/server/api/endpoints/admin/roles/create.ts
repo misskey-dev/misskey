@@ -18,7 +18,7 @@ export const paramDef = {
 		name: { type: 'string' },
 		description: { type: 'string' },
 		isPublic: { type: 'boolean' },
-		definition: {
+		options: {
 			type: 'object',
 		},
 	},
@@ -26,7 +26,7 @@ export const paramDef = {
 		'name',
 		'description',
 		'isPublic',
-		'definition',
+		'options',
 	],
 } as const;
 
@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: ps.name,
 				description: ps.description,
 				isPublic: ps.isPublic,
-				definition: ps.definition,
+				options: ps.options,
 			});
 		});
 	}

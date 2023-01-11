@@ -228,12 +228,6 @@ export class Meta {
 	public enableSensitiveMediaDetectionForVideos: boolean;
 
 	@Column('integer', {
-		default: 1024,
-		comment: 'Drive capacity of a local user (MB)',
-	})
-	public localDriveCapacityMb: number;
-
-	@Column('integer', {
 		default: 32,
 		comment: 'Drive capacity of a remote user (MB)',
 	})
@@ -476,4 +470,9 @@ export class Meta {
 		default: true,
 	})
 	public enableActiveEmailValidation: boolean;
+
+	@Column('jsonb', {
+		default: { },
+	})
+	public defaultRoleOverride: Record<string, any>;
 }

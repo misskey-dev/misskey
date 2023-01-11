@@ -34,7 +34,7 @@ export class Role {
 	@Column('jsonb', {
 		default: { },
 	})
-	public definition: Record<string, {
+	public options: Record<string, {
 		useDefault: boolean;
 		value: any;
 	}>;

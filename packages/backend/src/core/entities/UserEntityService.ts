@@ -443,9 +443,6 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
-				...(isMe || opts.includeSecrets ? {
-					driveCapacityOverrideMb: user.driveCapacityOverrideMb,
-				} : {}),
 			} : {}),
 
 			...(opts.detail && isMe ? {
