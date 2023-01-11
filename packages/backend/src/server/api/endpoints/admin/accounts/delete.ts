@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (user.isRoot) {
-				throw new Error('cannot suspend root');
+				throw new Error('cannot delete a root account');
 			}
 
 			if (this.userEntityService.isLocalUser(user)) {
