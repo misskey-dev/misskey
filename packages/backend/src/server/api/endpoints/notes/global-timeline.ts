@@ -66,9 +66,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (m.disableGlobalTimeline) {
 				if (me == null) {
 					throw new ApiError(meta.errors.gtlDisabled);
-				} else {
+				} else if (!me.isRoot) {
 					const role = await this.roleService.getUserRoleOptions(me.id);
-					if (!me.isRoot && !role.forceGtlAvailable) {
+					if (!role.forceGtlAvailable) {
 						throw new ApiError(meta.errors.gtlDisabled);
 					}
 				}

@@ -71,9 +71,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (m.disableLocalTimeline) {
 				if (me == null) {
 					throw new ApiError(meta.errors.ltlDisabled);
-				} else {
+				} else if (!me.isRoot) {
 					const role = await this.roleService.getUserRoleOptions(me.id);
-					if (!me.isRoot && !role.forceLtlAvailable) {
+					if (!role.forceLtlAvailable) {
 						throw new ApiError(meta.errors.ltlDisabled);
 					}
 				}

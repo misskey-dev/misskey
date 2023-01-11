@@ -72,9 +72,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const m = await this.metaService.fetch();
-			if (m.disableLocalTimeline) {
+			if (m.disableLocalTimeline && !me.isRoot) {
 				const role = await this.roleService.getUserRoleOptions(me.id);
-				if (!me.isRoot && !role.forceLtlAvailable) {
+				if (!role.forceLtlAvailable) {
 					throw new ApiError(meta.errors.stlDisabled);
 				}
 			}
