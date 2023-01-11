@@ -387,7 +387,7 @@ export class UserEntityService implements OnModuleInit {
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && opts.detail ? (await this.roleService.getUserRoles(meId)).some(r => r.forModeration) : null;
+		const isModerator = isMe && opts.detail ? (await this.roleService.getUserRoles(meId)).some(r => r.isModerator) : null;
 
 		const falsy = opts.detail ? false : undefined;
 

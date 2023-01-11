@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'silence',
+	requireModerator: true,
 } as const;
 
 export const paramDef = {

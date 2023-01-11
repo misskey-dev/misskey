@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['admin', 'role'],
 
 	requireCredential: true,
-	rolePermission: 'updateRole',
+	requireAdmin: true,
 
 	errors: {
 		noSuchRole: {
@@ -27,7 +27,7 @@ export const paramDef = {
 		name: { type: 'string' },
 		description: { type: 'string' },
 		isPublic: { type: 'boolean' },
-		forModeration: { type: 'boolean' },
+		isModerator: { type: 'boolean' },
 		options: {
 			type: 'object',
 		},
@@ -37,7 +37,7 @@ export const paramDef = {
 		'name',
 		'description',
 		'isPublic',
-		'forModeration',
+		'isModerator',
 		'options',
 	],
 } as const;
@@ -63,7 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: ps.name,
 				description: ps.description,
 				isPublic: ps.isPublic,
-				forModeration: ps.forModeration,
+				isModerator: ps.isModerator,
 				options: ps.options,
 			});
 			const updated = await this.rolesRepository.findOneByOrFail({ id: ps.roleId });

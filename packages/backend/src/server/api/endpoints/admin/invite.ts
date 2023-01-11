@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'invite',
+	requireModerator: true,
 
 	res: {
 		type: 'object',

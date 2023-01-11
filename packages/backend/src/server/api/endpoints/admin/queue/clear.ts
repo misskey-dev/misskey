@@ -7,7 +7,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'manageJobQueue',
+	requireModerator: true,
 } as const;
 
 export const paramDef = {

@@ -34,7 +34,12 @@ export class Role {
 	@Column('boolean', {
 		default: false,
 	})
-	public forModeration: boolean;
+	public isModerator: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isAdministrator: boolean;
 
 	@Column('jsonb', {
 		default: { },

@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'updateEmoji',
+	requireModerator: true,
 
 	errors: {
 		noSuchEmoji: {

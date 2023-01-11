@@ -8,7 +8,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'updateAnnouncement',
+	requireModerator: true,
 
 	errors: {
 		noSuchAnnouncement: {

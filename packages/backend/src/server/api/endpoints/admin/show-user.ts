@@ -7,7 +7,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'showUserDetails',
+	requireModerator: true,
 
 	res: {
 		type: 'object',

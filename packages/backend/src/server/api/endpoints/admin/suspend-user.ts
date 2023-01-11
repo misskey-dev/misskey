@@ -14,7 +14,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'suspend',
+	requireModerator: true,
 } as const;
 
 export const paramDef = {

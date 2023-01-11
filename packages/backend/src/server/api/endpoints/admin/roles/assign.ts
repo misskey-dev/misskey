@@ -10,7 +10,7 @@ export const meta = {
 	tags: ['admin', 'role'],
 
 	requireCredential: true,
-	rolePermission: 'assignRole',
+	requireAdmin: true,
 
 	errors: {
 		noSuchRole: {

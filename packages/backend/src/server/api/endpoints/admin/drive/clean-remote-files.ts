@@ -6,7 +6,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'deleteDriveFile',
+	requireModerator: true,
 } as const;
 
 export const paramDef = {

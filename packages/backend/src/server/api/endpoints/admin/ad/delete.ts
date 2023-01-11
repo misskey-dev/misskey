@@ -8,7 +8,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'manageAds',
+	rolePermissrequireModerator: true,
 
 	errors: {
 		noSuchAd: {

@@ -8,7 +8,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'addRelay',
+	requireModerator: true,
 
 	errors: {
 		invalidUrl: {

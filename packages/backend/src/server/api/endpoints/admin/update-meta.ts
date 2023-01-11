@@ -12,7 +12,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'editInstanceSettings',
+	requireAdmin: true,
 } as const;
 
 export const paramDef = {

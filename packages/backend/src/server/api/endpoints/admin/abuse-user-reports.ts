@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	rolePermission: 'viewAbuseUserReports',
+	requireModerator: true,
 
 	res: {
 		type: 'array',

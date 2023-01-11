@@ -253,25 +253,21 @@ export class ApiCallService implements OnApplicationShutdown {
 			});
 		}
 
-		if (!user!.isAdmin) {
-			if (ep.meta.rolePermission) {
-				const myRole = await this.roleService.getUserRoleOptions(user!.id);
-				if (myRole[ep.meta.rolePermission] !== true) {
-					throw new ApiError({
-						message: 'You are not assigned to a role with the required permission.',
-						code: 'ROLE_PERMISSION_DENIED',
-						id: 'c3d38592-54c0-429d-be96-5636b0431a61',
-					});
-				}
-			} else if (ep.meta.requireModerator) {
-				const myRoles = await this.roleService.getUserRoles(user!.id);
-				if (!myRoles.some(r => r.forModeration)) {
-					throw new ApiError({
-						message: 'You are not assigned to a role with forModeration flag.',
-						code: 'ROLE_PERMISSION_DENIED',
-						id: 'd33d5333-db36-423d-a8f9-1a2b9549da41',
-					});
-				}
+		if (!user!.isAdmin && (ep.meta.requireModerator || ep.meta.requireAdmin)) {
+			const myRoles = await this.roleService.getUserRoles(user!.id);
+			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
+				throw new ApiError({
+					message: 'You are not assigned to a moderator role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					id: 'd33d5333-db36-423d-a8f9-1a2b9549da41',
+				});
+			}
+			if (ep.meta.requireAdmin && !myRoles.some(r => r.isAdministrator)) {
+				throw new ApiError({
+					message: 'You are not assigned to an administrator role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+				});
 			}
 		}
 

@@ -5,7 +5,7 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
-	rolePermission: 'getDbInfo',
+	requireAdmin: true,
 
 	tags: ['admin'],
 } as const;
