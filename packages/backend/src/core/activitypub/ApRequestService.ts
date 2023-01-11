@@ -8,6 +8,7 @@ import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
 import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
 
 type Request = {
 	url: string;
@@ -30,6 +31,7 @@ type PrivateKey = {
 @Injectable()
 export class ApRequestService {
 	private undiciFetcher: UndiciFetcher;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -39,9 +41,10 @@ export class ApRequestService {
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('ap-request');
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
-		}), this.loggerService.getLogger('ap-request') );
+		}), this.logger );
 	}
 
 	@bindThis

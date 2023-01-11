@@ -14,11 +14,13 @@ import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
+import type Logger from '@/logger.js';
 
 export class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
 	private undiciFetcher: UndiciFetcher;
+	private logger: Logger;
 
 	constructor(
 		private config: Config,
@@ -37,9 +39,10 @@ export class Resolver {
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
+		this.logger = this.loggerService.getLogger('ap-request');
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
-		}), this.loggerService.getLogger('ap-request') );
+		}), this.logger);
 	}
 
 	@bindThis
