@@ -27,7 +27,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'] },
-		state: { type: 'string', enum: ['all', 'admin', 'moderator', 'adminOrModerator', 'alive'], default: 'all' },
+		state: { type: 'string', enum: ['all', 'admin', 'alive'], default: 'all' },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
 		hostname: {
 			type: 'string',
@@ -55,8 +55,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			switch (ps.state) {
 				case 'admin': query.andWhere('user.isAdmin = TRUE'); break;
-				case 'moderator': query.andWhere('user.isModerator = TRUE'); break;
-				case 'adminOrModerator': query.andWhere('user.isAdmin = TRUE OR user.isModerator = TRUE'); break;
 				case 'alive': query.andWhere('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
 			}
 

@@ -22,7 +22,6 @@ import type { EventEmitter } from 'events';
 export interface InternalStreamTypes {
 	userChangeSuspendedState: { id: User['id']; isSuspended: User['isSuspended']; };
 	userChangeSilencedState: { id: User['id']; isSilenced: User['isSilenced']; };
-	userChangeModeratorState: { id: User['id']; isModerator: User['isModerator']; };
 	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
 	remoteUserUpdated: { id: User['id']; };
 	roleCreated: Role;

@@ -45,7 +45,7 @@ onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
 	} else if ($i) {
-		disabled = !$i.isModerator && !$i.isAdmin && (
+		disabled = !$i.isAdmin && (
 			instance.disableLocalTimeline && ['local', 'social'].includes(props.column.tl) ||
 			instance.disableGlobalTimeline && ['global'].includes(props.column.tl));
 	}
