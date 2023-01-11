@@ -59,15 +59,7 @@ export class DownloadService {
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
 
-		const response = await this.undiciFetcher.fetch(
-			url,
-			{
-				method: 'GET',
-				headers: {
-					'User-Agent': this.config.userAgent,
-				},
-			}
-		);
+		const response = await this.undiciFetcher.fetch(url);
 
 		if (response.body === null) {
 			throw new StatusError('No body', 400, 'No body');

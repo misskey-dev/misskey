@@ -89,7 +89,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded',
-						'User-Agent': config.userAgent,
 						Accept: 'application/json, */*',
 					},
 					body: params.toString(),

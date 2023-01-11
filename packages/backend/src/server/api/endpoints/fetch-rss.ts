@@ -37,10 +37,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				ps.url,
 				{
 					method: 'GET',
-					headers: Object.assign({
-						'User-Agent': config.userAgent,
+					headers: {
 						Accept: 'application/rss+xml, */*',
-					}),
+					},
 					// timeout: 5000,
 				}
 			);

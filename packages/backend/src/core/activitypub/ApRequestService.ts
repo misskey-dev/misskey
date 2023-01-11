@@ -158,7 +158,6 @@ export class ApRequestService {
 			url,
 			body,
 			additionalHeaders: {
-				'User-Agent': this.config.userAgent,
 			},
 		});
 
@@ -188,7 +187,6 @@ export class ApRequestService {
 			},
 			url,
 			additionalHeaders: {
-				'User-Agent': this.config.userAgent,
 			},
 		});
 
