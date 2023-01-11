@@ -84,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			if (!me.isAdmin && (file.userId !== me.id)) {
+			if (!me.isRoot && (file.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

@@ -253,7 +253,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			});
 		}
 
-		if (!user!.isAdmin && (ep.meta.requireModerator || ep.meta.requireAdmin)) {
+		if (!user!.isRoot && (ep.meta.requireModerator || ep.meta.requireAdmin)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
 				throw new ApiError({

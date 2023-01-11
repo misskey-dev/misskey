@@ -387,7 +387,8 @@ export class UserEntityService implements OnModuleInit {
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && opts.detail ? (await this.roleService.getUserRoles(meId)).some(r => r.isModerator) : null;
+		const isModerator = isMe && opts.detail ? (user.isRoot || (await this.roleService.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator)) : null;
+		const isAdmin = isMe && opts.detail ? (user.isRoot || (await this.roleService.getUserRoles(user.id)).some(r => r.isAdministrator)) : null;
 
 		const falsy = opts.detail ? false : undefined;
 
@@ -398,7 +399,6 @@ export class UserEntityService implements OnModuleInit {
 			host: user.host,
 			avatarUrl: this.getAvatarUrlSync(user),
 			avatarBlurhash: user.avatar?.blurhash ?? null,
-			isAdmin: user.isAdmin ?? falsy,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
 			instance: user.host ? this.userInstanceCache.fetch(user.host,
@@ -454,6 +454,7 @@ export class UserEntityService implements OnModuleInit {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				isModerator: isModerator,
+				isAdmin: isAdmin,
 				injectFeaturedNote: profile!.injectFeaturedNote,
 				receiveAnnouncementEmail: profile!.receiveAnnouncementEmail,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,

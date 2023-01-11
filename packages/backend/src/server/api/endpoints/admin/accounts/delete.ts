@@ -41,8 +41,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.isAdmin) {
-				throw new Error('cannot suspend admin');
+			if (user.isRoot) {
+				throw new Error('cannot suspend root');
 			}
 
 			if (this.userEntityService.isLocalUser(user)) {

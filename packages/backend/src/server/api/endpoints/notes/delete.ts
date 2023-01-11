@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			if (!me.isAdmin && (note.userId !== me.id)) {
+			if (!me.isRoot && (note.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

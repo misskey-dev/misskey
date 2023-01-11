@@ -47,11 +47,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
-			if (!_me.isAdmin && user.isAdmin) {
+			if (!_me.isRoot && user.isRoot) {
 				throw new Error('cannot show info of admin');
 			}
 
-			if (!_me.isAdmin) {
+			if (!_me.isRoot) {
 				return {
 					isSilenced: user.isSilenced,
 					isSuspended: user.isSuspended,

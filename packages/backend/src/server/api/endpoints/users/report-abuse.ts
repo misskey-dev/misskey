@@ -7,8 +7,8 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users'],
@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.cannotReportYourself);
 			}
 
-			if (user.isAdmin) {
+			if (user.isRoot) {
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
@@ -90,11 +90,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Publish event to moderators
 			setImmediate(async () => {
+				// role
 				const moderators = await this.usersRepository.find({
 					where: [{
 						isAdmin: true,
-					}, {
-						isModerator: true,
 					}],
 				});
 

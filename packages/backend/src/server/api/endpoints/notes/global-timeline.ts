@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.gtlDisabled);
 				} else {
 					const role = await this.roleService.getUserRoleOptions(me.id);
-					if (!me.isAdmin && !role.forceGtlAvailable) {
+					if (!me.isRoot && !role.forceGtlAvailable) {
 						throw new ApiError(meta.errors.gtlDisabled);
 					}
 				}

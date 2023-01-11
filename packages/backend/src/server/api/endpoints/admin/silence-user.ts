@@ -37,8 +37,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.isAdmin) {
-				throw new Error('cannot silence admin');
+			if (user.isRoot) {
+				throw new Error('cannot silence root');
 			}
 
 			await this.usersRepository.update(user.id, {

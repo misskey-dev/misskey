@@ -32,7 +32,7 @@ class GlobalTimelineChannel extends Channel {
 		const meta = await this.metaService.fetch();
 		if (meta.disableGlobalTimeline) {
 			if (this.user == null) return;
-			if (!this.user.isAdmin) {
+			if (!this.user.isRoot) {
 				const role = await this.roleService.getUserRoleOptions(this.user.id);
 				if (!role.forceGtlAvailable) return;
 			}

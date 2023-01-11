@@ -138,9 +138,9 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the User is the admin.',
+		comment: 'Whether the User is the root.',
 	})
-	public isAdmin: boolean;
+	public isRoot: boolean;
 
 	@Index()
 	@Column('boolean', {

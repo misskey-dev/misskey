@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const m = await this.metaService.fetch();
 			if (m.disableLocalTimeline) {
 				const role = await this.roleService.getUserRoleOptions(me.id);
-				if (!me.isAdmin && !role.forceLtlAvailable) {
+				if (!me.isRoot && !role.forceLtlAvailable) {
 					throw new ApiError(meta.errors.stlDisabled);
 				}
 			}
