@@ -9,6 +9,7 @@ import { MetaService } from '@/core/MetaService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RoleOptions = {
+	manageJobQueue: boolean;
 	userSuspend: boolean;
 	userSilence: boolean;
 	createRole: boolean;
