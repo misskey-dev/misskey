@@ -39,7 +39,7 @@ export class Resolver {
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
-		this.logger = this.loggerService.getLogger('ap-resolve');
+		this.logger = this.loggerService?.getLogger('ap-resolve');  // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
 		}), this.logger);
