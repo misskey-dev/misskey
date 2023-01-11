@@ -8,6 +8,7 @@ import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
@@ -17,6 +18,7 @@ class HybridTimelineChannel extends Channel {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -29,7 +31,13 @@ class HybridTimelineChannel extends Channel {
 	@bindThis
 	public async init(params: any): Promise<void> {
 		const meta = await this.metaService.fetch();
-		if (meta.disableLocalTimeline && !this.user!.isAdmin && !this.user!.isModerator) return;
+		if (meta.disableLocalTimeline) {
+			if (this.user == null) return; // 型のため
+			if (!this.user.isAdmin) {
+				const role = await this.roleService.getUserRoleOptions(this.user.id);
+				if (!role.forceLtlAvailable) return;
+			}
+		}
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -112,6 +120,7 @@ export class HybridTimelineChannelService {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
@@ -120,6 +129,7 @@ export class HybridTimelineChannelService {
 	public create(id: string, connection: Channel['connection']): HybridTimelineChannel {
 		return new HybridTimelineChannel(
 			this.metaService,
+			this.roleService,
 			this.noteEntityService,
 			id,
 			connection,

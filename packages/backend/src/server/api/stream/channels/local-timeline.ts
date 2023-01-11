@@ -6,6 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
 
 class LocalTimelineChannel extends Channel {
@@ -15,6 +16,7 @@ class LocalTimelineChannel extends Channel {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -28,7 +30,11 @@ class LocalTimelineChannel extends Channel {
 	public async init(params: any) {
 		const meta = await this.metaService.fetch();
 		if (meta.disableLocalTimeline) {
-			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;
+			if (this.user == null) return;
+			if (!this.user.isAdmin) {
+				const role = await this.roleService.getUserRoleOptions(this.user.id);
+				if (!role.forceLtlAvailable) return;
+			}
 		}
 
 		// Subscribe events
@@ -92,6 +98,7 @@ export class LocalTimelineChannelService {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
@@ -100,6 +107,7 @@ export class LocalTimelineChannelService {
 	public create(id: string, connection: Channel['connection']): LocalTimelineChannel {
 		return new LocalTimelineChannel(
 			this.metaService,
+			this.roleService,
 			this.noteEntityService,
 			id,
 			connection,

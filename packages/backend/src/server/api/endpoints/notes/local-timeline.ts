@@ -7,6 +7,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -62,13 +63,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const m = await this.metaService.fetch();
 			if (m.disableLocalTimeline) {
-				if (me == null || (!me.isAdmin && !me.isModerator)) {
+				if (me == null) {
 					throw new ApiError(meta.errors.ltlDisabled);
+				} else {
+					const role = await this.roleService.getUserRoleOptions(me.id);
+					if (!me.isAdmin && !role.forceLtlAvailable) {
+						throw new ApiError(meta.errors.ltlDisabled);
+					}
 				}
 			}
 

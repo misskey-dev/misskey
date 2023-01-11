@@ -31,6 +31,8 @@ export type RoleOptions = {
 	resetPassword: boolean;
 	resolveAbuseUserReports: boolean;
 	showUserDetails: boolean;
+	forceGtlAvailable: boolean;
+	forceLtlAvailable: boolean;
 	driveCapacityMb: number;
 	antennaLimit: number;
 };
