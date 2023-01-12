@@ -1,3 +1,5 @@
+const config = require('../../packages/frontend/vite.config')
+
 describe('After user signed in', () => {
 	beforeEach(() => {
 		cy.resetState();
@@ -29,8 +31,10 @@ describe('After user signed in', () => {
 
 	it('first widget should be removed', () => {
 		cy.get('.mk-widget-edit').click();
-		cy.get('.customize-container:first-child .remove._button').click();
-		cy.get('.customize-container').should('have.length', 2);
+		const containerClassName = config.toBase62(config.hash(`MkWidgets customize-container`)).substring(0, 4)
+		const removeButtonClassName = config.toBase62(config.hash(`MkWidgets customize-container-remove`)).substring(0, 4)
+		cy.get(`.${containerClassName}:first-child .${removeButtonClassName}._button`).click();
+		cy.get(`.${containerClassName}`).should('have.length', 2);
 	});
 
 	function buildWidgetTest(widgetName) {
