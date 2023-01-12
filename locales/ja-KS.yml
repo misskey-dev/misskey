@@ -917,6 +917,7 @@ tools: "ツール"
 cannotLoad: "読み込めへんで"
 like: "ええやん！"
 show: "表示"
+color: "色"
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出して、モデレーションに役立てることができるで。サーバーの負荷が少し増えてまうなあ。"
   sensitivity: "検出感度やで"
