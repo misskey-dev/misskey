@@ -46,8 +46,8 @@ onMounted(() => {
 		setType();
 	} else if ($i) {
 		disabled = !$i.isAdmin && (
-			instance.disableLocalTimeline && ['local', 'social'].includes(props.column.tl) ||
-			instance.disableGlobalTimeline && ['global'].includes(props.column.tl));
+			!$i.role.forceLtlAvailable && instance.disableLocalTimeline && ['local', 'social'].includes(props.column.tl) ||
+			!$i.role.forceGtlAvailable && instance.disableGlobalTimeline && ['global'].includes(props.column.tl));
 	}
 });
 

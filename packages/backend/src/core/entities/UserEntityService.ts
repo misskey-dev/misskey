@@ -488,6 +488,7 @@ export class UserEntityService implements OnModuleInit {
 			} : {}),
 
 			...(opts.includeSecrets ? {
+				role: this.roleService.getUserRoleOptions(user.id),
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 				securityKeysList: profile!.twoFactorEnabled
