@@ -91,6 +91,18 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async isModerator(user: { id: User['id']; isRoot: User['isRoot'] } | null): Promise<boolean> {
+		if (user == null) return false;
+		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
+	}
+
+	@bindThis
+	public async isAdministrator(user: { id: User['id']; isRoot: User['isRoot'] } | null): Promise<boolean> {
+		if (user == null) return false;
+		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
+	}
+
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		this.redisSubscriber.off('message', this.onMessage);
 	}

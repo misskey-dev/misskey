@@ -131,8 +131,8 @@ export class ClientServerService {
 					reply.code(403);
 					throw new Error('no such user');
 				}
-				const roles = await this.roleService.getUserRoles(user.id);
-				if (!(user.isRoot || !roles.some(r => r.isAdministrator))) {
+				const isAdministrator = await this.roleService.isAdministrator(user);
+				if (!isAdministrator) {
 					reply.code(403);
 					throw new Error('access denied');
 				}

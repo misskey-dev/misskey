@@ -57,8 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot suspend root account');
 			}
 
-			const roles = await this.roleService.getUserRoles(user.id);
-			if (roles.some(r => r.isModerator || r.isAdministrator)) {
+			if (await this.roleService.isModerator(user)) {
 				throw new Error('cannot suspend moderator account');
 			}
 
