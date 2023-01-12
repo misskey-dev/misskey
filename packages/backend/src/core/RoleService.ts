@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
+import { In } from 'typeorm';
 import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
@@ -30,6 +31,9 @@ export class RoleService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
@@ -100,6 +104,23 @@ export class RoleService implements OnApplicationShutdown {
 	public async isAdministrator(user: { id: User['id']; isRoot: User['isRoot'] } | null): Promise<boolean> {
 		if (user == null) return false;
 		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
+	}
+
+	@bindThis
+	public async getModerators(): Promise<ILocalUser[]> {
+		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
+		const moderatorRoles = roles.filter(r => r.isModerator || r.isAdministrator);
+		const assigns = moderatorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
+			roleId: In(moderatorRoles.map(r => r.id)),
+		}) : [];
+		const users = assigns.length > 0 ? await this.usersRepository.findBy({
+			id: In(assigns.map(a => a.userId)),
+		}) : [];
+		// 重そう
+		//const rootAccounts = await this.usersRepository.findBy({
+		//	isRoot
+		//});
+		return [...users];
 	}
 
 	@bindThis

@@ -8,6 +8,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -61,6 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private metaService: MetaService,
 		private emailService: EmailService,
 		private getterService: GetterService,
+		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -74,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.cannotReportYourself);
 			}
 
-			if (user.isRoot) {
+			if (await this.roleService.isAdministrator(user)) {
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
@@ -90,12 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Publish event to moderators
 			setImmediate(async () => {
-				// role
-				const moderators = await this.usersRepository.find({
-					where: [{
-						isAdmin: true,
-					}],
-				});
+				const moderators = await this.roleService.getModerators();
 
 				for (const moderator of moderators) {
 					this.globalEventService.publishAdminStream(moderator.id, 'newAbuseUserReport', {
