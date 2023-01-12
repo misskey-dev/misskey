@@ -235,25 +235,25 @@ export class ApiCallService implements OnApplicationShutdown {
 			});
 		}
 
-		if (ep.meta.requireCredential && user == null) {
-			throw new ApiError({
-				message: 'Credential required.',
-				code: 'CREDENTIAL_REQUIRED',
-				id: '1384574d-a912-4b81-8601-c7b1c4085df1',
-				httpStatusCode: 401,
-			});
+		if (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin) {
+			if (user == null) {
+				throw new ApiError({
+					message: 'Credential required.',
+					code: 'CREDENTIAL_REQUIRED',
+					id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+					httpStatusCode: 401,
+				});
+			} else if (user!.isSuspended) {
+				throw new ApiError({
+					message: 'Your account has been suspended.',
+					code: 'YOUR_ACCOUNT_SUSPENDED',
+					id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
+					httpStatusCode: 403,
+				});
+			}
 		}
 
-		if (ep.meta.requireCredential && user!.isSuspended) {
-			throw new ApiError({
-				message: 'Your account has been suspended.',
-				code: 'YOUR_ACCOUNT_SUSPENDED',
-				id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
-				httpStatusCode: 403,
-			});
-		}
-
-		if (!user!.isRoot && (ep.meta.requireModerator || ep.meta.requireAdmin)) {
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
 				throw new ApiError({

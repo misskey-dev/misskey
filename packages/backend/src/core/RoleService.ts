@@ -82,15 +82,16 @@ export class RoleService implements OnApplicationShutdown {
 
 		const roles = await this.getUserRoles(userId);
 
-		function getOptionValue(role: Role, option: keyof RoleOptions) {
-			return role.options[option] && role.options[option].useDefault !== true ? role.options[option].value : baseRoleOptions[option];
+		function getOptionValues(option: keyof RoleOptions) {
+			if (roles.length === 0) return [baseRoleOptions[option]];
+			return roles.map(role => (role.options[option] && (role.options[option].useDefault !== true)) ? role.options[option].value : baseRoleOptions[option]);
 		}
 
 		return {
-			gtlAvailable: roles.some(r => getOptionValue(r, 'gtlAvailable')),
-			ltlAvailable: roles.some(r => getOptionValue(r, 'ltlAvailable')),
-			driveCapacityMb: Math.max(...roles.map(r => getOptionValue(r, 'driveCapacityMb'))),
-			antennaLimit: Math.max(...roles.map(r => getOptionValue(r, 'antennaLimit'))),
+			gtlAvailable: getOptionValues('gtlAvailable').some(x => x === true),
+			ltlAvailable: getOptionValues('ltlAvailable').some(x => x === true),
+			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
+			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
 		};
 	}
 

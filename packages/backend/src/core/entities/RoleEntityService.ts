@@ -6,6 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { User } from '@/models/entities/User.js';
 import type { Role } from '@/models/entities/Role.js';
 import { bindThis } from '@/decorators.js';
+import { DEFAULT_ROLE } from '@/core/RoleService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -32,6 +33,14 @@ export class RoleEntityService {
 			roleId: role.id,
 		});
 
+		const options = { ...role.options };
+		for (const [k, v] of Object.entries(DEFAULT_ROLE)) {
+			if (options[k] == null) options[k] = {
+				useDefault: true,
+				value: v,
+			};
+		}
+
 		return await awaitAll({
 			id: role.id,
 			createdAt: role.createdAt.toISOString(),
@@ -42,7 +51,7 @@ export class RoleEntityService {
 			isPublic: role.isPublic,
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,
-			options: role.options,
+			options,
 		});
 	}
 

@@ -352,6 +352,22 @@ export const routes = [{
 		name: 'ads',
 		component: page(() => import('./pages/admin/ads.vue')),
 	}, {
+		path: '/roles/:id/edit',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.edit.vue')),
+	}, {
+		path: '/roles/new',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.edit.vue')),
+	}, {
+		path: '/roles/:id',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.role.vue')),
+	}, {
+		path: '/roles',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.vue')),
+	}, {
 		path: '/database',
 		name: 'database',
 		component: page(() => import('./pages/admin/database.vue')),

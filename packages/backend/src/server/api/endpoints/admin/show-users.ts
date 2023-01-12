@@ -62,16 +62,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				case 'suspended': query.where('user.isSuspended = TRUE'); break;
 				case 'admin': {
 					const adminIds = await this.roleService.getAdministratorIds();
+					if (adminIds.length === 0) return [];
 					query.where('user.id IN (:...adminIds)', { adminIds: adminIds });
 					break;
 				}
 				case 'moderator': {
 					const moderatorIds = await this.roleService.getModeratorIds(false);
+					if (moderatorIds.length === 0) return [];
 					query.where('user.id IN (:...moderatorIds)', { moderatorIds: moderatorIds });
 					break;
 				}
 				case 'adminOrModerator': {
 					const adminOrModeratorIds = await this.roleService.getModeratorIds();
+					if (adminOrModeratorIds.length === 0) return [];
 					query.where('user.id IN (:...adminOrModeratorIds)', { adminOrModeratorIds: adminOrModeratorIds });
 					break;
 				}

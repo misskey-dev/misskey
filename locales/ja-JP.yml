@@ -924,6 +924,28 @@ neverShow: "今後表示しない"
 remindMeLater: "また後で"
 didYouLikeMisskey: "Misskeyを気に入っていただけましたか？"
 pleaseDonate: "Misskeyは{host}が使用している無料のソフトウェアです。これからも開発を続けられるように、ぜひ寄付をお願いします！"
+roles: "ロール"
+role: "ロール"
+noramlUser: "一般ユーザー"
+undefined: "未定義"
+
+_role:
+  new: "ロールの作成"
+  edit: "ロールの編集"
+  name: "ロール名"
+  description: "ロールの説明"
+  type: "ロールの種類"
+  descriptionOfType: "モデレーターは基本的なモデレーションに関する操作を行えます。\n管理者はインスタンスの全ての設定を変更できます。"
+  isPublic: "ロールを公開"
+  descriptionOfIsPublic: "ロールにアサインされたユーザーを誰でも見ることができます。また、ユーザーのプロフィールでこのロールが表示されます。"
+  options: "オプション"
+  baseRole: "ベースロール"
+  useBaseValue: "ベースロールの値を使用"
+  _options:
+    gtlAvailable: "グローバルタイムラインの閲覧"
+    ltlAvailable: "ローカルタイムラインの閲覧"
+    driveCapacity: "ドライブ容量"
+    antennaMax: "アンテナの作成可能数"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
