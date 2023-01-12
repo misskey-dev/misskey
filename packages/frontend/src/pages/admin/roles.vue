@@ -8,7 +8,7 @@
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
 					<div class="_gaps">
-						<MkFolder default-open>
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
 							<template #suffix>{{ options_gtlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
 							<MkSwitch v-model="options_gtlAvailable">
@@ -16,7 +16,7 @@
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder default-open>
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.ltlAvailable }}</template>
 							<template #suffix>{{ options_ltlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
 							<MkSwitch v-model="options_ltlAvailable">
@@ -24,7 +24,7 @@
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder default-open>
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 							<template #suffix>{{ options_driveCapacityMb }}MB</template>
 							<MkInput v-model="options_driveCapacityMb" type="number">
@@ -32,7 +32,7 @@
 							</MkInput>
 						</MkFolder>
 
-						<MkFolder default-open>
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.antennaMax }}</template>
 							<template #suffix>{{ options_antennaLimit }}</template>
 							<MkInput v-model="options_antennaLimit" type="number">
