@@ -924,6 +924,7 @@ neverShow: "不再顯示"
 remindMeLater: "以後再說"
 didYouLikeMisskey: "您是否喜愛Misskey呢？"
 pleaseDonate: "Misskey是由{host}使用的免費軟體。請贊助我們，讓開發能夠持續！"
+color: "顏色"
 _sensitiveMediaDetection:
   description: "您可以使用機器學習自動檢測敏感媒體並將其用於審核。 伺服器的負荷會稍微增加。"
   sensitivity: "檢測敏感度"
