@@ -6,15 +6,15 @@
 	"scripts": {
 		"start": "node ./built/index.js",
 		"start:test": "NODE_ENV=test node ./built/index.js",
-		"migrate": "typeorm migration:run -d ormconfig.js",
+		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
 		"lint": "tsc --noEmit && eslint --quiet \"src/**/*.ts\"",
 		"jest": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
 		"jest-and-coverage": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
 		"jest-clear": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --clearCache",
-		"test": "yarn jest",
-		"test-and-coverage": "yarn jest-and-coverage"
+		"test": "pnpm jest",
+		"test-and-coverage": "pnpm jest-and-coverage"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs": "^4.1.0",
