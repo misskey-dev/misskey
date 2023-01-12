@@ -50,7 +50,7 @@ const menu = defaultStore.state.menu;
 
 const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k => navbarItemDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 	type: def.to ? 'link' : 'button',
-	text: i18n.ts[def.title],
+	text: def.title,
 	icon: def.icon,
 	to: def.to,
 	action: def.action,
@@ -75,7 +75,7 @@ function close() {
 
 	&.asDrawer {
 		width: 100%;
-		padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px) 16px;
+		padding: 16px 16px max(env(safe-area-inset-bottom, 0px), 16px) 16px;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;

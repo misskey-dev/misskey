@@ -1,78 +1,88 @@
 <template>
-<div class="_formRoot">
-	<FormSection>
+<div class="_gaps_m">
+	<FormSection first>
 		<template #label><i class="ti ti-pencil"></i> {{ i18n.ts._exportOrImport.allNotes }}</template>
-		<FormFolder>
+		<MkFolder>
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
 			<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</FormFolder>
+		</MkFolder>
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-star"></i> {{ i18n.ts._exportOrImport.favoritedNotes }}</template>
-		<FormFolder>
+		<MkFolder>
 			<template #label>{{ i18n.ts.export }}</template>
 			<template #icon><i class="ti ti-download"></i></template>
 			<MkButton primary :class="$style.button" inline @click="exportFavorites()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</FormFolder>
+		</MkFolder>
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.followingList }}</template>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="ti ti-download"></i></template>
-			<FormSwitch v-model="excludeMutingUsers" class="_formBlock">
-				{{ i18n.ts._exportOrImport.excludeMutingUsers }}
-			</FormSwitch>
-			<FormSwitch v-model="excludeInactiveUsers" class="_formBlock">
-				{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
-			</FormSwitch>
-			<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</FormFolder>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="ti ti-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-		</FormFolder>
+		<div class="_gaps_s">
+			<MkFolder>
+				<template #label>{{ i18n.ts.export }}</template>
+				<template #icon><i class="ti ti-download"></i></template>
+				<div class="_gaps_s">
+					<MkSwitch v-model="excludeMutingUsers">
+						{{ i18n.ts._exportOrImport.excludeMutingUsers }}
+					</MkSwitch>
+					<MkSwitch v-model="excludeInactiveUsers">
+						{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
+					</MkSwitch>
+					<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+				</div>
+			</MkFolder>
+			<MkFolder>
+				<template #label>{{ i18n.ts.import }}</template>
+				<template #icon><i class="ti ti-upload"></i></template>
+				<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+			</MkFolder>
+		</div>
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.userLists }}</template>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="ti ti-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</FormFolder>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="ti ti-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-		</FormFolder>
+		<div class="_gaps_s">
+			<MkFolder>
+				<template #label>{{ i18n.ts.export }}</template>
+				<template #icon><i class="ti ti-download"></i></template>
+				<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+			</MkFolder>
+			<MkFolder>
+				<template #label>{{ i18n.ts.import }}</template>
+				<template #icon><i class="ti ti-upload"></i></template>
+				<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+			</MkFolder>
+		</div>
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.muteList }}</template>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="ti ti-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</FormFolder>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="ti ti-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-		</FormFolder>
+		<div class="_gaps_s">
+			<MkFolder>
+				<template #label>{{ i18n.ts.export }}</template>
+				<template #icon><i class="ti ti-download"></i></template>
+				<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+			</MkFolder>
+			<MkFolder>
+				<template #label>{{ i18n.ts.import }}</template>
+				<template #icon><i class="ti ti-upload"></i></template>
+				<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+			</MkFolder>
+		</div>
 	</FormSection>
 	<FormSection>
 		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.blockingList }}</template>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="ti ti-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</FormFolder>
-		<FormFolder class="_formBlock">
-			<template #label>{{ i18n.ts.import }}</template>
-			<template #icon><i class="ti ti-upload"></i></template>
-			<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-		</FormFolder>
+		<div class="_gaps_s">
+			<MkFolder>
+				<template #label>{{ i18n.ts.export }}</template>
+				<template #icon><i class="ti ti-download"></i></template>
+				<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+			</MkFolder>
+			<MkFolder>
+				<template #label>{{ i18n.ts.import }}</template>
+				<template #icon><i class="ti ti-upload"></i></template>
+				<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+			</MkFolder>
+		</div>
 	</FormSection>
 </div>
 </template>
@@ -81,8 +91,8 @@
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
-import FormFolder from '@/components/form/folder.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import { i18n } from '@/i18n';

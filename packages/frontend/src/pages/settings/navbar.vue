@@ -1,27 +1,27 @@
 <template>
-<div class="_formRoot">
-	<FormTextarea v-model="items" tall manual-save class="_formBlock">
+<div class="_gaps_m">
+	<MkTextarea v-model="items" tall manual-save>
 		<template #label>{{ i18n.ts.navbar }}</template>
 		<template #caption><button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button></template>
-	</FormTextarea>
+	</MkTextarea>
 
-	<FormRadios v-model="menuDisplay" class="_formBlock">
+	<MkRadios v-model="menuDisplay">
 		<template #label>{{ i18n.ts.display }}</template>
 		<option value="sideFull">{{ i18n.ts._menuDisplay.sideFull }}</option>
 		<option value="sideIcon">{{ i18n.ts._menuDisplay.sideIcon }}</option>
 		<option value="top">{{ i18n.ts._menuDisplay.top }}</option>
 		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ i18n.ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
-	</FormRadios>
+	</MkRadios>
 
-	<FormButton danger class="_formBlock" @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
+	<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store';
@@ -49,7 +49,7 @@ async function addItem() {
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
-			value: k, text: i18n.ts[navbarItemDef[k].title],
+			value: k, text: navbarItemDef[k].title,
 		})), {
 			value: '-', text: i18n.ts.divider,
 		}],

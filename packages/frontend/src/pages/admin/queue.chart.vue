@@ -1,12 +1,10 @@
 <template>
-<div class="pumxzjhg">
-	<div class="_table status">
-		<div class="_row">
-			<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
-			<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
-			<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
-			<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
-		</div>
+<div class="pumxzjhg _gaps">
+	<div :class="$style.status">
+		<div class="item _panel"><div class="label">Process</div>{{ number(activeSincePrevTick) }}</div>
+		<div class="item _panel"><div class="label">Active</div>{{ number(active) }}</div>
+		<div class="item _panel"><div class="label">Waiting</div>{{ number(waiting) }}</div>
+		<div class="item _panel"><div class="label">Delayed</div>{{ number(delayed) }}</div>
 	</div>
 	<div class="charts">
 		<div class="chart">
@@ -26,15 +24,21 @@
 			<XChart ref="chartWaiting" type="waiting"/>
 		</div>
 	</div>
-	<div class="jobs">
-		<div v-if="jobs.length > 0">
-			<div v-for="job in jobs" :key="job[0]">
-				<span>{{ job[0] }}</span>
-				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
+	<MkFolder :default-open="true" :max-height="250">
+		<template #icon><i class="ti ti-alert-triangle"></i></template>
+		<template #label>Errored instances</template>
+		<template #suffix>({{ number(jobs.reduce((a, b) => a + b[1], 0)) }} jobs)</template>
+		
+		<div :class="$style.jobs">
+			<div v-if="jobs.length > 0">
+				<div v-for="job in jobs" :key="job[0]">
+					<MkA :to="`/instance-info/${job[0]}`" behavior="window">{{ job[0] }}</MkA>
+					<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
+				</div>
 			</div>
+			<span v-else style="opacity: 0.5;">{{ i18n.ts.noJobs }}</span>
 		</div>
-		<span v-else style="opacity: 0.5;">{{ i18n.ts.noJobs }}</span>
-	</div>
+	</MkFolder>
 </div>
 </template>
 
@@ -45,6 +49,7 @@ import number from '@/filters/number';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
+import MkFolder from '@/components/MkFolder.vue';
 
 const connection = markRaw(stream.useChannel('queueStats'));
 
@@ -115,14 +120,10 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .pumxzjhg {
-	> .status {
-		padding: 16px;
-	}
-
 	> .charts {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 16px;
+		gap: 10px;
 
 		> .chart {
 			min-width: 0;
@@ -135,15 +136,27 @@ onUnmounted(() => {
 			}
 		}
 	}
+}
+</style>
 
-	> .jobs {
-		margin-top: 16px;
-		padding: 16px;
-		max-height: 180px;
-		overflow: auto;
-		background: var(--panel);
-		border-radius: var(--radius);
+<style lang="scss" module>
+.status {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	grid-gap: 10px;
+
+	&:global {
+		> .item {
+			padding: 12px 16px;
+
+			> .label {
+				font-size: 80%;
+				opacity: 0.6;
+			}
+		}
 	}
+}
 
+.jobs {
 }
 </style>

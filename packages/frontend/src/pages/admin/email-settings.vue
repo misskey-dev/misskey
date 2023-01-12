@@ -3,40 +3,43 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
-			<div class="_formRoot">
-				<FormSwitch v-model="enableEmail" class="_formBlock">
+			<div class="_gaps_m">
+				<MkSwitch v-model="enableEmail">
 					<template #label>{{ i18n.ts.enableEmail }} ({{ i18n.ts.recommended }})</template>
 					<template #caption>{{ i18n.ts.emailConfigInfo }}</template>
-				</FormSwitch>
+				</MkSwitch>
 
 				<template v-if="enableEmail">
-					<FormInput v-model="email" type="email" class="_formBlock">
+					<MkInput v-model="email" type="email">
 						<template #label>{{ i18n.ts.emailAddress }}</template>
-					</FormInput>
+					</MkInput>
 
 					<FormSection>
 						<template #label>{{ i18n.ts.smtpConfig }}</template>
-						<FormSplit :min-width="280">
-							<FormInput v-model="smtpHost" class="_formBlock">
-								<template #label>{{ i18n.ts.smtpHost }}</template>
-							</FormInput>
-							<FormInput v-model="smtpPort" type="number" class="_formBlock">
-								<template #label>{{ i18n.ts.smtpPort }}</template>
-							</FormInput>
-						</FormSplit>
-						<FormSplit :min-width="280">
-							<FormInput v-model="smtpUser" class="_formBlock">
-								<template #label>{{ i18n.ts.smtpUser }}</template>
-							</FormInput>
-							<FormInput v-model="smtpPass" type="password" class="_formBlock">
-								<template #label>{{ i18n.ts.smtpPass }}</template>
-							</FormInput>
-						</FormSplit>
-						<FormInfo class="_formBlock">{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
-						<FormSwitch v-model="smtpSecure" class="_formBlock">
-							<template #label>{{ i18n.ts.smtpSecure }}</template>
-							<template #caption>{{ i18n.ts.smtpSecureInfo }}</template>
-						</FormSwitch>
+
+						<div class="_gaps_m">
+							<FormSplit :min-width="280">
+								<MkInput v-model="smtpHost">
+									<template #label>{{ i18n.ts.smtpHost }}</template>
+								</MkInput>
+								<MkInput v-model="smtpPort" type="number">
+									<template #label>{{ i18n.ts.smtpPort }}</template>
+								</MkInput>
+							</FormSplit>
+							<FormSplit :min-width="280">
+								<MkInput v-model="smtpUser">
+									<template #label>{{ i18n.ts.smtpUser }}</template>
+								</MkInput>
+								<MkInput v-model="smtpPass" type="password">
+									<template #label>{{ i18n.ts.smtpPass }}</template>
+								</MkInput>
+							</FormSplit>
+							<FormInfo>{{ i18n.ts.emptyToDisableSmtpAuth }}</FormInfo>
+							<MkSwitch v-model="smtpSecure">
+								<template #label>{{ i18n.ts.smtpSecure }}</template>
+								<template #caption>{{ i18n.ts.smtpSecureInfo }}</template>
+							</MkSwitch>
+						</div>
 					</FormSection>
 				</template>
 			</div>
@@ -48,8 +51,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormInput from '@/components/form/input.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';

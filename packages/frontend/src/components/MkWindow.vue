@@ -1,7 +1,7 @@
 <template>
 <Transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div v-if="showing" ref="rootEl" class="ebkgocck" :class="{ maximized }">
-		<div class="body _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
+		<div class="body _shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
 					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
@@ -61,8 +61,8 @@ function dragClear(fn) {
 }
 
 const props = withDefaults(defineProps<{
-	initialWidth?: number;
-	initialHeight?: number | null;
+	initialWidth: number;
+	initialHeight: number | null;
 	canResize?: boolean;
 	closeButton?: boolean;
 	mini?: boolean;
@@ -386,7 +386,7 @@ function onBrowserResize() {
 }
 
 onMounted(() => {
-	if (props.initialWidth) applyTransformWidth(props.initialWidth);
+	applyTransformWidth(props.initialWidth);
 	if (props.initialHeight) applyTransformHeight(props.initialHeight);
 
 	applyTransformTop((window.innerHeight / 2) - (rootEl.offsetHeight / 2));
@@ -489,6 +489,7 @@ defineExpose({
 			flex: 1;
 			overflow: auto;
 			background: var(--panel);
+			container-type: inline-size;
 		}
 	}
 

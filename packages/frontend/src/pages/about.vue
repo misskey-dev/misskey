@@ -2,8 +2,8 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'overview'" :content-max="600" :margin-min="20">
-		<div class="_formRoot">
-			<div class="_formBlock fwhjspax" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+		<div class="_gaps_m">
+			<div class="fwhjspax" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 				<div class="content">
 					<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
 					<div class="name">
@@ -12,44 +12,48 @@
 				</div>
 			</div>
 
-			<MkKeyValue class="_formBlock">
+			<MkKeyValue>
 				<template #key>{{ i18n.ts.description }}</template>
 				<template #value><div v-html="$instance.description"></div></template>
 			</MkKeyValue>
 
 			<FormSection>
-				<MkKeyValue class="_formBlock" :copy="version">
-					<template #key>Misskey</template>
-					<template #value>{{ version }}</template>
-				</MkKeyValue>
-				<div class="_formBlock" v-html="i18n.t('poweredByMisskeyDescription', { name: $instance.name ?? host })">
+				<div class="_gaps_m">
+					<MkKeyValue :copy="version">
+						<template #key>Misskey</template>
+						<template #value>{{ version }}</template>
+					</MkKeyValue>
+					<div v-html="i18n.t('poweredByMisskeyDescription', { name: $instance.name ?? host })">
+					</div>
+					<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
 				</div>
-				<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
 			</FormSection>
 
 			<FormSection>
-				<FormSplit>
-					<MkKeyValue class="_formBlock">
-						<template #key>{{ i18n.ts.administrator }}</template>
-						<template #value>{{ $instance.maintainerName }}</template>
-					</MkKeyValue>
-					<MkKeyValue class="_formBlock">
-						<template #key>{{ i18n.ts.contact }}</template>
-						<template #value>{{ $instance.maintainerEmail }}</template>
-					</MkKeyValue>
-				</FormSplit>
-				<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" class="_formBlock" external>{{ i18n.ts.tos }}</FormLink>
+				<div class="_gaps_m">
+					<FormSplit>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.administrator }}</template>
+							<template #value>{{ $instance.maintainerName }}</template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.contact }}</template>
+							<template #value>{{ $instance.maintainerEmail }}</template>
+						</MkKeyValue>
+					</FormSplit>
+					<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" external>{{ i18n.ts.tos }}</FormLink>
+				</div>
 			</FormSection>
 
 			<FormSuspense :p="initStats">
 				<FormSection>
 					<template #label>{{ i18n.ts.statistics }}</template>
 					<FormSplit>
-						<MkKeyValue class="_formBlock">
+						<MkKeyValue>
 							<template #key>{{ i18n.ts.users }}</template>
 							<template #value>{{ number(stats.originalUsersCount) }}</template>
 						</MkKeyValue>
-						<MkKeyValue class="_formBlock">
+						<MkKeyValue>
 							<template #key>{{ i18n.ts.notes }}</template>
 							<template #value>{{ number(stats.originalNotesCount) }}</template>
 						</MkKeyValue>

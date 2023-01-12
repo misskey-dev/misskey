@@ -220,6 +220,7 @@ import * as ep___messaging_messages_create from './endpoints/messaging/messages/
 import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
 import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
+import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
@@ -266,6 +267,15 @@ import * as ep___pages_like from './endpoints/pages/like.js';
 import * as ep___pages_show from './endpoints/pages/show.js';
 import * as ep___pages_unlike from './endpoints/pages/unlike.js';
 import * as ep___pages_update from './endpoints/pages/update.js';
+import * as ep___flash_create from './endpoints/flash/create.js';
+import * as ep___flash_delete from './endpoints/flash/delete.js';
+import * as ep___flash_featured from './endpoints/flash/featured.js';
+import * as ep___flash_like from './endpoints/flash/like.js';
+import * as ep___flash_show from './endpoints/flash/show.js';
+import * as ep___flash_unlike from './endpoints/flash/unlike.js';
+import * as ep___flash_update from './endpoints/flash/update.js';
+import * as ep___flash_my from './endpoints/flash/my.js';
+import * as ep___flash_myLikes from './endpoints/flash/my-likes.js';
 import * as ep___ping from './endpoints/ping.js';
 import * as ep___pinnedUsers from './endpoints/pinned-users.js';
 import * as ep___promo_read from './endpoints/promo/read.js';
@@ -541,6 +551,7 @@ const $messaging_messages_create: Provider = { provide: 'ep:messaging/messages/c
 const $messaging_messages_delete: Provider = { provide: 'ep:messaging/messages/delete', useClass: ep___messaging_messages_delete.default };
 const $messaging_messages_read: Provider = { provide: 'ep:messaging/messages/read', useClass: ep___messaging_messages_read.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
+const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
 const $mute_delete: Provider = { provide: 'ep:mute/delete', useClass: ep___mute_delete.default };
@@ -587,6 +598,15 @@ const $pages_like: Provider = { provide: 'ep:pages/like', useClass: ep___pages_l
 const $pages_show: Provider = { provide: 'ep:pages/show', useClass: ep___pages_show.default };
 const $pages_unlike: Provider = { provide: 'ep:pages/unlike', useClass: ep___pages_unlike.default };
 const $pages_update: Provider = { provide: 'ep:pages/update', useClass: ep___pages_update.default };
+const $flash_create: Provider = { provide: 'ep:flash/create', useClass: ep___flash_create.default };
+const $flash_delete: Provider = { provide: 'ep:flash/delete', useClass: ep___flash_delete.default };
+const $flash_featured: Provider = { provide: 'ep:flash/featured', useClass: ep___flash_featured.default };
+const $flash_like: Provider = { provide: 'ep:flash/like', useClass: ep___flash_like.default };
+const $flash_show: Provider = { provide: 'ep:flash/show', useClass: ep___flash_show.default };
+const $flash_unlike: Provider = { provide: 'ep:flash/unlike', useClass: ep___flash_unlike.default };
+const $flash_update: Provider = { provide: 'ep:flash/update', useClass: ep___flash_update.default };
+const $flash_my: Provider = { provide: 'ep:flash/my', useClass: ep___flash_my.default };
+const $flash_myLikes: Provider = { provide: 'ep:flash/my-likes', useClass: ep___flash_myLikes.default };
 const $ping: Provider = { provide: 'ep:ping', useClass: ep___ping.default };
 const $pinnedUsers: Provider = { provide: 'ep:pinned-users', useClass: ep___pinnedUsers.default };
 const $promo_read: Provider = { provide: 'ep:promo/read', useClass: ep___promo_read.default };
@@ -866,6 +886,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$messaging_messages_delete,
 		$messaging_messages_read,
 		$meta,
+		$emojis,
 		$miauth_genToken,
 		$mute_create,
 		$mute_delete,
@@ -912,6 +933,15 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$pages_show,
 		$pages_unlike,
 		$pages_update,
+		$flash_create,
+		$flash_delete,
+		$flash_featured,
+		$flash_like,
+		$flash_show,
+		$flash_unlike,
+		$flash_update,
+		$flash_my,
+		$flash_myLikes,
 		$ping,
 		$pinnedUsers,
 		$promo_read,
@@ -1185,6 +1215,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$messaging_messages_delete,
 		$messaging_messages_read,
 		$meta,
+		$emojis,
 		$miauth_genToken,
 		$mute_create,
 		$mute_delete,
@@ -1231,6 +1262,15 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$pages_show,
 		$pages_unlike,
 		$pages_update,
+		$flash_create,
+		$flash_delete,
+		$flash_featured,
+		$flash_like,
+		$flash_show,
+		$flash_unlike,
+		$flash_update,
+		$flash_my,
+		$flash_myLikes,
 		$ping,
 		$pinnedUsers,
 		$promo_read,

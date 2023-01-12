@@ -11,18 +11,18 @@
 		<div v-else-if="tab === 'search'">
 			<MkSpacer :content-max="1200">
 				<div>
-					<MkInput v-model="searchQuery" :debounce="true" type="search" class="_formBlock">
+					<MkInput v-model="searchQuery" :debounce="true" type="search">
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.searchUser }}</template>
 					</MkInput>
-					<MkRadios v-model="searchOrigin" class="_formBlock">
+					<MkRadios v-model="searchOrigin">
 						<option value="combined">{{ i18n.ts.all }}</option>
 						<option value="local">{{ i18n.ts.local }}</option>
 						<option value="remote">{{ i18n.ts.remote }}</option>
 					</MkRadios>
 				</div>
 
-				<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
+				<XUserList v-if="searchQuery" ref="searchEl" class="_margin" :pagination="searchPagination"/>
 			</MkSpacer>
 		</div>
 	</div>
@@ -33,9 +33,9 @@
 import { computed, watch } from 'vue';
 import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkInput from '@/components/form/input.vue';
-import MkRadios from '@/components/form/radios.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
 });
 
 let tab = $ref(props.initialTab);
-let tagsEl = $shallowRef<InstanceType<typeof MkFolder>>();
+let tagsEl = $shallowRef<InstanceType<typeof MkFoldableSection>>();
 let searchQuery = $ref(null);
 let searchOrigin = $ref('combined');
 

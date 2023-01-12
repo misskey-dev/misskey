@@ -916,6 +916,14 @@ loggedInAsBot: "Botアカウントでログイン中"
 tools: "ツール"
 cannotLoad: "読み込めません"
 numberOfProfileView: "プロフィール表示回数"
+like: "いいね！"
+unlike: "いいねを解除"
+numberOfLikes: "いいね数"
+show: "表示"
+neverShow: "今後表示しない"
+remindMeLater: "また後で"
+didYouLikeMisskey: "Misskeyを気に入っていただけましたか？"
+pleaseDonate: "Misskeyは{host}が使用している無料のソフトウェアです。これからも開発を続けられるように、ぜひ寄付をお願いします！"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -1327,6 +1335,8 @@ _weekday:
   saturday: "土曜日"
 
 _widgets:
+  profile: "プロフィール"
+  instanceInfo: "インスタンス情報"
   memo: "付箋"
   notifications: "通知"
   timeline: "タイムライン"
@@ -1348,10 +1358,12 @@ _widgets:
   jobQueue: "ジョブキュー"
   serverMetric: "サーバーメトリクス"
   aiscript: "AiScriptコンソール"
+  aiscriptApp: "AiScript App"
   aichan: "藍"
   userList: "ユーザーリスト"
   _userList:
     chooseList: "リストを選択"
+  clicker: "クリッカー"
 
 _cw:
   hide: "隠す"
@@ -1463,6 +1475,22 @@ _timelines:
   social: "ソーシャル"
   global: "グローバル"
 
+_play:
+  new: "Playの作成"
+  edit: "Playの編集"
+  created: "Playを作成しました"
+  updated: "Playを更新しました"
+  deleted: "Playを削除しました"
+  pageSetting: "Play設定"
+  editThisPage: "このPlayを編集"
+  viewSource: "ソースを表示"
+  my: "自分のPlay"
+  liked: "いいねしたPlay"
+  featured: "人気"
+  title: "タイトル"
+  script: "スクリプト"
+  summary: "説明"
+
 _pages:
   newPage: "ページの作成"
   editPage: "ページの編集"
@@ -1525,7 +1553,6 @@ _notification:
   youGotReply: "{name}からのリプライ"
   youGotQuote: "{name}による引用"
   youRenoted: "{name}がRenoteしました"
-  youGotPoll: "{name}が投票しました"
   youGotMessagingMessageFromUser: "{name}からのチャットがあります"
   youGotMessagingMessageFromGroup: "{name}のチャットがあります"
   youWereFollowed: "フォローされました"
@@ -1544,7 +1571,6 @@ _notification:
     renote: "Renote"
     quote: "引用"
     reaction: "リアクション"
-    pollVote: "アンケートに投票された"
     pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"

@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="700">
 		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="page" :key="page.id" class="xcukqgmh">
-				<div class="_block main">
+				<div class="main">
 					<!--
 				<div class="header">
 					<h1>{{ page.title }}</h1>
@@ -18,8 +18,8 @@
 					</div>
 					<div class="actions">
 						<div class="like">
-							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
-							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-if="page.isLiked" v-tooltip="i18n.ts._pages.unlike" class="button" as-like primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
+							<MkButton v-else v-tooltip="i18n.ts._pages.like" class="button" as-like @click="like()"><i class="ti ti-heart"></i><span v-if="page.likedCount > 0" class="count">{{ page.likedCount }}</span></MkButton>
 						</div>
 						<div class="other">
 							<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
@@ -51,7 +51,7 @@
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #header><i class="ti ti-clock"></i> {{ i18n.ts.recentPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_gap"/>
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
 					</MkPagination>
 				</MkContainer>
 			</div>
@@ -206,20 +206,6 @@ definePageMetadata(computed(() => page ? {
 			margin-top: 16px;
 			padding: 16px 0 0 0;
 			border-top: solid 0.5px var(--divider);
-
-			> .like {
-				> .button {
-					--accent: rgb(241 97 132);
-					--X8: rgb(241 92 128);
-					--buttonBg: rgb(216 71 106 / 5%);
-					--buttonHoverBg: rgb(216 71 106 / 10%);
-					color: #ff002f;
-
-					::v-deep(.count) {
-						margin-left: 0.5em;
-					}
-				}
-			}
 
 			> .other {
 				margin-left: auto;

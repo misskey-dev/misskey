@@ -59,6 +59,11 @@ function chosen(emoji: any) {
 function opening() {
 	picker.value?.reset();
 	picker.value?.focus();
+
+	// 何故かちょっと待たないとフォーカスされない
+	setTimeout(() => {
+		picker.value?.focus();
+	}, 10);
 }
 </script>
 

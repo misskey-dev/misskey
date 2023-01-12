@@ -10,8 +10,7 @@
 
 <script lang="ts" setup>
 import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import { Chart } from 'chart.js';
-import { enUS } from 'date-fns/locale';
+import { Chart, ChartDataset } from 'chart.js';
 import tinycolor from 'tinycolor2';
 import * as misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
@@ -65,38 +64,36 @@ async function renderChart() {
 
 	const colorUser = '#3498db';
 	const colorVisitor = '#2ecc71';
+	const colorUser2 = '#3498db88';
+	const colorVisitor2 = '#2ecc7188';
+
+	function makeDataset(label: string, data: ChartDataset['data'], extra: Partial<ChartDataset> = {}): ChartDataset {
+		return Object.assign({
+			label: label,
+			data: data,
+			parsing: false,
+			pointRadius: 0,
+			borderWidth: 0,
+			borderJoinStyle: 'round',
+			borderRadius: 4,
+			barPercentage: 0.7,
+			categoryPercentage: 0.7,
+			fill: true,
+		} satisfies ChartDataset, extra);
+	}
 
 	chartInstance = new Chart(chartEl, {
 		type: 'bar',
 		data: {
-			datasets: [{
-				parsing: false,
-				label: 'UPV (user)',
-				data: format(raw.upv.user).slice().reverse(),
-				pointRadius: 0,
-				borderWidth: 0,
-				borderJoinStyle: 'round',
-				borderRadius: 4,
-				backgroundColor: colorUser,
-				barPercentage: 0.7,
-				categoryPercentage: 1,
-				fill: true,
-			}, {
-				parsing: false,
-				label: 'UPV (visitor)',
-				data: format(raw.upv.visitor).slice().reverse(),
-				pointRadius: 0,
-				borderWidth: 0,
-				borderJoinStyle: 'round',
-				borderRadius: 4,
-				backgroundColor: colorVisitor,
-				barPercentage: 0.7,
-				categoryPercentage: 1,
-				fill: true,
-			}],
+			datasets: [
+				makeDataset('UPV (user)', format(raw.upv.user).slice().reverse(), { backgroundColor: colorUser, stack: 'u' }),
+				makeDataset('UPV (visitor)', format(raw.upv.visitor).slice().reverse(), { backgroundColor: colorVisitor, stack: 'u' }),
+				makeDataset('NPV (user)', format(raw.pv.user).slice().reverse(), { backgroundColor: colorUser2, stack: 'n' }),
+				makeDataset('NPV (visitor)', format(raw.pv.visitor).slice().reverse(), { backgroundColor: colorVisitor2, stack: 'n' }),
+			],
 		},
 		options: {
-			aspectRatio: 2.5,
+			aspectRatio: 3,
 			layout: {
 				padding: {
 					left: 0,
@@ -113,6 +110,10 @@ async function renderChart() {
 					time: {
 						stepSize: 1,
 						unit: 'day',
+						displayFormats: {
+							day: 'M/d',
+							month: 'Y/M',
+						},
 					},
 					grid: {
 						display: false,
@@ -121,11 +122,6 @@ async function renderChart() {
 						display: true,
 						maxRotation: 0,
 						autoSkipPadding: 8,
-					},
-					adapters: {
-						date: {
-							locale: enUS,
-						},
 					},
 				},
 				y: {
@@ -148,7 +144,7 @@ async function renderChart() {
 			plugins: {
 				title: {
 					display: true,
-					text: 'Unique PV',
+					text: 'Unique/Natural PV',
 					padding: {
 						left: 0,
 						right: 0,
