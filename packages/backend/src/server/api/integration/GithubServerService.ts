@@ -174,7 +174,7 @@ export class GithubServerService {
 						}
 					}));
 
-				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
+				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', {
 					'Authorization': `bearer ${accessToken}`,
 				})) as Record<string, unknown>;
 				if (typeof login !== 'string' || typeof id !== 'string') {
@@ -223,7 +223,7 @@ export class GithubServerService {
 							}
 						}));
 
-				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
+				const { login, id } = (await this.httpRequestService.getJson('https://api.github.com/user', 'application/vnd.github.v3+json', {
 					'Authorization': `bearer ${accessToken}`,
 				})) as Record<string, unknown>;
 

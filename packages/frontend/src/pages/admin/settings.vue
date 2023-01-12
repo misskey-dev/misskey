@@ -47,14 +47,6 @@
 					</FormSection>
 
 					<FormSection>
-						<div class="_gaps_s">
-							<MkSwitch v-model="enableLocalTimeline">{{ i18n.ts.enableLocalTimeline }}</MkSwitch>
-							<MkSwitch v-model="enableGlobalTimeline">{{ i18n.ts.enableGlobalTimeline }}</MkSwitch>
-							<FormInfo>{{ i18n.ts.disablingTimelinesInfo }}</FormInfo>
-						</div>
-					</FormSection>
-
-					<FormSection>
 						<template #label>{{ i18n.ts.theme }}</template>
 
 						<div class="_gaps_m">
@@ -100,19 +92,11 @@
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
 							</MkSwitch>
 
-							<FormSplit :min-width="280">
-								<MkInput v-model="localDriveCapacityMb" type="number">
-									<template #label>{{ i18n.ts.driveCapacityPerLocalAccount }}</template>
-									<template #suffix>MB</template>
-									<template #caption>{{ i18n.ts.inMb }}</template>
-								</MkInput>
-
-								<MkInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
-									<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
-									<template #suffix>MB</template>
-									<template #caption>{{ i18n.ts.inMb }}</template>
-								</MkInput>
-							</FormSplit>
+							<MkInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
+								<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
+								<template #suffix>MB</template>
+								<template #caption>{{ i18n.ts.inMb }}</template>
+							</MkInput>
 						</div>
 					</FormSection>
 
@@ -185,11 +169,8 @@ let backgroundImageUrl: string | null = $ref(null);
 let themeColor: any = $ref(null);
 let defaultLightTheme: any = $ref(null);
 let defaultDarkTheme: any = $ref(null);
-let enableLocalTimeline: boolean = $ref(false);
-let enableGlobalTimeline: boolean = $ref(false);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
-let localDriveCapacityMb: any = $ref(0);
 let remoteDriveCapacityMb: any = $ref(0);
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
@@ -212,11 +193,8 @@ async function init() {
 	defaultDarkTheme = meta.defaultDarkTheme;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
-	enableLocalTimeline = !meta.disableLocalTimeline;
-	enableGlobalTimeline = !meta.disableGlobalTimeline;
 	pinnedUsers = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles = meta.cacheRemoteFiles;
-	localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 	remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 	enableRegistration = !meta.disableRegistration;
 	emailRequiredForSignup = meta.emailRequiredForSignup;
@@ -240,11 +218,8 @@ function save() {
 		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
 		maintainerName,
 		maintainerEmail,
-		disableLocalTimeline: !enableLocalTimeline,
-		disableGlobalTimeline: !enableGlobalTimeline,
 		pinnedUsers: pinnedUsers.split('\n'),
 		cacheRemoteFiles,
-		localDriveCapacityMb: parseInt(localDriveCapacityMb, 10),
 		remoteDriveCapacityMb: parseInt(remoteDriveCapacityMb, 10),
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,

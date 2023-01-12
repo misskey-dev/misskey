@@ -5,6 +5,7 @@ import type { UserListsRepository, UserGroupJoiningsRepository, AntennasReposito
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -83,6 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		private antennaEntityService: AntennaEntityService,
+		private roleService: RoleService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -90,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const currentAntennasCount = await this.antennasRepository.countBy({
 				userId: me.id,
 			});
-			if (currentAntennasCount > 5) {
+			if (currentAntennasCount > (await this.roleService.getUserRoleOptions(me.id)).antennaLimit) {
 				throw new ApiError(meta.errors.tooManyAntennas);
 			}
 

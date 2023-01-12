@@ -32,11 +32,12 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
-	user: { id: User['id']; host: User['host']; driveCapacityOverrideMb: User['driveCapacityOverrideMb'] } | null;
+	user: { id: User['id']; host: User['host'] } | null;
 	/** File path */
 	path: string;
 	/** Name */
@@ -62,7 +63,7 @@ type AddFileArgs = {
 
 type UploadFromUrlArgs = {
 	url: string;
-	user: { id: User['id']; host: User['host']; driveCapacityOverrideMb: User['driveCapacityOverrideMb'] } | null;
+	user: { id: User['id']; host: User['host'] } | null;
 	folderId?: DriveFolder['id'] | null;
 	uri?: string | null;
 	sensitive?: boolean;
@@ -106,6 +107,7 @@ export class DriveService {
 		private videoProcessingService: VideoProcessingService,
 		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
+		private roleService: RoleService,
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
@@ -373,8 +375,19 @@ export class DriveService {
 			partSize: s3.endpoint.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
 		});
 
-		const result = await upload.promise();
-		if (result) this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+		await upload.promise()
+			.then(
+				result => {
+					if (result) {
+						this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+					} else {
+						this.registerLogger.error(`Upload Result Empty: key = ${key}, filename = ${filename}`);
+					}
+				},
+				err => {
+					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
+				}
+			);
 	}
 
 	@bindThis
@@ -460,18 +473,21 @@ export class DriveService {
 			}
 		}
 
+		this.registerLogger.debug(`ADD DRIVE FILE: user ${user?.id ?? 'not set'}, name ${detectedName}, tmp ${path}`);
+
 		//#region Check drive usage
 		if (user && !isLink) {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
-			const u = await this.usersRepository.findOneBy({ id: user.id });
 
-			const instance = await this.metaService.fetch();
-			let driveCapacity = 1024 * 1024 * (this.userEntityService.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
-
-			if (this.userEntityService.isLocalUser(user) && u?.driveCapacityOverrideMb != null) {
-				driveCapacity = 1024 * 1024 * u.driveCapacityOverrideMb;
+			let driveCapacity: number;
+			if (this.userEntityService.isLocalUser(user)) {
+				const role = await this.roleService.getUserRoleOptions(user.id);
+				driveCapacity = 1024 * 1024 * role.driveCapacityMb;
 				this.registerLogger.debug('drive capacity override applied');
 				this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
+			} else {
+				const instance = await this.metaService.fetch();
+				driveCapacity = 1024 * 1024 * instance.remoteDriveCapacityMb;
 			}
 
 			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
