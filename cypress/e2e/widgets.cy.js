@@ -29,8 +29,8 @@ describe('After user signed in', () => {
 
 	it('first widget should be removed', () => {
 		cy.get('.mk-widget-edit').click();
-		cy.get('.customize-container:first-child .remove._button').click();
-		cy.get('.customize-container').should('have.length', 2);
+		cy.get('.components-MkWidgets-customize-container:first-child .components-MkWidgets-customize-container-remove._button').click();
+		cy.get('.components-MkWidgets-customize-container').should('have.length', 2);
 	});
 
 	function buildWidgetTest(widgetName) {
