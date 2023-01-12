@@ -1,19 +1,18 @@
 <template>
-<div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="search" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
-	<div ref="emojis" class="emojis">
+<div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
+	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
+	<div ref="emojisEl" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
 				<button
 					v-for="emoji in searchResultCustom"
-					:key="emoji.id"
+					:key="emoji.name"
 					class="_button item"
 					:title="emoji.name"
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<!--<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>-->
-					<img class="emoji" :src="disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+					<MkEmoji class="emoji" :emoji="`:${emoji.name}:`"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
@@ -78,24 +77,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import Ripple from '@/components/MkRipple.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
-import { emojiCategories, instance } from '@/instance';
+import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { getCustomEmojiCategories, customEmojis } from '@/custom-emojis';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
 	asReactionPicker?: boolean;
 	maxHeight?: number;
 	asDrawer?: boolean;
+	asWindow?: boolean;
 }>(), {
 	showPinned: true,
 });
@@ -104,8 +104,9 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
-const search = ref<HTMLInputElement>();
-const emojis = ref<HTMLDivElement>();
+const customEmojiCategories = getCustomEmojiCategories();
+const searchEl = shallowRef<HTMLInputElement>();
+const emojisEl = shallowRef<HTMLDivElement>();
 
 const {
 	reactions: pinned,
@@ -119,15 +120,13 @@ const {
 const size = computed(() => props.asReactionPicker ? reactionPickerSize.value : 1);
 const width = computed(() => props.asReactionPicker ? reactionPickerWidth.value : 3);
 const height = computed(() => props.asReactionPicker ? reactionPickerHeight.value : 2);
-const customEmojiCategories = emojiCategories;
-const customEmojis = instance.emojis;
 const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
 watch(q, () => {
-	if (emojis.value) emojis.value.scrollTop = 0;
+	if (emojisEl.value) emojisEl.value.scrollTop = 0;
 
 	if (q.value === '') {
 		searchResultCustom.value = [];
@@ -269,14 +268,14 @@ watch(q, () => {
 
 function focus() {
 	if (!['smartphone', 'tablet'].includes(deviceKind) && !isTouchUsing) {
-		search.value?.focus({
+		searchEl.value?.focus({
 			preventScroll: true,
 		});
 	}
 }
 
 function reset() {
-	if (emojis.value) emojis.value.scrollTop = 0;
+	if (emojisEl.value) emojisEl.value.scrollTop = 0;
 	q.value = '';
 }
 
@@ -290,7 +289,7 @@ function chosen(emoji: any, ev?: MouseEvent) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(Ripple, { x, y }, {}, 'end');
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
 	}
 
 	const key = getKey(emoji);
@@ -309,7 +308,7 @@ function input(): void {
 	// Using custom input event instead of v-model to respond immediately on
 	// Android, where composition happens on all languages
 	// (v-model does not update during composition)
-	q.value = search.value?.value.trim() ?? '';
+	q.value = searchEl.value?.value.trim() ?? '';
 }
 
 function paste(event: ClipboardEvent): void {
@@ -426,6 +425,28 @@ defineExpose({
 					font-size: 15px;
 				}
 
+				> .body {
+					display: grid;
+					grid-template-columns: var(--columns);
+					font-size: 30px;
+
+					> .item {
+						aspect-ratio: 1 / 1;
+						width: auto;
+						height: auto;
+						min-width: 0;
+					}
+				}
+			}
+		}
+	}
+
+	&.asWindow {
+		width: 100% !important;
+		height: 100% !important;
+
+		> .emojis {
+			::v-deep(section) {
 				> .body {
 					display: grid;
 					grid-template-columns: var(--columns);

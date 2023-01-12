@@ -8,6 +8,16 @@ export type IImage = {
 	ext: string | null;
 	type: string;
 };
+
+export const webpDefault: sharp.WebpOptions = {
+	quality: 85,
+	alphaQuality: 95,
+	lossless: false,
+	nearLossless: false,
+	smartSubsample: true,
+	mixed: true,
+};
+
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -53,21 +63,19 @@ export class ImageProcessingService {
 	 *   with resize, remove metadata, resolve orientation, stop animation
 	 */
 	@bindThis
-	public async convertToWebp(path: string, width: number, height: number, quality = 85): Promise<IImage> {
-		return this.convertSharpToWebp(await sharp(path), width, height, quality);
+	public async convertToWebp(path: string, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
+		return this.convertSharpToWebp(await sharp(path), width, height, options);
 	}
 
 	@bindThis
-	public async convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number, quality = 85): Promise<IImage> {
+	public async convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
 		const data = await sharp
 			.resize(width, height, {
 				fit: 'inside',
 				withoutEnlargement: true,
 			})
 			.rotate()
-			.webp({
-				quality,
-			})
+			.webp(options)
 			.toBuffer();
 
 		return {

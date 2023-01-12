@@ -3,55 +3,20 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-	DoughnutController,
-} from 'chart.js';
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { Chart } from 'chart.js';
 import number from '@/filters/number';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	DoughnutController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-);
+initChart();
 
 const props = defineProps<{
 	data: { name: string; value: number; color: string; onClick?: () => void }[];
 }>();
 
-const chartEl = ref<HTMLCanvasElement>(null);
-
-// フォントカラー
-Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',

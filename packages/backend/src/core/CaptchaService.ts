@@ -1,7 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 
@@ -13,9 +10,6 @@ type CaptchaResponse = {
 @Injectable()
 export class CaptchaService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private httpRequestService: HttpRequestService,
 	) {
 	}
@@ -27,16 +21,16 @@ export class CaptchaService {
 			response,
 		});
 	
-		const res = await fetch(url, {
-			method: 'POST',
-			body: params,
-			headers: {
-				'User-Agent': this.config.userAgent,
+		const res = await this.httpRequestService.fetch(
+			url,
+			{
+				method: 'POST',
+				body: params,
 			},
-			// TODO
-			//timeout: 10 * 1000,
-			agent: (url, bypassProxy) => this.httpRequestService.getAgentByUrl(url, bypassProxy),
-		}).catch(err => {
+			{
+				noOkError: true,
+			}
+		).catch(err => {
 			throw `${err.message ?? err}`;
 		});
 	

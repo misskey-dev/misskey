@@ -5,7 +5,7 @@
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
 				<template v-if="choice.isVoted"><i class="ti ti-check"></i></template>
-				<Mfm :text="choice.text" :plain="true" :custom-emojis="note.emojis"/>
+				<Mfm :text="choice.text" :plain="true"/>
 				<span v-if="showResult" class="votes">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
 		</li>
@@ -102,7 +102,7 @@ const vote = async (id) => {
 			//border: solid 0.5px var(--divider);
 			background: var(--accentedBg);
 			border-radius: 4px;
-			overflow: hidden;
+			overflow: clip;
 			cursor: pointer;
 
 			> .backdrop {

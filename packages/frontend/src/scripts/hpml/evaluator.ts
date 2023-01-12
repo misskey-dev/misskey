@@ -1,13 +1,11 @@
 import autobind from 'autobind-decorator';
-import { PageVar, envVarsDef, Fn, HpmlScope, HpmlError } from '.';
-import { version } from '@/config';
-import { AiScript, utils, values } from '@syuilo/aiscript';
-import { createAiScriptEnv } from '../aiscript/api';
+import { markRaw, ref, Ref, unref } from 'vue';
 import { collectPageVars } from '../collect-page-vars';
 import { initHpmlLib, initAiLib } from './lib';
-import * as os from '@/os';
-import { markRaw, ref, Ref, unref } from 'vue';
 import { Expr, isLiteralValue, Variable } from './expr';
+import { PageVar, envVarsDef, Fn, HpmlScope, HpmlError } from '.';
+import { version } from '@/config';
+import * as os from '@/os';
 
 /**
  * Hpml evaluator
@@ -16,7 +14,6 @@ export class Hpml {
 	private variables: Variable[];
 	private pageVars: PageVar[];
 	private envVars: Record<keyof typeof envVarsDef, any>;
-	public aiscript?: AiScript;
 	public pageVarUpdatedCallback?: values.VFn;
 	public canvases: Record<string, HTMLCanvasElement> = {};
 	public vars: Ref<Record<string, any>> = ref({});
@@ -24,7 +21,6 @@ export class Hpml {
 
 	private opts: {
 		randomSeed: string; visitor?: any; url?: string;
-		enableAiScript: boolean;
 	};
 
 	constructor(page: Hpml['page'], opts: Hpml['opts']) {
@@ -32,31 +28,6 @@ export class Hpml {
 		this.variables = this.page.variables;
 		this.pageVars = collectPageVars(this.page.content);
 		this.opts = opts;
-
-		if (this.opts.enableAiScript) {
-			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
-				storageKey: 'pages:' + this.page.id,
-			}), ...initAiLib(this) }, {
-				in: (q) => {
-					return new Promise(ok => {
-						os.inputText({
-							title: q,
-						}).then(({ canceled, result: a }) => {
-							ok(a);
-						});
-					});
-				},
-				out: (value) => {
-					console.log(value);
-				},
-				log: (type, params) => {
-				},
-			}));
-
-			this.aiscript.scope.opts.onUpdated = (name, value) => {
-				this.eval();
-			};
-		}
 
 		const date = new Date();
 
@@ -74,7 +45,7 @@ export class Hpml {
 			IS_CAT: opts.visitor ? opts.visitor.isCat : false,
 			SEED: opts.randomSeed ? opts.randomSeed : '',
 			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
-			AISCRIPT_DISABLED: !this.opts.enableAiScript,
+			AISCRIPT_DISABLED: true,
 			NULL: null,
 		};
 
@@ -100,13 +71,6 @@ export class Hpml {
 	}
 
 	@autobind
-	public callAiScript(fn: string) {
-		try {
-			if (this.aiscript) this.aiscript.execFn(this.aiscript.scope.get(fn), []);
-		} catch (err) {}
-	}
-
-	@autobind
 	public registerCanvas(id: string, canvas: any) {
 		this.canvases[id] = canvas;
 	}
@@ -116,9 +80,6 @@ export class Hpml {
 		const pageVar = this.pageVars.find(v => v.name === name);
 		if (pageVar !== undefined) {
 			pageVar.value = value;
-			if (this.pageVarUpdatedCallback) {
-				if (this.aiscript) this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
-			}
 		} else {
 			throw new HpmlError(`No such page var '${name}'`);
 		}
@@ -178,18 +139,6 @@ export class Hpml {
 
 			if (expr.type === 'ref') {
 				return scope.getState(expr.value);
-			}
-
-			if (expr.type === 'aiScriptVar') {
-				if (this.aiscript) {
-					try {
-						return utils.valToJs(this.aiscript.scope.get(expr.value));
-					} catch (err) {
-						return null;
-					}
-				} else {
-					return null;
-				}
 			}
 
 			// Define user function

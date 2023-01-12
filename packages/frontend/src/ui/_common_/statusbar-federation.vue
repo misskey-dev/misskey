@@ -1,7 +1,7 @@
 <template>
 <span v-if="!fetching" class="nmidsaqw">
 	<template v-if="display === 'marquee'">
-		<transition name="change" mode="default">
+		<Transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="instance in instances" :key="instance.id" class="item" :class="{ colored }" :style="{ background: colored ? instance.themeColor : null }">
 					<img class="icon" :src="getInstanceIcon(instance)" alt=""/>
@@ -11,7 +11,7 @@
 					<span class="divider"></span>
 				</span>
 			</MarqueeText>
-		</transition>
+		</Transition>
 	</template>
 	<template v-else-if="display === 'oneByOne'">
 		<!-- TODO -->
@@ -44,7 +44,7 @@ let key = $ref(0);
 
 const tick = () => {
 	os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
+		sort: '+latestRequestReceivedAt',
 		limit: 30,
 	}).then(res => {
 		instances.value = res;

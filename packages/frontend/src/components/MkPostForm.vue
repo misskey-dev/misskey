@@ -18,16 +18,23 @@
 			<button ref="visibilityButton" v-tooltip="i18n.ts.visibility" class="_button visibility" :disabled="channel != null" @click="setVisibility">
 				<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 				<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-				<span v-if="visibility === 'followers'"><i class="ti ti-lock-open"></i></span>
+				<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
 				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
 			</button>
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<button class="submit _buttonGradate" :disabled="!canPost" data-cy-open-post-form-submit @click="post">{{ submitText }}<i :class="reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i></button>
+			<button v-click-anime class="submit _button" :class="{ posting }" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
+				<div class="inner">
+					<template v-if="posted"></template>
+					<template v-else-if="posting"><MkEllipsis/></template>
+					<template v-else>{{ submitText }}</template>
+					<i :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i>
+				</div>
+			</button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
-		<XNoteSimple v-if="reply" class="preview" :note="reply"/>
-		<XNoteSimple v-if="renote" class="preview" :note="renote"/>
+		<MkNoteSimple v-if="reply" class="preview" :note="reply"/>
+		<MkNoteSimple v-if="renote" class="preview" :note="renote"/>
 		<div v-if="quoteId" class="with-quote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
@@ -41,10 +48,10 @@
 		</div>
 		<MkInfo v-if="hasNotSpecifiedMentions" warn class="hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
-		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
+		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 		<XPostFormAttaches v-model="files" class="attaches" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
-		<XPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
+		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" class="preview" :text="text"/>
 		<footer>
 			<button v-tooltip="i18n.ts.attachFile" class="_button" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
@@ -71,10 +78,10 @@ import { length } from 'stringz';
 import { toASCII } from 'punycode/';
 import * as Acct from 'misskey-js/built/acct';
 import { throttle } from 'throttle-debounce';
-import XNoteSimple from '@/components/MkNoteSimple.vue';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
-import XPollEditor from '@/components/MkPollEditor.vue';
+import MkPollEditor from '@/components/MkPollEditor.vue';
 import { host, url } from '@/config';
 import { erase, unique } from '@/scripts/array';
 import { extractMentions } from '@/scripts/extract-mentions';
@@ -90,6 +97,8 @@ import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { miLocalStorage } from '@/local-storage';
 
 const modal = inject('modal');
 
@@ -108,6 +117,7 @@ const props = withDefaults(defineProps<{
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
+	freezeAfterPosted?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
@@ -119,12 +129,13 @@ const emit = defineEmits<{
 	(ev: 'esc'): void;
 }>();
 
-const textareaEl = $ref<HTMLTextAreaElement | null>(null);
-const cwInputEl = $ref<HTMLInputElement | null>(null);
-const hashtagsInputEl = $ref<HTMLInputElement | null>(null);
-const visibilityButton = $ref<HTMLElement | null>(null);
+const textareaEl = $shallowRef<HTMLTextAreaElement | null>(null);
+const cwInputEl = $shallowRef<HTMLInputElement | null>(null);
+const hashtagsInputEl = $shallowRef<HTMLInputElement | null>(null);
+const visibilityButton = $shallowRef<HTMLElement | null>(null);
 
 let posting = $ref(false);
+let posted = $ref(false);
 let text = $ref(props.initialText ?? '');
 let files = $ref(props.initialFiles ?? []);
 let poll = $ref<{
@@ -146,7 +157,7 @@ let autocomplete = $ref(null);
 let draghover = $ref(false);
 let quoteId = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
-let recentHashtags = $ref(JSON.parse(localStorage.getItem('hashtags') || '[]'));
+let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') || '[]'));
 let imeText = $ref('');
 
 const typing = throttle(3000, () => {
@@ -206,7 +217,7 @@ const maxTextLength = $computed((): number => {
 });
 
 const canPost = $computed((): boolean => {
-	return !posting &&
+	return !posting && !posted &&
 		(1 <= textLength || 1 <= files.length || !!poll || !!props.renote) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
@@ -533,7 +544,7 @@ function onDrop(ev): void {
 }
 
 function saveDraft() {
-	const draftData = JSON.parse(localStorage.getItem('drafts') || '{}');
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') || '{}');
 
 	draftData[draftKey] = {
 		updatedAt: new Date(),
@@ -548,18 +559,26 @@ function saveDraft() {
 		},
 	};
 
-	localStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
 function deleteDraft() {
-	const draftData = JSON.parse(localStorage.getItem('drafts') ?? '{}');
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
 	delete draftData[draftKey];
 
-	localStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-async function post() {
+async function post(ev?: MouseEvent) {
+	if (ev) {
+		const el = ev.currentTarget ?? ev.target;
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+	}
+
 	let postData = {
 		text: text === '' ? undefined : text,
 		fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
@@ -594,14 +613,18 @@ async function post() {
 
 	posting = true;
 	os.api('notes/create', postData, token).then(() => {
-		clear();
+		if (props.freezeAfterPosted) {
+			posted = true;
+		} else {
+			clear();
+		}
 		nextTick(() => {
 			deleteDraft();
 			emit('posted');
 			if (postData.text && postData.text !== '') {
 				const hashtags_ = mfm.parse(postData.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
-				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
+				const history = JSON.parse(miLocalStorage.getItem('hashtags') || '[]') as string[];
+				miLocalStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting = false;
 			postAccount = null;
@@ -676,7 +699,7 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
-			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[draftKey];
+			const draft = JSON.parse(miLocalStorage.getItem('drafts') || '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;
 				useCw = draft.data.useCw;
@@ -712,6 +735,10 @@ onMounted(() => {
 
 		nextTick(() => watchForDraft());
 	});
+});
+
+defineExpose({
+	clear,
 });
 </script>
 
@@ -793,19 +820,42 @@ onMounted(() => {
 
 			> .submit {
 				margin: 16px 16px 16px 0;
-				padding: 0 12px;
-				line-height: 34px;
-				font-weight: bold;
 				vertical-align: bottom;
-				border-radius: 4px;
-				font-size: 0.9em;
 
 				&:disabled {
 					opacity: 0.7;
 				}
 
-				> i {
-					margin-left: 6px;
+				&.posting {
+					cursor: wait;
+				}
+
+				&:not(:disabled):hover {
+					> .inner {
+						background: linear-gradient(90deg, var(--X8), var(--X8));
+					}
+				}
+
+				&:not(:disabled):active {
+					> .inner {
+						background: linear-gradient(90deg, var(--X8), var(--X8));
+					}
+				}
+
+				> .inner {
+					padding: 0 12px;
+					line-height: 34px;
+					font-weight: bold;
+					border-radius: 4px;
+					font-size: 0.9em;
+					min-width: 90px;
+					box-sizing: border-box;
+					color: var(--fgOnAccent);
+					background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+
+					> i {
+						margin-left: 6px;
+					}
 				}
 			}
 		}

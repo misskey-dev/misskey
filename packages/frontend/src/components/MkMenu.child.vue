@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { on } from 'events';
-import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
 import * as os from '@/os';
@@ -24,7 +24,7 @@ const emit = defineEmits<{
 	(ev: 'actioned'): void;
 }>();
 
-const el = ref<HTMLElement>();
+const el = shallowRef<HTMLElement>();
 const align = 'left';
 
 function setPosition() {
@@ -43,6 +43,10 @@ function onChildClosed(actioned?: boolean) {
 		emit('closed');
 	}
 }
+
+watch(() => props.targetElement, () => {
+	setPosition();
+});
 
 onMounted(() => {
 	setPosition();

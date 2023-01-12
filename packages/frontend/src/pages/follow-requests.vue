@@ -19,7 +19,7 @@
 								<p class="acct">@{{ acct(req.follower) }}</p>
 							</div>
 							<div v-if="req.follower.description" class="description" :title="req.follower.description">
-								<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+								<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :plain="true" :nowrap="true"/>
 							</div>
 							<div class="actions">
 								<button class="_button" @click="accept(req.follower)"><i class="ti ti-check"></i></button>
@@ -35,14 +35,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { shallowRef, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const paginationComponent = ref<InstanceType<typeof MkPagination>>();
+const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const pagination = {
 	endpoint: 'following/requests/list' as const,

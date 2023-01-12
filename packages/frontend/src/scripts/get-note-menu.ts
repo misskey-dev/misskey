@@ -9,6 +9,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
 import { notePage } from '@/filters/note';
+import { miLocalStorage } from '@/local-storage';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
@@ -181,7 +182,7 @@ export function getNoteMenu(props: {
 		props.translating.value = true;
 		const res = await os.api('notes/translate', {
 			noteId: appearNote.id,
-			targetLang: localStorage.getItem('lang') || navigator.language,
+			targetLang: miLocalStorage.getItem('lang') || navigator.language,
 		});
 		props.translating.value = false;
 		props.translation.value = res;
@@ -202,7 +203,7 @@ export function getNoteMenu(props: {
 					action: unclip,
 				}, null] : []
 			), {
-				icon: 'ti ti-external-link',
+				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
 				action: notedetails,
 			}, {

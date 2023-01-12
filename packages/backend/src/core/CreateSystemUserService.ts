@@ -53,7 +53,7 @@ export class CreateSystemUserService {
 				usernameLower: username.toLowerCase(),
 				host: null,
 				token: secret,
-				isAdmin: false,
+				isRoot: false,
 				isLocked: true,
 				isExplorable: false,
 				isBot: true,

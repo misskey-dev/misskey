@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 	<div v-if="pending">
 		<MkLoading/>
 	</div>
@@ -12,7 +12,7 @@
 			<MkButton inline class="retry" @click="retry"><i class="ti ti-reload"></i> {{ $ts.retry }}</MkButton>
 		</div>
 	</div>
-</transition>
+</Transition>
 </template>
 
 <script lang="ts">

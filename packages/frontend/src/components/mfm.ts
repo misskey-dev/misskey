@@ -5,7 +5,6 @@ import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import { concat } from '@/scripts/array';
-import MkFormula from '@/components/MkFormula.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
@@ -34,9 +33,6 @@ export default defineComponent({
 		i: {
 			type: Object,
 			default: null,
-		},
-		customEmojis: {
-			required: false,
 		},
 		isNote: {
 			type: Boolean,
@@ -275,8 +271,8 @@ export default defineComponent({
 					return [h(MkEmoji, {
 						key: Math.random(),
 						emoji: `:${token.props.name}:`,
-						customEmojis: this.customEmojis,
 						normal: this.plain,
+						host: this.author.host,
 					})];
 				}
 
@@ -284,25 +280,16 @@ export default defineComponent({
 					return [h(MkEmoji, {
 						key: Math.random(),
 						emoji: token.props.emoji,
-						customEmojis: this.customEmojis,
 						normal: this.plain,
 					})];
 				}
 
 				case 'mathInline': {
-					return [h(MkFormula, {
-						key: Math.random(),
-						formula: token.props.formula,
-						block: false,
-					})];
+					return [h('code', genEl(token.props.formula))];
 				}
 
 				case 'mathBlock': {
-					return [h(MkFormula, {
-						key: Math.random(),
-						formula: token.props.formula,
-						block: true,
-					})];
+					return [h('code', genEl(token.props.formula))];
 				}
 
 				case 'search': {

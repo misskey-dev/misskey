@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="400"
 	:height="450"
@@ -10,30 +10,35 @@
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
-	<div class="_monolithic_">
-		<div v-if="showGlobalToggle" class="_section">
-			<MkSwitch v-model="useGlobalSetting">
-				{{ i18n.ts.useGlobalSetting }}
-				<template #caption>{{ i18n.ts.useGlobalSettingDesc }}</template>
-			</MkSwitch>
+
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<div class="_gaps_m">
+			<template v-if="showGlobalToggle">
+				<MkSwitch v-model="useGlobalSetting">
+					{{ i18n.ts.useGlobalSetting }}
+					<template #caption>{{ i18n.ts.useGlobalSettingDesc }}</template>
+				</MkSwitch>
+			</template>
+			<template v-if="!useGlobalSetting">
+				<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
+				<div class="_buttons">
+					<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
+					<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
+				</div>
+				<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype]">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
+			</template>
 		</div>
-		<div v-if="!useGlobalSetting" class="_section">
-			<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
-			<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
-			<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
-			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype]">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
-		</div>
-	</div>
-</XModalWindow>
+	</MkSpacer>
+</MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkSwitch from './form/switch.vue';
+import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
 const emit = defineEmits<{
@@ -51,7 +56,7 @@ const props = withDefaults(defineProps<{
 
 let includingTypes = $computed(() => props.includingTypes || []);
 
-const dialog = $ref<InstanceType<typeof XModalWindow>>();
+const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
 let typesMap = $ref<Record<typeof notificationTypes[number], boolean>>({});
 let useGlobalSetting = $ref((includingTypes === null || includingTypes.length === 0) && props.showGlobalToggle);

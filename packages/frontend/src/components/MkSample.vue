@@ -1,6 +1,6 @@
 <template>
-<div class="_card">
-	<div class="_content">
+<div class="">
+	<div class="">
 		<MkInput v-model="text">
 			<template #label>Text</template>
 		</MkInput>
@@ -15,10 +15,10 @@
 		<MkButton inline>This is</MkButton>
 		<MkButton inline primary>the button</MkButton>
 	</div>
-	<div class="_content" style="pointer-events: none;">
+	<div class="" style="pointer-events: none;">
 		<Mfm :text="mfm"/>
 	</div>
-	<div class="_content">
+	<div class="">
 		<MkButton inline primary @click="openMenu">Open menu</MkButton>
 		<MkButton inline primary @click="openDialog">Open dialog</MkButton>
 		<MkButton inline primary @click="openForm">Open form</MkButton>
@@ -30,10 +30,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSwitch from '@/components/form/switch.vue';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkRadio from '@/components/form/radio.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkRadio from '@/components/MkRadio.vue';
 import * as os from '@/os';
 import * as config from '@/config';
 

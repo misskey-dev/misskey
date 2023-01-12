@@ -30,7 +30,7 @@ export class WebfingerService {
 	public async webfinger(query: string): Promise<IWebFinger> {
 		const url = this.genUrl(query);
 
-		return await this.httpRequestService.getJson(url, 'application/jrd+json, application/json') as IWebFinger;
+		return await this.httpRequestService.getJson<IWebFinger>(url, 'application/jrd+json, application/json');
 	}
 
 	@bindThis

@@ -10,19 +10,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import { version } from '@/config';
 import { i18n } from '@/i18n';
+import { confetti } from '@/scripts/confetti';
 
-const modal = ref<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
 	modal.value.close();
 	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
 };
+
+onMounted(() => {
+	confetti({
+		duration: 1000 * 3,
+	});
+});
 </script>
 
 <style lang="scss" scoped>

@@ -9,7 +9,7 @@ import type { Config } from '@/config.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import { ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -79,10 +79,32 @@ export class MediaProxyServerService {
 	
 			const { mime, ext } = await this.fileInfoService.detectType(path);
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
+			const isAnimationConvertibleImage = isMimeImage(mime, 'sharp-animation-convertible-image');
 	
 			let image: IImage;
-	
-			if ('static' in request.query && isConvertibleImage) {
+			if ('emoji' in request.query && isConvertibleImage) {
+				if (!isAnimationConvertibleImage && !('static' in request.query)) {
+					image = {
+						data: fs.readFileSync(path),
+						ext,
+						type: mime,
+					};
+				} else {
+					const data = await sharp(path, { animated: !('static' in request.query) })
+					.resize({
+						height: 128,
+						withoutEnlargement: true,
+					})
+					.webp(webpDefault)
+					.toBuffer();
+
+					image = {
+						data,
+						ext: 'webp',
+						type: 'image/webp',
+					};
+				}
+			} else if ('static' in request.query && isConvertibleImage) {
 				image = await this.imageProcessingService.convertToWebp(path, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
 				image = await this.imageProcessingService.convertToWebp(path, 200, 200);
@@ -91,7 +113,7 @@ export class MediaProxyServerService {
 					// 画像でないなら404でお茶を濁す
 					throw new StatusError('Unexpected mime', 404);
 				}
-	
+
 				const mask = sharp(path)
 					.resize(96, 96, {
 						fit: 'inside',
@@ -121,8 +143,8 @@ export class MediaProxyServerService {
 					ext: 'png',
 					type: 'image/png',
 				};
-			}	else if (mime === 'image/svg+xml') {
-				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, 1);
+			} else if (mime === 'image/svg+xml') {
+				image = await this.imageProcessingService.convertToWebp(path, 2048, 2048, webpDefault);
 			} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			} else {

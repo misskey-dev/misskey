@@ -1,13 +1,13 @@
 <template>
 <div>
-	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root" class="_panel">
 			<MkA v-for="user in moderators" :key="user.id" class="user" :to="`/user-info/${user.id}`">
 				<MkAvatar :user="user" class="avatar" :show-indicator="true" :disable-link="true"/>
 			</MkA>
 		</div>
-	</transition>
+	</Transition>
 </div>
 </template>
 

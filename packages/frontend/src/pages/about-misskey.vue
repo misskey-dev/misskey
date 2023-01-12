@@ -3,18 +3,17 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div style="overflow: clip;">
 		<MkSpacer :content-max="600" :margin-min="20">
-			<div class="_formRoot znqjceqz">
-				<div id="debug"></div>
-				<div ref="containerEl" v-panel class="_formBlock about" :class="{ playing: easterEggEngine != null }">
+			<div class="_gaps_m znqjceqz">
+				<div ref="containerEl" v-panel class="about" :class="{ playing: easterEggEngine != null }">
 					<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
 					<div class="misskey">Misskey</div>
 					<div class="version">v{{ version }}</div>
-					<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
+					<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :is-reaction="false" :normal="true" :no-style="true"/></span>
 				</div>
-				<div class="_formBlock" style="text-align: center;">
+				<div style="text-align: center;">
 					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
 				</div>
-				<div class="_formBlock" style="text-align: center;">
+				<div style="text-align: center;">
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
 				</div>
 				<FormSection>
@@ -38,23 +37,20 @@
 				</FormSection>
 				<FormSection>
 					<template #label>{{ i18n.ts._aboutMisskey.contributors }}</template>
-					<div class="_formLinks">
+					<div class="_formLinksGrid">
 						<FormLink to="https://github.com/syuilo" external>@syuilo</FormLink>
-						<FormLink to="https://github.com/AyaMorisawa" external>@AyaMorisawa</FormLink>
-						<FormLink to="https://github.com/mei23" external>@mei23</FormLink>
-						<FormLink to="https://github.com/acid-chicken" external>@acid-chicken</FormLink>
 						<FormLink to="https://github.com/tamaina" external>@tamaina</FormLink>
+						<FormLink to="https://github.com/acid-chicken" external>@acid-chicken</FormLink>
 						<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
-						<FormLink to="https://github.com/Xeltica" external>@Xeltica</FormLink>
-						<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
-						<FormLink to="https://github.com/marihachi" external>@marihachi</FormLink>
 					</div>
 					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
-					<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
-					<template #caption>{{ i18n.ts._aboutMisskey.morePatrons }}</template>
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
+						<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
+					</div>
+					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
 			</div>
 		</MkSpacer>
@@ -159,7 +155,7 @@ const patrons = [
 let easterEggReady = false;
 let easterEggEmojis = $ref([]);
 let easterEggEngine = $ref(null);
-const containerEl = $ref<HTMLElement>();
+const containerEl = $shallowRef<HTMLElement>();
 
 function iconLoaded() {
 	const emojis = defaultStore.state.reactions;
@@ -231,7 +227,7 @@ definePageMetadata({
 
 		> .icon {
 			display: block;
-			width: 100px;
+			width: 80px;
 			margin: 0 auto;
 			border-radius: 16px;
 		}
