@@ -39,10 +39,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.isRoot) {
-				throw new Error('cannot silence root');
-			}
-
 			if (await this.roleService.isModerator(user)) {
 				throw new Error('cannot silence moderator account');
 			}

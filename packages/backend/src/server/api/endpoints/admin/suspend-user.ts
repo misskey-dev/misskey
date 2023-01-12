@@ -53,10 +53,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.isRoot) {
-				throw new Error('cannot suspend root account');
-			}
-
 			if (await this.roleService.isModerator(user)) {
 				throw new Error('cannot suspend moderator account');
 			}
