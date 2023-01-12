@@ -207,7 +207,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: file.name,
 				md5: file.md5,
 				createdAt: file.createdAt.toISOString(),
-				// role
 				requestIp: isModerator ? file.requestIp : null,
 				requestHeaders: isModerator ? file.requestHeaders : null,
 			};
