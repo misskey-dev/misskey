@@ -59,6 +59,14 @@ import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
 import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
+import * as ep___admin_roles_create from './endpoints/admin/roles/create.js';
+import * as ep___admin_roles_delete from './endpoints/admin/roles/delete.js';
+import * as ep___admin_roles_list from './endpoints/admin/roles/list.js';
+import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
+import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
+import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
+import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
+import * as ep___admin_roles_updateDefaultRoleOverride from './endpoints/admin/roles/update-default-role-override.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -385,6 +393,14 @@ const eps = [
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/delete-account', ep___admin_deleteAccount],
 	['admin/update-user-note', ep___admin_updateUserNote],
+	['admin/roles/create', ep___admin_roles_create],
+	['admin/roles/delete', ep___admin_roles_delete],
+	['admin/roles/list', ep___admin_roles_list],
+	['admin/roles/show', ep___admin_roles_show],
+	['admin/roles/update', ep___admin_roles_update],
+	['admin/roles/assign', ep___admin_roles_assign],
+	['admin/roles/unassign', ep___admin_roles_unassign],
+	['admin/roles/update-default-role-override', ep___admin_roles_updateDefaultRoleOverride],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],

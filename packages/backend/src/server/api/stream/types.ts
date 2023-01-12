@@ -24,6 +24,7 @@ export interface InternalStreamTypes {
 	userChangeSilencedState: { id: User['id']; isSilenced: User['isSilenced']; };
 	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
 	remoteUserUpdated: { id: User['id']; };
+	defaultRoleOverrideUpdated: Role['options'];
 	roleCreated: Role;
 	roleDeleted: Role;
 	roleUpdated: Role;
