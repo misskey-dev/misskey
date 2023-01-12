@@ -943,6 +943,7 @@ _role:
   options: "Optionen"
   baseRole: "Rollenvorlage"
   useBaseValue: "Wert der Rollenvorlage verwenden"
+  chooseRoleToAssign: "Zuzuweisende Rolle auswählen"
   canEditMembersByModerator: "Moderatoren können Benutzern diese Rolle zuweisen"
   descriptionOfCanEditMembersByModerator: "Wenn aktiviert, so können Moderatoren und Adminstratoren anderen Benutzern diese Rolle zuweisen bzw. diese Zuweisung aufheben. Wenn deaktiviert, so ist es nur Administratoren möglich, Zuweisungen dieser Rolle zu verwalten."
   _options:
