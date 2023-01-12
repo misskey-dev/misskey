@@ -13,8 +13,8 @@
 		<template #caption>#RRGGBB</template>
 	</MkInput>
 
-	<MkSelect v-model="roleType" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.type }}</template>
+	<MkSelect v-model="rolePermission" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfType.replaceAll('\n', '<br>')"></div></template>
 		<option value="normal">{{ i18n.ts.normalUser }}</option>
 		<option value="moderator">{{ i18n.ts.moderator }}</option>
@@ -132,7 +132,7 @@ const role = props.role;
 
 let name = $ref(role?.name ?? 'New Role');
 let description = $ref(role?.description ?? '');
-let roleType = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
+let rolePermission = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
 let color = $ref(role?.color ?? null);
 let isPublic = $ref(role?.isPublic ?? false);
 let canEditMembersByModerator = $ref(role?.canEditMembersByModerator ?? false);
@@ -165,8 +165,8 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
-			isAdministrator: roleType === 'administrator',
-			isModerator: roleType === 'moderator',
+			isAdministrator: rolePermission === 'administrator',
+			isModerator: rolePermission === 'moderator',
 			isPublic,
 			canEditMembersByModerator,
 			options: getOptions(),
@@ -177,8 +177,8 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
-			isAdministrator: roleType === 'administrator',
-			isModerator: roleType === 'moderator',
+			isAdministrator: rolePermission === 'administrator',
+			isModerator: rolePermission === 'moderator',
 			isPublic,
 			canEditMembersByModerator,
 			options: getOptions(),

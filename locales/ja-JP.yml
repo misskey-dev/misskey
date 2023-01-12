@@ -937,7 +937,7 @@ _role:
   edit: "ロールの編集"
   name: "ロール名"
   description: "ロールの説明"
-  type: "ロールの種類"
+  permission: "ロールの権限"
   descriptionOfType: "モデレーターは基本的なモデレーションに関する操作を行えます。\n管理者はインスタンスの全ての設定を変更できます。"
   isPublic: "ロールを公開"
   descriptionOfIsPublic: "ロールにアサインされたユーザーを誰でも見ることができます。また、ユーザーのプロフィールでこのロールが表示されます。"
