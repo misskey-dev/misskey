@@ -56,6 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: this.idService.genId(),
 				createdAt: date,
 				updatedAt: date,
+				lastUsedAt: date,
 				name: ps.name,
 				description: ps.description,
 				color: ps.color,

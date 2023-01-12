@@ -90,6 +90,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			await this.roleAssignmentsRepository.delete(roleAssignment.id);
+
+			this.rolesRepository.update(ps.roleId, {
+				lastUsedAt: new Date(),
+			});
 	
 			this.globalEventService.publishInternalEvent('userRoleUnassigned', roleAssignment);
 		});

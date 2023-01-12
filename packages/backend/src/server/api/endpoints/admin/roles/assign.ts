@@ -85,6 +85,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				roleId: role.id,
 				userId: user.id,
 			}).then(x => this.roleAssignmentsRepository.findOneByOrFail(x.identifiers[0]));
+
+			this.rolesRepository.update(ps.roleId, {
+				lastUsedAt: new Date(),
+			});
 	
 			this.globalEventService.publishInternalEvent('userRoleAssigned', created);
 		});

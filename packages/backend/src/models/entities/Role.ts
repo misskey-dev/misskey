@@ -16,6 +16,11 @@ export class Role {
 	})
 	public updatedAt: Date;
 
+	@Column('timestamp with time zone', {
+		comment: 'The last used date of the Role.',
+	})
+	public lastUsedAt: Date;
+
 	@Column('varchar', {
 		length: 256,
 	})
