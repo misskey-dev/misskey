@@ -4,7 +4,7 @@
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700">
 			<div class="_gaps">
-				<MkButton primary rounded @click="create">{{ i18n.ts._role.new }}</MkButton>
+				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
 					<div class="_gaps">
