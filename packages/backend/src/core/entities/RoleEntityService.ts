@@ -26,16 +26,23 @@ export class RoleEntityService {
 	public async pack(
 		src: Role['id'] | Role,
 		me?: { id: User['id'] } | null | undefined,
+		options?: {
+			detail?: boolean;
+		},
 	) {
+		const opts = Object.assign({
+			detail: true,
+		}, options);
+
 		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
 
 		const assigns = await this.roleAssignmentsRepository.findBy({
 			roleId: role.id,
 		});
 
-		const options = { ...role.options };
+		const roleOptions = { ...role.options };
 		for (const [k, v] of Object.entries(DEFAULT_ROLE)) {
-			if (options[k] == null) options[k] = {
+			if (roleOptions[k] == null) roleOptions[k] = {
 				useDefault: true,
 				value: v,
 			};
@@ -45,13 +52,15 @@ export class RoleEntityService {
 			id: role.id,
 			createdAt: role.createdAt.toISOString(),
 			updatedAt: role.updatedAt.toISOString(),
-			users: this.userEntityService.packMany(assigns.map(x => x.userId), me),
 			name: role.name,
 			description: role.description,
 			isPublic: role.isPublic,
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,
-			options,
+			options: roleOptions,
+			...(opts.detail ? {
+				users: this.userEntityService.packMany(assigns.map(x => x.userId), me),
+			} : {}),
 		});
 	}
 
@@ -59,8 +68,11 @@ export class RoleEntityService {
 	public packMany(
 		roles: any[],
 		me: { id: User['id'] },
+		options?: {
+			detail?: boolean;
+		},
 	) {
-		return Promise.all(roles.map(x => this.pack(x, me)));
+		return Promise.all(roles.map(x => this.pack(x, me, options)));
 	}
 }
 

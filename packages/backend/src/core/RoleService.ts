@@ -58,7 +58,46 @@ export class RoleService implements OnApplicationShutdown {
 		if (obj.channel === 'internal') {
 			const { type, body } = obj.message;
 			switch (type) {
-				// TODO
+				case 'roleCreated': {
+					const cached = this.rolesCache.get(null);
+					if (cached) {
+						cached.push(body);
+					}
+					break;
+				}
+				case 'roleUpdated': {
+					const cached = this.rolesCache.get(null);
+					if (cached) {
+						const i = cached.findIndex(x => x.id === body.id);
+						if (i > -1) {
+							cached[i] = body;
+						} else {
+							cached.push(body);
+						}
+					}
+					break;
+				}
+				case 'roleDeleted': {
+					const cached = this.rolesCache.get(null);
+					if (cached) {
+						this.rolesCache.set(null, cached.filter(x => x.id !== body.id));
+					}
+					break;
+				}
+				case 'userRoleAssigned': {
+					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
+					if (cached) {
+						cached.push(body);
+					}
+					break;
+				}
+				case 'userRoleUnassigned': {
+					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
+					if (cached) {
+						this.roleAssignmentByUserIdCache.set(body.userId, cached.filter(x => x.id !== body.id));
+					}
+					break;
+				}
 				default:
 					break;
 			}

@@ -94,10 +94,21 @@
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
-				<MkTextarea v-model="moderationNote" manual-save>
-					<template #label>Moderation note</template>
-				</MkTextarea>
 				<MkFolder>
+					<template #icon><i class="ti ti-badges"></i></template>
+					<template #label>{{ i18n.ts.roles }}</template>
+
+					<div class="_gaps">
+						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
+
+						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
+							<MkRolePreview :class="$style.role" :role="role"/>
+							<button class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+						</div>
+					</div>
+				</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-password"></i></template>
 					<template #label>IP</template>
 					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
 					<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
@@ -109,10 +120,14 @@
 					</template>
 				</MkFolder>
 				<MkFolder>
+					<template #icon><i class="ti ti-cloud"></i></template>
 					<template #label>{{ i18n.ts.files }}</template>
 
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</MkFolder>
+				<MkTextarea v-model="moderationNote" manual-save>
+					<template #label>Moderation note</template>
+				</MkTextarea>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
@@ -168,6 +183,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { iAmAdmin, iAmModerator } from '@/account';
 import { instance } from '@/instance';
+import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
 	userId: string;
@@ -310,6 +326,31 @@ async function deleteAccount() {
 	}
 }
 
+async function assignRole() {
+	const roles = await os.api('admin/roles/list');
+
+	const { canceled, result: roleId } = await os.select({
+		title: i18n.ts._role.chooseRoleToAssign,
+		items: roles.map(r => ({ text: r.name, value: r.id })),
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.id });
+	refreshUser();
+}
+
+async function unassignRole(role, ev) {
+	os.popupMenu([{
+		text: i18n.ts.unassign,
+		icon: 'ti ti-x',
+		danger: true,
+		action: async () => {
+			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.id });
+			refreshUser();
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
 watch(() => props.userId, () => {
 	init = createFetcher();
 }, {
@@ -446,5 +487,20 @@ definePageMetadata(computed(() => ({
 	> :global(.ip) {
 		margin-left: auto;
 	}
+}
+
+.roleItem {
+	display: flex;
+}
+
+.role {
+	flex: 1;
+}
+
+.roleUnassign {
+	width: 32px;
+	height: 32px;
+	margin-left: 8px;
+	align-self: center;
 }
 </style>

@@ -3,6 +3,7 @@ import type { UsersRepository, SigninsRepository, UserProfilesRepository } from 
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -38,6 +39,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private signinsRepository: SigninsRepository,
 
 		private roleService: RoleService,
+		private roleEntityService: RoleEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [user, profile] = await Promise.all([
@@ -70,6 +72,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
+			const roles = await this.roleService.getUserRoles(user.id);
+
 			return {
 				email: profile.email,
 				emailVerified: profile.emailVerified,
@@ -90,6 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				lastActiveDate: user.lastActiveDate,
 				moderationNote: profile.moderationNote,
 				signins,
+				roles: await this.roleEntityService.packMany(roles, me, { detail: false }),
 			};
 		});
 	}

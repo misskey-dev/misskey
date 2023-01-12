@@ -928,6 +928,8 @@ roles: "ロール"
 role: "ロール"
 noramlUser: "一般ユーザー"
 undefined: "未定義"
+assign: "アサイン"
+unassign: "アサインを解除"
 
 _role:
   new: "ロールの作成"
@@ -941,6 +943,7 @@ _role:
   options: "オプション"
   baseRole: "ベースロール"
   useBaseValue: "ベースロールの値を使用"
+  chooseRoleToAssign: "アサインするロールを選択"
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"

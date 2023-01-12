@@ -42,9 +42,7 @@
 					</div>
 				</MkFolder>
 				<div class="_gaps_s">
-					<MkA v-for="role in roles" :key="role.id" class="_panel" :class="$style.role" :to="`/admin/roles/${role.id}`">
-						<div :class="$style.roleTitle">{{ role.name }}</div>
-					</MkA>
+					<MkRolePreview v-for="role in roles" :key="role.id" :role="role"/>
 				</div>
 			</div>
 		</MkSpacer>
@@ -61,10 +59,10 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { dateString } from '@/filters/date';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
 
@@ -103,12 +101,5 @@ definePageMetadata(computed(() => ({
 </script>
 
 <style lang="scss" module>
-.role {
-	display: block;
-	padding: 16px 20px;
-}
 
-.roleTitle {
-	font-weight: bold;
-}
 </style>
