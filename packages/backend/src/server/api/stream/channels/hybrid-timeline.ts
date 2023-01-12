@@ -30,14 +30,8 @@ class HybridTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any): Promise<void> {
-		const meta = await this.metaService.fetch();
-		if (meta.disableLocalTimeline) {
-			if (this.user == null) return; // 型のため
-			if (!this.user.isRoot) {
-				const role = await this.roleService.getUserRoleOptions(this.user.id);
-				if (!role.forceLtlAvailable) return;
-			}
-		}
+		const role = await this.roleService.getUserRoleOptions(this.user ? this.user.id : null);
+		if (!role.ltlAvailable) return;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);

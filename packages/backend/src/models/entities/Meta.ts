@@ -45,16 +45,6 @@ export class Meta {
 	@Column('boolean', {
 		default: false,
 	})
-	public disableLocalTimeline: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public disableGlobalTimeline: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
 	public useStarForReactionFallback: boolean;
 
 	@Column('varchar', {

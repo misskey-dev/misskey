@@ -71,12 +71,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const m = await this.metaService.fetch();
-			if (m.disableLocalTimeline && !me.isRoot) {
-				const role = await this.roleService.getUserRoleOptions(me.id);
-				if (!role.forceLtlAvailable) {
-					throw new ApiError(meta.errors.stlDisabled);
-				}
+			const role = await this.roleService.getUserRoleOptions(me.id);
+			if (!role.ltlAvailable) {
+				throw new ApiError(meta.errors.stlDisabled);
 			}
 
 			//#region Construct query

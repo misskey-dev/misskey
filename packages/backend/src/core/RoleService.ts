@@ -9,13 +9,15 @@ import { MetaService } from '@/core/MetaService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RoleOptions = {
-	forceGtlAvailable: boolean;
-	forceLtlAvailable: boolean;
+	gtlAvailable: boolean;
+	ltlAvailable: boolean;
 	driveCapacityMb: number;
 	antennaLimit: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
+	gtlAvailable: true,
+	ltlAvailable: true,
 	driveCapacityMb: 100,
 	antennaLimit: 5,
 };
@@ -68,16 +70,22 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async getUserRoleOptions(userId: User['id']): Promise<RoleOptions> {
-		const roles = await this.getUserRoles(userId);
+	public async getUserRoleOptions(userId: User['id'] | null): Promise<RoleOptions> {
 		const meta = await this.metaService.fetch();
 		const baseRoleOptions = { ...DEFAULT_ROLE, ...meta.defaultRoleOverride };
+
+		if (userId == null) return baseRoleOptions;
+
+		const roles = await this.getUserRoles(userId);
 
 		function getOptionValue(role: Role, option: keyof RoleOptions) {
 			return role.options[option] && role.options[option].useDefault !== true ? role.options[option].value : baseRoleOptions[option];
 		}
 
 		return {
+			gtlAvailable: roles.some(r => getOptionValue(r, 'gtlAvailable')),
+			ltlAvailable: roles.some(r => getOptionValue(r, 'ltlAvailable')),
+			driveCapacityMb: Math.max(...roles.map(r => getOptionValue(r, 'driveCapacityMb'))),
 			antennaLimit: Math.max(...roles.map(r => getOptionValue(r, 'antennaLimit'))),
 		};
 	}

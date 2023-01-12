@@ -29,14 +29,8 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		const meta = await this.metaService.fetch();
-		if (meta.disableGlobalTimeline) {
-			if (this.user == null) return;
-			if (!this.user.isRoot) {
-				const role = await this.roleService.getUserRoleOptions(this.user.id);
-				if (!role.forceGtlAvailable) return;
-			}
-		}
+		const role = await this.roleService.getUserRoleOptions(this.user ? this.user.id : null);
+		if (!role.gtlAvailable) return;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);

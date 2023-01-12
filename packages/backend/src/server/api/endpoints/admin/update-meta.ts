@@ -19,8 +19,6 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
-		disableLocalTimeline: { type: 'boolean', nullable: true },
-		disableGlobalTimeline: { type: 'boolean', nullable: true },
 		useStarForReactionFallback: { type: 'boolean', nullable: true },
 		pinnedUsers: { type: 'array', nullable: true, items: {
 			type: 'string',
@@ -127,14 +125,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (typeof ps.disableRegistration === 'boolean') {
 				set.disableRegistration = ps.disableRegistration;
-			}
-
-			if (typeof ps.disableLocalTimeline === 'boolean') {
-				set.disableLocalTimeline = ps.disableLocalTimeline;
-			}
-
-			if (typeof ps.disableGlobalTimeline === 'boolean') {
-				set.disableGlobalTimeline = ps.disableGlobalTimeline;
 			}
 
 			if (typeof ps.useStarForReactionFallback === 'boolean') {

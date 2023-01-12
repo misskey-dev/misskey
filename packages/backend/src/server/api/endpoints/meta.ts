@@ -78,18 +78,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			disableLocalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			disableGlobalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerLocalUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
 			driveCapacityPerRemoteUserMb: {
 				type: 'number',
 				optional: false, nullable: false,
@@ -315,8 +303,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				repositoryUrl: instance.repositoryUrl,
 				feedbackUrl: instance.feedbackUrl,
 				disableRegistration: instance.disableRegistration,
-				disableLocalTimeline: instance.disableLocalTimeline,
-				disableGlobalTimeline: instance.disableGlobalTimeline,
 				driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
@@ -371,8 +357,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
 				response.features = {
 					registration: !instance.disableRegistration,
-					localTimeLine: !instance.disableLocalTimeline,
-					globalTimeLine: !instance.disableGlobalTimeline,
 					emailRequiredForSignup: instance.emailRequiredForSignup,
 					elasticsearch: this.config.elasticsearch ? true : false,
 					hcaptcha: instance.enableHcaptcha,

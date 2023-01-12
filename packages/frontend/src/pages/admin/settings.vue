@@ -47,14 +47,6 @@
 					</FormSection>
 
 					<FormSection>
-						<div class="_gaps_s">
-							<MkSwitch v-model="enableLocalTimeline">{{ i18n.ts.enableLocalTimeline }}</MkSwitch>
-							<MkSwitch v-model="enableGlobalTimeline">{{ i18n.ts.enableGlobalTimeline }}</MkSwitch>
-							<FormInfo>{{ i18n.ts.disablingTimelinesInfo }}</FormInfo>
-						</div>
-					</FormSection>
-
-					<FormSection>
 						<template #label>{{ i18n.ts.theme }}</template>
 
 						<div class="_gaps_m">
@@ -203,8 +195,6 @@ async function init() {
 	defaultDarkTheme = meta.defaultDarkTheme;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
-	enableLocalTimeline = !meta.disableLocalTimeline;
-	enableGlobalTimeline = !meta.disableGlobalTimeline;
 	pinnedUsers = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles = meta.cacheRemoteFiles;
 	remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
@@ -230,8 +220,6 @@ function save() {
 		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
 		maintainerName,
 		maintainerEmail,
-		disableLocalTimeline: !enableLocalTimeline,
-		disableGlobalTimeline: !enableGlobalTimeline,
 		pinnedUsers: pinnedUsers.split('\n'),
 		cacheRemoteFiles,
 		remoteDriveCapacityMb: parseInt(remoteDriveCapacityMb, 10),
