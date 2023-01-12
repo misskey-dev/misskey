@@ -15,7 +15,7 @@
 	"private": true,
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
-		"build": "pnpm -r build && pnpm gulp",
+		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
 		"start": "cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
 		"init": "pnpm migrate",
