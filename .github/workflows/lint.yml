@@ -15,14 +15,14 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3.2.0
-      with:
-        node-version: 18.x
-        cache: 'pnpm'
     - uses: pnpm/action-setup@v2
       with:
         version: 7
         run_install: false
+    - uses: actions/setup-node@v3.2.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
 
@@ -41,14 +41,14 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3.2.0
-      with:
-        node-version: 18.x
-        cache: 'pnpm'
     - uses: pnpm/action-setup@v2
       with:
         version: 7
         run_install: false
+    - uses: actions/setup-node@v3.2.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter ${{ matrix.workspace }} run lint
