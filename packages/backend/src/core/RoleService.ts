@@ -107,20 +107,43 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async getModerators(): Promise<ILocalUser[]> {
+	public async getModeratorIds(includeAdmins = true): Promise<User['id'][]> {
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
-		const moderatorRoles = roles.filter(r => r.isModerator || r.isAdministrator);
+		const moderatorRoles = includeAdmins ? roles.filter(r => r.isModerator || r.isAdministrator) : roles.filter(r => r.isModerator);
 		const assigns = moderatorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
 			roleId: In(moderatorRoles.map(r => r.id)),
 		}) : [];
-		const users = assigns.length > 0 ? await this.usersRepository.findBy({
-			id: In(assigns.map(a => a.userId)),
+		// TODO: isRootなアカウントも含める
+		return assigns.map(a => a.userId);
+	}
+
+	@bindThis
+	public async getModerators(includeAdmins = true): Promise<User[]> {
+		const ids = await this.getModeratorIds(includeAdmins);
+		const users = ids.length > 0 ? await this.usersRepository.findBy({
+			id: In(ids),
 		}) : [];
-		// 重そう
-		//const rootAccounts = await this.usersRepository.findBy({
-		//	isRoot
-		//});
-		return [...users];
+		return users;
+	}
+
+	@bindThis
+	public async getAdministratorIds(): Promise<User['id'][]> {
+		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
+		const administratorRoles = roles.filter(r => r.isAdministrator);
+		const assigns = administratorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
+			roleId: In(administratorRoles.map(r => r.id)),
+		}) : [];
+		// TODO: isRootなアカウントも含める
+		return assigns.map(a => a.userId);
+	}
+
+	@bindThis
+	public async getAdministrators(): Promise<User[]> {
+		const ids = await this.getAdministratorIds();
+		const users = ids.length > 0 ? await this.usersRepository.findBy({
+			id: In(ids),
+		}) : [];
+		return users;
 	}
 
 	@bindThis
