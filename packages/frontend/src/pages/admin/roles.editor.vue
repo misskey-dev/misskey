@@ -16,7 +16,7 @@
 	<MkSelect v-model="roleType" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.type }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfType.replaceAll('\n', '<br>')"></div></template>
-		<option value="normal">{{ i18n.ts.noramlUser }}</option>
+		<option value="normal">{{ i18n.ts.normalUser }}</option>
 		<option value="moderator">{{ i18n.ts.moderator }}</option>
 		<option value="administrator">{{ i18n.ts.administrator }}</option>
 	</MkSelect>
