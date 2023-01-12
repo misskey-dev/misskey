@@ -37,6 +37,7 @@ export const routes = [{
 }, {
 	path: '/user-info/:userId',
 	component: page(() => import('./pages/user-info.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/instance-info/:host',
 	component: page(() => import('./pages/instance-info.vue')),

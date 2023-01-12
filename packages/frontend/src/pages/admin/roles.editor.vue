@@ -90,6 +90,11 @@
 		</div>
 	</FormSlot>
 
+	<MkSwitch v-model="canEditMembersByModerator" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.canEditMembersByModerator }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfCanEditMembersByModerator }}</template>
+	</MkSwitch>
+
 	<MkSwitch v-model="isPublic" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.isPublic }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfIsPublic }}</template>
@@ -130,6 +135,7 @@ let description = $ref(role?.description ?? '');
 let roleType = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
 let color = $ref(role?.color ?? null);
 let isPublic = $ref(role?.isPublic ?? false);
+let canEditMembersByModerator = $ref(role?.canEditMembersByModerator ?? false);
 let options_gtlAvailable_useDefault = $ref(role?.options?.gtlAvailable?.useDefault ?? true);
 let options_gtlAvailable_value = $ref(role?.options?.gtlAvailable?.value ?? false);
 let options_ltlAvailable_useDefault = $ref(role?.options?.ltlAvailable?.useDefault ?? true);
@@ -162,6 +168,7 @@ async function save() {
 			isAdministrator: roleType === 'administrator',
 			isModerator: roleType === 'moderator',
 			isPublic,
+			canEditMembersByModerator,
 			options: getOptions(),
 		});
 		emit('updated');
@@ -173,6 +180,7 @@ async function save() {
 			isAdministrator: roleType === 'administrator',
 			isModerator: roleType === 'moderator',
 			isPublic,
+			canEditMembersByModerator,
 			options: getOptions(),
 		});
 		emit('created', created);

@@ -183,11 +183,14 @@ import { iAmAdmin, iAmModerator } from '@/account';
 import { instance } from '@/instance';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	userId: string;
-}>();
+	initialTab?: string;
+}>(), {
+	initialTab: 'overview',
+});
 
-let tab = $ref('overview');
+let tab = $ref(props.initialTab);
 let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
 let init = $ref<ReturnType<typeof createFetcher>>();

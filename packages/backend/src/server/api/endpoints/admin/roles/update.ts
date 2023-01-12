@@ -30,6 +30,7 @@ export const paramDef = {
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
+		canEditMembersByModerator: { type: 'boolean' },
 		options: {
 			type: 'object',
 		},
@@ -42,6 +43,7 @@ export const paramDef = {
 		'isPublic',
 		'isModerator',
 		'isAdministrator',
+		'canEditMembersByModerator',
 		'options',
 	],
 } as const;
@@ -70,6 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isPublic: ps.isPublic,
 				isModerator: ps.isModerator,
 				isAdministrator: ps.isAdministrator,
+				canEditMembersByModerator: ps.canEditMembersByModerator,
 				options: ps.options,
 			});
 			const updated = await this.rolesRepository.findOneByOrFail({ id: ps.roleId });

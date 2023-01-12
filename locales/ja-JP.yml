@@ -945,6 +945,8 @@ _role:
   baseRole: "ベースロール"
   useBaseValue: "ベースロールの値を使用"
   chooseRoleToAssign: "アサインするロールを選択"
+  canEditMembersByModerator: "モデレーターのメンバー編集を許可"
+  descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"

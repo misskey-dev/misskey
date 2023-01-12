@@ -46,6 +46,11 @@ export class Role {
 	})
 	public isAdministrator: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public canEditMembersByModerator: boolean;
+
 	@Column('jsonb', {
 		default: { },
 	})

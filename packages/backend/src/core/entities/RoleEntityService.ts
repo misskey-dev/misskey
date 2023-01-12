@@ -58,6 +58,7 @@ export class RoleEntityService {
 			isPublic: role.isPublic,
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,
+			canEditMembersByModerator: role.canEditMembersByModerator,
 			options: roleOptions,
 			...(opts.detail ? {
 				users: this.userEntityService.packMany(assigns.map(x => x.userId), me),

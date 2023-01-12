@@ -5,12 +5,13 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin', 'role'],
 
 	requireCredential: true,
-	requireAdmin: true,
+	requireModerator: true,
 
 	errors: {
 		noSuchRole: {
@@ -23,6 +24,12 @@ export const meta = {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
 			id: '558ea170-f653-4700-94d0-5a818371d0df',
+		},
+
+		accessDenied: {
+			message: 'Only administrators can edit members of the role.',
+			code: 'ACCESS_DENIED',
+			id: '25b5bc31-dc79-4ebd-9bd2-c84978fd052c',
 		},
 	},
 } as const;
@@ -53,12 +60,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
 		private globalEventService: GlobalEventService,
+		private roleService: RoleService,
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
+			}
+
+			if (!role.canEditMembersByModerator && !(await this.roleService.isAdministrator(me))) {
+				throw new ApiError(meta.errors.accessDenied);
 			}
 
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
