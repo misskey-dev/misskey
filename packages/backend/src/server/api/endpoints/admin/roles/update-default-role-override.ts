@@ -1,11 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { RolesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '@/server/api/error.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
-	tags: ['admin'],
+	tags: ['admin', 'role'],
 
 	requireCredential: true,
 	requireAdmin: true,
@@ -14,32 +16,27 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
+		options: {
+			type: 'object',
+		},
 	},
-	required: ['userId'],
+	required: [
+		'options',
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
+		private metaService: MetaService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps) => {
-			const user = await this.usersRepository.findOneBy({ id: ps.userId });
-
-			if (user == null) {
-				throw new Error('user not found');
-			}
-
-			await this.usersRepository.update(user.id, {
-				isModerator: false,
+			await this.metaService.update({
+				defaultRoleOverride: ps.options,
 			});
-
-			this.globalEventService.publishInternalEvent('userChangeModeratorState', { id: user.id, isModerator: false });
+			this.globalEventService.publishInternalEvent('defaultRoleOverrideUpdated', ps.options);
 		});
 	}
 }
