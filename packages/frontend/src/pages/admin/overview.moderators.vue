@@ -21,8 +21,9 @@ let moderators: any = $ref(null);
 let fetching = $ref(true);
 
 onMounted(async () => {
-	moderators = await os.api('admin/show-moderators', {
+	moderators = await os.api('admin/show-users', {
 		sort: '+lastActiveDate',
+		state: 'adminOrModerator',
 		limit: 30,
 	});
 
