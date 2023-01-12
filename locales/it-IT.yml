@@ -924,6 +924,7 @@ neverShow: "Non mostrare più"
 remindMeLater: "Rimanda"
 didYouLikeMisskey: "Ti piace Misskey?"
 pleaseDonate: "Misskey è il software libero utilizzato su {host}. Offrendo una donazione è più facile continuare a svilupparlo!"
+color: "Colore"
 _sensitiveMediaDetection:
   description: "L'apprendimento automatico può essere utilizzato per individuare automaticamente i media sensibili da moderare. Il carico del server aumenta leggermente."
   sensitivity: "Sensibilità di rilevamento"
