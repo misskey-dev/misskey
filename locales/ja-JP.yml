@@ -948,6 +948,7 @@ _role:
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
+    canPublicNote: "パブリック投稿の許可"
     driveCapacity: "ドライブ容量"
     antennaMax: "アンテナの作成可能数"
 

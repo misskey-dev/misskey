@@ -423,7 +423,7 @@ export class UserEntityService implements OnModuleInit {
 				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
 				bannerBlurhash: user.banner?.blurhash ?? null,
 				isLocked: user.isLocked,
-				isSilenced: user.isSilenced ?? falsy,
+				isSilenced: this.roleService.getUserRoleOptions(user.id).then(r => !r.canPublicNote),
 				isSuspended: user.isSuspended ?? falsy,
 				description: profile!.description,
 				location: profile!.location,

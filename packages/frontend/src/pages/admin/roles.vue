@@ -25,6 +25,14 @@
 						</MkFolder>
 
 						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
+							<template #suffix>{{ options_canPublicNote ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="options_canPublicNote">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 							<template #suffix>{{ options_driveCapacityMb }}MB</template>
 							<MkInput v-model="options_driveCapacityMb" type="number">
@@ -72,6 +80,7 @@ const roles = await os.api('admin/roles/list');
 
 let options_gtlAvailable = $ref(instance.baseRole.gtlAvailable);
 let options_ltlAvailable = $ref(instance.baseRole.ltlAvailable);
+let options_canPublicNote = $ref(instance.baseRole.canPublicNote);
 let options_driveCapacityMb = $ref(instance.baseRole.driveCapacityMb);
 let options_antennaLimit = $ref(instance.baseRole.antennaLimit);
 
@@ -80,6 +89,7 @@ async function updateBaseRole() {
 		options: {
 			gtlAvailable: options_gtlAvailable,
 			ltlAvailable: options_ltlAvailable,
+			canPublicNote: options_canPublicNote,
 			driveCapacityMb: options_driveCapacityMb,
 			antennaLimit: options_antennaLimit,
 		},

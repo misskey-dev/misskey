@@ -12,6 +12,7 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 export type RoleOptions = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
+	canPublicNote: boolean;
 	driveCapacityMb: number;
 	antennaLimit: number;
 };
@@ -19,6 +20,7 @@ export type RoleOptions = {
 export const DEFAULT_ROLE: RoleOptions = {
 	gtlAvailable: true,
 	ltlAvailable: true,
+	canPublicNote: true,
 	driveCapacityMb: 100,
 	antennaLimit: 5,
 };
@@ -129,6 +131,7 @@ export class RoleService implements OnApplicationShutdown {
 		return {
 			gtlAvailable: getOptionValues('gtlAvailable').some(x => x === true),
 			ltlAvailable: getOptionValues('ltlAvailable').some(x => x === true),
+			canPublicNote: getOptionValues('canPublicNote').some(x => x === true),
 			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
 			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
 		};

@@ -21,7 +21,6 @@ import type { EventEmitter } from 'events';
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
 	userChangeSuspendedState: { id: User['id']; isSuspended: User['isSuspended']; };
-	userChangeSilencedState: { id: User['id']; isSilenced: User['isSilenced']; };
 	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
 	remoteUserUpdated: { id: User['id']; };
 	defaultRoleOverrideUpdated: Role['options'];

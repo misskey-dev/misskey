@@ -51,6 +51,19 @@
 			</MkFolder>
 
 			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
+				<template #suffix>{{ options_canPublicNote_useDefault ? i18n.ts._role.useBaseValue : (options_canPublicNote_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_canPublicNote_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="options_canPublicNote_value" :disabled="options_canPublicNote_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 				<template #suffix>{{ options_driveCapacityMb_useDefault ? i18n.ts._role.useBaseValue : (options_driveCapacityMb_value + 'MB') }}</template>
 				<div class="_gaps">
@@ -121,6 +134,8 @@ let options_gtlAvailable_useDefault = $ref(role?.options?.gtlAvailable?.useDefau
 let options_gtlAvailable_value = $ref(role?.options?.gtlAvailable?.value ?? false);
 let options_ltlAvailable_useDefault = $ref(role?.options?.ltlAvailable?.useDefault ?? true);
 let options_ltlAvailable_value = $ref(role?.options?.ltlAvailable?.value ?? false);
+let options_canPublicNote_useDefault = $ref(role?.options?.canPublicNote?.useDefault ?? true);
+let options_canPublicNote_value = $ref(role?.options?.canPublicNote?.value ?? false);
 let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.useDefault ?? true);
 let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? 0);
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
@@ -130,6 +145,7 @@ function getOptions() {
 	return {
 		gtlAvailable: { useDefault: options_gtlAvailable_useDefault, value: options_gtlAvailable_value },
 		ltlAvailable: { useDefault: options_ltlAvailable_useDefault, value: options_ltlAvailable_value },
+		canPublicNote: { useDefault: options_canPublicNote_useDefault, value: options_canPublicNote_value },
 		driveCapacityMb: { useDefault: options_driveCapacityMb_useDefault, value: options_driveCapacityMb_value },
 		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
 	};

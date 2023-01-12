@@ -53,9 +53,7 @@ import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderation-logs.js';
 import * as ep___admin_showUser from './endpoints/admin/show-user.js';
 import * as ep___admin_showUsers from './endpoints/admin/show-users.js';
-import * as ep___admin_silenceUser from './endpoints/admin/silence-user.js';
 import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
-import * as ep___admin_unsilenceUser from './endpoints/admin/unsilence-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
@@ -389,9 +387,7 @@ const $admin_serverInfo: Provider = { provide: 'ep:admin/server-info', useClass:
 const $admin_showModerationLogs: Provider = { provide: 'ep:admin/show-moderation-logs', useClass: ep___admin_showModerationLogs.default };
 const $admin_showUser: Provider = { provide: 'ep:admin/show-user', useClass: ep___admin_showUser.default };
 const $admin_showUsers: Provider = { provide: 'ep:admin/show-users', useClass: ep___admin_showUsers.default };
-const $admin_silenceUser: Provider = { provide: 'ep:admin/silence-user', useClass: ep___admin_silenceUser.default };
 const $admin_suspendUser: Provider = { provide: 'ep:admin/suspend-user', useClass: ep___admin_suspendUser.default };
-const $admin_unsilenceUser: Provider = { provide: 'ep:admin/unsilence-user', useClass: ep___admin_unsilenceUser.default };
 const $admin_unsuspendUser: Provider = { provide: 'ep:admin/unsuspend-user', useClass: ep___admin_unsuspendUser.default };
 const $admin_updateMeta: Provider = { provide: 'ep:admin/update-meta', useClass: ep___admin_updateMeta.default };
 const $admin_deleteAccount: Provider = { provide: 'ep:admin/delete-account', useClass: ep___admin_deleteAccount.default };
@@ -729,9 +725,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_showModerationLogs,
 		$admin_showUser,
 		$admin_showUsers,
-		$admin_silenceUser,
 		$admin_suspendUser,
-		$admin_unsilenceUser,
 		$admin_unsuspendUser,
 		$admin_updateMeta,
 		$admin_deleteAccount,
@@ -1063,9 +1057,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_showModerationLogs,
 		$admin_showUser,
 		$admin_showUsers,
-		$admin_silenceUser,
 		$admin_suspendUser,
-		$admin_unsilenceUser,
 		$admin_unsuspendUser,
 		$admin_updateMeta,
 		$admin_deleteAccount,

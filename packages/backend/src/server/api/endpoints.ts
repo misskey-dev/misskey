@@ -52,9 +52,7 @@ import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderation-logs.js';
 import * as ep___admin_showUser from './endpoints/admin/show-user.js';
 import * as ep___admin_showUsers from './endpoints/admin/show-users.js';
-import * as ep___admin_silenceUser from './endpoints/admin/silence-user.js';
 import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
-import * as ep___admin_unsilenceUser from './endpoints/admin/unsilence-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
@@ -386,9 +384,7 @@ const eps = [
 	['admin/show-moderation-logs', ep___admin_showModerationLogs],
 	['admin/show-user', ep___admin_showUser],
 	['admin/show-users', ep___admin_showUsers],
-	['admin/silence-user', ep___admin_silenceUser],
 	['admin/suspend-user', ep___admin_suspendUser],
-	['admin/unsilence-user', ep___admin_unsilenceUser],
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
 	['admin/delete-account', ep___admin_deleteAccount],

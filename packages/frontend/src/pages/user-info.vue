@@ -87,9 +87,7 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_gaps_m">
-				<MkSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</MkSwitch>
 				<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
-				{{ i18n.ts.reflectMayTakeTime }}
 				<div>
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
@@ -196,6 +194,7 @@ let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
 let ips = $ref(null);
 let ap = $ref(null);
+let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
 let moderationNote = $ref('');
@@ -219,6 +218,7 @@ function createFetcher() {
 			user = _user;
 			info = _info;
 			ips = _ips;
+			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
 			moderationNote = info.moderationNote;
@@ -255,19 +255,6 @@ async function resetPassword() {
 		type: 'success',
 		text: i18n.t('newPasswordIs', { password }),
 	});
-}
-
-async function toggleSilence(v) {
-	const confirm = await os.confirm({
-		type: 'warning',
-		text: v ? i18n.ts.silenceConfirm : i18n.ts.unsilenceConfirm,
-	});
-	if (confirm.canceled) {
-		silenced = !v;
-	} else {
-		await os.api(v ? 'admin/silence-user' : 'admin/unsilence-user', { userId: user.id });
-		await refreshUser();
-	}
 }
 
 async function toggleSuspend(v) {

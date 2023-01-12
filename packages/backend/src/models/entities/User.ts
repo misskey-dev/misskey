@@ -114,12 +114,6 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the User is silenced.',
-	})
-	public isSilenced: boolean;
-
-	@Column('boolean', {
-		default: false,
 		comment: 'Whether the User is locked.',
 	})
 	public isLocked: boolean;
