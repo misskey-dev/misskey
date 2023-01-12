@@ -87,7 +87,6 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_gaps_m">
-				<MkSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</MkSwitch>
 				<MkSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</MkSwitch>
 				<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
@@ -181,7 +180,6 @@ let init = $ref<ReturnType<typeof createFetcher>>();
 let info = $ref();
 let ips = $ref(null);
 let ap = $ref(null);
-let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
 let moderationNote = $ref('');
@@ -205,7 +203,6 @@ function createFetcher() {
 			user = _user;
 			info = _info;
 			ips = _ips;
-			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
 			moderationNote = info.moderationNote;
@@ -268,11 +265,6 @@ async function toggleSuspend(v) {
 		await os.api(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.id });
 		await refreshUser();
 	}
-}
-
-async function toggleModerator(v) {
-	await os.api(v ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: user.id });
-	await refreshUser();
 }
 
 async function deleteAllFiles() {
