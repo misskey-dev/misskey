@@ -19,6 +19,10 @@ jobs:
       with:
         node-version: 18.x
         cache: 'pnpm'
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
 
@@ -41,6 +45,10 @@ jobs:
       with:
         node-version: 18.x
         cache: 'pnpm'
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter ${{ matrix.workspace }} run lint
