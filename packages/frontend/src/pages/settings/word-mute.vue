@@ -7,17 +7,17 @@
 	<div>
 		<div v-show="tab === 'soft'" class="_gaps_m">
 			<MkInfo>{{ i18n.ts._wordMute.softDescription }}</MkInfo>
-			<FormTextarea v-model="softMutedWords">
+			<MkTextarea v-model="softMutedWords">
 				<span>{{ i18n.ts._wordMute.muteWords }}</span>
 				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
-			</FormTextarea>
+			</MkTextarea>
 		</div>
 		<div v-show="tab === 'hard'" class="_gaps_m">
 			<MkInfo>{{ i18n.ts._wordMute.hardDescription }} {{ i18n.ts.reflectMayTakeTime }}</MkInfo>
-			<FormTextarea v-model="hardMutedWords">
+			<MkTextarea v-model="hardMutedWords">
 				<span>{{ i18n.ts._wordMute.muteWords }}</span>
 				<template #caption>{{ i18n.ts._wordMute.muteWordsDescription }}<br>{{ i18n.ts._wordMute.muteWordsDescription2 }}</template>
-			</FormTextarea>
+			</MkTextarea>
 			<MkKeyValue v-if="hardWordMutedNotesCount != null">
 				<template #key>{{ i18n.ts._wordMute.mutedNotes }}</template>
 				<template #value>{{ number(hardWordMutedNotesCount) }}</template>
@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';

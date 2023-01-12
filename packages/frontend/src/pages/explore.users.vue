@@ -6,52 +6,52 @@
 	</MkTab>
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
-			<MkFolder class="_margin" persist-key="explore-pinned-users">
+			<MkFoldableSection class="_margin" persist-key="explore-pinned-users">
 				<template #header><i class="fas fa-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
 				<XUserList :pagination="pinnedUsers"/>
-			</MkFolder>
-			<MkFolder class="_margin" persist-key="explore-popular-users">
+			</MkFoldableSection>
+			<MkFoldableSection class="_margin" persist-key="explore-popular-users">
 				<template #header><i class="fas fa-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsers"/>
-			</MkFolder>
-			<MkFolder class="_margin" persist-key="explore-recently-updated-users">
+			</MkFoldableSection>
+			<MkFoldableSection class="_margin" persist-key="explore-recently-updated-users">
 				<template #header><i class="fas fa-comment-alt ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsers"/>
-			</MkFolder>
-			<MkFolder class="_margin" persist-key="explore-recently-registered-users">
+			</MkFoldableSection>
+			<MkFoldableSection class="_margin" persist-key="explore-recently-registered-users">
 				<template #header><i class="ti ti-plus ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsers"/>
-			</MkFolder>
+			</MkFoldableSection>
 		</template>
 	</div>
 	<div v-else>
-		<MkFolder ref="tagsEl" :foldable="true" :expanded="false" class="_margin">
+		<MkFoldableSection ref="tagsEl" :foldable="true" :expanded="false" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
 				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/explore/tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
 				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/explore/tags/${tag.tag}`">{{ tag.tag }}</MkA>
 			</div>
-		</MkFolder>
+		</MkFoldableSection>
 
-		<MkFolder v-if="tag != null" :key="`${tag}`" class="_margin">
+		<MkFoldableSection v-if="tag != null" :key="`${tag}`" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
 			<XUserList :pagination="tagUsers"/>
-		</MkFolder>
+		</MkFoldableSection>
 
 		<template v-if="tag == null">
-			<MkFolder class="_margin">
+			<MkFoldableSection class="_margin">
 				<template #header><i class="fas fa-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsersF"/>
-			</MkFolder>
-			<MkFolder class="_margin">
+			</MkFoldableSection>
+			<MkFoldableSection class="_margin">
 				<template #header><i class="fas fa-comment-alt ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsersF"/>
-			</MkFolder>
-			<MkFolder class="_margin">
+			</MkFoldableSection>
+			<MkFoldableSection class="_margin">
 				<template #header><i class="fas fa-rocket ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyDiscoveredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsersF"/>
-			</MkFolder>
+			</MkFoldableSection>
 		</template>
 	</div>
 </MkSpacer>
@@ -60,7 +60,7 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import XUserList from '@/components/MkUserList.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
@@ -72,7 +72,7 @@ const props = defineProps<{
 }>();
 
 let origin = $ref('local');
-let tagsEl = $shallowRef<InstanceType<typeof MkFolder>>();
+let tagsEl = $shallowRef<InstanceType<typeof MkFoldableSection>>();
 let tagsLocal = $ref([]);
 let tagsRemote = $ref([]);
 

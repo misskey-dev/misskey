@@ -1,11 +1,11 @@
 <template>
 <div class="_gaps_m">
-	<FormSelect v-model="statusbar.type" placeholder="Please select">
+	<MkSelect v-model="statusbar.type" placeholder="Please select">
 		<template #label>{{ i18n.ts.type }}</template>
 		<option value="rss">RSS</option>
 		<option value="federation">Federation</option>
 		<option value="userList">User list timeline</option>
-	</FormSelect>
+	</MkSelect>
 
 	<MkInput v-model="statusbar.name" manual-save>
 		<template #label>{{ i18n.ts.label }}</template>
@@ -15,14 +15,14 @@
 		<template #label>Black</template>
 	</MkSwitch>
 
-	<FormRadios v-model="statusbar.size">
+	<MkRadios v-model="statusbar.size">
 		<template #label>{{ i18n.ts.size }}</template>
 		<option value="verySmall">{{ i18n.ts.small }}+</option>
 		<option value="small">{{ i18n.ts.small }}</option>
 		<option value="medium">{{ i18n.ts.medium }}</option>
 		<option value="large">{{ i18n.ts.large }}</option>
 		<option value="veryLarge">{{ i18n.ts.large }}+</option>
-	</FormRadios>
+	</MkRadios>
 
 	<template v-if="statusbar.type === 'rss'">
 		<MkInput v-model="statusbar.props.url" manual-save type="url">
@@ -34,10 +34,10 @@
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
-		<FormRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
+		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
 			<template #label>{{ i18n.ts.speed }}</template>
 			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
-		</FormRange>
+		</MkRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse">
 			<template #label>{{ i18n.ts.reverse }}</template>
 		</MkSwitch>
@@ -46,10 +46,10 @@
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
-		<FormRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
+		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
 			<template #label>{{ i18n.ts.speed }}</template>
 			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
-		</FormRange>
+		</MkRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse">
 			<template #label>{{ i18n.ts.reverse }}</template>
 		</MkSwitch>
@@ -58,17 +58,17 @@
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'userList' && userLists != null">
-		<FormSelect v-model="statusbar.props.userListId">
+		<MkSelect v-model="statusbar.props.userListId">
 			<template #label>{{ i18n.ts.userList }}</template>
 			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
-		</FormSelect>
+		</MkSelect>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
-		<FormRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
+		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
 			<template #label>{{ i18n.ts.speed }}</template>
 			<template #caption>{{ i18n.ts.fast }} &lt;-&gt; {{ i18n.ts.slow }}</template>
-		</FormRange>
+		</MkRange>
 		<MkSwitch v-model="statusbar.props.marqueeReverse">
 			<template #label>{{ i18n.ts.reverse }}</template>
 		</MkSwitch>
@@ -82,12 +82,12 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue';
-import FormSelect from '@/components/form/select.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSwitch from '@/components/form/switch.vue';
-import FormRadios from '@/components/form/radios.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormRange from '@/components/form/range.vue';
+import MkRange from '@/components/MkRange.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';

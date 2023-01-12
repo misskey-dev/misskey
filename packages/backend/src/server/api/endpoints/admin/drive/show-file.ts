@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -159,6 +160,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const file = ps.fileId ? await this.driveFilesRepository.findOneBy({ id: ps.fileId }) : await this.driveFilesRepository.findOne({
@@ -174,6 +177,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
+
+			const isModerator = await this.roleService.isModerator(me);
 
 			return {
 				id: file.id,
@@ -202,8 +207,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: file.name,
 				md5: file.md5,
 				createdAt: file.createdAt.toISOString(),
-				requestIp: me.isAdmin ? file.requestIp : null,
-				requestHeaders: me.isAdmin ? file.requestHeaders : null,
+				requestIp: isModerator ? file.requestIp : null,
+				requestHeaders: isModerator ? file.requestHeaders : null,
 			};
 		});
 	}

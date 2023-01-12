@@ -104,7 +104,7 @@ const menuDef = $computed(() => [{
 	}, {
 		icon: 'ti ti-whirl',
 		text: i18n.ts.federation,
-		to: '/about#federation',
+		to: '/admin/federation',
 		active: currentPage?.route.name === 'federation',
 	}, {
 		icon: 'ti ti-clock-play',
@@ -131,6 +131,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
 		active: currentPage?.route.name === 'abuses',
+	}, {
+		icon: 'ti ti-badges',
+		text: i18n.ts.roles,
+		to: '/admin/roles',
+		active: currentPage?.route.name === 'roles',
 	}],
 }, {
 	title: i18n.ts.settings,

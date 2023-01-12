@@ -6,7 +6,7 @@
 import { TextBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { defineComponent, PropType } from 'vue';
-import MkTextarea from '../form/textarea.vue';
+import MkTextarea from '../MkTextarea.vue';
 
 export default defineComponent({
 	components: {

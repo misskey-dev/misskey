@@ -7,6 +7,7 @@ import type { Packed } from '@/misc/schema.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
 
 class GlobalTimelineChannel extends Channel {
@@ -16,6 +17,7 @@ class GlobalTimelineChannel extends Channel {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -27,10 +29,8 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		const meta = await this.metaService.fetch();
-		if (meta.disableGlobalTimeline) {
-			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;
-		}
+		const role = await this.roleService.getUserRoleOptions(this.user ? this.user.id : null);
+		if (!role.gtlAvailable) return;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -95,6 +95,7 @@ export class GlobalTimelineChannelService {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
@@ -103,6 +104,7 @@ export class GlobalTimelineChannelService {
 	public create(id: string, connection: Channel['connection']): GlobalTimelineChannel {
 		return new GlobalTimelineChannel(
 			this.metaService,
+			this.roleService,
 			this.noteEntityService,
 			id,
 			connection,

@@ -41,23 +41,18 @@ export function openInstanceMenu(ev: MouseEvent) {
 			to: '/api-console',
 			text: 'API Console',
 			icon: 'ti ti-terminal-2',
+		}, {
+			type: 'link',
+			to: '/clicker',
+			text: '🍪👈',
+			icon: 'ti ti-cookie',
 		}],
 	}, null, {
-		type: 'parent',
 		text: i18n.ts.help,
 		icon: 'ti ti-question-circle',
-		children: [{
-			type: 'link',
-			to: '/mfm-cheat-sheet',
-			text: i18n.ts._mfm.cheatSheet,
-			icon: 'ti ti-code',
-		}, null, {
-			text: i18n.ts.document,
-			icon: 'ti ti-question-circle',
-			action: () => {
-				window.open('https://misskey-hub.net/help.html', '_blank');
-			},
-		}],
+		action: () => {
+			window.open('https://misskey-hub.net/help.html', '_blank');
+		},
 	}, {
 		type: 'link',
 		text: i18n.ts.aboutMisskey,

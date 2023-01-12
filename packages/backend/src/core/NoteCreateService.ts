@@ -42,6 +42,7 @@ import { NoteReadService } from '@/core/NoteReadService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { RoleService } from '@/core/RoleService.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -186,6 +187,7 @@ export class NoteCreateService {
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
+		private roleService: RoleService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private activeUsersChart: ActiveUsersChart,
@@ -197,7 +199,6 @@ export class NoteCreateService {
 		id: User['id'];
 		username: User['username'];
 		host: User['host'];
-		isSilenced: User['isSilenced'];
 		createdAt: User['createdAt'];
 		isBot: User['isBot'];
 	}, data: Option, silent = false): Promise<Note> {
@@ -224,9 +225,10 @@ export class NoteCreateService {
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
 
-		// サイレンス
-		if (user.isSilenced && data.visibility === 'public' && data.channel == null) {
-			data.visibility = 'home';
+		if (data.visibility === 'public' && data.channel == null) {
+			if ((await this.roleService.getUserRoleOptions(user.id)).canPublicNote) {
+				data.visibility = 'home';
+			}
 		}
 
 		// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
@@ -418,7 +420,6 @@ export class NoteCreateService {
 		id: User['id'];
 		username: User['username'];
 		host: User['host'];
-		isSilenced: User['isSilenced'];
 		createdAt: User['createdAt'];
 		isBot: User['isBot'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {

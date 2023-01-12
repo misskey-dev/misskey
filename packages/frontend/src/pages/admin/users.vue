@@ -19,7 +19,6 @@
 							<option value="available">{{ i18n.ts.normal }}</option>
 							<option value="admin">{{ i18n.ts.administrator }}</option>
 							<option value="moderator">{{ i18n.ts.moderator }}</option>
-							<option value="silenced">{{ i18n.ts.silence }}</option>
 							<option value="suspended">{{ i18n.ts.suspend }}</option>
 						</MkSelect>
 						<MkSelect v-model="origin" style="flex: 1;">
@@ -55,8 +54,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import XHeader from './_header_.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';

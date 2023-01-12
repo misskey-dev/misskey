@@ -33,6 +33,7 @@ import { instance } from '@/instance';
 import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
+import { miLocalStorage } from '@/local-storage';
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -180,8 +181,10 @@ const menuDef = computed(() => [{
 		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
 		action: () => {
-			localStorage.removeItem('locale');
-			localStorage.removeItem('theme');
+			miLocalStorage.removeItem('locale');
+			miLocalStorage.removeItem('theme');
+			miLocalStorage.removeItem('emojis');
+			miLocalStorage.removeItem('lastEmojisFetchedAt');
 			unisonReload();
 		},
 	}, {

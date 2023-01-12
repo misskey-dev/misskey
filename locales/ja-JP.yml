@@ -920,6 +920,39 @@ like: "いいね！"
 unlike: "いいねを解除"
 numberOfLikes: "いいね数"
 show: "表示"
+neverShow: "今後表示しない"
+remindMeLater: "また後で"
+didYouLikeMisskey: "Misskeyを気に入っていただけましたか？"
+pleaseDonate: "Misskeyは{host}が使用している無料のソフトウェアです。これからも開発を続けられるように、ぜひ寄付をお願いします！"
+roles: "ロール"
+role: "ロール"
+noramlUser: "一般ユーザー"
+undefined: "未定義"
+assign: "アサイン"
+unassign: "アサインを解除"
+color: "色"
+
+_role:
+  new: "ロールの作成"
+  edit: "ロールの編集"
+  name: "ロール名"
+  description: "ロールの説明"
+  type: "ロールの種類"
+  descriptionOfType: "モデレーターは基本的なモデレーションに関する操作を行えます。\n管理者はインスタンスの全ての設定を変更できます。"
+  isPublic: "ロールを公開"
+  descriptionOfIsPublic: "ロールにアサインされたユーザーを誰でも見ることができます。また、ユーザーのプロフィールでこのロールが表示されます。"
+  options: "オプション"
+  baseRole: "ベースロール"
+  useBaseValue: "ベースロールの値を使用"
+  chooseRoleToAssign: "アサインするロールを選択"
+  canEditMembersByModerator: "モデレーターのメンバー編集を許可"
+  descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
+  _options:
+    gtlAvailable: "グローバルタイムラインの閲覧"
+    ltlAvailable: "ローカルタイムラインの閲覧"
+    canPublicNote: "パブリック投稿の許可"
+    driveCapacity: "ドライブ容量"
+    antennaMax: "アンテナの作成可能数"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"
@@ -1331,6 +1364,8 @@ _weekday:
   saturday: "土曜日"
 
 _widgets:
+  profile: "プロフィール"
+  instanceInfo: "インスタンス情報"
   memo: "付箋"
   notifications: "通知"
   timeline: "タイムライン"
@@ -1357,6 +1392,7 @@ _widgets:
   userList: "ユーザーリスト"
   _userList:
     chooseList: "リストを選択"
+  clicker: "クリッカー"
 
 _cw:
   hide: "隠す"
@@ -1546,7 +1582,6 @@ _notification:
   youGotReply: "{name}からのリプライ"
   youGotQuote: "{name}による引用"
   youRenoted: "{name}がRenoteしました"
-  youGotPoll: "{name}が投票しました"
   youGotMessagingMessageFromUser: "{name}からのチャットがあります"
   youGotMessagingMessageFromGroup: "{name}のチャットがあります"
   youWereFollowed: "フォローされました"
@@ -1565,7 +1600,6 @@ _notification:
     renote: "Renote"
     quote: "引用"
     reaction: "リアクション"
-    pollVote: "アンケートに投票された"
     pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"

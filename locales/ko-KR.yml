@@ -920,6 +920,10 @@ like: "좋아요!"
 unlike: "좋아요 취소"
 numberOfLikes: "좋아요 수"
 show: "표시"
+neverShow: "다시 보지 않기"
+remindMeLater: "나중에 알림"
+didYouLikeMisskey: "Misskey가 마음에 드시나요?"
+pleaseDonate: "{host}은(는) 무료 소프트웨어 Misskey를 사용합니다. 후원을 통해 저희의 개발이 이어질 수 있게 도와주세요!"
 _sensitiveMediaDetection:
   description: "기계학습을 통해 자동으로 민감한 미디어를 탐지하여, 모더레이션에 참고할 수 있도록 합니다. 서버의 부하를 약간 증가시킵니다."
   sensitivity: "탐지 민감도"
@@ -1298,6 +1302,8 @@ _weekday:
   friday: "금요일"
   saturday: "토요일"
 _widgets:
+  profile: "프로필"
+  instanceInfo: "인스턴스 정보"
   memo: "스티커 메모"
   notifications: "알림"
   timeline: "타임라인"
@@ -1324,6 +1330,7 @@ _widgets:
   userList: "사용자 목록"
   _userList:
     chooseList: "리스트 선택"
+  clicker: "클리커"
 _cw:
   hide: "숨기기"
   show: "더 보기"
@@ -1499,7 +1506,6 @@ _notification:
   youGotReply: "{name}님이 답글함"
   youGotQuote: "{name}님이 인용함"
   youRenoted: "{name}님이 Renote"
-  youGotPoll: "{name}님이 투표함"
   youGotMessagingMessageFromUser: "{name} 님이 보낸 채팅이 있어요"
   youGotMessagingMessageFromGroup: "{name}에서 보낸 채팅이 있어요"
   youWereFollowed: "새로운 팔로워가 있습니다"
@@ -1517,7 +1523,6 @@ _notification:
     renote: "리노트"
     quote: "인용"
     reaction: "리액션"
-    pollVote: "투표 참여"
     pollEnded: "투표가 종료됨"
     receiveFollowRequest: "팔로우 요청을 받았을 때"
     followRequestAccepted: "팔로우 요청이 승인되었을 때"

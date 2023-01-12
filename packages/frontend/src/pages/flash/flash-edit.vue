@@ -28,8 +28,8 @@ import * as os from '@/os';
 import { url } from '@/config';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import MkTextarea from '@/components/form/textarea.vue';
-import MkInput from '@/components/form/input.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkInput from '@/components/MkInput.vue';
 import { useRouter } from '@/router';
 
 const router = useRouter();
@@ -49,7 +49,7 @@ if (props.id) {
 let title = $ref(flash?.title ?? 'New Play');
 let summary = $ref(flash?.summary ?? '');
 let permissions = $ref(flash?.permissions ?? []);
-let script = $ref(flash?.script ?? `/// @ 0.12.1
+let script = $ref(flash?.script ?? `/// @ 0.12.2
 
 var name = ""
 

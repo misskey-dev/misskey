@@ -45,6 +45,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 const { t, ts } = i18n;
 
 useCssModule();
@@ -170,9 +171,9 @@ function getSettings(): Profile['settings'] {
 	return {
 		hot,
 		cold,
-		fontSize: localStorage.getItem('fontSize'),
-		useSystemFont: localStorage.getItem('useSystemFont') as 't' | null,
-		wallpaper: localStorage.getItem('wallpaper'),
+		fontSize: miLocalStorage.getItem('fontSize'),
+		useSystemFont: miLocalStorage.getItem('useSystemFont') as 't' | null,
+		wallpaper: miLocalStorage.getItem('wallpaper'),
 	};
 }
 
@@ -279,23 +280,23 @@ async function applyProfile(id: string): Promise<void> {
 
 	// fontSize
 	if (settings.fontSize) {
-		localStorage.setItem('fontSize', settings.fontSize);
+		miLocalStorage.setItem('fontSize', settings.fontSize);
 	} else {
-		localStorage.removeItem('fontSize');
+		miLocalStorage.removeItem('fontSize');
 	}
 
 	// useSystemFont
 	if (settings.useSystemFont) {
-		localStorage.setItem('useSystemFont', settings.useSystemFont);
+		miLocalStorage.setItem('useSystemFont', settings.useSystemFont);
 	} else {
-		localStorage.removeItem('useSystemFont');
+		miLocalStorage.removeItem('useSystemFont');
 	}
 
 	// wallpaper
 	if (settings.wallpaper != null) {
-		localStorage.setItem('wallpaper', settings.wallpaper);
+		miLocalStorage.setItem('wallpaper', settings.wallpaper);
 	} else {
-		localStorage.removeItem('wallpaper');
+		miLocalStorage.removeItem('wallpaper');
 	}
 
 	const { canceled: cancel2 } = await os.confirm({

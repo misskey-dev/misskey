@@ -301,6 +301,10 @@
 
 			const meta = await res.json();
 
+			if (meta.version == null) {
+				throw new Error('failed to fetch instance metadata');
+			}
+
 			if (meta.version != v) {
 				localStorage.setItem('v', meta.version);
 				refresh();

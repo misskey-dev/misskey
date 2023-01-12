@@ -4,8 +4,9 @@ import type { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -51,6 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private usersRepository: UsersRepository,
 
 		private getterService: GetterService,
+		private roleService: RoleService,
 		private noteDeleteService: NoteDeleteService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -59,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			if ((!me.isAdmin && !me.isModerator) && (note.userId !== me.id)) {
+			if (!await this.roleService.isModerator(me) && (note.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

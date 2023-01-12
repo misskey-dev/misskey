@@ -1,11 +1,11 @@
 <template>
-<span v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat: user.isCat, square: $store.state.squareAvatars }" :style="{ color }" :title="acct(user)" @click="onClick">
-	<img class="inner" :src="url" decoding="async"/>
-	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
+<span v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" class="_noSelect" :style="{ color }" :title="acct(user)" @click="onClick">
+	<img :class="$style.inner" :src="url" decoding="async"/>
+	<MkUserOnlineIndicator v-if="showIndicator" :class="$style.indicator" :user="user"/>
 </span>
-<MkA v-else v-user-preview="disablePreview ? undefined : user.id" class="eiwwqkts _noSelect" :class="{ cat: user.isCat, square: $store.state.squareAvatars }" :style="{ color }" :to="userPage(user)" :title="acct(user)" :target="target">
-	<img class="inner" :src="url" decoding="async"/>
-	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
+<MkA v-else v-user-preview="disablePreview ? undefined : user.id" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :to="userPage(user)" :title="acct(user)" :target="target">
+	<img :class="$style.inner" :src="url" decoding="async"/>
+	<MkUserOnlineIndicator v-if="showIndicator" :class="$style.indicator" :user="user"/>
 </MkA>
 </template>
 
@@ -52,7 +52,7 @@ watch(() => props.user.avatarBlurhash, () => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 @keyframes earwiggleleft {
 	from { transform: rotate(37.6deg) skew(30deg); }
 	25% { transform: rotate(10deg) skew(30deg); }
@@ -69,74 +69,74 @@ watch(() => props.user.avatarBlurhash, () => {
 	to { transform: rotate(-37.6deg) skew(-30deg); }
 }
 
-.eiwwqkts {
+.root {
 	position: relative;
 	display: inline-block;
 	vertical-align: bottom;
 	flex-shrink: 0;
 	border-radius: 100%;
 	line-height: 16px;
+}
+
+.inner {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	border-radius: 100%;
+	z-index: 1;
+	overflow: clip;
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+}
+
+.indicator {
+	position: absolute;
+	z-index: 1;
+	bottom: 0;
+	left: 0;
+	width: 20%;
+	height: 20%;
+}
+
+.square {
+	border-radius: 20%;
 
 	> .inner {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		top: 0;
-		border-radius: 100%;
-		z-index: 1;
-		overflow: clip;
-		object-fit: cover;
-		width: 100%;
-		height: 100%;
-	}
-
-	> .indicator {
-		position: absolute;
-		z-index: 1;
-		bottom: 0;
-		left: 0;
-		width: 20%;
-		height: 20%;
-	}
-
-	&.square {
 		border-radius: 20%;
+	}
+}
 
-		> .inner {
-			border-radius: 20%;
-		}
+.cat {
+	&:before, &:after {
+		background: #df548f;
+		border: solid 4px currentColor;
+		box-sizing: border-box;
+		content: '';
+		display: inline-block;
+		height: 50%;
+		width: 50%;
 	}
 
-	&.cat {
-		&:before, &:after {
-			background: #df548f;
-			border: solid 4px currentColor;
-			box-sizing: border-box;
-			content: '';
-			display: inline-block;
-			height: 50%;
-			width: 50%;
-		}
+	&:before {
+		border-radius: 0 75% 75%;
+		transform: rotate(37.5deg) skew(30deg);
+	}
 
+	&:after {
+		border-radius: 75% 0 75% 75%;
+		transform: rotate(-37.5deg) skew(-30deg);
+	}
+
+	&:hover {
 		&:before {
-			border-radius: 0 75% 75%;
-			transform: rotate(37.5deg) skew(30deg);
+			animation: earwiggleleft 1s infinite;
 		}
 
 		&:after {
-			border-radius: 75% 0 75% 75%;
-			transform: rotate(-37.5deg) skew(-30deg);
-		}
-
-		&:hover {
-			&:before {
-				animation: earwiggleleft 1s infinite;
-			}
-
-			&:after {
-				animation: earwiggleright 1s infinite;
-			}
+			animation: earwiggleright 1s infinite;
 		}
 	}
 }
