@@ -4,7 +4,7 @@ import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
@@ -12,11 +12,15 @@ import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
+import type Logger from '@/logger.js';
 
 export class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
+	private undiciFetcher: UndiciFetcher;
+	private logger: Logger;
 
 	constructor(
 		private config: Config,
@@ -31,9 +35,14 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
+		private loggerService: LoggerService,
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
+		this.logger = this.loggerService?.getLogger('ap-resolve');  // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
+		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
+			maxRedirections: 0,
+		}), this.logger);
 	}
 
 	@bindThis
@@ -96,8 +105,8 @@ export class Resolver {
 		}
 
 		const object = (this.user
-			? await this.apRequestService.signedGet(value, this.user)
-			: await this.httpRequestService.getJson(value, 'application/activity+json, application/ld+json')) as IObject;
+			? await this.apRequestService.signedGet(value, this.user) as IObject
+			: await this.undiciFetcher.getJson<IObject>(value, 'application/activity+json, application/ld+json'));
 
 		if (object == null || (
 			Array.isArray(object['@context']) ?

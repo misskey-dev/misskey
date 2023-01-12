@@ -50,8 +50,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.isAdmin) {
-				throw new Error('cannot reset password of admin');
+			if (user.isRoot) {
+				throw new Error('cannot reset password of root');
 			}
 
 			const passwd = rndstr('a-zA-Z0-9', 8);
