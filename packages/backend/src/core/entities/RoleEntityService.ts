@@ -54,6 +54,7 @@ export class RoleEntityService {
 			updatedAt: role.updatedAt.toISOString(),
 			name: role.name,
 			description: role.description,
+			color: role.color,
 			isPublic: role.isPublic,
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,

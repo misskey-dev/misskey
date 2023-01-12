@@ -1,5 +1,5 @@
 <template>
-<MkA v-adaptive-bg :to="`/admin/roles/${role.id}`" class="_panel" :class="$style.root" tabindex="-1">
+<MkA v-adaptive-bg :to="`/admin/roles/${role.id}`" class="_panel" :class="$style.root" tabindex="-1" :style="{ '--color': role.color }">
 	<div :class="$style.title">{{ role.name }}</div>
 	<div :class="$style.description">{{ role.description }}</div>
 </MkA>
@@ -19,6 +19,7 @@ const props = defineProps<{
 .root {
 	display: block;
 	padding: 16px 20px;
+	border-left: solid 6px var(--color);
 }
 
 .title {

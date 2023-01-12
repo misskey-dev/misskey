@@ -8,6 +8,11 @@
 		<template #label>{{ i18n.ts._role.description }}</template>
 	</MkTextarea>
 
+	<MkInput v-model="color">
+		<template #label>{{ i18n.ts.color }}</template>
+		<template #caption>#RRGGBB</template>
+	</MkInput>
+
 	<MkSelect v-model="roleType" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.type }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfType.replaceAll('\n', '<br>')"></div></template>
@@ -110,6 +115,7 @@ const role = props.role;
 let name = $ref(role?.name ?? 'New Role');
 let description = $ref(role?.description ?? '');
 let roleType = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
+let color = $ref(role?.color ?? null);
 let isPublic = $ref(role?.isPublic ?? false);
 let options_gtlAvailable_useDefault = $ref(role?.options?.gtlAvailable?.useDefault ?? true);
 let options_gtlAvailable_value = $ref(role?.options?.gtlAvailable?.value ?? false);
@@ -136,6 +142,7 @@ async function save() {
 			roleId: role.id,
 			name,
 			description,
+			color: color === '' ? null : color,
 			isAdministrator: roleType === 'administrator',
 			isModerator: roleType === 'moderator',
 			isPublic,
@@ -146,6 +153,7 @@ async function save() {
 		const created = await os.apiWithDialog('admin/roles/create', {
 			name,
 			description,
+			color: color === '' ? null : color,
 			isAdministrator: roleType === 'administrator',
 			isModerator: roleType === 'moderator',
 			isPublic,

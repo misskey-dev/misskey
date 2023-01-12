@@ -8,6 +8,7 @@ export class Role1673500412259 {
         await queryRunner.query(`CREATE INDEX "IDX_f0de67fd09cd3cd0aabca79994" ON "role_assignment" ("roleId") `);
         await queryRunner.query(`CREATE UNIQUE INDEX "IDX_0953deda7ce6e1448e935859e5" ON "role_assignment" ("userId", "roleId") `);
 				await queryRunner.query(`ALTER TABLE "user" RENAME COLUMN "isAdmin" TO "isRoot"`);
+				await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "isModerator"`);
         await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "driveCapacityOverrideMb"`);
         await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "disableLocalTimeline"`);
         await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "disableGlobalTimeline"`);
@@ -25,6 +26,7 @@ export class Role1673500412259 {
         await queryRunner.query(`ALTER TABLE "meta" ADD "disableGlobalTimeline" boolean NOT NULL DEFAULT false`);
         await queryRunner.query(`ALTER TABLE "meta" ADD "disableLocalTimeline" boolean NOT NULL DEFAULT false`);
         await queryRunner.query(`ALTER TABLE "user" ADD "driveCapacityOverrideMb" integer`);
+				await queryRunner.query(`ALTER TABLE "user" ADD "isModerator" boolean NOT NULL DEFAULT false`);
 				await queryRunner.query(`ALTER TABLE "user" RENAME COLUMN "isRoot" TO "isAdmin"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_0953deda7ce6e1448e935859e5"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_f0de67fd09cd3cd0aabca79994"`);

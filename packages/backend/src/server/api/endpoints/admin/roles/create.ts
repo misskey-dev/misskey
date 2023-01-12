@@ -18,6 +18,7 @@ export const paramDef = {
 	properties: {
 		name: { type: 'string' },
 		description: { type: 'string' },
+		color: { type: 'string', nullable: true },
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
@@ -28,6 +29,7 @@ export const paramDef = {
 	required: [
 		'name',
 		'description',
+		'color',
 		'isPublic',
 		'isModerator',
 		'isAdministrator',
@@ -54,6 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				updatedAt: date,
 				name: ps.name,
 				description: ps.description,
+				color: ps.color,
 				isPublic: ps.isPublic,
 				isAdministrator: ps.isAdministrator,
 				isModerator: ps.isModerator,

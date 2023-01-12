@@ -930,6 +930,7 @@ noramlUser: "一般ユーザー"
 undefined: "未定義"
 assign: "アサイン"
 unassign: "アサインを解除"
+color: "色"
 
 _role:
   new: "ロールの作成"

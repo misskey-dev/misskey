@@ -26,6 +26,11 @@ export class Role {
 	})
 	public description: string;
 
+	@Column('varchar', {
+		length: 256, nullable: true,
+	})
+	public color: string | null;
+
 	@Column('boolean', {
 		default: false,
 	})
