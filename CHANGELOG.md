@@ -111,6 +111,7 @@ You should also include the user name that made the change.
 - Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
 - Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Client: パスワードマネージャーなどでユーザー名がオートコンプリートされない問題を修正 @massongit
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
