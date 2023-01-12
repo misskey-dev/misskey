@@ -27,6 +27,7 @@ You should also include the user name that made the change.
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- インスタンスブロックが後方参照で適用されるようになります
 
 #### For users
 - ノートのウォッチ機能が削除されました
