@@ -375,8 +375,19 @@ export class DriveService {
 			partSize: s3.endpoint.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
 		});
 
-		const result = await upload.promise();
-		if (result) this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+		await upload.promise()
+			.then(
+				result => {
+					if (result) {
+						this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+					} else {
+						this.registerLogger.error(`Upload Result Empty: key = ${key}, filename = ${filename}`);
+					}
+				},
+				err => {
+					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
+				}
+			);
 	}
 
 	@bindThis
@@ -461,6 +472,8 @@ export class DriveService {
 				return much;
 			}
 		}
+
+		this.registerLogger.debug(`ADD DRIVE FILE: user ${user?.id ?? 'not set'}, name ${detectedName}, tmp ${path}`);
 
 		//#region Check drive usage
 		if (user && !isLink) {

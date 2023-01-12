@@ -4272,6 +4272,7 @@ __metadata:
     typeorm: 0.3.11
     typescript: 4.9.4
     ulid: 2.3.0
+    undici: ^5.14.0
     unzipper: 0.10.11
     uuid: 9.0.0
     vary: 1.1.2
@@ -16665,21 +16666,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:^5.14.0, undici@npm:^5.5.1":
+  version: 5.14.0
+  resolution: "undici@npm:5.14.0"
+  dependencies:
+    busboy: ^1.6.0
+  checksum: 7a076e44d84b25844b4eb657034437b8b9bb91f17d347de474fdea1d4263ce7ae9406db79cd30de5642519277b4893f43073258bcc8fed420b295da3fdd11b26
+  languageName: node
+  linkType: hard
+
 "undici@npm:^5.2.0":
   version: 5.13.0
   resolution: "undici@npm:5.13.0"
   dependencies:
     busboy: ^1.6.0
   checksum: 15b8f7df4bd8c9bf9d777456d16b51eb621f25d3ee60f575a8693192a647b3a8b33671e984386636e8df42085488f86a52d0d47db1b8c22edcc591134892a424
-  languageName: node
-  linkType: hard
-
-"undici@npm:^5.5.1":
-  version: 5.14.0
-  resolution: "undici@npm:5.14.0"
-  dependencies:
-    busboy: ^1.6.0
-  checksum: 7a076e44d84b25844b4eb657034437b8b9bb91f17d347de474fdea1d4263ce7ae9406db79cd30de5642519277b4893f43073258bcc8fed420b295da3fdd11b26
   languageName: node
   linkType: hard
 
