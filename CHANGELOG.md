@@ -29,7 +29,7 @@ You should also include the user name that made the change.
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - 従来のモデレーターフラグは廃止され、より高度なロール機能が導入されました
 	- これに伴い、アップデートを行うと全てのモデレーターフラグは失われます。そのため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
-	- サイレンスはロールに統合されました
+	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
 	- ユーザーごとのドライブ容量設定はロールに統合されました
 	- LTL/GTLの解放状態はロールに統合されました
 
