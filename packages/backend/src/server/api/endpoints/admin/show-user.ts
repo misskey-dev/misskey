@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -35,6 +36,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
+
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [user, profile] = await Promise.all([
@@ -46,12 +49,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
+			const isModerator = await this.roleService.isModerator(user);
+
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
-			if (!_me.isRoot && user.isRoot) {
+			if (!await this.roleService.isAdministrator(_me) && await this.roleService.isAdministrator(user)) {
 				throw new Error('cannot show info of admin');
 			}
 
-			if (!_me.isRoot) {
+			if (!await this.roleService.isAdministrator(_me)) {
 				return {
 					isSilenced: user.isSilenced,
 					isSuspended: user.isSuspended,
@@ -79,6 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				mutedWords: profile.mutedWords,
 				mutedInstances: profile.mutedInstances,
 				mutingNotificationTypes: profile.mutingNotificationTypes,
+				isModerator: isModerator,
 				isSilenced: user.isSilenced,
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,
