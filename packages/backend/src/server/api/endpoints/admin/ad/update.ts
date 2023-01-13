@@ -38,7 +38,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.usersRepository)
+		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {

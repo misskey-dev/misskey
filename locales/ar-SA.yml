@@ -817,6 +817,7 @@ account: "الحسابات"
 cannotLoad: "تعذر التحميل"
 like: "أعجبني"
 show: "المظهر"
+color: "اللون"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"

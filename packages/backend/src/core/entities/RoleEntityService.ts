@@ -55,6 +55,8 @@ export class RoleEntityService {
 			name: role.name,
 			description: role.description,
 			color: role.color,
+			target: role.target,
+			condFormula: role.condFormula,
 			isPublic: role.isPublic,
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,

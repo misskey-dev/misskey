@@ -159,7 +159,7 @@ export class ApDbResolverService {
 		if (key == null) return null;
 
 		return {
-			user: await this.userCacheService.userByIdCache.fetch(key.userId, () => this.usersRepository.findOneByOrFail({ id: key.userId })) as CacheableRemoteUser,
+			user: await this.userCacheService.findById(key.userId) as CacheableRemoteUser,
 			key,
 		};
 	}

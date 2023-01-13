@@ -18,6 +18,12 @@ You should also include the user name that made the change.
 - Various usability improvements
 - Various UI tweaks
 
+### Notable features
+- ロール機能
+	- 従来より柔軟にユーザーの権限を管理できます。例えば、「インスタンスのパトロンはアンテナを30個まで作れる」「基本的にLTLは見れないが、許可した人だけ見れる」「招待制インスタンスだけどユーザーなら誰でも他者を招待できる」のような運用はもちろん、「ローカルユーザーかつアカウント作成から1日未満のユーザーはパブリックな投稿を行えない」のように複数条件を組み合わせて、自動でロールを付与する設定も可能です。
+- Misskey Play
+	- 従来の動的なPagesに代わる、新しいプラットフォームです。動的なコンテンツ(アプリケーション)に特化していて、Pagesに比べてはるかに柔軟なアプリケーションを作成可能です。
+
 ### Changes
 #### For server admins
 - Node.js 18.x or later is required
@@ -28,11 +34,12 @@ You should also include the user name that made the change.
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
 - インスタンスブロックはサブドメインにも適用されるようになります
-- 従来のモデレーターフラグは廃止され、より高度なロール機能が導入されました
-	- これに伴い、アップデートを行うと全てのモデレーターフラグは失われます。そのため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
+- ロールの導入に伴い、いくつかの機能がロールと統合されました
+	- モデレーターはロールに統合されました。今までのモデレーター情報は失われるため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
 	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
-	- ユーザーごとのドライブ容量設定はロールに統合されました
-	- LTL/GTLの解放状態はロールに統合されました
+	- ユーザーごとのドライブ容量設定はロールに統合されました。
+	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールのドライブ容量を編集してください。
+	- LTL/GTLの解放状態はロールに統合されました。
 
 #### For users
 - ノートのウォッチ機能が削除されました
@@ -66,6 +73,8 @@ You should also include the user name that made the change.
 - Push notification of Antenna note @tamaina
 - AVIF support @tamaina
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはインスタンスの招待コードを発行できるように
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはカスタム絵文字の追加、編集、削除を行えるように
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: Use undici instead of node-fetch and got @tamaina

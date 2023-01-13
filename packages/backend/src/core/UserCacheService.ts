@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
+import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -66,6 +66,11 @@ export class UserCacheService implements OnApplicationShutdown {
 					break;
 			}
 		}
+	}
+
+	@bindThis
+	public findById(userId: User['id']) {
+		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }));
 	}
 
 	@bindThis

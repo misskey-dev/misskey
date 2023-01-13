@@ -2,6 +2,7 @@ import * as os from '@/os';
 import { instance } from '@/instance';
 import { host } from '@/config';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 export function openInstanceMenu(ev: MouseEvent) {
 	os.popupMenu([{
@@ -46,7 +47,28 @@ export function openInstanceMenu(ev: MouseEvent) {
 			to: '/clicker',
 			text: '🍪👈',
 			icon: 'ti ti-cookie',
-		}],
+		}, ($i && ($i.isAdmin || $i.role.canInvite) && instance.disableRegistration) ? {
+			text: i18n.ts.invite,
+			icon: 'ti ti-user-plus',
+			action: () => {
+				os.api('invite').then(x => {
+					os.alert({
+						type: 'info',
+						text: x.code,
+					});
+				}).catch(err => {
+					os.alert({
+						type: 'error',
+						text: err,
+					});
+				});
+			},
+		} : undefined, ($i && ($i.isAdmin || $i.role.canManageCustomEmojis)) ? {
+			type: 'link',
+			to: '/custom-emojis-manager',
+			text: i18n.ts.manageCustomEmojis,
+			icon: 'ti ti-icons',
+		} : undefined],
 	}, null, {
 		text: i18n.ts.help,
 		icon: 'ti ti-question-circle',

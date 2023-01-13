@@ -376,6 +376,7 @@ $widgets-hide-threshold: 1090px;
 
 .navButtonIcon {
 	font-size: 18px;
+	vertical-align: middle;
 }
 
 .navButtonIndicator {

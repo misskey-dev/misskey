@@ -866,6 +866,7 @@ windowMaximize: "Развернуть"
 windowRestore: "Восстановить"
 like: "Нравится!"
 show: "Отображение"
+color: "Цвет"
 _sensitiveMediaDetection:
   description: "Машинное обучение может быть использовано для автоматического обнаружения чувствительных медиа для модерации. Нагрузка на сервер увеличивается незначительно."
   setSensitiveFlagAutomatically: "Установить флаг NSFW"
