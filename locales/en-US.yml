@@ -937,7 +937,6 @@ _role:
   name: "Role name"
   description: "Role description"
   permission: "Role permissions"
-  descriptionOfType: "Moderators can perform basic moderation operations.\nAdministrators can change all settings of the instance."
   isPublic: "Public role"
   descriptionOfIsPublic: "Anyone will be able to view a list of users assigned to this role. In addition, this role will be displayed in the profiles of assigned users."
   options: "Role options"
