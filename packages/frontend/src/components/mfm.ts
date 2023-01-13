@@ -285,11 +285,11 @@ export default defineComponent({
 				}
 
 				case 'mathInline': {
-					return [h('code', genEl(token.props.formula))];
+					return [h('code', token.props.formula)];
 				}
 
 				case 'mathBlock': {
-					return [h('code', genEl(token.props.formula))];
+					return [h('code', token.props.formula)];
 				}
 
 				case 'search': {
