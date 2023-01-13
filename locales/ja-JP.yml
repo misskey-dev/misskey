@@ -944,6 +944,7 @@ _role:
   manual: "マニュアル"
   conditional: "コンディショナル"
   condition: "条件"
+  isConditionalRole: "これはコンディショナルロールです。"
   isPublic: "ロールを公開"
   descriptionOfIsPublic: "ロールにアサインされたユーザーを誰でも見ることができます。また、ユーザーのプロフィールでこのロールが表示されます。"
   options: "オプション"
