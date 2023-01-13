@@ -78,6 +78,7 @@ You should also include the user name that made the change.
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: Use undici instead of node-fetch and got @tamaina
+- Server: Judge instance block by endsWith @tamaina
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: アンケート選択肢の文字数制限を緩和 @syuilo
 - Server: improve stats api performance @syuilo
