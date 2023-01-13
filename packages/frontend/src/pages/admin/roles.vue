@@ -41,6 +41,14 @@
 						</MkFolder>
 
 						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
+							<template #suffix>{{ options_canManageCustomEmojis ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="options_canManageCustomEmojis">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 							<template #suffix>{{ options_driveCapacityMb }}MB</template>
 							<MkInput v-model="options_driveCapacityMb" type="number">
@@ -90,6 +98,7 @@ let options_gtlAvailable = $ref(instance.baseRole.gtlAvailable);
 let options_ltlAvailable = $ref(instance.baseRole.ltlAvailable);
 let options_canPublicNote = $ref(instance.baseRole.canPublicNote);
 let options_canInvite = $ref(instance.baseRole.canInvite);
+let options_canManageCustomEmojis = $ref(instance.baseRole.canManageCustomEmojis);
 let options_driveCapacityMb = $ref(instance.baseRole.driveCapacityMb);
 let options_antennaLimit = $ref(instance.baseRole.antennaLimit);
 
@@ -100,6 +109,7 @@ async function updateBaseRole() {
 			ltlAvailable: options_ltlAvailable,
 			canPublicNote: options_canPublicNote,
 			canInvite: options_canInvite,
+			canManageCustomEmojis: options_canManageCustomEmojis,
 			driveCapacityMb: options_driveCapacityMb,
 			antennaLimit: options_antennaLimit,
 		},

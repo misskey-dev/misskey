@@ -931,6 +931,7 @@ undefined: "未定義"
 assign: "アサイン"
 unassign: "アサインを解除"
 color: "色"
+manageCustomEmojis: "カスタム絵文字の管理"
 
 _role:
   new: "ロールの作成"
@@ -958,6 +959,7 @@ _role:
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     canInvite: "インスタンス招待コードの発行"
+    canManageCustomEmojis: "カスタム絵文字の管理"
     driveCapacity: "ドライブ容量"
     antennaMax: "アンテナの作成可能数"
   _condition:

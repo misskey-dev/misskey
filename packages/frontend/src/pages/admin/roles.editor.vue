@@ -91,6 +91,19 @@
 			</MkFolder>
 
 			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
+				<template #suffix>{{ options_canManageCustomEmojis_useDefault ? i18n.ts._role.useBaseValue : (options_canManageCustomEmojis_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_canManageCustomEmojis_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="options_canManageCustomEmojis_value" :disabled="options_canManageCustomEmojis_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 				<template #suffix>{{ options_driveCapacityMb_useDefault ? i18n.ts._role.useBaseValue : (options_driveCapacityMb_value + 'MB') }}</template>
 				<div class="_gaps">
@@ -175,6 +188,8 @@ let options_canPublicNote_useDefault = $ref(role?.options?.canPublicNote?.useDef
 let options_canPublicNote_value = $ref(role?.options?.canPublicNote?.value ?? false);
 let options_canInvite_useDefault = $ref(role?.options?.canInvite?.useDefault ?? true);
 let options_canInvite_value = $ref(role?.options?.canInvite?.value ?? false);
+let options_canManageCustomEmojis_useDefault = $ref(role?.options?.canManageCustomEmojis?.useDefault ?? true);
+let options_canManageCustomEmojis_value = $ref(role?.options?.canManageCustomEmojis?.value ?? false);
 let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.useDefault ?? true);
 let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? 0);
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
@@ -192,6 +207,7 @@ function getOptions() {
 		ltlAvailable: { useDefault: options_ltlAvailable_useDefault, value: options_ltlAvailable_value },
 		canPublicNote: { useDefault: options_canPublicNote_useDefault, value: options_canPublicNote_value },
 		canInvite: { useDefault: options_canInvite_useDefault, value: options_canInvite_value },
+		canManageCustomEmojis: { useDefault: options_canManageCustomEmojis_useDefault, value: options_canManageCustomEmojis_value },
 		driveCapacityMb: { useDefault: options_driveCapacityMb_useDefault, value: options_driveCapacityMb_value },
 		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
 	};
