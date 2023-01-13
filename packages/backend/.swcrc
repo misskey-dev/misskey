@@ -9,17 +9,7 @@
     "transform": {
       "legacyDecorator": true,
       "decoratorMetadata": true
-    },
-		"experimental": {
-			"keepImportAssertions": true
-		},
-		"baseUrl": ".",
-		"paths": {
-			"@/*": [
-				"./src/*"
-			]
-		},
-		"target": "es2021"
+    }
   },
   "minify": false
 }
