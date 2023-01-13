@@ -4,12 +4,12 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
 
 	requireCredential: true,
+	requireRoleOption: 'canInvite',
 
 	res: {
 		type: 'object',
@@ -39,15 +39,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
 
-		private roleService: RoleService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const role = await this.roleService.getUserRoleOptions(me.id);
-			if (!me.isRoot && !role.canInvite) {
-				throw new Error('access denied');
-			}
-
 			const code = rndstr({
 				length: 8,
 				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)

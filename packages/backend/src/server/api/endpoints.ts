@@ -695,6 +695,8 @@ export interface IEndpointMeta {
 	 */
 	readonly requireAdmin?: boolean;
 
+	readonly requireRoleOption?: string;
+
 	/**
 	 * エンドポイントのリミテーションに関するやつ
 	 * 省略した場合はリミテーションは無いものとして解釈されます。

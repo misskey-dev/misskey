@@ -271,6 +271,17 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
+		if (ep.meta.requireRoleOption != null && !user!.isRoot) {
+			const myRole = await this.roleService.getUserRoleOptions(user!.id);
+			if (!myRole[ep.meta.requireRoleOption]) {
+				throw new ApiError({
+					message: 'You are not assigned to a required role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a',
+				});
+			}
+		}
+
 		if (token && ep.meta.kind && !token.permission.some(p => p === ep.meta.kind)) {
 			throw new ApiError({
 				message: 'Your app does not have the necessary permissions to use this endpoint.',
