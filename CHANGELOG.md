@@ -12,7 +12,7 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, 🍪👈, etc)
+- New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
@@ -27,10 +27,17 @@ You should also include the user name that made the change.
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- 従来のモデレーターフラグは廃止され、より高度なロール機能が導入されました
+	- これに伴い、アップデートを行うと全てのモデレーターフラグは失われます。そのため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
+	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
+	- ユーザーごとのドライブ容量設定はロールに統合されました
+	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールのドライブ容量を編集してください。
+	- LTL/GTLの解放状態はロールに統合されました
 
 #### For users
 - ノートのウォッチ機能が削除されました
 - アンケートに投票された際に通知が作成されなくなりました
+- ノートの数式埋め込みが削除されました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.2にアップデートされました
@@ -51,6 +58,7 @@ You should also include the user name that made the change.
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
 
 ### Improvements
+- Role system @syuilo
 - Misskey Play @syuilo
 - Introduce retention-rate aggregation @syuilo
 - Make possible to export favorited notes @syuilo
@@ -60,6 +68,7 @@ You should also include the user name that made the change.
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
+- Server: Use undici instead of node-fetch and got @tamaina
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: アンケート選択肢の文字数制限を緩和 @syuilo
 - Server: improve stats api performance @syuilo
@@ -110,6 +119,7 @@ You should also include the user name that made the change.
 - Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
 - Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Client: パスワードマネージャーなどでユーザー名がオートコンプリートされない問題を修正 @massongit
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
@@ -120,6 +130,11 @@ You should also include the user name that made the change.
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo
+
+### Special thanks
+- All contributors
+- All who have created instances for the beta test
+- All who participated in the beta test
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes

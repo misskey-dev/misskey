@@ -2445,13 +2445,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/katex@npm:0.16.0":
-  version: 0.16.0
-  resolution: "@types/katex@npm:0.16.0"
-  checksum: f93ceb2496621d18a28252264c0b7f5b0bdf125f9dc92d1adfbd9bf00942cd2918de336fae628d3929e615aaf84b7adb1781711c4e4605664be0827b1013ec14
-  languageName: node
-  linkType: hard
-
 "@types/keyv@npm:^3.1.4":
   version: 3.1.4
   resolution: "@types/keyv@npm:3.1.4"
@@ -4279,6 +4272,7 @@ __metadata:
     typeorm: 0.3.11
     typescript: 4.9.4
     ulid: 2.3.0
+    undici: ^5.14.0
     unzipper: 0.10.11
     uuid: 9.0.0
     vary: 1.1.2
@@ -5433,13 +5427,6 @@ __metadata:
   version: 5.1.0
   resolution: "commander@npm:5.1.0"
   checksum: 0b7fec1712fbcc6230fcb161d8d73b4730fa91a21dc089515489402ad78810547683f058e2a9835929c212fead1d6a6ade70db28bbb03edbc2829a9ab7d69447
-  languageName: node
-  linkType: hard
-
-"commander@npm:^8.0.0":
-  version: 8.3.0
-  resolution: "commander@npm:8.3.0"
-  checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
   languageName: node
   linkType: hard
 
@@ -8049,7 +8036,6 @@ __metadata:
     "@types/glob": 8.0.0
     "@types/gulp": 4.0.10
     "@types/gulp-rename": 2.0.1
-    "@types/katex": 0.16.0
     "@types/matter-js": 0.18.2
     "@types/punycode": 2.1.0
     "@types/sanitize-html": ^2.8.0
@@ -8090,7 +8076,6 @@ __metadata:
     insert-text-at-cursor: 0.3.0
     is-file-animated: 1.0.2
     json5: 2.2.3
-    katex: 0.16.4
     matter-js: 0.18.0
     mfm-js: 0.23.1
     misskey-js: 0.0.14
@@ -10918,17 +10903,6 @@ __metadata:
     jwa: ^2.0.0
     safe-buffer: ^5.0.1
   checksum: d68d07aa6d1b8cb35c363a9bd2b48f15064d342a5d9dc18a250dbbce8dc06bd7e4792516c50baa16b8d14f61167c19e851fd7f66b59ecc68b7f6a013759765f7
-  languageName: node
-  linkType: hard
-
-"katex@npm:0.16.4":
-  version: 0.16.4
-  resolution: "katex@npm:0.16.4"
-  dependencies:
-    commander: ^8.0.0
-  bin:
-    katex: cli.js
-  checksum: 94eaf1fbd8365792308527695c09baa6d2d84e2d0170e4af44fb12be3ed403fb3430caff2410117f2f1a9dfdb329f61ab9611d97e645d9c89ee60940698a45cc
   languageName: node
   linkType: hard
 
@@ -16692,21 +16666,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:^5.14.0, undici@npm:^5.5.1":
+  version: 5.14.0
+  resolution: "undici@npm:5.14.0"
+  dependencies:
+    busboy: ^1.6.0
+  checksum: 7a076e44d84b25844b4eb657034437b8b9bb91f17d347de474fdea1d4263ce7ae9406db79cd30de5642519277b4893f43073258bcc8fed420b295da3fdd11b26
+  languageName: node
+  linkType: hard
+
 "undici@npm:^5.2.0":
   version: 5.13.0
   resolution: "undici@npm:5.13.0"
   dependencies:
     busboy: ^1.6.0
   checksum: 15b8f7df4bd8c9bf9d777456d16b51eb621f25d3ee60f575a8693192a647b3a8b33671e984386636e8df42085488f86a52d0d47db1b8c22edcc591134892a424
-  languageName: node
-  linkType: hard
-
-"undici@npm:^5.5.1":
-  version: 5.14.0
-  resolution: "undici@npm:5.14.0"
-  dependencies:
-    busboy: ^1.6.0
-  checksum: 7a076e44d84b25844b4eb657034437b8b9bb91f17d347de474fdea1d4263ce7ae9406db79cd30de5642519277b4893f43073258bcc8fed420b295da3fdd11b26
   languageName: node
   linkType: hard
 

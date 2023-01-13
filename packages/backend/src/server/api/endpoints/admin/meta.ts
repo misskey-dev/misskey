@@ -4,6 +4,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { DEFAULT_ROLE } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -15,14 +16,6 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: false,
 		properties: {
-			driveCapacityPerLocalUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerRemoteUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
 			cacheRemoteFiles: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -377,10 +370,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				repositoryUrl: instance.repositoryUrl,
 				feedbackUrl: instance.feedbackUrl,
 				disableRegistration: instance.disableRegistration,
-				disableLocalTimeline: instance.disableLocalTimeline,
-				disableGlobalTimeline: instance.disableGlobalTimeline,
-				driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-				driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
@@ -451,6 +440,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				deeplIsPro: instance.deeplIsPro,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
+				baseRole: { ...DEFAULT_ROLE, ...instance.defaultRoleOverride },
 			};
 		});
 	}

@@ -97,6 +97,11 @@ const menuDef = $computed(() => [{
 		to: '/admin/users',
 		active: currentPage?.route.name === 'users',
 	}, {
+		icon: 'ti ti-badges',
+		text: i18n.ts.roles,
+		to: '/admin/roles',
+		active: currentPage?.route.name === 'roles',
+	}, {
 		icon: 'ti ti-icons',
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',

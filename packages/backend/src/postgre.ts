@@ -70,6 +70,8 @@ import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
+import { Role } from '@/models/entities/Role.js';
+import { RoleAssignment } from '@/models/entities/RoleAssignment.js';
 import { Flash } from '@/models/entities/Flash.js';
 import { FlashLike } from '@/models/entities/FlashLike.js';
 
@@ -186,6 +188,8 @@ export const entities = [
 	Webhook,
 	UserIp,
 	RetentionAggregation,
+	Role,
+	RoleAssignment,
 	Flash,
 	FlashLike,
 	...charts,

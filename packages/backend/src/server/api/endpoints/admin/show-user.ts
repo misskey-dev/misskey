@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
+import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -35,6 +37,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
+
+		private roleService: RoleService,
+		private roleEntityService: RoleEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [user, profile] = await Promise.all([
@@ -46,15 +51,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
+			const isModerator = await this.roleService.isModerator(user);
+			const isSilenced = !(await this.roleService.getUserRoleOptions(user.id)).canPublicNote;
+
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
-			if ((_me.isModerator && !_me.isAdmin) && user.isAdmin) {
+			if (!await this.roleService.isAdministrator(_me) && await this.roleService.isAdministrator(user)) {
 				throw new Error('cannot show info of admin');
 			}
 
-			if (!_me.isAdmin) {
+			if (!await this.roleService.isAdministrator(_me)) {
 				return {
-					isModerator: user.isModerator,
-					isSilenced: user.isSilenced,
 					isSuspended: user.isSuspended,
 				};
 			}
@@ -65,6 +71,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
+
+			const roles = await this.roleService.getUserRoles(user.id);
 
 			return {
 				email: profile.email,
@@ -80,12 +88,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				mutedWords: profile.mutedWords,
 				mutedInstances: profile.mutedInstances,
 				mutingNotificationTypes: profile.mutingNotificationTypes,
-				isModerator: user.isModerator,
-				isSilenced: user.isSilenced,
+				isModerator: isModerator,
+				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,
 				moderationNote: profile.moderationNote,
 				signins,
+				roles: await this.roleEntityService.packMany(roles, me, { detail: false }),
 			};
 		});
 	}

@@ -1,5 +1,5 @@
 <template>
-<div :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
+<div v-adaptive-bg :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
 	<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
 	<div class="body">
 		<span class="name"><MkUserName class="name" :user="user"/></span>

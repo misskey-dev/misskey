@@ -37,6 +37,7 @@ export const routes = [{
 }, {
 	path: '/user-info/:userId',
 	component: page(() => import('./pages/user-info.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/instance-info/:host',
 	component: page(() => import('./pages/instance-info.vue')),
@@ -351,6 +352,22 @@ export const routes = [{
 		path: '/ads',
 		name: 'ads',
 		component: page(() => import('./pages/admin/ads.vue')),
+	}, {
+		path: '/roles/:id/edit',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.edit.vue')),
+	}, {
+		path: '/roles/new',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.edit.vue')),
+	}, {
+		path: '/roles/:id',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.role.vue')),
+	}, {
+		path: '/roles',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.vue')),
 	}, {
 		path: '/database',
 		name: 'database',
