@@ -13,7 +13,7 @@
 					<template #label>{{ i18n.ts.info }}</template>
 					<XEditor :role="role" readonly/>
 				</MkFolder>
-				<MkFolder default-open>
+				<MkFolder v-if="role.target === 'manual'" default-open>
 					<template #icon><i class="ti ti-users"></i></template>
 					<template #label>{{ i18n.ts.users }}</template>
 					<template #suffix>{{ role.users.length }}</template>
@@ -28,6 +28,7 @@
 						</div>
 					</div>
 				</MkFolder>
+				<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
 			</div>
 		</MkSpacer>
 	</MkStickyContainer>
@@ -45,6 +46,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { useRouter } from '@/router';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const router = useRouter();
 

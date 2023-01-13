@@ -1,6 +1,48 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 
+type CondFormulaValueAnd = {
+	type: 'and';
+	values: RoleCondFormulaValue[];
+};
+
+type CondFormulaValueOr = {
+	type: 'or';
+	values: RoleCondFormulaValue[];
+};
+
+type CondFormulaValueNot = {
+	type: 'not';
+	value: RoleCondFormulaValue;
+};
+
+type CondFormulaValueIsLocal = {
+	type: 'isLocal';
+};
+
+type CondFormulaValueIsRemote = {
+	type: 'isRemote';
+};
+
+type CondFormulaValueCreatedLessThan = {
+	type: 'createdLessThan';
+	sec: number;
+};
+
+type CondFormulaValueCreatedMoreThan = {
+	type: 'createdMoreThan';
+	sec: number;
+};
+
+export type RoleCondFormulaValue =
+	CondFormulaValueAnd |
+	CondFormulaValueOr |
+	CondFormulaValueNot |
+	CondFormulaValueIsLocal |
+	CondFormulaValueIsRemote |
+	CondFormulaValueCreatedLessThan |
+	CondFormulaValueCreatedMoreThan;
+
 @Entity()
 export class Role {
 	@PrimaryColumn(id())
@@ -35,6 +77,17 @@ export class Role {
 		length: 256, nullable: true,
 	})
 	public color: string | null;
+
+	@Column('enum', {
+		enum: ['manual', 'conditional'],
+		default: 'manual',
+	})
+	public target: 'manual' | 'conditional';
+
+	@Column('jsonb', {
+		default: { },
+	})
+	public condFormula: RoleCondFormulaValue;
 
 	@Column('boolean', {
 		default: false,
