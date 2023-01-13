@@ -937,7 +937,6 @@ _role:
   name: "Rollenname"
   description: "Rollenbeschreibung"
   permission: "Rollenberechtigungen"
-  descriptionOfType: "Moderatoren können grundlegende Verwaltungsaufgaben erledigen.\nAdministratoren können alle Einstellungen der Instanz verwalten."
   isPublic: "Öffentliche Rolle"
   descriptionOfIsPublic: "Ist dies aktiviert, so kann jeder die Liste der Benutzer, die dieser Rolle zugewiesen sind, einsehen. Zusätzlich wird diese Rolle im Profil zugewiesener Benutzer angezeigt."
   options: "Optionen"
