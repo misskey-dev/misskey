@@ -935,7 +935,6 @@ _role:
   edit: "编辑角色"
   name: "角色名称"
   description: "角色描述"
-  descriptionOfType: "版主可以执行基本的审核操作。\n管理员可以更改实例的所有设置。"
   isPublic: "角色公开"
   descriptionOfIsPublic: "任何人都可以看到分配该角色的用户。而用户的个人资料也将显示该角色。"
   options: "选项"
