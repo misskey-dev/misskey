@@ -6,7 +6,7 @@
 			{{ message }}
 		</MkInfo>
 		<div v-if="!totpLogin" class="normal-signin _gaps_m">
-			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required data-cy-signin-username @update:model-value="onUsernameChange">
+			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username" autofocus required data-cy-signin-username @update:model-value="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>

@@ -7,6 +7,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { DEFAULT_ROLE } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -75,22 +76,6 @@ export const meta = {
 			},
 			disableRegistration: {
 				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			disableLocalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			disableGlobalTimeline: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerLocalUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerRemoteUserMb: {
-				type: 'number',
 				optional: false, nullable: false,
 			},
 			cacheRemoteFiles: {
@@ -314,10 +299,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				repositoryUrl: instance.repositoryUrl,
 				feedbackUrl: instance.feedbackUrl,
 				disableRegistration: instance.disableRegistration,
-				disableLocalTimeline: instance.disableLocalTimeline,
-				disableGlobalTimeline: instance.disableGlobalTimeline,
-				driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-				driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
@@ -353,6 +334,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				translatorAvailable: instance.deeplAuthKey != null,
 
+				baseRole: { ...DEFAULT_ROLE, ...instance.defaultRoleOverride },
+
 				...(ps.detail ? {
 					pinnedPages: instance.pinnedPages,
 					pinnedClipId: instance.pinnedClipId,
@@ -369,8 +352,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
 				response.features = {
 					registration: !instance.disableRegistration,
-					localTimeLine: !instance.disableLocalTimeline,
-					globalTimeLine: !instance.disableGlobalTimeline,
 					emailRequiredForSignup: instance.emailRequiredForSignup,
 					elasticsearch: this.config.elasticsearch ? true : false,
 					hcaptcha: instance.enableHcaptcha,

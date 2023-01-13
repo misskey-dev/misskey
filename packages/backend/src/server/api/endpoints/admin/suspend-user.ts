@@ -9,6 +9,7 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -41,6 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userEntityService: UserEntityService,
 		private userFollowingService: UserFollowingService,
 		private userSuspendService: UserSuspendService,
+		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -51,12 +53,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.isAdmin) {
-				throw new Error('cannot suspend admin');
-			}
-
-			if (user.isModerator) {
-				throw new Error('cannot suspend moderator');
+			if (await this.roleService.isModerator(user)) {
+				throw new Error('cannot suspend moderator account');
 			}
 
 			await this.usersRepository.update(user.id, {

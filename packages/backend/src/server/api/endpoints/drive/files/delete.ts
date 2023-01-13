@@ -4,6 +4,7 @@ import type { DriveFilesRepository } from '@/models/index.js';
 import { DriveService } from '@/core/DriveService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -46,6 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFilesRepository: DriveFilesRepository,
 
 		private driveService: DriveService,
+		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -55,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			if ((!me.isAdmin && !me.isModerator) && (file.userId !== me.id)) {
+			if (!await this.roleService.isModerator(me) && (file.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

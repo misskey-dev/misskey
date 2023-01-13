@@ -12,6 +12,7 @@ import type { UserIpsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -41,6 +42,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		private metaService: MetaService,
 		private authenticateService: AuthenticateService,
 		private rateLimiterService: RateLimiterService,
+		private roleService: RoleService,
 		private apiLoggerService: ApiLoggerService,
 	) {
 		this.logger = this.apiLoggerService.logger;
@@ -202,7 +204,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 	) {
 		const isSecure = user != null && token == null;
-		const isModerator = user != null && (user.isModerator || user.isAdmin);
 
 		if (ep.meta.secure && !isSecure) {
 			throw new ApiError(accessDenied);
@@ -234,30 +235,40 @@ export class ApiCallService implements OnApplicationShutdown {
 			});
 		}
 
-		if (ep.meta.requireCredential && user == null) {
-			throw new ApiError({
-				message: 'Credential required.',
-				code: 'CREDENTIAL_REQUIRED',
-				id: '1384574d-a912-4b81-8601-c7b1c4085df1',
-				httpStatusCode: 401,
-			});
+		if (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin) {
+			if (user == null) {
+				throw new ApiError({
+					message: 'Credential required.',
+					code: 'CREDENTIAL_REQUIRED',
+					id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+					httpStatusCode: 401,
+				});
+			} else if (user!.isSuspended) {
+				throw new ApiError({
+					message: 'Your account has been suspended.',
+					code: 'YOUR_ACCOUNT_SUSPENDED',
+					id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
+					httpStatusCode: 403,
+				});
+			}
 		}
 
-		if (ep.meta.requireCredential && user!.isSuspended) {
-			throw new ApiError({
-				message: 'Your account has been suspended.',
-				code: 'YOUR_ACCOUNT_SUSPENDED',
-				id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
-				httpStatusCode: 403,
-			});
-		}
-
-		if (ep.meta.requireAdmin && !user!.isAdmin) {
-			throw new ApiError(accessDenied, { reason: 'You are not the admin.' });
-		}
-
-		if (ep.meta.requireModerator && !isModerator) {
-			throw new ApiError(accessDenied, { reason: 'You are not a moderator.' });
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
+			const myRoles = await this.roleService.getUserRoles(user!.id);
+			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
+				throw new ApiError({
+					message: 'You are not assigned to a moderator role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					id: 'd33d5333-db36-423d-a8f9-1a2b9549da41',
+				});
+			}
+			if (ep.meta.requireAdmin && !myRoles.some(r => r.isAdministrator)) {
+				throw new ApiError({
+					message: 'You are not assigned to an administrator role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+				});
+			}
 		}
 
 		if (token && ep.meta.kind && !token.permission.some(p => p === ep.meta.kind)) {
