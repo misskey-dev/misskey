@@ -964,6 +964,8 @@ _role:
   _condition:
     isLocal: "Local user"
     isRemote: "Remote user"
+    createdLessThan: "Created less than"
+    createdMoreThan: "Created more than"
     and: "AND"
     or: "OR"
     not: "NOT"
