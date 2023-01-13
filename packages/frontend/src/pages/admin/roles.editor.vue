@@ -15,11 +15,25 @@
 
 	<MkSelect v-model="rolePermission" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.permission }}</template>
-		<template #caption><div v-html="i18n.ts._role.descriptionOfType.replaceAll('\n', '<br>')"></div></template>
+		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
 		<option value="normal">{{ i18n.ts.normalUser }}</option>
 		<option value="moderator">{{ i18n.ts.moderator }}</option>
 		<option value="administrator">{{ i18n.ts.administrator }}</option>
 	</MkSelect>
+
+	<MkSelect v-model="target" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.assignTarget }}</template>
+		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
+		<option value="manual">{{ i18n.ts._role.manual }}</option>
+		<option value="conditional">{{ i18n.ts._role.conditional }}</option>
+	</MkSelect>
+
+	<MkFolder v-if="target === 'conditional'" default-open>
+		<template #label>{{ i18n.ts._role.condition }}</template>
+		<div class="_gaps">
+			<RolesEditorFormula v-model="condFormula"/>
+		</div>
+	</MkFolder>
 
 	<FormSlot>
 		<template #label>{{ i18n.ts._role.options }}</template>
@@ -107,7 +121,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
+import { v4 as uuid } from 'uuid';
+import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -134,6 +150,8 @@ let name = $ref(role?.name ?? 'New Role');
 let description = $ref(role?.description ?? '');
 let rolePermission = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
 let color = $ref(role?.color ?? null);
+let target = $ref(role?.target ?? 'manual');
+let condFormula = $ref(role?.condFormula ?? { id: uuid(), type: 'isRemote' });
 let isPublic = $ref(role?.isPublic ?? false);
 let canEditMembersByModerator = $ref(role?.canEditMembersByModerator ?? false);
 let options_gtlAvailable_useDefault = $ref(role?.options?.gtlAvailable?.useDefault ?? true);
@@ -146,6 +164,10 @@ let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.us
 let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? 0);
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
 let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? 0);
+
+watch($$(condFormula), () => {
+	console.log(condFormula);
+}, { deep: true });
 
 function getOptions() {
 	return {
@@ -165,6 +187,8 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
+			target,
+			condFormula,
 			isAdministrator: rolePermission === 'administrator',
 			isModerator: rolePermission === 'moderator',
 			isPublic,
@@ -177,6 +201,8 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
+			target,
+			condFormula,
 			isAdministrator: rolePermission === 'administrator',
 			isModerator: rolePermission === 'moderator',
 			isPublic,
