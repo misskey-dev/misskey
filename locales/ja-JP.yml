@@ -957,6 +957,7 @@ _role:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
+    canInvite: "インスタンス招待コードの発行"
     driveCapacity: "ドライブ容量"
     antennaMax: "アンテナの作成可能数"
   _condition:

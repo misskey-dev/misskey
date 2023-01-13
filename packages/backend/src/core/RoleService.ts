@@ -16,6 +16,7 @@ export type RoleOptions = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
+	canInvite: boolean;
 	driveCapacityMb: number;
 	antennaLimit: number;
 };
@@ -24,6 +25,7 @@ export const DEFAULT_ROLE: RoleOptions = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
+	canInvite: false,
 	driveCapacityMb: 100,
 	antennaLimit: 5,
 };
@@ -179,6 +181,7 @@ export class RoleService implements OnApplicationShutdown {
 			gtlAvailable: getOptionValues('gtlAvailable').some(x => x === true),
 			ltlAvailable: getOptionValues('ltlAvailable').some(x => x === true),
 			canPublicNote: getOptionValues('canPublicNote').some(x => x === true),
+			canInvite: getOptionValues('canInvite').some(x => x === true),
 			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
 			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
 		};
