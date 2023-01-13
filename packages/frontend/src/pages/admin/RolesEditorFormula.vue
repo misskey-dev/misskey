@@ -13,6 +13,9 @@
 		<button v-if="draggable" class="drag-handle _button" :class="$style.dragHandle">
 			<i class="ti ti-menu-2"></i>
 		</button>
+		<button v-if="draggable" class="_button" :class="$style.remove" @click="removeSelf">
+			<i class="ti ti-x"></i>
+		</button>
 	</div>
 
 	<div v-if="type === 'and' || type === 'or'" :class="$style.values" class="_gaps">
@@ -20,7 +23,7 @@
 			<template #item="{element}">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-					<RolesEditorFormula :model-value="element" draggable @update:model-value="updated => valuesItemUpdated(updated)"/>
+					<RolesEditorFormula :model-value="element" draggable @update:model-value="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
 				</div>
 			</template>
 		</Sortable>
@@ -55,6 +58,7 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
+	(ev: 'remove'): void;
 }>();
 
 const props = defineProps<{
@@ -93,6 +97,14 @@ function valuesItemUpdated(item) {
 	const i = v.value.values.findIndex(_item => _item.id === item.id);
 	v.value.values[i] = item;
 }
+
+function removeItem(item) {
+	v.value.values = v.value.values.filter(_item => _item.id !== item.id);
+}
+
+function removeSelf() {
+	emit('remove');
+}
 </script>
 
 <style lang="scss" module>
@@ -110,6 +122,10 @@ function valuesItemUpdated(item) {
 
 .dragHandle {
 	cursor: move;
+	margin-left: 10px;
+}
+
+.remove {
 	margin-left: 10px;
 }
 
