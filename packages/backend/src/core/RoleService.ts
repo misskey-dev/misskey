@@ -20,6 +20,7 @@ export type RoleOptions = {
 	canManageCustomEmojis: boolean;
 	driveCapacityMb: number;
 	antennaLimit: number;
+	wordMuteLimit: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
@@ -30,6 +31,7 @@ export const DEFAULT_ROLE: RoleOptions = {
 	canManageCustomEmojis: false,
 	driveCapacityMb: 100,
 	antennaLimit: 5,
+	wordMuteLimit: 200,
 };
 
 @Injectable()
@@ -187,6 +189,7 @@ export class RoleService implements OnApplicationShutdown {
 			canManageCustomEmojis: getOptionValues('canManageCustomEmojis').some(x => x === true),
 			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
 			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
+			wordMuteLimit: Math.max(...getOptionValues('wordMuteLimit')),
 		};
 	}
 
