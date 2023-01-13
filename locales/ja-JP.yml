@@ -193,7 +193,7 @@ clearQueueConfirmText: "未配達の投稿は配送されなくなります。�
 clearCachedFiles: "キャッシュをクリア"
 clearCachedFilesConfirm: "キャッシュされたリモートファイルをすべて削除しますか？"
 blockedInstances: "ブロックしたインスタンス"
-blockedInstancesDescription: "ブロックしたいインスタンスのホストを改行で区切って設定します。ブロックされたインスタンスは、このインスタンスとやり取りできなくなります。"
+blockedInstancesDescription: "ブロックしたいインスタンスのホストを改行で区切って設定します。ブロックされたインスタンスは、このインスタンスとやり取りできなくなります。サブドメインもブロックされます。"
 muteAndBlock: "ミュートとブロック"
 mutedUsers: "ミュートしたユーザー"
 blockedUsers: "ブロックしたユーザー"
