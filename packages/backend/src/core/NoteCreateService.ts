@@ -225,7 +225,7 @@ export class NoteCreateService {
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
 
-		if (data.visibility === 'public' && this.userEntityService.isLocalUser(user) && data.channel == null) {
+		if (data.visibility === 'public' && data.channel == null) {
 			if ((await this.roleService.getUserRoleOptions(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
 			}
