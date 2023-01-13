@@ -6,6 +6,10 @@
 			<option value="isRemote">{{ i18n.ts._role._condition.isRemote }}</option>
 			<option value="createdLessThan">{{ i18n.ts._role._condition.createdLessThan }}</option>
 			<option value="createdMoreThan">{{ i18n.ts._role._condition.createdMoreThan }}</option>
+			<option value="followersLessThanOrEq">{{ i18n.ts._role._condition.followersLessThanOrEq }}</option>
+			<option value="followersMoreThanOrEq">{{ i18n.ts._role._condition.followersMoreThanOrEq }}</option>
+			<option value="followingLessThanOrEq">{{ i18n.ts._role._condition.followingLessThanOrEq }}</option>
+			<option value="followingMoreThanOrEq">{{ i18n.ts._role._condition.followingMoreThanOrEq }}</option>
 			<option value="and">{{ i18n.ts._role._condition.and }}</option>
 			<option value="or">{{ i18n.ts._role._condition.or }}</option>
 			<option value="not">{{ i18n.ts._role._condition.not }}</option>
@@ -36,6 +40,9 @@
 
 	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan'" v-model="v.sec" type="number">
 		<template #suffix>sec</template>
+	</MkInput>
+
+	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
 	</MkInput>
 </div>
 </template>
@@ -85,6 +92,10 @@ const type = computed({
 		if (t === 'not') v.value.value = { id: uuid(), type: 'isRemote' };
 		if (t === 'createdLessThan') v.value.sec = 86400;
 		if (t === 'createdMoreThan') v.value.sec = 86400;
+		if (t === 'followersLessThanOrEq') v.value.value = 10;
+		if (t === 'followersMoreThanOrEq') v.value.value = 10;
+		if (t === 'followingLessThanOrEq') v.value.value = 10;
+		if (t === 'followingMoreThanOrEq') v.value.value = 10;
 		v.value.type = t;
 	},
 });
