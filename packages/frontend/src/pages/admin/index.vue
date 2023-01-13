@@ -80,7 +80,7 @@ const menuDef = $computed(() => [{
 		action: lookup,
 	}, ...(instance.disableRegistration ? [{
 		type: 'button',
-		icon: 'ti ti-user',
+		icon: 'ti ti-user-plus',
 		text: i18n.ts.invite,
 		action: invite,
 	}] : [])],
@@ -223,7 +223,7 @@ provideMetadataReceiver((info) => {
 });
 
 const invite = () => {
-	os.api('admin/invite').then(x => {
+	os.api('invite').then(x => {
 		os.alert({
 			type: 'info',
 			text: x.code,

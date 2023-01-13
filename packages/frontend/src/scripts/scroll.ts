@@ -10,53 +10,67 @@ export function getScrollContainer(el: HTMLElement | null): HTMLElement | null {
 	}
 }
 
-export function getScrollPosition(el: Element | null): number {
+export function getStickyTop(el: HTMLElement, container: HTMLElement | null = null, top: number = 0) {
+	if (!el.parentElement) return top;
+	const data = el.dataset.stickyContainerHeaderHeight;
+	const newTop = data ? Number(data) + top : top;
+	if (el === container) return newTop;
+	return getStickyTop(el.parentElement, container, newTop);
+}
+
+export function getScrollPosition(el: HTMLElement | null): number {
 	const container = getScrollContainer(el);
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function isTopVisible(el: Element | null): boolean {
-	const scrollTop = getScrollPosition(el);
-	const topPosition = el.offsetTop; // TODO: container内でのelの相対位置を取得できればより正確になる
+export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance: number = 1, once: boolean = false) {
+	// とりあえず評価してみる
+	if (isTopVisible(el)) {
+		cb();
+		if (once) return null;
+	}
 
-	return scrollTop <= topPosition;
-}
-
-export function isBottomVisible(el: HTMLElement, tolerance = 1, container = getScrollContainer(el)) {
-	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + tolerance;
-	return el.scrollHeight <= window.innerHeight + window.scrollY + tolerance;
-}
-
-export function onScrollTop(el: Element, cb) {
 	const container = getScrollContainer(el) || window;
+
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		if (isTopVisible(el)) {
+		if (isTopVisible(el, tolerance)) {
 			cb();
-			container.removeEventListener('scroll', onScroll);
+			if (once) removeListener();
 		}
 	};
+
+	function removeListener() { container.removeEventListener('scroll', onScroll); }
 	container.addEventListener('scroll', onScroll, { passive: true });
+	return removeListener;
 }
 
-export function onScrollBottom(el: Element, cb) {
-	const container = getScrollContainer(el) || window;
+export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance: number = 1, once: boolean = false) {
+	const container = getScrollContainer(el);
+
+	// とりあえず評価してみる
+	if (isBottomVisible(el, tolerance, container)) {
+		cb();
+		if (once) return null;
+	}
+
+	const containerOrWindow = container || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		const pos = getScrollPosition(el);
-		if (pos + el.clientHeight > el.scrollHeight - 1) {
+		if (isBottomVisible(el, 1, container)) {
 			cb();
-			container.removeEventListener('scroll', onScroll);
+			if (once) removeListener();
 		}
 	};
-	container.addEventListener('scroll', onScroll, { passive: true });
+
+	function removeListener() {
+		containerOrWindow.removeEventListener('scroll', onScroll);
+	}
+	containerOrWindow.addEventListener('scroll', onScroll, { passive: true });
+	return removeListener;
 }
 
-export function scroll(el: Element, options: {
-	top?: number;
-	left?: number;
-	behavior?: ScrollBehavior;
-}) {
+export function scroll(el: HTMLElement, options: ScrollToOptions | undefined) {
 	const container = getScrollContainer(el);
 	if (container == null) {
 		window.scroll(options);
@@ -65,21 +79,51 @@ export function scroll(el: Element, options: {
 	}
 }
 
-export function scrollToTop(el: Element, options: { behavior?: ScrollBehavior; } = {}) {
+/**
+ * Scroll to Top
+ * @param el Scroll container element
+ * @param options Scroll options
+ */
+export function scrollToTop(el: HTMLElement, options: { behavior?: ScrollBehavior; } = {}) {
 	scroll(el, { top: 0, ...options });
 }
 
-export function scrollToBottom(el: Element, options: { behavior?: ScrollBehavior; } = {}) {
-	scroll(el, { top: 99999, ...options }); // TODO: ちゃんと計算する
+/**
+ * Scroll to Bottom
+ * @param el Content element
+ * @param options Scroll options
+ * @param container Scroll container element
+ */
+export function scrollToBottom(
+	el: HTMLElement,
+	options: ScrollToOptions = {},
+	container = getScrollContainer(el),
+) {
+	if (container) {
+		container.scroll({ top: el.scrollHeight - container.clientHeight + getStickyTop(el, container) || 0, ...options });
+	} else {
+		window.scroll({
+			top: (el.scrollHeight - window.innerHeight + getStickyTop(el, container) + (window.innerWidth <= 500 ? 96 : 0)) || 0,
+			...options
+		});
+	}
 }
 
-export function isBottom(el: Element, asobi = 0) {
-	const container = getScrollContainer(el);
-	const current = container
-		? el.scrollTop + el.offsetHeight
-		: window.scrollY + window.innerHeight;
-	const max = container
-		? el.scrollHeight
-		: document.body.offsetHeight;
-	return current >= (max - asobi);
+export function isTopVisible(el: HTMLElement, tolerance: number = 1): boolean {
+	const scrollTop = getScrollPosition(el);
+	return scrollTop <= tolerance;
+}
+
+export function isBottomVisible(el: HTMLElement, tolerance = 1, container = getScrollContainer(el)) {
+	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + tolerance;
+	return el.scrollHeight <= window.innerHeight + window.scrollY + tolerance;
+}
+
+// https://ja.javascript.info/size-and-scroll-window#ref-932
+export function getBodyScrollHeight() {
+	return Math.max(
+		document.body.scrollHeight, document.documentElement.scrollHeight,
+		document.body.offsetHeight, document.documentElement.offsetHeight,
+		document.body.clientHeight, document.documentElement.clientHeight
+	);
 }

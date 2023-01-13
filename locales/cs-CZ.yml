@@ -611,6 +611,7 @@ slow: "Pomalá"
 fast: "Rychlá"
 account: "Účty"
 show: "Zobrazit"
+color: "Barva"
 _ad:
   back: "Zpět"
 _gallery:

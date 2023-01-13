@@ -918,6 +918,7 @@ cannotLoad: "No se puede cargar."
 numberOfProfileView: "Número de vistas de perfil"
 like: "¡Muy bien!"
 show: "Apariencia"
+color: "Color"
 _sensitiveMediaDetection:
   description: "Reduce el esfuerzo de la moderación el el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
   sensitivity: "Sensibilidad de detección"

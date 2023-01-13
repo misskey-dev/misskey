@@ -25,6 +25,12 @@ export class UtilityService {
 	}
 
 	@bindThis
+	public isBlockedHost(blockedHosts: string[], host: string | null): boolean {
+		if (host == null) return false;
+		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
 	public extractDbHost(uri: string): string {
 		const url = new URL(uri);
 		return this.toPuny(url.hostname);
