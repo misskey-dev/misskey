@@ -935,7 +935,6 @@ _role:
   edit: "역할 수정"
   name: "역할 이름"
   description: "역할 설명"
-  descriptionOfType: "모더레이터는 기본적인 중재와 관련된 작업을 수행할 수 있습니다.\n관리자는 인스턴스의 모든 설정을 변경할 수 있습니다."
   isPublic: "공개 역할"
   descriptionOfIsPublic: "역할에 할당된 사용자를 누구나 볼 수 있습니다. 또한 사용자 프로필에 이 역할이 표시됩니다."
   options: "옵션"
