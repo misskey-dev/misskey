@@ -165,9 +165,11 @@ let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
 let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? 0);
 
-watch($$(condFormula), () => {
-	console.log(condFormula);
-}, { deep: true });
+if (_DEV_) {
+	watch($$(condFormula), () => {
+		console.log(JSON.parse(JSON.stringify(condFormula)));
+	}, { deep: true });
+}
 
 function getOptions() {
 	return {
