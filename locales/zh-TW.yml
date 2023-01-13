@@ -937,11 +937,23 @@ _role:
   name: "角色名稱"
   description: "角色描述 "
   permission: "角色的權限"
+  descriptionOfPermission: "<b>審核員</b>執行與審核相關的基本操作。\n<b>管理者</b>能變更實例的全部設定。"
+  assignTarget: "指派目標"
+  manual: "手動"
+  condition: "條件"
   isConditionalRole: "這是條件角色。"
   isPublic: "角色為公開"
+  options: "選項"
   baseRole: "基本角色"
   useBaseValue: "使用基本角色的值"
   chooseRoleToAssign: "選擇要指派的角色"
+  _options:
+    driveCapacity: "雲端硬碟容量"
+  _condition:
+    isLocal: "本地使用者"
+    isRemote: "遠端使用者"
+    createdLessThan: "自建立帳戶開始～以內"
+    createdMoreThan: "自建立帳戶開始～經過"
 _sensitiveMediaDetection:
   description: "您可以使用機器學習自動檢測敏感媒體並將其用於審核。 伺服器的負荷會稍微增加。"
   sensitivity: "檢測敏感度"
