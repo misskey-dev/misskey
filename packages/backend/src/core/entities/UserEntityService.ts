@@ -448,6 +448,14 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).map(role => ({
+					id: role.id,
+					name: role.name,
+					color: role.color,
+					description: role.description,
+					isModerator: role.isModerator,
+					isAdministrator: role.isAdministrator,
+				}))),
 			} : {}),
 
 			...(opts.detail && isMe ? {
