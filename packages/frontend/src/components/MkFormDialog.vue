@@ -15,7 +15,7 @@
 	</template>
 
 	<MkSpacer :margin-min="20" :margin-max="32">
-		<div class="xkpnjxcv _gaps_m">
+		<div class="_gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
@@ -119,9 +119,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.xkpnjxcv {
-
-}
-</style>
