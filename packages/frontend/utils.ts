@@ -1,3 +1,5 @@
+import path from 'path';
+
 const hash = (str: string, seed = 0): number => {
     let h1 = 0xdeadbeef ^ seed,
         h2 = 0x41c6ce57 ^ seed;
@@ -27,10 +29,11 @@ function toBase62(n: number): string {
     return result;
 }
 
-export const generateScopedName = (name, filename, css):string => {
+export const generateScopedName = (name, filename, css): string => {
     if (process.env.NODE_ENV === 'production') {
         return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4);
     } else {
-        return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4) + '-' + name;
+        //return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4) + '-' + name;
+        return (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
     }
 };
