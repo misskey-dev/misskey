@@ -25,6 +25,8 @@ export type RoleOptions = {
 	webhookLimit: number;
 	clipLimit: number;
 	noteEachClipsLimit: number;
+	userListLimit: number;
+	userEachUserListsLimit: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
@@ -39,6 +41,8 @@ export const DEFAULT_ROLE: RoleOptions = {
 	webhookLimit: 3,
 	clipLimit: 10,
 	noteEachClipsLimit: 200,
+	userListLimit: 10,
+	userEachUserListsLimit: 50,
 };
 
 @Injectable()
@@ -212,6 +216,8 @@ export class RoleService implements OnApplicationShutdown {
 			webhookLimit: Math.max(...getOptionValues('webhookLimit')),
 			clipLimit: Math.max(...getOptionValues('clipLimit')),
 			noteEachClipsLimit: Math.max(...getOptionValues('noteEachClipsLimit')),
+			userListLimit: Math.max(...getOptionValues('userListLimit')),
+			userEachUserListsLimit: Math.max(...getOptionValues('userEachUserListsLimit')),
 		};
 	}
 

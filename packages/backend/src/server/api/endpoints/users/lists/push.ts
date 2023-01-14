@@ -111,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Push the user
-			await this.userListService.push(user, userList);
+			await this.userListService.push(user, userList, me);
 		});
 	}
 }

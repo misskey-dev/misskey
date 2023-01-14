@@ -176,6 +176,30 @@
 					</MkInput>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.userListMax }}</template>
+				<template #suffix>{{ options_userList_useDefault ? i18n.ts._role.useBaseValue : (options_userList_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_userList_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_userList_value" :disabled="options_userList_useDefault" type="number" :readonly="readonly">
+					</MkInput>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.userEachUserListsMax }}</template>
+				<template #suffix>{{ options_userEachUserListsLimit_useDefault ? i18n.ts._role.useBaseValue : (options_userEachUserListsLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_userEachUserListsLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_userEachUserListsLimit_value" :disabled="options_userEachUserListsLimit_useDefault" type="number" :readonly="readonly">
+					</MkInput>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 
@@ -251,6 +275,10 @@ let options_clipLimit_useDefault = $ref(role?.options?.clipLimit?.useDefault ?? 
 let options_clipLimit_value = $ref(role?.options?.clipLimit?.value ?? 0);
 let options_noteEachClipsLimit_useDefault = $ref(role?.options?.noteEachClipsLimit?.useDefault ?? true);
 let options_noteEachClipsLimit_value = $ref(role?.options?.noteEachClipsLimit?.value ?? 0);
+let options_userListLimit_useDefault = $ref(role?.options?.userListLimit?.useDefault ?? true);
+let options_userListLimit_value = $ref(role?.options?.userListLimit?.value ?? 0);
+let options_userEachUserListsLimit_useDefault = $ref(role?.options?.userEachUserListsLimit?.useDefault ?? true);
+let options_userEachUserListsLimit_value = $ref(role?.options?.userEachUserListsLimit?.value ?? 0);
 
 if (_DEV_) {
 	watch($$(condFormula), () => {
@@ -271,6 +299,8 @@ function getOptions() {
 		webhookLimit: { useDefault: options_webhookLimit_useDefault, value: options_webhookLimit_value },
 		clipLimit: { useDefault: options_clipLimit_useDefault, value: options_clipLimit_value },
 		noteEachClipsLimit: { useDefault: options_noteEachClipsLimit_useDefault, value: options_noteEachClipsLimit_value },
+		userListLimit: { useDefault: options_userListLimit_useDefault, value: options_userListLimit_value },
+		userEachUserListsLimit: { useDefault: options_userEachUserListsLimit_useDefault, value: options_userEachUserListsLimit_value },
 	};
 }
 

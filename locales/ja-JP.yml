@@ -966,6 +966,8 @@ _role:
     webhookMax: "Webhookの作成可能数"
     clipMax: "クリップの作成可能数"
     noteEachClipsMax: "クリップ内のノートの最大数"
+    userListMax: "ユーザーリストの作成可能数"
+    userEachUserListsMax: "ユーザーリスト内のユーザーの最大数"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"

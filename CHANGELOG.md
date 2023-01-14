@@ -77,6 +77,7 @@ You should also include the user name that made the change.
 - 非モデレーターでも、権限を持つロールをアサインされたユーザーはインスタンスの招待コードを発行できるように @syuilo
 - 非モデレーターでも、権限を持つロールをアサインされたユーザーはカスタム絵文字の追加、編集、削除を行えるように @syuilo
 - クリップおよびクリップ内のノートの作成可能数を設定可能に @syuilo
+- ユーザーリストおよびユーザーリスト内のユーザーの作成可能数を設定可能に @syuilo
 - ハードワードミュートの最大文字数を設定可能に @syuilo
 - Webhookの作成可能数を設定可能に @syuilo
 - Server: signToActivityPubGet is set to true by default @syuilo
