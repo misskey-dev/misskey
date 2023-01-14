@@ -1,5 +1,5 @@
 <template>
-<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :is-note="isNote" class="havbbuyv" :class="{ nowrap }"/>
+<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :is-note="isNote" :class="[$style.root, { [$style.nowrap]: nowrap }]"/>
 </template>
 
 <script lang="ts" setup>
@@ -157,8 +157,8 @@ const props = withDefaults(defineProps<{
 }
 </style>
 
-<style lang="scss" scoped>
-.havbbuyv {
+<style lang="scss" module>
+.root {
 	white-space: pre-wrap;
 
 	&.nowrap {
@@ -166,25 +166,6 @@ const props = withDefaults(defineProps<{
 		word-wrap: normal; // https://codeday.me/jp/qa/20190424/690106.html
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-
-	::v-deep(.quote) {
-		display: block;
-		margin: 8px;
-		padding: 6px 0 6px 12px;
-		color: var(--fg);
-		border-left: solid 3px var(--fg);
-		opacity: 0.7;
-	}
-
-	::v-deep(pre) {
-		font-size: 0.8em;
-	}
-
-	> ::v-deep(code) {
-		font-size: 0.8em;
-		word-break: break-all;
-		padding: 4px 6px;
 	}
 }
 </style>
