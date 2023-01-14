@@ -111,7 +111,7 @@ onMounted(() => {
 		align-items: center;
 		width: 100%;
 		box-sizing: border-box;
-		padding: 10px 14px 10px 14px;
+		padding: 9px 14px 9px 14px;
 		background: var(--buttonBg);
 		border-radius: 6px;
 
