@@ -29,11 +29,11 @@ function toBase62(n: number): string {
     return result;
 }
 
-export const generateScopedName = (name, filename, css): string => {
+export const generateScopedName = (name, filename, basePath): string => {
     if (process.env.NODE_ENV === 'production') {
         return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4);
     } else {
         //return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4) + '-' + name;
-        return (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
+        return (path.relative(basePath, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
     }
 };

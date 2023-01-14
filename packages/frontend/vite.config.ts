@@ -30,7 +30,9 @@ export default defineConfig(({ command, mode }) => {
 
 		css: {
 			modules: {
-				generateScopedName,
+				generateScopedName: (name, filename, css): string => {
+					return generateScopedName(name, filename, __dirname);
+				},
 			},
 		},
 
