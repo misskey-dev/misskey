@@ -960,6 +960,7 @@ _role:
     canInvite: "發行實例邀請碼"
     canManageCustomEmojis: "管理自訂表情符號"
     driveCapacity: "雲端硬碟容量"
+    pinMax: "置頂貼文的最大數量"
     antennaMax: "可建立的天線數量"
     webhookMax: "可建立的Webhook數量"
     clipMax: "可建立的摘錄數量"
