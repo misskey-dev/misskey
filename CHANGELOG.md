@@ -133,6 +133,7 @@ You should also include the user name that made the change.
 - Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
 - Server: follow request list api pagination @sim1222
+- Server: ドライブ容量超過時のエラーが適切にレスポンスされない問題を修正 @syuilo
 - Client: パスワードマネージャーなどでユーザー名がオートコンプリートされない問題を修正 @massongit
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
