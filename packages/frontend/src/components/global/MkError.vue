@@ -1,9 +1,9 @@
 <template>
 <Transition :name="$store.state.animation ? '_transition_zoom' : ''" appear>
-	<div class="mjndxjcg">
-		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-		<p><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
-		<MkButton class="button" @click="() => $emit('retry')">{{ i18n.ts.retry }}</MkButton>
+	<div :class="$style.root">
+		<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+		<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
+		<MkButton :class="$style.button" @click="() => $emit('retry')">{{ i18n.ts.retry }}</MkButton>
 	</div>
 </Transition>
 </template>
@@ -13,24 +13,24 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 </script>
 
-<style lang="scss" scoped>
-.mjndxjcg {
+<style lang="scss" module>
+.root {
 	padding: 32px;
 	text-align: center;
+}
 
-	> p {
-		margin: 0 0 8px 0;
-	}
+.text {
+	margin: 0 0 8px 0;
+}
 
-	> .button {
-		margin: 0 auto;
-	}
+.button {
+	margin: 0 auto;
+}
 
-	> img {
-		vertical-align: bottom;
-		height: 128px;
-		margin-bottom: 16px;
-		border-radius: 16px;
-	}
+.img {
+	vertical-align: bottom;
+	height: 128px;
+	margin-bottom: 16px;
+	border-radius: 16px;
 }
 </style>
