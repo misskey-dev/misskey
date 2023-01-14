@@ -82,7 +82,7 @@ const type = $computed<ModalTypes>(() => {
 		return props.preferType!;
 	}
 });
-const isEnableBgTransparent = props.transparentBg && (type === 'popup');
+const isEnableBgTransparent = $computed(() => props.transparentBg && (type === 'popup'));
 let transitionName = $computed((() =>
 	defaultStore.state.animation
 		? useSendAnime
