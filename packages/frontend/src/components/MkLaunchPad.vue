@@ -66,6 +66,7 @@ function close() {
 .szkkfdyq {
 	max-height: 100%;
 	width: min(460px, 100vw);
+	margin: auto;
 	padding: 24px;
 	box-sizing: border-box;
 	overflow: auto;
