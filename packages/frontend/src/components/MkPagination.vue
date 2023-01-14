@@ -1,5 +1,11 @@
 <template>
-<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+<Transition
+	:enter-active-class="$store.state.animation ? $style.transition_fade_enterActive : ''"
+	:leave-active-class="$store.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enter-from-class="$store.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leave-to-class="$store.state.animation ? $style.transition_fade_leaveTo : ''"
+	mode="out-in"
+>
 	<MkLoading v-if="fetching"/>
 
 	<MkError v-else-if="error" @retry="init()"/>
@@ -14,15 +20,15 @@
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items" :fetching="fetching || moreFetching"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
@@ -95,7 +101,7 @@ const isBackTop = ref(false);
 const empty = computed(() => items.value.length === 0);
 const error = ref(false);
 const {
-	enableInfiniteScroll
+	enableInfiniteScroll,
 } = defaultStore.reactiveState;
 
 const contentEl = $computed(() => props.pagination.pageEl || rootEl);
@@ -292,7 +298,7 @@ const prepend = (item: MisskeyEntity): void => {
 
 function unshiftItems(newItems: MisskeyEntity[]) {
 	const length = newItems.length + items.value.length;
-	items.value = [ ...newItems, ...items.value ].slice(0, props.displayLimit);
+	items.value = [...newItems, ...items.value].slice(0, props.displayLimit);
 
 	if (length >= props.displayLimit) more.value = true;
 }
@@ -331,7 +337,7 @@ onActivated(() => {
 });
 
 onDeactivated(() => {
-	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl ? rootEl?.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
+	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl ? rootEl.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
 });
 
 function toBottom() {
@@ -372,20 +378,18 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
+<style lang="scss" module>
+.transition_fade_enterActive,
+.transition_fade_leaveActive {
 	transition: opacity 0.125s ease;
 }
-.fade-enter-from,
-.fade-leave-to {
+.transition_fade_enterFrom,
+.transition_fade_leaveTo {
 	opacity: 0;
 }
 
-.cxiknjgy {
-	> .button {
-		margin-left: auto;
-		margin-right: auto;
-	}
+.more {
+	margin-left: auto;
+	margin-right: auto;
 }
 </style>
