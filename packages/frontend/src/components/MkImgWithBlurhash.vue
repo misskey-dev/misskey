@@ -1,7 +1,7 @@
 <template>
-<div class="xubzgfgb" :class="{ cover }" :title="title">
-	<canvas v-if="!loaded" ref="canvas" :width="size" :height="size" :title="title"/>
-	<img v-if="src" :src="src" :title="title" :alt="alt" @load="onLoad"/>
+<div :class="[$style.root, { [$style.cover]: cover }]" :title="title">
+	<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
+	<img v-if="src" :class="$style.img" :src="src" :title="title" :alt="alt" @load="onLoad"/>
 </div>
 </template>
 
@@ -45,32 +45,32 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.xubzgfgb {
+<style lang="scss" module>
+.root {
 	position: relative;
 	width: 100%;
 	height: 100%;
 
-	> canvas,
-	> img {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-
-	> canvas {
-		position: absolute;
-		object-fit: cover;
-	}
-
-	> img {
-		object-fit: contain;
-	}
-
 	&.cover {
-		> img {
+		> .img {
 			object-fit: cover;
 		}
 	}
+}
+
+.canvas,
+.img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.canvas {
+	position: absolute;
+	object-fit: cover;
+}
+
+.img {
+	object-fit: contain;
 }
 </style>

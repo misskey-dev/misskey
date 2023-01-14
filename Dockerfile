@@ -1,4 +1,6 @@
-FROM node:18.13.0-bullseye AS builder
+ARG NODE_VERSION=18.13.0-bullseye
+
+FROM node:${NODE_VERSION} AS builder
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
@@ -22,17 +24,22 @@ ARG NODE_ENV=production
 RUN git submodule update --init
 RUN pnpm build
 
-FROM node:18.13.0-bullseye-slim AS runner
+FROM node:${NODE_VERSION}-slim AS runner
 
-WORKDIR /misskey
+ARG UID="991"
+ARG GID="991"
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	ffmpeg tini \
 	&& apt-get -y clean \
-	&& rm -rf /var/lib/apt/lists/*
+	&& rm -rf /var/lib/apt/lists/* \
+	&& groupadd -g "${GID}" misskey \
+	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey
 
 RUN npm i -g pnpm
+USER misskey
+WORKDIR /misskey
 
 COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
