@@ -12,6 +12,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class NotePiningService {
@@ -30,6 +31,7 @@ export class NotePiningService {
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
+		private roleService: RoleService,
 		private relayService: RelayService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
@@ -55,7 +57,7 @@ export class NotePiningService {
 
 		const pinings = await this.userNotePiningsRepository.findBy({ userId: user.id });
 
-		if (pinings.length >= 5) {
+		if (pinings.length >= (await this.roleService.getUserRoleOptions(user.id)).pinLimit) {
 			throw new IdentifiableError('15a018eb-58e5-4da1-93be-330fcc5e4e1a', 'You can not pin notes any more.');
 		}
 

@@ -6,6 +6,7 @@ import { webhookEventTypes } from '@/models/entities/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['webhooks'],
