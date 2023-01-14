@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFoldersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
@@ -13,6 +14,11 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:drive',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 10,
+	},
 
 	errors: {
 		noSuchFolder: {

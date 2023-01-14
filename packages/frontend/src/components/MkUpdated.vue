@@ -34,6 +34,7 @@ onMounted(() => {
 
 <style lang="scss" module>
 .root {
+	margin: auto;
 	position: relative;
 	padding: 32px;
 	min-width: 320px;
