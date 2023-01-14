@@ -962,6 +962,7 @@ _role:
     canInvite: "インスタンス招待コードの発行"
     canManageCustomEmojis: "カスタム絵文字の管理"
     driveCapacity: "ドライブ容量"
+    pinMax: "ノートのピン留めの最大数"
     antennaMax: "アンテナの作成可能数"
     wordMuteMax: "ワードミュートの最大文字数"
     webhookMax: "Webhookの作成可能数"

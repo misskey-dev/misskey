@@ -80,6 +80,7 @@ You should also include the user name that made the change.
 - ユーザーリストおよびユーザーリスト内のユーザーの作成可能数を設定可能に @syuilo
 - ハードワードミュートの最大文字数を設定可能に @syuilo
 - Webhookの作成可能数を設定可能に @syuilo
+- ノートをピン留めできる数を設定可能に @syuilo
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: Use undici instead of node-fetch and got @tamaina

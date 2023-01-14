@@ -57,6 +57,13 @@
 						</MkFolder>
 
 						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.pinMax }}</template>
+							<template #suffix>{{ options_pinLimit }}</template>
+							<MkInput v-model="options_pinLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.antennaMax }}</template>
 							<template #suffix>{{ options_antennaLimit }}</template>
 							<MkInput v-model="options_antennaLimit" type="number">
@@ -144,6 +151,7 @@ let options_canPublicNote = $ref(instance.baseRole.canPublicNote);
 let options_canInvite = $ref(instance.baseRole.canInvite);
 let options_canManageCustomEmojis = $ref(instance.baseRole.canManageCustomEmojis);
 let options_driveCapacityMb = $ref(instance.baseRole.driveCapacityMb);
+let options_pinLimit = $ref(instance.baseRole.pinLimit);
 let options_antennaLimit = $ref(instance.baseRole.antennaLimit);
 let options_wordMuteLimit = $ref(instance.baseRole.wordMuteLimit);
 let options_webhookLimit = $ref(instance.baseRole.webhookLimit);
@@ -161,6 +169,7 @@ async function updateBaseRole() {
 			canInvite: options_canInvite,
 			canManageCustomEmojis: options_canManageCustomEmojis,
 			driveCapacityMb: options_driveCapacityMb,
+			pinLimit: options_pinLimit,
 			antennaLimit: options_antennaLimit,
 			wordMuteLimit: options_wordMuteLimit,
 			webhookLimit: options_webhookLimit,

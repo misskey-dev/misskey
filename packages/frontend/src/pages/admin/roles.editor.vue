@@ -117,6 +117,18 @@
 			</MkFolder>
 
 			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.pinMax }}</template>
+				<template #suffix>{{ options_pinLimit_useDefault ? i18n.ts._role.useBaseValue : (options_pinLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_pinLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_pinLimit_value" :disabled="options_pinLimit_useDefault" type="number" :readonly="readonly">
+					</MkInput>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.antennaMax }}</template>
 				<template #suffix>{{ options_antennaLimit_useDefault ? i18n.ts._role.useBaseValue : (options_antennaLimit_value) }}</template>
 				<div class="_gaps">
@@ -265,6 +277,8 @@ let options_canManageCustomEmojis_useDefault = $ref(role?.options?.canManageCust
 let options_canManageCustomEmojis_value = $ref(role?.options?.canManageCustomEmojis?.value ?? false);
 let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.useDefault ?? true);
 let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? 0);
+let options_pinLimit_useDefault = $ref(role?.options?.pinLimit?.useDefault ?? true);
+let options_pinLimit_value = $ref(role?.options?.pinLimit?.value ?? 0);
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
 let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? 0);
 let options_wordMuteLimit_useDefault = $ref(role?.options?.wordMuteLimit?.useDefault ?? true);
@@ -294,6 +308,7 @@ function getOptions() {
 		canInvite: { useDefault: options_canInvite_useDefault, value: options_canInvite_value },
 		canManageCustomEmojis: { useDefault: options_canManageCustomEmojis_useDefault, value: options_canManageCustomEmojis_value },
 		driveCapacityMb: { useDefault: options_driveCapacityMb_useDefault, value: options_driveCapacityMb_value },
+		pinLimit: { useDefault: options_pinLimit_useDefault, value: options_pinLimit_value },
 		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
 		wordMuteLimit: { useDefault: options_wordMuteLimit_useDefault, value: options_wordMuteLimit_value },
 		webhookLimit: { useDefault: options_webhookLimit_useDefault, value: options_webhookLimit_value },
