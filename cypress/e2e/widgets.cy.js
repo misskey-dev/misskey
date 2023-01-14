@@ -33,8 +33,7 @@ describe('After user signed in', () => {
 	it('first widget should be removed', () => {
 		cy.get('.mk-widget-edit').click();
 		const frontendPath = path.resolve(__dirname + '/../../packages/frontend');
-        console.log(__dirname);
-        console.log(frontendPath);
+        throw new Error(__dirname);
 		const containerClassName = generateScopedName('customize-container', 'MkWidgets', frontendPath);
 		const removeButtonClassName = generateScopedName('customize-container-remove', 'MkWidgets', frontendPath);
 		cy.get(`.${containerClassName}:first-child .${removeButtonClassName}._button`).click();
