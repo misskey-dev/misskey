@@ -76,6 +76,9 @@ jobs:
         ports:
           - 56312:6379
 
+    env:
+      NODE_ENV: development
+
     steps:
     - uses: actions/checkout@v2
       with:
