@@ -5,7 +5,7 @@ import type { UserList } from '@/models/entities/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '@/server/api/error';
+import { ApiError } from '@/server/api/error.js';
 import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
