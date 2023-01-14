@@ -1,16 +1,16 @@
 <template>
 <MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
-	<div class="bqxuuuey">
-		<div class="reaction">
-			<MkReactionIcon :reaction="reaction" class="icon" :no-style="true"/>
-			<div class="name">{{ getReactionName(reaction) }}</div>
+	<div :class="$style.root">
+		<div :class="$style.reaction">
+			<MkReactionIcon :reaction="reaction" :class="$style.reactionIcon" :no-style="true"/>
+			<div :class="$style.reactionName">{{ getReactionName(reaction) }}</div>
 		</div>
-		<div class="users">
-			<div v-for="u in users" :key="u.id" class="user">
-				<MkAvatar class="avatar" :user="u"/>
-				<MkUserName class="name" :user="u" :nowrap="true"/>
+		<div :class="$style.users">
+			<div v-for="u in users" :key="u.id" :class="$style.user">
+				<MkAvatar :class="$style.avatar" :user="u"/>
+				<MkUserName :user="u" :nowrap="true"/>
 			</div>
-			<div v-if="users.length > 10" class="omitted">+{{ count - 10 }}</div>
+			<div v-if="users.length > 10">+{{ count - 10 }}</div>
 		</div>
 	</div>
 </MkTooltip>
@@ -43,53 +43,53 @@ function getReactionName(reaction: string): string {
 }
 </script>
 
-<style lang="scss" scoped>
-.bqxuuuey {
+<style lang="scss" module>
+.root {
 	display: flex;
+}
 
-	> .reaction {
-		max-width: 100px;
-		text-align: center;
+.reaction {
+	max-width: 100px;
+	text-align: center;
+}
 
-		> .icon {
-			display: block;
-			width: 60px;
-			font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
-			object-fit: contain;
-			margin: 0 auto;
-		}
+.reactionIcon {
+	display: block;
+	width: 60px;
+	font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
+	object-fit: contain;
+	margin: 0 auto;
+}
 
-		> .name {
-			font-size: 1em;
-		}
+.reactionName {
+	font-size: 1em;
+}
+
+.users {
+	flex: 1;
+	min-width: 0;
+	font-size: 0.95em;
+	border-left: solid 0.5px var(--divider);
+	padding-left: 10px;
+	margin-left: 10px;
+	margin-right: 14px;
+	text-align: left;
+}
+
+.user {
+	line-height: 24px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	&:not(:last-child) {
+		margin-bottom: 3px;
 	}
+}
 
-	> .users {
-		flex: 1;
-		min-width: 0;
-		font-size: 0.95em;
-		border-left: solid 0.5px var(--divider);
-		padding-left: 10px;
-		margin-left: 10px;
-		margin-right: 14px;
-		text-align: left;
-
-		> .user {
-			line-height: 24px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-
-			&:not(:last-child) {
-				margin-bottom: 3px;
-			}
-
-			> .avatar {
-				width: 24px;
-				height: 24px;
-				margin-right: 3px;
-			}
-		}
-	}
+.avatar {
+	width: 24px;
+	height: 24px;
+	margin-right: 3px;
 }
 </style>
