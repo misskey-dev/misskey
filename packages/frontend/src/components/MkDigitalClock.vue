@@ -1,11 +1,11 @@
 <template>
-<span class="zjobosdg">
+<span>
 	<span v-text="hh"></span>
-	<span class="colon" :class="{ showColon }">:</span>
+	<span :class="[$style.colon, { [$style.showColon]: showColon }]">:</span>
 	<span v-text="mm"></span>
-	<span v-if="showS" class="colon" :class="{ showColon }">:</span>
+	<span v-if="showS" :class="[$style.colon, { [$style.showColon]: showColon }]">:</span>
 	<span v-if="showS" v-text="ss"></span>
-	<span v-if="showMs" class="colon" :class="{ showColon }">:</span>
+	<span v-if="showMs" :class="[$style.colon, { [$style.showColon]: showColon }]">:</span>
 	<span v-if="showMs" v-text="ms"></span>
 </span>
 </template>
@@ -62,16 +62,14 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.zjobosdg {
-	> .colon {
-		opacity: 0;
-		transition: opacity 1s ease;
+<style lang="scss" module>
+.colon {
+	opacity: 0;
+	transition: opacity 1s ease;
 
-		&.showColon {
-			opacity: 1;
-			transition: opacity 0s;
-		}
+	&.showColon {
+		opacity: 1;
+		transition: opacity 0s;
 	}
 }
 </style>
