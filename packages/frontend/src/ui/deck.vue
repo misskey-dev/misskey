@@ -9,7 +9,7 @@
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
 					v-if="ids.length > 1"
-					:class="[$style.column, $style.folder]"
+					:class="$style.folder"
 					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 				>
 					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
@@ -49,10 +49,15 @@
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
-		<button :class="[$style.navButton, $style.postButton]" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
+		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
-	<Transition :name="$store.state.animation ? 'menu-back' : ''">
+	<Transition
+		:enter-active-class="$store.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leave-active-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enter-from-class="$store.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leave-to-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+	>
 		<div
 			v-if="drawerMenuShowing"
 			:class="$style.menuBg"
@@ -62,8 +67,15 @@
 		></div>
 	</Transition>
 
-	<Transition :name="$store.state.animation ? 'menu' : ''">
-		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
+	<Transition
+		:enter-active-class="$store.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leave-active-class="$store.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+	>
+		<div v-if="drawerMenuShowing" :class="$style.menu">
+			<XDrawerMenu/>
+		</div>
 	</Transition>
 
 	<XCommon/>
@@ -222,31 +234,29 @@ async function deleteProfile() {
 }
 </script>
 
-<style lang="scss" scoped>
-.menu-enter-active,
-.menu-leave-active {
+<style lang="scss" module>
+.transition_menuDrawerBg_enterActive,
+.transition_menuDrawerBg_leaveActive {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_menuDrawerBg_enterFrom,
+.transition_menuDrawerBg_leaveTo {
+	opacity: 0;
+}
+
+.transition_menuDrawer_enterActive,
+.transition_menuDrawer_leaveActive {
 	opacity: 1;
 	transform: translateX(0);
 	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.menu-enter-from,
-.menu-leave-active {
+.transition_menuDrawer_enterFrom,
+.transition_menuDrawer_leaveTo {
 	opacity: 0;
 	transform: translateX(-240px);
 }
 
-.menu-back-enter-active,
-.menu-back-leave-active {
-	opacity: 1;
-	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.menu-back-enter-from,
-.menu-back-leave-active {
-	opacity: 0;
-}
-</style>
-
-<style lang="scss" module>
 .root {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
@@ -298,6 +308,7 @@ async function deleteProfile() {
 }
 
 .folder {
+	composes: column;
 	display: flex;
 	flex-direction: column;
 
@@ -389,25 +400,31 @@ async function deleteProfile() {
 	color: var(--fg);
 
 	&:hover {
-		background: var(--X2);
+		background: var(--panelHighlight);
 	}
 
-	&:disabled {
-		cursor: default;
-
-		> .navButtonIcon {
-			opacity: 0.5;
-		}
+	&:active {
+		background: var(--X2);
 	}
 }
 
 .postButton {
+	composes: navButton;
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 	color: var(--fgOnAccent);
+
+	&:hover {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
+	}
+
+	&:active {
+		background: linear-gradient(90deg, var(--X8), var(--X8));
+	}
 }
 
 .navButtonIcon {
 	font-size: 18px;
+	vertical-align: middle;
 }
 
 .navButtonIndicator {

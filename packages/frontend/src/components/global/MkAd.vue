@@ -1,16 +1,16 @@
 <template>
-<div v-if="chosen" class="qiivuoyo">
-	<div v-if="!showMenu" class="main" :class="chosen.place">
-		<a :href="chosen.url" target="_blank">
-			<img :src="chosen.imageUrl">
-			<button class="_button menu" @click.prevent.stop="toggleMenu"><span class="ti ti-info-circle info-circle"></span></button>
+<div v-if="chosen" :class="$style.root">
+	<div v-if="!showMenu" :class="[$style.main, $style['form_' + chosen.place]]">
+		<a :href="chosen.url" target="_blank" :class="$style.link">
+			<img :src="chosen.imageUrl" :class="$style.img">
+			<button class="_button" :class="$style.i" @click.prevent.stop="toggleMenu"><i :class="$style.iIcon" class="ti ti-info-circle"></i></button>
 		</a>
 	</div>
-	<div v-else class="menu">
-		<div class="body">
+	<div v-else :class="$style.menu">
+		<div :class="$style.menuContainer">
 			<div>Ads by {{ host }}</div>
 			<!--<MkButton class="button" primary>{{ $ts._ad.like }}</MkButton>-->
-			<MkButton v-if="chosen.ratio !== 0" class="button" @click="reduceFrequency">{{ $ts._ad.reduceFrequencyOfThisAd }}</MkButton>
+			<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ $ts._ad.reduceFrequencyOfThisAd }}</MkButton>
 			<button class="_textButton" @click="toggleMenu">{{ $ts._ad.back }}</button>
 		</div>
 	</div>
@@ -92,95 +92,99 @@ function reduceFrequency(): void {
 }
 </script>
 
-<style lang="scss" scoped>
-.qiivuoyo {
+<style lang="scss" module>
+.root {
 	background-size: auto auto;
 	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--ad) 8px, var(--ad) 14px );
+}
 
-	> .main {
-		text-align: center;
+.main {
+	text-align: center;
 
-		> a {
-			display: inline-block;
-			position: relative;
-			vertical-align: bottom;
-
-			&:hover {
-				> img {
-					filter: contrast(120%);
-				}
-			}
-
-			> img {
-				display: block;
-				object-fit: contain;
-				margin: auto;
-				border-radius: 5px;
-			}
-
-			> .menu {
-				position: absolute;
-				top: 1px;
-				right: 1px;
-
-				> .info-circle {
-					border: 3px solid var(--panel);
-					border-radius: 50%;
-					background: var(--panel);
-				}
-			}
-		}
-
-		&.square {
-			> a ,
-			> a > img {
-				max-width: min(300px, 100%);
-				max-height: 300px;
-			}
-		}
-
-		&.horizontal {
-			padding: 8px;
-
-			> a ,
-			> a > img {
-				max-width: min(600px, 100%);
-				max-height: 80px;
-			}
-		}
-
-		&.horizontal-big {
-			padding: 8px;
-
-			> a ,
-			> a > img {
-				max-width: min(600px, 100%);
-				max-height: 250px;
-			}
-		}
-
-		&.vertical {
-			> a ,
-			> a > img {
-				max-width: min(100px, 100%);
-			}
+	&.form_square {
+		> .link,
+		> .link > .img {
+			max-width: min(300px, 100%);
+			max-height: 300px;
 		}
 	}
 
-	> .menu {
+	&.form_horizontal {
 		padding: 8px;
-		text-align: center;
 
-		> .body {
-			padding: 8px;
-			margin: 0 auto;
-			max-width: 400px;
-			border: solid 1px var(--divider);
-
-			> .button {
-				margin: 8px auto;
-			}
+		> .link,
+		> .link > .img {
+			max-width: min(600px, 100%);
+			max-height: 80px;
 		}
 	}
+
+	&.form_horizontal-big {
+		padding: 8px;
+
+		> .link,
+		> .link > .img {
+			max-width: min(600px, 100%);
+			max-height: 250px;
+		}
+	}
+
+	&.form_vertical {
+		> .link,
+		> .link > .img {
+			max-width: min(100px, 100%);
+		}
+	}
+}
+
+.link {
+	display: inline-block;
+	position: relative;
+	vertical-align: bottom;
+
+	&:hover {
+		> .img {
+			filter: contrast(120%);
+		}
+	}
+}
+
+.img {
+	display: block;
+	object-fit: contain;
+	margin: auto;
+	border-radius: 5px;
+}
+
+.i {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	display: grid;
+	place-content: center;
+	background: var(--panel);
+	border-radius: 100%;
+	padding: 2px;
+}
+
+.iIcon {
+	font-size: 14px;
+	line-height: 17px;
+}
+
+.menu {
+	padding: 8px;
+	text-align: center;
+}
+
+.menuContainer {
+	padding: 8px;
+	margin: 0 auto;
+	max-width: 400px;
+	border: solid 1px var(--divider);
+}
+
+.menuButton {
+	margin: 8px auto;
 }
 </style>

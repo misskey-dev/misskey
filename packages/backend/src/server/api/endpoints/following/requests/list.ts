@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
 import type { FollowRequestsRepository } from '@/models/index.js';
 import { FollowRequestEntityService } from '@/core/entities/FollowRequestEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -40,7 +41,11 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
+	properties: {
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+	},
 	required: [],
 } as const;
 
@@ -52,13 +57,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private followRequestsRepository: FollowRequestsRepository,
 
 		private followRequestEntityService: FollowRequestEntityService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const reqs = await this.followRequestsRepository.findBy({
-				followeeId: me.id,
-			});
+			const query = this.queryService.makePaginationQuery(this.followRequestsRepository.createQueryBuilder('request'), ps.sinceId, ps.untilId)
+				.andWhere('request.followeeId = :meId', { meId: me.id });
 
-			return await Promise.all(reqs.map(req => this.followRequestEntityService.pack(req)));
+			const requests = await query
+				.take(ps.limit)
+				.getMany();
+
+			return await Promise.all(requests.map(req => this.followRequestEntityService.pack(req)));
 		});
 	}
 }

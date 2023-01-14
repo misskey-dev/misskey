@@ -1,8 +1,15 @@
 <template>
-<Transition :name="transitionName" :duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
-	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
-		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
+<Transition
+	:name="transitionName"
+	:enter-active-class="$style['transition_' + transitionName + '_enterActive']"
+	:leave-active-class="$style['transition_' + transitionName + '_leaveActive']"
+	:enter-from-class="$style['transition_' + transitionName + '_enterFrom']"
+	:leave-to-class="$style['transition_' + transitionName + '_leaveTo']"
+	:duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened"
+>
+	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog' || type === 'dialog:top', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+		<div class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: transparentBg && (type === 'popup') }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+		<div ref="content" :class="[$style.content, { [$style.fixed]: fixed, [$style.top]: type === 'dialog:top' }]" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
 	</div>
@@ -280,8 +287,9 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.send-enter-active, .send-leave-active {
+<style lang="scss" module>
+.transition_send_enterActive,
+.transition_send_leaveActive {
 	> .bg {
 		transition: opacity 0.3s !important;
 	}
@@ -291,7 +299,8 @@ defineExpose({
 		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
 	}
 }
-.send-enter-from, .send-leave-to {
+.transition_send_enterFrom,
+.transition_send_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -303,7 +312,8 @@ defineExpose({
 	}
 }
 
-.modal-enter-active, .modal-leave-active {
+.transition_modal_enterActive,
+.transition_modal_leaveActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -313,7 +323,8 @@ defineExpose({
 		transition: opacity 0.2s, transform 0.2s !important;
 	}
 }
-.modal-enter-from, .modal-leave-to {
+.transition_modal_enterFrom,
+.transition_modal_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -326,7 +337,8 @@ defineExpose({
 	}
 }
 
-.modal-popup-enter-active, .modal-popup-leave-active {
+.transition_modal-popup_enterActive,
+.transition_modal-popup_leaveActive {
 	> .bg {
 		transition: opacity 0.1s !important;
 	}
@@ -336,7 +348,8 @@ defineExpose({
 		transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1), transform 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
-.modal-popup-enter-from, .modal-popup-leave-to {
+.transition_modal-popup_enterFrom,
+.transition_modal-popup_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -349,7 +362,7 @@ defineExpose({
 	}
 }
 
-.modal-drawer-enter-active {
+.transition_modal-drawer_enterActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -358,7 +371,7 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.modal-drawer-leave-active {
+.transition_modal-drawer_leaveActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -367,7 +380,8 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.modal-drawer-enter-from, .modal-drawer-leave-to {
+.transition_modal-drawer_enterFrom,
+.transition_modal-drawer_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -378,15 +392,7 @@ defineExpose({
 	}
 }
 
-.qzhlnise {
-	> .bg {
-		&.transparent {
-			background: transparent;
-			-webkit-backdrop-filter: none;
-			backdrop-filter: none;
-		}
-	}
-
+.root {
 	&.dialog {
 		> .content {
 			position: fixed;
@@ -408,12 +414,12 @@ defineExpose({
 				mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
 			}
 
-			> ::v-deep(*) {
+			&:global > * {
 				margin: auto;
 			}
 
 			&.top {
-				> ::v-deep(*) {
+				&:global > * {
 					margin-top: 0;
 				}
 			}
@@ -445,11 +451,18 @@ defineExpose({
 			right: 0;
 			margin: auto;
 
-			> ::v-deep(*) {
+			&:global > * {
 				margin: auto;
 			}
 		}
 	}
+}
 
+.bg {
+	&.bgTransparent {
+		background: transparent;
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
 }
 </style>

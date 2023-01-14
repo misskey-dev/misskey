@@ -6,10 +6,10 @@ import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
-	tags: ['admin'],
+	tags: ['meta'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRoleOption: 'canInvite',
 
 	res: {
 		type: 'object',
@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async () => {
+		super(meta, paramDef, async (ps, me) => {
 			const code = rndstr({
 				length: 8,
 				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)

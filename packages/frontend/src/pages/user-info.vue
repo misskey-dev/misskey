@@ -87,18 +87,26 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_gaps_m">
-				<MkSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" @update:model-value="toggleModerator">{{ i18n.ts.moderator }}</MkSwitch>
-				<MkSwitch v-model="silenced" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</MkSwitch>
 				<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
-				{{ i18n.ts.reflectMayTakeTime }}
 				<div>
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
-				<MkTextarea v-model="moderationNote" manual-save>
-					<template #label>Moderation note</template>
-				</MkTextarea>
 				<MkFolder>
+					<template #icon><i class="ti ti-badges"></i></template>
+					<template #label>{{ i18n.ts.roles }}</template>
+
+					<div class="_gaps">
+						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
+
+						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
+							<MkRolePreview :class="$style.role" :role="role"/>
+							<button class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+						</div>
+					</div>
+				</MkFolder>
+				<MkFolder>
+					<template #icon><i class="ti ti-password"></i></template>
 					<template #label>IP</template>
 					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
 					<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
@@ -110,21 +118,14 @@
 					</template>
 				</MkFolder>
 				<MkFolder>
+					<template #icon><i class="ti ti-cloud"></i></template>
 					<template #label>{{ i18n.ts.files }}</template>
 
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</MkFolder>
-				<FormSection>
-					<template #label>Drive Capacity Override</template>
-
-					<MkInput v-if="user.host == null" v-model="driveCapacityOverrideMb" inline :manual-save="true" type="number" :placeholder="i18n.t('defaultValueIs', { value: instance.driveCapacityPerLocalUserMb })" @update:model-value="applyDriveCapacityOverride">
-						<template #label>{{ i18n.ts.driveCapOverrideLabel }}</template>
-						<template #suffix>MB</template>
-						<template #caption>
-							{{ i18n.ts.driveCapOverrideCaption }}
-						</template>
-					</MkInput>
-				</FormSection>
+				<MkTextarea v-model="moderationNote" manual-save>
+					<template #label>Moderation note</template>
+				</MkTextarea>
 			</div>
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
@@ -180,12 +181,16 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { iAmAdmin, iAmModerator } from '@/account';
 import { instance } from '@/instance';
+import MkRolePreview from '@/components/MkRolePreview.vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	userId: string;
-}>();
+	initialTab?: string;
+}>(), {
+	initialTab: 'overview',
+});
 
-let tab = $ref('overview');
+let tab = $ref(props.initialTab);
 let chartSrc = $ref('per-user-notes');
 let user = $ref<null | misskey.entities.UserDetailed>();
 let init = $ref<ReturnType<typeof createFetcher>>();
@@ -195,7 +200,6 @@ let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
-let driveCapacityOverrideMb: number | null = $ref(0);
 let moderationNote = $ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
@@ -220,7 +224,6 @@ function createFetcher() {
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
-			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
 			moderationNote = info.moderationNote;
 
 			watch($$(moderationNote), async () => {
@@ -257,19 +260,6 @@ async function resetPassword() {
 	});
 }
 
-async function toggleSilence(v) {
-	const confirm = await os.confirm({
-		type: 'warning',
-		text: v ? i18n.ts.silenceConfirm : i18n.ts.unsilenceConfirm,
-	});
-	if (confirm.canceled) {
-		silenced = !v;
-	} else {
-		await os.api(v ? 'admin/silence-user' : 'admin/unsilence-user', { userId: user.id });
-		await refreshUser();
-	}
-}
-
 async function toggleSuspend(v) {
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -281,11 +271,6 @@ async function toggleSuspend(v) {
 		await os.api(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.id });
 		await refreshUser();
 	}
-}
-
-async function toggleModerator(v) {
-	await os.api(v ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: user.id });
-	await refreshUser();
 }
 
 async function deleteAllFiles() {
@@ -305,22 +290,6 @@ async function deleteAllFiles() {
 		});
 	});
 	await refreshUser();
-}
-
-async function applyDriveCapacityOverride() {
-	let driveCapOrMb = driveCapacityOverrideMb;
-	if (driveCapacityOverrideMb && driveCapacityOverrideMb < 0) {
-		driveCapOrMb = null;
-	}
-	try {
-		await os.apiWithDialog('admin/drive-capacity-override', { userId: user.id, overrideMb: driveCapOrMb });
-		await refreshUser();
-	} catch (err) {
-		os.alert({
-			type: 'error',
-			text: err.toString(),
-		});
-	}
 }
 
 async function deleteAccount() {
@@ -345,6 +314,31 @@ async function deleteAccount() {
 			text: 'input not match',
 		});
 	}
+}
+
+async function assignRole() {
+	const roles = await os.api('admin/roles/list');
+
+	const { canceled, result: roleId } = await os.select({
+		title: i18n.ts._role.chooseRoleToAssign,
+		items: roles.map(r => ({ text: r.name, value: r.id })),
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.id });
+	refreshUser();
+}
+
+async function unassignRole(role, ev) {
+	os.popupMenu([{
+		text: i18n.ts.unassign,
+		icon: 'ti ti-x',
+		danger: true,
+		action: async () => {
+			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.id });
+			refreshUser();
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 watch(() => props.userId, () => {
@@ -483,5 +477,20 @@ definePageMetadata(computed(() => ({
 	> :global(.ip) {
 		margin-left: auto;
 	}
+}
+
+.roleItem {
+	display: flex;
+}
+
+.role {
+	flex: 1;
+}
+
+.roleUnassign {
+	width: 32px;
+	height: 32px;
+	margin-left: 8px;
+	align-self: center;
 }
 </style>

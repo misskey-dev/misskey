@@ -5,13 +5,21 @@ import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import { concat } from '@/scripts/array';
-import MkFormula from '@/components/MkFormula.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
+
+const QUOTE_STYLE = `
+display: block;
+margin: 8px;
+padding: 6px 0 6px 12px;
+color: var(--fg);
+border-left: solid 3px var(--fg);
+opacity: 0.7;
+`.split('\n').join(' ');
 
 export default defineComponent({
 	props: {
@@ -44,7 +52,7 @@ export default defineComponent({
 	render() {
 		if (this.text == null || this.text === '') return;
 
-		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
+		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text);
 
 		const validTime = (t: string | null | undefined) => {
 			if (t == null) return null;
@@ -88,22 +96,22 @@ export default defineComponent({
 					let style;
 					switch (token.props.name) {
 						case 'tada': {
-							const speed = validTime(token.props.args.speed) || '1s';
+							const speed = validTime(token.props.args.speed) ?? '1s';
 							style = 'font-size: 150%;' + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
-							const speed = validTime(token.props.args.speed) || '1s';
+							const speed = validTime(token.props.args.speed) ?? '1s';
 							style = (this.$store.state.animatedMfm ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'twitch': {
-							const speed = validTime(token.props.args.speed) || '0.5s';
+							const speed = validTime(token.props.args.speed) ?? '0.5s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-twitch ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'shake': {
-							const speed = validTime(token.props.args.speed) || '0.5s';
+							const speed = validTime(token.props.args.speed) ?? '0.5s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-shake ${speed} ease infinite;` : '';
 							break;
 						}
@@ -116,17 +124,17 @@ export default defineComponent({
 								token.props.args.x ? 'mfm-spinX' :
 								token.props.args.y ? 'mfm-spinY' :
 								'mfm-spin';
-							const speed = validTime(token.props.args.speed) || '1.5s';
+							const speed = validTime(token.props.args.speed) ?? '1.5s';
 							style = this.$store.state.animatedMfm ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
 							break;
 						}
 						case 'jump': {
-							const speed = validTime(token.props.args.speed) || '0.75s';
+							const speed = validTime(token.props.args.speed) ?? '0.75s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-jump ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'bounce': {
-							const speed = validTime(token.props.args.speed) || '0.75s';
+							const speed = validTime(token.props.args.speed) ?? '0.75s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
 							break;
 						}
@@ -171,7 +179,7 @@ export default defineComponent({
 							}, genEl(token.children));
 						}
 						case 'rainbow': {
-							const speed = validTime(token.props.args.speed) || '1s';
+							const speed = validTime(token.props.args.speed) ?? '1s';
 							style = this.$store.state.animatedMfm ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 							break;
 						}
@@ -182,8 +190,26 @@ export default defineComponent({
 							return h(MkSparkle, {}, genEl(token.children));
 						}
 						case 'rotate': {
-							const degrees = parseInt(token.props.args.deg) || '90';
+							const degrees = parseInt(token.props.args.deg) ?? '90';
 							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+							break;
+						}
+						case 'position': {
+							const x = parseInt(token.props.args.x ?? '0');
+							const y = parseInt(token.props.args.y ?? '0');
+							style = `transform: translateX(${x}em) translateY(${y}em);`;
+							break;
+						}
+						case 'fg': {
+							let color = token.props.args.color;
+							if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+							style = `color: #${color};`;
+							break;
+						}
+						case 'bg': {
+							let color = token.props.args.color;
+							if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+							style = `background-color: #${color};`;
 							break;
 						}
 					}
@@ -191,7 +217,7 @@ export default defineComponent({
 						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children), ']']);
 					} else {
 						return h('span', {
-							style: 'display: inline-block;' + style,
+							style: 'display: inline-block; ' + style,
 						}, genEl(token.children));
 					}
 				}
@@ -259,11 +285,11 @@ export default defineComponent({
 				case 'quote': {
 					if (!this.nowrap) {
 						return [h('div', {
-							class: 'quote',
+							style: QUOTE_STYLE,
 						}, genEl(token.children))];
 					} else {
 						return [h('span', {
-							class: 'quote',
+							style: QUOTE_STYLE,
 						}, genEl(token.children))];
 					}
 				}
@@ -273,7 +299,7 @@ export default defineComponent({
 						key: Math.random(),
 						emoji: `:${token.props.name}:`,
 						normal: this.plain,
-						host: this.author?.host,
+						host: this.author.host,
 					})];
 				}
 
@@ -286,19 +312,11 @@ export default defineComponent({
 				}
 
 				case 'mathInline': {
-					return [h(MkFormula, {
-						key: Math.random(),
-						formula: token.props.formula,
-						block: false,
-					})];
+					return [h('code', token.props.formula)];
 				}
 
 				case 'mathBlock': {
-					return [h(MkFormula, {
-						key: Math.random(),
-						formula: token.props.formula,
-						block: true,
-					})];
+					return [h('code', token.props.formula)];
 				}
 
 				case 'search': {

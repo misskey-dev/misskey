@@ -12,11 +12,17 @@ You should also include the user name that made the change.
 ## 13.0.0 (unreleased)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, 🍪👈, etc)
+- New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
 - Various UI tweaks
+
+### Notable features
+- ロール機能
+	- 従来より柔軟にユーザーの権限を管理できます。例えば、「インスタンスのパトロンはアンテナを30個まで作れる」「基本的にLTLは見れないが、許可した人だけ見れる」「招待制インスタンスだけどユーザーなら誰でも他者を招待できる」のような運用はもちろん、「ローカルユーザーかつアカウント作成から1日未満のユーザーはパブリックな投稿を行えない」のように複数条件を組み合わせて、自動でロールを付与する設定も可能です。
+- Misskey Play
+	- 従来の動的なPagesに代わる、新しいプラットフォームです。動的なコンテンツ(アプリケーション)に特化していて、Pagesに比べてはるかに柔軟なアプリケーションを作成可能です。
 
 ### Changes
 #### For server admins
@@ -27,17 +33,25 @@ You should also include the user name that made the change.
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
 	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- インスタンスブロックはサブドメインにも適用されるようになります
+- ロールの導入に伴い、いくつかの機能がロールと統合されました
+	- モデレーターはロールに統合されました。今までのモデレーター情報は失われるため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
+	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
+	- ユーザーごとのドライブ容量設定はロールに統合されました。
+	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールのドライブ容量を編集してください。
+	- LTL/GTLの解放状態はロールに統合されました。
 
 #### For users
 - ノートのウォッチ機能が削除されました
 - アンケートに投票された際に通知が作成されなくなりました
+- ノートの数式埋め込みが削除されました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.2にアップデートされました
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
 	- 0.12.x未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
-- Firefox109以下はサポートされなくなりました
+- Firefox110以下はサポートされなくなりました
 
 #### For app developers
 - API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
@@ -51,6 +65,7 @@ You should also include the user name that made the change.
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
 
 ### Improvements
+- Role system @syuilo
 - Misskey Play @syuilo
 - Introduce retention-rate aggregation @syuilo
 - Make possible to export favorited notes @syuilo
@@ -58,9 +73,18 @@ You should also include the user name that made the change.
 - Push notification of Antenna note @tamaina
 - AVIF support @tamaina
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはインスタンスの招待コードを発行できるように @syuilo
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはカスタム絵文字の追加、編集、削除を行えるように @syuilo
+- ハードワードミュートの最大文字数を設定可能に @syuilo
+- Webhookの作成可能数を設定可能に @syuilo
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
+- Server: Use undici instead of node-fetch and got @tamaina
+- Server: Judge instance block by endsWith @tamaina
 - Server: improve note scoring for featured notes @CyberRex0
+- Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: improve stats api performance @syuilo
+- Server: improve nodeinfo performance @syuilo
 - Server: delete outdated notifications regularly to improve db performance @syuilo
 - Server: delete outdated hard-mutes regularly to improve db performance @syuilo
 - Server: delete outdated notes of antenna regularly to improve db performance @syuilo
@@ -88,6 +112,7 @@ You should also include the user name that made the change.
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: add new theme @syuilo
+- Client: add new mfm function (position, fg, bg) @syuilo
 - Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
 - Client: improve overall performance of client @syuilo
@@ -107,8 +132,11 @@ You should also include the user name that made the change.
 - Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
 - Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Server: follow request list api pagination @sim1222
+- Client: パスワードマネージャーなどでユーザー名がオートコンプリートされない問題を修正 @massongit
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
+- Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
 - Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
 - Client: use proxied image for instance icon @syuilo
 - Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
@@ -116,6 +144,11 @@ You should also include the user name that made the change.
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo
+
+### Special thanks
+- All contributors
+- All who have created instances for the beta test
+- All who participated in the beta test
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes

@@ -917,6 +917,7 @@ neverShow: "Nabudúce nezobrazovať"
 remindMeLater: "Pripomenúť neskôr"
 didYouLikeMisskey: "Páči sa vám Misskey?"
 pleaseDonate: "Misskey je bezplatný softvér, ktorý používa {host}. Prosím, prispejte, aby sme ho mohli ďalej rozvíjať!"
+color: "Farba"
 _sensitiveMediaDetection:
   description: "Strojové učenie sa použije na automatickú detekciu citlivých médií na účely ich moderovania. Mierne sa zvýši zaťaženie servera."
   sensitivity: "Citlivosť detekcie"
