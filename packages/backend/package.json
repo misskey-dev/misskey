@@ -72,7 +72,7 @@
 		"json5-loader": "4.0.1",
 		"jsonld": "8.1.0",
 		"jsrsasign": "10.6.1",
-		"mfm-js": "0.23.1",
+		"mfm-js": "0.23.3",
 		"mime-types": "2.1.35",
 		"misskey-js": "0.0.14",
 		"ms": "3.0.0-canary.1",

@@ -4225,7 +4225,7 @@ __metadata:
     json5-loader: 4.0.1
     jsonld: 8.1.0
     jsrsasign: 10.6.1
-    mfm-js: 0.23.1
+    mfm-js: 0.23.3
     mime-types: 2.1.35
     misskey-js: 0.0.14
     ms: 3.0.0-canary.1
@@ -8077,7 +8077,7 @@ __metadata:
     is-file-animated: 1.0.2
     json5: 2.2.3
     matter-js: 0.18.0
-    mfm-js: 0.23.1
+    mfm-js: 0.23.3
     misskey-js: 0.0.14
     photoswipe: 5.3.4
     prismjs: 1.29.0
@@ -11566,12 +11566,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mfm-js@npm:0.23.1":
-  version: 0.23.1
-  resolution: "mfm-js@npm:0.23.1"
+"mfm-js@npm:0.23.3":
+  version: 0.23.3
+  resolution: "mfm-js@npm:0.23.3"
   dependencies:
     twemoji-parser: 14.0.0
-  checksum: 1c489ee30db7b4a2abd979f5e6453edb0c2e5ebb45e303cf4275215bb606620cf7df4b22442dfc560f6d2724986ed03153a301684a19a5decd72e8f8b5b3b81b
+  checksum: 7079f80a53a9afc8599333f3256fb18a6bf7c01102a2f8f2be657843726a34835e2af34e26bc5b27e45b217fb2f120c0d3006e9fab2a972c845e9f7361e3cc1b
   languageName: node
   linkType: hard
 
