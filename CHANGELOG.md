@@ -83,6 +83,7 @@ You should also include the user name that made the change.
 - Server: Judge instance block by endsWith @tamaina
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: add rate limits for some endpoints @syuilo
 - Server: improve stats api performance @syuilo
 - Server: improve nodeinfo performance @syuilo
 - Server: delete outdated notifications regularly to improve db performance @syuilo
