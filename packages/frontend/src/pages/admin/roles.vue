@@ -78,6 +78,20 @@
 							</MkInput>
 						</MkFolder>
 
+						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.clipMax }}</template>
+							<template #suffix>{{ options_clipLimit }}</template>
+							<MkInput v-model="options_clipLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.noteEachClipsMax }}</template>
+							<template #suffix>{{ options_noteEachClipsLimit }}</template>
+							<MkInput v-model="options_noteEachClipsLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
@@ -119,6 +133,8 @@ let options_driveCapacityMb = $ref(instance.baseRole.driveCapacityMb);
 let options_antennaLimit = $ref(instance.baseRole.antennaLimit);
 let options_wordMuteLimit = $ref(instance.baseRole.wordMuteLimit);
 let options_webhookLimit = $ref(instance.baseRole.webhookLimit);
+let options_clipLimit = $ref(instance.baseRole.clipLimit);
+let options_noteEachClipsLimit = $ref(instance.baseRole.noteEachClipsLimit);
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-role-override', {
@@ -132,6 +148,8 @@ async function updateBaseRole() {
 			antennaLimit: options_antennaLimit,
 			wordMuteLimit: options_wordMuteLimit,
 			webhookLimit: options_webhookLimit,
+			clipLimit: options_clipLimit,
+			noteEachClipsLimit: options_noteEachClipsLimit,
 		},
 	});
 }

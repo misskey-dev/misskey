@@ -23,6 +23,8 @@ export type RoleOptions = {
 	antennaLimit: number;
 	wordMuteLimit: number;
 	webhookLimit: number;
+	clipLimit: number;
+	noteEachClipsLimit: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
@@ -35,6 +37,8 @@ export const DEFAULT_ROLE: RoleOptions = {
 	antennaLimit: 5,
 	wordMuteLimit: 200,
 	webhookLimit: 3,
+	clipLimit: 10,
+	noteEachClipsLimit: 200,
 };
 
 @Injectable()
@@ -206,6 +210,8 @@ export class RoleService implements OnApplicationShutdown {
 			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
 			wordMuteLimit: Math.max(...getOptionValues('wordMuteLimit')),
 			webhookLimit: Math.max(...getOptionValues('webhookLimit')),
+			clipLimit: Math.max(...getOptionValues('clipLimit')),
+			noteEachClipsLimit: Math.max(...getOptionValues('noteEachClipsLimit')),
 		};
 	}
 

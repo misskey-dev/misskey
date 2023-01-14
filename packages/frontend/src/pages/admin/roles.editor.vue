@@ -152,6 +152,30 @@
 					</MkInput>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.clipMax }}</template>
+				<template #suffix>{{ options_clipLimit_useDefault ? i18n.ts._role.useBaseValue : (options_clipLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_clipLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_clipLimit_value" :disabled="options_clipLimit_useDefault" type="number" :readonly="readonly">
+					</MkInput>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.noteEachClipsMax }}</template>
+				<template #suffix>{{ options_noteEachClipsLimit_useDefault ? i18n.ts._role.useBaseValue : (options_noteEachClipsLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_noteEachClipsLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_noteEachClipsLimit_value" :disabled="options_noteEachClipsLimit_useDefault" type="number" :readonly="readonly">
+					</MkInput>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 
@@ -223,6 +247,10 @@ let options_wordMuteLimit_useDefault = $ref(role?.options?.wordMuteLimit?.useDef
 let options_wordMuteLimit_value = $ref(role?.options?.wordMuteLimit?.value ?? 0);
 let options_webhookLimit_useDefault = $ref(role?.options?.webhookLimit?.useDefault ?? true);
 let options_webhookLimit_value = $ref(role?.options?.webhookLimit?.value ?? 0);
+let options_clipLimit_useDefault = $ref(role?.options?.clipLimit?.useDefault ?? true);
+let options_clipLimit_value = $ref(role?.options?.clipLimit?.value ?? 0);
+let options_noteEachClipsLimit_useDefault = $ref(role?.options?.noteEachClipsLimit?.useDefault ?? true);
+let options_noteEachClipsLimit_value = $ref(role?.options?.noteEachClipsLimit?.value ?? 0);
 
 if (_DEV_) {
 	watch($$(condFormula), () => {
@@ -241,6 +269,8 @@ function getOptions() {
 		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
 		wordMuteLimit: { useDefault: options_wordMuteLimit_useDefault, value: options_wordMuteLimit_value },
 		webhookLimit: { useDefault: options_webhookLimit_useDefault, value: options_webhookLimit_value },
+		clipLimit: { useDefault: options_clipLimit_useDefault, value: options_clipLimit_value },
+		noteEachClipsLimit: { useDefault: options_noteEachClipsLimit_useDefault, value: options_noteEachClipsLimit_value },
 	};
 }
 
