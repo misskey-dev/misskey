@@ -60,5 +60,8 @@
 		"eslint": "^8.31.0",
 		"start-server-and-test": "1.15.2",
 		"typescript": "4.9.4"
+	},
+	"optionalDependencies": {
+		"@tensorflow/tfjs-core": "^4.1.0"
 	}
 }

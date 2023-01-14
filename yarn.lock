@@ -2068,6 +2068,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tensorflow/tfjs-core@npm:^4.1.0":
+  version: 4.2.0
+  resolution: "@tensorflow/tfjs-core@npm:4.2.0"
+  dependencies:
+    "@types/long": ^4.0.1
+    "@types/offscreencanvas": ~2019.7.0
+    "@types/seedrandom": ^2.4.28
+    "@types/webgl-ext": 0.0.30
+    "@webgpu/types": 0.1.21
+    long: 4.0.0
+    node-fetch: ~2.6.1
+    seedrandom: ^3.0.5
+  checksum: 88b680f955369b58343e7683b3a77fa5c2569b387c8b61bf90985293428bdbed4504d0da038bad39def4efc95659f2b75041ae6f41cbacb6ac7c6d44d7ccd456
+  languageName: node
+  linkType: hard
+
 "@tensorflow/tfjs-data@npm:4.1.0":
   version: 4.1.0
   resolution: "@tensorflow/tfjs-data@npm:4.1.0"
@@ -11811,6 +11827,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "misskey@workspace:."
   dependencies:
+    "@tensorflow/tfjs-core": ^4.1.0
     "@types/gulp": 4.0.10
     "@types/gulp-rename": 2.0.1
     "@typescript-eslint/eslint-plugin": 5.48.0
@@ -11827,6 +11844,9 @@ __metadata:
     js-yaml: 4.1.0
     start-server-and-test: 1.15.2
     typescript: 4.9.4
+  dependenciesMeta:
+    "@tensorflow/tfjs-core":
+      optional: true
   languageName: unknown
   linkType: soft
 
