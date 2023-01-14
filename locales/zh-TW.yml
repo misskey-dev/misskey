@@ -961,7 +961,8 @@ _role:
     canManageCustomEmojis: "管理自訂表情符號"
     driveCapacity: "雲端硬碟容量"
     antennaMax: "可建立的天線數量"
-    webhookMax: "可建立的Webhook數"
+    webhookMax: "可建立的Webhook數量"
+    clipMax: "可建立的摘錄數量"
   _condition:
     isLocal: "本地使用者"
     isRemote: "遠端使用者"
