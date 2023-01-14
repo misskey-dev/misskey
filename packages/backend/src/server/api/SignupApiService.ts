@@ -12,8 +12,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { ILocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
-import { SigninService } from './SigninService.js';
 import { bindThis } from '@/decorators.js';
+import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -193,7 +193,7 @@ export class SignupApiService {
 				emailVerifyCode: null,
 			});
 
-			this.signinService.signin(request, reply, account as ILocalUser);
+			return this.signinService.signin(request, reply, account as ILocalUser);
 		} catch (err) {
 			throw new FastifyReplyError(400, err);
 		}

@@ -1,3 +1,4 @@
+import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 

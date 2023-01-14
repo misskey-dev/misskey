@@ -256,9 +256,10 @@ defineExpose({
 		border: none;
 		border-radius: 0;
 		box-shadow: none;
-		background: transparent;
 		box-sizing: border-box;
 		color: var(--fg);
+		background: rgba(12, 18, 16, 0.85);
+		backdrop-filter: var(--blur, blur(15px));
 	}
 
 	footer {

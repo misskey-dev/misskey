@@ -386,7 +386,7 @@ export class DriveService {
 				},
 				err => {
 					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
-				}
+				},
 			);
 	}
 
@@ -479,16 +479,10 @@ export class DriveService {
 		if (user && !isLink) {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
 
-			let driveCapacity: number;
-			if (this.userEntityService.isLocalUser(user)) {
-				const role = await this.roleService.getUserRoleOptions(user.id);
-				driveCapacity = 1024 * 1024 * role.driveCapacityMb;
-				this.registerLogger.debug('drive capacity override applied');
-				this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
-			} else {
-				const instance = await this.metaService.fetch();
-				driveCapacity = 1024 * 1024 * instance.remoteDriveCapacityMb;
-			}
+			const role = await this.roleService.getUserRoleOptions(user.id);
+			const driveCapacity = 1024 * 1024 * role.driveCapacityMb;
+			this.registerLogger.debug('drive capacity override applied');
+			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 
 			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 

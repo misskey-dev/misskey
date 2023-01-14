@@ -306,6 +306,9 @@ export const routes = [{
 	path: '/channels',
 	component: page(() => import('./pages/channels.vue')),
 }, {
+	path: '/custom-emojis-manager',
+	component: page(() => import('./pages/custom-emojis-manager.vue')),
+}, {
 	path: '/registry/keys/system/:path(*)?',
 	component: page(() => import('./pages/registry.keys.vue')),
 }, {
@@ -331,7 +334,7 @@ export const routes = [{
 	}, {
 		path: '/emojis',
 		name: 'emojis',
-		component: page(() => import('./pages/admin/emojis.vue')),
+		component: page(() => import('./pages/custom-emojis-manager.vue')),
 	}, {
 		path: '/queue',
 		name: 'queue',

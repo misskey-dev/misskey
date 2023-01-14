@@ -13,13 +13,27 @@
 		<template #caption>#RRGGBB</template>
 	</MkInput>
 
-	<MkSelect v-model="roleType" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.type }}</template>
-		<template #caption><div v-html="i18n.ts._role.descriptionOfType.replaceAll('\n', '<br>')"></div></template>
-		<option value="normal">{{ i18n.ts.noramlUser }}</option>
+	<MkSelect v-model="rolePermission" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.permission }}</template>
+		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
+		<option value="normal">{{ i18n.ts.normalUser }}</option>
 		<option value="moderator">{{ i18n.ts.moderator }}</option>
 		<option value="administrator">{{ i18n.ts.administrator }}</option>
 	</MkSelect>
+
+	<MkSelect v-model="target" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.assignTarget }}</template>
+		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
+		<option value="manual">{{ i18n.ts._role.manual }}</option>
+		<option value="conditional">{{ i18n.ts._role.conditional }}</option>
+	</MkSelect>
+
+	<MkFolder v-if="target === 'conditional'" default-open>
+		<template #label>{{ i18n.ts._role.condition }}</template>
+		<div class="_gaps">
+			<RolesEditorFormula v-model="condFormula"/>
+		</div>
+	</MkFolder>
 
 	<FormSlot>
 		<template #label>{{ i18n.ts._role.options }}</template>
@@ -64,6 +78,32 @@
 			</MkFolder>
 
 			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.canInvite }}</template>
+				<template #suffix>{{ options_canInvite_useDefault ? i18n.ts._role.useBaseValue : (options_canInvite_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_canInvite_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="options_canInvite_value" :disabled="options_canInvite_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
+				<template #suffix>{{ options_canManageCustomEmojis_useDefault ? i18n.ts._role.useBaseValue : (options_canManageCustomEmojis_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_canManageCustomEmojis_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="options_canManageCustomEmojis_value" :disabled="options_canManageCustomEmojis_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 				<template #suffix>{{ options_driveCapacityMb_useDefault ? i18n.ts._role.useBaseValue : (options_driveCapacityMb_value + 'MB') }}</template>
 				<div class="_gaps">
@@ -87,6 +127,31 @@
 					</MkInput>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.wordMuteMax }}</template>
+				<template #suffix>{{ options_wordMuteLimit_useDefault ? i18n.ts._role.useBaseValue : (options_wordMuteLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_wordMuteLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_wordMuteLimit_value" :disabled="options_wordMuteLimit_useDefault" type="number" :readonly="readonly">
+						<template #suffix>chars</template>
+					</MkInput>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.webhookMax }}</template>
+				<template #suffix>{{ options_webhookLimit_useDefault ? i18n.ts._role.useBaseValue : (options_webhookLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_webhookLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_webhookLimit_value" :disabled="options_webhookLimit_useDefault" type="number" :readonly="readonly">
+					</MkInput>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 
@@ -107,7 +172,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
+import { v4 as uuid } from 'uuid';
+import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -132,8 +199,10 @@ const role = props.role;
 
 let name = $ref(role?.name ?? 'New Role');
 let description = $ref(role?.description ?? '');
-let roleType = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
+let rolePermission = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
 let color = $ref(role?.color ?? null);
+let target = $ref(role?.target ?? 'manual');
+let condFormula = $ref(role?.condFormula ?? { id: uuid(), type: 'isRemote' });
 let isPublic = $ref(role?.isPublic ?? false);
 let canEditMembersByModerator = $ref(role?.canEditMembersByModerator ?? false);
 let options_gtlAvailable_useDefault = $ref(role?.options?.gtlAvailable?.useDefault ?? true);
@@ -142,18 +211,36 @@ let options_ltlAvailable_useDefault = $ref(role?.options?.ltlAvailable?.useDefau
 let options_ltlAvailable_value = $ref(role?.options?.ltlAvailable?.value ?? false);
 let options_canPublicNote_useDefault = $ref(role?.options?.canPublicNote?.useDefault ?? true);
 let options_canPublicNote_value = $ref(role?.options?.canPublicNote?.value ?? false);
+let options_canInvite_useDefault = $ref(role?.options?.canInvite?.useDefault ?? true);
+let options_canInvite_value = $ref(role?.options?.canInvite?.value ?? false);
+let options_canManageCustomEmojis_useDefault = $ref(role?.options?.canManageCustomEmojis?.useDefault ?? true);
+let options_canManageCustomEmojis_value = $ref(role?.options?.canManageCustomEmojis?.value ?? false);
 let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.useDefault ?? true);
 let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? 0);
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
 let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? 0);
+let options_wordMuteLimit_useDefault = $ref(role?.options?.wordMuteLimit?.useDefault ?? true);
+let options_wordMuteLimit_value = $ref(role?.options?.wordMuteLimit?.value ?? 0);
+let options_webhookLimit_useDefault = $ref(role?.options?.webhookLimit?.useDefault ?? true);
+let options_webhookLimit_value = $ref(role?.options?.webhookLimit?.value ?? 0);
+
+if (_DEV_) {
+	watch($$(condFormula), () => {
+		console.log(JSON.parse(JSON.stringify(condFormula)));
+	}, { deep: true });
+}
 
 function getOptions() {
 	return {
 		gtlAvailable: { useDefault: options_gtlAvailable_useDefault, value: options_gtlAvailable_value },
 		ltlAvailable: { useDefault: options_ltlAvailable_useDefault, value: options_ltlAvailable_value },
 		canPublicNote: { useDefault: options_canPublicNote_useDefault, value: options_canPublicNote_value },
+		canInvite: { useDefault: options_canInvite_useDefault, value: options_canInvite_value },
+		canManageCustomEmojis: { useDefault: options_canManageCustomEmojis_useDefault, value: options_canManageCustomEmojis_value },
 		driveCapacityMb: { useDefault: options_driveCapacityMb_useDefault, value: options_driveCapacityMb_value },
 		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
+		wordMuteLimit: { useDefault: options_wordMuteLimit_useDefault, value: options_wordMuteLimit_value },
+		webhookLimit: { useDefault: options_webhookLimit_useDefault, value: options_webhookLimit_value },
 	};
 }
 
@@ -165,8 +252,10 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
-			isAdministrator: roleType === 'administrator',
-			isModerator: roleType === 'moderator',
+			target,
+			condFormula,
+			isAdministrator: rolePermission === 'administrator',
+			isModerator: rolePermission === 'moderator',
 			isPublic,
 			canEditMembersByModerator,
 			options: getOptions(),
@@ -177,8 +266,10 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
-			isAdministrator: roleType === 'administrator',
-			isModerator: roleType === 'moderator',
+			target,
+			condFormula,
+			isAdministrator: rolePermission === 'administrator',
+			isModerator: rolePermission === 'moderator',
 			isPublic,
 			canEditMembersByModerator,
 			options: getOptions(),

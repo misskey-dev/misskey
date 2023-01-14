@@ -7,22 +7,34 @@ import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/mode
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
+import { UserCacheService } from '@/core/UserCacheService.js';
+import { RoleCondFormulaValue } from '@/models/entities/Role.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RoleOptions = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
+	canInvite: boolean;
+	canManageCustomEmojis: boolean;
 	driveCapacityMb: number;
 	antennaLimit: number;
+	wordMuteLimit: number;
+	webhookLimit: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
+	canInvite: false,
+	canManageCustomEmojis: false,
 	driveCapacityMb: 100,
 	antennaLimit: 5,
+	wordMuteLimit: 200,
+	webhookLimit: 3,
 };
 
 @Injectable()
@@ -44,6 +56,8 @@ export class RoleService implements OnApplicationShutdown {
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
 		private metaService: MetaService,
+		private userCacheService: UserCacheService,
+		private userEntityService: UserEntityService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -58,7 +72,7 @@ export class RoleService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
+			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'roleCreated': {
 					const cached = this.rolesCache.get(null);
@@ -112,11 +126,60 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	private evalCond(user: User, value: RoleCondFormulaValue): boolean {
+		try {
+			switch (value.type) {
+				case 'and': {
+					return value.values.every(v => this.evalCond(user, v));
+				}
+				case 'or': {
+					return value.values.some(v => this.evalCond(user, v));
+				}
+				case 'not': {
+					return !this.evalCond(user, value.value);
+				}
+				case 'isLocal': {
+					return this.userEntityService.isLocalUser(user);
+				}
+				case 'isRemote': {
+					return this.userEntityService.isRemoteUser(user);
+				}
+				case 'createdLessThan': {
+					return user.createdAt.getTime() > (Date.now() - (value.sec * 1000));
+				}
+				case 'createdMoreThan': {
+					return user.createdAt.getTime() < (Date.now() - (value.sec * 1000));
+				}
+				case 'followersLessThanOrEq': {
+					return user.followersCount <= value.value;
+				}
+				case 'followersMoreThanOrEq': {
+					return user.followersCount >= value.value;
+				}
+				case 'followingLessThanOrEq': {
+					return user.followingCount <= value.value;
+				}
+				case 'followingMoreThanOrEq': {
+					return user.followingCount >= value.value;
+				}
+				default:
+					return false;
+			}
+		} catch (err) {
+			// TODO: log error
+			return false;
+		}
+	}
+
+	@bindThis
 	public async getUserRoles(userId: User['id']) {
 		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
 		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
-		return roles.filter(r => assignedRoleIds.includes(r.id));
+		const assignedRoles = roles.filter(r => assignedRoleIds.includes(r.id));
+		const user = roles.some(r => r.target === 'conditional') ? await this.userCacheService.findById(userId) : null;
+		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, r.condFormula));
+		return [...assignedRoles, ...matchedCondRoles];
 	}
 
 	@bindThis
@@ -137,8 +200,12 @@ export class RoleService implements OnApplicationShutdown {
 			gtlAvailable: getOptionValues('gtlAvailable').some(x => x === true),
 			ltlAvailable: getOptionValues('ltlAvailable').some(x => x === true),
 			canPublicNote: getOptionValues('canPublicNote').some(x => x === true),
+			canInvite: getOptionValues('canInvite').some(x => x === true),
+			canManageCustomEmojis: getOptionValues('canManageCustomEmojis').some(x => x === true),
 			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
 			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
+			wordMuteLimit: Math.max(...getOptionValues('wordMuteLimit')),
+			webhookLimit: Math.max(...getOptionValues('webhookLimit')),
 		};
 	}
 
