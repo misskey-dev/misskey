@@ -1,7 +1,5 @@
 # Run secret-dependent integration tests only after /deploy approval
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
   repository_dispatch:
     types: [deploy-command]
 
