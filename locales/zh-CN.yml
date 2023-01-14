@@ -961,6 +961,7 @@ _role:
     canManageCustomEmojis: "管理自定义表情符号"
     driveCapacity: "网盘容量"
     antennaMax: "可创建的最大天线数量"
+    webhookMax: "Webhook 创建数量限制"
   _condition:
     isLocal: "是本地用户"
     isRemote: "是远程用户"
