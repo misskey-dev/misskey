@@ -1,36 +1,36 @@
 <template>
-<div v-if="show" ref="el" class="fdidabkb" :class="{ slim: narrow, thin: thin_ }" :style="{ background: bg }" @click="onClick">
-	<div v-if="narrow" class="buttons left">
-		<MkAvatar v-if="props.displayMyAvatar && $i" class="avatar" :user="$i" :disable-preview="true"/>
+<div v-if="show" ref="el" :class="[$style.root, { [$style.slim]: narrow, [$style.thin]: thin_ }]" :style="{ background: bg }" @click="onClick">
+	<div v-if="narrow" :class="$style.buttonsLeft">
+		<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :disable-preview="true"/>
 	</div>
 	<template v-if="metadata">
-		<div v-if="!hideTitle" class="titleContainer" @click="showTabsPopup">
-			<MkAvatar v-if="metadata.avatar" class="avatar" :user="metadata.avatar" :disable-preview="true" :show-indicator="true"/>
-			<i v-else-if="metadata.icon" class="icon" :class="metadata.icon"></i>
+		<div v-if="!hideTitle" :class="$style.titleContainer" @click="showTabsPopup">
+			<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" :disable-preview="true" :show-indicator="true"/>
+			<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
 
-			<div class="title">
-				<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true" class="title"/>
-				<div v-else-if="metadata.title" class="title">{{ metadata.title }}</div>
-				<div v-if="!narrow && metadata.subtitle" class="subtitle">
+			<div :class="$style.title">
+				<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true"/>
+				<div v-else-if="metadata.title">{{ metadata.title }}</div>
+				<div v-if="!narrow && metadata.subtitle" :class="$style.subtitle">
 					{{ metadata.subtitle }}
 				</div>
-				<div v-if="narrow && hasTabs" class="subtitle activeTab">
+				<div v-if="narrow && hasTabs" :class="[$style.subtitle, $style.activeTab]">
 					{{ tabs.find(tab => tab.key === props.tab)?.title }}
-					<i class="chevron ti ti-chevron-down"></i>
+					<i class="ti ti-chevron-down" :class="$style.chevron"></i>
 				</div>
 			</div>
 		</div>
-		<div v-if="!narrow || hideTitle" class="tabs">
-			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="tab _button" :class="{ active: tab.key != null && tab.key === props.tab }" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
-				<i v-if="tab.icon" class="icon" :class="tab.icon"></i>
-				<span v-if="!tab.iconOnly" class="title">{{ tab.title }}</span>
+		<div v-if="!narrow || hideTitle" :class="$style.tabs">
+			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
+				<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
+				<span v-if="!tab.iconOnly" :class="$style.tabTitle">{{ tab.title }}</span>
 			</button>
-			<div ref="tabHighlightEl" class="highlight"></div>
+			<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
 		</div>
 	</template>
-	<div class="buttons right">
+	<div :class="$style.buttonsRight">
 		<template v-for="action in actions">
-			<button v-tooltip.noDelay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+			<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 		</template>
 	</div>
 </div>
@@ -178,8 +178,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.fdidabkb {
+<style lang="scss" module>
+.root {
 	--height: 50px;
 	display: flex;
 	width: 100%;
@@ -215,154 +215,156 @@ onUnmounted(() => {
 			}
 		}
 	}
+}
 
-	> .buttons {
-		--margin: 8px;
-		display: flex;
-    align-items: center;
-		min-width: var(--height);
-		height: var(--height);
-		margin: 0 var(--margin);
+.buttons {
+	--margin: 8px;
+	display: flex;
+	align-items: center;
+	min-width: var(--height);
+	height: var(--height);
+	margin: 0 var(--margin);
 
-		&.left {
-			margin-right: auto;
+	&:empty {
+		width: var(--height);
+	}
+}
 
-			> .avatar {
-				$size: 32px;
-				display: inline-block;
-				width: $size;
-				height: $size;
-				vertical-align: bottom;
-				margin: 0 8px;
-				pointer-events: none;
-			}
-		}
+.buttonsLeft {
+	composes: buttons;
+	margin-right: auto;
+}
 
-		&.right {
-			margin-left: auto;
-		}
+.buttonsRight {
+	composes: buttons;
+	margin-left: auto;
+}
 
-		&:empty {
-			width: var(--height);
-		}
+.avatar {
+	$size: 32px;
+	display: inline-block;
+	width: $size;
+	height: $size;
+	vertical-align: bottom;
+	margin: 0 8px;
+	pointer-events: none;
+}
 
-		> .button {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			height: calc(var(--height) - (var(--margin) * 2));
-			width: calc(var(--height) - (var(--margin) * 2));
-			box-sizing: border-box;
-			position: relative;
-			border-radius: 5px;
+.button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: calc(var(--height) - (var(--margin) * 2));
+	width: calc(var(--height) - (var(--margin) * 2));
+	box-sizing: border-box;
+	position: relative;
+	border-radius: 5px;
 
-			&:hover {
-				background: rgba(0, 0, 0, 0.05);
-			}
-
-			&.highlighted {
-				color: var(--accent);
-			}
-		}
-
-		> .fullButton {
-			& + .fullButton {
-				margin-left: 12px;
-			}
-		}
+	&:hover {
+		background: rgba(0, 0, 0, 0.05);
 	}
 
-	> .titleContainer {
-		display: flex;
-		align-items: center;
-		max-width: 400px;
-		overflow: auto;
-		white-space: nowrap;
-		text-align: left;
-		font-weight: bold;
-		flex-shrink: 0;
-		margin-left: 24px;
+	&.highlighted {
+		color: var(--accent);
+	}
+}
 
-		> .avatar {
-			$size: 32px;
+.fullButton {
+	& + .fullButton {
+		margin-left: 12px;
+	}
+}
+
+.titleContainer {
+	display: flex;
+	align-items: center;
+	max-width: 400px;
+	overflow: auto;
+	white-space: nowrap;
+	text-align: left;
+	font-weight: bold;
+	flex-shrink: 0;
+	margin-left: 24px;
+}
+
+.titleAvatar {
+	$size: 32px;
+	display: inline-block;
+	width: $size;
+	height: $size;
+	vertical-align: bottom;
+	margin: 0 8px;
+	pointer-events: none;
+}
+
+.titleIcon {
+	margin-right: 8px;
+	width: 16px;
+	text-align: center;
+}
+
+.title {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	line-height: 1.1;
+}
+
+.subtitle {
+	opacity: 0.6;
+	font-size: 0.8em;
+	font-weight: normal;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	&.activeTab {
+		text-align: center;
+
+		> .chevron {
 			display: inline-block;
-			width: $size;
-			height: $size;
-			vertical-align: bottom;
-			margin: 0 8px;
-			pointer-events: none;
-		}
-
-		> .icon {
-			margin-right: 8px;
-			width: 16px;
-			text-align: center;
-		}
-
-		> .title {
-			min-width: 0;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			line-height: 1.1;
-
-			> .subtitle {
-				opacity: 0.6;
-				font-size: 0.8em;
-				font-weight: normal;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-
-				&.activeTab {
-					text-align: center;
-
-					> .chevron {
-						display: inline-block;
-						margin-left: 6px;
-					}
-				}
-			}
+			margin-left: 6px;
 		}
 	}
+}
 
-	> .tabs {
-		position: relative;
-		margin-left: 16px;
-		font-size: 0.8em;
-		overflow: auto;
-		white-space: nowrap;
+.tabs {
+	position: relative;
+	margin-left: 16px;
+	font-size: 0.8em;
+	overflow: auto;
+	white-space: nowrap;
+}
 
-		> .tab {
-			display: inline-block;
-			position: relative;
-			padding: 0 10px;
-			height: 100%;
-			font-weight: normal;
-			opacity: 0.7;
+.tab {
+	display: inline-block;
+	position: relative;
+	padding: 0 10px;
+	height: 100%;
+	font-weight: normal;
+	opacity: 0.7;
 
-			&:hover {
-				opacity: 1;
-			}
-
-			&.active {
-				opacity: 1;
-			}
-
-			> .icon + .title {
-				margin-left: 8px;
-			}
-		}
-
-		> .highlight {
-			position: absolute;
-			bottom: 0;
-			height: 3px;
-			background: var(--accent);
-			border-radius: 999px;
-			transition: all 0.2s ease;
-			pointer-events: none;
-		}
+	&:hover {
+		opacity: 1;
 	}
+
+	&.active {
+		opacity: 1;
+	}
+}
+
+.tabIcon + .tabTitle {
+	margin-left: 8px;
+}
+
+.tabHighlight {
+	position: absolute;
+	bottom: 0;
+	height: 3px;
+	background: var(--accent);
+	border-radius: 999px;
+	transition: all 0.2s ease;
+	pointer-events: none;
 }
 </style>

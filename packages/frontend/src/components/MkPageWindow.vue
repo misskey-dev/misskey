@@ -17,7 +17,7 @@
 		</template>
 	</template>
 
-	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
+	<div :class="$style.root" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
 		<RouterView :router="router"/>
 	</div>
 </MkWindow>
@@ -133,8 +133,8 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.yrolvcoq {
+<style lang="scss" module>
+.root {
 	min-height: 100%;
 	background: var(--bg);
 

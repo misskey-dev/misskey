@@ -151,7 +151,7 @@ importers:
       json5-loader: 4.0.1
       jsonld: 8.1.0
       jsrsasign: 10.6.1
-      mfm-js: 0.23.1
+      mfm-js: 0.23.3
       mime-types: 2.1.35
       misskey-js: 0.0.14
       ms: 3.0.0-canary.1
@@ -258,7 +258,7 @@ importers:
       json5-loader: 4.0.1
       jsonld: 8.1.0
       jsrsasign: 10.6.1
-      mfm-js: 0.23.1
+      mfm-js: 0.23.3
       mime-types: 2.1.35
       misskey-js: 0.0.14
       ms: 3.0.0-canary.1
@@ -424,7 +424,7 @@ importers:
       is-file-animated: 1.0.2
       json5: 2.2.3
       matter-js: 0.18.0
-      mfm-js: 0.23.1
+      mfm-js: 0.23.3
       misskey-js: 0.0.14
       photoswipe: 5.3.4
       prismjs: 1.29.0
@@ -487,7 +487,7 @@ importers:
       is-file-animated: 1.0.2
       json5: 2.2.3
       matter-js: 0.18.0
-      mfm-js: 0.23.1
+      mfm-js: 0.23.3
       misskey-js: 0.0.14
       photoswipe: 5.3.4
       prismjs: 1.29.0
@@ -9275,8 +9275,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  /mfm-js/0.23.1:
-    resolution: {integrity: sha512-4HFvUjFuw0xxFzaEcaytcNzxbLmKz/E5k1XoI+EBld7WcrH4kpf4tV10TAj2lrC9uZm0S6lF/Q2ypbQ4dJWDvg==}
+  /mfm-js/0.23.3:
+    resolution: {integrity: sha512-o8scYmbey6rMUmWAlT3k3ntt6khaCLdxlmHhAWV5wTTMj2OK1atQvZfRUq0SIVm1Jig08qlZg/ps71xUqrScNA==}
     dependencies:
       twemoji-parser: 14.0.0
     dev: false

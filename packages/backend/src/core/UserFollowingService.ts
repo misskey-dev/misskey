@@ -62,6 +62,7 @@ export class UserFollowingService {
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
+		private globalEventService: GlobalEventService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
@@ -195,6 +196,8 @@ export class UserFollowingService {
 		}
 	
 		if (alreadyFollowed) return;
+
+		this.globalEventService.publishInternalEvent('follow', { followerId: follower.id, followeeId: followee.id });
 	
 		//#region Increment counts
 		await Promise.all([
@@ -314,6 +317,8 @@ export class UserFollowingService {
 		follower: {id: User['id']; host: User['host']; },
 		followee: { id: User['id']; host: User['host']; },
 	): Promise<void> {
+		this.globalEventService.publishInternalEvent('unfollow', { followerId: follower.id, followeeId: followee.id });
+	
 		//#region Decrement following / followers counts
 		await Promise.all([
 			this.usersRepository.decrement({ id: follower.id }, 'followingCount', 1),

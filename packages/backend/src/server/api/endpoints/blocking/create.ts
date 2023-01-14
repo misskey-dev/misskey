@@ -5,15 +5,15 @@ import type { UsersRepository, BlockingsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
 
 	limit: {
 		duration: ms('1hour'),
-		max: 100,
+		max: 20,
 	},
 
 	requireCredential: true,
