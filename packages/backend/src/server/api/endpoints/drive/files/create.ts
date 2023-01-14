@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
-			const meta = await this.metaService.fetch();
+			const instance = await this.metaService.fetch();
 
 			try {
 				// Create file
@@ -102,8 +102,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					folderId: ps.folderId,
 					force: ps.force,
 					sensitive: ps.isSensitive,
-					requestIp: meta.enableIpLogging ? ip : null,
-					requestHeaders: meta.enableIpLogging ? headers : null,
+					requestIp: instance.enableIpLogging ? ip : null,
+					requestHeaders: instance.enableIpLogging ? headers : null,
 				});
 				return await this.driveFileEntityService.pack(driveFile, { self: true });
 			} catch (err) {
@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 				throw new ApiError();
 			} finally {
-		cleanup!();
+				cleanup!();
 			}
 		});
 	}
