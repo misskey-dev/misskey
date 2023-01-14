@@ -932,6 +932,7 @@ assign: "アサイン"
 unassign: "アサインを解除"
 color: "色"
 manageCustomEmojis: "カスタム絵文字の管理"
+youCannotCreateAnymore: "これ以上作成することはできません。"
 
 _role:
   new: "ロールの作成"
