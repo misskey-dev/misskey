@@ -1,17 +1,20 @@
 <template>
-<div ref="rootEl" class="dwzlatin" :class="{ opened }">
-	<div class="header _button" @click="toggle">
-		<span class="icon"><slot name="icon"></slot></span>
-		<span class="text"><slot name="label"></slot></span>
-		<span class="right">
-			<span class="text"><slot name="suffix"></slot></span>
+<div ref="rootEl" :class="[$style.root, { [$style.opened]: opened }]">
+	<div :class="$style.header" class="_button" @click="toggle">
+		<span :class="$style.headerIcon"><slot name="icon"></slot></span>
+		<span :class="$style.headerText"><slot name="label"></slot></span>
+		<span :class="$style.headerRight">
+			<span :class="$style.headerRightText"><slot name="suffix"></slot></span>
 			<i v-if="opened" class="ti ti-chevron-up icon"></i>
 			<i v-else class="ti ti-chevron-down icon"></i>
 		</span>
 	</div>
-	<div v-if="openedAtLeastOnce" class="body" :class="{ bgSame }" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null }">
+	<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null }">
 		<Transition
-			:name="$store.state.animation ? 'folder-toggle' : ''"
+			:enter-active-class="$store.state.animation ? $style.transition_toggle_enterActive : ''"
+			:leave-active-class="$store.state.animation ? $style.transition_toggle_leaveActive : ''"
+			:enter-from-class="$store.state.animation ? $style.transition_toggle_enterFrom : ''"
+			:leave-to-class="$store.state.animation ? $style.transition_toggle_leaveTo : ''"
 			@enter="enter"
 			@after-enter="afterEnter"
 			@leave="leave"
@@ -94,85 +97,88 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.folder-toggle-enter-active, .folder-toggle-leave-active {
+<style lang="scss" module>
+.transition_toggle_enterActive,
+.transition_toggle_leaveActive {
 	overflow-y: clip;
 	transition: opacity 0.3s, height 0.3s, transform 0.3s !important;
 }
-.folder-toggle-enter-from, .folder-toggle-leave-to {
+.transition_toggle_enterFrom,
+.transition_toggle_leaveTo {
 	opacity: 0;
 }
 
-.dwzlatin {
+.root {
 	display: block;
-
-	> .header {
-		display: flex;
-		align-items: center;
-		width: 100%;
-		box-sizing: border-box;
-		padding: 10px 14px 10px 14px;
-		background: var(--buttonBg);
-		border-radius: 6px;
-
-		&:hover {
-			text-decoration: none;
-			background: var(--buttonHoverBg);
-		}
-
-		&.active {
-			color: var(--accent);
-			background: var(--buttonHoverBg);
-		}
-
-		> .icon {
-			margin-right: 0.75em;
-			flex-shrink: 0;
-			text-align: center;
-			opacity: 0.8;
-
-			&:empty {
-				display: none;
-
-				& + .text {
-					padding-left: 4px;
-				}
-			}
-		}
-
-		> .text {
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			padding-right: 12px;
-		}
-
-		> .right {
-			margin-left: auto;
-			opacity: 0.7;
-			white-space: nowrap;
-
-			> .text:not(:empty) {
-				margin-right: 0.75em;
-			}
-		}
-	}
-
-	> .body {
-		background: var(--panel);
-		border-radius: 0 0 6px 6px;
-		container-type: inline-size;
-		overflow: auto;
-
-		&.bgSame {
-			background: var(--bg);
-		}
-	}
 
 	&.opened {
 		> .header {
 			border-radius: 6px 6px 0 0;
 		}
+	}
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 9px 12px 9px 12px;
+	background: var(--buttonBg);
+	border-radius: 6px;
+	transition: border-radius 0.3s;
+
+	&:hover {
+		text-decoration: none;
+		background: var(--buttonHoverBg);
+	}
+
+	&.active {
+		color: var(--accent);
+		background: var(--buttonHoverBg);
+	}
+}
+
+.headerIcon {
+	margin-right: 0.75em;
+	flex-shrink: 0;
+	text-align: center;
+	opacity: 0.8;
+
+	&:empty {
+		display: none;
+
+		& + .headerText {
+			padding-left: 4px;
+		}
+	}
+}
+
+.headerText {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	padding-right: 12px;
+}
+
+.headerRight {
+	margin-left: auto;
+	opacity: 0.7;
+	white-space: nowrap;
+}
+
+.headerRightText:not(:empty) {
+	margin-right: 0.75em;
+}
+
+.body {
+	background: var(--panel);
+	border-radius: 0 0 6px 6px;
+	container-type: inline-size;
+	overflow: auto;
+
+	&.bgSame {
+		background: var(--bg);
 	}
 }
 </style>

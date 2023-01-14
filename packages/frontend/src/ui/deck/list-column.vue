@@ -53,6 +53,3 @@ const menu = [{
 	action: setList,
 }];
 </script>
-
-<style lang="scss" scoped>
-</style>

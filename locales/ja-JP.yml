@@ -963,6 +963,7 @@ _role:
     driveCapacity: "ドライブ容量"
     antennaMax: "アンテナの作成可能数"
     wordMuteMax: "ワードミュートの最大文字数"
+    webhookMax: "Webhookの作成可能数"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"

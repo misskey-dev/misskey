@@ -1,10 +1,10 @@
 <template>
 <MkModal ref="modal" :z-priority="'middle'" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<div class="ewlycnyt">
-		<div class="title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
-		<div class="version">✨{{ version }}🚀</div>
+	<div :class="$style.root">
+		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
+		<div :class="$style.version">✨{{ version }}🚀</div>
 		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
-		<MkButton class="gotIt" primary full @click="$refs.modal.close()">{{ i18n.ts.gotIt }}</MkButton>
+		<MkButton :class="$style.gotIt" primary full @click="$refs.modal.close()">{{ i18n.ts.gotIt }}</MkButton>
 	</div>
 </MkModal>
 </template>
@@ -32,8 +32,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.ewlycnyt {
+<style lang="scss" module>
+.root {
 	position: relative;
 	padding: 32px;
 	min-width: 320px;
@@ -42,17 +42,17 @@ onMounted(() => {
 	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
+}
 
-	> .title {
-		font-weight: bold;
-	}
+.title {
+	font-weight: bold;
+}
 
-	> .version {
-		margin: 1em 0;
-	}
+.version {
+	margin: 1em 0;
+}
 
-	> .gotIt {
-		margin: 8px 0 0 0;
-	}
+.gotIt {
+	margin: 8px 0 0 0;
 }
 </style>

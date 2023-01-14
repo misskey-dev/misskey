@@ -140,6 +140,18 @@
 					</MkInput>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.webhookMax }}</template>
+				<template #suffix>{{ options_webhookLimit_useDefault ? i18n.ts._role.useBaseValue : (options_webhookLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_webhookLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_webhookLimit_value" :disabled="options_webhookLimit_useDefault" type="number" :readonly="readonly">
+					</MkInput>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 
@@ -209,6 +221,8 @@ let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefau
 let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? 0);
 let options_wordMuteLimit_useDefault = $ref(role?.options?.wordMuteLimit?.useDefault ?? true);
 let options_wordMuteLimit_value = $ref(role?.options?.wordMuteLimit?.value ?? 0);
+let options_webhookLimit_useDefault = $ref(role?.options?.webhookLimit?.useDefault ?? true);
+let options_webhookLimit_value = $ref(role?.options?.webhookLimit?.value ?? 0);
 
 if (_DEV_) {
 	watch($$(condFormula), () => {
@@ -226,6 +240,7 @@ function getOptions() {
 		driveCapacityMb: { useDefault: options_driveCapacityMb_useDefault, value: options_driveCapacityMb_value },
 		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
 		wordMuteLimit: { useDefault: options_wordMuteLimit_useDefault, value: options_wordMuteLimit_value },
+		webhookLimit: { useDefault: options_webhookLimit_useDefault, value: options_webhookLimit_value },
 	};
 }
 
