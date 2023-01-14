@@ -1,7 +1,7 @@
 <template>
-<button class="nrvgflfu _button" @click="toggle">
+<button class="_button" :class="$style.root" @click="toggle">
 	<b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b>
-	<span v-if="!modelValue">{{ label }}</span>
+	<span v-if="!modelValue" :class="$style.label">{{ label }}</span>
 </button>
 </template>
 
@@ -34,8 +34,8 @@ const toggle = () => {
 };
 </script>
 
-<style lang="scss" scoped>
-.nrvgflfu {
+<style lang="scss" module>
+.root {
 	display: inline-block;
 	padding: 4px 8px;
 	font-size: 0.7em;
@@ -46,17 +46,17 @@ const toggle = () => {
 	&:hover {
 		background: var(--cwHoverBg);
 	}
+}
 
-	> span {
-		margin-left: 4px;
+.label {
+	margin-left: 4px;
 
-		&:before {
-			content: '(';
-		}
+	&:before {
+		content: '(';
+	}
 
-		&:after {
-			content: ')';
-		}
+	&:after {
+		content: ')';
 	}
 }
 </style>

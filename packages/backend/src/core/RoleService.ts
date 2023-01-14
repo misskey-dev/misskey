@@ -22,6 +22,7 @@ export type RoleOptions = {
 	driveCapacityMb: number;
 	antennaLimit: number;
 	wordMuteLimit: number;
+	webhookLimit: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
@@ -33,6 +34,7 @@ export const DEFAULT_ROLE: RoleOptions = {
 	driveCapacityMb: 100,
 	antennaLimit: 5,
 	wordMuteLimit: 200,
+	webhookLimit: 3,
 };
 
 @Injectable()
@@ -203,6 +205,7 @@ export class RoleService implements OnApplicationShutdown {
 			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
 			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
 			wordMuteLimit: Math.max(...getOptionValues('wordMuteLimit')),
+			webhookLimit: Math.max(...getOptionValues('webhookLimit')),
 		};
 	}
 

@@ -1,5 +1,5 @@
 <template>
-<svg class="mbcofsoe" viewBox="0 0 10 10" preserveAspectRatio="none">
+<svg :class="$style.root" viewBox="0 0 10 10" preserveAspectRatio="none">
 	<template v-if="props.graduations === 'dots'">
 		<circle
 			v-for="(angle, i) in graduationsMajor"
@@ -39,8 +39,7 @@
 	-->
 
 	<line
-		class="s"
-		:class="{ animate: !disableSAnimate && sAnimation !== 'none', elastic: sAnimation === 'elastic', easeOut: sAnimation === 'easeOut' }"
+		:class="[$style.s, { [$style.animate]: !disableSAnimate && sAnimation !== 'none', [$style.elastic]: sAnimation === 'elastic', [$style.easeOut]: sAnimation === 'easeOut' }]"
 		:x1="5 - (0 * (sHandLengthRatio * handsTailLength))"
 		:y1="5 + (1 * (sHandLengthRatio * handsTailLength))"
 		:x2="5 + (0 * ((sHandLengthRatio * 5) - handsPadding))"
@@ -205,21 +204,21 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.mbcofsoe {
+<style lang="scss" module>
+.root {
 	display: block;
+}
 
-	> .s {
-		will-change: transform;
-		transform-origin: 50% 50%;
+.s {
+	will-change: transform;
+	transform-origin: 50% 50%;
 
-		&.animate.elastic {
-			transition: transform .2s cubic-bezier(.4,2.08,.55,.44);
-		}
+	&.animate.elastic {
+		transition: transform .2s cubic-bezier(.4,2.08,.55,.44);
+	}
 
-		&.animate.easeOut {
-			transition: transform .7s cubic-bezier(0,.7,.3,1);
-		}
+	&.animate.easeOut {
+		transition: transform .7s cubic-bezier(0,.7,.3,1);
 	}
 }
 </style>

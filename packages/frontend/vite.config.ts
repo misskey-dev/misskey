@@ -1,3 +1,4 @@
+import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
@@ -62,7 +63,8 @@ export default defineConfig(({ command, mode }) => {
 					if (process.env.NODE_ENV === 'production') {
 						return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4);
 					} else {
-						return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4) + '-' + name;
+						//return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4) + '-' + name;
+						return (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					}
 				},
 			},

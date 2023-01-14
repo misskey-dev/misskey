@@ -71,6 +71,13 @@
 							</MkInput>
 						</MkFolder>
 
+						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.webhookMax }}</template>
+							<template #suffix>{{ options_webhookLimit }}</template>
+							<MkInput v-model="options_webhookLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
@@ -111,6 +118,7 @@ let options_canManageCustomEmojis = $ref(instance.baseRole.canManageCustomEmojis
 let options_driveCapacityMb = $ref(instance.baseRole.driveCapacityMb);
 let options_antennaLimit = $ref(instance.baseRole.antennaLimit);
 let options_wordMuteLimit = $ref(instance.baseRole.wordMuteLimit);
+let options_webhookLimit = $ref(instance.baseRole.webhookLimit);
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-role-override', {
@@ -123,6 +131,7 @@ async function updateBaseRole() {
 			driveCapacityMb: options_driveCapacityMb,
 			antennaLimit: options_antennaLimit,
 			wordMuteLimit: options_wordMuteLimit,
+			webhookLimit: options_webhookLimit,
 		},
 	});
 }
