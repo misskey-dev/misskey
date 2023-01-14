@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" v-slot="{ type, maxHeight }" :z-priority="'high'" :src="src" :transparent-bg="true" @click="modal.close()" @close="emit('closing')" @closed="emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq" :class="{ drawer: type === 'drawer' }" @close="modal.close()"/>
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="modal.close()"/>
 </MkModal>
 </template>
 
@@ -26,12 +26,10 @@ const emit = defineEmits<{
 let modal = $shallowRef<InstanceType<typeof MkModal>>();
 </script>
 
-<style lang="scss" scoped>
-.sfhdhdhq {
-	&.drawer {
-		border-radius: 24px;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-	}
+<style lang="scss" module>
+.drawer {
+	border-radius: 24px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
 }
 </style>
