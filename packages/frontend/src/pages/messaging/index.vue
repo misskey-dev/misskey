@@ -10,7 +10,7 @@
 					v-for="(message, i) in messages"
 					:key="message.id"
 					v-anim="i"
-					class="message"
+					class="message _panel"
 					:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
 					:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 					:data-index="i"

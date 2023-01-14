@@ -6,6 +6,7 @@ import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/mode
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -39,7 +40,7 @@ export class UserCacheService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
+			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'userChangeSuspendedState':
 				case 'remoteUserUpdated': {
@@ -60,6 +61,13 @@ export class UserCacheService implements OnApplicationShutdown {
 					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as ILocalUser;
 					this.localUserByNativeTokenCache.delete(body.oldToken);
 					this.localUserByNativeTokenCache.set(body.newToken, user);
+					break;
+				}
+				case 'follow': {
+					const follower = this.userByIdCache.get(body.followerId);
+					if (follower) follower.followingCount++;
+					const followee = this.userByIdCache.get(body.followeeId);
+					if (followee) followee.followersCount++;
 					break;
 				}
 				default:

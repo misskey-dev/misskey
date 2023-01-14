@@ -34,6 +34,26 @@ type CondFormulaValueCreatedMoreThan = {
 	sec: number;
 };
 
+type CondFormulaValueFollowersLessThanOrEq = {
+	type: 'followersLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueFollowersMoreThanOrEq = {
+	type: 'followersMoreThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueFollowingLessThanOrEq = {
+	type: 'followingLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueFollowingMoreThanOrEq = {
+	type: 'followingMoreThanOrEq';
+	value: number;
+};
+
 export type RoleCondFormulaValue =
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
@@ -41,7 +61,11 @@ export type RoleCondFormulaValue =
 	CondFormulaValueIsLocal |
 	CondFormulaValueIsRemote |
 	CondFormulaValueCreatedLessThan |
-	CondFormulaValueCreatedMoreThan;
+	CondFormulaValueCreatedMoreThan |
+	CondFormulaValueFollowersLessThanOrEq |
+	CondFormulaValueFollowersMoreThanOrEq |
+	CondFormulaValueFollowingLessThanOrEq |
+	CondFormulaValueFollowingMoreThanOrEq;
 
 @Entity()
 export class Role {

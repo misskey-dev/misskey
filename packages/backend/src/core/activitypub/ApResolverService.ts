@@ -96,7 +96,7 @@ export class Resolver {
 		}
 
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(host)) {
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
 			throw new Error('Instance is blocked');
 		}
 
