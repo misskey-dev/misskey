@@ -9,7 +9,8 @@
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div :class="$style.tl">
 				<XTimeline
-					ref="tl" :key="src"
+					ref="tlComponent"
+					:key="src"
 					:src="src"
 					:sound="true"
 					@queue="queueUpdated"
