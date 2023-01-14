@@ -127,6 +127,19 @@
 					</MkInput>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.wordMuteMax }}</template>
+				<template #suffix>{{ options_wordMuteLimit_useDefault ? i18n.ts._role.useBaseValue : (options_wordMuteLimit_value) }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_wordMuteLimit_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="options_wordMuteLimit_value" :disabled="options_wordMuteLimit_useDefault" type="number" :readonly="readonly">
+						<template #suffix>chars</template>
+					</MkInput>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 
@@ -194,6 +207,8 @@ let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.us
 let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? 0);
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
 let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? 0);
+let options_wordMuteLimit_useDefault = $ref(role?.options?.wordMuteLimit?.useDefault ?? true);
+let options_wordMuteLimit_value = $ref(role?.options?.wordMuteLimit?.value ?? 0);
 
 if (_DEV_) {
 	watch($$(condFormula), () => {
@@ -210,6 +225,7 @@ function getOptions() {
 		canManageCustomEmojis: { useDefault: options_canManageCustomEmojis_useDefault, value: options_canManageCustomEmojis_value },
 		driveCapacityMb: { useDefault: options_driveCapacityMb_useDefault, value: options_driveCapacityMb_value },
 		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
+		wordMuteLimit: { useDefault: options_wordMuteLimit_useDefault, value: options_wordMuteLimit_value },
 	};
 }
 

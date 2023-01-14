@@ -67,7 +67,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				active: ps.active,
 			});
 
-			this.globalEventService.publishInternalEvent('webhookUpdated', webhook);
+			const updated = await this.webhooksRepository.findOneByOrFail({
+				id: ps.webhookId,
+			});
+
+			this.globalEventService.publishInternalEvent('webhookUpdated', updated);
 		});
 	}
 }

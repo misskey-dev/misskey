@@ -36,8 +36,8 @@ export class ApiServerService {
 
 		private userEntityService: UserEntityService,
 		private apiCallService: ApiCallService,
-		private signupApiServiceService: SignupApiService,
-		private signinApiServiceService: SigninApiService,
+		private signupApiService: SignupApiService,
+		private signinApiService: SigninApiService,
 		private githubServerService: GithubServerService,
 		private discordServerService: DiscordServerService,
 		private twitterServerService: TwitterServerService,
@@ -116,7 +116,7 @@ export class ApiServerService {
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
 			}
-		}>('/signup', (request, reply) => this.signupApiServiceService.signup(request, reply));
+		}>('/signup', (request, reply) => this.signupApiService.signup(request, reply));
 
 		fastify.post<{
 			Body: {
@@ -129,9 +129,9 @@ export class ApiServerService {
 				credentialId?: string;
 				challengeId?: string;
 			};
-		}>('/signin', (request, reply) => this.signinApiServiceService.signin(request, reply));
+		}>('/signin', (request, reply) => this.signinApiService.signin(request, reply));
 
-		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiServiceService.signupPending(request, reply));
+		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiService.signupPending(request, reply));
 
 		fastify.register(this.discordServerService.create);
 		fastify.register(this.githubServerService.create);

@@ -62,6 +62,15 @@
 							<MkInput v-model="options_antennaLimit" type="number">
 							</MkInput>
 						</MkFolder>
+
+						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.wordMuteMax }}</template>
+							<template #suffix>{{ options_wordMuteLimit }}</template>
+							<MkInput v-model="options_wordMuteLimit" type="number">
+								<template #suffix>chars</template>
+							</MkInput>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
@@ -101,6 +110,7 @@ let options_canInvite = $ref(instance.baseRole.canInvite);
 let options_canManageCustomEmojis = $ref(instance.baseRole.canManageCustomEmojis);
 let options_driveCapacityMb = $ref(instance.baseRole.driveCapacityMb);
 let options_antennaLimit = $ref(instance.baseRole.antennaLimit);
+let options_wordMuteLimit = $ref(instance.baseRole.wordMuteLimit);
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-role-override', {
@@ -112,6 +122,7 @@ async function updateBaseRole() {
 			canManageCustomEmojis: options_canManageCustomEmojis,
 			driveCapacityMb: options_driveCapacityMb,
 			antennaLimit: options_antennaLimit,
+			wordMuteLimit: options_wordMuteLimit,
 		},
 	});
 }
