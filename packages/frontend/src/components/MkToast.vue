@@ -49,7 +49,7 @@ onMounted(() => {
 	transform: translateY(-100%);
 }
 
-> .root {
+.root {
 	position: fixed;
 	left: 0;
 	right: 0;
