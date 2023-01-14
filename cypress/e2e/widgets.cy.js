@@ -1,6 +1,3 @@
-const path = require('path');
-const {generateScopedName} = require("../../packages/frontend/utils");
-
 describe('After user signed in', () => {
 	beforeEach(() => {
 		cy.resetState();
@@ -32,10 +29,8 @@ describe('After user signed in', () => {
 
 	it('first widget should be removed', () => {
 		cy.get('.mk-widget-edit').click();
-		const containerClassName = 'components-MkWidgets-customize-container';
-		const removeButtonClassName = 'components-MkWidgets-customize-container-remove';
-		cy.get(`.${containerClassName}:first-child .${removeButtonClassName}._button`).click();
-		cy.get(`.${containerClassName}`).should('have.length', 2);
+		cy.get(`.components-MkWidgets-customize-container:first-child .components-MkWidgets-customize-container-remove._button`).click();
+		cy.get(`.components-MkWidgets-customize-container`).should('have.length', 2);
 	});
 
 	function buildWidgetTest(widgetName) {
