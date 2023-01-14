@@ -179,12 +179,12 @@
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.userListMax }}</template>
-				<template #suffix>{{ options_userList_useDefault ? i18n.ts._role.useBaseValue : (options_userList_value) }}</template>
+				<template #suffix>{{ options_userListLimit_useDefault ? i18n.ts._role.useBaseValue : (options_userListLimit_value) }}</template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_userList_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options_userListLimit_useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_userList_value" :disabled="options_userList_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options_userListLimit_value" :disabled="options_userListLimit_useDefault" type="number" :readonly="readonly">
 					</MkInput>
 				</div>
 			</MkFolder>
