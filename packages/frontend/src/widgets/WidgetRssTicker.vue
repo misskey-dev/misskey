@@ -1,7 +1,8 @@
 <template>
 <MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-ticker">
-	<template #header><i class="ti ti-rss"></i>RSS</template>
-	<template #func><button class="_button" @click="configure"><i class="ti ti-settings"></i></button></template>
+	<template #icon><i class="ti ti-rss"></i></template>
+	<template #header>RSS</template>
+	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure"><i class="ti ti-settings"></i></button></template>
 
 	<div :class="$style.feed">
 		<div v-if="fetching" :class="$style.loading">
@@ -10,7 +11,7 @@
 		<div v-else>
 			<Transition :name="$style.change" mode="default" appear>
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
-					<span v-for="item in items" :class="$style.item" :key="item.link">
+					<span v-for="item in items" :key="item.link" :class="$style.item">
 						<a :class="$style.link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
 				</MarqueeText>
@@ -86,7 +87,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const rawItems = ref([]);
 const items = computed(() => {
-	const newItems = rawItems.value.slice(0, widgetProps.maxEntries)
+	const newItems = rawItems.value.slice(0, widgetProps.maxEntries);
 	if (widgetProps.shuffle) {
 		shuffle(newItems);
 	}
@@ -106,12 +107,12 @@ const tick = () => {
 	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
 
 	window.fetch(fetchEndpoint.value, {})
-	.then(res => res.json())
-	.then(feed => {
-		rawItems.value = feed.items ?? [];
-		fetching.value = false;
-		key++;
-	});
+		.then(res => res.json())
+		.then(feed => {
+			rawItems.value = feed.items ?? [];
+			fetching.value = false;
+			key++;
+		});
 };
 
 watch(() => fetchEndpoint, tick);
