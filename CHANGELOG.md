@@ -52,6 +52,7 @@ You should also include the user name that made the change.
 	- 0.12.x未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
 - Firefox110以下はサポートされなくなりました
+  - 109でもContainerQueriesのフラグを有効にする事で問題なく使用できます
 
 #### For app developers
 - API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
