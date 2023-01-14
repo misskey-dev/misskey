@@ -35,7 +35,9 @@ RUN apt-get update \
 	&& apt-get -y clean \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& groupadd -g "${GID}" misskey \
-	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey
+	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
+    && find / -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
+    && find / -type f -perm /g+s -ignore_readdir_race -exec chmod g-s {} \;
 
 USER misskey
 WORKDIR /misskey
@@ -48,6 +50,9 @@ COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/built ./pa
 COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
 COPY --chown=misskey:misskey . ./
 
+RUN rm -rf .git/
+
 ENV NODE_ENV=production
+HEALTHCHECK --interval=5s --retries=20 CMD ["curl", "-s", "-S", "-o", "/dev/null", "http://localhost:3000/"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["yarn", "run", "migrateandstart"]

@@ -1,0 +1,24 @@
+---
+name: Dockle
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  dockle:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_CONTENT_TRUST: 1
+    steps:
+      - uses: actions/checkout@v3.2.0
+      - run: |
+          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v0.4.10/dockle_0.4.10_Linux-64bit.deb"
+          sudo dpkg -i dockle.deb
+          docker compose up -d web
+          cmd="dockle --exit-code 1 $(docker compose images web | awk 'OFS=":" {print $2,$3}' | tail -n +2) ${image_name}"
+          echo "> ${cmd}"
+          eval "${cmd}"

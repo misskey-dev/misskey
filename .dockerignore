@@ -17,6 +17,9 @@ misskey-assets/
 fluent-emojis/
 .pnp.*
 .yarn/*
+.idea/
+packages/*/.vscode/
+packages/backend/test/docker-compose.yml
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
