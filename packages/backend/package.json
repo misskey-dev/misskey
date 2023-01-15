@@ -6,15 +6,15 @@
 	"scripts": {
 		"start": "node ./built/index.js",
 		"start:test": "NODE_ENV=test node ./built/index.js",
-		"migrate": "typeorm migration:run -d ormconfig.js",
+		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
 		"build": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
 		"lint": "tsc --noEmit && eslint --quiet \"src/**/*.ts\"",
 		"jest": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
 		"jest-and-coverage": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
 		"jest-clear": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --clearCache",
-		"test": "yarn jest",
-		"test-and-coverage": "yarn jest-and-coverage"
+		"test": "pnpm jest",
+		"test-and-coverage": "pnpm jest-and-coverage"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs": "^4.1.0",
@@ -116,6 +116,7 @@
 		"tsconfig-paths": "4.1.2",
 		"twemoji-parser": "14.0.0",
 		"typeorm": "0.3.11",
+		"typescript": "4.9.4",
 		"ulid": "2.3.0",
 		"undici": "^5.15.0",
 		"unzipper": "0.10.11",
@@ -180,7 +181,6 @@
 		"execa": "6.1.0",
 		"jest": "29.3.1",
 		"jest-mock": "^29.3.1",
-		"node-fetch": "3.3.0",
-		"typescript": "4.9.4"
+		"node-fetch": "3.3.0"
 	}
 }
