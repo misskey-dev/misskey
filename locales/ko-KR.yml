@@ -954,6 +954,11 @@ _role:
   chooseRoleToAssign: "할당할 역할 선택"
   canEditMembersByModerator: "모더레이터의 역할 수정 허용"
   descriptionOfCanEditMembersByModerator: "이 옵션을 켜면 모더레이터도 이 역할에 사용자를 추가하거나 삭제할 수 있습니다. 꺼져 있으면 관리자만 가능합니다."
+  priority: "우선순위"
+  _priority:
+    low: "낮음"
+    middle: "보통"
+    high: "높음"
   _options:
     gtlAvailable: "글로벌 타임라인 보이기"
     ltlAvailable: "로컬 타임라인 보이기"
