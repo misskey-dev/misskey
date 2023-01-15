@@ -16,12 +16,12 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		options: {
+		policies: {
 			type: 'object',
 		},
 	},
 	required: [
-		'options',
+		'policies',
 	],
 } as const;
 
@@ -34,9 +34,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps) => {
 			await this.metaService.update({
-				defaultRoleOverride: ps.options,
+				policies: ps.policies,
 			});
-			this.globalEventService.publishInternalEvent('defaultRoleOverrideUpdated', ps.options);
+			this.globalEventService.publishInternalEvent('policiesUpdated', ps.policies);
 		});
 	}
 }

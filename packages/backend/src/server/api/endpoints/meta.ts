@@ -7,7 +7,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import { DEFAULT_ROLE } from '@/core/RoleService.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -334,7 +334,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				translatorAvailable: instance.deeplAuthKey != null,
 
-				baseRole: { ...DEFAULT_ROLE, ...instance.defaultRoleOverride },
+				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
 				...(ps.detail ? {
 					pinnedPages: instance.pinnedPages,

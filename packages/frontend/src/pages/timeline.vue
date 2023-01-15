@@ -35,8 +35,8 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
-const isLocalTimelineAvailable = ($i == null && instance.baseRole.ltlAvailable) || ($i != null && $i.role.ltlAvailable);
-const isGlobalTimelineAvailable = ($i == null && instance.baseRole.gtlAvailable) || ($i != null && $i.role.gtlAvailable);
+const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
+const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
 const keymap = {
 	't': focus,
 };

@@ -952,11 +952,17 @@ _role:
   isPublic: "ロールを公開"
   descriptionOfIsPublic: "ロールにアサインされたユーザーを誰でも見ることができます。また、ユーザーのプロフィールでこのロールが表示されます。"
   options: "オプション"
+  policies: "ポリシー"
   baseRole: "ベースロール"
   useBaseValue: "ベースロールの値を使用"
   chooseRoleToAssign: "アサインするロールを選択"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
   descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
+  priority: "優先度"
+  _priority:
+    low: "低"
+    middle: "中"
+    high: "高"
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"

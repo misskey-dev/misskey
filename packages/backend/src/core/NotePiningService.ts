@@ -57,7 +57,7 @@ export class NotePiningService {
 
 		const pinings = await this.userNotePiningsRepository.findBy({ userId: user.id });
 
-		if (pinings.length >= (await this.roleService.getUserRoleOptions(user.id)).pinLimit) {
+		if (pinings.length >= (await this.roleService.getUserPolicies(user.id)).pinLimit) {
 			throw new IdentifiableError('15a018eb-58e5-4da1-93be-330fcc5e4e1a', 'You can not pin notes any more.');
 		}
 

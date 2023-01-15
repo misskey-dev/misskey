@@ -35,7 +35,7 @@ export class UserListService {
 		const currentCount = await this.userListJoiningsRepository.countBy({
 			userListId: list.id,
 		});
-		if (currentCount > (await this.roleService.getUserRoleOptions(me.id)).userEachUserListsLimit) {
+		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
 			throw new Error('Too many users');
 		}
 

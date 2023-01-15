@@ -47,10 +47,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Calculate drive usage
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(me.id);
 
-			const myRole = await this.roleService.getUserRoleOptions(me.id);
+			const policies = await this.roleService.getUserPolicies(me.id);
 
 			return {
-				capacity: 1024 * 1024 * myRole.driveCapacityMb,
+				capacity: 1024 * 1024 * policies.driveCapacityMb,
 				usage: usage,
 			};
 		});
