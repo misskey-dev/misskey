@@ -951,6 +951,7 @@ _role:
   isPublic: "角色公开"
   descriptionOfIsPublic: "任何人都可以看到分配该角色的用户。而用户的个人资料也将显示该角色。"
   options: "选项"
+  policies: "策略"
   baseRole: "基本角色"
   useBaseValue: "使用基本角色的值"
   chooseRoleToAssign: "选择要分配的角色"
