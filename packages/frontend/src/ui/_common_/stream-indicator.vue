@@ -1,5 +1,5 @@
 <template>
-<div v-if="true || hasDisconnected && $store.state.serverDisconnectedBehavior === 'quiet'" :class="$style.root" class="_panel _shadow" @click="resetDisconnected">
+<div v-if="hasDisconnected && $store.state.serverDisconnectedBehavior === 'quiet'" :class="$style.root" class="_panel _shadow" @click="resetDisconnected">
 	<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.disconnectedFromServer }}</div>
 	<div :class="$style.command" class="_buttons">
 		<MkButton :class="$style.commandButton" small primary @click="reload">{{ i18n.ts.reload }}</MkButton>
