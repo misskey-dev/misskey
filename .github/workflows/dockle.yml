@@ -19,8 +19,10 @@ jobs:
           curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v0.4.10/dockle_0.4.10_Linux-64bit.deb"
           sudo dpkg -i dockle.deb
       - run: cp .config/docker_example.env .config/docker.env
-      - run: docker compose up -d web
       - run: |
-          cmd="dockle --exit-code 1 $(docker compose images web | awk 'OFS=":" {print $2,$3}' | tail -n +2) ${image_name}"
+          docker compose up -d web
+          docker tag "$(docker compose images web | awk 'OFS=":" {print $4}' | tail -n +2)" misskey-web:latest
+      - run: |
+          cmd="dockle --exit-code 1 misskey-web:latest ${image_name}"
           echo "> ${cmd}"
           eval "${cmd}"
