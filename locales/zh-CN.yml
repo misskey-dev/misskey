@@ -956,6 +956,11 @@ _role:
   chooseRoleToAssign: "选择要分配的角色"
   canEditMembersByModerator: "允许监察者编辑成员"
   descriptionOfCanEditMembersByModerator: "如果选中，监察者和管理员都能够为用户分配/取消分配角色。如果未选中，则只有管理员可以执行此操作。"
+  priority: "优先级"
+  _priority:
+    low: "低"
+    middle: "中"
+    high: "高"
   _options:
     gtlAvailable: "查看全局时间线"
     ltlAvailable: "查看本地时间线"
