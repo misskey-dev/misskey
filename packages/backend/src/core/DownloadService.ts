@@ -60,7 +60,7 @@ export class DownloadService {
 	@bindThis
 	public async fetchUrl(url: string): Promise<NonNullBodyResponse> {
 		this.logger.info(`Downloading ${chalk.cyan(url)} ...`);
-	
+
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
@@ -70,7 +70,7 @@ export class DownloadService {
 		if (response.body === null) {
 			throw new StatusError('No body', 400, 'No body');
 		}
-	
+
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 
 		return response as NonNullBodyResponse;
