@@ -261,7 +261,6 @@ defineExpose({
 	box-shadow: none;
 	box-sizing: border-box;
 	color: var(--fg);
-	backdrop-filter: var(--blur, blur(15px));
 }
 
 .footer {
