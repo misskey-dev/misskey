@@ -64,6 +64,7 @@ You should also include the user name that made the change.
 - API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
 - API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
+- API: `instance`エンティティの`caughtAt`は`firstRetrievedAt`に名前が変わりました
 
 ### Improvements
 - Role system @syuilo
