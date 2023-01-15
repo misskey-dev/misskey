@@ -203,7 +203,7 @@ export function getNoteMenu(props: {
 					action: unclip,
 				}, null] : []
 			), {
-				icon: 'ti ti-external-link',
+				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
 				action: notedetails,
 			}, {

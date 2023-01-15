@@ -49,7 +49,8 @@
 				</div>
 				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 				<MkContainer :max-height="300" :foldable="true" class="other">
-					<template #header><i class="ti ti-clock"></i> {{ i18n.ts.recentPosts }}</template>
+					<template #icon><i class="ti ti-clock"></i></template>
+					<template #header>{{ i18n.ts.recentPosts }}</template>
 					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
 						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
 					</MkPagination>

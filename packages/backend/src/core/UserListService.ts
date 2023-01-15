@@ -10,6 +10,7 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class UserListService {
@@ -23,13 +24,21 @@ export class UserListService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private userFollowingService: UserFollowingService,
+		private roleService: RoleService,
 		private globalEventServie: GlobalEventService,
 		private proxyAccountService: ProxyAccountService,
 	) {
 	}
 
 	@bindThis
-	public async push(target: User, list: UserList) {
+	public async push(target: User, list: UserList, me: User) {
+		const currentCount = await this.userListJoiningsRepository.countBy({
+			userListId: list.id,
+		});
+		if (currentCount > (await this.roleService.getUserRoleOptions(me.id)).userEachUserListsLimit) {
+			throw new Error('Too many users');
+		}
+
 		await this.userListJoiningsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),

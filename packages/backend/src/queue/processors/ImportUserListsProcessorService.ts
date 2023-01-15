@@ -10,10 +10,10 @@ import { DownloadService } from '@/core/DownloadService.js';
 import { UserListService } from '@/core/UserListService.js';
 import { IdService } from '@/core/IdService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ImportUserListsProcessorService {
@@ -102,7 +102,7 @@ export class ImportUserListsProcessorService {
 
 				if (await this.userListJoiningsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
 
-				this.userListService.push(target, list!);
+				this.userListService.push(target, list!, user);
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

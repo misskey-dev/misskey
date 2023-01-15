@@ -24,6 +24,7 @@ export const getBuiltinThemes = () => Promise.all(
 		'l-coffee',
 		'l-apricot',
 		'l-rainy',
+		'l-botanical',
 		'l-vivid',
 		'l-cherry',
 		'l-sushi',

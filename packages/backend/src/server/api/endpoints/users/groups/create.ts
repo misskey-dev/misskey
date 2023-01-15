@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import type { UserGroupsRepository, UserGroupJoiningsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
@@ -15,6 +16,11 @@ export const meta = {
 	kind: 'write:user-groups',
 
 	description: 'Create a new group.',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 10,
+	},
 
 	res: {
 		type: 'object',

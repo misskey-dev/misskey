@@ -6,6 +6,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -70,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			query
-				.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
+				.andWhere('note.text ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` })
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')

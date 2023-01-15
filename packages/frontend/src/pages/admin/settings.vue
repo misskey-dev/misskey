@@ -5,52 +5,44 @@
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<FormInput v-model="name">
+					<MkInput v-model="name">
 						<template #label>{{ i18n.ts.instanceName }}</template>
-					</FormInput>
+					</MkInput>
 
-					<FormTextarea v-model="description">
+					<MkTextarea v-model="description">
 						<template #label>{{ i18n.ts.instanceDescription }}</template>
-					</FormTextarea>
+					</MkTextarea>
 
-					<FormInput v-model="tosUrl">
+					<MkInput v-model="tosUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.tosUrl }}</template>
-					</FormInput>
+					</MkInput>
 
 					<FormSplit :min-width="300">
-						<FormInput v-model="maintainerName">
+						<MkInput v-model="maintainerName">
 							<template #label>{{ i18n.ts.maintainerName }}</template>
-						</FormInput>
+						</MkInput>
 
-						<FormInput v-model="maintainerEmail" type="email">
+						<MkInput v-model="maintainerEmail" type="email">
 							<template #prefix><i class="ti ti-mail"></i></template>
 							<template #label>{{ i18n.ts.maintainerEmail }}</template>
-						</FormInput>
+						</MkInput>
 					</FormSplit>
 
-					<FormTextarea v-model="pinnedUsers">
+					<MkTextarea v-model="pinnedUsers">
 						<template #label>{{ i18n.ts.pinnedUsers }}</template>
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
-					</FormTextarea>
+					</MkTextarea>
 
 					<FormSection>
 						<div class="_gaps_s">
-							<FormSwitch v-model="enableRegistration">
+							<MkSwitch v-model="enableRegistration">
 								<template #label>{{ i18n.ts.enableRegistration }}</template>
-							</FormSwitch>
+							</MkSwitch>
 
-							<FormSwitch v-model="emailRequiredForSignup">
+							<MkSwitch v-model="emailRequiredForSignup">
 								<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
-							</FormSwitch>
-						</div>
-					</FormSection>
-
-					<FormSection>
-						<div class="_gaps_s">
-							<FormSwitch v-model="enableLocalTimeline">{{ i18n.ts.enableLocalTimeline }}</FormSwitch>
-							<FormSwitch v-model="enableGlobalTimeline">{{ i18n.ts.enableGlobalTimeline }}</FormSwitch>
-							<FormInfo>{{ i18n.ts.disablingTimelinesInfo }}</FormInfo>
+							</MkSwitch>
 						</div>
 					</FormSection>
 
@@ -58,36 +50,36 @@
 						<template #label>{{ i18n.ts.theme }}</template>
 
 						<div class="_gaps_m">
-							<FormInput v-model="iconUrl">
+							<MkInput v-model="iconUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.iconUrl }}</template>
-							</FormInput>
+							</MkInput>
 
-							<FormInput v-model="bannerUrl">
+							<MkInput v-model="bannerUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.bannerUrl }}</template>
-							</FormInput>
+							</MkInput>
 
-							<FormInput v-model="backgroundImageUrl">
+							<MkInput v-model="backgroundImageUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
-							</FormInput>
+							</MkInput>
 
-							<FormInput v-model="themeColor">
+							<MkInput v-model="themeColor">
 								<template #prefix><i class="ti ti-palette"></i></template>
 								<template #label>{{ i18n.ts.themeColor }}</template>
 								<template #caption>#RRGGBB</template>
-							</FormInput>
+							</MkInput>
 
-							<FormTextarea v-model="defaultLightTheme">
+							<MkTextarea v-model="defaultLightTheme">
 								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
 								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</FormTextarea>
+							</MkTextarea>
 
-							<FormTextarea v-model="defaultDarkTheme">
+							<MkTextarea v-model="defaultDarkTheme">
 								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
 								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</FormTextarea>
+							</MkTextarea>
 						</div>
 					</FormSection>
 
@@ -95,24 +87,10 @@
 						<template #label>{{ i18n.ts.files }}</template>
 
 						<div class="_gaps_m">
-							<FormSwitch v-model="cacheRemoteFiles">
+							<MkSwitch v-model="cacheRemoteFiles">
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
-							</FormSwitch>
-
-							<FormSplit :min-width="280">
-								<FormInput v-model="localDriveCapacityMb" type="number">
-									<template #label>{{ i18n.ts.driveCapacityPerLocalAccount }}</template>
-									<template #suffix>MB</template>
-									<template #caption>{{ i18n.ts.inMb }}</template>
-								</FormInput>
-
-								<FormInput v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">
-									<template #label>{{ i18n.ts.driveCapacityPerRemoteAccount }}</template>
-									<template #suffix>MB</template>
-									<template #caption>{{ i18n.ts.inMb }}</template>
-								</FormInput>
-							</FormSplit>
+							</MkSwitch>
 						</div>
 					</FormSection>
 
@@ -120,21 +98,21 @@
 						<template #label>ServiceWorker</template>
 
 						<div class="_gaps_m">
-							<FormSwitch v-model="enableServiceWorker">
+							<MkSwitch v-model="enableServiceWorker">
 								<template #label>{{ i18n.ts.enableServiceworker }}</template>
 								<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
-							</FormSwitch>
+							</MkSwitch>
 
 							<template v-if="enableServiceWorker">
-								<FormInput v-model="swPublicKey">
+								<MkInput v-model="swPublicKey">
 									<template #prefix><i class="ti ti-key"></i></template>
 									<template #label>Public key</template>
-								</FormInput>
+								</MkInput>
 
-								<FormInput v-model="swPrivateKey">
+								<MkInput v-model="swPrivateKey">
 									<template #prefix><i class="ti ti-key"></i></template>
 									<template #label>Private key</template>
-								</FormInput>
+								</MkInput>
 							</template>
 						</div>
 					</FormSection>
@@ -143,13 +121,13 @@
 						<template #label>DeepL Translation</template>
 
 						<div class="_gaps_m">
-							<FormInput v-model="deeplAuthKey">
+							<MkInput v-model="deeplAuthKey">
 								<template #prefix><i class="ti ti-key"></i></template>
 								<template #label>DeepL Auth Key</template>
-							</FormInput>
-							<FormSwitch v-model="deeplIsPro">
+							</MkInput>
+							<MkSwitch v-model="deeplIsPro">
 								<template #label>Pro account</template>
-							</FormSwitch>
+							</MkSwitch>
 						</div>
 					</FormSection>
 				</div>
@@ -162,9 +140,9 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XHeader from './_header_.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -185,12 +163,8 @@ let backgroundImageUrl: string | null = $ref(null);
 let themeColor: any = $ref(null);
 let defaultLightTheme: any = $ref(null);
 let defaultDarkTheme: any = $ref(null);
-let enableLocalTimeline: boolean = $ref(false);
-let enableGlobalTimeline: boolean = $ref(false);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
-let localDriveCapacityMb: any = $ref(0);
-let remoteDriveCapacityMb: any = $ref(0);
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
@@ -212,12 +186,8 @@ async function init() {
 	defaultDarkTheme = meta.defaultDarkTheme;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
-	enableLocalTimeline = !meta.disableLocalTimeline;
-	enableGlobalTimeline = !meta.disableGlobalTimeline;
 	pinnedUsers = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles = meta.cacheRemoteFiles;
-	localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
-	remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 	enableRegistration = !meta.disableRegistration;
 	emailRequiredForSignup = meta.emailRequiredForSignup;
 	enableServiceWorker = meta.enableServiceWorker;
@@ -240,12 +210,8 @@ function save() {
 		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
 		maintainerName,
 		maintainerEmail,
-		disableLocalTimeline: !enableLocalTimeline,
-		disableGlobalTimeline: !enableGlobalTimeline,
 		pinnedUsers: pinnedUsers.split('\n'),
 		cacheRemoteFiles,
-		localDriveCapacityMb: parseInt(localDriveCapacityMb, 10),
-		remoteDriveCapacityMb: parseInt(remoteDriveCapacityMb, 10),
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,
 		enableServiceWorker,

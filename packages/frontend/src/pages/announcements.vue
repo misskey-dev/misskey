@@ -53,14 +53,14 @@ definePageMetadata({
 <style lang="scss" scoped>
 .ruryvtyk {
 	> .announcement {
+		padding: 16px;
+
 		> .header {
-			padding: 16px;
+			margin-bottom: 16px;
 			font-weight: bold;
 		}
 
 		> .content {
-			padding: 0 16px;
-		
 			> img {
 				display: block;
 				max-height: 300px;
@@ -69,7 +69,7 @@ definePageMetadata({
 		}
 
 		> .footer {
-			padding: 16px;
+			margin-top: 16px;
 		}
 	}
 }

@@ -2,9 +2,9 @@
 <div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<FormTextarea v-model="code" tall>
+	<MkTextarea v-model="code" tall>
 		<template #label>{{ i18n.ts.code }}</template>
-	</FormTextarea>
+	</MkTextarea>
 
 	<div>
 		<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
@@ -16,7 +16,7 @@
 import { defineAsyncComponent, nextTick, ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';

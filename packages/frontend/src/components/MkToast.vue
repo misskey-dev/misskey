@@ -1,8 +1,14 @@
 <template>
-<div class="mk-toast">
-	<Transition :name="$store.state.animation ? 'toast' : ''" appear @after-leave="emit('closed')">
-		<div v-if="showing" class="body _acrylic" :style="{ zIndex }">
-			<div class="message">
+<div>
+	<Transition
+		:enter-active-class="$store.state.animation ? $style.transition_toast_enterActive : ''"
+		:leave-active-class="$store.state.animation ? $style.transition_toast_leaveActive : ''"
+		:enter-from-class="$store.state.animation ? $style.transition_toast_enterFrom : ''"
+		:leave-to-class="$store.state.animation ? $style.transition_toast_leaveTo : ''"
+		appear @after-leave="emit('closed')"
+	>
+		<div v-if="showing" class="_acrylic" :class="$style.root" :style="{ zIndex }">
+			<div style="padding: 16px 24px;">
 				{{ message }}
 			</div>
 		</div>
@@ -32,35 +38,31 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.toast-enter-active, .toast-leave-active {
+<style lang="scss" module>
+.transition_toast_enterActive,
+.transition_toast_leaveActive {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.toast-enter-from, .toast-leave-to {
+.transition_toast_enterFrom,
+.transition_toast_leaveTo {
 	opacity: 0;
 	transform: translateY(-100%);
 }
 
-.mk-toast {
-	> .body {
-		position: fixed;
-		left: 0;
-		right: 0;
-		top: 0;
-		margin: 0 auto;
-		margin-top: 16px;
-		min-width: 300px;
-		max-width: calc(100% - 32px);
-		width: min-content;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-		border-radius: 8px;
-		overflow: clip;
-		text-align: center;
-		pointer-events: none;
-
-		> .message {
-			padding: 16px 24px;
-		}
-	}
+.root {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	margin: 0 auto;
+	margin-top: 16px;
+	min-width: 300px;
+	max-width: calc(100% - 32px);
+	width: min-content;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+	border-radius: 8px;
+	overflow: clip;
+	text-align: center;
+	pointer-events: none;
 }
 </style>

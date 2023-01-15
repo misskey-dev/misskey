@@ -17,7 +17,7 @@
 		</template>
 	</template>
 
-	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
+	<div :class="$style.root" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
 		<RouterView :router="router"/>
 	</div>
 </MkWindow>
@@ -84,6 +84,7 @@ provideMetadataReceiver((info) => {
 });
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
+provide('forceSpacerMin', true);
 
 const contextmenu = $computed(() => ([{
 	icon: 'ti ti-player-eject',
@@ -132,9 +133,11 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.yrolvcoq {
+<style lang="scss" module>
+.root {
 	min-height: 100%;
 	background: var(--bg);
+
+	--margin: var(--marginHalf);
 }
 </style>

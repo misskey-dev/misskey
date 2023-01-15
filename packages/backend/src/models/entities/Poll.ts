@@ -24,7 +24,7 @@ export class Poll {
 	public multiple: boolean;
 
 	@Column('varchar', {
-		length: 128, array: true, default: '{}',
+		length: 256, array: true, default: '{}',
 	})
 	public choices: string[];
 

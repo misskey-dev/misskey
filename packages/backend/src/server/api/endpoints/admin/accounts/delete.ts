@@ -11,7 +11,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireAdmin: true,
 } as const;
 
 export const paramDef = {
@@ -41,12 +41,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.isAdmin) {
-				throw new Error('cannot suspend admin');
-			}
-
-			if (user.isModerator) {
-				throw new Error('cannot suspend moderator');
+			if (user.isRoot) {
+				throw new Error('cannot delete a root account');
 			}
 
 			if (this.userEntityService.isLocalUser(user)) {

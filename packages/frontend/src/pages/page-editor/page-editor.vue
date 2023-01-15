@@ -59,11 +59,11 @@
 import { defineAsyncComponent, computed, provide, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSelect from '@/components/form/select.vue';
-import MkSwitch from '@/components/form/switch.vue';
-import MkInput from '@/components/form/input.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
 import { url } from '@/config';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';

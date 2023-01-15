@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import MkSwitch from './form/switch.vue';
+import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';

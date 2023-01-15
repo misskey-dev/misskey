@@ -12,12 +12,15 @@ import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
+import type Logger from '@/logger.js';
 
 export class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
 	private undiciFetcher: UndiciFetcher;
+	private logger: Logger;
 
 	constructor(
 		private config: Config,
@@ -32,12 +35,14 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
+		private loggerService: LoggerService,
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
+		this.logger = this.loggerService?.getLogger('ap-resolve');  // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
-		}));
+		}), this.logger);
 	}
 
 	@bindThis
@@ -91,7 +96,7 @@ export class Resolver {
 		}
 
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(host)) {
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
 			throw new Error('Instance is blocked');
 		}
 

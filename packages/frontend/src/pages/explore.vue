@@ -33,9 +33,9 @@
 import { computed, watch } from 'vue';
 import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkInput from '@/components/form/input.vue';
-import MkRadios from '@/components/form/radios.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
 });
 
 let tab = $ref(props.initialTab);
-let tagsEl = $shallowRef<InstanceType<typeof MkFolder>>();
+let tagsEl = $shallowRef<InstanceType<typeof MkFoldableSection>>();
 let searchQuery = $ref(null);
 let searchOrigin = $ref('combined');
 

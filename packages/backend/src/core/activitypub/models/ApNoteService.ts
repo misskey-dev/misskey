@@ -324,7 +324,7 @@ export class ApNoteService {
 	
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) throw { statusCode: 451 };
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) throw { statusCode: 451 };
 	
 		const unlock = await this.appLockService.getApLock(uri);
 	

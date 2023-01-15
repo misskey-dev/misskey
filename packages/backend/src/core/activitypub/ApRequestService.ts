@@ -6,7 +6,9 @@ import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
 import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
 
 type Request = {
 	url: string;
@@ -29,6 +31,7 @@ type PrivateKey = {
 @Injectable()
 export class ApRequestService {
 	private undiciFetcher: UndiciFetcher;
+	private logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -36,10 +39,12 @@ export class ApRequestService {
 
 		private userKeypairStoreService: UserKeypairStoreService,
 		private httpRequestService: HttpRequestService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService?.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
 			maxRedirections: 0,
-		}));
+		}), this.logger );
 	}
 
 	@bindThis
@@ -153,7 +158,6 @@ export class ApRequestService {
 			url,
 			body,
 			additionalHeaders: {
-				'User-Agent': this.config.userAgent,
 			},
 		});
 
@@ -183,7 +187,6 @@ export class ApRequestService {
 			},
 			url,
 			additionalHeaders: {
-				'User-Agent': this.config.userAgent,
 			},
 		});
 

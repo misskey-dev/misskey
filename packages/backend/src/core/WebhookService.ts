@@ -3,8 +3,9 @@ import Redis from 'ioredis';
 import type { WebhooksRepository } from '@/models/index.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import { DI } from '@/di-symbols.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
+import { StreamMessages } from '@/server/api/stream/types.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class WebhookService implements OnApplicationShutdown {
@@ -39,7 +40,7 @@ export class WebhookService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
+			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'webhookCreated':
 					if (body.active) {

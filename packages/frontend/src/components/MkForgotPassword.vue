@@ -36,7 +36,7 @@
 import { } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';

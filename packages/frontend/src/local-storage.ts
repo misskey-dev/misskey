@@ -2,6 +2,8 @@ type Keys =
 	'v' |
 	'lastVersion' |
 	'instance' |
+	'emojis' | // TODO: indexed db
+	'lastEmojisFetchedAt' |
 	'account' |
 	'accounts' |
 	'latestDonationInfoShownAt' |

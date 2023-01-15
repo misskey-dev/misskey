@@ -120,6 +120,10 @@ export class UndiciFetcher {
 		const res = await undici.fetch(url, {
 			dispatcher: this.getAgentByUrl(new URL(url), privateOptions.bypassProxy),
 			...options,
+			headers: {
+				'User-Agent': this.userAgent ?? '',
+				...(options.headers ?? {}),
+			},
 		}).catch((err) => {
 			this.logger?.error('fetch error', err);
 			throw new StatusError('Resource Unreachable', 500, 'Resource Unreachable');
@@ -136,7 +140,6 @@ export class UndiciFetcher {
 			url,
 			{
 				headers: Object.assign({
-					'User-Agent': this.userAgent,
 					Accept: accept,
 				}, headers ?? {}),
 			}
@@ -151,7 +154,6 @@ export class UndiciFetcher {
 			url,
 			{
 				headers: Object.assign({
-					'User-Agent': this.userAgent,
 					Accept: accept,
 				}, headers ?? {}),
 			}
@@ -219,7 +221,7 @@ export class HttpRequestService {
 			},
 		}
 
-		this.maxSockets = Math.max(256, this.config.deliverJobConcurrency ?? 128);
+		this.maxSockets = Math.max(64, this.config.deliverJobConcurrency ?? 128);
 
 		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherOption(), this.logger);
 
@@ -269,11 +271,6 @@ export class HttpRequestService {
 		//#endregion
 	}
 
-	/**
-	 * Get http agent by URL
-	 * @param url URL
-	 * @param bypassProxy Allways bypass proxy
-	 */
 	@bindThis
 	public getStandardUndiciFetcherOption(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}) {
 		return {
@@ -290,6 +287,7 @@ export class HttpRequestService {
 				}
 			}
 			} : {}),
+			userAgent: this.config.userAgent,
 		}
 	}
 

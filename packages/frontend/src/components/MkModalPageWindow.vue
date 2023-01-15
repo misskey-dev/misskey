@@ -117,6 +117,7 @@ function onContextmenu(ev: MouseEvent) {
 
 <style lang="scss" scoped>
 .hrmcaedk {
+	margin: auto;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;

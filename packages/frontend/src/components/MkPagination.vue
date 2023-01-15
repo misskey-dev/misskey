@@ -1,5 +1,11 @@
 <template>
-<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+<Transition
+	:enter-active-class="$store.state.animation ? $style.transition_fade_enterActive : ''"
+	:leave-active-class="$store.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enter-from-class="$store.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leave-to-class="$store.state.animation ? $style.transition_fade_leaveTo : ''"
+	mode="out-in"
+>
 	<MkLoading v-if="fetching"/>
 
 	<MkError v-else-if="error" @retry="init()"/>
@@ -14,15 +20,15 @@
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
-			<MkButton v-if="!moreFetching" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMoreAhead">
+		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _margin">
-			<MkButton v-if="!moreFetching" v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+		<slot :items="items" :fetching="fetching || moreFetching"></slot>
+		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
@@ -31,15 +37,18 @@
 </Transition>
 </template>
 
-<script lang="ts" setup>
-import { computed, ComputedRef, isRef, markRaw, onActivated, onDeactivated, Ref, ref, shallowRef, watch } from 'vue';
+<script lang="ts">
+import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
+import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
 import MkButton from '@/components/MkButton.vue';
+import { defaultStore } from '@/store';
+import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
+const TOLERANCE = 16;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
@@ -58,8 +67,11 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 	reversed?: boolean;
 
 	offsetMode?: boolean;
-};
 
+	pageEl?: HTMLElement;
+};
+</script>
+<script lang="ts" setup>
 const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
@@ -72,21 +84,73 @@ const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
 }>();
 
-type Item = { id: string; [another: string]: unknown; };
+let rootEl = $shallowRef<HTMLElement>();
 
-const rootEl = shallowRef<HTMLElement>();
-const items = ref<Item[]>([]);
-const queue = ref<Item[]>([]);
+// 遡り中かどうか
+let backed = $ref(false);
+
+let scrollRemove = $ref<(() => void) | null>(null);
+
+const items = ref<MisskeyEntity[]>([]);
+const queue = ref<MisskeyEntity[]>([]);
 const offset = ref(0);
 const fetching = ref(true);
 const moreFetching = ref(false);
 const more = ref(false);
-const backed = ref(false); // 遡り中か否か
 const isBackTop = ref(false);
 const empty = computed(() => items.value.length === 0);
 const error = ref(false);
+const {
+	enableInfiniteScroll,
+} = defaultStore.reactiveState;
 
-const init = async (): Promise<void> => {
+const contentEl = $computed(() => props.pagination.pageEl || rootEl);
+const scrollableElement = $computed(() => getScrollContainer(contentEl));
+
+// 先頭が表示されているかどうかを検出
+// https://qiita.com/mkataigi/items/0154aefd2223ce23398e
+let scrollObserver = $ref<IntersectionObserver>();
+
+watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
+	if (scrollObserver) scrollObserver.disconnect();
+
+	scrollObserver = new IntersectionObserver(entries => {
+		backed = entries[0].isIntersecting;
+	}, {
+		root: scrollableElement,
+		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
+		threshold: 0.01,
+	});
+}, { immediate: true });
+
+watch($$(rootEl), () => {
+	scrollObserver.disconnect();
+	nextTick(() => {
+		if (rootEl) scrollObserver.observe(rootEl);
+	});
+});
+
+watch([$$(backed), $$(contentEl)], () => {
+	if (!backed) {
+		if (!contentEl) return;
+
+		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, TOLERANCE);
+	} else {
+		if (scrollRemove) scrollRemove();
+		scrollRemove = null;
+	}
+});
+
+if (props.pagination.params && isRef(props.pagination.params)) {
+	watch(props.pagination.params, init, { deep: true });
+}
+
+watch(queue, (a, b) => {
+	if (a.length === 0 && b.length === 0) return;
+	emit('queue', queue.value.length);
+}, { deep: true });
+
+async function init(): Promise<void> {
 	queue.value = [];
 	fetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
@@ -96,18 +160,15 @@ const init = async (): Promise<void> => {
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
-			if (props.pagination.reversed) {
-				if (i === res.length - 2) item._shouldInsertAd_ = true;
-			} else {
-				if (i === 3) item._shouldInsertAd_ = true;
-			}
+			if (i === 3) item._shouldInsertAd_ = true;
 		}
 		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
 			res.pop();
-			items.value = props.pagination.reversed ? [...res].reverse() : res;
+			if (props.pagination.reversed) moreFetching.value = true;
+			items.value = res;
 			more.value = true;
 		} else {
-			items.value = props.pagination.reversed ? [...res].reverse() : res;
+			items.value = res;
 			more.value = false;
 		}
 		offset.value = res.length;
@@ -117,17 +178,16 @@ const init = async (): Promise<void> => {
 		error.value = true;
 		fetching.value = false;
 	});
-};
+}
 
-const reload = (): void => {
+const reload = (): Promise<void> => {
 	items.value = [];
-	init();
+	return init();
 };
 
 const fetchMore = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
 	moreFetching.value = true;
-	backed.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
 	await os.api(props.pagination.endpoint, {
 		...params,
@@ -142,22 +202,52 @@ const fetchMore = async (): Promise<void> => {
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
-			if (props.pagination.reversed) {
-				if (i === res.length - 9) item._shouldInsertAd_ = true;
-			} else {
-				if (i === 10) item._shouldInsertAd_ = true;
-			}
+			if (i === 10) item._shouldInsertAd_ = true;
 		}
+
+		const reverseConcat = _res => {
+			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
+			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
+
+			items.value = items.value.concat(_res);
+
+			return nextTick(() => {
+				if (scrollableElement) {
+					scroll(scrollableElement, { top: oldScroll + (scrollableElement.scrollHeight - oldHeight), behavior: 'instant' });
+				} else {
+					window.scroll({ top: oldScroll + (getBodyScrollHeight() - oldHeight), behavior: 'instant' });
+				}
+
+				return nextTick();
+			});
+		};
+
 		if (res.length > SECOND_FETCH_LIMIT) {
 			res.pop();
-			items.value = props.pagination.reversed ? [...res].reverse().concat(items.value) : items.value.concat(res);
-			more.value = true;
+
+			if (props.pagination.reversed) {
+				reverseConcat(res).then(() => {
+					more.value = true;
+					moreFetching.value = false;
+				});
+			} else {
+				items.value = items.value.concat(res);
+				more.value = true;
+				moreFetching.value = false;
+			}
 		} else {
-			items.value = props.pagination.reversed ? [...res].reverse().concat(items.value) : items.value.concat(res);
-			more.value = false;
+			if (props.pagination.reversed) {
+				reverseConcat(res).then(() => {
+					more.value = false;
+					moreFetching.value = false;
+				});
+			} else {
+				items.value = items.value.concat(res);
+				more.value = false;
+				moreFetching.value = false;
+			}
 		}
 		offset.value += res.length;
-		moreFetching.value = false;
 	}, err => {
 		moreFetching.value = false;
 	});
@@ -180,10 +270,10 @@ const fetchMoreAhead = async (): Promise<void> => {
 	}).then(res => {
 		if (res.length > SECOND_FETCH_LIMIT) {
 			res.pop();
-			items.value = props.pagination.reversed ? [...res].reverse().concat(items.value) : items.value.concat(res);
+			items.value = items.value.concat(res);
 			more.value = true;
 		} else {
-			items.value = props.pagination.reversed ? [...res].reverse().concat(items.value) : items.value.concat(res);
+			items.value = items.value.concat(res);
 			more.value = false;
 		}
 		offset.value += res.length;
@@ -193,125 +283,113 @@ const fetchMoreAhead = async (): Promise<void> => {
 	});
 };
 
-const prepend = (item: Item): void => {
-	if (props.pagination.reversed) {
-		if (rootEl.value) {
-			const container = getScrollContainer(rootEl.value);
-			if (container == null) {
-				// TODO?
-			} else {
-				const pos = getScrollPosition(rootEl.value);
-				const viewHeight = container.clientHeight;
-				const height = container.scrollHeight;
-				const isBottom = (pos + viewHeight > height - 32);
-				if (isBottom) {
-					// オーバーフローしたら古いアイテムは捨てる
-					if (items.value.length >= props.displayLimit) {
-						// このやり方だとVue 3.2以降アニメーションが動かなくなる
-						//items.value = items.value.slice(-props.displayLimit);
-						while (items.value.length >= props.displayLimit) {
-							items.value.shift();
-						}
-						more.value = true;
-					}
-				}
-			}
-		}
-		items.value.push(item);
-		// TODO
-	} else {
-		// 初回表示時はunshiftだけでOK
-		if (!rootEl.value) {
-			items.value.unshift(item);
-			return;
-		}
-
-		const isTop = isBackTop.value || (document.body.contains(rootEl.value) && isTopVisible(rootEl.value));
-
-		if (isTop) {
-			// Prepend the item
-			items.value.unshift(item);
-
-			// オーバーフローしたら古いアイテムは捨てる
-			if (items.value.length >= props.displayLimit) {
-				// このやり方だとVue 3.2以降アニメーションが動かなくなる
-				//this.items = items.value.slice(0, props.displayLimit);
-				while (items.value.length >= props.displayLimit) {
-					items.value.pop();
-				}
-				more.value = true;
-			}
-		} else {
-			queue.value.push(item);
-			onScrollTop(rootEl.value, () => {
-				for (const item of queue.value) {
-					prepend(item);
-				}
-				queue.value = [];
-			});
-		}
+const prepend = (item: MisskeyEntity): void => {
+	// 初回表示時はunshiftだけでOK
+	if (!rootEl) {
+		items.value.unshift(item);
+		return;
 	}
+
+	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, TOLERANCE);
+
+	if (isTop) unshiftItems([item]);
+	else prependQueue(item);
 };
 
-const append = (item: Item): void => {
+function unshiftItems(newItems: MisskeyEntity[]) {
+	const length = newItems.length + items.value.length;
+	items.value = [...newItems, ...items.value].slice(0, props.displayLimit);
+
+	if (length >= props.displayLimit) more.value = true;
+}
+
+function executeQueue() {
+	if (queue.value.length === 0) return;
+	unshiftItems(queue.value);
+	queue.value = [];
+}
+
+function prependQueue(newItem: MisskeyEntity) {
+	queue.value.unshift(newItem);
+	if (queue.value.length >= props.displayLimit) {
+		queue.value.pop();
+	}
+}
+
+const appendItem = (item: MisskeyEntity): void => {
 	items.value.push(item);
 };
 
-const removeItem = (finder: (item: Item) => boolean) => {
+const removeItem = (finder: (item: MisskeyEntity) => boolean) => {
 	const i = items.value.findIndex(finder);
 	items.value.splice(i, 1);
 };
 
-const updateItem = (id: Item['id'], replacer: (old: Item) => Item): void => {
+const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
 	const i = items.value.findIndex(item => item.id === id);
 	items.value[i] = replacer(items.value[i]);
 };
 
-if (props.pagination.params && isRef(props.pagination.params)) {
-	watch(props.pagination.params, init, { deep: true });
-}
-
-watch(queue, (a, b) => {
-	if (a.length === 0 && b.length === 0) return;
-	emit('queue', queue.value.length);
-}, { deep: true });
-
-init();
+const inited = init();
 
 onActivated(() => {
 	isBackTop.value = false;
 });
 
 onDeactivated(() => {
-	isBackTop.value = window.scrollY === 0;
+	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl ? rootEl.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
+});
+
+function toBottom() {
+	scrollToBottom(contentEl);
+}
+
+onMounted(() => {
+	inited.then(() => {
+		if (props.pagination.reversed) {
+			nextTick(() => {
+				setTimeout(toBottom, 800);
+
+				// scrollToBottomでmoreFetchingボタンが画面外まで出るまで
+				// more = trueを遅らせる
+				setTimeout(() => {
+					moreFetching.value = false;
+				}, 2000);
+			});
+		}
+	});
+});
+
+onBeforeUnmount(() => {
+	scrollObserver.disconnect();
 });
 
 defineExpose({
 	items,
 	queue,
 	backed,
+	more,
+	inited,
 	reload,
 	prepend,
-	append,
+	append: appendItem,
 	removeItem,
 	updateItem,
 });
 </script>
 
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
+<style lang="scss" module>
+.transition_fade_enterActive,
+.transition_fade_leaveActive {
 	transition: opacity 0.125s ease;
 }
-.fade-enter-from,
-.fade-leave-to {
+.transition_fade_enterFrom,
+.transition_fade_leaveTo {
 	opacity: 0;
 }
 
-.cxiknjgy {
-	> .button {
-		margin-left: auto;
-		margin-right: auto;
-	}
+.more {
+	margin-left: auto;
+	margin-right: auto;
 }
 </style>

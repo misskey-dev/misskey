@@ -1,10 +1,10 @@
 <template>
 <MkTooltip ref="tooltip" :showing="showing" :x="x" :y="y" :max-width="340" :direction="'top'" :inner-margin="16" @closed="emit('closed')">
-	<div v-if="title || series" class="qpcyisrl">
-		<div v-if="title" class="title">{{ title }}</div>
+	<div v-if="title || series">
+		<div v-if="title" :class="$style.title">{{ title }}</div>
 		<template v-if="series">
-			<div v-for="x in series" class="series">
-				<span class="color" :style="{ background: x.backgroundColor, borderColor: x.borderColor }"></span>
+			<div v-for="x in series">
+				<span :class="$style.color" :style="{ background: x.backgroundColor, borderColor: x.borderColor }"></span>
 				<span>{{ x.text }}</span>
 			</div>
 		</template>
@@ -33,21 +33,17 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style lang="scss" scoped>
-.qpcyisrl {
-	> .title {
-		margin-bottom: 4px;
-	}
+<style lang="scss" module>
+.title {
+	margin-bottom: 4px;
+}
 
-	> .series {
-		> .color {
-			display: inline-block;
-			width: 8px;
-			height: 8px;
-			border-width: 1px;
-			border-style: solid;
-			margin-right: 8px;
-		}
-	}
+.color {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-width: 1px;
+	border-style: solid;
+	margin-right: 8px;
 }
 </style>

@@ -1,8 +1,15 @@
 <template>
-<Transition :name="transitionName" :duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
-	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
-		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
+<Transition
+	:name="transitionName"
+	:enter-active-class="$style['transition_' + transitionName + '_enterActive']"
+	:leave-active-class="$style['transition_' + transitionName + '_leaveActive']"
+	:enter-from-class="$style['transition_' + transitionName + '_enterFrom']"
+	:leave-to-class="$style['transition_' + transitionName + '_leaveTo']"
+	:duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened"
+>
+	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+		<div class="_modalBg data-cy-bg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent, 'data-cy-transparent': isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+		<div ref="content" :class="[$style.content, { [$style.fixed]: fixed }]" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
 	</div>
@@ -26,7 +33,7 @@ function getFixedContainer(el: Element | null): Element | null {
 	}
 }
 
-type ModalTypes = 'popup' | 'dialog' | 'dialog:top' | 'drawer';
+type ModalTypes = 'popup' | 'dialog' | 'drawer';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
@@ -63,6 +70,7 @@ let transformOrigin = $ref('center');
 let showing = $ref(true);
 let content = $shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
+let useSendAnime = $ref(false);
 const type = $computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
 		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
@@ -74,15 +82,35 @@ const type = $computed<ModalTypes>(() => {
 		return props.preferType!;
 	}
 });
-let transitionName = $ref(defaultStore.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : '');
-let transitionDuration = $ref(defaultStore.state.animation ? 200 : 0);
+const isEnableBgTransparent = $computed(() => props.transparentBg && (type === 'popup'));
+let transitionName = $computed((() =>
+	defaultStore.state.animation
+		? useSendAnime
+			? 'send'
+			: type === 'drawer'
+				? 'modal-drawer'
+				: type === 'popup'
+					? 'modal-popup'
+					: 'modal'
+		: ''
+));
+let transitionDuration = $computed((() =>
+	transitionName === 'send'
+		? 400
+		: transitionName === 'modal-popup'
+			? 100
+			: transitionName === 'modal'
+				? 200
+				: transitionName === 'modal-drawer'
+					? 200
+					: 0
+));
 
 let contentClicking = false;
 
 function close(opts: { useSendAnimation?: boolean } = {}) {
 	if (opts.useSendAnimation) {
-		transitionName = 'send';
-		transitionDuration = 400;
+		useSendAnime = true;
 	}
 
 	// eslint-disable-next-line vue/no-mutating-props
@@ -244,7 +272,7 @@ onMounted(() => {
 		fixed = (type === 'drawer') || (getFixedContainer(props.src) != null);
 
 		await nextTick();
-		
+
 		align();
 	}, { immediate: true });
 
@@ -260,19 +288,20 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.send-enter-active, .send-leave-active {
+<style lang="scss" module>
+.transition_send_enterActive,
+.transition_send_leaveActive {
 	> .bg {
 		transition: opacity 0.3s !important;
 	}
 
 	> .content {
-		transform-style: preserve-3d;
-    transform: perspective(50cm) translateZ(0px) translateY(0px) rotateX(0deg);
-		transition: opacity 0.4s cubic-bezier(.5,-0.5,.75,1), transform 0.4s cubic-bezier(.5,-0.5,.75,1) !important;
+    transform: translateY(0px);
+		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
 	}
 }
-.send-enter-from, .send-leave-to {
+.transition_send_enterFrom,
+.transition_send_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -280,12 +309,12 @@ defineExpose({
 	> .content {
 		pointer-events: none;
 		opacity: 0;
-		transform-style: preserve-3d;
-		transform: perspective(50cm) translateZ(-300px) translateY(-200px) rotateX(40deg);
+		transform: translateY(-300px);
 	}
 }
 
-.modal-enter-active, .modal-leave-active {
+.transition_modal_enterActive,
+.transition_modal_leaveActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -295,7 +324,8 @@ defineExpose({
 		transition: opacity 0.2s, transform 0.2s !important;
 	}
 }
-.modal-enter-from, .modal-leave-to {
+.transition_modal_enterFrom,
+.transition_modal_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -308,17 +338,19 @@ defineExpose({
 	}
 }
 
-.modal-popup-enter-active, .modal-popup-leave-active {
+.transition_modal-popup_enterActive,
+.transition_modal-popup_leaveActive {
 	> .bg {
-		transition: opacity 0.2s !important;
+		transition: opacity 0.1s !important;
 	}
 
 	> .content {
 		transform-origin: var(--transformOrigin);
-		transition: opacity 0.2s cubic-bezier(0, 0, 0.2, 1), transform 0.2s cubic-bezier(0, 0, 0.2, 1) !important;
+		transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1), transform 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
-.modal-popup-enter-from, .modal-popup-leave-to {
+.transition_modal-popup_enterFrom,
+.transition_modal-popup_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -331,7 +363,7 @@ defineExpose({
 	}
 }
 
-.modal-drawer-enter-active {
+.transition_modal-drawer_enterActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -340,7 +372,7 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.modal-drawer-leave-active {
+.transition_modal-drawer_leaveActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -349,7 +381,8 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.modal-drawer-enter-from, .modal-drawer-leave-to {
+.transition_modal-drawer_enterFrom,
+.transition_modal-drawer_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -360,15 +393,7 @@ defineExpose({
 	}
 }
 
-.qzhlnise {
-	> .bg {
-		&.transparent {
-			background: transparent;
-			-webkit-backdrop-filter: none;
-			backdrop-filter: none;
-		}
-	}
-
+.root {
 	&.dialog {
 		> .content {
 			position: fixed;
@@ -388,16 +413,6 @@ defineExpose({
 				padding: 16px;
 				-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
 				mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
-			}
-
-			> ::v-deep(*) {
-				margin: auto;
-			}
-
-			&.top {
-				> ::v-deep(*) {
-					margin-top: 0;
-				}
 			}
 		}
 	}
@@ -426,12 +441,15 @@ defineExpose({
 			left: 0;
 			right: 0;
 			margin: auto;
-
-			> ::v-deep(*) {
-				margin: auto;
-			}
 		}
 	}
+}
 
+.bg {
+	&.bgTransparent {
+		background: transparent;
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
 }
 </style>

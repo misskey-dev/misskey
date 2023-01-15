@@ -1,17 +1,17 @@
 <template>
 <div class="_gaps_m">
 	<MkInfo>{{ i18n.ts._instanceMute.title }}</MkInfo>
-	<FormTextarea v-model="instanceMutes">
+	<MkTextarea v-model="instanceMutes">
 		<template #label>{{ i18n.ts._instanceMute.heading }}</template>
 		<template #caption>{{ i18n.ts._instanceMute.instanceMuteDescription }}<br>{{ i18n.ts._instanceMute.instanceMuteDescription2 }}</template>
-	</FormTextarea>
+	</MkTextarea>
 	<MkButton primary :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import FormTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
