@@ -1,5 +1,5 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-clock">
+<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-clock data-cy-mkw-clock">
 	<div class="vubelbmv" :class="widgetProps.size">
 		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label a abbrev">{{ tzAbbrev }}</div>
 		<MkAnalogClock

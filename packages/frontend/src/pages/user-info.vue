@@ -86,16 +86,28 @@
 					</div>
 				</FormSection>
 			</div>
+
 			<div v-else-if="tab === 'moderation'" class="_gaps_m">
 				<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
+
 				<div>
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
 					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
 				</div>
+
+				<MkFolder>
+					<template #icon><i class="ti ti-license"></i></template>
+					<template #label>{{ i18n.ts._role.policies }}</template>
+					<div class="_gaps">
+						<div v-for="policy in Object.keys(info.policies)" :key="policy">
+							{{ policy }} ... {{ info.policies[policy] }}
+						</div>
+					</div>
+				</MkFolder>
+
 				<MkFolder>
 					<template #icon><i class="ti ti-badges"></i></template>
 					<template #label>{{ i18n.ts.roles }}</template>
-
 					<div class="_gaps">
 						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
@@ -105,6 +117,7 @@
 						</div>
 					</div>
 				</MkFolder>
+
 				<MkFolder>
 					<template #icon><i class="ti ti-password"></i></template>
 					<template #label>IP</template>
@@ -117,16 +130,18 @@
 						</div>
 					</template>
 				</MkFolder>
+
 				<MkFolder>
 					<template #icon><i class="ti ti-cloud"></i></template>
 					<template #label>{{ i18n.ts.files }}</template>
-
 					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
 				</MkFolder>
+
 				<MkTextarea v-model="moderationNote" manual-save>
 					<template #label>Moderation note</template>
 				</MkTextarea>
 			</div>
+
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshm">
 					<div class="selects">
@@ -142,6 +157,7 @@
 					</div>
 				</div>
 			</div>
+
 			<div v-else-if="tab === 'raw'" class="_gaps_m">
 				<MkObjectView v-if="info && $i.isAdmin" tall :value="info">
 				</MkObjectView>

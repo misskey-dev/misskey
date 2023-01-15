@@ -225,7 +225,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 
 			// TODO: 毎リクエスト計算するのもあれだしキャッシュしたい
-			const factor = user ? (await this.roleService.getUserRoleOptions(user.id)).rateLimitFactor : 1;
+			const factor = user ? (await this.roleService.getUserPolicies(user.id)).rateLimitFactor : 1;
 
 			// Rate limit
 			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
@@ -274,9 +274,9 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if (ep.meta.requireRoleOption != null && !user!.isRoot) {
-			const myRole = await this.roleService.getUserRoleOptions(user!.id);
-			if (!myRole[ep.meta.requireRoleOption]) {
+		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+			const policies = await this.roleService.getUserPolicies(user!.id);
+			if (!policies[ep.meta.requireRolePolicy]) {
 				throw new ApiError({
 					message: 'You are not assigned to a required role.',
 					code: 'ROLE_PERMISSION_DENIED',

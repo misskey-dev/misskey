@@ -29,8 +29,8 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		const role = await this.roleService.getUserRoleOptions(this.user ? this.user.id : null);
-		if (!role.gtlAvailable) return;
+		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
+		if (!policies.gtlAvailable) return;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
