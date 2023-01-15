@@ -1,7 +1,7 @@
 <template>
-<div class="fpezltsf" :class="{ warn }">
-	<i v-if="warn" class="ti ti-alert-triangle"></i>
-	<i v-else class="ti ti-info-circle"></i>
+<div :class="[$style.root, { [$style.warn]: warn }]">
+	<i v-if="warn" class="ti ti-alert-triangle" :class="$style.i"></i>
+	<i v-else class="ti ti-info-circle" :class="$style.i"></i>
 	<slot></slot>
 </div>
 </template>
@@ -14,8 +14,8 @@ const props = defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
-.fpezltsf {
+<style lang="scss" module>
+.root {
 	padding: 12px 14px;
 	font-size: 90%;
 	background: var(--infoBg);
@@ -26,9 +26,9 @@ const props = defineProps<{
 		background: var(--infoWarnBg);
 		color: var(--infoWarnFg);
 	}
+}
 
-	> i {
-		margin-right: 4px;
-	}
+.i {
+	margin-right: 4px;
 }
 </style>

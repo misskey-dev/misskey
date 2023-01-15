@@ -125,6 +125,7 @@ You should also include the user name that made the change.
 - Client: clicker game @syuilo
 
 ### Bugfixes
+- Server: Fix @tensorflow/tfjs-core's MODULE_NOT_FOUND error @ikuradon
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
 - Server: Fix peers API returning suspended instances @ineffyble

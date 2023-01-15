@@ -37,7 +37,7 @@ describe('After user signed in', () => {
 		it(`${widgetName} widget should get added`, () => {
 			cy.get('.mk-widget-edit').click();
 			cy.get('.mk-widget-select select').select(widgetName, { force: true });
-			cy.get('.bg._modalBg.transparent').click({ multiple: true, force: true });
+			cy.get('.data-cy-bg._modalBg.data-cy-transparent').click({ multiple: true, force: true });
 			cy.get('.mk-widget-add').click({ force: true });
 			cy.get(`.mkw-${widgetName}`).should('exist');
 		});

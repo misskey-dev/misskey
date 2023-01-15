@@ -493,7 +493,7 @@ function readPromo() {
 	bottom: 1em;
 }
 
-.howLessLabel {
+.showLessLabel {
 	display: inline-block;
 	background: var(--popup);
 	padding: 6px 10px;
