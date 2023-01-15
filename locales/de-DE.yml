@@ -956,6 +956,11 @@ _role:
   chooseRoleToAssign: "Zuzuweisende Rolle auswählen"
   canEditMembersByModerator: "Moderatoren können Benutzern diese Rolle zuweisen"
   descriptionOfCanEditMembersByModerator: "Wenn aktiviert, so können Moderatoren und Adminstratoren anderen Benutzern diese Rolle zuweisen bzw. diese Zuweisung aufheben. Wenn deaktiviert, so ist es nur Administratoren möglich, Zuweisungen dieser Rolle zu verwalten."
+  priority: "Priorität"
+  _priority:
+    low: "Niedrig"
+    middle: "Mittel"
+    high: "Hoch"
   _options:
     gtlAvailable: "Kann auf die globale Chronik zugreifen"
     ltlAvailable: "Kann auf die lokale Chronik zugreifen"
