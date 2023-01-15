@@ -13,5 +13,3 @@ jobs:
     steps:
       - uses: actions/checkout@v3.3.0
       - uses: reviewdog/action-actionlint@v1.35.0
-        with:
-          reporter: github-pr-review
