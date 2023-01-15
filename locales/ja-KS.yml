@@ -943,6 +943,11 @@ _role:
   chooseRoleToAssign: "アサインするロールを選択"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
   descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになるで。オフにすると管理者のみが行えるで。"
+  priority: "優先度"
+  _priority:
+    low: "低い"
+    middle: "中"
+    high: "高い"
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
