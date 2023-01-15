@@ -932,6 +932,7 @@ assign: "Assegna"
 unassign: "Disassegna"
 color: "Colore"
 manageCustomEmojis: "Gestisci le emoji personalizzate"
+youCannotCreateAnymore: "Non puoi creare, hai raggiunto il limite."
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"
@@ -953,6 +954,11 @@ _role:
   chooseRoleToAssign: "Seleziona il ruolo da assegnare"
   canEditMembersByModerator: "Consenti ai Moderatori di modificare i membri di questo ruolo"
   descriptionOfCanEditMembersByModerator: "Se attivo, anche i Moderatori potranno assegnare o togliere questo ruolo. Altrimenti, se disattivo, potranno solo gli Amministratori."
+  priority: "Priorità"
+  _priority:
+    low: "Bassa"
+    middle: "Medio"
+    high: "Alta"
   _options:
     gtlAvailable: "Disponibilità della Timeline Federata"
     ltlAvailable: "Disponibilità della Timeline Locale"
