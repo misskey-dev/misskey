@@ -895,6 +895,12 @@ caption: "Підпис"
 like: "Вподобати"
 show: "Відображення"
 color: "Колір"
+_role:
+  priority: "Пріоритет"
+  _priority:
+    low: "Низький"
+    middle: "Середній"
+    high: "Високий"
 _sensitiveMediaDetection:
   sensitivity: "Чутливість детектування"
   setSensitiveFlagAutomatically: "Позначити як NSFW"
