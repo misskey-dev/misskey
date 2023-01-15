@@ -951,6 +951,7 @@ _role:
   isPublic: "Ruolo pubblico"
   descriptionOfIsPublic: "La lista di profili assegnati a questo ruolo è visibile a chiunque. Inoltre, il nome del ruolo verrà mostrato pubblicamente nei relativi profili."
   options: "Opzioni del ruolo"
+  policies: "Policy"
   baseRole: "Ruolo di base"
   useBaseValue: "Eredita dal ruolo base"
   chooseRoleToAssign: "Seleziona il ruolo da assegnare"
