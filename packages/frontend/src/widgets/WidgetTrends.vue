@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-trends">
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-trends data-cy-mkw-trends">
 	<template #icon><i class="ti ti-hash"></i></template>
 	<template #header>{{ i18n.ts._widgets.trends }}</template>
 
