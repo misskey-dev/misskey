@@ -950,6 +950,7 @@ _role:
   isPublic: "角色為公開"
   descriptionOfIsPublic: "任何人都可以看到被指派了角色的使用者。此外，使用者的個人檔案將顯示這個角色。"
   options: "選項"
+  policies: "政策"
   baseRole: "基本角色"
   useBaseValue: "使用基本角色的值"
   chooseRoleToAssign: "選擇要指派的角色"
