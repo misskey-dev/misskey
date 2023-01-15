@@ -956,6 +956,11 @@ _role:
   chooseRoleToAssign: "Select the role to assign"
   canEditMembersByModerator: "Allow moderators to edit the list members of this role"
   descriptionOfCanEditMembersByModerator: "When turned on, moderators as well as administrators will be able to assign and unassign users to this role. When turned off, only administrators will be able to assign users."
+  priority: "Priority"
+  _priority:
+    low: "Low"
+    middle: "Medium"
+    high: "High"
   _options:
     gtlAvailable: "Viewing the global timeline"
     ltlAvailable: "Viewing the local timeline"
