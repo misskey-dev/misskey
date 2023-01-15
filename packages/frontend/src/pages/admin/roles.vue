@@ -10,114 +10,114 @@
 					<div class="_gaps">
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
-							<template #suffix>{{ Math.floor(options_rateLimitFactor * 100) }}%</template>
-							<MkRange :model-value="options_rateLimitFactor * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => options_rateLimitFactor = (v / 100)">
+							<template #suffix>{{ Math.floor(policies.rateLimitFactor * 100) }}%</template>
+							<MkRange :model-value="policies.rateLimitFactor * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => policies.rateLimitFactor = (v / 100)">
 								<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
 							</MkRange>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
-							<template #suffix>{{ options_gtlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="options_gtlAvailable">
+							<template #suffix>{{ policies.gtlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.gtlAvailable">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.ltlAvailable }}</template>
-							<template #suffix>{{ options_ltlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="options_ltlAvailable">
+							<template #suffix>{{ policies.ltlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.ltlAvailable">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
-							<template #suffix>{{ options_canPublicNote ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="options_canPublicNote">
+							<template #suffix>{{ policies.canPublicNote ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canPublicNote">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.canInvite }}</template>
-							<template #suffix>{{ options_canInvite ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="options_canInvite">
+							<template #suffix>{{ policies.canInvite ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canInvite">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
-							<template #suffix>{{ options_canManageCustomEmojis ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="options_canManageCustomEmojis">
+							<template #suffix>{{ policies.canManageCustomEmojis ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canManageCustomEmojis">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
-							<template #suffix>{{ options_driveCapacityMb }}MB</template>
-							<MkInput v-model="options_driveCapacityMb" type="number">
+							<template #suffix>{{ policies.driveCapacityMb }}MB</template>
+							<MkInput v-model="policies.driveCapacityMb" type="number">
 								<template #suffix>MB</template>
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.pinMax }}</template>
-							<template #suffix>{{ options_pinLimit }}</template>
-							<MkInput v-model="options_pinLimit" type="number">
+							<template #suffix>{{ policies.pinLimit }}</template>
+							<MkInput v-model="policies.pinLimit" type="number">
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.antennaMax }}</template>
-							<template #suffix>{{ options_antennaLimit }}</template>
-							<MkInput v-model="options_antennaLimit" type="number">
+							<template #suffix>{{ policies.antennaLimit }}</template>
+							<MkInput v-model="policies.antennaLimit" type="number">
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.wordMuteMax }}</template>
-							<template #suffix>{{ options_wordMuteLimit }}</template>
-							<MkInput v-model="options_wordMuteLimit" type="number">
+							<template #suffix>{{ policies.wordMuteLimit }}</template>
+							<MkInput v-model="policies.wordMuteLimit" type="number">
 								<template #suffix>chars</template>
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.webhookMax }}</template>
-							<template #suffix>{{ options_webhookLimit }}</template>
-							<MkInput v-model="options_webhookLimit" type="number">
+							<template #suffix>{{ policies.webhookLimit }}</template>
+							<MkInput v-model="policies.webhookLimit" type="number">
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.clipMax }}</template>
-							<template #suffix>{{ options_clipLimit }}</template>
-							<MkInput v-model="options_clipLimit" type="number">
+							<template #suffix>{{ policies.clipLimit }}</template>
+							<MkInput v-model="policies.clipLimit" type="number">
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.noteEachClipsMax }}</template>
-							<template #suffix>{{ options_noteEachClipsLimit }}</template>
-							<MkInput v-model="options_noteEachClipsLimit" type="number">
+							<template #suffix>{{ policies.noteEachClipsLimit }}</template>
+							<MkInput v-model="policies.noteEachClipsLimit" type="number">
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.userListMax }}</template>
-							<template #suffix>{{ options_userListLimit }}</template>
-							<MkInput v-model="options_userListLimit" type="number">
+							<template #suffix>{{ policies.userListLimit }}</template>
+							<MkInput v-model="policies.userListLimit" type="number">
 							</MkInput>
 						</MkFolder>
 
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.userEachUserListsMax }}</template>
-							<template #suffix>{{ options_userEachUserListsLimit }}</template>
-							<MkInput v-model="options_userEachUserListsLimit" type="number">
+							<template #suffix>{{ policies.userEachUserListsLimit }}</template>
+							<MkInput v-model="policies.userEachUserListsLimit" type="number">
 							</MkInput>
 						</MkFolder>
 
@@ -134,7 +134,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, reactive } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -150,45 +150,36 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
 
+const ROLE_POLICIES = [
+	'gtlAvailable',
+	'ltlAvailable',
+	'canPublicNote',
+	'canInvite',
+	'canManageCustomEmojis',
+	'driveCapacityMb',
+	'pinLimit',
+	'antennaLimit',
+	'wordMuteLimit',
+	'webhookLimit',
+	'clipLimit',
+	'noteEachClipsLimit',
+	'userListLimit',
+	'userEachUserListsLimit',
+	'rateLimitFactor',
+] as const;
+
 const router = useRouter();
 
 const roles = await os.api('admin/roles/list');
 
-let options_gtlAvailable = $ref(instance.baseRole.gtlAvailable);
-let options_ltlAvailable = $ref(instance.baseRole.ltlAvailable);
-let options_canPublicNote = $ref(instance.baseRole.canPublicNote);
-let options_canInvite = $ref(instance.baseRole.canInvite);
-let options_canManageCustomEmojis = $ref(instance.baseRole.canManageCustomEmojis);
-let options_driveCapacityMb = $ref(instance.baseRole.driveCapacityMb);
-let options_pinLimit = $ref(instance.baseRole.pinLimit);
-let options_antennaLimit = $ref(instance.baseRole.antennaLimit);
-let options_wordMuteLimit = $ref(instance.baseRole.wordMuteLimit);
-let options_webhookLimit = $ref(instance.baseRole.webhookLimit);
-let options_clipLimit = $ref(instance.baseRole.clipLimit);
-let options_noteEachClipsLimit = $ref(instance.baseRole.noteEachClipsLimit);
-let options_userListLimit = $ref(instance.baseRole.userListLimit);
-let options_userEachUserListsLimit = $ref(instance.baseRole.userEachUserListsLimit);
-let options_rateLimitFactor = $ref(instance.baseRole.rateLimitFactor);
+const policies = reactive<Record<typeof ROLE_POLICIES[number], any>>({});
+for (const ROLE_POLICY of ROLE_POLICIES) {
+	policies[ROLE_POLICY] = instance.policies[ROLE_POLICY];
+}
 
 async function updateBaseRole() {
-	await os.apiWithDialog('admin/roles/update-default-role-override', {
-		options: {
-			gtlAvailable: options_gtlAvailable,
-			ltlAvailable: options_ltlAvailable,
-			canPublicNote: options_canPublicNote,
-			canInvite: options_canInvite,
-			canManageCustomEmojis: options_canManageCustomEmojis,
-			driveCapacityMb: options_driveCapacityMb,
-			pinLimit: options_pinLimit,
-			antennaLimit: options_antennaLimit,
-			wordMuteLimit: options_wordMuteLimit,
-			webhookLimit: options_webhookLimit,
-			clipLimit: options_clipLimit,
-			noteEachClipsLimit: options_noteEachClipsLimit,
-			userListLimit: options_userListLimit,
-			userEachUserListsLimit: options_userEachUserListsLimit,
-			rateLimitFactor: options_rateLimitFactor,
-		},
+	await os.apiWithDialog('admin/roles/update-default-policies', {
+		policies,
 	});
 }
 

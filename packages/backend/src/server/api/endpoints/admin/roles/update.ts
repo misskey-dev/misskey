@@ -33,7 +33,7 @@ export const paramDef = {
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
-		options: {
+		policies: {
 			type: 'object',
 		},
 	},
@@ -48,7 +48,7 @@ export const paramDef = {
 		'isModerator',
 		'isAdministrator',
 		'canEditMembersByModerator',
-		'options',
+		'policies',
 	],
 } as const;
 
@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isModerator: ps.isModerator,
 				isAdministrator: ps.isAdministrator,
 				canEditMembersByModerator: ps.canEditMembersByModerator,
-				options: ps.options,
+				policies: ps.policies,
 			});
 			const updated = await this.rolesRepository.findOneByOrFail({ id: ps.roleId });
 			this.globalEventService.publishInternalEvent('roleUpdated', updated);

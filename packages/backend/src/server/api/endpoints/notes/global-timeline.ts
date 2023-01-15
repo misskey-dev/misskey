@@ -62,8 +62,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const role = await this.roleService.getUserRoleOptions(me ? me.id : null);
-			if (!role.gtlAvailable) {
+			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
+			if (!policies.gtlAvailable) {
 				throw new ApiError(meta.errors.gtlDisabled);
 			}
 
