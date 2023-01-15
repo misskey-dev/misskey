@@ -934,6 +934,7 @@ color: "Farbe"
 manageCustomEmojis: "Benutzerdefinierte Emojis verwalten"
 youCannotCreateAnymore: "Du hast das Erstellungslimit erreicht."
 cannotPerformTemporary: "Vorübergehend nicht verfügbar"
+cannotPerformTemporaryDescription: "Diese Aktion ist wegen des Überschreitenes des Ausführungslimits temporär nicht verfügbar. Bitte versuche es nach einiger Zeit erneut."
 _role:
   new: "Rolle erstellen"
   edit: "Rolle bearbeiten"
@@ -970,6 +971,8 @@ _role:
     noteEachClipsMax: "Maximale Anzahl an Notizen innerhalb eines Clips"
     userListMax: "Maximale Anzahl an Benutzern in einer Benutzerliste"
     userEachUserListsMax: "Maximale Anzahl an Benutzerlisten"
+    rateLimitFactor: "Versuchsanzahl"
+    descriptionOfRateLimitFactor: "Je niedriger desto weniger restriktiv, je höher destro restriktiver."
   _condition:
     isLocal: "Lokaler Benutzer"
     isRemote: "Benutzer fremder Instanz"
