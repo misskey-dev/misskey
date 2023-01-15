@@ -867,6 +867,12 @@ windowRestore: "Восстановить"
 like: "Нравится!"
 show: "Отображение"
 color: "Цвет"
+_role:
+  priority: "Приоритет"
+  _priority:
+    low: "Низкий"
+    middle: "Средне"
+    high: "Высокий"
 _sensitiveMediaDetection:
   description: "Машинное обучение может быть использовано для автоматического обнаружения чувствительных медиа для модерации. Нагрузка на сервер увеличивается незначительно."
   setSensitiveFlagAutomatically: "Установить флаг NSFW"
