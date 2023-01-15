@@ -1,51 +1,48 @@
 <template>
 <div
 	ref="rootEl"
-	class=""
+	class="root"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<div class="mk-messaging-room">
-		<div class="body">
-			<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
-				<template #empty>
-					<div class="_fullinfo">
-						<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-						<div>{{ i18n.ts.noMessagesYet }}</div>
-					</div>
-				</template>
-
-				<template #default="{ items: messages, fetching: pFetching }">
-					<MkDateSeparatedList
-						v-if="messages.length > 0"
-						v-slot="{ item: message }"
-						:class="{ messages: true, 'deny-move-transition': pFetching }"
-						:items="messages"
-						direction="up"
-						reversed
-					>
-						<XMessage :key="message.id" :message="message" :is-group="group != null"/>
-					</MkDateSeparatedList>
-				</template>
-			</MkPagination>
-		</div>
-		<footer>
-			<div v-if="typers.length > 0" class="typers">
-				<I18n :src="i18n.ts.typingUsers" text-tag="span" class="users">
-					<template #users>
-						<b v-for="typer in typers" :key="typer.id" class="user">{{ typer.username }}</b>
-					</template>
-				</I18n>
-				<MkEllipsis/>
-			</div>
-			<Transition :name="animation ? 'fade' : ''">
-				<div v-show="showIndicator" class="new-message">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas ti-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
+	<div class="body">
+		<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
+			<template #empty>
+				<div class="_fullinfo">
+					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<div>{{ i18n.ts.noMessagesYet }}</div>
 				</div>
-			</Transition>
-			<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
-		</footer>
+			</template>
+			<template #default="{ items: messages, fetching: pFetching }">
+				<MkDateSeparatedList
+					v-if="messages.length > 0"
+					v-slot="{ item: message }"
+					:class="{ messages: true, 'deny-move-transition': pFetching }"
+					:items="messages"
+					direction="up"
+					reversed
+				>
+					<XMessage :key="message.id" :message="message" :is-group="group != null"/>
+				</MkDateSeparatedList>
+			</template>
+		</MkPagination>
 	</div>
+	<footer>
+		<div v-if="typers.length > 0" class="typers">
+			<I18n :src="i18n.ts.typingUsers" text-tag="span" class="users">
+				<template #users>
+					<b v-for="typer in typers" :key="typer.id" class="user">{{ typer.username }}</b>
+				</template>
+			</I18n>
+			<MkEllipsis/>
+		</div>
+		<Transition :name="animation ? 'fade' : ''">
+			<div v-show="showIndicator" class="new-message">
+				<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas ti-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
+			</div>
+		</Transition>
+		<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
+	</footer>
 </div>
 </template>
 
@@ -140,7 +137,9 @@ async function fetch() {
 	document.addEventListener('visibilitychange', onVisibilitychange);
 
 	nextTick(() => {
-		thisScrollToBottom();
+		pagingComponent.inited.then(() => {
+			thisScrollToBottom();
+		});
 		window.setTimeout(() => {
 			fetching = false;
 		}, 300);
@@ -305,11 +304,12 @@ definePageMetadata(computed(() => !fetching ? user ? {
 </script>
 
 <style lang="scss" scoped>
-.mk-messaging-room {
-	position: relative;
-	overflow: auto;
+.root {
+	display: content;
 
 	> .body {
+		min-height: 80%;
+
 		.more {
 			display: block;
 			margin: 16px auto;
@@ -349,8 +349,9 @@ definePageMetadata(computed(() => !fetching ? user ? {
 		width: 100%;
 		position: sticky;
 		z-index: 2;
-		bottom: 0;
 		padding-top: 8px;
+		bottom: 0;
+		bottom: env(safe-area-inset-bottom, 0px);
 
 		> .new-message {
 			width: 100%;
@@ -395,6 +396,8 @@ definePageMetadata(computed(() => !fetching ? user ? {
 			max-height: 12em;
 			overflow-y: scroll;
 			border-top: solid 0.5px var(--divider);
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
 		}
 	}
 }

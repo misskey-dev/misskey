@@ -18,7 +18,6 @@
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
-								<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 							</div>
@@ -35,10 +34,12 @@
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
 							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
-							<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
+					</div>
+					<div v-if="user.roles.length > 0" class="roles">
+						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">{{ role.name }}</span>
 					</div>
 					<div class="description">
 						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
@@ -189,7 +190,7 @@ onMounted(() => {
 		const bd = parseInt(props.user.birthday.split('-')[2]);
 		if (m === bm && d === bd) {
 			confetti({
-				duration: 1000 * 4
+				duration: 1000 * 4,
 			});
 		}
 	}
@@ -339,6 +340,18 @@ onUnmounted(() => {
 					box-shadow: 1px 1px 3px rgba(#000, 0.2);
 				}
 
+				> .roles {
+					padding: 24px 24px 0 154px;
+					font-size: 0.95em;
+
+					> .role {
+						border: solid 1px var(--color, var(--divider));
+						border-radius: 999px;
+						margin-right: 4px;
+						padding: 3px 8px;
+					}
+				}
+
 				> .description {
 					padding: 24px 24px 24px 154px;
 					font-size: 0.95em;
@@ -467,6 +480,11 @@ onUnmounted(() => {
 					width: 92px;
 					height: 92px;
 					margin: auto;
+				}
+
+				> .roles {
+					padding: 16px 16px 0 16px;
+					text-align: center;
 				}
 
 				> .description {

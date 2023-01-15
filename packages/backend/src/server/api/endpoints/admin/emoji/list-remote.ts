@@ -11,7 +11,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
 
 	res: {
 		type: 'array',

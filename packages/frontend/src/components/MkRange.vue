@@ -173,7 +173,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	$thumbWidth: 20px;
 
 	> .body {
-		padding: 8px 12px;
+		padding: 7px 12px;
 		background: var(--panel);
 		border: solid 1px var(--panel);
 		border-radius: 6px;

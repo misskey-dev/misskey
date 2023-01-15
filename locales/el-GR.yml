@@ -1,6 +1,6 @@
 ---
 _lang_: "Ελληνικά"
-monthAndDay: "{μήνας}/{ημέρα}"
+monthAndDay: "{day}/{month}"
 search: "Αναζήτηση"
 notifications: "Ειδοποιήσεις"
 username: "Όνομα μέλους"

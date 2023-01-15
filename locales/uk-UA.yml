@@ -894,6 +894,7 @@ windowRestore: "Відновити"
 caption: "Підпис"
 like: "Вподобати"
 show: "Відображення"
+color: "Колір"
 _sensitiveMediaDetection:
   sensitivity: "Чутливість детектування"
   setSensitiveFlagAutomatically: "Позначити як NSFW"

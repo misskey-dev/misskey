@@ -1,31 +1,31 @@
 <template>
-<div class="mkw-calendar" :class="{ _panel: !widgetProps.transparent }">
-	<div class="calendar" :class="{ isHoliday }">
-		<p class="month-and-year">
-			<span class="year">{{ $t('yearX', { year }) }}</span>
-			<span class="month">{{ $t('monthX', { month }) }}</span>
+<div :class="[$style.root, { _panel: !widgetProps.transparent }]" class="data-cy-mkw-calendar">
+	<div :class="[$style.calendar, { [$style.isHoliday]: isHoliday }]">
+		<p :class="$style.monthAndYear">
+			<span :class="$style.year">{{ $t('yearX', { year }) }}</span>
+			<span :class="$style.month">{{ $t('monthX', { month }) }}</span>
 		</p>
 		<p v-if="month === 1 && day === 1" class="day">🎉{{ $t('dayX', { day }) }}<span style="display: inline-block; transform: scaleX(-1);">🎉</span></p>
-		<p v-else class="day">{{ $t('dayX', { day }) }}</p>
-		<p class="week-day">{{ weekDay }}</p>
+		<p v-else :class="$style.day">{{ $t('dayX', { day }) }}</p>
+		<p :class="$style.weekDay">{{ weekDay }}</p>
 	</div>
-	<div class="info">
-		<div>
-			<p>{{ i18n.ts.today }}<b>{{ dayP.toFixed(1) }}%</b></p>
-			<div class="meter">
-				<div class="val" :style="{ width: `${dayP}%` }"></div>
+	<div :class="$style.info">
+		<div :class="$style.infoSection">
+			<p :class="$style.infoText">{{ i18n.ts.today }}<b :class="$style.percentage">{{ dayP.toFixed(1) }}%</b></p>
+			<div :class="$style.meter">
+				<div :class="$style.meterVal" :style="{ width: `${dayP}%` }"></div>
 			</div>
 		</div>
-		<div>
-			<p>{{ i18n.ts.thisMonth }}<b>{{ monthP.toFixed(1) }}%</b></p>
-			<div class="meter">
-				<div class="val" :style="{ width: `${monthP}%` }"></div>
+		<div :class="$style.infoSection">
+			<p :class="$style.infoText">{{ i18n.ts.thisMonth }}<b :class="$style.percentage">{{ monthP.toFixed(1) }}%</b></p>
+			<div :class="$style.meter">
+				<div :class="$style.meterVal" :style="{ width: `${monthP}%` }"></div>
 			</div>
 		</div>
-		<div>
-			<p>{{ i18n.ts.thisYear }}<b>{{ yearP.toFixed(1) }}%</b></p>
-			<div class="meter">
-				<div class="val" :style="{ width: `${yearP}%` }"></div>
+		<div :class="$style.infoSection">
+			<p :class="$style.infoText">{{ i18n.ts.thisYear }}<b :class="$style.percentage">{{ yearP.toFixed(1) }}%</b></p>
+			<div :class="$style.meter">
+				<div :class="$style.meterVal" :style="{ width: `${yearP}%` }"></div>
 			</div>
 		</div>
 	</div>
@@ -115,8 +115,8 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.mkw-calendar {
+<style lang="scss" module>
+.root {
 	padding: 16px 0;
 
 	&:after {
@@ -124,91 +124,93 @@ defineExpose<WidgetComponentExpose>({
 		display: block;
 		clear: both;
 	}
+}
 
-	> .calendar {
-		float: left;
-		width: 60%;
-		text-align: center;
+.calendar {
+	float: left;
+	width: 60%;
+	text-align: center;
 
-		&.isHoliday {
-			> .day {
-				color: #ef95a0;
-			}
-		}
-
-		> .month-and-year, > .week-day {
-			margin: 0;
-			line-height: 18px;
-			font-size: 0.9em;
-
-			> .year, > .month {
-				margin: 0 4px;
-			}
-		}
-
+	&.isHoliday {
 		> .day {
-			margin: 10px 0;
-			line-height: 32px;
-			font-size: 1.75em;
+			color: #ef95a0;
+		}
+	}
+}
+
+.monthAndYear,
+.weekDay {
+	margin: 0;
+	line-height: 18px;
+	font-size: 0.9em;
+}
+
+.year,
+.month {
+	margin: 0 4px;
+}
+
+.day {
+	margin: 10px 0;
+	line-height: 32px;
+	font-size: 1.75em;
+}
+
+.info {
+	display: block;
+	float: left;
+	width: 40%;
+	padding: 0 16px 0 0;
+	box-sizing: border-box;
+}
+
+.infoSection {
+	margin-bottom: 8px;
+
+	&:last-child {
+		margin-bottom: 4px;
+	}
+
+	&:nth-child(1) {
+		> .meter > .meterVal {
+			background: #f7796c;
 		}
 	}
 
-	> .info {
-		display: block;
-		float: left;
-		width: 40%;
-		padding: 0 16px 0 0;
-		box-sizing: border-box;
-
-		> div {
-			margin-bottom: 8px;
-
-			&:last-child {
-				margin-bottom: 4px;
-			}
-
-			> p {
-				display: flex;
-				margin: 0 0 2px 0;
-				font-size: 0.75em;
-				line-height: 18px;
-				opacity: 0.8;
-
-				> b {
-					margin-left: auto;
-				}
-			}
-
-			> .meter {
-				width: 100%;
-				overflow: hidden;
-				background: var(--X11);
-				border-radius: 8px;
-
-				> .val {
-					height: 4px;
-					transition: width .3s cubic-bezier(0.23, 1, 0.32, 1);
-				}
-			}
-
-			&:nth-child(1) {
-				> .meter > .val {
-					background: #f7796c;
-				}
-			}
-
-			&:nth-child(2) {
-				> .meter > .val {
-					background: #a1de41;
-				}
-			}
-
-			&:nth-child(3) {
-				> .meter > .val {
-					background: #41ddde;
-				}
-			}
+	&:nth-child(2) {
+		> .meter > .meterVal {
+			background: #a1de41;
 		}
 	}
+
+	&:nth-child(3) {
+		> .meter > .meterVal {
+			background: #41ddde;
+		}
+	}
+}
+
+.infoText {
+	display: flex;
+	margin: 0 0 2px 0;
+	font-size: 0.75em;
+	line-height: 18px;
+	opacity: 0.8;
+}
+
+.percentage {
+	margin-left: auto;
+}
+
+.meter {
+	width: 100%;
+	overflow: hidden;
+	background: var(--X11);
+	border-radius: 8px;
+}
+
+.meterVal {
+	height: 4px;
+	transition: width .3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 </style>

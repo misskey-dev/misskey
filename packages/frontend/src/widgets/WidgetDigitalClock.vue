@@ -1,10 +1,10 @@
 <template>
-<div class="mkw-digitalClock _monospace" :class="{ _panel: !widgetProps.transparent }" :style="{ fontSize: `${widgetProps.fontSize}em` }">
-	<div v-if="widgetProps.showLabel" class="label">{{ tzAbbrev }}</div>
-	<div class="time">
+<div class="data-cy-mkw-digitalClock _monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
+	<div v-if="widgetProps.showLabel" :class="$style.label">{{ tzAbbrev }}</div>
+	<div>
 		<MkDigitalClock :show-ms="widgetProps.showMs" :offset="tzOffset"/>
 	</div>
-	<div v-if="widgetProps.showLabel" class="label">{{ tzOffsetLabel }}</div>
+	<div v-if="widgetProps.showLabel" :class="$style.label">{{ tzOffsetLabel }}</div>
 </div>
 </template>
 
@@ -79,14 +79,14 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.mkw-digitalClock {
+<style lang="scss" module>
+.root {
 	padding: 16px 0;
 	text-align: center;
+}
 
-	> .label {
-		font-size: 65%;
-		opacity: 0.7;
-	}
+.label {
+	font-size: 65%;
+	opacity: 0.7;
 }
 </style>

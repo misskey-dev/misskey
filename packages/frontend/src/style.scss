@@ -17,7 +17,7 @@
 }
 
 ::selection {
-	color: #fff;
+	color: var(--fgOnAccent);
 	background-color: var(--accent);
 } 
 
@@ -150,10 +150,8 @@ hr {
 }
 
 ._ghost {
-	&, * {
-		@extend ._noSelect;
-		pointer-events: none;
-	}
+	@extend ._noSelect;
+	pointer-events: none;
 }
 
 ._modalBg {
@@ -172,6 +170,7 @@ hr {
 }
 
 ._button {
+	@extend ._noSelect;
 	appearance: none;
 	display: inline-block;
 	padding: 0;
@@ -187,14 +186,6 @@ hr {
 	font-family: inherit;
 	line-height: inherit;
 	max-width: 100%;
-
-	&, * {
-		@extend ._noSelect;
-	}
-
-	* {
-		pointer-events: none;
-	}
 
 	&:focus-visible {
 		outline: none;

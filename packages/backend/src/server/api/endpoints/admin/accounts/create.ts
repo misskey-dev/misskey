@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const noUsers = (await this.usersRepository.countBy({
 				host: IsNull(),
 			})) === 0;
-			if (!noUsers && !me?.isAdmin) throw new Error('access denied');
+			if (!noUsers && !me?.isRoot) throw new Error('access denied');
 
 			const { account, secret } = await this.signupService.signup({
 				username: ps.username,

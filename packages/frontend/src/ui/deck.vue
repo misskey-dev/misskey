@@ -424,6 +424,7 @@ async function deleteProfile() {
 
 .navButtonIcon {
 	font-size: 18px;
+	vertical-align: middle;
 }
 
 .navButtonIndicator {

@@ -1,17 +1,11 @@
 <template>
-<MkA v-if="url.startsWith('/')" v-user-preview="canonical" class="akbvjaqn" :class="{ isMe }" :to="url" :style="{ background: bgCss }">
-	<img class="icon" :src="`/avatar/@${username}@${host}`" alt="">
-	<span class="main">
-		<span class="username">@{{ username }}</span>
-		<span v-if="(host != localHost) || $store.state.showFullAcct" class="host">@{{ toUnicode(host) }}</span>
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }">
+	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
+	<span>
+		<span :class="$style.username">@{{ username }}</span>
+		<span v-if="(host != localHost) || $store.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
-<a v-else class="akbvjaqn" :href="url" target="_blank" rel="noopener" :style="{ background: bgCss }">
-	<span class="main">
-		<span class="username">@{{ username }}</span>
-		<span class="host">@{{ toUnicode(host) }}</span>
-	</span>
-</a>
 </template>
 
 <script lang="ts" setup>
@@ -39,8 +33,8 @@ bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
 </script>
 
-<style lang="scss" scoped>
-.akbvjaqn {
+<style lang="scss" module>
+.root {
 	display: inline-block;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
@@ -49,18 +43,18 @@ const bgCss = bg.toRgbString();
 	&.isMe {
 		color: var(--mentionMe);
 	}
+}
 
-	> .icon {
-		width: 1.5em;
-		height: 1.5em;
-		object-fit: cover;
-		margin: 0 0.2em 0 0;
-		vertical-align: bottom;
-		border-radius: 100%;
-	}
+.icon {
+	width: 1.5em;
+	height: 1.5em;
+	object-fit: cover;
+	margin: 0 0.2em 0 0;
+	vertical-align: bottom;
+	border-radius: 100%;
+}
 
-	> .main > .host {
-		opacity: 0.5;
-	}
+.host {
+	opacity: 0.5;
 }
 </style>

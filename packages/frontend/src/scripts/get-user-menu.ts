@@ -108,26 +108,6 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		});
 	}
 
-	async function toggleSilence() {
-		if (!await getConfirmed(i18n.t(user.isSilenced ? 'unsilenceConfirm' : 'silenceConfirm'))) return;
-
-		os.apiWithDialog(user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
-			userId: user.id,
-		}).then(() => {
-			user.isSilenced = !user.isSilenced;
-		});
-	}
-
-	async function toggleSuspend() {
-		if (!await getConfirmed(i18n.t(user.isSuspended ? 'unsuspendConfirm' : 'suspendConfirm'))) return;
-
-		os.apiWithDialog(user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
-			userId: user.id,
-		}).then(() => {
-			user.isSuspended = !user.isSuspended;
-		});
-	}
-
 	function reportAbuse() {
 		os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 			user: user,
@@ -218,13 +198,11 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 		if (iAmModerator) {
 			menu = menu.concat([null, {
-				icon: 'ti ti-microphone-2-off',
-				text: user.isSilenced ? i18n.ts.unsilence : i18n.ts.silence,
-				action: toggleSilence,
-			}, {
-				icon: 'ti ti-snowflake',
-				text: user.isSuspended ? i18n.ts.unsuspend : i18n.ts.suspend,
-				action: toggleSuspend,
+				icon: 'ti ti-user-exclamation',
+				text: i18n.ts.moderation,
+				action: () => {
+					router.push('/user-info/' + user.id + '#moderation');
+				},
 			}]);
 		}
 	}

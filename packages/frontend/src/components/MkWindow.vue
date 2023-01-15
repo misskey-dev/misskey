@@ -1,34 +1,41 @@
 <template>
-<Transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
-	<div v-if="showing" ref="rootEl" class="ebkgocck" :class="{ maximized }">
-		<div class="body _shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
-			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
-				<span class="left">
-					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
+<Transition
+	:enter-active-class="$store.state.animation ? $style.transition_window_enterActive : ''"
+	:leave-active-class="$store.state.animation ? $style.transition_window_leaveActive : ''"
+	:enter-from-class="$store.state.animation ? $style.transition_window_enterFrom : ''"
+	:leave-to-class="$store.state.animation ? $style.transition_window_leaveTo : ''"
+	appear
+	@after-leave="$emit('closed')"
+>
+	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
+		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
+			<div :class="[$style.header, { [$style.mini]: mini }]" @contextmenu.prevent.stop="onContextmenu">
+				<span :class="$style.headerLeft">
+					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
 				</span>
-				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
+				<span :class="$style.headerTitle" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
-				<span class="right">
-					<button v-for="button in buttonsRight" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
-					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="button _button" @click="unMaximize()"><i class="ti ti-picture-in-picture"></i></button>
-					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="button _button" @click="maximize()"><i class="ti ti-rectangle"></i></button>
-					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="button _button" @click="close()"><i class="ti ti-x"></i></button>
+				<span :class="$style.headerRight">
+					<button v-for="button in buttonsRight" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
+					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="_button" :class="$style.headerButton" @click="unMaximize()"><i class="ti ti-picture-in-picture"></i></button>
+					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="_button" :class="$style.headerButton" @click="maximize()"><i class="ti ti-rectangle"></i></button>
+					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="_button" :class="$style.headerButton" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
-			<div class="body">
+			<div :class="$style.content">
 				<slot></slot>
 			</div>
 		</div>
 		<template v-if="canResize">
-			<div class="handle top" @mousedown.prevent="onTopHandleMousedown"></div>
-			<div class="handle right" @mousedown.prevent="onRightHandleMousedown"></div>
-			<div class="handle bottom" @mousedown.prevent="onBottomHandleMousedown"></div>
-			<div class="handle left" @mousedown.prevent="onLeftHandleMousedown"></div>
-			<div class="handle top-left" @mousedown.prevent="onTopLeftHandleMousedown"></div>
-			<div class="handle top-right" @mousedown.prevent="onTopRightHandleMousedown"></div>
-			<div class="handle bottom-right" @mousedown.prevent="onBottomRightHandleMousedown"></div>
-			<div class="handle bottom-left" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
+			<div :class="$style.handleTop" @mousedown.prevent="onTopHandleMousedown"></div>
+			<div :class="$style.handleRight" @mousedown.prevent="onRightHandleMousedown"></div>
+			<div :class="$style.handleBottom" @mousedown.prevent="onBottomHandleMousedown"></div>
+			<div :class="$style.handleLeft" @mousedown.prevent="onLeftHandleMousedown"></div>
+			<div :class="$style.handleTopLeft" @mousedown.prevent="onTopLeftHandleMousedown"></div>
+			<div :class="$style.handleTopRight" @mousedown.prevent="onTopRightHandleMousedown"></div>
+			<div :class="$style.handleBottomRight" @mousedown.prevent="onBottomRightHandleMousedown"></div>
+			<div :class="$style.handleBottomLeft" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
 		</template>
 	</div>
 </Transition>
@@ -407,166 +414,174 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.window-enter-active, .window-leave-active {
+<style lang="scss" module>
+.transition_window_enterActive,
+.transition_window_leaveActive {
 	transition: opacity 0.2s, transform 0.2s !important;
 }
-.window-enter-from, .window-leave-to {
+.transition_window_enterFrom,
+.transition_window_leaveTo {
 	pointer-events: none;
 	opacity: 0;
 	transform: scale(0.9);
 }
 
-.ebkgocck {
+.root {
 	position: fixed;
 	top: 0;
 	left: 0;
-
-	> .body {
-		overflow: clip;
-		display: flex;
-		flex-direction: column;
-		contain: content;
-		width: 100%;
-		height: 100%;
-		border-radius: var(--radius);
-
-		> .header {
-			--height: 39px;
-
-			&.mini {
-				--height: 32px;
-			}
-
-			display: flex;
-			position: relative;
-			z-index: 1;
-			flex-shrink: 0;
-			user-select: none;
-			height: var(--height);
-			background: var(--windowHeader);
-			-webkit-backdrop-filter: var(--blur, blur(15px));
-			backdrop-filter: var(--blur, blur(15px));
-			//border-bottom: solid 1px var(--divider);
-			font-size: 95%;
-			font-weight: bold;
-
-			> .left, > .right {
-				> .button {
-					height: var(--height);
-					width: var(--height);
-
-					&:hover {
-						color: var(--fgHighlighted);
-					}
-
-					&.highlighted {
-						color: var(--accent);
-					}
-				}
-			}
-
-			> .left {
-				margin-right: 16px;
-			}
-
-			> .right {
-				min-width: 16px;
-			}
-
-			> .title {
-				flex: 1;
-				position: relative;
-				line-height: var(--height);
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				cursor: move;
-			}
-		}
-
-		> .body {
-			flex: 1;
-			overflow: auto;
-			background: var(--panel);
-			container-type: inline-size;
-		}
-	}
-
-	> .handle {
-		$size: 8px;
-
-		position: absolute;
-
-		&.top {
-			top: -($size);
-			left: 0;
-			width: 100%;
-			height: $size;
-			cursor: ns-resize;
-		}
-
-		&.right {
-			top: 0;
-			right: -($size);
-			width: $size;
-			height: 100%;
-			cursor: ew-resize;
-		}
-
-		&.bottom {
-			bottom: -($size);
-			left: 0;
-			width: 100%;
-			height: $size;
-			cursor: ns-resize;
-		}
-
-		&.left {
-			top: 0;
-			left: -($size);
-			width: $size;
-			height: 100%;
-			cursor: ew-resize;
-		}
-
-		&.top-left {
-			top: -($size);
-			left: -($size);
-			width: $size * 2;
-			height: $size * 2;
-			cursor: nwse-resize;
-		}
-
-		&.top-right {
-			top: -($size);
-			right: -($size);
-			width: $size * 2;
-			height: $size * 2;
-			cursor: nesw-resize;
-		}
-
-		&.bottom-right {
-			bottom: -($size);
-			right: -($size);
-			width: $size * 2;
-			height: $size * 2;
-			cursor: nwse-resize;
-		}
-
-		&.bottom-left {
-			bottom: -($size);
-			left: -($size);
-			width: $size * 2;
-			height: $size * 2;
-			cursor: nesw-resize;
-		}
-	}
 
 	&.maximized {
 		> .body {
 			border-radius: 0;
 		}
 	}
+}
+
+.body {
+	overflow: clip;
+	display: flex;
+	flex-direction: column;
+	contain: content;
+	width: 100%;
+	height: 100%;
+	border-radius: var(--radius);
+}
+
+.header {
+	--height: 39px;
+
+	&.mini {
+		--height: 32px;
+	}
+
+	display: flex;
+	position: relative;
+	z-index: 1;
+	flex-shrink: 0;
+	user-select: none;
+	height: var(--height);
+	background: var(--windowHeader);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	//border-bottom: solid 1px var(--divider);
+	font-size: 95%;
+	font-weight: bold;
+}
+
+.headerButton {
+	height: var(--height);
+	width: var(--height);
+
+	&:hover {
+		color: var(--fgHighlighted);
+	}
+
+	&.highlighted {
+		color: var(--accent);
+	}
+}
+
+.headerLeft {
+	margin-right: 16px;
+}
+
+.headerRight {
+	min-width: 16px;
+}
+
+.headerTitle {
+	flex: 1;
+	position: relative;
+	line-height: var(--height);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	cursor: move;
+}
+
+.content {
+	flex: 1;
+	overflow: auto;
+	background: var(--panel);
+	container-type: inline-size;
+}
+
+$handleSize: 8px;
+
+.handle {
+	position: absolute;
+}
+
+.handleTop {
+	composes: handle;
+	top: -($handleSize);
+	left: 0;
+	width: 100%;
+	height: $handleSize;
+	cursor: ns-resize;
+}
+
+.handleRight {
+	composes: handle;
+	top: 0;
+	right: -($handleSize);
+	width: $handleSize;
+	height: 100%;
+	cursor: ew-resize;
+}
+
+.handleBottom {
+	composes: handle;
+	bottom: -($handleSize);
+	left: 0;
+	width: 100%;
+	height: $handleSize;
+	cursor: ns-resize;
+}
+
+.handleLeft {
+	composes: handle;
+	top: 0;
+	left: -($handleSize);
+	width: $handleSize;
+	height: 100%;
+	cursor: ew-resize;
+}
+
+.handleTopLeft {
+	composes: handle;
+	top: -($handleSize);
+	left: -($handleSize);
+	width: $handleSize * 2;
+	height: $handleSize * 2;
+	cursor: nwse-resize;
+}
+
+.handleTopRight {
+	composes: handle;
+	top: -($handleSize);
+	right: -($handleSize);
+	width: $handleSize * 2;
+	height: $handleSize * 2;
+	cursor: nesw-resize;
+}
+
+.handleBottomRight {
+	composes: handle;
+	bottom: -($handleSize);
+	right: -($handleSize);
+	width: $handleSize * 2;
+	height: $handleSize * 2;
+	cursor: nwse-resize;
+}
+
+.handleBottomLeft {
+	composes: handle;
+	bottom: -($handleSize);
+	left: -($handleSize);
+	width: $handleSize * 2;
+	height: $handleSize * 2;
+	cursor: nesw-resize;
 }
 </style>

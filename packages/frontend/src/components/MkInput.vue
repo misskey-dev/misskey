@@ -78,9 +78,9 @@ const inputEl = shallowRef<HTMLElement>();
 const prefixEl = shallowRef<HTMLElement>();
 const suffixEl = shallowRef<HTMLElement>();
 const height =
-	props.small ? 34 :
-	props.large ? 40 :
-	37;
+	props.small ? 33 :
+	props.large ? 39 :
+	36;
 
 const focus = () => inputEl.value.focus();
 const onInput = (ev: KeyboardEvent) => {

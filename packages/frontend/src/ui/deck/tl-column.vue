@@ -8,12 +8,12 @@
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="disabled" class="iwaalbte">
-		<p>
+	<div v-if="disabled" :class="$style.disabled">
+		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus-circle"></i>
 			{{ $t('disabled-timeline.title') }}
 		</p>
-		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
+		<p :class="$style.disabledDescription">{{ $t('disabled-timeline.description') }}</p>
 	</div>
 	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
 </XColumn>
@@ -45,9 +45,7 @@ onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
 	} else if ($i) {
-		disabled = !$i.isModerator && !$i.isAdmin && (
-			instance.disableLocalTimeline && ['local', 'social'].includes(props.column.tl) ||
-			instance.disableGlobalTimeline && ['global'].includes(props.column.tl));
+		disabled = false; // TODO
 	}
 });
 
@@ -82,16 +80,16 @@ const menu = [{
 }];
 </script>
 
-<style lang="scss" scoped>
-.iwaalbte {
+<style lang="scss" module>
+.disabled {
 	text-align: center;
+}
 
-	> p {
-		margin: 16px;
+.disabledTitle {
+	margin: 16px;
+}
 
-		&.desc {
-			font-size: 14px;
-		}
-	}
+.disabledDescription {
+	font-size: 90%;
 }
 </style>

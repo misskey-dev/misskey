@@ -1,38 +1,38 @@
 <template>
-<div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
-	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+<div v-if="playerEnabled" :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
+	<button :class="$style.disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
+	<iframe :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 </div>
-<div v-else-if="tweetId && tweetExpanded" ref="twitter" class="twitter">
+<div v-else-if="tweetId && tweetExpanded" ref="twitter" :class="$style.twitter">
 	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
-<div v-else class="mk-url-preview">
-	<component :is="self ? 'MkA' : 'a'" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
+<div v-else :class="$style.urlPreview">
+	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
+		<div v-if="thumbnail" :class="$style.thumbnail" :style="`background-image: url('${thumbnail}')`">
 		</div>
-		<article>
-			<header>
-				<h1 v-if="unknownUrl">{{ url }}</h1>
-				<h1 v-else-if="fetching"><MkEllipsis/></h1>
-				<h1 v-else :title="title">{{ title }}</h1>
+		<article :class="$style.body">
+			<header :class="$style.header">
+				<h1 v-if="unknownUrl" :class="$style.title">{{ url }}</h1>
+				<h1 v-else-if="fetching" :class="$style.title"><MkEllipsis/></h1>
+				<h1 v-else :class="$style.title" :title="title">{{ title }}</h1>
 			</header>
-			<p v-if="unknownUrl">{{ i18n.ts.cannotLoad }}</p>
-			<p v-else-if="fetching"><MkEllipsis/></p>
-			<p v-else-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
-			<footer>
-				<img v-if="icon" class="icon" :src="icon"/>
-				<p v-if="unknownUrl">?</p>
-				<p v-else-if="fetching"><MkEllipsis/></p>
-				<p v-else :title="sitename">{{ sitename }}</p>
+			<p v-if="unknownUrl" :class="$style.text">{{ i18n.ts.cannotLoad }}</p>
+			<p v-else-if="fetching" :class="$style.text"><MkEllipsis/></p>
+			<p v-else-if="description" :class="$style.text" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
+			<footer :class="$style.footer">
+				<img v-if="icon" :class="$style.siteIcon" :src="icon"/>
+				<p v-if="unknownUrl" :class="$style.siteName">?</p>
+				<p v-else-if="fetching" :class="$style.siteName"><MkEllipsis/></p>
+				<p v-else :class="$style.siteName" :title="sitename">{{ sitename }}</p>
 			</footer>
 		</article>
 	</component>
-	<div v-if="tweetId" class="action">
+	<div v-if="tweetId" :class="$style.action">
 		<MkButton :small="true" inline @click="tweetExpanded = true">
 			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
 		</MkButton>
 	</div>
-	<div v-if="!playerEnabled && player.url" class="action">
+	<div v-if="!playerEnabled && player.url" :class="$style.action">
 		<MkButton :small="true" inline @click="playerEnabled = true">
 			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
 		</MkButton>
@@ -136,197 +136,198 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .player {
 	position: relative;
 	width: 100%;
+}
 
-	> button {
-		position: absolute;
-		top: -1.5em;
-		right: 0;
-		font-size: 1em;
-		width: 1.5em;
-		height: 1.5em;
-		padding: 0;
-		margin: 0;
-		color: var(--fg);
-		background: rgba(128, 128, 128, 0.2);
-		opacity: 0.7;
+.disablePlayer {
+	position: absolute;
+	top: -1.5em;
+	right: 0;
+	font-size: 1em;
+	width: 1.5em;
+	height: 1.5em;
+	padding: 0;
+	margin: 0;
+	color: var(--fg);
+	background: rgba(128, 128, 128, 0.2);
+	opacity: 0.7;
 
-		&:hover {
-			opacity: 0.9;
-		}
-	}
-
-	> iframe {
-		height: 100%;
-		left: 0;
-		position: absolute;
-		top: 0;
-		width: 100%;
+	&:hover {
+		opacity: 0.9;
 	}
 }
 
-.mk-url-preview {
-	> .link {
-		position: relative;
-		display: block;
-		font-size: 14px;
-		box-shadow: 0 0 0 1px var(--divider);
-		border-radius: 8px;
-		overflow: clip;
+.playerIframe {
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
 
-		&:hover {
-			text-decoration: none;
-			border-color: rgba(0, 0, 0, 0.2);
+.twitter {
 
-			> article > header > h1 {
-				text-decoration: underline;
-			}
-		}
+}
 
-		> .thumbnail {
-			position: absolute;
-			width: 100px;
-			height: 100%;
-			background-position: center;
-			background-size: cover;
-			display: flex;
-			justify-content: center;
-			align-items: center;
+.urlPreview {
+}
 
-			& + article {
-				left: 100px;
-				width: calc(100% - 100px);
-			}
-		}
+.link {
+	position: relative;
+	display: block;
+	font-size: 14px;
+	box-shadow: 0 0 0 1px var(--divider);
+	border-radius: 8px;
+	overflow: clip;
 
-		> article {
-			position: relative;
-			box-sizing: border-box;
-			padding: 16px;
+	&:hover {
+		text-decoration: none;
+		border-color: rgba(0, 0, 0, 0.2);
 
-			> header {
-				margin-bottom: 8px;
-
-				> h1 {
-					margin: 0;
-					font-size: 1em;
-				}
-			}
-
-			> p {
-				margin: 0;
-				font-size: 0.8em;
-			}
-
-			> footer {
-				margin-top: 8px;
-				height: 16px;
-
-				> img {
-					display: inline-block;
-					width: 16px;
-					height: 16px;
-					margin-right: 4px;
-					vertical-align: top;
-				}
-
-				> p {
-					display: inline-block;
-					margin: 0;
-					color: var(--urlPreviewInfo);
-					font-size: 0.8em;
-					line-height: 16px;
-					vertical-align: top;
-				}
-			}
-		}
-
-		&.compact {
-			> article {
-				> header h1, p, footer {
-					overflow: hidden;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-				}
-			}
+		> .body > .header > .title {
+			text-decoration: underline;
 		}
 	}
 
-	> .action {
-		display: flex;
-		gap: 6px;
-		flex-wrap: wrap;
-		margin-top: 6px;
+	&.compact {
+		> .body {
+			> .header .title, .text, .footer {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+		}
 	}
+}
+
+.thumbnail {
+	position: absolute;
+	width: 100px;
+	height: 100%;
+	background-position: center;
+	background-size: cover;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	& + .body {
+		left: 100px;
+		width: calc(100% - 100px);
+	}
+}
+
+.body {
+	position: relative;
+	box-sizing: border-box;
+	padding: 16px;
+}
+
+.header {
+	margin-bottom: 8px;
+}
+
+.title {
+	margin: 0;
+	font-size: 1em;
+}
+
+.text {
+	margin: 0;
+	font-size: 0.8em;
+}
+
+.footer {
+	margin-top: 8px;
+	height: 16px;
+}
+
+.siteIcon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 4px;
+	vertical-align: top;
+}
+
+.siteName {
+	display: inline-block;
+	margin: 0;
+	color: var(--urlPreviewInfo);
+	font-size: 0.8em;
+	line-height: 16px;
+	vertical-align: top;
+}
+
+.action {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	margin-top: 6px;
 }
 
 @container (max-width: 400px) {
-	.mk-url-preview {
-		> .link {
-			font-size: 12px;
+	.link {
+		font-size: 12px;
+	}
 
-			> .thumbnail {
-				height: 80px;
-			}
+	.thumbnail {
+		height: 80px;
+	}
 
-			> article {
-				padding: 12px;
-			}
-		}
+	.body {
+		padding: 12px;
 	}
 }
 
 @container (max-width: 350px) {
-	.mk-url-preview {
-		> .link {
-			font-size: 10px;
+	.link {
+		font-size: 10px;
 
+		&.compact {
 			> .thumbnail {
-				height: 70px;
+				position: absolute;
+				width: 56px;
+				height: 100%;
 			}
 
-			> article {
-				padding: 8px;
+			> .body {
+				left: 56px;
+				width: calc(100% - 56px);
+				padding: 4px;
 
-				> header {
-					margin-bottom: 4px;
+				> .header {
+					margin-bottom: 2px;
 				}
 
-				> footer {
-					margin-top: 4px;
-
-					> img {
-						width: 12px;
-						height: 12px;
-					}
-				}
-			}
-
-			&.compact {
-				> .thumbnail {
-					position: absolute;
-					width: 56px;
-					height: 100%;
-				}
-
-				> article {
-					left: 56px;
-					width: calc(100% - 56px);
-					padding: 4px;
-
-					> header {
-						margin-bottom: 2px;
-					}
-
-					> footer {
-						margin-top: 2px;
-					}
+				> .footer {
+					margin-top: 2px;
 				}
 			}
 		}
+	}
+
+	.thumbnail {
+		height: 70px;
+	}
+
+	.body {
+		padding: 8px;
+	}
+
+	.header {
+		margin-bottom: 4px;
+	}
+
+	.footer {
+		margin-top: 4px;
+	}
+
+	.siteIcon {
+		width: 12px;
+		height: 12px;
 	}
 }
 </style>

@@ -5,6 +5,11 @@
 
 version: 2
 updates:
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 0
 - package-ecosystem: npm
   directory: "/"
   schedule:
@@ -17,6 +22,11 @@ updates:
   open-pull-requests-limit: 0
 - package-ecosystem: npm
   directory: "/packages/frontend"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 0
+- package-ecosystem: npm
+  directory: "/packages/sw"
   schedule:
     interval: daily
   open-pull-requests-limit: 0
