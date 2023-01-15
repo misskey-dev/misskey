@@ -73,6 +73,7 @@
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
 		"@types/matter-js": "0.18.2",
+		"@types/node": "^18.11.18",
 		"@types/punycode": "2.1.0",
 		"@types/sanitize-html": "^2.8.0",
 		"@types/seedrandom": "3.0.4",
