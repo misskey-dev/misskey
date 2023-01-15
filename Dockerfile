@@ -47,7 +47,7 @@ COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/node_modul
 COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/built ./packages/backend/built
 COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
 COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/fluent-emojis
-COPY . ./
+COPY --chown=misskey:misskey . ./
 
 ENV NODE_ENV=production
 ENTRYPOINT ["/usr/bin/tini", "--"]

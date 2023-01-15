@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const currentCount = await this.userListsRepository.countBy({
 				userId: me.id,
 			});
-			if (currentCount > (await this.roleService.getUserRoleOptions(me.id)).userListLimit) {
+			if (currentCount > (await this.roleService.getUserPolicies(me.id)).userListLimit) {
 				throw new ApiError(meta.errors.tooManyUserLists);
 			}
 	

@@ -42,5 +42,6 @@ const props = defineProps<{
 
 .description {
 	opacity: 0.7;
+	font-size: 85%;
 }
 </style>

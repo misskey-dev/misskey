@@ -65,7 +65,7 @@ import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
 import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
 import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
-import * as ep___admin_roles_updateDefaultRoleOverride from './endpoints/admin/roles/update-default-role-override.js';
+import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -399,7 +399,7 @@ const $admin_roles_show: Provider = { provide: 'ep:admin/roles/show', useClass: 
 const $admin_roles_update: Provider = { provide: 'ep:admin/roles/update', useClass: ep___admin_roles_update.default };
 const $admin_roles_assign: Provider = { provide: 'ep:admin/roles/assign', useClass: ep___admin_roles_assign.default };
 const $admin_roles_unassign: Provider = { provide: 'ep:admin/roles/unassign', useClass: ep___admin_roles_unassign.default };
-const $admin_roles_updateDefaultRoleOverride: Provider = { provide: 'ep:admin/roles/update-default-role-override', useClass: ep___admin_roles_updateDefaultRoleOverride.default };
+const $admin_roles_updateDefaultPolicies: Provider = { provide: 'ep:admin/roles/update-default-policies', useClass: ep___admin_roles_updateDefaultPolicies.default };
 const $announcements: Provider = { provide: 'ep:announcements', useClass: ep___announcements.default };
 const $antennas_create: Provider = { provide: 'ep:antennas/create', useClass: ep___antennas_create.default };
 const $antennas_delete: Provider = { provide: 'ep:antennas/delete', useClass: ep___antennas_delete.default };
@@ -737,7 +737,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_update,
 		$admin_roles_assign,
 		$admin_roles_unassign,
-		$admin_roles_updateDefaultRoleOverride,
+		$admin_roles_updateDefaultPolicies,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -1069,7 +1069,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_update,
 		$admin_roles_assign,
 		$admin_roles_unassign,
-		$admin_roles_updateDefaultRoleOverride,
+		$admin_roles_updateDefaultPolicies,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,

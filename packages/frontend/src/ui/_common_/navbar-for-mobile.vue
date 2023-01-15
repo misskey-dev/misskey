@@ -35,7 +35,7 @@
 				<i class="icon ti ti-pencil ti-fw"></i><span class="text">{{ i18n.ts.note }}</span>
 			</button>
 			<button v-click-anime class="item _button account" @click="openAccountMenu">
-				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
+				<MkAvatar :user="$i" class="avatar" :disable-link="true"/><MkAcct class="text" :user="$i"/>
 			</button>
 		</div>
 	</div>

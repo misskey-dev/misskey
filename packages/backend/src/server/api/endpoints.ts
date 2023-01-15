@@ -64,7 +64,7 @@ import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
 import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
 import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
-import * as ep___admin_roles_updateDefaultRoleOverride from './endpoints/admin/roles/update-default-role-override.js';
+import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -396,7 +396,7 @@ const eps = [
 	['admin/roles/update', ep___admin_roles_update],
 	['admin/roles/assign', ep___admin_roles_assign],
 	['admin/roles/unassign', ep___admin_roles_unassign],
-	['admin/roles/update-default-role-override', ep___admin_roles_updateDefaultRoleOverride],
+	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -695,7 +695,7 @@ export interface IEndpointMeta {
 	 */
 	readonly requireAdmin?: boolean;
 
-	readonly requireRoleOption?: string;
+	readonly requireRolePolicy?: string;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ

@@ -173,7 +173,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.mutedWords !== undefined) {
 				// TODO: ちゃんと数える
 				const length = JSON.stringify(ps.mutedWords).length;
-				if (length > (await this.roleService.getUserRoleOptions(user.id)).wordMuteLimit) {
+				if (length > (await this.roleService.getUserPolicies(user.id)).wordMuteLimit) {
 					throw new ApiError(meta.errors.tooManyMutedWords);
 				}
 

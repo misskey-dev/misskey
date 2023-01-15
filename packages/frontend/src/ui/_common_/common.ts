@@ -47,7 +47,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 			to: '/clicker',
 			text: '🍪👈',
 			icon: 'ti ti-cookie',
-		}, ($i && ($i.isAdmin || $i.role.canInvite) && instance.disableRegistration) ? {
+		}, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
 			text: i18n.ts.invite,
 			icon: 'ti ti-user-plus',
 			action: () => {
@@ -63,7 +63,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 					});
 				});
 			},
-		} : undefined, ($i && ($i.isAdmin || $i.role.canManageCustomEmojis)) ? {
+		} : undefined, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 			type: 'link',
 			to: '/custom-emojis-manager',
 			text: i18n.ts.manageCustomEmojis,
