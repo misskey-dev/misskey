@@ -15,7 +15,7 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3.2.0
+    - uses: actions/setup-node@v3.6.0
       with:
         node-version: 18.x
         cache: 'yarn'
@@ -37,7 +37,7 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3.2.0
+    - uses: actions/setup-node@v3.6.0
       with:
         node-version: 18.x
         cache: 'yarn'
