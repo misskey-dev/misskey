@@ -17,7 +17,7 @@
 }
 
 ::selection {
-	color: #fff;
+	color: var(--fgOnAccent);
 	background-color: var(--accent);
 } 
 
@@ -150,10 +150,8 @@ hr {
 }
 
 ._ghost {
-	&, * {
-		@extend ._noSelect;
-		pointer-events: none;
-	}
+	@extend ._noSelect;
+	pointer-events: none;
 }
 
 ._modalBg {
