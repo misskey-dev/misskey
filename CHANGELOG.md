@@ -99,6 +99,7 @@ You should also include the user name that made the change.
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
 - Client: YouTube window player @sim1222
+- Client: show readable error when rate limit exceeded @syuilo
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
