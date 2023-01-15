@@ -18,8 +18,7 @@ import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
-import { PassThrough, Readable, pipeline } from 'node:stream';
-import { Request } from 'got';
+import { Readable, pipeline } from 'node:stream';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -123,9 +122,9 @@ export class MediaProxyServerService {
 					};
 				}
 			} else if ('static' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 498, 280);
+				image = this.imageProcessingService.convertToWebpFromWebReadable(response.body, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 200, 200);
+				image = this.imageProcessingService.convertToWebpFromWebReadable(response.body, 200, 200);
 			} else if ('badge' in request.query) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
@@ -164,7 +163,7 @@ export class MediaProxyServerService {
 					type: 'image/png',
 				};
 			} else if (mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 2048, 2048);
+				image = this.imageProcessingService.convertToWebpFromWebReadable(response.body, 2048, 2048);
 			} else if (!mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			}

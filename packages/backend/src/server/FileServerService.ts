@@ -20,9 +20,7 @@ import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
-import { PassThrough, Readable } from 'node:stream';
-import sharp from 'sharp';
-import { Request } from 'got';
+import { Readable } from 'node:stream';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -126,8 +124,8 @@ export class FileServerService {
 					const convertFile = async () => {
 						if (isThumbnail) {
 							if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(mime)) {
-								return this.imageProcessingService.convertSharpToWebpStreamObj(
-									Readable.fromWeb(response.body).pipe(sharp()),
+								return this.imageProcessingService.convertToWebpFromWebReadable(
+									response.body,
 									498,
 									280
 								);
@@ -140,8 +138,8 @@ export class FileServerService {
 						if (isWebpublic) {
 							if (['image/svg+xml'].includes(mime)) {
 								return {
-									data: this.imageProcessingService.convertSharpToWebpStream(
-											Readable.fromWeb(response.body).pipe(sharp()),
+									data: this.imageProcessingService.convertToWebpFromWebReadable(
+											response.body,
 											2048,
 											2048,
 											{ ...webpDefault, lossless: true }

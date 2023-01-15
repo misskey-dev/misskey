@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { ReadableStream } from 'node:stream/web';
+import { Readable } from 'node:stream';
 
 export type IImage = {
 	data: Buffer;
@@ -88,6 +90,12 @@ export class ImageProcessingService {
 			ext: 'webp',
 			type: 'image/webp',
 		}
+	}
+
+	@bindThis
+	public convertToWebpFromWebReadable(readable: ReadableStream | null, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageStream {
+		if (readable == null) throw new Error('Input is null');
+		return this.convertSharpToWebpStreamObj(Readable.fromWeb(readable).pipe(sharp()), width, height, options);
 	}
 
 	@bindThis
