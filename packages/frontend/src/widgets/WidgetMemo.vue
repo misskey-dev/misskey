@@ -1,6 +1,7 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-memo">
-	<template #header><i class="ti ti-note"></i>{{ i18n.ts._widgets.memo }}</template>
+	<template #icon><i class="ti ti-note"></i></template>
+	<template #header>{{ i18n.ts._widgets.memo }}</template>
 
 	<div class="otgbylcu">
 		<textarea v-model="text" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>

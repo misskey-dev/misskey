@@ -1,7 +1,8 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-userList">
-	<template #header><i class="ti ti-users"></i>{{ list ? list.name : i18n.ts._widgets.userList }}</template>
-	<template #func><button class="_button" @click="configure()"><i class="ti ti-settings"></i></button></template>
+	<template #icon><i class="ti ti-users"></i></template>
+	<template #header>{{ list ? list.name : i18n.ts._widgets.userList }}</template>
+	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure()"><i class="ti ti-settings"></i></button></template>
 
 	<div :class="$style.root">
 		<div v-if="widgetProps.listId == null" class="init">
