@@ -953,6 +953,11 @@ _role:
   chooseRoleToAssign: "เลือกบทบาทที่ต้องการกำหนด"
   canEditMembersByModerator: "อนุญาตให้ผู้ดูแลแก้ไขสมาชิก"
   descriptionOfCanEditMembersByModerator: "เมื่อเปิดใช้ ผู้ดูแลนอกเหนือจากผู้ดูแลระบบแล้ว จะสามารถกำหนดและยกเลิกการมอบหมายบทบาทนี้ให้กับผู้ใช้ได้ เมื่อปิด เฉพาะผู้ดูแลระบบเท่านั้นที่จะสามารถกำหนดผู้ใช้ได้นะ"
+  priority: "ลำดับความสำคัญ"
+  _priority:
+    low: "ต่ำ"
+    middle: "ปานกลาง"
+    high: "สูง"
   _options:
     gtlAvailable: "การดูไทม์ไลน์ทั่วโลก"
     ltlAvailable: "การดูไทม์ไลน์ในท้องถิ่น"
