@@ -226,7 +226,7 @@ export class NoteCreateService {
 		if (data.channel != null) data.localOnly = true;
 
 		if (data.visibility === 'public' && data.channel == null) {
-			if ((await this.roleService.getUserRoleOptions(user.id)).canPublicNote === false) {
+			if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
 			}
 		}

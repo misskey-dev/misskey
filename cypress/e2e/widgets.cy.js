@@ -39,7 +39,7 @@ describe('After user signed in', () => {
 			cy.get('.mk-widget-select select').select(widgetName, { force: true });
 			cy.get('.data-cy-bg._modalBg.data-cy-transparent').click({ multiple: true, force: true });
 			cy.get('.mk-widget-add').click({ force: true });
-			cy.get(`.mkw-${widgetName}`).should('exist');
+			cy.get(`.data-cy-mkw-${widgetName}`).should('exist');
 		});
 	}
 

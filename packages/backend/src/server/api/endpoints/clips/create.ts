@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const currentCount = await this.clipsRepository.countBy({
 				userId: me.id,
 			});
-			if (currentCount > (await this.roleService.getUserRoleOptions(me.id)).clipLimit) {
+			if (currentCount > (await this.roleService.getUserPolicies(me.id)).clipLimit) {
 				throw new ApiError(meta.errors.tooManyClips);
 			}
 	

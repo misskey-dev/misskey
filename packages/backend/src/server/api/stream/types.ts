@@ -30,7 +30,7 @@ export interface InternalStreamTypes {
 	remoteUserUpdated: Serialized<{ id: User['id']; }>;
 	follow: Serialized<{ followerId: User['id']; followeeId: User['id']; }>;
 	unfollow: Serialized<{ followerId: User['id']; followeeId: User['id']; }>;
-	defaultRoleOverrideUpdated: Serialized<Role['options']>;
+	policiesUpdated: Serialized<Role['options']>;
 	roleCreated: Serialized<Role>;
 	roleDeleted: Serialized<Role>;
 	roleUpdated: Serialized<Role>;

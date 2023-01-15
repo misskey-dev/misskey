@@ -97,7 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const currentCount = await this.clipNotesRepository.countBy({
 				clipId: clip.id,
 			});
-			if (currentCount > (await this.roleService.getUserRoleOptions(me.id)).noteEachClipsLimit) {
+			if (currentCount > (await this.roleService.getUserPolicies(me.id)).noteEachClipsLimit) {
 				throw new ApiError(meta.errors.tooManyClipNotes);
 			}
 

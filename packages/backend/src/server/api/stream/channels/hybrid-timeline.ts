@@ -30,8 +30,8 @@ class HybridTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any): Promise<void> {
-		const role = await this.roleService.getUserRoleOptions(this.user ? this.user.id : null);
-		if (!role.ltlAvailable) return;
+		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
+		if (!policies.ltlAvailable) return;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
