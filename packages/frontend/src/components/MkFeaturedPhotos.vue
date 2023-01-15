@@ -1,5 +1,5 @@
 <template>
-<div v-if="meta" class="xfbouadm" :style="{ backgroundImage: `url(${ meta.backgroundImageUrl })` }"></div>
+<div v-if="meta" :class="$style.root" :style="{ backgroundImage: `url(${ meta.backgroundImageUrl })` }"></div>
 </template>
 
 <script lang="ts" setup>
@@ -14,8 +14,8 @@ os.api('meta', { detail: true }).then(gotMeta => {
 });
 </script>
 
-<style lang="scss" scoped>
-.xfbouadm {
+<style lang="scss" module>
+.root {
 	background-position: center;
 	background-size: cover;
 }
