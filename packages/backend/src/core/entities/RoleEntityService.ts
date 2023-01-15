@@ -44,6 +44,7 @@ export class RoleEntityService {
 		for (const [k, v] of Object.entries(DEFAULT_ROLE)) {
 			if (roleOptions[k] == null) roleOptions[k] = {
 				useDefault: true,
+				priority: 0,
 				value: v,
 			};
 		}

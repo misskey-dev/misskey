@@ -40,189 +40,235 @@
 		<div class="_gaps_s">
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
-				<template #suffix>{{ options_rateLimitFactor_useDefault ? i18n.ts._role.useBaseValue : `${Math.floor(options_rateLimitFactor_value * 100)}%` }}</template>
+				<template #suffix>{{ options.rateLimitFactor.useDefault ? i18n.ts._role.useBaseValue : `${Math.floor(options.rateLimitFactor.value * 100)}%` }} <i :class="getPriorityIcon(options.rateLimitFactor)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_rateLimitFactor_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.rateLimitFactor.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkRange :model-value="options_rateLimitFactor_value * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => options_rateLimitFactor_value = (v / 100)">
+					<MkRange :model-value="options.rateLimitFactor.value * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => options.rateLimitFactor.value = (v / 100)">
+						<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
 						<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
+					</MkRange>
+					<MkRange v-model="options.rateLimitFactor.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
-				<template #suffix>{{ options_gtlAvailable_useDefault ? i18n.ts._role.useBaseValue : (options_gtlAvailable_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<template #suffix>{{ options.gtlAvailable.useDefault ? i18n.ts._role.useBaseValue : (options.gtlAvailable.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(options.gtlAvailable)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_gtlAvailable_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.gtlAvailable.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="options_gtlAvailable_value" :disabled="options_gtlAvailable_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.gtlAvailable.value" :disabled="options.gtlAvailable.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
+					<MkRange v-model="options.gtlAvailable.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.ltlAvailable }}</template>
-				<template #suffix>{{ options_ltlAvailable_useDefault ? i18n.ts._role.useBaseValue : (options_ltlAvailable_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<template #suffix>{{ options.ltlAvailable.useDefault ? i18n.ts._role.useBaseValue : (options.ltlAvailable.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(options.ltlAvailable)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_ltlAvailable_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.ltlAvailable.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="options_ltlAvailable_value" :disabled="options_ltlAvailable_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.ltlAvailable.value" :disabled="options.ltlAvailable.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
+					<MkRange v-model="options.ltlAvailable.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
-				<template #suffix>{{ options_canPublicNote_useDefault ? i18n.ts._role.useBaseValue : (options_canPublicNote_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<template #suffix>{{ options.canPublicNote.useDefault ? i18n.ts._role.useBaseValue : (options.canPublicNote.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(options.canPublicNote)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_canPublicNote_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.canPublicNote.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="options_canPublicNote_value" :disabled="options_canPublicNote_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.canPublicNote.value" :disabled="options.canPublicNote.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
+					<MkRange v-model="options.canPublicNote.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.canInvite }}</template>
-				<template #suffix>{{ options_canInvite_useDefault ? i18n.ts._role.useBaseValue : (options_canInvite_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<template #suffix>{{ options.canInvite.useDefault ? i18n.ts._role.useBaseValue : (options.canInvite.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(options.canInvite)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_canInvite_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.canInvite.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="options_canInvite_value" :disabled="options_canInvite_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.canInvite.value" :disabled="options.canInvite.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
+					<MkRange v-model="options.canInvite.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
-				<template #suffix>{{ options_canManageCustomEmojis_useDefault ? i18n.ts._role.useBaseValue : (options_canManageCustomEmojis_value ? i18n.ts.yes : i18n.ts.no) }}</template>
+				<template #suffix>{{ options.canManageCustomEmojis.useDefault ? i18n.ts._role.useBaseValue : (options.canManageCustomEmojis.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(options.canManageCustomEmojis)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_canManageCustomEmojis_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.canManageCustomEmojis.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="options_canManageCustomEmojis_value" :disabled="options_canManageCustomEmojis_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.canManageCustomEmojis.value" :disabled="options.canManageCustomEmojis.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
+					<MkRange v-model="options.canManageCustomEmojis.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
-				<template #suffix>{{ options_driveCapacityMb_useDefault ? i18n.ts._role.useBaseValue : (options_driveCapacityMb_value + 'MB') }}</template>
+				<template #suffix>{{ options.driveCapacityMb.useDefault ? i18n.ts._role.useBaseValue : (options.driveCapacityMb.value + 'MB') }} <i :class="getPriorityIcon(options.driveCapacityMb)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_driveCapacityMb_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.driveCapacityMb.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_driveCapacityMb_value" :disabled="options_driveCapacityMb_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.driveCapacityMb.value" :disabled="options.driveCapacityMb.useDefault" type="number" :readonly="readonly">
 						<template #suffix>MB</template>
 					</MkInput>
+					<MkRange v-model="options.driveCapacityMb.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.pinMax }}</template>
-				<template #suffix>{{ options_pinLimit_useDefault ? i18n.ts._role.useBaseValue : (options_pinLimit_value) }}</template>
+				<template #suffix>{{ options.pinLimit.useDefault ? i18n.ts._role.useBaseValue : (options.pinLimit.value) }} <i :class="getPriorityIcon(options.pinLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_pinLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.pinLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_pinLimit_value" :disabled="options_pinLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.pinLimit.value" :disabled="options.pinLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
+					<MkRange v-model="options.pinLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.antennaMax }}</template>
-				<template #suffix>{{ options_antennaLimit_useDefault ? i18n.ts._role.useBaseValue : (options_antennaLimit_value) }}</template>
+				<template #suffix>{{ options.antennaLimit.useDefault ? i18n.ts._role.useBaseValue : (options.antennaLimit.value) }} <i :class="getPriorityIcon(options.antennaLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_antennaLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.antennaLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_antennaLimit_value" :disabled="options_antennaLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.antennaLimit.value" :disabled="options.antennaLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
+					<MkRange v-model="options.antennaLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.wordMuteMax }}</template>
-				<template #suffix>{{ options_wordMuteLimit_useDefault ? i18n.ts._role.useBaseValue : (options_wordMuteLimit_value) }}</template>
+				<template #suffix>{{ options.wordMuteLimit.useDefault ? i18n.ts._role.useBaseValue : (options.wordMuteLimit.value) }} <i :class="getPriorityIcon(options.wordMuteLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_wordMuteLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.wordMuteLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_wordMuteLimit_value" :disabled="options_wordMuteLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.wordMuteLimit.value" :disabled="options.wordMuteLimit.useDefault" type="number" :readonly="readonly">
 						<template #suffix>chars</template>
 					</MkInput>
+					<MkRange v-model="options.wordMuteLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.webhookMax }}</template>
-				<template #suffix>{{ options_webhookLimit_useDefault ? i18n.ts._role.useBaseValue : (options_webhookLimit_value) }}</template>
+				<template #suffix>{{ options.webhookLimit.useDefault ? i18n.ts._role.useBaseValue : (options.webhookLimit.value) }} <i :class="getPriorityIcon(options.webhookLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_webhookLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.webhookLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_webhookLimit_value" :disabled="options_webhookLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.webhookLimit.value" :disabled="options.webhookLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
+					<MkRange v-model="options.webhookLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.clipMax }}</template>
-				<template #suffix>{{ options_clipLimit_useDefault ? i18n.ts._role.useBaseValue : (options_clipLimit_value) }}</template>
+				<template #suffix>{{ options.clipLimit.useDefault ? i18n.ts._role.useBaseValue : (options.clipLimit.value) }} <i :class="getPriorityIcon(options.clipLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_clipLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.clipLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_clipLimit_value" :disabled="options_clipLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.clipLimit.value" :disabled="options.clipLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
+					<MkRange v-model="options.clipLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.noteEachClipsMax }}</template>
-				<template #suffix>{{ options_noteEachClipsLimit_useDefault ? i18n.ts._role.useBaseValue : (options_noteEachClipsLimit_value) }}</template>
+				<template #suffix>{{ options.noteEachClipsLimit.useDefault ? i18n.ts._role.useBaseValue : (options.noteEachClipsLimit.value) }} <i :class="getPriorityIcon(options.noteEachClipsLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_noteEachClipsLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.noteEachClipsLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_noteEachClipsLimit_value" :disabled="options_noteEachClipsLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.noteEachClipsLimit.value" :disabled="options.noteEachClipsLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
+					<MkRange v-model="options.noteEachClipsLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.userListMax }}</template>
-				<template #suffix>{{ options_userListLimit_useDefault ? i18n.ts._role.useBaseValue : (options_userListLimit_value) }}</template>
+				<template #suffix>{{ options.userListLimit.useDefault ? i18n.ts._role.useBaseValue : (options.userListLimit.value) }} <i :class="getPriorityIcon(options.userListLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_userListLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.userListLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_userListLimit_value" :disabled="options_userListLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.userListLimit.value" :disabled="options.userListLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
+					<MkRange v-model="options.userListLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 
 			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.userEachUserListsMax }}</template>
-				<template #suffix>{{ options_userEachUserListsLimit_useDefault ? i18n.ts._role.useBaseValue : (options_userEachUserListsLimit_value) }}</template>
+				<template #suffix>{{ options.userEachUserListsLimit.useDefault ? i18n.ts._role.useBaseValue : (options.userEachUserListsLimit.value) }} <i :class="getPriorityIcon(options.userEachUserListsLimit)"></i></template>
 				<div class="_gaps">
-					<MkSwitch v-model="options_userEachUserListsLimit_useDefault" :readonly="readonly">
+					<MkSwitch v-model="options.userEachUserListsLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="options_userEachUserListsLimit_value" :disabled="options_userEachUserListsLimit_useDefault" type="number" :readonly="readonly">
+					<MkInput v-model="options.userEachUserListsLimit.value" :disabled="options.userEachUserListsLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
+					<MkRange v-model="options.userEachUserListsLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
 				</div>
 			</MkFolder>
 		</div>
@@ -245,7 +291,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -259,6 +305,24 @@ import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
+
+const ROLE_OPTIONS = [
+	'gtlAvailable',
+	'ltlAvailable',
+	'canPublicNote',
+	'canInvite',
+	'canManageCustomEmojis',
+	'driveCapacityMb',
+	'pinLimit',
+	'antennaLimit',
+	'wordMuteLimit',
+	'webhookLimit',
+	'clipLimit',
+	'noteEachClipsLimit',
+	'userListLimit',
+	'userEachUserListsLimit',
+	'rateLimitFactor',
+] as const;
 
 const emit = defineEmits<{
 	(ev: 'created', payload: any): void;
@@ -280,36 +344,16 @@ let target = $ref(role?.target ?? 'manual');
 let condFormula = $ref(role?.condFormula ?? { id: uuid(), type: 'isRemote' });
 let isPublic = $ref(role?.isPublic ?? false);
 let canEditMembersByModerator = $ref(role?.canEditMembersByModerator ?? false);
-let options_gtlAvailable_useDefault = $ref(role?.options?.gtlAvailable?.useDefault ?? true);
-let options_gtlAvailable_value = $ref(role?.options?.gtlAvailable?.value ?? instance.baseRole.gtlAvailable);
-let options_ltlAvailable_useDefault = $ref(role?.options?.ltlAvailable?.useDefault ?? true);
-let options_ltlAvailable_value = $ref(role?.options?.ltlAvailable?.value ?? instance.baseRole.ltlAvailable);
-let options_canPublicNote_useDefault = $ref(role?.options?.canPublicNote?.useDefault ?? true);
-let options_canPublicNote_value = $ref(role?.options?.canPublicNote?.value ?? instance.baseRole.canPublicNote);
-let options_canInvite_useDefault = $ref(role?.options?.canInvite?.useDefault ?? true);
-let options_canInvite_value = $ref(role?.options?.canInvite?.value ?? instance.baseRole.canInvite);
-let options_canManageCustomEmojis_useDefault = $ref(role?.options?.canManageCustomEmojis?.useDefault ?? true);
-let options_canManageCustomEmojis_value = $ref(role?.options?.canManageCustomEmojis?.value ?? instance.baseRole.canManageCustomEmojis);
-let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.useDefault ?? true);
-let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? instance.baseRole.driveCapacityMb);
-let options_pinLimit_useDefault = $ref(role?.options?.pinLimit?.useDefault ?? true);
-let options_pinLimit_value = $ref(role?.options?.pinLimit?.value ?? instance.baseRole.pinLimit);
-let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
-let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? instance.baseRole.antennaLimit);
-let options_wordMuteLimit_useDefault = $ref(role?.options?.wordMuteLimit?.useDefault ?? true);
-let options_wordMuteLimit_value = $ref(role?.options?.wordMuteLimit?.value ?? instance.baseRole.wordMuteLimit);
-let options_webhookLimit_useDefault = $ref(role?.options?.webhookLimit?.useDefault ?? true);
-let options_webhookLimit_value = $ref(role?.options?.webhookLimit?.value ?? instance.baseRole.webhookLimit);
-let options_clipLimit_useDefault = $ref(role?.options?.clipLimit?.useDefault ?? true);
-let options_clipLimit_value = $ref(role?.options?.clipLimit?.value ?? instance.baseRole.clipLimit);
-let options_noteEachClipsLimit_useDefault = $ref(role?.options?.noteEachClipsLimit?.useDefault ?? true);
-let options_noteEachClipsLimit_value = $ref(role?.options?.noteEachClipsLimit?.value ?? instance.baseRole.noteEachClipsLimit);
-let options_userListLimit_useDefault = $ref(role?.options?.userListLimit?.useDefault ?? true);
-let options_userListLimit_value = $ref(role?.options?.userListLimit?.value ?? instance.baseRole.userListLimit);
-let options_userEachUserListsLimit_useDefault = $ref(role?.options?.userEachUserListsLimit?.useDefault ?? true);
-let options_userEachUserListsLimit_value = $ref(role?.options?.userEachUserListsLimit?.value ?? instance.baseRole.userEachUserListsLimit);
-let options_rateLimitFactor_useDefault = $ref(role?.options?.rateLimitFactor?.useDefault ?? true);
-let options_rateLimitFactor_value = $ref(role?.options?.rateLimitFactor?.value ?? instance.baseRole.rateLimitFactor);
+
+const options = reactive<Record<typeof ROLE_OPTIONS[number], { useDefault: boolean; priority: number; value: any; }>>({});
+for (const ROLE_OPTION of ROLE_OPTIONS) {
+	const _options = role?.options ?? {};
+	options[ROLE_OPTION] = {
+		useDefault: _options[ROLE_OPTION]?.useDefault ?? true,
+		priority: _options[ROLE_OPTION]?.priority ?? 0,
+		value: _options[ROLE_OPTION]?.value ?? instance.baseRole[ROLE_OPTION],
+	};
+}
 
 if (_DEV_) {
 	watch($$(condFormula), () => {
@@ -317,24 +361,10 @@ if (_DEV_) {
 	}, { deep: true });
 }
 
-function getOptions() {
-	return {
-		gtlAvailable: { useDefault: options_gtlAvailable_useDefault, value: options_gtlAvailable_value },
-		ltlAvailable: { useDefault: options_ltlAvailable_useDefault, value: options_ltlAvailable_value },
-		canPublicNote: { useDefault: options_canPublicNote_useDefault, value: options_canPublicNote_value },
-		canInvite: { useDefault: options_canInvite_useDefault, value: options_canInvite_value },
-		canManageCustomEmojis: { useDefault: options_canManageCustomEmojis_useDefault, value: options_canManageCustomEmojis_value },
-		driveCapacityMb: { useDefault: options_driveCapacityMb_useDefault, value: options_driveCapacityMb_value },
-		pinLimit: { useDefault: options_pinLimit_useDefault, value: options_pinLimit_value },
-		antennaLimit: { useDefault: options_antennaLimit_useDefault, value: options_antennaLimit_value },
-		wordMuteLimit: { useDefault: options_wordMuteLimit_useDefault, value: options_wordMuteLimit_value },
-		webhookLimit: { useDefault: options_webhookLimit_useDefault, value: options_webhookLimit_value },
-		clipLimit: { useDefault: options_clipLimit_useDefault, value: options_clipLimit_value },
-		noteEachClipsLimit: { useDefault: options_noteEachClipsLimit_useDefault, value: options_noteEachClipsLimit_value },
-		userListLimit: { useDefault: options_userListLimit_useDefault, value: options_userListLimit_value },
-		userEachUserListsLimit: { useDefault: options_userEachUserListsLimit_useDefault, value: options_userEachUserListsLimit_value },
-		rateLimitFactor: { useDefault: options_rateLimitFactor_useDefault, value: options_rateLimitFactor_value },
-	};
+function getPriorityIcon(option) {
+	if (option.priority === 2) return 'ti ti-arrows-up';
+	if (option.priority === 1) return 'ti ti-arrow-narrow-up';
+	return 'ti ti-point';
 }
 
 async function save() {
@@ -351,7 +381,7 @@ async function save() {
 			isModerator: rolePermission === 'moderator',
 			isPublic,
 			canEditMembersByModerator,
-			options: getOptions(),
+			options,
 		});
 		emit('updated');
 	} else {
@@ -365,7 +395,7 @@ async function save() {
 			isModerator: rolePermission === 'moderator',
 			isPublic,
 			canEditMembersByModerator,
-			options: getOptions(),
+			options,
 		});
 		emit('created', created);
 	}
