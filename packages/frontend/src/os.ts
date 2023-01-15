@@ -20,7 +20,10 @@ export const apiWithDialog = ((
 	promiseDialog(promise, null, (err) => {
 		let title = null;
 		let text = err.message + '\n' + (err as any).id;
-		if (err.code.startsWith('TOO_MANY')) {
+		if (err.code === 'RATE_LIMIT_EXCEEDED') {
+			title = i18n.ts.cannotPerformTemporary;
+			text = i18n.ts.cannotPerformTemporaryDescription;
+		} else if (err.code.startsWith('TOO_MANY')) {
 			title = i18n.ts.youCannotCreateAnymore;
 			text = `${i18n.ts.error}: ${err.id}`;
 		}

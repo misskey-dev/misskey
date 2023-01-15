@@ -1,0 +1,46 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  yarn_install:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'yarn'
+    - run: corepack enable
+    - run: yarn install --immutable
+
+  lint:
+    needs: [yarn_install]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        workspace:
+        - backend
+        - frontend
+        - sw
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'yarn'
+    - run: corepack enable
+    - run: yarn install --immutable
+    - run: yarn workspace ${{ matrix.workspace }} run lint
