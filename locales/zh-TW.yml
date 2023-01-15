@@ -932,6 +932,8 @@ assign: "指派"
 unassign: "取消指派"
 color: "顏色"
 manageCustomEmojis: "管理自訂表情符號"
+cannotPerformTemporary: "暫時無法進行"
+cannotPerformTemporaryDescription: "由於超過操作次數限制，暫時無法進行。請過一段時間之後再嘗試。"
 _role:
   new: "建立角色"
   edit: "編輯角色"
