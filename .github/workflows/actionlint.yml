@@ -1,0 +1,17 @@
+name: actionlint
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - uses: reviewdog/action-actionlint@v1.35.0
+        with:
+          reporter: github-pr-review
