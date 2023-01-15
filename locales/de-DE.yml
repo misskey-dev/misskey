@@ -951,6 +951,7 @@ _role:
   isPublic: "Öffentliche Rolle"
   descriptionOfIsPublic: "Ist dies aktiviert, so kann jeder die Liste der Benutzer, die dieser Rolle zugewiesen sind, einsehen. Zusätzlich wird diese Rolle im Profil zugewiesener Benutzer angezeigt."
   options: "Optionen"
+  policies: "Richtlinien"
   baseRole: "Rollenvorlage"
   useBaseValue: "Wert der Rollenvorlage verwenden"
   chooseRoleToAssign: "Zuzuweisende Rolle auswählen"
