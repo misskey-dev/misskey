@@ -11,7 +11,7 @@ jobs:
   yarn_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
       with:
         fetch-depth: 0
         submodules: true
@@ -33,7 +33,7 @@ jobs:
         - frontend
         - sw
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
       with:
         fetch-depth: 0
         submodules: true
