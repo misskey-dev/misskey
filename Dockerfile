@@ -41,11 +41,12 @@ RUN npm i -g pnpm
 USER misskey
 WORKDIR /misskey
 
-COPY --from=builder /misskey/node_modules ./node_modules
-COPY --from=builder /misskey/built ./built
-COPY --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
-COPY --from=builder /misskey/packages/backend/built ./packages/backend/built
-COPY --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
+COPY --chown=misskey:misskey --from=builder /misskey/node_modules ./node_modules
+COPY --chown=misskey:misskey --from=builder /misskey/built ./built
+COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
+COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/built ./packages/backend/built
+COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
+COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY . ./
 
 ENV NODE_ENV=production
