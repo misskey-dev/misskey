@@ -387,6 +387,7 @@ importers:
       '@types/gulp': 4.0.10
       '@types/gulp-rename': 2.0.1
       '@types/matter-js': 0.18.2
+      '@types/node': ^18.11.18
       '@types/punycode': 2.1.0
       '@types/sanitize-html': ^2.8.0
       '@types/seedrandom': 3.0.4
@@ -515,7 +516,7 @@ importers:
       typescript: 4.9.4
       uuid: 9.0.0
       vanilla-tilt: 1.8.0
-      vite: 4.0.4_sass@1.57.1
+      vite: 4.0.4_ovmyjmuuyckt3r3gpaexj2onji
       vue: 3.2.45
       vue-prism-editor: 2.0.0-alpha.2_vue@3.2.45
       vuedraggable: 4.1.0_vue@3.2.45
@@ -525,6 +526,7 @@ importers:
       '@types/gulp': 4.0.10
       '@types/gulp-rename': 2.0.1
       '@types/matter-js': 0.18.2
+      '@types/node': 18.11.18
       '@types/punycode': 2.1.0
       '@types/sanitize-html': 2.8.0
       '@types/seedrandom': 3.0.4
@@ -1385,7 +1387,7 @@ packages:
       end-of-stream: 1.4.4
       fastify-plugin: 4.5.0
       hexoid: 1.0.0
-      secure-json-parse: 2.5.0
+      secure-json-parse: 2.7.0
       stream-wormhole: 1.1.0
     dev: false
 
@@ -1431,7 +1433,7 @@ packages:
       fastify-plugin: 4.5.0
       glob: 8.0.3
       p-limit: 3.1.0
-      readable-stream: 4.2.0
+      readable-stream: 4.3.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -3057,7 +3059,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.4_sass@1.57.1
+      vite: 4.0.4_ovmyjmuuyckt3r3gpaexj2onji
       vue: 3.2.45
     dev: false
 
@@ -11053,16 +11055,6 @@ packages:
       util-deprecate: 1.0.2
     dev: false
 
-  /readable-stream/4.2.0:
-    resolution: {integrity: sha512-gJrBHsaI3lgBoGMW/jHZsQ/o/TIWiu5ENCJG1BB7fuCKzpFM8GaS2UoBVt9NO+oI+3FcrBNbUkl3ilDe09aY4A==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    dependencies:
-      abort-controller: 3.0.0
-      buffer: 6.0.3
-      events: 3.3.0
-      process: 0.11.10
-    dev: false
-
   /readable-stream/4.3.0:
     resolution: {integrity: sha512-MuEnA0lbSi7JS8XM+WNJlWZkHAAdm7gETHdFK//Q/mChGyj2akEFtdLZh32jSdkWGbRwCW9pn6g3LWDdDeZnBQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -11535,10 +11527,6 @@ packages:
       '@types/json-schema': 7.0.11
       ajv: 6.12.6
       ajv-keywords: 3.5.2_ajv@6.12.6
-    dev: false
-
-  /secure-json-parse/2.5.0:
-    resolution: {integrity: sha512-ZQruFgZnIWH+WyO9t5rWt4ZEGqCKPwhiw+YbzTwpmT9elgLrLcfuyUiSnwwjUiVy9r4VM3urtbNF1xmEh9IL2w==}
     dev: false
 
   /secure-json-parse/2.7.0:
@@ -12992,7 +12980,7 @@ packages:
       replace-ext: 1.0.1
     dev: false
 
-  /vite/4.0.4_sass@1.57.1:
+  /vite/4.0.4_ovmyjmuuyckt3r3gpaexj2onji:
     resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -13017,6 +13005,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 18.11.18
       esbuild: 0.16.17
       postcss: 8.4.21
       resolve: 1.22.1
