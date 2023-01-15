@@ -74,8 +74,7 @@ export class MediaProxyServerService {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
 		try {
-			const _response = await this.downloadService.fetchUrl(url);	
-			const response = _response.clone() as NonNullBodyResponse;
+			const response = await this.downloadService.fetchUrl(url);
 			const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
 			let { mime, ext } = await this.fileInfoService.detectRequestType(response);

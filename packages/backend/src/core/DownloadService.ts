@@ -79,7 +79,7 @@ export class DownloadService {
 	@bindThis
 	public async pipeRequestToFile(_response: Response, path: string): Promise<void> {
 		const response = _response.clone();
-		if (response.body === null) {
+		if (response.body == null) {
 			throw new StatusError('No body', 400, 'No body');
 		}
 
