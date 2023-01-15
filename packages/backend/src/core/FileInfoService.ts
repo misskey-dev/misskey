@@ -341,16 +341,15 @@ export class FileInfoService {
 	}
 
 	/**
-	 * Detect MIME Type and extension by stream for performance (this cannot detect SVG)
+	 * Detect MIME Type and extension by stream and path for performance
 	 */
 	@bindThis
-	public async detectRequestType(_response: Response): Promise<{
+	public async detectRequestType(_response: Response, path?: string, fileSavingPromise: Promise<any> = Promise.resolve()): Promise<{
 		mime: string;
 		ext: string | null;
 	}> {
 		const response = _response.clone();
 
-		// Check 0 byte
 		if (!response.body) {
 			throw new StatusError('No Body', 400, 'No Body');
 		}
@@ -358,10 +357,24 @@ export class FileInfoService {
 		const type = await fileTypeFromStream(stream.Readable.fromWeb(response.body));
 
 		if (type) {
+			// XMLはSVGかもしれない
+			if (path && type.mime === 'application/xml') {
+				await fileSavingPromise;
+				if (await this.checkSvg(path)) {
+					return TYPE_SVG;
+				}	
+			}
+
 			return {
 				mime: type.mime,
 				ext: type.ext,
 			};
+		}
+
+		// 種類が不明でもSVGかもしれない
+		if (path) {
+			await fileSavingPromise;
+			if (await this.checkSvg(path)) return TYPE_SVG;
 		}
 
 		// 種類が不明なら application/octet-stream にする
