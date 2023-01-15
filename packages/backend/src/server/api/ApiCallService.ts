@@ -224,8 +224,11 @@ export class ApiCallService implements OnApplicationShutdown {
 				limit.key = ep.name;
 			}
 
+			// TODO: 毎リクエスト計算するのもあれだしキャッシュしたい
+			const factor = user ? (await this.roleService.getUserRoleOptions(user.id)).rateLimitFactor : 1;
+
 			// Rate limit
-			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor).catch(err => {
+			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
 				throw new ApiError({
 					message: 'Rate limit exceeded. Please try again later.',
 					code: 'RATE_LIMIT_EXCEEDED',

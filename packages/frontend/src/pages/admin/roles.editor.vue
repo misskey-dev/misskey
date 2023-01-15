@@ -39,6 +39,19 @@
 		<template #label>{{ i18n.ts._role.options }}</template>
 		<div class="_gaps_s">
 			<MkFolder>
+				<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
+				<template #suffix>{{ options_rateLimitFactor_useDefault ? i18n.ts._role.useBaseValue : `${Math.floor(options_rateLimitFactor_value * 100)}%` }}</template>
+				<div class="_gaps">
+					<MkSwitch v-model="options_rateLimitFactor_useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkRange :model-value="options_rateLimitFactor_value * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => options_rateLimitFactor_value = (v / 100)">
+						<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
 				<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
 				<template #suffix>{{ options_gtlAvailable_useDefault ? i18n.ts._role.useBaseValue : (options_gtlAvailable_value ? i18n.ts.yes : i18n.ts.no) }}</template>
 				<div class="_gaps">
@@ -241,9 +254,11 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkRange from '@/components/MkRange.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 const emit = defineEmits<{
 	(ev: 'created', payload: any): void;
@@ -266,33 +281,35 @@ let condFormula = $ref(role?.condFormula ?? { id: uuid(), type: 'isRemote' });
 let isPublic = $ref(role?.isPublic ?? false);
 let canEditMembersByModerator = $ref(role?.canEditMembersByModerator ?? false);
 let options_gtlAvailable_useDefault = $ref(role?.options?.gtlAvailable?.useDefault ?? true);
-let options_gtlAvailable_value = $ref(role?.options?.gtlAvailable?.value ?? false);
+let options_gtlAvailable_value = $ref(role?.options?.gtlAvailable?.value ?? instance.baseRole.gtlAvailable);
 let options_ltlAvailable_useDefault = $ref(role?.options?.ltlAvailable?.useDefault ?? true);
-let options_ltlAvailable_value = $ref(role?.options?.ltlAvailable?.value ?? false);
+let options_ltlAvailable_value = $ref(role?.options?.ltlAvailable?.value ?? instance.baseRole.ltlAvailable);
 let options_canPublicNote_useDefault = $ref(role?.options?.canPublicNote?.useDefault ?? true);
-let options_canPublicNote_value = $ref(role?.options?.canPublicNote?.value ?? false);
+let options_canPublicNote_value = $ref(role?.options?.canPublicNote?.value ?? instance.baseRole.canPublicNote);
 let options_canInvite_useDefault = $ref(role?.options?.canInvite?.useDefault ?? true);
-let options_canInvite_value = $ref(role?.options?.canInvite?.value ?? false);
+let options_canInvite_value = $ref(role?.options?.canInvite?.value ?? instance.baseRole.canInvite);
 let options_canManageCustomEmojis_useDefault = $ref(role?.options?.canManageCustomEmojis?.useDefault ?? true);
-let options_canManageCustomEmojis_value = $ref(role?.options?.canManageCustomEmojis?.value ?? false);
+let options_canManageCustomEmojis_value = $ref(role?.options?.canManageCustomEmojis?.value ?? instance.baseRole.canManageCustomEmojis);
 let options_driveCapacityMb_useDefault = $ref(role?.options?.driveCapacityMb?.useDefault ?? true);
-let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? 0);
+let options_driveCapacityMb_value = $ref(role?.options?.driveCapacityMb?.value ?? instance.baseRole.driveCapacityMb);
 let options_pinLimit_useDefault = $ref(role?.options?.pinLimit?.useDefault ?? true);
-let options_pinLimit_value = $ref(role?.options?.pinLimit?.value ?? 0);
+let options_pinLimit_value = $ref(role?.options?.pinLimit?.value ?? instance.baseRole.pinLimit);
 let options_antennaLimit_useDefault = $ref(role?.options?.antennaLimit?.useDefault ?? true);
-let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? 0);
+let options_antennaLimit_value = $ref(role?.options?.antennaLimit?.value ?? instance.baseRole.antennaLimit);
 let options_wordMuteLimit_useDefault = $ref(role?.options?.wordMuteLimit?.useDefault ?? true);
-let options_wordMuteLimit_value = $ref(role?.options?.wordMuteLimit?.value ?? 0);
+let options_wordMuteLimit_value = $ref(role?.options?.wordMuteLimit?.value ?? instance.baseRole.wordMuteLimit);
 let options_webhookLimit_useDefault = $ref(role?.options?.webhookLimit?.useDefault ?? true);
-let options_webhookLimit_value = $ref(role?.options?.webhookLimit?.value ?? 0);
+let options_webhookLimit_value = $ref(role?.options?.webhookLimit?.value ?? instance.baseRole.webhookLimit);
 let options_clipLimit_useDefault = $ref(role?.options?.clipLimit?.useDefault ?? true);
-let options_clipLimit_value = $ref(role?.options?.clipLimit?.value ?? 0);
+let options_clipLimit_value = $ref(role?.options?.clipLimit?.value ?? instance.baseRole.clipLimit);
 let options_noteEachClipsLimit_useDefault = $ref(role?.options?.noteEachClipsLimit?.useDefault ?? true);
-let options_noteEachClipsLimit_value = $ref(role?.options?.noteEachClipsLimit?.value ?? 0);
+let options_noteEachClipsLimit_value = $ref(role?.options?.noteEachClipsLimit?.value ?? instance.baseRole.noteEachClipsLimit);
 let options_userListLimit_useDefault = $ref(role?.options?.userListLimit?.useDefault ?? true);
-let options_userListLimit_value = $ref(role?.options?.userListLimit?.value ?? 0);
+let options_userListLimit_value = $ref(role?.options?.userListLimit?.value ?? instance.baseRole.userListLimit);
 let options_userEachUserListsLimit_useDefault = $ref(role?.options?.userEachUserListsLimit?.useDefault ?? true);
-let options_userEachUserListsLimit_value = $ref(role?.options?.userEachUserListsLimit?.value ?? 0);
+let options_userEachUserListsLimit_value = $ref(role?.options?.userEachUserListsLimit?.value ?? instance.baseRole.userEachUserListsLimit);
+let options_rateLimitFactor_useDefault = $ref(role?.options?.rateLimitFactor?.useDefault ?? true);
+let options_rateLimitFactor_value = $ref(role?.options?.rateLimitFactor?.value ?? instance.baseRole.rateLimitFactor);
 
 if (_DEV_) {
 	watch($$(condFormula), () => {
@@ -316,6 +333,7 @@ function getOptions() {
 		noteEachClipsLimit: { useDefault: options_noteEachClipsLimit_useDefault, value: options_noteEachClipsLimit_value },
 		userListLimit: { useDefault: options_userListLimit_useDefault, value: options_userListLimit_value },
 		userEachUserListsLimit: { useDefault: options_userEachUserListsLimit_useDefault, value: options_userEachUserListsLimit_value },
+		rateLimitFactor: { useDefault: options_rateLimitFactor_useDefault, value: options_rateLimitFactor_value },
 	};
 }
 

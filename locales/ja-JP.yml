@@ -972,6 +972,8 @@ _role:
     noteEachClipsMax: "クリップ内のノートの最大数"
     userListMax: "ユーザーリストの作成可能数"
     userEachUserListsMax: "ユーザーリスト内のユーザーの最大数"
+    rateLimitFactor: "レートリミット"
+    descriptionOfRateLimitFactor: "小さいほど制限が緩和され、大きいほど制限が強化されます。"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"
