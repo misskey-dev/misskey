@@ -28,7 +28,7 @@
 							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 						</div>
 					</div>
-					<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
+					<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true" :disable-link="true"/>
 					<div class="title">
 						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
