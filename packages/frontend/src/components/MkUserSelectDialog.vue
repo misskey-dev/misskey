@@ -60,11 +60,16 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
+}>();
+
+const props = defineProps<{
+	includeSelf?: boolean;
 }>();
 
 let username = $ref('');
@@ -110,7 +115,11 @@ onMounted(() => {
 	os.api('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(users => {
-		recentUsers = users;
+		if (props.includeSelf) {
+			recentUsers = [$i, ...users];
+		} else {
+			recentUsers = users;
+		}
 	});
 });
 </script>

@@ -77,7 +77,9 @@ async function del() {
 }
 
 function assign() {
-	os.selectUser().then(async (user) => {
+	os.selectUser({
+		includeSelf: true,
+	}).then(async (user) => {
 		await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id });
 		role.users.push(user);
 	});
