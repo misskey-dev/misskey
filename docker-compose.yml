@@ -44,7 +44,7 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
     healthcheck:
-      test: "pg_isready"
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
 
