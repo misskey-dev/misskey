@@ -28,6 +28,7 @@ export type RoleOptions = {
 	noteEachClipsLimit: number;
 	userListLimit: number;
 	userEachUserListsLimit: number;
+	rateLimitFactor: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
@@ -45,6 +46,7 @@ export const DEFAULT_ROLE: RoleOptions = {
 	noteEachClipsLimit: 200,
 	userListLimit: 10,
 	userEachUserListsLimit: 50,
+	rateLimitFactor: 1,
 };
 
 @Injectable()
@@ -201,26 +203,36 @@ export class RoleService implements OnApplicationShutdown {
 
 		const roles = await this.getUserRoles(userId);
 
-		function getOptionValues(option: keyof RoleOptions) {
-			if (roles.length === 0) return [baseRoleOptions[option]];
-			return roles.map(role => (role.options[option] && (role.options[option].useDefault !== true)) ? role.options[option].value : baseRoleOptions[option]);
+		function calc<T extends keyof RoleOptions>(name: T, aggregate: (values: RoleOptions[T][]) => RoleOptions[T]) {
+			if (roles.length === 0) return baseRoleOptions[name];
+
+			const options = roles.map(role => role.options[name] ?? { priority: 0, useDefault: true });
+
+			const p2 = options.filter(option => option.priority === 2);
+			if (p2.length > 0) return aggregate(p2.map(option => option.useDefault ? baseRoleOptions[name] : option.value));
+
+			const p1 = options.filter(option => option.priority === 1);
+			if (p1.length > 0) return aggregate(p2.map(option => option.useDefault ? baseRoleOptions[name] : option.value));
+
+			return aggregate(options.map(option => option.useDefault ? baseRoleOptions[name] : option.value));
 		}
 
 		return {
-			gtlAvailable: getOptionValues('gtlAvailable').some(x => x === true),
-			ltlAvailable: getOptionValues('ltlAvailable').some(x => x === true),
-			canPublicNote: getOptionValues('canPublicNote').some(x => x === true),
-			canInvite: getOptionValues('canInvite').some(x => x === true),
-			canManageCustomEmojis: getOptionValues('canManageCustomEmojis').some(x => x === true),
-			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
-			pinLimit: Math.max(...getOptionValues('pinLimit')),
-			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
-			wordMuteLimit: Math.max(...getOptionValues('wordMuteLimit')),
-			webhookLimit: Math.max(...getOptionValues('webhookLimit')),
-			clipLimit: Math.max(...getOptionValues('clipLimit')),
-			noteEachClipsLimit: Math.max(...getOptionValues('noteEachClipsLimit')),
-			userListLimit: Math.max(...getOptionValues('userListLimit')),
-			userEachUserListsLimit: Math.max(...getOptionValues('userEachUserListsLimit')),
+			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
+			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
+			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
+			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
+			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
+			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
+			antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),
+			wordMuteLimit: calc('wordMuteLimit', vs => Math.max(...vs)),
+			webhookLimit: calc('webhookLimit', vs => Math.max(...vs)),
+			clipLimit: calc('clipLimit', vs => Math.max(...vs)),
+			noteEachClipsLimit: calc('noteEachClipsLimit', vs => Math.max(...vs)),
+			userListLimit: calc('userListLimit', vs => Math.max(...vs)),
+			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
+			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 		};
 	}
 

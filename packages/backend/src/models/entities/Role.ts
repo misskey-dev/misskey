@@ -138,6 +138,7 @@ export class Role {
 	})
 	public options: Record<string, {
 		useDefault: boolean;
+		priority: number;
 		value: any;
 	}>;
 }
