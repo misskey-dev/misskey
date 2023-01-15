@@ -955,6 +955,11 @@ _role:
   chooseRoleToAssign: "選擇要指派的角色"
   canEditMembersByModerator: "允許編輯監察員的成員"
   descriptionOfCanEditMembersByModerator: "如果開啟，管理員與監察員都可以為使用者指派/解除指派該角色。如果關閉，則只有管理員可以執行。"
+  priority: "優先級"
+  _priority:
+    low: "低"
+    middle: "中"
+    high: "高"
   _options:
     gtlAvailable: "瀏覽全域時間軸"
     ltlAvailable: "瀏覽本地時間軸"
