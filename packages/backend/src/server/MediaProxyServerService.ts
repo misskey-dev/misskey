@@ -108,6 +108,12 @@ export class MediaProxyServerService {
 								withoutEnlargement: true,
 							})
 							.webp(webpDefault),
+						err => {
+							if (err) {
+								this.logger.error('Sharp pipeline error (emoji)', err);
+								throw new StatusError('Internal Error occured (in emoji pipeline, MediaProxy)', 500, 'Internal Error occured');
+							}
+						}
 					);
 
 					image = {

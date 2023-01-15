@@ -126,7 +126,11 @@ export class FileServerService {
 					const convertFile = async () => {
 						if (isThumbnail) {
 							if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(mime)) {
-								return this.imageProcessingService.convertSharpToWebpStreamObj(Readable.fromWeb(response.body).pipe(sharp()), 498, 280);
+								return this.imageProcessingService.convertSharpToWebpStreamObj(
+									Readable.fromWeb(response.body).pipe(sharp()),
+									498,
+									280
+								);
 							} else if (mime.startsWith('video/')) {
 								await fileSaving;
 								return await this.videoProcessingService.generateVideoThumbnail(path);
@@ -136,7 +140,12 @@ export class FileServerService {
 						if (isWebpublic) {
 							if (['image/svg+xml'].includes(mime)) {
 								return {
-									data: this.imageProcessingService.convertSharpToWebpStream(Readable.fromWeb(response.body).pipe(sharp()), 2048, 2048, { ...webpDefault, lossless: true }),
+									data: this.imageProcessingService.convertSharpToWebpStream(
+											Readable.fromWeb(response.body).pipe(sharp()),
+											2048,
+											2048,
+											{ ...webpDefault, lossless: true }
+										),
 									ext: 'webp',
 									type: 'image/webp',
 								};
