@@ -8,7 +8,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
-import { RoleCondFormulaValue } from '@/models/entities/Role.js';
+import type { RoleCondFormulaValue } from '@/models/entities/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
@@ -28,6 +28,7 @@ export type RoleOptions = {
 	noteEachClipsLimit: number;
 	userListLimit: number;
 	userEachUserListsLimit: number;
+	rateLimitFactor: number;
 };
 
 export const DEFAULT_ROLE: RoleOptions = {
@@ -45,6 +46,7 @@ export const DEFAULT_ROLE: RoleOptions = {
 	noteEachClipsLimit: 200,
 	userListLimit: 10,
 	userEachUserListsLimit: 50,
+	rateLimitFactor: 1,
 };
 
 @Injectable()
@@ -221,6 +223,7 @@ export class RoleService implements OnApplicationShutdown {
 			noteEachClipsLimit: Math.max(...getOptionValues('noteEachClipsLimit')),
 			userListLimit: Math.max(...getOptionValues('userListLimit')),
 			userEachUserListsLimit: Math.max(...getOptionValues('userEachUserListsLimit')),
+			rateLimitFactor: Math.max(...getOptionValues('rateLimitFactor')),
 		};
 	}
 

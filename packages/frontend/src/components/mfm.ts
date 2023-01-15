@@ -299,7 +299,8 @@ export default defineComponent({
 						key: Math.random(),
 						emoji: `:${token.props.name}:`,
 						normal: this.plain,
-						host: this.author.host,
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						host: this.author?.host,
 					})];
 				}
 

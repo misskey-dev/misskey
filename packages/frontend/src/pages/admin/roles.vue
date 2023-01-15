@@ -9,6 +9,14 @@
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
 					<div class="_gaps">
 						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
+							<template #suffix>{{ Math.floor(options_rateLimitFactor * 100) }}%</template>
+							<MkRange :model-value="options_rateLimitFactor * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => options_rateLimitFactor = (v / 100)">
+								<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
+							</MkRange>
+						</MkFolder>
+
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
 							<template #suffix>{{ options_gtlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
 							<MkSwitch v-model="options_gtlAvailable">
@@ -134,6 +142,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkRange from '@/components/MkRange.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -159,6 +168,7 @@ let options_clipLimit = $ref(instance.baseRole.clipLimit);
 let options_noteEachClipsLimit = $ref(instance.baseRole.noteEachClipsLimit);
 let options_userListLimit = $ref(instance.baseRole.userListLimit);
 let options_userEachUserListsLimit = $ref(instance.baseRole.userEachUserListsLimit);
+let options_rateLimitFactor = $ref(instance.baseRole.rateLimitFactor);
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-role-override', {
@@ -177,6 +187,7 @@ async function updateBaseRole() {
 			noteEachClipsLimit: options_noteEachClipsLimit,
 			userListLimit: options_userListLimit,
 			userEachUserListsLimit: options_userEachUserListsLimit,
+			rateLimitFactor: options_rateLimitFactor,
 		},
 	});
 }

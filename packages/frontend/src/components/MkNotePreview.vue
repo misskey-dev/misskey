@@ -1,12 +1,12 @@
 <template>
-<div class="fefdfafb">
-	<MkAvatar class="avatar" :user="$i"/>
-	<div class="main">
-		<div class="header">
+<div :class="$style.root">
+	<MkAvatar :class="$style.avatar" :user="$i"/>
+	<div :class="$style.main">
+		<div :class="$style.header">
 			<MkUserName :user="$i"/>
 		</div>
-		<div class="body">
-			<div class="content">
+		<div>
+			<div :class="$style.content">
 				<Mfm :text="text.trim()" :author="$i" :i="$i"/>
 			</div>
 		</div>
@@ -22,75 +22,48 @@ const props = defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
-.fefdfafb {
+<style lang="scss" module>
+.root {
 	display: flex;
 	margin: 0;
 	padding: 0;
 	overflow: clip;
 	font-size: 0.95em;
+}
 
-	> .avatar {
-		flex-shrink: 0;
-		display: block;
-		margin: 0 10px 0 0;
-		width: 40px;
-		height: 40px;
-		border-radius: 8px;
-		pointer-events: none;
-	}
+.avatar {
+	flex-shrink: 0 !important;
+	display: block !important;
+	margin: 0 10px 0 0 !important;
+	width: 40px !important;
+	height: 40px !important;
+	border-radius: 8px !important;
+	pointer-events: none !important;
+}
 
-	> .main {
-		flex: 1;
-		min-width: 0;
+.main {
+	flex: 1;
+	min-width: 0;
+}
 
-		> .header {
-			margin-bottom: 2px;
-			font-weight: bold;
-		}
-
-		> .body {
-
-			> .cw {
-				cursor: default;
-				display: block;
-				margin: 0;
-				padding: 0;
-				overflow-wrap: break-word;
-
-				> .text {
-					margin-right: 8px;
-				}
-			}
-
-			> .content {
-				> .text {
-					cursor: default;
-					margin: 0;
-					padding: 0;
-				}
-			}
-		}
-	}
+.header {
+	margin-bottom: 2px;
+	font-weight: bold;
 }
 
 @container (min-width: 350px) {
-	.fefdfafb {
-		> .avatar {
-			margin: 0 10px 0 0;
-			width: 44px;
-			height: 44px;
-		}
+	.avatar {
+		margin: 0 10px 0 0 !important;
+		width: 44px !important;
+		height: 44px !important;
 	}
 }
 
 @container (min-width: 500px) {
-	.fefdfafb {
-		> .avatar {
-			margin: 0 12px 0 0;
-			width: 48px;
-			height: 48px;
-		}
+	.avatar {
+		margin: 0 12px 0 0 !important;
+		width: 48px !important;
+		height: 48px !important;
 	}
 }
 </style>

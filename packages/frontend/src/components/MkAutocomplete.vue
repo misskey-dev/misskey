@@ -17,9 +17,7 @@
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" :class="$style.list">
 		<li v-for="emoji in emojis" :key="emoji.emoji" :class="$style.item" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<div :class="$style.emoji">
-				<MkEmoji :emoji="emoji.emoji"/>
-			</div>
+			<MkEmoji :emoji="emoji.emoji" :class="$style.emoji"/>
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span v-if="q" :class="$style.emojiName" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
 			<span v-else v-text="emoji.name"></span>
@@ -439,14 +437,15 @@ onBeforeUnmount(() => {
 }
 
 .emoji {
-	flex-shrink: 0;
-	display: flex;
-	margin: 0 4px 0 0;
-	height: 24px;
-	width: 24px;
-	justify-content: center;
-	align-items: center;
-	font-size: 20px;
+	flex-shrink: 0 !important;
+	display: flex !important;
+	margin: 0 4px 0 0 !important;
+	height: 24px !important;
+	width: 24px !important;
+	justify-content: center !important;
+	align-items: center !important;
+	font-size: 20px !important;
+	pointer-events: none !important;
 }
 
 .emojiImg {
