@@ -933,6 +933,8 @@ unassign: "取消分配"
 color: "颜色"
 manageCustomEmojis: "管理自定义表情符号"
 youCannotCreateAnymore: "抱歉，您无法再创建更多了。"
+cannotPerformTemporary: "暂时不可用"
+cannotPerformTemporaryDescription: "因操作过于频繁，暂时不可用，请稍后再试。"
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -969,6 +971,8 @@ _role:
     noteEachClipsMax: "单个便签内的贴文数量限制"
     userListMax: "用户列表创建数量限制"
     userEachUserListsMax: "单个用户列表内用户数量限制"
+    rateLimitFactor: "速率限制"
+    descriptionOfRateLimitFactor: "值越小限制越少，值越大限制越多。"
   _condition:
     isLocal: "是本地用户"
     isRemote: "是远程用户"
