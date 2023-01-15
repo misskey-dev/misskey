@@ -23,7 +23,7 @@
 		@leave="leave"
 		@after-leave="afterLeave"
 	>
-		<div v-show="showBody" ref="content" :class="[$style.content, { omitted }]">
+		<div v-show="showBody" ref="content" :class="[$style.content, { [$style.omitted]: omitted }]">
 			<slot></slot>
 			<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
 				<span :class="$style.fadeLabel">{{ $ts.showMore }}</span>
