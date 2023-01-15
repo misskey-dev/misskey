@@ -33,6 +33,7 @@ importers:
       gulp-replace: 1.1.4
       gulp-terser: 2.1.0
       js-yaml: 4.1.0
+      typescript: 4.9.4
     optionalDependencies:
       '@tensorflow/tfjs-core': 4.2.0
     devDependencies:
@@ -44,7 +45,6 @@ importers:
       cypress: 12.3.0
       eslint: 8.31.0
       start-server-and-test: 1.15.2
-      typescript: 4.9.4
 
   packages/backend:
     specifiers:
@@ -305,6 +305,7 @@ importers:
       tsconfig-paths: 4.1.2
       twemoji-parser: 14.0.0
       typeorm: 0.3.11_ioredis@4.28.5+pg@8.8.0
+      typescript: 4.9.4
       ulid: 2.3.0
       undici: 5.15.0
       unzipper: 0.10.11
@@ -372,7 +373,6 @@ importers:
       jest: 29.3.1_@types+node@18.11.18
       jest-mock: 29.3.1
       node-fetch: 3.3.0
-      typescript: 4.9.4
 
   packages/frontend:
     specifiers:
