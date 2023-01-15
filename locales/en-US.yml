@@ -951,6 +951,7 @@ _role:
   isPublic: "Public role"
   descriptionOfIsPublic: "Anyone will be able to view a list of users assigned to this role. In addition, this role will be displayed in the profiles of assigned users."
   options: "Role options"
+  policies: "Policies"
   baseRole: "Base role"
   useBaseValue: "Use base role value"
   chooseRoleToAssign: "Select the role to assign"
