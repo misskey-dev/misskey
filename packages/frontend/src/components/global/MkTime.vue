@@ -9,6 +9,7 @@
 <script lang="ts" setup>
 import { onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
+import { dateTimeFormat } from '@/scripts/intl-const';
 
 const props = withDefaults(defineProps<{
 	time: Date | string;
@@ -18,7 +19,7 @@ const props = withDefaults(defineProps<{
 });
 
 const _time = typeof props.time === 'string' ? new Date(props.time) : props.time;
-const absolute = _time.toLocaleString();
+const absolute = dateTimeFormat.format(_time);
 
 let now = $shallowRef(new Date());
 const relative = $computed(() => {
@@ -35,22 +36,21 @@ const relative = $computed(() => {
 		i18n.ts._ago.future);
 });
 
-function tick() {
-	// TODO: パフォーマンス向上のため、このコンポーネントが画面内に表示されている場合のみ更新する
-	now = new Date();
-
-	tickId = window.setTimeout(() => {
-		window.requestAnimationFrame(tick);
-	}, 10000);
-}
-
 let tickId: number;
 
+function tick() {
+	now = new Date();
+	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
+	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
+
+	tickId = window.setTimeout(tick, next);
+}
+
 if (props.mode === 'relative' || props.mode === 'detail') {
-	tickId = window.requestAnimationFrame(tick);
+	tick();
 
 	onUnmounted(() => {
-		window.cancelAnimationFrame(tickId);
+		window.clearTimeout(tickId);
 	});
 }
 </script>

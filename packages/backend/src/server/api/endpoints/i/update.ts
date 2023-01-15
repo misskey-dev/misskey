@@ -17,6 +17,7 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -61,6 +62,12 @@ export const meta = {
 			message: 'Invalid Regular Expression.',
 			code: 'INVALID_REGEXP',
 			id: '0d786918-10df-41cd-8f33-8dec7d9a89a5',
+		},
+
+		tooManyMutedWords: {
+			message: 'Too many muted words.',
+			code: 'TOO_MANY_MUTED_WORDS',
+			id: '010665b1-a211-42d2-bc64-8f6609d79785',
 		},
 	},
 
@@ -144,6 +151,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
 		private hashtagService: HashtagService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
@@ -163,6 +171,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 			if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 			if (ps.mutedWords !== undefined) {
+				// TODO: ちゃんと数える
+				const length = JSON.stringify(ps.mutedWords).length;
+				if (length > (await this.roleService.getUserPolicies(user.id)).wordMuteLimit) {
+					throw new ApiError(meta.errors.tooManyMutedWords);
+				}
+
 				// validate regular expression syntax
 				ps.mutedWords.filter(x => !Array.isArray(x)).forEach(x => {
 					const regexp = x.match(/^\/(.+)\/(.*)$/);

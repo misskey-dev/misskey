@@ -62,6 +62,7 @@ export class UserFollowingService {
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
+		private globalEventService: GlobalEventService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
@@ -195,6 +196,8 @@ export class UserFollowingService {
 		}
 	
 		if (alreadyFollowed) return;
+
+		this.globalEventService.publishInternalEvent('follow', { followerId: follower.id, followeeId: followee.id });
 	
 		//#region Increment counts
 		await Promise.all([
@@ -205,12 +208,12 @@ export class UserFollowingService {
 	
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.registerOrFetchInstanceDoc(follower.host).then(i => {
+			this.federatedInstanceService.fetch(follower.host).then(i => {
 				this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
 				this.instanceChart.updateFollowing(i.host, true);
 			});
 		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.registerOrFetchInstanceDoc(followee.host).then(i => {
+			this.federatedInstanceService.fetch(followee.host).then(i => {
 				this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
 				this.instanceChart.updateFollowers(i.host, true);
 			});
@@ -314,6 +317,8 @@ export class UserFollowingService {
 		follower: {id: User['id']; host: User['host']; },
 		followee: { id: User['id']; host: User['host']; },
 	): Promise<void> {
+		this.globalEventService.publishInternalEvent('unfollow', { followerId: follower.id, followeeId: followee.id });
+	
 		//#region Decrement following / followers counts
 		await Promise.all([
 			this.usersRepository.decrement({ id: follower.id }, 'followingCount', 1),
@@ -323,12 +328,12 @@ export class UserFollowingService {
 	
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.registerOrFetchInstanceDoc(follower.host).then(i => {
+			this.federatedInstanceService.fetch(follower.host).then(i => {
 				this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
 				this.instanceChart.updateFollowing(i.host, false);
 			});
 		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.registerOrFetchInstanceDoc(followee.host).then(i => {
+			this.federatedInstanceService.fetch(followee.host).then(i => {
 				this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
 				this.instanceChart.updateFollowers(i.host, false);
 			});

@@ -1,9 +1,10 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent">
-	<template #header><i class="ti ti-server"></i>{{ i18n.ts._widgets.serverMetric }}</template>
-	<template #func><button class="_button" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
+	<template #icon><i class="ti ti-server"></i></template>
+	<template #header>{{ i18n.ts._widgets.serverMetric }}</template>
+	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
-	<div v-if="meta" class="mkw-serverMetric">
+	<div v-if="meta" class="mkw-serverMetric data-cy-mkw-serverMetric">
 		<XCpuMemory v-if="widgetProps.view === 0" :connection="connection" :meta="meta"/>
 		<XNet v-else-if="widgetProps.view === 1" :connection="connection" :meta="meta"/>
 		<XCpu v-else-if="widgetProps.view === 2" :connection="connection" :meta="meta"/>

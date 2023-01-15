@@ -53,6 +53,7 @@ _mfm:
 _sfx:
   notification: "Bildirim"
 _widgets:
+  profile: "Profil"
   notifications: "Bildirim"
   timeline: "Zaman çizelgesi"
 _profile:

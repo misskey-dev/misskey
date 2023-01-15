@@ -1,10 +1,10 @@
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
+	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
 	:title="url"
 >
 	<slot></slot>
-	<i v-if="target === '_blank'" :class="$style.icon" class="ti ti-external-link"></i>
+	<i v-if="target === '_blank'" class="ti ti-external-link" :class="$style.icon"></i>
 </component>
 </template>
 
@@ -36,10 +36,6 @@ useTooltip($$(el), (showing) => {
 </script>
 
 <style lang="scss" module>
-.root {
-	word-break: break-all;
-}
-
 .icon {
 	padding-left: 2px;
 	font-size: .9em;

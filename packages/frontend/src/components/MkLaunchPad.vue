@@ -3,12 +3,12 @@
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" v-click-anime class="_button" @click="$event => { item.action($event); close(); }">
+				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
-				<MkA v-else v-click-anime :to="item.to" @click.passive="close()">
+				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
@@ -44,13 +44,13 @@ const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'pop
 	deviceKind === 'smartphone' ? 'drawer' :
 	'dialog';
 
-const modal = $ref<InstanceType<typeof MkModal>>();
+const modal = $shallowRef<InstanceType<typeof MkModal>>();
 
 const menu = defaultStore.state.menu;
 
 const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k => navbarItemDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 	type: def.to ? 'link' : 'button',
-	text: i18n.ts[def.title],
+	text: def.title,
 	icon: def.icon,
 	to: def.to,
 	action: def.action,
@@ -66,6 +66,7 @@ function close() {
 .szkkfdyq {
 	max-height: 100%;
 	width: min(460px, 100vw);
+	margin: auto;
 	padding: 24px;
 	box-sizing: border-box;
 	overflow: auto;
@@ -75,18 +76,18 @@ function close() {
 
 	&.asDrawer {
 		width: 100%;
-		padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px) 16px;
+		padding: 16px 16px max(env(safe-area-inset-bottom, 0px), 16px) 16px;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 		text-align: center;
 	}
 
-	> .main, > .sub {
+	> .main {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 
-		> * {
+		> .item {
 			position: relative;
 			display: flex;
 			flex-direction: column;
@@ -127,12 +128,6 @@ function close() {
 				}
 			}
 		}
-	}
-
-	> .sub {
-		margin-top: 8px;
-		padding-top: 8px;
-		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

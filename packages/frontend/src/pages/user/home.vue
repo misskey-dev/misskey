@@ -1,15 +1,15 @@
 <template>
 <MkSpacer :content-max="narrow ? 800 : 1100">
 	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
-		<div class="main">
+		<div class="main _gaps">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
-			<div class="profile">
+			<div class="profile _gaps">
 				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
 
-				<div :key="user.id" class="_block main">
+				<div :key="user.id" class="main _panel">
 					<div class="banner-container" :style="style">
 						<div ref="bannerEl" class="banner" :style="style"></div>
 						<div class="fade"></div>
@@ -18,7 +18,6 @@
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
-								<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 							</div>
@@ -29,16 +28,18 @@
 							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 						</div>
 					</div>
-					<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
+					<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true" :disable-link="true"/>
 					<div class="title">
 						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
 							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
-							<span v-if="!user.isAdmin && user.isModerator" :title="i18n.ts.isModerator" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
+					</div>
+					<div v-if="user.roles.length > 0" class="roles">
+						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">{{ role.name }}</span>
 					</div>
 					<div class="description">
 						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
@@ -55,7 +56,7 @@
 						</dl>
 						<dl class="field">
 							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
-							<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
+							<dd class="value">{{ dateString(user.createdAt) }} (<MkTime :time="user.createdAt"/>)</dd>
 						</dl>
 					</div>
 					<div v-if="user.fields.length > 0" class="fields">
@@ -85,23 +86,23 @@
 				</div>
 			</div>
 
-			<div class="contents">
-				<div v-if="user.pinnedNotes.length > 0" class="_gap">
-					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
+			<div class="contents _gaps">
+				<div v-if="user.pinnedNotes.length > 0" class="_gaps">
+					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
 					<XPhotos :key="user.id" :user="user"/>
-					<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
+					<XActivity :key="user.id" :user="user"/>
 				</template>
 			</div>
 			<div>
 				<XUserTimeline :user="user"/>
 			</div>
 		</div>
-		<div v-if="!narrow" class="sub" style="container-type: inline-size;">
+		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
 			<XPhotos :key="user.id" :user="user"/>
-			<XActivity :key="user.id" :user="user" style="margin-top: var(--margin);"/>
+			<XActivity :key="user.id" :user="user"/>
 		</div>
 	</div>
 </MkSpacer>
@@ -115,7 +116,7 @@ import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -127,6 +128,8 @@ import * as os from '@/os';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { dateString } from '@/filters/date';
+import { confetti } from '@/scripts/confetti';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -179,6 +182,18 @@ function parallax() {
 onMounted(() => {
 	window.requestAnimationFrame(parallaxLoop);
 	narrow = rootEl!.clientWidth < 1000;
+
+	if (props.user.birthday) {
+		const m = new Date().getMonth() + 1;
+		const d = new Date().getDate();
+		const bm = parseInt(props.user.birthday.split('-')[1]);
+		const bd = parseInt(props.user.birthday.split('-')[2]);
+		if (m === bm && d === bd) {
+			confetti({
+				duration: 1000 * 4,
+			});
+		}
+	}
 });
 
 onUnmounted(() => {
@@ -202,12 +217,12 @@ onUnmounted(() => {
 
 			> .main {
 				position: relative;
-				overflow: hidden;
+				overflow: clip;
 
 				> .banner-container {
 					position: relative;
 					height: 250px;
-					overflow: hidden;
+					overflow: clip;
 					background-size: cover;
 					background-position: center;
 
@@ -323,6 +338,18 @@ onUnmounted(() => {
 					width: 120px;
 					height: 120px;
 					box-shadow: 1px 1px 3px rgba(#000, 0.2);
+				}
+
+				> .roles {
+					padding: 24px 24px 0 154px;
+					font-size: 0.95em;
+
+					> .role {
+						border: solid 1px var(--color, var(--divider));
+						border-radius: 999px;
+						margin-right: 4px;
+						padding: 3px 8px;
+					}
 				}
 
 				> .description {
@@ -453,6 +480,11 @@ onUnmounted(() => {
 					width: 92px;
 					height: 92px;
 					margin: auto;
+				}
+
+				> .roles {
+					padding: 16px 16px 0 16px;
+					text-align: center;
 				}
 
 				> .description {

@@ -79,10 +79,18 @@ export class MediaProxyServerService {
 	
 			const { mime, ext } = await this.fileInfoService.detectType(path);
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
+			const isAnimationConvertibleImage = isMimeImage(mime, 'sharp-animation-convertible-image');
 	
 			let image: IImage;
 			if ('emoji' in request.query && isConvertibleImage) {
-				const data = await sharp(path, { animated: !('static' in request.query) })
+				if (!isAnimationConvertibleImage && !('static' in request.query)) {
+					image = {
+						data: fs.readFileSync(path),
+						ext,
+						type: mime,
+					};
+				} else {
+					const data = await sharp(path, { animated: !('static' in request.query) })
 					.resize({
 						height: 128,
 						withoutEnlargement: true,
@@ -90,11 +98,12 @@ export class MediaProxyServerService {
 					.webp(webpDefault)
 					.toBuffer();
 
-				image = {
-					data,
-					ext: 'webp',
-					type: 'image/webp',
-				};
+					image = {
+						data,
+						ext: 'webp',
+						type: 'image/webp',
+					};
+				}
 			} else if ('static' in request.query && isConvertibleImage) {
 				image = await this.imageProcessingService.convertToWebp(path, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {

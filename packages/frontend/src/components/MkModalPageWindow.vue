@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
-	<div ref="rootEl" class="hrmcaedk _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
+	<div ref="rootEl" class="hrmcaedk" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
 			<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="ti ti-arrow-left"></i></button>
 			<span v-else style="display: inline-block; width: 20px"></span>
@@ -49,7 +49,7 @@ router.addListener('push', ctx => {
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let rootEl = $ref();
-let modal = $ref<InstanceType<typeof MkModal>>();
+let modal = $shallowRef<InstanceType<typeof MkModal>>();
 let path = $ref(props.initialPath);
 let width = $ref(860);
 let height = $ref(660);
@@ -117,6 +117,7 @@ function onContextmenu(ev: MouseEvent) {
 
 <style lang="scss" scoped>
 .hrmcaedk {
+	margin: auto;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;

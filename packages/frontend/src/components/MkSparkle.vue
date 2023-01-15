@@ -1,6 +1,6 @@
 <template>
-<span class="mk-sparkle">
-	<span ref="el">
+<span :class="$style.root">
+	<span ref="el" style="display: inline-block;">
 		<slot></slot>
 	</span>
 	<!-- なぜか path に対する key が機能しないため
@@ -32,7 +32,7 @@
 		</path>
 	</svg>
 	-->
-	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg">
+	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: -32px; left: -32px;">
 		<path
 			style="transform-origin: center; transform-box: fill-box;"
 			:transform="`translate(${particle.x} ${particle.y})`"
@@ -64,10 +64,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
 const particles = ref([]);
-const el = ref<HTMLElement>();
+const el = shallowRef<HTMLElement>();
 const width = ref(0);
 const height = ref(0);
 const colors = ['#FF1493', '#00FFFF', '#FFE202', '#FFE202', '#FFE202'];
@@ -111,20 +111,10 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.mk-sparkle {
+<style lang="scss" module>
+.root {
 	position: relative;
 	display: inline-block;
-
-	> span {
-		display: inline-block;
-	}
-
-	> svg {
-		position: absolute;
-		top: -32px;
-		left: -32px;
-		pointer-events: none;
-	}
+	pointer-events: none;
 }
 </style>

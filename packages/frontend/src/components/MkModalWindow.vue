@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" @click="onBgClick" @closed="$emit('closed')">
-	<div ref="rootEl" class="ebkgoccj _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
+	<div ref="rootEl" class="ebkgoccj" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
 		<div ref="headerEl" class="header">
 			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>
 			<span class="title">
@@ -41,9 +41,9 @@ const emit = defineEmits<{
 	(event: 'ok'): void;
 }>();
 
-let modal = $ref<InstanceType<typeof MkModal>>();
-let rootEl = $ref<HTMLElement>();
-let headerEl = $ref<HTMLElement>();
+let modal = $shallowRef<InstanceType<typeof MkModal>>();
+let rootEl = $shallowRef<HTMLElement>();
+let headerEl = $shallowRef<HTMLElement>();
 let bodyWidth = $ref(0);
 let bodyHeight = $ref(0);
 
@@ -85,10 +85,12 @@ defineExpose({
 
 <style lang="scss" scoped>
 .ebkgoccj {
+	margin: auto;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	contain: content;
+	container-type: inline-size;
 	border-radius: var(--radius);
 
 	--root-margin: 24px;

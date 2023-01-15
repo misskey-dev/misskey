@@ -1,6 +1,6 @@
 <template>
-<div class="_formRoot">
-	<FromSlot class="_formBlock">
+<div class="_gaps_m">
+	<FromSlot>
 		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
 		<div v-panel style="border-radius: 6px;">
 			<Sortable v-model="reactions" class="zoaiodol" :item-key="item => item" :animation="150" :delay="100" :delay-on-touch-only="true">
@@ -17,37 +17,37 @@
 		<template #caption>{{ i18n.ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ i18n.ts.preview }}</button></template>
 	</FromSlot>
 
-	<FormRadios v-model="reactionPickerSize" class="_formBlock">
+	<MkRadios v-model="reactionPickerSize">
 		<template #label>{{ i18n.ts.size }}</template>
 		<option :value="1">{{ i18n.ts.small }}</option>
 		<option :value="2">{{ i18n.ts.medium }}</option>
 		<option :value="3">{{ i18n.ts.large }}</option>
-	</FormRadios>
-	<FormRadios v-model="reactionPickerWidth" class="_formBlock">
+	</MkRadios>
+	<MkRadios v-model="reactionPickerWidth">
 		<template #label>{{ i18n.ts.numberOfColumn }}</template>
 		<option :value="1">5</option>
 		<option :value="2">6</option>
 		<option :value="3">7</option>
 		<option :value="4">8</option>
 		<option :value="5">9</option>
-	</FormRadios>
-	<FormRadios v-model="reactionPickerHeight" class="_formBlock">
+	</MkRadios>
+	<MkRadios v-model="reactionPickerHeight">
 		<template #label>{{ i18n.ts.height }}</template>
 		<option :value="1">{{ i18n.ts.small }}</option>
 		<option :value="2">{{ i18n.ts.medium }}</option>
 		<option :value="3">{{ i18n.ts.large }}</option>
 		<option :value="4">{{ i18n.ts.large }}+</option>
-	</FormRadios>
+	</MkRadios>
 
-	<FormSwitch v-model="reactionPickerUseDrawerForMobile" class="_formBlock">
+	<MkSwitch v-model="reactionPickerUseDrawerForMobile">
 		{{ i18n.ts.useDrawerReactionPickerForMobile }}
 		<template #caption>{{ i18n.ts.needReloadToApply }}</template>
-	</FormSwitch>
+	</MkSwitch>
 
 	<FormSection>
-		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<FormButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
-			<FormButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
+		<div class="_buttons">
+			<MkButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+			<MkButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 		</div>
 	</FormSection>
 </div>
@@ -56,12 +56,12 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
 import Sortable from 'vuedraggable';
-import FormInput from '@/components/form/input.vue';
-import FormRadios from '@/components/form/radios.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import FromSlot from '@/components/form/slot.vue';
-import FormButton from '@/components/MkButton.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
-import FormSwitch from '@/components/form/switch.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';

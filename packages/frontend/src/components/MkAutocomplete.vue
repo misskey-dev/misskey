@@ -1,41 +1,40 @@
 <template>
-<div ref="rootEl" class="swhvrteh _popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
-	<ol v-if="type === 'user'" ref="suggests" class="users">
-		<li v-for="user in users" tabindex="-1" class="user" @click="complete(type, user)" @keydown="onKeydown">
-			<img class="avatar" :src="user.avatarUrl"/>
-			<span class="name">
+<div ref="rootEl" :class="$style.root" class="_popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
+	<ol v-if="type === 'user'" ref="suggests" :class="$style.list">
+		<li v-for="user in users" tabindex="-1" :class="$style.item" @click="complete(type, user)" @keydown="onKeydown">
+			<img :class="$style.avatar" :src="user.avatarUrl"/>
+			<span :class="$style.userName">
 				<MkUserName :key="user.id" :user="user"/>
 			</span>
-			<span class="username">@{{ acct(user) }}</span>
+			<span>@{{ acct(user) }}</span>
 		</li>
-		<li tabindex="-1" class="choose" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
+		<li tabindex="-1" :class="$style.item" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
 	</ol>
-	<ol v-else-if="hashtags.length > 0" ref="suggests" class="hashtags">
-		<li v-for="hashtag in hashtags" tabindex="-1" @click="complete(type, hashtag)" @keydown="onKeydown">
+	<ol v-else-if="hashtags.length > 0" ref="suggests" :class="[$style.list, $style.hashtags]">
+		<li v-for="hashtag in hashtags" tabindex="-1" :class="$style.item" @click="complete(type, hashtag)" @keydown="onKeydown">
 			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
-	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
-		<li v-for="emoji in emojis" tabindex="-1" :key="emoji.emoji" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<div class="emoji">
-				<MkEmoji :emoji="emoji.emoji" />
-			</div>
+	<ol v-else-if="emojis.length > 0" ref="suggests" :class="$style.list">
+		<li v-for="emoji in emojis" :key="emoji.emoji" :class="$style.item" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
+			<MkEmoji :emoji="emoji.emoji" :class="$style.emoji"/>
 			<!-- eslint-disable-next-line vue/no-v-html -->
-			<span v-if="q" class="name" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
+			<span v-if="q" :class="$style.emojiName" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
 			<span v-else v-text="emoji.name"></span>
-			<span v-if="emoji.aliasOf" class="alias">({{ emoji.aliasOf }})</span>
+			<span v-if="emoji.aliasOf" :class="$style.emojiAlias">({{ emoji.aliasOf }})</span>
 		</li>
 	</ol>
-	<ol v-else-if="mfmTags.length > 0" ref="suggests" class="mfmTags">
-		<li v-for="tag in mfmTags" tabindex="-1" @click="complete(type, tag)" @keydown="onKeydown">
-			<span class="tag">{{ tag }}</span>
+	<ol v-else-if="mfmTags.length > 0" ref="suggests" :class="$style.list">
+		<li v-for="tag in mfmTags" tabindex="-1" :class="$style.item" @click="complete(type, tag)" @keydown="onKeydown">
+			<span>{{ tag }}</span>
 		</li>
 	</ol>
 </div>
 </template>
 
 <script lang="ts">
-import { markRaw, ref, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { markRaw, ref, shallowRef, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import sanitizeHtml from 'sanitize-html';
 import contains from '@/scripts/contains';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { acct } from '@/filters/user';
@@ -45,7 +44,8 @@ import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
-import sanitizeHtml from 'sanitize-html';
+import { miLocalStorage } from '@/local-storage';
+import { customEmojis } from '@/custom-emojis';
 
 type EmojiDef = {
 	emoji: string;
@@ -85,7 +85,6 @@ for (const x of lib) {
 emjdb.sort((a, b) => a.name.length - b.name.length);
 
 //#region Construct Emoji DB
-const customEmojis = instance.emojis;
 const emojiDefinitions: EmojiDef[] = [];
 
 for (const x of customEmojis) {
@@ -116,7 +115,6 @@ export default {
 	emojiDb,
 	emojiDefinitions,
 	emojilist,
-	customEmojis,
 };
 </script>
 
@@ -136,7 +134,7 @@ const emit = defineEmits<{
 }>();
 
 const suggests = ref<Element>();
-const rootEl = ref<HTMLDivElement>();
+const rootEl = shallowRef<HTMLDivElement>();
 
 const fetching = ref(true);
 const users = ref<any[]>([]);
@@ -208,7 +206,7 @@ function exec() {
 		}
 	} else if (props.type === 'hashtag') {
 		if (!props.q || props.q === '') {
-			hashtags.value = JSON.parse(localStorage.getItem('hashtags') || '[]');
+			hashtags.value = JSON.parse(miLocalStorage.getItem('hashtags') || '[]');
 			fetching.value = false;
 		} else {
 			const cacheKey = `autocomplete:hashtag:${props.q}`;
@@ -379,113 +377,89 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.swhvrteh {
+<style lang="scss" module>
+.root {
 	position: fixed;
 	max-width: 100%;
 	margin-top: calc(1em + 8px);
-	overflow: hidden;
+	overflow: clip;
 	transition: top 0.1s ease, left 0.1s ease;
+}
 
-	> ol {
-		display: block;
-		margin: 0;
-		padding: 4px 0;
-		max-height: 190px;
-		max-width: 500px;
-		overflow: auto;
-		list-style: none;
+.list {
+	display: block;
+	margin: 0;
+	padding: 4px 0;
+	max-height: 190px;
+	max-width: 500px;
+	overflow: auto;
+	list-style: none;
+}
 
-		> li {
-			display: flex;
-			align-items: center;
-			padding: 4px 12px;
-			white-space: nowrap;
-			overflow: hidden;
-			font-size: 0.9em;
-			cursor: default;
+.item {
+	display: flex;
+	align-items: center;
+	padding: 4px 12px;
+	white-space: nowrap;
+	overflow: clip;
+	font-size: 0.9em;
+	cursor: default;
+	user-select: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
 
-			&, * {
-				user-select: none;
-			}
-
-			* {
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			&:hover {
-				background: var(--X3);
-			}
-
-			&[data-selected='true'] {
-				background: var(--accent);
-
-				&, * {
-					color: #fff !important;
-				}
-			}
-
-			&:active {
-				background: var(--accentDarken);
-
-				&, * {
-					color: #fff !important;
-				}
-			}
-		}
+	&:hover {
+		background: var(--X3);
 	}
 
-	> .users > li {
-
-		.avatar {
-			min-width: 28px;
-			min-height: 28px;
-			max-width: 28px;
-			max-height: 28px;
-			margin: 0 8px 0 0;
-			border-radius: 100%;
-		}
-
-		.name {
-			margin: 0 8px 0 0;
-		}
+	&[data-selected='true'] {
+		background: var(--accent);
+		color: #fff !important;
 	}
 
-	> .emojis > li {
-
-		.emoji {
-			flex-shrink: 0;
-			display: flex;
-			margin: 0 4px 0 0;
-			height: 24px;
-			width: 24px;
-			justify-content: center;
-			align-items: center;
-			font-size: 20px;
-
-			> img {
-				height: 24px;
-				width: 24px;
-				object-fit: scale-down;
-			}
-
-		}
-
-		.name {
-			flex-shrink: 1;
-		}
-
-		.alias {
-			flex-shrink: 9999999;
-			margin: 0 0 0 8px;
-		}
+	&:active {
+		background: var(--accentDarken);
+		color: #fff !important;
 	}
+}
 
-	> .mfmTags > li {
+.avatar {
+	min-width: 28px;
+	min-height: 28px;
+	max-width: 28px;
+	max-height: 28px;
+	margin: 0 8px 0 0;
+	border-radius: 100%;
+}
 
-		.name {
-		}
-	}
+.userName {
+	margin: 0 8px 0 0;
+}
+
+.emoji {
+	flex-shrink: 0 !important;
+	display: flex !important;
+	margin: 0 4px 0 0 !important;
+	height: 24px !important;
+	width: 24px !important;
+	justify-content: center !important;
+	align-items: center !important;
+	font-size: 20px !important;
+	pointer-events: none !important;
+}
+
+.emojiImg {
+	height: 24px;
+	width: 24px;
+	object-fit: scale-down;
+}
+
+.emojiName {
+	flex-shrink: 1;
+}
+
+.emojiAlias {
+	flex-shrink: 9999999;
+	margin: 0 0 0 8px;
 }
 </style>

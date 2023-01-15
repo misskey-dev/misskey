@@ -10,6 +10,7 @@ import anim from './anim';
 import clickAnime from './click-anime';
 import panel from './panel';
 import adaptiveBorder from './adaptive-border';
+import adaptiveBg from './adaptive-bg';
 
 export default function(app: App) {
 	app.directive('userPreview', userPreview);
@@ -23,4 +24,5 @@ export default function(app: App) {
 	app.directive('click-anime', clickAnime);
 	app.directive('panel', panel);
 	app.directive('adaptive-border', adaptiveBorder);
+	app.directive('adaptive-bg', adaptiveBg);
 }

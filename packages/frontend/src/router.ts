@@ -37,6 +37,7 @@ export const routes = [{
 }, {
 	path: '/user-info/:userId',
 	component: page(() => import('./pages/user-info.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/instance-info/:host',
 	component: page(() => import('./pages/instance-info.vue')),
@@ -207,6 +208,7 @@ export const routes = [{
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
+	hash: 'initialTab',
 }, {
 	path: '/search',
 	component: page(() => import('./pages/search.vue')),
@@ -262,6 +264,20 @@ export const routes = [{
 	path: '/pages',
 	component: page(() => import('./pages/pages.vue')),
 }, {
+	path: '/play/:id/edit',
+	component: page(() => import('./pages/flash/flash-edit.vue')),
+	loginRequired: true,
+}, {
+	path: '/play/new',
+	component: page(() => import('./pages/flash/flash-edit.vue')),
+	loginRequired: true,
+}, {
+	path: '/play/:id',
+	component: page(() => import('./pages/flash/flash.vue')),
+}, {
+	path: '/play',
+	component: page(() => import('./pages/flash/flash-index.vue')),
+}, {
 	path: '/gallery/:postId/edit',
 	component: page(() => import('./pages/gallery/edit.vue')),
 	loginRequired: true,
@@ -290,6 +306,9 @@ export const routes = [{
 	path: '/channels',
 	component: page(() => import('./pages/channels.vue')),
 }, {
+	path: '/custom-emojis-manager',
+	component: page(() => import('./pages/custom-emojis-manager.vue')),
+}, {
 	path: '/registry/keys/system/:path(*)?',
 	component: page(() => import('./pages/registry.keys.vue')),
 }, {
@@ -315,7 +334,7 @@ export const routes = [{
 	}, {
 		path: '/emojis',
 		name: 'emojis',
-		component: page(() => import('./pages/admin/emojis.vue')),
+		component: page(() => import('./pages/custom-emojis-manager.vue')),
 	}, {
 		path: '/queue',
 		name: 'queue',
@@ -325,6 +344,10 @@ export const routes = [{
 		name: 'files',
 		component: page(() => import('./pages/admin/files.vue')),
 	}, {
+		path: '/federation',
+		name: 'federation',
+		component: page(() => import('./pages/admin/federation.vue')),
+	}, {
 		path: '/announcements',
 		name: 'announcements',
 		component: page(() => import('./pages/admin/announcements.vue')),
@@ -332,6 +355,22 @@ export const routes = [{
 		path: '/ads',
 		name: 'ads',
 		component: page(() => import('./pages/admin/ads.vue')),
+	}, {
+		path: '/roles/:id/edit',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.edit.vue')),
+	}, {
+		path: '/roles/new',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.edit.vue')),
+	}, {
+		path: '/roles/:id',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.role.vue')),
+	}, {
+		path: '/roles',
+		name: 'roles',
+		component: page(() => import('./pages/admin/roles.vue')),
 	}, {
 		path: '/database',
 		name: 'database',
@@ -444,6 +483,10 @@ export const routes = [{
 }, {
 	path: '/timeline/antenna/:antennaId',
 	component: page(() => import('./pages/antenna-timeline.vue')),
+	loginRequired: true,
+}, {
+	path: '/clicker',
+	component: page(() => import('./pages/clicker.vue')),
 	loginRequired: true,
 }, {
 	name: 'index',

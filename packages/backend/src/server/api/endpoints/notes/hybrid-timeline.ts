@@ -7,6 +7,7 @@ import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -66,11 +67,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const m = await this.metaService.fetch();
-			if (m.disableLocalTimeline && (!me.isAdmin && !me.isModerator)) {
+			const policies = await this.roleService.getUserPolicies(me.id);
+			if (!policies.ltlAvailable) {
 				throw new ApiError(meta.errors.stlDisabled);
 			}
 
@@ -81,6 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('note.createdAt > :minDate', { minDate: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) }) // 30日前まで
 				.andWhere(new Brackets(qb => {
 					qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id })
 						.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');

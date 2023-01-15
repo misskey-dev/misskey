@@ -1,6 +1,6 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog:top'" @click="modal.close()" @closed="onModalClosed()">
-	<MkPostForm ref="form" v-bind="props" autofocus freeze-after-posted @posted="onPosted" @cancel="modal.close()" @esc="modal.close()"/>
+<MkModal ref="modal" :prefer-type="'dialog'" @click="modal.close()" @closed="onModalClosed()">
+	<MkPostForm ref="form" style="margin: 0 auto auto auto;" v-bind="props" autofocus freeze-after-posted @posted="onPosted" @cancel="modal.close()" @esc="modal.close()"/>
 </MkModal>
 </template>
 
@@ -31,8 +31,8 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let modal = $ref<InstanceType<typeof MkModal>>();
-let form = $ref<InstanceType<typeof MkPostForm>>();
+let modal = $shallowRef<InstanceType<typeof MkModal>>();
+let form = $shallowRef<InstanceType<typeof MkPostForm>>();
 
 function onPosted() {
 	modal.close({

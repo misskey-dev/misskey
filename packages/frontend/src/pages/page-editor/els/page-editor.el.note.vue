@@ -20,8 +20,8 @@
 /* eslint-disable vue/no-mutating-props */
 import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSwitch from '@/components/form/switch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import XNote from '@/components/MkNote.vue';
 import XNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os';
@@ -37,20 +37,16 @@ const emit = defineEmits<{
 let id: any = $ref(props.modelValue.note);
 let note: any = $ref(null);
 
-watch(id, async () => {
+watch($$(id), async () => {
 	if (id && (id.startsWith('http://') || id.startsWith('https://'))) {
-		emit('update:modelValue', {
-			...props.modelValue,
-			note: (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop(),
-		});
-	} else {
-		emit('update:modelValue', {
-			...props.modelValue,
-			note: id,
-		});
+		id = (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop();
 	}
 
-	note = await os.api('notes/show', { noteId: props.modelValue.note });
+	emit('update:modelValue', {
+		...props.modelValue,
+		note: id,
+	});
+	note = await os.api('notes/show', { noteId: id });
 }, {
 	immediate: true,
 });

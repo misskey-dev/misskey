@@ -1,5 +1,5 @@
 <template>
-<div class="_formRoot">
+<div class="_gaps_m">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
@@ -8,73 +8,75 @@
 		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<FormInput v-model="profile.name" :max="30" manual-save class="_formBlock">
+	<MkInput v-model="profile.name" :max="30" manual-save>
 		<template #label>{{ i18n.ts._profile.name }}</template>
-	</FormInput>
+	</MkInput>
 
-	<FormTextarea v-model="profile.description" :max="500" tall manual-save class="_formBlock">
+	<MkTextarea v-model="profile.description" :max="500" tall manual-save>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-	</FormTextarea>
+	</MkTextarea>
 
-	<FormInput v-model="profile.location" manual-save class="_formBlock">
+	<MkInput v-model="profile.location" manual-save>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
-	</FormInput>
+	</MkInput>
 
-	<FormInput v-model="profile.birthday" type="date" manual-save class="_formBlock">
+	<MkInput v-model="profile.birthday" type="date" manual-save>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
-	</FormInput>
+	</MkInput>
 
-	<FormSelect v-model="profile.lang" class="_formBlock">
+	<MkSelect v-model="profile.lang">
 		<template #label>{{ i18n.ts.language }}</template>
 		<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
-	</FormSelect>
+	</MkSelect>
 
-	<FormSlot class="_formBlock">
-		<FormFolder>
+	<FormSlot>
+		<MkFolder>
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div class="_formRoot">
-				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
-					<FormInput v-model="record.name" small>
+			<div class="_gaps_m">
+				<FormSplit v-for="(record, i) in fields" :min-width="250">
+					<MkInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
-					</FormInput>
-					<FormInput v-model="record.value" small>
+					</MkInput>
+					<MkInput v-model="record.value" small>
 						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
-					</FormInput>
+					</MkInput>
 				</FormSplit>
-				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-				<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<div>
+					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				</div>
 			</div>
-		</FormFolder>
+		</MkFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
 
-	<FormFolder>
+	<MkFolder>
 		<template #label>{{ i18n.ts.advancedSettings }}</template>
 
-		<div class="_formRoot">
-			<FormSwitch v-model="profile.isCat" class="_formBlock">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></FormSwitch>
-			<FormSwitch v-model="profile.isBot" class="_formBlock">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></FormSwitch>
+		<div class="_gaps_m">
+			<MkSwitch v-model="profile.isCat">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></MkSwitch>
+			<MkSwitch v-model="profile.isBot">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></MkSwitch>
 		</div>
-	</FormFolder>
+	</MkFolder>
 
-	<FormSwitch v-model="profile.showTimelineReplies" class="_formBlock">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></FormSwitch>
+	<MkSwitch v-model="profile.showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
-import FormFolder from '@/components/form/folder.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
 import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';

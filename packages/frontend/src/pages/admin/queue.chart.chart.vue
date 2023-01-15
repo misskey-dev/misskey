@@ -3,58 +3,23 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onMounted, onUnmounted, ref } from 'vue';
-import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-} from 'chart.js';
+import { watch, onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { Chart } from 'chart.js';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
+import { initChart } from '@/scripts/init-chart';
 
-Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	TimeScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
-	Filler,
-);
+initChart();
 
 const props = defineProps<{
 	type: string;
 }>();
 
-const chartEl = ref<HTMLCanvasElement>(null);
-
-const gridColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-// フォントカラー
-Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+const chartEl = shallowRef<HTMLCanvasElement>(null);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
@@ -131,8 +96,6 @@ onMounted(() => {
 				x: {
 					grid: {
 						display: true,
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 					ticks: {
 						display: false,
@@ -142,8 +105,6 @@ onMounted(() => {
 				y: {
 					min: 0,
 					grid: {
-						color: gridColor,
-						borderColor: 'rgb(0, 0, 0, 0)',
 					},
 				},
 			},

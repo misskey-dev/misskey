@@ -1,32 +1,34 @@
 <template>
 <button
 	v-if="!link"
-	ref="el" class="bghgjjyj _button"
-	:class="{ inline, primary, gradate, danger, rounded, full, small }"
+	ref="el" class="_button"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.asLike]: asLike }]"
 	:type="type"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
-	<div ref="ripples" class="ripples"></div>
-	<div class="content">
+	<div ref="ripples" :class="$style.ripples"></div>
+	<div :class="$style.content">
 		<slot></slot>
 	</div>
 </button>
 <MkA
-	v-else class="bghgjjyj _button"
-	:class="{ inline, primary, gradate, danger, rounded, full, small }"
+	v-else class="_button"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.asLike]: asLike }]"
 	:to="to"
 	@mousedown="onMousedown"
 >
-	<div ref="ripples" class="ripples"></div>
-	<div class="content">
+	<div ref="ripples" :class="$style.ripples"></div>
+	<div :class="$style.content">
 		<slot></slot>
 	</div>
 </MkA>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted } from 'vue';
+import { nextTick, onMounted, useCssModule } from 'vue';
+
+const $style = useCssModule();
 
 const props = defineProps<{
 	type?: 'button' | 'submit' | 'reset';
@@ -41,14 +43,16 @@ const props = defineProps<{
 	danger?: boolean;
 	full?: boolean;
 	small?: boolean;
+	large?: boolean;
+	asLike?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'click', payload: MouseEvent): void;
 }>();
 
-let el = $ref<HTMLElement | null>(null);
-let ripples = $ref<HTMLElement | null>(null);
+let el = $shallowRef<HTMLElement | null>(null);
+let ripples = $shallowRef<HTMLElement | null>(null);
 
 onMounted(() => {
 	if (props.autofocus) {
@@ -76,6 +80,7 @@ function onMousedown(evt: MouseEvent): void {
 	const rect = target.getBoundingClientRect();
 
 	const ripple = document.createElement('div');
+	ripple.classList.add($style.ripple);
 	ripple.style.top = (evt.clientY - rect.top - 1).toString() + 'px';
 	ripple.style.left = (evt.clientX - rect.left - 1).toString() + 'px';
 
@@ -99,8 +104,8 @@ function onMousedown(evt: MouseEvent): void {
 }
 </script>
 
-<style lang="scss" scoped>
-.bghgjjyj {
+<style lang="scss" module>
+.root {
 	position: relative;
 	z-index: 1; // 他コンポーネントのbox-shadowに隠されないようにするため
 	display: block;
@@ -131,6 +136,11 @@ function onMousedown(evt: MouseEvent): void {
 		padding: 6px 12px;
 	}
 
+	&.large {
+		font-size: 100%;
+		padding: 8px 16px;
+	}
+
 	&.full {
 		width: 100%;
 	}
@@ -150,6 +160,37 @@ function onMousedown(evt: MouseEvent): void {
 
 		&:not(:disabled):active {
 			background: var(--X8);
+		}
+	}
+
+	&.asLike {
+		background: rgba(255, 86, 125, 0.07);
+		color: #ff002f;
+
+		&:not(:disabled):hover {
+			background: rgba(255, 74, 116, 0.11);
+		}
+
+		&:not(:disabled):active {
+			background: rgba(224, 57, 96, 0.125);
+		}
+
+		> .ripples {
+			> .ripple {
+				background: rgba(255, 60, 106, 0.15);
+			}
+		}
+
+		&.primary {
+			background: rgb(241 97 132);
+
+			&:not(:disabled):hover {
+				background: rgb(241 92 128);
+			}
+
+			&:not(:disabled):active {
+				background: rgb(241 92 128);
+			}
 		}
 	}
 
@@ -199,35 +240,37 @@ function onMousedown(evt: MouseEvent): void {
 		min-width: 100px;
 	}
 
-	> .ripples {
-		position: absolute;
-		z-index: 0;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: 6px;
-		overflow: hidden;
-
-		::v-deep(div) {
-			position: absolute;
-			width: 2px;
-			height: 2px;
-			border-radius: 100%;
-			background: rgba(0, 0, 0, 0.1);
-			opacity: 1;
-			transform: scale(1);
-			transition: all 0.5s cubic-bezier(0,.5,0,1);
-		}
-	}
-
-	&.primary > .ripples ::v-deep(div) {
+	&.primary > .ripples > .ripple {
 		background: rgba(0, 0, 0, 0.15);
 	}
+}
 
-	> .content {
-		position: relative;
-		z-index: 1;
-	}
+.ripples {
+	position: absolute;
+	z-index: 0;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 6px;
+	overflow: clip;
+	pointer-events: none;
+}
+
+.ripple {
+	position: absolute;
+	width: 2px;
+	height: 2px;
+	border-radius: 100%;
+	background: rgba(0, 0, 0, 0.1);
+	opacity: 1;
+	transform: scale(1);
+	transition: all 0.5s cubic-bezier(0,.5,0,1);
+}
+
+.content {
+	position: relative;
+	z-index: 1;
+	pointer-events: none;
 }
 </style>

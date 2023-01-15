@@ -76,7 +76,7 @@ export class InboxProcessorService {
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(host)) {
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
 			return `Blocked request: ${host}`;
 		}
 
@@ -158,7 +158,7 @@ export class InboxProcessorService {
 
 				// ブロックしてたら中断
 				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
-				if (meta.blockedHosts.includes(ldHost)) {
+				if (this.utilityService.isBlockedHost(meta.blockedHosts, ldHost)) {
 					return `Blocked request: ${ldHost}`;
 				}
 			} else {
@@ -176,10 +176,12 @@ export class InboxProcessorService {
 		}
 
 		// Update stats
-		this.federatedInstanceService.registerOrFetchInstanceDoc(authUser.user.host).then(i => {
+		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
 			this.instancesRepository.update(i.id, {
 				latestRequestReceivedAt: new Date(),
-				lastCommunicatedAt: new Date(),
+				isNotResponding: false,
+			});
+			this.federatedInstanceService.updateCachePartial(host, {
 				isNotResponding: false,
 			});
 

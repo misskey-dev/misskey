@@ -8,20 +8,20 @@
 	</template>
 
 	<template #default="{ items: notifications }">
-		<XList v-slot="{ item: notification }" class="elsfgstc" :items="notifications" :no-gap="true">
+		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :no-gap="true">
 			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
 			<XNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
-		</XList>
+		</MkDateSeparatedList>
 	</template>
 </MkPagination>
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, markRaw, onUnmounted, onMounted, computed, ref } from 'vue';
+import { defineComponent, markRaw, onUnmounted, onMounted, computed, shallowRef } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
-import XList from '@/components/MkDateSeparatedList.vue';
+import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import XNote from '@/components/MkNote.vue';
 import * as os from '@/os';
 import { stream } from '@/stream';
@@ -33,7 +33,7 @@ const props = defineProps<{
 	unreadOnly?: boolean;
 }>();
 
-const pagingComponent = ref<InstanceType<typeof MkPagination>>();
+const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
@@ -97,8 +97,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.elsfgstc {
+<style lang="scss" module>
+.list {
 	background: var(--panel);
 }
 </style>

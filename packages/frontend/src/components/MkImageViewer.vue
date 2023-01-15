@@ -28,11 +28,12 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const modal = $ref<InstanceType<typeof MkModal>>();
+const modal = $shallowRef<InstanceType<typeof MkModal>>();
 </script>
 
 <style lang="scss" scoped>
 .xubzgfga {
+	margin: auto;
 	display: flex;
 	flex-direction: column;
 	height: 100%;

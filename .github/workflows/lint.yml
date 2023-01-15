@@ -11,11 +11,11 @@ jobs:
   yarn_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3.2.0
+    - uses: actions/setup-node@v3.6.0
       with:
         node-version: 18.x
         cache: 'yarn'
@@ -33,11 +33,11 @@ jobs:
         - frontend
         - sw
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3.2.0
+    - uses: actions/setup-node@v3.6.0
       with:
         node-version: 18.x
         cache: 'yarn'

@@ -2,12 +2,12 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_formRoot">
-			<MkInput v-model="name" class="_formBlock">
+		<div class="_gaps_m">
+			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="description" class="_formBlock">
+			<MkTextarea v-model="description">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
@@ -18,7 +18,7 @@
 					<MkButton @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
-			<div class="_formBlock">
+			<div>
 				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
 			</div>
 		</div>
@@ -28,9 +28,9 @@
 
 <script lang="ts" setup>
 import { computed, inject, watch } from 'vue';
-import MkTextarea from '@/components/form/textarea.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/form/input.vue';
+import MkInput from '@/components/MkInput.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { useRouter } from '@/router';

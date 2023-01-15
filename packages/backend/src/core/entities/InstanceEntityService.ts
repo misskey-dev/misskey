@@ -7,7 +7,7 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
-import { UserEntityService } from './UserEntityService.js';
+import { UtilityService } from '../UtilityService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -17,6 +17,8 @@ export class InstanceEntityService {
 		private instancesRepository: InstancesRepository,
 
 		private metaService: MetaService,
+
+		private utilityService: UtilityService,
 	) {
 	}
 
@@ -33,11 +35,9 @@ export class InstanceEntityService {
 			notesCount: instance.notesCount,
 			followingCount: instance.followingCount,
 			followersCount: instance.followersCount,
-			latestRequestSentAt: instance.latestRequestSentAt ? instance.latestRequestSentAt.toISOString() : null,
-			lastCommunicatedAt: instance.lastCommunicatedAt.toISOString(),
 			isNotResponding: instance.isNotResponding,
 			isSuspended: instance.isSuspended,
-			isBlocked: meta.blockedHosts.includes(instance.host),
+			isBlocked: this.utilityService.isBlockedHost(meta.blockedHosts, instance.host),
 			softwareName: instance.softwareName,
 			softwareVersion: instance.softwareVersion,
 			openRegistrations: instance.openRegistrations,

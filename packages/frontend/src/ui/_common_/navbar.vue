@@ -17,14 +17,14 @@
 					:is="navbarItemDef[item].to ? 'MkA' : 'button'"
 					v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
 					v-click-anime
-					v-tooltip.noDelay.right="i18n.ts[navbarItemDef[item].title]"
+					v-tooltip.noDelay.right="navbarItemDef[item].title"
 					class="item _button"
 					:class="[item, { active: navbarItemDef[item].active }]"
 					active-class="active"
 					:to="navbarItemDef[item].to"
 					v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
 				>
-					<i class="icon ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ i18n.ts[navbarItemDef[item].title] }}</span>
+					<i class="icon ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
 					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
 				</component>
 			</template>
@@ -45,7 +45,7 @@
 				<i class="icon ti ti-pencil ti-fw"></i><span class="text">{{ i18n.ts.note }}</span>
 			</button>
 			<button v-click-anime v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="item _button account" @click="openAccountMenu">
-				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
+				<MkAvatar :user="$i" class="avatar" :disable-link="true"/><MkAcct class="text" :user="$i"/>
 			</button>
 		</div>
 	</div>

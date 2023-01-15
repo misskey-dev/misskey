@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div ref="rootEl" class="eqqrhokj">
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-		<div class="tl _block">
+		<div class="tl">
 			<XTimeline
 				ref="tlEl" :key="listId"
 				class="tl"
@@ -34,8 +34,8 @@ const props = defineProps<{
 
 let list = $ref(null);
 let queue = $ref(0);
-let tlEl = $ref<InstanceType<typeof XTimeline>>();
-let rootEl = $ref<HTMLElement>();
+let tlEl = $shallowRef<InstanceType<typeof XTimeline>>();
+let rootEl = $shallowRef<HTMLElement>();
 
 watch(() => props.listId, async () => {
 	list = await os.api('users/lists/show', {

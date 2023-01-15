@@ -1,10 +1,12 @@
+import { Plugin } from 'chart.js';
+
 export const chartVLine = (vLineColor: string) => ({
 	id: 'vLine',
 	beforeDraw(chart, args, options) {
 		if (chart.tooltip?._active?.length) {
-			const activePoint = chart.tooltip._active[0];
 			const ctx = chart.ctx;
-			const x = activePoint.element.x;
+			const xs = chart.tooltip._active.map(a => a.element.x);
+			const x = xs.reduce((a, b) => a + b, 0) / xs.length;
 			const topY = chart.scales.y.top;
 			const bottomY = chart.scales.y.bottom;
 
@@ -18,4 +20,4 @@ export const chartVLine = (vLineColor: string) => ({
 			ctx.restore();
 		}
 	},
-});
+}) as Plugin;

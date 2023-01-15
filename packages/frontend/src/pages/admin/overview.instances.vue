@@ -22,7 +22,7 @@ const fetching = ref(true);
 
 const fetch = async () => {
 	const fetchedInstances = await os.api('federation/instances', {
-		sort: '+lastCommunicatedAt',
+		sort: '+latestRequestReceivedAt',
 		limit: 6,
 	});
 	instances.value = fetchedInstances;

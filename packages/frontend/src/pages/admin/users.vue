@@ -19,7 +19,6 @@
 							<option value="available">{{ i18n.ts.normal }}</option>
 							<option value="admin">{{ i18n.ts.administrator }}</option>
 							<option value="moderator">{{ i18n.ts.moderator }}</option>
-							<option value="silenced">{{ i18n.ts.silence }}</option>
 							<option value="suspended">{{ i18n.ts.suspend }}</option>
 						</MkSelect>
 						<MkSelect v-model="origin" style="flex: 1;">
@@ -41,7 +40,7 @@
 					</div>
 
 					<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination" class="users">
-						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${new Date(user.updatedAt).toLocaleString()}`" class="user" :to="`/user-info/${user.id}`">
+						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/user-info/${user.id}`">
 							<MkUserCardMini :user="user"/>
 						</MkA>
 					</MkPagination>
@@ -55,16 +54,17 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import XHeader from './_header_.vue';
-import MkInput from '@/components/form/input.vue';
-import MkSelect from '@/components/form/select.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import { dateString } from '@/filters/date';
 
-let paginationComponent = $ref<InstanceType<typeof MkPagination>>();
+let paginationComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
 let sort = $ref('+createdAt');
 let state = $ref('all');

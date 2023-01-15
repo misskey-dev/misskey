@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
@@ -8,14 +8,14 @@
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="disabled" class="iwaalbte">
-		<p>
+	<div v-if="disabled" :class="$style.disabled">
+		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus-circle"></i>
 			{{ $t('disabled-timeline.title') }}
 		</p>
-		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
+		<p :class="$style.disabledDescription">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')" @queue="queueUpdated" @note="onNote"/>
+	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
 </XColumn>
 </template>
 
@@ -40,16 +40,12 @@ const emit = defineEmits<{
 }>();
 
 let disabled = $ref(false);
-let indicated = $ref(false);
-let columnActive = $ref(true);
 
 onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
 	} else if ($i) {
-		disabled = !$i.isModerator && !$i.isAdmin && (
-			instance.disableLocalTimeline && ['local', 'social'].includes(props.column.tl) ||
-			instance.disableGlobalTimeline && ['global'].includes(props.column.tl));
+		disabled = false; // TODO
 	}
 });
 
@@ -77,26 +73,6 @@ async function setType() {
 	});
 }
 
-function queueUpdated(q) {
-	if (columnActive) {
-		indicated = q !== 0;
-	}
-}
-
-function onNote() {
-	if (!columnActive) {
-		indicated = true;
-	}
-}
-
-function onChangeActiveState(state) {
-	columnActive = state;
-
-	if (columnActive) {
-		indicated = false;
-	}
-}
-
 const menu = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.timeline,
@@ -104,16 +80,16 @@ const menu = [{
 }];
 </script>
 
-<style lang="scss" scoped>
-.iwaalbte {
+<style lang="scss" module>
+.disabled {
 	text-align: center;
+}
 
-	> p {
-		margin: 16px;
+.disabledTitle {
+	margin: 16px;
+}
 
-		&.desc {
-			font-size: 14px;
-		}
-	}
+.disabledDescription {
+	font-size: 90%;
 }
 </style>

@@ -1,8 +1,9 @@
 <template>
 <MkContainer>
-	<template #header><i class="ti ti-chart-line" style="margin-right: 0.5em;"></i>{{ $ts.activity }}</template>
-	<template #func>
-		<button class="_button" @click="showMenu">
+	<template #icon><i class="ti ti-chart-line"></i></template>
+	<template #header>{{ $ts.activity }}</template>
+	<template #func="{ buttonStyleClass }">
+		<button class="_button" :class="buttonStyleClass" @click="showMenu">
 			<i class="ti ti-dots"></i>
 		</button>
 	</template>
@@ -33,9 +34,15 @@ let chartSrc = $ref('per-user-notes');
 function showMenu(ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.notes,
-		active: true,
+		active: chartSrc === 'per-user-notes',
 		action: () => {
 			chartSrc = 'per-user-notes';
+		},
+	}, {
+		text: i18n.ts.numberOfProfileView,
+		active: chartSrc === 'per-user-pv',
+		action: () => {
+			chartSrc = 'per-user-pv';
 		},
 	}, /*, {
 		text: i18n.ts.following,
