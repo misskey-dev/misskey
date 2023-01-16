@@ -8,9 +8,10 @@ import type { CacheableUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class PollService {
@@ -40,6 +41,7 @@ export class PollService {
 	) {
 	}
 
+	@bindThis
 	public async vote(user: CacheableUser, note: Note, choice: number) {
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 	
@@ -90,15 +92,9 @@ export class PollService {
 			choice: choice,
 			userId: user.id,
 		});
-	
-		// Notify
-		this.createNotificationService.createNotification(note.userId, 'pollVote', {
-			notifierId: user.id,
-			noteId: note.id,
-			choice: choice,
-		});
 	}
 
+	@bindThis
 	public async deliverQuestionUpdate(noteId: Note['id']) {
 		const note = await this.notesRepository.findOneBy({ id: noteId });
 		if (note == null) throw new Error('note not found');

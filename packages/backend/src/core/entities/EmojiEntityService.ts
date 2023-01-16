@@ -6,6 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
+import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -18,26 +19,28 @@ export class EmojiEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: Emoji['id'] | Emoji,
+		opts: { omitHost?: boolean; omitId?: boolean; } = {},
 	): Promise<Packed<'Emoji'>> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 
 		return {
-			id: emoji.id,
+			id: opts.omitId ? undefined : emoji.id,
 			aliases: emoji.aliases,
 			name: emoji.name,
 			category: emoji.category,
-			host: emoji.host,
-			// ?? emoji.originalUrl してるのは後方互換性のため
-			url: emoji.publicUrl ?? emoji.originalUrl,
+			host: opts.omitHost ? undefined : emoji.host,
 		};
 	}
 
+	@bindThis
 	public packMany(
 		emojis: any[],
+		opts: { omitHost?: boolean; omitId?: boolean; } = {},
 	) {
-		return Promise.all(emojis.map(x => this.pack(x)));
+		return Promise.all(emojis.map(x => this.pack(x, opts)));
 	}
 }
 

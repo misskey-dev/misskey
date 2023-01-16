@@ -14,6 +14,7 @@ import sharp from 'sharp';
 import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
+import { bindThis } from '@/decorators.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -42,6 +43,7 @@ const TYPE_SVG = {
 	mime: 'image/svg+xml',
 	ext: 'svg',
 };
+
 @Injectable()
 export class FileInfoService {
 	constructor(
@@ -52,6 +54,7 @@ export class FileInfoService {
 	/**
 	 * Get file information
 	 */
+	@bindThis
 	public async getFileInfo(path: string, opts: {
 		skipSensitiveDetection: boolean;
 		sensitiveThreshold?: number;
@@ -70,7 +73,18 @@ export class FileInfoService {
 		let height: number | undefined;
 		let orientation: number | undefined;
 
-		if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml', 'image/vnd.adobe.photoshop'].includes(type.mime)) {
+		if ([
+			'image/png',
+			'image/gif',
+			'image/jpeg',
+			'image/webp',
+			'image/avif',
+			'image/apng',
+			'image/bmp',
+			'image/tiff',
+			'image/svg+xml',
+			'image/vnd.adobe.photoshop',
+		].includes(type.mime)) {
 			const imageSize = await this.detectImageSize(path).catch(e => {
 				warnings.push(`detectImageSize failed: ${e}`);
 				return undefined;
@@ -97,7 +111,15 @@ export class FileInfoService {
 
 		let blurhash: string | undefined;
 
-		if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime)) {
+		if ([
+			'image/jpeg',
+			'image/gif',
+			'image/png',
+			'image/apng',
+			'image/webp',
+			'image/avif',
+			'image/svg+xml',
+		].includes(type.mime)) {
 			blurhash = await this.getBlurhash(path).catch(e => {
 				warnings.push(`getBlurhash failed: ${e}`);
 				return undefined;
@@ -135,6 +157,7 @@ export class FileInfoService {
 		};
 	}
 
+	@bindThis
 	private async detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number, analyzeVideo: boolean): Promise<[sensitive: boolean, porn: boolean]> {
 		let sensitive = false;
 		let porn = false;
@@ -152,7 +175,11 @@ export class FileInfoService {
 			return [sensitive, porn];
 		}
 	
-		if (['image/jpeg', 'image/png', 'image/webp'].includes(mime)) {
+		if ([
+			'image/jpeg',
+			'image/png',
+			'image/webp',
+		].includes(mime)) {
 			const result = await this.aiService.detectSensitive(source);
 			if (result) {
 				[sensitive, porn] = judgePrediction(result);
@@ -269,6 +296,7 @@ export class FileInfoService {
 		}
 	}
 	
+	@bindThis
 	private exists(path: string): Promise<boolean> {
 		return fs.promises.access(path).then(() => true, () => false);
 	}
@@ -276,6 +304,7 @@ export class FileInfoService {
 	/**
 	 * Detect MIME Type and extension
 	 */
+	@bindThis
 	public async detectType(path: string): Promise<{
 	mime: string;
 	ext: string | null;
@@ -312,6 +341,7 @@ export class FileInfoService {
 	/**
 	 * Check the file is SVG or not
 	 */
+	@bindThis
 	public async checkSvg(path: string) {
 		try {
 			const size = await this.getFileSize(path);
@@ -325,6 +355,7 @@ export class FileInfoService {
 	/**
 	 * Get file size
 	 */
+	@bindThis
 	public async getFileSize(path: string): Promise<number> {
 		const getStat = util.promisify(fs.stat);
 		return (await getStat(path)).size;
@@ -333,6 +364,7 @@ export class FileInfoService {
 	/**
 	 * Calculate MD5 hash
 	 */
+	@bindThis
 	private async calcHash(path: string): Promise<string> {
 		const hash = crypto.createHash('md5').setEncoding('hex');
 		await pipeline(fs.createReadStream(path), hash);
@@ -342,6 +374,7 @@ export class FileInfoService {
 	/**
 	 * Detect dimensions of image
 	 */
+	@bindThis
 	private async detectImageSize(path: string): Promise<{
 	width: number;
 	height: number;
@@ -358,19 +391,20 @@ export class FileInfoService {
 	/**
 	 * Calculate average color of image
 	 */
+	@bindThis
 	private getBlurhash(path: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			sharp(path)
 				.raw()
 				.ensureAlpha()
 				.resize(64, 64, { fit: 'inside' })
-				.toBuffer((err, buffer, { width, height }) => {
+				.toBuffer((err, buffer, info) => {
 					if (err) return reject(err);
 
 					let hash;
 
 					try {
-						hash = encode(new Uint8ClampedArray(buffer), width, height, 7, 7);
+						hash = encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 					} catch (e) {
 						return reject(e);
 					}

@@ -6,8 +6,9 @@ import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserSuspendService {
@@ -28,6 +29,7 @@ export class UserSuspendService {
 	) {
 	}
 
+	@bindThis
 	public async doPostSuspend(user: { id: User['id']; host: User['host'] }): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
 	
@@ -57,6 +59,7 @@ export class UserSuspendService {
 		}
 	}
 
+	@bindThis
 	public async doPostUnsuspend(user: User): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
 	

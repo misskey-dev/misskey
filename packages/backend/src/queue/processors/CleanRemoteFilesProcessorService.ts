@@ -7,6 +7,7 @@ import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CleanRemoteFilesProcessorService {
@@ -25,6 +26,7 @@ export class CleanRemoteFilesProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean-remote-files');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Deleting cached remote files...');
 
@@ -63,7 +65,7 @@ export class CleanRemoteFilesProcessorService {
 			job.progress(deletedCount / total);
 		}
 
-		this.logger.succ('All cahced remote files has been deleted.');
+		this.logger.succ('All cached remote files has been deleted.');
 		done();
 	}
 }

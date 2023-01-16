@@ -4,6 +4,7 @@ import type { AbuseUserReportsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { UserEntityService } from './UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class AbuseUserReportEntityService {
@@ -15,6 +16,7 @@ export class AbuseUserReportEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {
@@ -41,6 +43,7 @@ export class AbuseUserReportEntityService {
 		});
 	}
 
+	@bindThis
 	public packMany(
 		reports: any[],
 	) {

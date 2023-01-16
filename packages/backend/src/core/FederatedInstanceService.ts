@@ -4,7 +4,8 @@ import type { Instance } from '@/models/entities/Instance.js';
 import { Cache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import { UtilityService } from './UtilityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class FederatedInstanceService {
@@ -20,7 +21,8 @@ export class FederatedInstanceService {
 		this.cache = new Cache<Instance>(1000 * 60 * 60);
 	}
 
-	public async registerOrFetchInstanceDoc(host: string): Promise<Instance> {
+	@bindThis
+	public async fetch(host: string): Promise<Instance> {
 		host = this.utilityService.toPuny(host);
 	
 		const cached = this.cache.get(host);
@@ -32,8 +34,7 @@ export class FederatedInstanceService {
 			const i = await this.instancesRepository.insert({
 				id: this.idService.genId(),
 				host,
-				caughtAt: new Date(),
-				lastCommunicatedAt: new Date(),
+				firstRetrievedAt: new Date(),
 			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
 	
 			this.cache.set(host, i);
@@ -42,5 +43,18 @@ export class FederatedInstanceService {
 			this.cache.set(host, index);
 			return index;
 		}
+	}
+
+	@bindThis
+	public async updateCachePartial(host: string, data: Partial<Instance>): Promise<void> {
+		host = this.utilityService.toPuny(host);
+	
+		const cached = this.cache.get(host);
+		if (cached == null) return;
+	
+		this.cache.set(host, {
+			...cached,
+			...data,
+		});
 	}
 }

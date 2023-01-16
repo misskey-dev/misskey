@@ -5,6 +5,7 @@ import type { UserListsRepository, UserGroupJoiningsRepository, AntennasReposito
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -25,6 +26,12 @@ export const meta = {
 			message: 'No such user group.',
 			code: 'NO_SUCH_USER_GROUP',
 			id: 'aa3c0b9a-8cae-47c0-92ac-202ce5906682',
+		},
+
+		tooManyAntennas: {
+			message: 'You cannot create antenna any more.',
+			code: 'TOO_MANY_ANTENNAS',
+			id: 'faf47050-e8b5-438c-913c-db2b1576fde4',
 		},
 	},
 
@@ -77,10 +84,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		private antennaEntityService: AntennaEntityService,
+		private roleService: RoleService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const currentAntennasCount = await this.antennasRepository.countBy({
+				userId: me.id,
+			});
+			if (currentAntennasCount > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
+				throw new ApiError(meta.errors.tooManyAntennas);
+			}
+
 			let userList;
 			let userGroupJoining;
 

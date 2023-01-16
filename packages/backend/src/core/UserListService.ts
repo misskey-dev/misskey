@@ -7,8 +7,10 @@ import { IdService } from '@/core/IdService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { ProxyAccountService } from './ProxyAccountService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ProxyAccountService } from '@/core/ProxyAccountService.js';
+import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class UserListService {
@@ -22,12 +24,21 @@ export class UserListService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private userFollowingService: UserFollowingService,
+		private roleService: RoleService,
 		private globalEventServie: GlobalEventService,
 		private proxyAccountService: ProxyAccountService,
 	) {
 	}
 
-	public async push(target: User, list: UserList) {
+	@bindThis
+	public async push(target: User, list: UserList, me: User) {
+		const currentCount = await this.userListJoiningsRepository.countBy({
+			userListId: list.id,
+		});
+		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
+			throw new Error('Too many users');
+		}
+
 		await this.userListJoiningsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),

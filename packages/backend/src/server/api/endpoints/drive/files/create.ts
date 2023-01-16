@@ -1,7 +1,7 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFilesRepository } from '@/models/index.js';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
@@ -78,8 +78,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me, _, file, cleanup, ip, headers) => {
 			// Get 'name' parameter
-			let name = ps.name ?? file.originalname;
-			if (name !== undefined && name !== null) {
+			let name = ps.name ?? file!.name ?? null;
+			if (name != null) {
 				name = name.trim();
 				if (name.length === 0) {
 					name = null;
@@ -88,24 +88,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				} else if (!this.driveFileEntityService.validateFileName(name)) {
 					throw new ApiError(meta.errors.invalidFileName);
 				}
-			} else {
-				name = null;
 			}
 
-			const meta = await this.metaService.fetch();
+			const instance = await this.metaService.fetch();
 
 			try {
 				// Create file
 				const driveFile = await this.driveService.addFile({
 					user: me,
-					path: file.path,
+					path: file!.path,
 					name,
 					comment: ps.comment,
 					folderId: ps.folderId,
 					force: ps.force,
 					sensitive: ps.isSensitive,
-					requestIp: meta.enableIpLogging ? ip : null,
-					requestHeaders: meta.enableIpLogging ? headers : null,
+					requestIp: instance.enableIpLogging ? ip : null,
+					requestHeaders: instance.enableIpLogging ? headers : null,
 				});
 				return await this.driveFileEntityService.pack(driveFile, { self: true });
 			} catch (err) {
@@ -118,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 				throw new ApiError();
 			} finally {
-		cleanup!();
+				cleanup!();
 			}
 		});
 	}

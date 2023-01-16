@@ -11,6 +11,7 @@ import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -68,6 +69,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 	}
 	
+	@bindThis
 	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
@@ -128,6 +130,7 @@ export class NoteEntityService implements OnModuleInit {
 		}
 	}
 
+	@bindThis
 	private async populatePoll(note: Note, meId: User['id'] | null) {
 		const poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 		const choices = poll.choices.map(c => ({
@@ -166,6 +169,7 @@ export class NoteEntityService implements OnModuleInit {
 		};
 	}
 
+	@bindThis
 	private async populateMyReaction(note: Note, meId: User['id'], _hint_?: {
 		myReactions: Map<Note['id'], NoteReaction | null>;
 	}) {
@@ -191,6 +195,7 @@ export class NoteEntityService implements OnModuleInit {
 		return undefined;
 	}
 
+	@bindThis
 	public async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
 		// This code must always be synchronized with the checks in generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
@@ -244,6 +249,7 @@ export class NoteEntityService implements OnModuleInit {
 		return true;
 	}
 
+	@bindThis
 	public async pack(
 		src: Note['id'] | Note,
 		me?: { id: User['id'] } | null | undefined,
@@ -294,7 +300,6 @@ export class NoteEntityService implements OnModuleInit {
 			repliesCount: note.repliesCount,
 			reactions: this.reactionService.convertLegacyReactions(note.reactions),
 			tags: note.tags.length > 0 ? note.tags : undefined,
-			emojis: this.customEmojiService.populateEmojis(note.emojis.concat(reactionEmojiNames), host),
 			fileIds: note.fileIds,
 			files: this.driveFileEntityService.packMany(note.fileIds),
 			replyId: note.replyId,
@@ -329,12 +334,20 @@ export class NoteEntityService implements OnModuleInit {
 
 		if (packed.user.isCat && packed.text) {
 			const tokens = packed.text ? mfm.parse(packed.text) : [];
-			mfm.inspect(tokens, node => {
+			function nyaizeNode(node: mfm.MfmNode) {
+				if (node.type === 'quote') return;
 				if (node.type === 'text') {
-					// TODO: quoteなtextはskip
 					node.props.text = nyaize(node.props.text);
 				}
-			});
+				if (node.children) {
+					for (const child of node.children) {
+						nyaizeNode(child);
+					}
+				}
+			}
+			for (const node of tokens) {
+				nyaizeNode(node);
+			}
 			packed.text = mfm.toString(tokens);
 		}
 
@@ -345,6 +358,7 @@ export class NoteEntityService implements OnModuleInit {
 		return packed;
 	}
 
+	@bindThis
 	public async packMany(
 		notes: Note[],
 		me?: { id: User['id'] } | null | undefined,
@@ -370,8 +384,6 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
-		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
-
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
@@ -380,6 +392,7 @@ export class NoteEntityService implements OnModuleInit {
 		})));
 	}
 
+	@bindThis
 	public async countSameRenotes(userId: string, renoteId: string, excludeNoteId: string | undefined): Promise<number> {
 		// 指定したユーザーの指定したノートのリノートがいくつあるか数える
 		const query = this.notesRepository.createQueryBuilder('note')

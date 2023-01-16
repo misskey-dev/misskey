@@ -1,5 +1,3 @@
-declare var self: ServiceWorkerGlobalScope;
-
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
 import { swNotificationRead } from '@/scripts/notification-read';
@@ -52,6 +50,7 @@ self.addEventListener('push', ev => {
 			// case 'driveFileCreated':
 			case 'notification':
 			case 'unreadMessagingMessage':
+			case 'unreadAntennaNote':
 				// 1日以上経過している場合は無視
 				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
@@ -67,6 +66,11 @@ self.addEventListener('push', ev => {
 			case 'readAllMessagingMessages':
 				for (const n of await self.registration.getNotifications()) {
 					if (n?.data?.type === 'unreadMessagingMessage') n.close();
+				}
+				break;
+			case 'readAllAntennas':
+				for (const n of await self.registration.getNotifications()) {
+					if (n?.data?.type === 'unreadAntennaNote') n.close();
 				}
 				break;
 			case 'readNotifications':
@@ -87,6 +91,13 @@ self.addEventListener('push', ev => {
 						}
 				}
 				break;
+			case 'readAntenna':
+				for (const n of await self.registration.getNotifications()) {
+					if (n?.data?.type === 'unreadAntennaNote' && data.body?.antennaId === n.data.body.antenna.id) {
+						n.close();
+					}
+				}
+				break;
 		}
 
 		return createEmptyNotification();
@@ -101,71 +112,73 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 	
 		const { action, notification } = ev;
 		const data: pushNotificationDataMap[K] = notification.data;
-		const { userId: id } = data;
+		const { userId: loginId } = data;
 		let client: WindowClient | null = null;
 	
 		switch (data.type) {
 			case 'notification':
 				switch (action) {
 					case 'follow':
-						if ('userId' in data.body) await swos.api('following/create', id, { userId: data.body.userId });
+						if ('userId' in data.body) await swos.api('following/create', loginId, { userId: data.body.userId });
 						break;
 					case 'showUser':
-						if ('user' in data.body) client = await swos.openUser(getAcct(data.body.user), id);
+						if ('user' in data.body) client = await swos.openUser(getAcct(data.body.user), loginId);
 						break;
 					case 'reply':
-						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, id);
+						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, loginId);
 						break;
 					case 'renote':
-						if ('note' in data.body) await swos.api('notes/create', id, { renoteId: data.body.note.id });
+						if ('note' in data.body) await swos.api('notes/create', loginId, { renoteId: data.body.note.id });
 						break;
 					case 'accept':
 						switch (data.body.type) {
 							case 'receiveFollowRequest':
-								await swos.api('following/requests/accept', id, { userId: data.body.userId });
+								await swos.api('following/requests/accept', loginId, { userId: data.body.userId });
 								break;
 							case 'groupInvited':
-								await swos.api('users/groups/invitations/accept', id, { invitationId: data.body.invitation.id });
+								await swos.api('users/groups/invitations/accept', loginId, { invitationId: data.body.invitation.id });
 								break;
 						}
 						break;
 					case 'reject':
 						switch (data.body.type) {
 							case 'receiveFollowRequest':
-								await swos.api('following/requests/reject', id, { userId: data.body.userId });
+								await swos.api('following/requests/reject', loginId, { userId: data.body.userId });
 								break;
 							case 'groupInvited':
-								await swos.api('users/groups/invitations/reject', id, { invitationId: data.body.invitation.id });
+								await swos.api('users/groups/invitations/reject', loginId, { invitationId: data.body.invitation.id });
 								break;
 						}
 						break;
 					case 'showFollowRequests':
-						client = await swos.openClient('push', '/my/follow-requests', id);
+						client = await swos.openClient('push', '/my/follow-requests', loginId);
 						break;
 					default:
 						switch (data.body.type) {
 							case 'receiveFollowRequest':
-								client = await swos.openClient('push', '/my/follow-requests', id);
+								client = await swos.openClient('push', '/my/follow-requests', loginId);
 								break;
 							case 'groupInvited':
-								client = await swos.openClient('push', '/my/groups', id);
+								client = await swos.openClient('push', '/my/groups', loginId);
 								break;
 							case 'reaction':
-								client = await swos.openNote(data.body.note.id, id);
+								client = await swos.openNote(data.body.note.id, loginId);
 								break;
 							default:
 								if ('note' in data.body) {
-									client = await swos.openNote(data.body.note.id, id);
+									client = await swos.openNote(data.body.note.id, loginId);
 								} else if ('user' in data.body) {
-									client = await swos.openUser(getAcct(data.body.user), id);
+									client = await swos.openUser(getAcct(data.body.user), loginId);
 								}
 								break;
 						}
 				}
 				break;
 			case 'unreadMessagingMessage':
-				client = await swos.openChat(data.body, id);
+				client = await swos.openChat(data.body, loginId);
 				break;
+			case 'unreadAntennaNote':
+				client = await swos.openAntenna(data.body.antenna.id, loginId);
 		}
 	
 		if (client) {
@@ -176,7 +189,6 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 		}
 	
 		notification.close();
-	
 	})());
 });
 

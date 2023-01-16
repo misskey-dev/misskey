@@ -4,6 +4,7 @@ import { QueueService } from '@/core/QueueService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DeleteAccountService {
@@ -17,10 +18,14 @@ export class DeleteAccountService {
 	) {
 	}
 
+	@bindThis
 	public async deleteAccount(user: {
 		id: string;
 		host: string | null;
 	}): Promise<void> {
+		const _user = await this.usersRepository.findOneByOrFail({ id: user.id });
+		if (_user.isRoot) throw new Error('cannot delete a root account');
+
 		// 物理削除する前にDelete activityを送信する
 		await this.userSuspendService.doPostSuspend(user).catch(e => {});
 	

@@ -4,6 +4,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -15,14 +16,6 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: false,
 		properties: {
-			driveCapacityPerLocalUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerRemoteUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
 			cacheRemoteFiles: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -44,6 +37,14 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			recaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableTurnstile: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			turnstileSiteKey: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -194,6 +195,10 @@ export const meta = {
 				optional: true, nullable: true,
 			},
 			recaptchaSecretKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
+			turnstileSecretKey: {
 				type: 'string',
 				optional: true, nullable: true,
 			},
@@ -365,15 +370,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				repositoryUrl: instance.repositoryUrl,
 				feedbackUrl: instance.feedbackUrl,
 				disableRegistration: instance.disableRegistration,
-				disableLocalTimeline: instance.disableLocalTimeline,
-				disableGlobalTimeline: instance.disableGlobalTimeline,
-				driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-				driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
 				enableRecaptcha: instance.enableRecaptcha,
 				recaptchaSiteKey: instance.recaptchaSiteKey,
+				enableTurnstile: instance.enableTurnstile,
+				turnstileSiteKey: instance.turnstileSiteKey,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
@@ -400,6 +403,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				blockedHosts: instance.blockedHosts,
 				hcaptchaSecretKey: instance.hcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
+				turnstileSecretKey: instance.turnstileSecretKey,
 				sensitiveMediaDetection: instance.sensitiveMediaDetection,
 				sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
@@ -436,6 +440,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				deeplIsPro: instance.deeplIsPro,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
+				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 			};
 		});
 	}

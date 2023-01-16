@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/index.js';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -72,6 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFoldersRepository: DriveFoldersRepository,
 
 		private driveFileEntityService: DriveFileEntityService,
+		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -81,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			if ((!me.isAdmin && !me.isModerator) && (file.userId !== me.id)) {
+			if (!await this.roleService.isModerator(me) && (file.userId !== me.id)) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

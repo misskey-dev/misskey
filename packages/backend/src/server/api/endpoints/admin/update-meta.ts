@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { Meta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -19,8 +19,6 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
-		disableLocalTimeline: { type: 'boolean', nullable: true },
-		disableGlobalTimeline: { type: 'boolean', nullable: true },
 		useStarForReactionFallback: { type: 'boolean', nullable: true },
 		pinnedUsers: { type: 'array', nullable: true, items: {
 			type: 'string',
@@ -42,8 +40,6 @@ export const paramDef = {
 		description: { type: 'string', nullable: true },
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
-		localDriveCapacityMb: { type: 'integer' },
-		remoteDriveCapacityMb: { type: 'integer' },
 		cacheRemoteFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
 		enableHcaptcha: { type: 'boolean' },
@@ -52,6 +48,9 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
+		enableTurnstile: { type: 'boolean' },
+		turnstileSiteKey: { type: 'string', nullable: true },
+		turnstileSecretKey: { type: 'string', nullable: true },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		setSensitiveFlagAutomatically: { type: 'boolean' },
@@ -127,14 +126,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.disableRegistration = ps.disableRegistration;
 			}
 
-			if (typeof ps.disableLocalTimeline === 'boolean') {
-				set.disableLocalTimeline = ps.disableLocalTimeline;
-			}
-
-			if (typeof ps.disableGlobalTimeline === 'boolean') {
-				set.disableGlobalTimeline = ps.disableGlobalTimeline;
-			}
-
 			if (typeof ps.useStarForReactionFallback === 'boolean') {
 				set.useStarForReactionFallback = ps.useStarForReactionFallback;
 			}
@@ -148,7 +139,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (Array.isArray(ps.blockedHosts)) {
-				set.blockedHosts = ps.blockedHosts.filter(Boolean);
+				set.blockedHosts = ps.blockedHosts.filter(Boolean).map(x => x.toLowerCase());
 			}
 
 			if (ps.themeColor !== undefined) {
@@ -191,14 +182,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.defaultDarkTheme = ps.defaultDarkTheme;
 			}
 
-			if (ps.localDriveCapacityMb !== undefined) {
-				set.localDriveCapacityMb = ps.localDriveCapacityMb;
-			}
-
-			if (ps.remoteDriveCapacityMb !== undefined) {
-				set.remoteDriveCapacityMb = ps.remoteDriveCapacityMb;
-			}
-
 			if (ps.cacheRemoteFiles !== undefined) {
 				set.cacheRemoteFiles = ps.cacheRemoteFiles;
 			}
@@ -229,6 +212,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.recaptchaSecretKey !== undefined) {
 				set.recaptchaSecretKey = ps.recaptchaSecretKey;
+			}
+
+			if (ps.enableTurnstile !== undefined) {
+				set.enableTurnstile = ps.enableTurnstile;
+			}
+
+			if (ps.turnstileSiteKey !== undefined) {
+				set.turnstileSiteKey = ps.turnstileSiteKey;
+			}
+
+			if (ps.turnstileSecretKey !== undefined) {
+				set.turnstileSecretKey = ps.turnstileSecretKey;
 			}
 
 			if (ps.sensitiveMediaDetection !== undefined) {

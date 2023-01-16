@@ -5,11 +5,12 @@ import type { UsersRepository, DriveFilesRepository, UserListJoiningsRepository,
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
-import { ResolveUserService } from '@/core/remote/ResolveUserService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { UserListService } from '@/core/UserListService.js';
 import { IdService } from '@/core/IdService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
@@ -37,13 +38,14 @@ export class ImportUserListsProcessorService {
 		private utilityService: UtilityService,
 		private idService: IdService,
 		private userListService: UserListService,
-		private resolveUserService: ResolveUserService,
+		private remoteUserResolveService: RemoteUserResolveService,
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('import-user-lists');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
 		this.logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
@@ -95,12 +97,12 @@ export class ImportUserListsProcessorService {
 				});
 
 				if (target == null) {
-					target = await this.resolveUserService.resolveUser(username, host);
+					target = await this.remoteUserResolveService.resolveUser(username, host);
 				}
 
 				if (await this.userListJoiningsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
 
-				this.userListService.push(target, list!);
+				this.userListService.push(target, list!, user);
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

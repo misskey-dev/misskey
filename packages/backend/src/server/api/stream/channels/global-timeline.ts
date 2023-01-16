@@ -6,6 +6,8 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
 
 class GlobalTimelineChannel extends Channel {
@@ -15,25 +17,26 @@ class GlobalTimelineChannel extends Channel {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
 		connection: Channel['connection'],
 	) {
 		super(id, connection);
-		this.onNote = this.onNote.bind(this);
+		//this.onNote = this.onNote.bind(this);
 	}
 
+	@bindThis
 	public async init(params: any) {
-		const meta = await this.metaService.fetch();
-		if (meta.disableGlobalTimeline) {
-			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;
-		}
+		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
+		if (!policies.gtlAvailable) return;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
+	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
@@ -78,6 +81,7 @@ class GlobalTimelineChannel extends Channel {
 		this.send('note', note);
 	}
 
+	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
@@ -91,13 +95,16 @@ export class GlobalTimelineChannelService {
 
 	constructor(
 		private metaService: MetaService,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): GlobalTimelineChannel {
 		return new GlobalTimelineChannel(
 			this.metaService,
+			this.roleService,
 			this.noteEntityService,
 			id,
 			connection,

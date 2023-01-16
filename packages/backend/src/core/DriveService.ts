@@ -28,14 +28,16 @@ import InstanceChart from '@/core/chart/charts/instance.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { S3Service } from '@/core/S3Service.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
-import { DriveFileEntityService } from './entities/DriveFileEntityService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { FileInfoService } from './FileInfoService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
+import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
-	user: { id: User['id']; host: User['host']; driveCapacityOverrideMb: User['driveCapacityOverrideMb'] } | null;
+	user: { id: User['id']; host: User['host'] } | null;
 	/** File path */
 	path: string;
 	/** Name */
@@ -61,7 +63,7 @@ type AddFileArgs = {
 
 type UploadFromUrlArgs = {
 	url: string;
-	user: { id: User['id']; host: User['host']; driveCapacityOverrideMb: User['driveCapacityOverrideMb'] } | null;
+	user: { id: User['id']; host: User['host'] } | null;
 	folderId?: DriveFolder['id'] | null;
 	uri?: string | null;
 	sensitive?: boolean;
@@ -105,6 +107,7 @@ export class DriveService {
 		private videoProcessingService: VideoProcessingService,
 		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
+		private roleService: RoleService,
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
@@ -122,6 +125,7 @@ export class DriveService {
 	 * @param hash Hash for original
 	 * @param size Size for original
 	 */
+	@bindThis
 	private async save(file: DriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<DriveFile> {
 	// thunbnail, webpublic を必要なら生成
 		const alts = await this.generateAlts(path, type, !file.uri);
@@ -136,6 +140,7 @@ export class DriveService {
 				if (type === 'image/jpeg') ext = '.jpg';
 				if (type === 'image/png') ext = '.png';
 				if (type === 'image/webp') ext = '.webp';
+				if (type === 'image/avif') ext = '.avif';
 				if (type === 'image/apng') ext = '.apng';
 				if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 			}
@@ -242,6 +247,7 @@ export class DriveService {
 	 * @param type Content-Type for original
 	 * @param generateWeb Generate webpublic or not
 	 */
+	@bindThis
 	public async generateAlts(path: string, type: string, generateWeb: boolean) {
 		if (type.startsWith('video/')) {
 			try {
@@ -259,7 +265,7 @@ export class DriveService {
 			}
 		}
 
-		if (!['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(type)) {
+		if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'].includes(type)) {
 			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
 			return {
 				webpublic: null,
@@ -284,7 +290,7 @@ export class DriveService {
 			}
 
 			satisfyWebpublic = !!(
-				type !== 'image/svg+xml' && type !== 'image/webp' &&
+				type !== 'image/svg+xml' && type !== 'image/webp' && type !== 'image/avif' &&
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -304,7 +310,7 @@ export class DriveService {
 			this.registerLogger.info('creating web image');
 
 			try {
-				if (['image/jpeg', 'image/webp'].includes(type)) {
+				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
 				} else if (['image/png'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
@@ -326,7 +332,7 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			if (['image/jpeg', 'image/webp', 'image/png', 'image/svg+xml'].includes(type)) {
+			if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(type)) {
 				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 280);
 			} else {
 				this.registerLogger.debug('thumbnail not created (not an required file)');
@@ -345,6 +351,7 @@ export class DriveService {
 	/**
 	 * Upload to ObjectStorage
 	 */
+	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
@@ -368,10 +375,22 @@ export class DriveService {
 			partSize: s3.endpoint.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
 		});
 
-		const result = await upload.promise();
-		if (result) this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+		await upload.promise()
+			.then(
+				result => {
+					if (result) {
+						this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
+					} else {
+						this.registerLogger.error(`Upload Result Empty: key = ${key}, filename = ${filename}`);
+					}
+				},
+				err => {
+					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
+				},
+			);
 	}
 
+	@bindThis
 	private async deleteOldFile(user: IRemoteUser) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
@@ -398,6 +417,7 @@ export class DriveService {
 	 * Add file to drive
 	 *
 	 */
+	@bindThis
 	public async addFile({
 		user,
 		path,
@@ -453,19 +473,16 @@ export class DriveService {
 			}
 		}
 
+		this.registerLogger.debug(`ADD DRIVE FILE: user ${user?.id ?? 'not set'}, name ${detectedName}, tmp ${path}`);
+
 		//#region Check drive usage
 		if (user && !isLink) {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
-			const u = await this.usersRepository.findOneBy({ id: user.id });
 
-			const instance = await this.metaService.fetch();
-			let driveCapacity = 1024 * 1024 * (this.userEntityService.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
-
-			if (this.userEntityService.isLocalUser(user) && u?.driveCapacityOverrideMb != null) {
-				driveCapacity = 1024 * 1024 * u.driveCapacityOverrideMb;
-				this.registerLogger.debug('drive capacity override applied');
-				this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
-			}
+			const policies = await this.roleService.getUserPolicies(user.id);
+			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
+			this.registerLogger.debug('drive capacity override applied');
+			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 
 			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
@@ -601,6 +618,7 @@ export class DriveService {
 		return file;
 	}
 
+	@bindThis
 	public async deleteFile(file: DriveFile, isExpired = false) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
@@ -627,6 +645,7 @@ export class DriveService {
 		this.deletePostProcess(file, isExpired);
 	}
 
+	@bindThis
 	public async deleteFileSync(file: DriveFile, isExpired = false) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
@@ -657,6 +676,7 @@ export class DriveService {
 		this.deletePostProcess(file, isExpired);
 	}
 
+	@bindThis
 	private async deletePostProcess(file: DriveFile, isExpired = false) {
 	// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
@@ -683,6 +703,7 @@ export class DriveService {
 		}
 	}
 
+	@bindThis
 	public async deleteObjectStorageFile(key: string) {
 		const meta = await this.metaService.fetch();
 
@@ -694,6 +715,7 @@ export class DriveService {
 		}).promise();
 	}
 
+	@bindThis
 	public async uploadFromUrl({
 		url,
 		user,

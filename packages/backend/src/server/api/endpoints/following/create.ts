@@ -6,15 +6,15 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['following', 'users'],
 
 	limit: {
 		duration: ms('1hour'),
-		max: 100,
+		max: 50,
 	},
 
 	requireCredential: true,

@@ -8,6 +8,7 @@ import type { Notification } from '@/models/entities/Notification.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Packed } from '@/misc/schema.js';
+import { bindThis } from '@/decorators.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
@@ -47,6 +48,7 @@ export class NotificationEntityService implements OnModuleInit {
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 	}
 
+	@bindThis
 	public async pack(
 		src: Notification['id'] | Notification,
 		options: {
@@ -96,7 +98,7 @@ export class NotificationEntityService implements OnModuleInit {
 				}),
 				reaction: notification.reaction,
 			} : {}),
-			...(notification.type === 'pollVote' ? {
+			...(notification.type === 'pollVote' ? { // TODO: そのうち消す
 				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
@@ -120,6 +122,7 @@ export class NotificationEntityService implements OnModuleInit {
 		});
 	}
 
+	@bindThis
 	public async packMany(
 		notifications: Notification[],
 		meId: User['id'],
@@ -139,8 +142,6 @@ export class NotificationEntityService implements OnModuleInit {
 		for (const target of targets) {
 			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) ?? null);
 		}
-
-		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
 
 		return await Promise.all(notifications.map(x => this.pack(x, {
 			_hintForEachNotes_: {

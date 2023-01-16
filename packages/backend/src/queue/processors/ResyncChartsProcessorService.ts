@@ -17,6 +17,7 @@ import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ResyncChartsProcessorService {
@@ -44,6 +45,7 @@ export class ResyncChartsProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('resync-charts');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Resync charts...');
 

@@ -7,6 +7,7 @@ import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
+import { bindThis } from '@/decorators.js';
 import * as TreeAdapter from '../../node_modules/parse5/dist/tree-adapters/default.js';
 import type * as mfm from 'mfm-js';
 
@@ -23,6 +24,7 @@ export class MfmService {
 	) {
 	}
 
+	@bindThis
 	public fromHtml(html: string, hashtagNames?: string[]): string {
 		// some AP servers like Pixelfed use br tags as well as newlines
 		html = html.replace(/<br\s?\/?>\r?\n/gi, '\n');
@@ -228,6 +230,7 @@ export class MfmService {
 		}
 	}
 
+	@bindThis
 	public toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
 		if (nodes == null) {
 			return null;

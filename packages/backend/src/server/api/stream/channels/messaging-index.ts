@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
 class MessagingIndexChannel extends Channel {
@@ -6,6 +7,7 @@ class MessagingIndexChannel extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = true;
 
+	@bindThis
 	public async init(params: any) {
 		// Subscribe messaging index stream
 		this.subscriber.on(`messagingIndexStream:${this.user!.id}`, data => {
@@ -23,6 +25,7 @@ export class MessagingIndexChannelService {
 	) {
 	}
 
+	@bindThis
 	public create(id: string, connection: Channel['connection']): MessagingIndexChannel {
 		return new MessagingIndexChannel(
 			id,

@@ -4,8 +4,10 @@ import type { UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ResolveUserService } from '@/core/remote/ResolveUserService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DI } from '@/di-symbols.js';
+import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import type { FindOptionsWhere } from 'typeorm';
@@ -89,20 +91,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private usersRepository: UsersRepository,
 
 		private userEntityService: UserEntityService,
-		private resolveUserService: ResolveUserService,
+		private remoteUserResolveService: RemoteUserResolveService,
+		private roleService: RoleService,
+		private perUserPvChart: PerUserPvChart,
 		private apiLoggerService: ApiLoggerService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me, _1, _2, _3, ip) => {
 			let user;
 
-			const isAdminOrModerator = me && (me.isAdmin || me.isModerator);
+			const isModerator = await this.roleService.isModerator(me);
 
 			if (ps.userIds) {
 				if (ps.userIds.length === 0) {
 					return [];
 				}
 
-				const users = await this.usersRepository.findBy(isAdminOrModerator ? {
+				const users = await this.usersRepository.findBy(isModerator ? {
 					id: In(ps.userIds),
 				} : {
 					id: In(ps.userIds),
@@ -121,7 +125,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			} else {
 				// Lookup user
 				if (typeof ps.host === 'string' && typeof ps.username === 'string') {
-					user = await this.resolveUserService.resolveUser(ps.username, ps.host).catch(err => {
+					user = await this.remoteUserResolveService.resolveUser(ps.username, ps.host).catch(err => {
 						this.apiLoggerService.logger.warn(`failed to resolve remote user: ${err}`);
 						throw new ApiError(meta.errors.failedToResolveRemoteUser);
 					});
@@ -133,8 +137,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					user = await this.usersRepository.findOneBy(q);
 				}
 
-				if (user == null || (!isAdminOrModerator && user.isSuspended)) {
+				if (user == null || (!isModerator && user.isSuspended)) {
 					throw new ApiError(meta.errors.noSuchUser);
+				}
+
+				if (user.host == null) {
+					if (me == null && ip != null) {
+						this.perUserPvChart.commitByVisitor(user, ip);
+					} else if (me && me.id !== user.id) {
+						this.perUserPvChart.commitByUser(user, me.id);
+					}
 				}
 
 				return await this.userEntityService.pack(user, me, {

@@ -10,14 +10,20 @@ export type SwMessage = {
 	[x: string]: any;
 };
 
-// Defined also @/core/push-notification.ts#L7-L14
+// Defined also @/core/PushNotificationService.ts#L12
 type pushNotificationDataSourceMap = {
 	notification: Misskey.entities.Notification;
 	unreadMessagingMessage: Misskey.entities.MessagingMessage;
+	unreadAntennaNote: {
+		antenna: { id: string, name: string };
+		note: Misskey.entities.Note;
+	};
 	readNotifications: { notificationIds: string[] };
 	readAllNotifications: undefined;
 	readAllMessagingMessages: undefined;
 	readAllMessagingMessagesOfARoom: { userId: string } | { groupId: string };
+	readAntenna: { antennaId: string };
+	readAllAntennas: undefined;
 };
 
 export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> = {
@@ -30,3 +36,18 @@ export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> 
 export type pushNotificationDataMap = {
 	[K in keyof pushNotificationDataSourceMap]: pushNotificationData<K>;
 };
+
+export type badgeNames = 
+	'null'
+	| 'antenna'
+	| 'arrow-back-up'
+	| 'at'
+	| 'chart-arrows'
+	| 'circle-check'
+	| 'messages'
+	| 'plus'
+	| 'quote'
+	| 'repeat'
+	| 'user-plus'
+	| 'users'
+	;

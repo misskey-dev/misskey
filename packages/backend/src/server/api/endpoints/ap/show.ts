@@ -4,17 +4,18 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, NotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { CacheableLocalUser, User } from '@/models/entities/User.js';
-import { isActor, isPost, getApId } from '@/core/remote/activitypub/type.js';
+import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
 import type { SchemaType } from '@/misc/schema.js';
-import { ApResolverService } from '@/core/remote/activitypub/ApResolverService.js';
-import { ApDbResolverService } from '@/core/remote/activitypub/ApDbResolverService.js';
+import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { MetaService } from '@/core/MetaService.js';
-import { ApPersonService } from '@/core/remote/activitypub/models/ApPersonService.js';
-import { ApNoteService } from '@/core/remote/activitypub/models/ApNoteService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -112,10 +113,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	/***
 	 * URIからUserかNoteを解決する
 	 */
+	@bindThis
 	private async fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
-		if (fetchedMeta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) return null;
+		if (this.utilityService.isBlockedHost(fetchedMeta.blockedHosts, this.utilityService.extractDbHost(uri))) return null;
 
 		let local = await this.mergePack(me, ...await Promise.all([
 			this.apDbResolverService.getUserFromApId(uri),
@@ -144,6 +146,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		);
 	}
 
+	@bindThis
 	private async mergePack(me: CacheableLocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
 		if (user != null) {
 			return {

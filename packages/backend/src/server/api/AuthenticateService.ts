@@ -7,6 +7,7 @@ import { Cache } from '@/misc/cache.js';
 import type { App } from '@/models/entities/App.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
+import { bindThis } from '@/decorators.js';
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {
@@ -34,7 +35,8 @@ export class AuthenticateService {
 		this.appCache = new Cache<App>(Infinity);
 	}
 
-	public async authenticate(token: string | null): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> {
+	@bindThis
+	public async authenticate(token: string | null | undefined): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> {
 		if (token == null) {
 			return [null, null];
 		}

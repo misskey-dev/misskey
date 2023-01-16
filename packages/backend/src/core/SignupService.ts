@@ -11,8 +11,9 @@ import { IdService } from '@/core/IdService.js';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import UsersChart from './chart/charts/users.js';
-import { UserEntityService } from './entities/UserEntityService.js';
 import { UtilityService } from './UtilityService.js';
 
 @Injectable()
@@ -37,6 +38,7 @@ export class SignupService {
 	) {
 	}
 
+	@bindThis
 	public async signup(opts: {
 		username: User['username'];
 		password?: string | null;
@@ -110,7 +112,7 @@ export class SignupService {
 				usernameLower: username.toLowerCase(),
 				host: this.utilityService.toPunyNullable(host),
 				token: secret,
-				isAdmin: (await this.usersRepository.countBy({
+				isRoot: (await this.usersRepository.countBy({
 					host: IsNull(),
 				})) === 0,
 			}));

@@ -6,7 +6,7 @@ export const packedFederationInstanceSchema = {
 			optional: false, nullable: false,
 			format: 'id',
 		},
-		caughtAt: {
+		firstRetrievedAt: {
 			type: 'string',
 			optional: false, nullable: false,
 			format: 'date-time',
@@ -31,16 +31,6 @@ export const packedFederationInstanceSchema = {
 		followersCount: {
 			type: 'number',
 			optional: false, nullable: false,
-		},
-		latestRequestSentAt: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'date-time',
-		},
-		lastCommunicatedAt: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'date-time',
 		},
 		isNotResponding: {
 			type: 'boolean',

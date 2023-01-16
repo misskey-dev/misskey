@@ -4,6 +4,8 @@ import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { bindThis } from '@/decorators.js';
+import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -20,7 +22,7 @@ export class MetaService implements OnApplicationShutdown {
 
 		private globalEventService: GlobalEventService,
 	) {
-		this.onMessage = this.onMessage.bind(this);
+		//this.onMessage = this.onMessage.bind(this);
 
 		if (process.env.NODE_ENV !== 'test') {
 			this.intervalId = setInterval(() => {
@@ -34,11 +36,12 @@ export class MetaService implements OnApplicationShutdown {
 		this.redisSubscriber.on('message', this.onMessage);
 	}
 
+	@bindThis
 	private async onMessage(_: string, data: string): Promise<void> {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
+			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'metaUpdated': {
 					this.cache = body;
@@ -50,6 +53,7 @@ export class MetaService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	public async fetch(noCache = false): Promise<Meta> {
 		if (!noCache && this.cache) return this.cache;
 	
@@ -84,6 +88,7 @@ export class MetaService implements OnApplicationShutdown {
 		});
 	}
 
+	@bindThis
 	public async update(data: Partial<Meta>): Promise<Meta> {
 		const updated = await this.db.transaction(async transactionalEntityManager => {
 			const metas = await transactionalEntityManager.find(Meta, {
@@ -114,6 +119,7 @@ export class MetaService implements OnApplicationShutdown {
 		return updated;
 	}
 
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		clearInterval(this.intervalId);
 		this.redisSubscriber.off('message', this.onMessage);

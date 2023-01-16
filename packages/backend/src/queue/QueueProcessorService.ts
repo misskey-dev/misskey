@@ -4,6 +4,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { QueueService } from '@/core/QueueService.js';
+import { bindThis } from '@/decorators.js';
 import { getJobInfo } from './get-job-info.js';
 import { SystemQueueProcessorsService } from './SystemQueueProcessorsService.js';
 import { ObjectStorageQueueProcessorsService } from './ObjectStorageQueueProcessorsService.js';
@@ -35,13 +36,22 @@ export class QueueProcessorService {
 		this.logger = this.queueLoggerService.logger;
 	}
 
+	@bindThis
 	public start() {
 		function renderError(e: Error): any {
-			return {
-				stack: e.stack,
-				message: e.message,
-				name: e.name,
-			};
+			if (e) { // 何故かeがundefinedで来ることがある
+				return {
+					stack: e.stack,
+					message: e.message,
+					name: e.name,
+				};
+			} else {
+				return {
+					stack: '?',
+					message: '?',
+					name: '?',
+				};
+			}
 		}
 	
 		const systemLogger = this.logger.createSubLogger('system');
@@ -119,6 +129,12 @@ export class QueueProcessorService {
 		});
 	
 		this.queueService.systemQueue.add('cleanCharts', {
+		}, {
+			repeat: { cron: '0 0 * * *' },
+			removeOnComplete: true,
+		});
+
+		this.queueService.systemQueue.add('aggregateRetention', {
 		}, {
 			repeat: { cron: '0 0 * * *' },
 			removeOnComplete: true,

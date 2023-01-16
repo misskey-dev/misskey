@@ -10,6 +10,7 @@ import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { DI } from '@/di-symbols.js';
 import generateNativeUserToken from '@/misc/generate-native-user-token.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CreateSystemUserService {
@@ -21,6 +22,7 @@ export class CreateSystemUserService {
 	) {
 	}
 
+	@bindThis
 	public async createSystemUser(username: string): Promise<User> {
 		const password = uuid();
 	
@@ -51,7 +53,7 @@ export class CreateSystemUserService {
 				usernameLower: username.toLowerCase(),
 				host: null,
 				token: secret,
-				isAdmin: false,
+				isRoot: false,
 				isLocked: true,
 				isExplorable: false,
 				isBot: true,

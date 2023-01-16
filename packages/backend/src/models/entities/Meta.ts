@@ -45,16 +45,6 @@ export class Meta {
 	@Column('boolean', {
 		default: false,
 	})
-	public disableLocalTimeline: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public disableGlobalTimeline: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
 	public useStarForReactionFallback: boolean;
 
 	@Column('varchar', {
@@ -188,6 +178,23 @@ export class Meta {
 	})
 	public recaptchaSecretKey: string | null;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public enableTurnstile: boolean;
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true,
+	})
+	public turnstileSiteKey: string | null;
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true,
+	})
+	public turnstileSecretKey: string | null;
+
 	@Column('enum', {
 		enum: ['none', 'all', 'local', 'remote'],
 		default: 'none',
@@ -209,18 +216,6 @@ export class Meta {
 		default: false,
 	})
 	public enableSensitiveMediaDetectionForVideos: boolean;
-
-	@Column('integer', {
-		default: 1024,
-		comment: 'Drive capacity of a local user (MB)',
-	})
-	public localDriveCapacityMb: number;
-
-	@Column('integer', {
-		default: 32,
-		comment: 'Drive capacity of a remote user (MB)',
-	})
-	public remoteDriveCapacityMb: number;
 
 	@Column('varchar', {
 		length: 128,
@@ -459,4 +454,9 @@ export class Meta {
 		default: true,
 	})
 	public enableActiveEmailValidation: boolean;
+
+	@Column('jsonb', {
+		default: { },
+	})
+	public policies: Record<string, any>;
 }

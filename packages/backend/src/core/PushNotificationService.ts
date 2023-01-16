@@ -5,37 +5,46 @@ import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import type { SwSubscriptionsRepository } from '@/models/index.js';
-import { MetaService } from './MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { bindThis } from '@/decorators.js';
 
-// Defined also packages/sw/types.ts#L14-L21
+// Defined also packages/sw/types.ts#L13
 type pushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
 	'unreadMessagingMessage': Packed<'MessagingMessage'>;
+	'unreadAntennaNote': {
+		antenna: { id: string, name: string };
+		note: Packed<'Note'>;
+	};
 	'readNotifications': { notificationIds: string[] };
 	'readAllNotifications': undefined;
 	'readAllMessagingMessages': undefined;
 	'readAllMessagingMessagesOfARoom': { userId: string } | { groupId: string };
+	'readAntenna': { antennaId: string };
+	'readAllAntennas': undefined;
 };
 
-// プッシュメッセージサーバーには文字数制限があるため、内容を削減します
-function truncateNotification(notification: Packed<'Notification'>): any {
-	if (notification.note) {
-		return {
-			...notification,
-			note: {
-				...notification.note,
-				// textをgetNoteSummaryしたものに置き換える
-				text: getNoteSummary(notification.type === 'renote' ? notification.note.renote as Packed<'Note'> : notification.note),
+// Reduce length because push message servers have character limits
+function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pushNotificationsTypes[T]): pushNotificationsTypes[T] {
+	if (body === undefined) return body;
 
+	return {
+		...body,
+		...(('note' in body && body.note) ? {
+			note: {
+				...body.note,
+				// textをgetNoteSummaryしたものに置き換える
+				text: getNoteSummary(('type' in body && body.type === 'renote') ? body.note.renote as Packed<'Note'> : body.note),
+	
 				cw: undefined,
 				reply: undefined,
 				renote: undefined,
-				user: undefined as any, // 通知を受け取ったユーザーである場合が多いのでこれも捨てる
-			},
-		};
-	}
+				user: type === 'notification' ? undefined as any : body.note.user,
+			}
+		} : {}),
+	};
 
-	return notification;
+	return body;
 }
 
 @Injectable()
@@ -51,6 +60,7 @@ export class PushNotificationService {
 	) {
 	}
 
+	@bindThis
 	public async pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
 		const meta = await this.metaService.fetch();
 	
@@ -67,6 +77,16 @@ export class PushNotificationService {
 		});
 	
 		for (const subscription of subscriptions) {
+			// Continue if sendReadMessage is false
+			if ([
+				'readNotifications',
+				'readAllNotifications',
+				'readAllMessagingMessages',
+				'readAllMessagingMessagesOfARoom',
+				'readAntenna',
+				'readAllAntennas',
+			].includes(type) && !subscription.sendReadMessage) continue;
+
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
 				keys: {
@@ -74,10 +94,10 @@ export class PushNotificationService {
 					p256dh: subscription.publickey,
 				},
 			};
-	
+
 			push.sendNotification(pushSubscription, JSON.stringify({
 				type,
-				body: type === 'notification' ? truncateNotification(body as Packed<'Notification'>) : body,
+				body: (type === 'notification' || type === 'unreadAntennaNote') ? truncateBody(type, body) : body,
 				userId,
 				dateTime: (new Date()).getTime(),
 			}), {

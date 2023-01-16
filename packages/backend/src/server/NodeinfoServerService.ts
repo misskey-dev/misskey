@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Router from '@koa/router';
 import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UsersRepository } from '@/models/index.js';
@@ -8,6 +7,11 @@ import { MetaService } from '@/core/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Cache } from '@/misc/cache.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
+import NotesChart from '@/core/chart/charts/notes.js';
+import UsersChart from '@/core/chart/charts/users.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';
@@ -26,9 +30,13 @@ export class NodeinfoServerService {
 
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
+		private notesChart: NotesChart,
+		private usersChart: UsersChart,
 	) {
+		//this.createServer = this.createServer.bind(this);
 	}
 
+	@bindThis
 	public getLinks() {
 		return [/* (awaiting release) {
 			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
@@ -39,26 +47,34 @@ export class NodeinfoServerService {
 			}];
 	}
 
-	public createRouter() {
-		const router = new Router();
-
+	@bindThis
+	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		const nodeinfo2 = async () => {
 			const now = Date.now();
+
+			const notesChart = await this.notesChart.getChart('hour', 1, null);
+			const localPosts = notesChart.local.total[0];
+
+			const usersChart = await this.usersChart.getChart('hour', 1, null);
+			const total = usersChart.local.total[0];
+
 			const [
 				meta,
-				total,
-				activeHalfyear,
-				activeMonth,
-				localPosts,
+				//activeHalfyear,
+				//activeMonth,
 			] = await Promise.all([
 				this.metaService.fetch(true),
-				this.usersRepository.count({ where: { host: IsNull() } }),
-				this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
-				this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
-				this.notesRepository.count({ where: { userHost: IsNull() } }),
+				// 重い
+				//this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 15552000000)) } }),
+				//this.usersRepository.count({ where: { host: IsNull(), lastActiveDate: MoreThan(new Date(now - 2592000000)) } }),
 			]);
 
+			const activeHalfyear = null;
+			const activeMonth = null;
+
 			const proxyAccount = meta.proxyAccountId ? await this.userEntityService.pack(meta.proxyAccountId).catch(() => null) : null;
+
+			const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
 			return {
 				software: {
@@ -89,8 +105,8 @@ export class NodeinfoServerService {
 					repositoryUrl: meta.repositoryUrl,
 					feedbackUrl: meta.feedbackUrl,
 					disableRegistration: meta.disableRegistration,
-					disableLocalTimeline: meta.disableLocalTimeline,
-					disableGlobalTimeline: meta.disableGlobalTimeline,
+					disableLocalTimeline: !basePolicies.ltlAvailable,
+					disableGlobalTimeline: !basePolicies.gtlAvailable,
 					emailRequiredForSignup: meta.emailRequiredForSignup,
 					enableHcaptcha: meta.enableHcaptcha,
 					enableRecaptcha: meta.enableRecaptcha,
@@ -108,22 +124,22 @@ export class NodeinfoServerService {
 
 		const cache = new Cache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
 
-		router.get(nodeinfo2_1path, async ctx => {
+		fastify.get(nodeinfo2_1path, async (request, reply) => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
-			ctx.body = { version: '2.1', ...base };
-			ctx.set('Cache-Control', 'public, max-age=600');
+			reply.header('Cache-Control', 'public, max-age=600');
+			return { version: '2.1', ...base };
 		});
 
-		router.get(nodeinfo2_0path, async ctx => {
+		fastify.get(nodeinfo2_0path, async (request, reply) => {
 			const base = await cache.fetch(null, () => nodeinfo2());
 
 			delete (base as any).software.repository;
 
-			ctx.body = { version: '2.0', ...base };
-			ctx.set('Cache-Control', 'public, max-age=600');
+			reply.header('Cache-Control', 'public, max-age=600');
+			return { version: '2.0', ...base };
 		});
 
-		return router;
+		done();
 	}
 }

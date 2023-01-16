@@ -28,7 +28,7 @@ Cypress.Commands.add('resetState', () => {
 	cy.window(win => {
 		win.indexedDB.deleteDatabase('keyval-store');
 	});
-	cy.request('POST', '/api/reset-db').as('reset');
+	cy.request('POST', '/api/reset-db', {}).as('reset');
 	cy.get('@reset').its('status').should('equal', 204);
 	cy.reload(true);
 });

@@ -7,7 +7,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { PollService } from '@/core/PollService.js';
-import { ApRendererService } from '@/core/remote/activitypub/ApRendererService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { DI } from '@/di-symbols.js';
@@ -160,13 +160,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.globalEventService.publishNoteStream(note.id, 'pollVoted', {
 				choice: ps.choice,
 				userId: me.id,
-			});
-
-			// Notify
-			this.createNotificationService.createNotification(note.userId, 'pollVote', {
-				notifierId: me.id,
-				noteId: note.id,
-				choice: ps.choice,
 			});
 
 			// リモート投票の場合リプライ送信

@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -14,6 +15,11 @@ export const meta = {
 	kind: 'write:account',
 
 	description: 'Add a user to an existing list.',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 30,
+	},
 
 	errors: {
 		noSuchList: {
@@ -105,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Push the user
-			await this.userListService.push(user, userList);
+			await this.userListService.push(user, userList, me);
 		});
 	}
 }

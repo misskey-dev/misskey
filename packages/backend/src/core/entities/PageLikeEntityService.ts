@@ -8,6 +8,7 @@ import type { User } from '@/models/entities/User.js';
 import type { PageLike } from '@/models/entities/PageLike.js';
 import { UserEntityService } from './UserEntityService.js';
 import { PageEntityService } from './PageEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class PageLikeEntityService {
@@ -19,6 +20,7 @@ export class PageLikeEntityService {
 	) {
 	}
 
+	@bindThis
 	public async pack(
 		src: PageLike['id'] | PageLike,
 		me?: { id: User['id'] } | null | undefined,
@@ -31,6 +33,7 @@ export class PageLikeEntityService {
 		};
 	}
 
+	@bindThis
 	public packMany(
 		likes: any[],
 		me: { id: User['id'] },

@@ -11,10 +11,11 @@ import NotesChart from '@/core/chart/charts/notes.js';
 import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { ApRendererService } from './remote/activitypub/ApRendererService.js';
-import { ApDeliverManagerService } from './remote/activitypub/ApDeliverManagerService.js';
-import { UserEntityService } from './entities/UserEntityService.js';
-import { NoteEntityService } from './entities/NoteEntityService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -48,13 +49,13 @@ export class NoteDeleteService {
 	 * @param user 投稿者
 	 * @param note 投稿
 	 */
-	async delete(user: { id: User['id']; uri: User['uri']; host: User['host']; }, note: Note, quiet = false) {
+	async delete(user: { id: User['id']; uri: User['uri']; host: User['host']; isBot: User['isBot']; }, note: Note, quiet = false) {
 		const deletedAt = new Date();
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 		if (note.renoteId && (await this.noteEntityService.countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
 			this.notesRepository.decrement({ id: note.renoteId }, 'renoteCount', 1);
-			this.notesRepository.decrement({ id: note.renoteId }, 'score', 1);
+			if (!user.isBot) this.notesRepository.decrement({ id: note.renoteId }, 'score', 1);
 		}
 
 		if (note.replyId) {
@@ -99,7 +100,7 @@ export class NoteDeleteService {
 			this.perUserNotesChart.update(user, note, false);
 
 			if (this.userEntityService.isRemoteUser(user)) {
-				this.federatedInstanceService.registerOrFetchInstanceDoc(user.host).then(i => {
+				this.federatedInstanceService.fetch(user.host).then(i => {
 					this.instancesRepository.decrement({ id: i.id }, 'notesCount', 1);
 					this.instanceChart.updateNote(i.host, note, false);
 				});
@@ -112,6 +113,7 @@ export class NoteDeleteService {
 		});
 	}
 
+	@bindThis
 	private async findCascadingNotes(note: Note) {
 		const cascadingNotes: Note[] = [];
 
@@ -134,6 +136,7 @@ export class NoteDeleteService {
 		return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
 	}
 
+	@bindThis
 	private async getMentionedRemoteUsers(note: Note) {
 		const where = [] as any[];
 
@@ -159,6 +162,7 @@ export class NoteDeleteService {
 		}) as IRemoteUser[];
 	}
 
+	@bindThis
 	private async deliverToConcerned(user: { id: ILocalUser['id']; host: null; }, note: Note, content: any) {
 		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);

@@ -7,7 +7,7 @@ import type { InstancesRepository, DriveFilesRepository } from '@/models/index.j
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
-import { ApRequestService } from '@/core/remote/activitypub/ApRequestService.js';
+import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { Cache } from '@/misc/cache.js';
@@ -15,15 +15,16 @@ import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId } from '@/core/remote/activitypub/type.js';
+import { getApId } from '@/core/activitypub/type.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { UserPublickey } from '@/models/entities/UserPublickey.js';
-import { ApDbResolverService } from '@/core/remote/activitypub/ApDbResolverService.js';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { ApPersonService } from '@/core/remote/activitypub/models/ApPersonService.js';
-import { LdSignatureService } from '@/core/remote/activitypub/LdSignatureService.js';
-import { ApInboxService } from '@/core/remote/activitypub/ApInboxService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
+import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DeliverJobData, InboxJobData } from '../types.js';
@@ -60,6 +61,7 @@ export class InboxProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('inbox');
 	}
 
+	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
 		const signature = job.data.signature;	// HTTP-signature
 		const activity = job.data.activity;
@@ -74,7 +76,7 @@ export class InboxProcessorService {
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(host)) {
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
 			return `Blocked request: ${host}`;
 		}
 
@@ -156,7 +158,7 @@ export class InboxProcessorService {
 
 				// ブロックしてたら中断
 				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
-				if (meta.blockedHosts.includes(ldHost)) {
+				if (this.utilityService.isBlockedHost(meta.blockedHosts, ldHost)) {
 					return `Blocked request: ${ldHost}`;
 				}
 			} else {
@@ -174,10 +176,12 @@ export class InboxProcessorService {
 		}
 
 		// Update stats
-		this.federatedInstanceService.registerOrFetchInstanceDoc(authUser.user.host).then(i => {
+		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
 			this.instancesRepository.update(i.id, {
 				latestRequestReceivedAt: new Date(),
-				lastCommunicatedAt: new Date(),
+				isNotResponding: false,
+			});
+			this.federatedInstanceService.updateCachePartial(host, {
 				isNotResponding: false,
 			});
 

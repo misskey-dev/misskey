@@ -13,6 +13,8 @@ import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
 import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -49,6 +51,7 @@ export class UserEntityService implements OnModuleInit {
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
+	private roleService: RoleService;
 	private userInstanceCache: Cache<Instance | null>;
 
 	constructor(
@@ -119,6 +122,7 @@ export class UserEntityService implements OnModuleInit {
 		//private pageEntityService: PageEntityService,
 		//private customEmojiService: CustomEmojiService,
 		//private antennaService: AntennaService,
+		//private roleService: RoleService,
 	) {
 		this.userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 	}
@@ -129,6 +133,7 @@ export class UserEntityService implements OnModuleInit {
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.antennaService = this.moduleRef.get('AntennaService');
+		this.roleService = this.moduleRef.get('RoleService');
 	}
 
 	//#region Validators
@@ -143,6 +148,7 @@ export class UserEntityService implements OnModuleInit {
 	public isLocalUser = isLocalUser;
 	public isRemoteUser = isRemoteUser;
 
+	@bindThis
 	public async getRelation(me: User['id'], target: User['id']) {
 		return awaitAll({
 			id: target,
@@ -198,6 +204,7 @@ export class UserEntityService implements OnModuleInit {
 		});
 	}
 
+	@bindThis
 	public async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
 		const mute = await this.mutingsRepository.findBy({
 			muterId: userId,
@@ -227,6 +234,7 @@ export class UserEntityService implements OnModuleInit {
 		return withUser || withGroups.some(x => x);
 	}
 
+	@bindThis
 	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
 		const reads = await this.announcementReadsRepository.findBy({
 			userId: userId,
@@ -239,6 +247,7 @@ export class UserEntityService implements OnModuleInit {
 		return count > 0;
 	}
 
+	@bindThis
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
@@ -250,6 +259,7 @@ export class UserEntityService implements OnModuleInit {
 		return unread != null;
 	}
 
+	@bindThis
 	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
 		const channels = await this.channelFollowingsRepository.findBy({ followerId: userId });
 
@@ -261,6 +271,7 @@ export class UserEntityService implements OnModuleInit {
 		return unread != null;
 	}
 
+	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const mute = await this.mutingsRepository.findBy({
 			muterId: userId,
@@ -279,6 +290,7 @@ export class UserEntityService implements OnModuleInit {
 		return count > 0;
 	}
 
+	@bindThis
 	public async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
 		const count = await this.followRequestsRepository.countBy({
 			followeeId: userId,
@@ -287,6 +299,7 @@ export class UserEntityService implements OnModuleInit {
 		return count > 0;
 	}
 
+	@bindThis
 	public getOnlineStatus(user: User): 'unknown' | 'online' | 'active' | 'offline' {
 		if (user.hideOnlineStatus) return 'unknown';
 		if (user.lastActiveDate == null) return 'unknown';
@@ -298,6 +311,7 @@ export class UserEntityService implements OnModuleInit {
 		);
 	}
 
+	@bindThis
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
 			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
@@ -309,6 +323,7 @@ export class UserEntityService implements OnModuleInit {
 		}
 	}
 
+	@bindThis
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
 			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
@@ -317,6 +332,7 @@ export class UserEntityService implements OnModuleInit {
 		}
 	}
 
+	@bindThis
 	public getIdenticonUrl(userId: User['id']): string {
 		return `${this.config.url}/identicon/${userId}`;
 	}
@@ -371,6 +387,9 @@ export class UserEntityService implements OnModuleInit {
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
+		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
+		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
+
 		const falsy = opts.detail ? false : undefined;
 
 		const packed = {
@@ -380,9 +399,6 @@ export class UserEntityService implements OnModuleInit {
 			host: user.host,
 			avatarUrl: this.getAvatarUrlSync(user),
 			avatarBlurhash: user.avatar?.blurhash ?? null,
-			avatarColor: null, // 後方互換性のため
-			isAdmin: user.isAdmin ?? falsy,
-			isModerator: user.isModerator ?? falsy,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
 			instance: user.host ? this.userInstanceCache.fetch(user.host,
@@ -396,9 +412,7 @@ export class UserEntityService implements OnModuleInit {
 				faviconUrl: instance.faviconUrl,
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
-			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
-			driveCapacityOverrideMb: user.driveCapacityOverrideMb,
 
 			...(opts.detail ? {
 				url: profile!.url,
@@ -408,9 +422,8 @@ export class UserEntityService implements OnModuleInit {
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
 				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
 				bannerBlurhash: user.banner?.blurhash ?? null,
-				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
-				isSilenced: user.isSilenced ?? falsy,
+				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
 				isSuspended: user.isSuspended ?? falsy,
 				description: profile!.description,
 				location: profile!.location,
@@ -435,11 +448,21 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).map(role => ({
+					id: role.id,
+					name: role.name,
+					color: role.color,
+					description: role.description,
+					isModerator: role.isModerator,
+					isAdministrator: role.isAdministrator,
+				}))),
 			} : {}),
 
 			...(opts.detail && isMe ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
+				isModerator: isModerator,
+				isAdmin: isAdmin,
 				injectFeaturedNote: profile!.injectFeaturedNote,
 				receiveAnnouncementEmail: profile!.receiveAnnouncementEmail,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
@@ -473,6 +496,7 @@ export class UserEntityService implements OnModuleInit {
 			} : {}),
 
 			...(opts.includeSecrets ? {
+				policies: this.roleService.getUserPolicies(user.id),
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 				securityKeysList: profile!.twoFactorEnabled

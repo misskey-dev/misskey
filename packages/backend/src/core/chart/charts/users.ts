@@ -5,6 +5,7 @@ import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UsersRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/users.js';
@@ -46,6 +47,7 @@ export default class UsersChart extends Chart<typeof schema> {
 		return {};
 	}
 
+	@bindThis
 	public async update(user: { id: User['id'], host: User['host'] }, isAdditional: boolean): Promise<void> {
 		const prefix = this.userEntityService.isLocalUser(user) ? 'local' : 'remote';
 

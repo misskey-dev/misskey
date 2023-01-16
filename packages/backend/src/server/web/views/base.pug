@@ -1,7 +1,7 @@
 block vars
 
 block loadClientEntry
-	- const clientEntry = getClientEntry();
+	- const clientEntry = config.clientEntry;
 
 doctype html
 
@@ -31,17 +31,19 @@ html
 		link(rel='icon' href= icon || '/favicon.ico')
 		link(rel='apple-touch-icon' href= icon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
+		link(rel='search' type='application/opensearchdescription+xml' title=(title || "Misskey") href=`${url}/opensearch.xml`)
 		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
-		link(rel='stylesheet' href='/assets/fontawesome/css/all.css')
-		link(rel='modulepreload' href=`/assets/${clientEntry.file}`)
+		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.css')
+		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
 
-		each href in clientEntry.css
-			link(rel='preload' href=`/assets/${href}` as='style')
+		if !config.clientManifestExists
+				script(type="module" src="/vite/@vite/client")
 
-		each href in clientEntry.css
-			link(rel='preload' href=`/assets/${href}` as='style')
+		if Array.isArray(clientEntry.css)
+			each href in clientEntry.css
+				link(rel='stylesheet' href=`/vite/${href}`)
 
 		title
 			block title

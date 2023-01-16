@@ -48,7 +48,7 @@ import { Poll } from '@/models/entities/Poll.js';
 import { PollVote } from '@/models/entities/PollVote.js';
 import { PromoNote } from '@/models/entities/PromoNote.js';
 import { PromoRead } from '@/models/entities/PromoRead.js';
-import { RegistrationTicket } from '@/models/entities/RegistrationTickets.js';
+import { RegistrationTicket } from '@/models/entities/RegistrationTicket.js';
 import { RegistryItem } from '@/models/entities/RegistryItem.js';
 import { Relay } from '@/models/entities/Relay.js';
 import { Signin } from '@/models/entities/Signin.js';
@@ -69,9 +69,15 @@ import { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
+import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
+import { Role } from '@/models/entities/Role.js';
+import { RoleAssignment } from '@/models/entities/RoleAssignment.js';
+import { Flash } from '@/models/entities/Flash.js';
+import { FlashLike } from '@/models/entities/FlashLike.js';
 
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
 
 export const dbLogger = new MisskeyLogger('db');
@@ -79,32 +85,39 @@ export const dbLogger = new MisskeyLogger('db');
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
 
 class MyCustomLogger implements Logger {
+	@bindThis
 	private highlight(sql: string) {
 		return highlight.highlight(sql, {
 			language: 'sql', ignoreIllegals: true,
 		});
 	}
 
+	@bindThis
 	public logQuery(query: string, parameters?: any[]) {
 		sqlLogger.info(this.highlight(query).substring(0, 100));
 	}
 
+	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[]) {
 		sqlLogger.error(this.highlight(query));
 	}
 
+	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[]) {
 		sqlLogger.warn(this.highlight(query));
 	}
 
+	@bindThis
 	public logSchemaBuild(message: string) {
 		sqlLogger.info(message);
 	}
 
+	@bindThis
 	public log(message: string) {
 		sqlLogger.info(message);
 	}
 
+	@bindThis
 	public logMigration(message: string) {
 		sqlLogger.info(message);
 	}
@@ -174,6 +187,11 @@ export const entities = [
 	UserPending,
 	Webhook,
 	UserIp,
+	RetentionAggregation,
+	Role,
+	RoleAssignment,
+	Flash,
+	FlashLike,
 	...charts,
 ];
 
