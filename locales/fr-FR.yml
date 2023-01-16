@@ -954,6 +954,7 @@ _accountDelete:
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
+  hide: "Cacher "
 _forgotPassword:
   enterEmail: "Entrez ici l'adresse e-mail que vous avez enregistrée pour votre compte. Un lien vous permettant de réinitialiser votre mot de passe sera envoyé à cette adresse."
   ifNoEmail: "Si vous n'avez pas enregistré d'adresse e-mail, merci de contacter l'administrateur·rice de votre instance."
