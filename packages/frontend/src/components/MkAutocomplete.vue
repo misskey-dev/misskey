@@ -62,6 +62,7 @@ type EmojiDef = {
 const lib = emojilist.filter(x => x.category !== 'flags');
 
 const emojiDb = computed(() => {
+	//#region Unicode Emoji
 	const char2path = defaultStore.reactiveState.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 	const unicodeEmojiDB: EmojiDef[] = lib.map(x => ({
@@ -84,8 +85,9 @@ const emojiDb = computed(() => {
 	}
 
 	unicodeEmojiDB.sort((a, b) => a.name.length - b.name.length);
+	//#endregion
 
-	//#region Construct Emoji DB
+	//#region Custom Emoji
 	const customEmojiDB: EmojiDef[] = [];
 
 	for (const x of customEmojis.value) {
@@ -108,6 +110,7 @@ const emojiDb = computed(() => {
 	}
 
 	customEmojiDB.sort((a, b) => a.name.length - b.name.length);
+	//#endregion
 
 	return markRaw([ ...customEmojiDB, ...unicodeEmojiDB ]);
 });
