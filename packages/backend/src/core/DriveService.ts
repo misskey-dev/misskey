@@ -479,8 +479,8 @@ export class DriveService {
 		if (user && !isLink) {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
 
-			const role = await this.roleService.getUserRoleOptions(user.id);
-			const driveCapacity = 1024 * 1024 * role.driveCapacityMb;
+			const policies = await this.roleService.getUserPolicies(user.id);
+			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
 			this.registerLogger.debug('drive capacity override applied');
 			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 

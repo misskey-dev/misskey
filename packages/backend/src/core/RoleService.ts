@@ -13,7 +13,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
-export type RoleOptions = {
+export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
@@ -31,7 +31,7 @@ export type RoleOptions = {
 	rateLimitFactor: number;
 };
 
-export const DEFAULT_ROLE: RoleOptions = {
+export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
@@ -195,26 +195,26 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async getUserRoleOptions(userId: User['id'] | null): Promise<RoleOptions> {
+	public async getUserPolicies(userId: User['id'] | null): Promise<RolePolicies> {
 		const meta = await this.metaService.fetch();
-		const baseRoleOptions = { ...DEFAULT_ROLE, ...meta.defaultRoleOverride };
+		const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
-		if (userId == null) return baseRoleOptions;
+		if (userId == null) return basePolicies;
 
 		const roles = await this.getUserRoles(userId);
 
-		function calc<T extends keyof RoleOptions>(name: T, aggregate: (values: RoleOptions[T][]) => RoleOptions[T]) {
-			if (roles.length === 0) return baseRoleOptions[name];
+		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
+			if (roles.length === 0) return basePolicies[name];
 
-			const options = roles.map(role => role.options[name] ?? { priority: 0, useDefault: true });
+			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
 
-			const p2 = options.filter(option => option.priority === 2);
-			if (p2.length > 0) return aggregate(p2.map(option => option.useDefault ? baseRoleOptions[name] : option.value));
+			const p2 = policies.filter(policy => policy.priority === 2);
+			if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 
-			const p1 = options.filter(option => option.priority === 1);
-			if (p1.length > 0) return aggregate(p2.map(option => option.useDefault ? baseRoleOptions[name] : option.value));
+			const p1 = policies.filter(policy => policy.priority === 1);
+			if (p1.length > 0) return aggregate(p1.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 
-			return aggregate(options.map(option => option.useDefault ? baseRoleOptions[name] : option.value));
+			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}
 
 		return {

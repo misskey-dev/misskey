@@ -458,5 +458,5 @@ export class Meta {
 	@Column('jsonb', {
 		default: { },
 	})
-	public defaultRoleOverride: Record<string, any>;
+	public policies: Record<string, any>;
 }

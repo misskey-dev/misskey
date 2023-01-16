@@ -4,7 +4,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
-import { DEFAULT_ROLE } from '@/core/RoleService.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -440,7 +440,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				deeplIsPro: instance.deeplIsPro,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
-				baseRole: { ...DEFAULT_ROLE, ...instance.defaultRoleOverride },
+				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 			};
 		});
 	}

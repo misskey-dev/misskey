@@ -916,6 +916,12 @@ show: "Affichage"
 neverShow: "Ne plus afficher"
 remindMeLater: "Peut-être plus tard"
 color: "Couleur"
+_role:
+  priority: "Priorité"
+  _priority:
+    low: "Basse"
+    middle: "Moyen"
+    high: "Haute"
 _sensitiveMediaDetection:
   description: "L'apprentissage automatique peut être utilisé pour détecter automatiquement les médias sensibles à modérer. La sollicitation des serveurs augmente légèrement."
   sensitivity: "Sensibilité de la détection"

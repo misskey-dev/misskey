@@ -952,6 +952,7 @@ _role:
   isPublic: "ロールを公開"
   descriptionOfIsPublic: "ロールにアサインされたユーザーを誰でも見ることができます。また、ユーザーのプロフィールでこのロールが表示されます。"
   options: "オプション"
+  policies: "ポリシー"
   baseRole: "ベースロール"
   useBaseValue: "ベースロールの値を使用"
   chooseRoleToAssign: "アサインするロールを選択"

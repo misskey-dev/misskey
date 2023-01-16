@@ -92,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const currentAntennasCount = await this.antennasRepository.countBy({
 				userId: me.id,
 			});
-			if (currentAntennasCount > (await this.roleService.getUserRoleOptions(me.id)).antennaLimit) {
+			if (currentAntennasCount > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
 				throw new ApiError(meta.errors.tooManyAntennas);
 			}
 
