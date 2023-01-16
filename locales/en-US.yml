@@ -935,7 +935,7 @@ manageCustomEmojis: "Manage Custom Emojis"
 youCannotCreateAnymore: "You've hit the creation limit."
 cannotPerformTemporary: "Temporarily unavailable"
 cannotPerformTemporaryDescription: "This action cannot be performed temporarily due to exceeding the execution limit. Please wait for a while and then try again."
-preset: "Presets"
+preset: "Preset"
 selectFromPresets: "Choose from presets"
 _role:
   new: "New role"
