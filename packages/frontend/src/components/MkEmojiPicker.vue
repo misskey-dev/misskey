@@ -88,7 +88,7 @@ import { deviceKind } from '@/scripts/device-kind';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
-import { getCustomEmojiCategories, customEmojis } from '@/custom-emojis';
+import { customEmojiCategories, customEmojis } from '@/custom-emojis';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -104,7 +104,6 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
-const customEmojiCategories = getCustomEmojiCategories();
 const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 

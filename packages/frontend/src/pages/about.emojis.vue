@@ -39,11 +39,10 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
-import { customEmojis, getCustomEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
+import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
 import { i18n } from '@/i18n';
 import * as Misskey from 'misskey-js';
 
-const customEmojiCategories = getCustomEmojiCategories();
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');
 let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
