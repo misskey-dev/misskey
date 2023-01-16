@@ -138,7 +138,7 @@ watch(q, () => {
 
 	const searchCustom = () => {
 		const max = 8;
-		const emojis = customEmojis;
+		const emojis = customEmojis.value;
 		const matches = new Set<Misskey.entities.CustomEmoji>();
 
 		const exactMatch = emojis.find(emoji => emoji.name === newQ);
@@ -323,7 +323,7 @@ function done(query?: string): boolean | void {
 	if (query == null || typeof query !== 'string') return;
 
 	const q2 = query.replace(/:/g, '');
-	const exactMatchCustom = customEmojis.find(emoji => emoji.name === q2);
+	const exactMatchCustom = customEmojis.value.find(emoji => emoji.name === q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
 		return true;

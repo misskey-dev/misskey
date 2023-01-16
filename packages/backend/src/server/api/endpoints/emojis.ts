@@ -10,6 +10,8 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
+	allowGet: true,
+	cacheSec: 60,
 
 	res: {
 		type: 'object',
@@ -75,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 				cache: {
 					id: 'meta_emojis',
-					milliseconds: 3600000,	// 1 hour
+					milliseconds: 60000,	// 1 minute
 				},
 			});
 

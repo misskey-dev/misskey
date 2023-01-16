@@ -1,20 +1,22 @@
-import { api } from './os';
+import { apiGet } from './os';
 import { miLocalStorage } from './local-storage';
+import { shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 
 const storageCache = miLocalStorage.getItem('emojis');
-export let customEmojis = storageCache ? JSON.parse(storageCache) : [];
+export const customEmojis = shallowRef<Misskey.entities.CustomEmoji[]>(storageCache ? JSON.parse(storageCache) : []);
 
 fetchCustomEmojis();
 
 export async function fetchCustomEmojis() {
 	const now = Date.now();
 	const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');
-	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return;
+	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60) return;
 
-	const res = await api('emojis', {});
+	const res = await apiGet('emojis', {});
 
-	customEmojis = res.emojis;
-	miLocalStorage.setItem('emojis', JSON.stringify(customEmojis));
+	customEmojis.value = res.emojis;
+	miLocalStorage.setItem('emojis', JSON.stringify(res.emojis));
 	miLocalStorage.setItem('lastEmojisFetchedAt', now.toString());
 }
 
@@ -23,7 +25,7 @@ export function getCustomEmojiCategories() {
 	if (cachedCategories) return cachedCategories;
 
 	const categories = new Set();
-	for (const emoji of customEmojis) {
+	for (const emoji of customEmojis.value) {
 		categories.add(emoji.category);
 	}
 	const res = Array.from(categories);
@@ -36,7 +38,7 @@ export function getCustomEmojiTags() {
 	if (cachedTags) return cachedTags;
 
 	const tags = new Set();
-	for (const emoji of customEmojis) {
+	for (const emoji of customEmojis.value) {
 		for (const tag of emoji.aliases) {
 			tags.add(tag);
 		}

@@ -79,6 +79,7 @@ import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { fetchCustomEmojis } from '@/custom-emojis';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -130,6 +131,7 @@ const add = async (ev: MouseEvent) => {
 	})));
 	promise.then(() => {
 		emojisPaginationComponent.value.reload();
+		fetchCustomEmojis();
 	});
 	os.promiseDialog(promise);
 };
@@ -147,6 +149,7 @@ const edit = (emoji) => {
 			} else if (result.deleted) {
 				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
 			}
+			fetchCustomEmojis();
 		},
 	}, 'closed');
 };
@@ -220,6 +223,7 @@ const setCategoryBulk = async () => {
 		category: result,
 	});
 	emojisPaginationComponent.value.reload();
+	fetchCustomEmojis();
 };
 
 const addTagBulk = async () => {
@@ -232,6 +236,7 @@ const addTagBulk = async () => {
 		aliases: result.split(' '),
 	});
 	emojisPaginationComponent.value.reload();
+	fetchCustomEmojis();
 };
 
 const removeTagBulk = async () => {
@@ -244,6 +249,7 @@ const removeTagBulk = async () => {
 		aliases: result.split(' '),
 	});
 	emojisPaginationComponent.value.reload();
+	fetchCustomEmojis();
 };
 
 const setTagBulk = async () => {
@@ -256,6 +262,7 @@ const setTagBulk = async () => {
 		aliases: result.split(' '),
 	});
 	emojisPaginationComponent.value.reload();
+	fetchCustomEmojis();
 };
 
 const delBulk = async () => {
@@ -268,6 +275,7 @@ const delBulk = async () => {
 		ids: selectedEmojis.value,
 	});
 	emojisPaginationComponent.value.reload();
+	fetchCustomEmojis();
 };
 
 const headerActions = $computed(() => [{
