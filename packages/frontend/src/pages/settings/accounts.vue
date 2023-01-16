@@ -6,7 +6,7 @@
 
 			<div v-for="account in accounts" :key="account.id" class="_panel _button lcjjdxlm" @click="menu(account, $event)">
 				<div class="avatar">
-					<MkAvatar :user="account" class="avatar" :disable-link="true"/>
+					<MkAvatar :user="account" class="avatar"/>
 				</div>
 				<div class="body">
 					<div class="name">

@@ -4,7 +4,7 @@
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root" class="_panel">
 			<MkA v-for="user in moderators" :key="user.id" class="user" :to="`/user-info/${user.id}`">
-				<MkAvatar :user="user" class="avatar" :show-indicator="true" :disable-link="true"/>
+				<MkAvatar :user="user" class="avatar" indicator/>
 			</MkA>
 		</div>
 	</Transition>
