@@ -88,7 +88,7 @@ let choices = [
 ]
 
 // シードが「ユーザーID+今日の日付」である乱数生成器を用意
-let random = Math:gen_rng(\`{USER_ID}{Date:day()}\`)
+let random = Math:gen_rng(\`{USER_ID}{Date:year()}{Date:month()}{Date:day()}\`)
 
 // ランダムに選択肢を選ぶ
 let chosen = choices[random(0 (choices.len - 1))]
