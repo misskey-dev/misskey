@@ -267,9 +267,9 @@ useTooltip(reactionRef, (showing) => {
 }
 
 .text {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	display: flex;
+	width: 100%;
+	overflow: clip;
 }
 
 .quote {
