@@ -935,6 +935,8 @@ manageCustomEmojis: "Gestisci le emoji personalizzate"
 youCannotCreateAnymore: "Non puoi creare, hai raggiunto il limite."
 cannotPerformTemporary: "Indisponibilità temporanea"
 cannotPerformTemporaryDescription: "L'attività non può essere svolta, poiché si è raggiunto il limite di esecuzioni possibili. Per favore, riprova più tardi."
+preset: "Preimpostato"
+selectFromPresets: "Seleziona preimpostato"
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"
@@ -979,6 +981,7 @@ _role:
     userEachUserListsMax: "Quantità massima di profili per lista"
     rateLimitFactor: "Limite del rapporto"
     descriptionOfRateLimitFactor: "I rapporti più bassi sono meno restrittivi, quelli più alti lo sono di più."
+    canHideAds: "Può nascondere i banner"
   _condition:
     isLocal: "Profilo locale"
     isRemote: "Profilo remoto"
