@@ -30,7 +30,10 @@
 				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
 				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
-				<MkSwitch v-model="enterSendsMessage">{{ i18n.ts.enterSendsMessage }}</MkSwitch>
+				<MkSwitch v-model="enterSendsMessage">
+					<template #label>{{ i18n.ts.enterSendsMessage }}</template>
+					<template #caption>{{ i18n.ts.enterSendsMessageCaption }}</template>
+				</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
