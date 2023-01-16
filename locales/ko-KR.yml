@@ -935,6 +935,8 @@ manageCustomEmojis: "커스텀 이모지 관리"
 youCannotCreateAnymore: "더 이상 생성할 수 없습니다."
 cannotPerformTemporary: "일시적으로 사용할 수 없음"
 cannotPerformTemporaryDescription: "조작 횟수 제한을 초과하여 일시적으로 사용이 불가합니다. 잠시 후 다시 시도해 주세요."
+preset: "프리셋"
+selectFromPresets: "프리셋에서 선택"
 _role:
   new: "새 역할 생성"
   edit: "역할 수정"
@@ -979,6 +981,7 @@ _role:
     userEachUserListsMax: "리스트당 최대 사용자 수"
     rateLimitFactor: "속도 제한"
     descriptionOfRateLimitFactor: "작을수록 제한이 완화되고, 클수록 제한이 강화됩니다."
+    canHideAds: "광고 숨기기"
   _condition:
     isLocal: "로컬 사용자"
     isRemote: "리모트 사용자"
