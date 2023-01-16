@@ -39,6 +39,8 @@ You should also include the user name that made the change.
 	- ユーザーごとのドライブ容量設定はロールに統合されました。
 	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールのドライブ容量を編集してください。
 	- LTL/GTLの解放状態はロールに統合されました。
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+  https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
 - ノートのウォッチ機能が削除されました
