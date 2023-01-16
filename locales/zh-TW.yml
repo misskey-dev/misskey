@@ -1016,6 +1016,7 @@ _accountDelete:
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "降低此廣告的頻率 "
+  hide: "隱藏"
 _forgotPassword:
   enterEmail: "請輸入您的帳戶註冊的電子郵件地址。 密碼重置連結將被發送到該電子郵件地址。"
   ifNoEmail: "如果您還沒有註冊您的電子郵件地址，請聯繫管理員。 "
