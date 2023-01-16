@@ -147,7 +147,7 @@ const edit = (emoji) => {
 					...result.updated,
 				}));
 
-				if (customEmojis.value.some(e => e.name === emoji.name)) {
+				if (!customEmojis.value.some(e => e.name === emoji.name)) {
 					customEmojis.value = [
 						{
 							name: result.updated.name,
