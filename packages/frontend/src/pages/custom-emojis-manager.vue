@@ -79,7 +79,7 @@ import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { fetchCustomEmojis } from '@/custom-emojis';
+import { fetchCustomEmojis, customEmojis } from '@/custom-emojis';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -146,10 +146,27 @@ const edit = (emoji) => {
 					...oldEmoji,
 					...result.updated,
 				}));
+
+				if (customEmojis.value.some(e => e.name === emoji.name)) {
+					customEmojis.value = [
+						{
+							name: result.updated.name,
+							aliases: result.updated.aliases,
+							category: result.updated.category,
+						},
+						...customEmojis.value,
+					];
+				} else {
+					customEmojis.value = customEmojis.value.map(e => e.name !== emoji.name ? e : {
+						name: result.updated.name,
+						aliases: result.updated.aliases,
+						category: result.updated.category,
+					});
+				}
 			} else if (result.deleted) {
 				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
+				customEmojis.value = customEmojis.value.filter(e => e.name !== emoji.name);
 			}
-			fetchCustomEmojis();
 		},
 	}, 'closed');
 };

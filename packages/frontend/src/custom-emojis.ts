@@ -6,6 +6,7 @@ import * as Misskey from 'misskey-js';
 const storageCache = miLocalStorage.getItem('emojis');
 export const customEmojis = shallowRef<Misskey.entities.CustomEmoji[]>(storageCache ? JSON.parse(storageCache) : []);
 
+fetchCustomEmojis();
 window.setInterval(fetchCustomEmojis, 1000 * 60 * 10);
 
 export async function fetchCustomEmojis() {
