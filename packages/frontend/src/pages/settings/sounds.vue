@@ -43,20 +43,20 @@ const sounds = ref({
 	channel: soundConfigStore.reactiveState.sound_channel,
 });
 
-async function updated(type, sound) {
+async function updated(type: keyof typeof sounds.value, sound) {
 	const v = {
 		type: sound.type,
 		volume: sound.volume,
 	};
 
-	soundConfigStore.set('sound_' + type, v);
+	soundConfigStore.set(`sound_${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
-	for (const sound of Object.keys(sounds.value)) {
-		const v = soundConfigStore.default['sound_' + sound];
-		soundConfigStore.set('sound_' + sound, v);
+	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
+		const v = soundConfigStore.def[`sound_${sound}`].default;
+		soundConfigStore.set(`sound_${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }
