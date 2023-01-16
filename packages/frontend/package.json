@@ -36,6 +36,7 @@
 		"insert-text-at-cursor": "0.3.0",
 		"is-file-animated": "1.0.2",
 		"json5": "2.2.3",
+		"large-small-dynamic-viewport-units-polyfill": "^0.1.0",
 		"matter-js": "0.18.0",
 		"mfm-js": "0.23.3",
 		"misskey-js": "0.0.14",

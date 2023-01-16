@@ -3,6 +3,7 @@
  */
 // https://vitejs.dev/config/build-options.html#build-modulepreload
 import 'vite/modulepreload-polyfill';
+import 'large-small-dynamic-viewport-units-polyfill';
 
 import '@/style.scss';
 
