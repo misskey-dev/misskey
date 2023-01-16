@@ -6,6 +6,8 @@ RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	build-essential
 
+RUN corepack enable
+
 WORKDIR /misskey
 
 COPY ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
@@ -14,7 +16,6 @@ COPY ["packages/backend/package.json", "./packages/backend/"]
 COPY ["packages/frontend/package.json", "./packages/frontend/"]
 COPY ["packages/sw/package.json", "./packages/sw/"]
 
-RUN npm i -g pnpm
 RUN pnpm i --frozen-lockfile
 
 COPY . ./
@@ -34,10 +35,10 @@ RUN apt-get update \
 	ffmpeg tini \
 	&& apt-get -y clean \
 	&& rm -rf /var/lib/apt/lists/* \
+	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey
 
-RUN npm i -g pnpm
 USER misskey
 WORKDIR /misskey
 
