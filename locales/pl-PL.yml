@@ -902,6 +902,7 @@ _accountDelete:
 _ad:
   back: "Wróć"
   reduceFrequencyOfThisAd: "Pokazuj tę reklamę rzadziej"
+  hide: "Nigdy nie pokazuj"
 _forgotPassword:
   enterEmail: "Wpisz adres e-mail użyty do rejestracji. Zostanie do niego wysłany link, za pomocą którego możesz zresetować hasło."
   ifNoEmail: "Jeżeli nie podano adresu e-mail podczas rejestracji, skontaktuj się z administratorem zamiast tego."
