@@ -13,7 +13,7 @@ export class Instance {
 	@Column('timestamp with time zone', {
 		comment: 'The caught date of the Instance.',
 	})
-	public caughtAt: Date;
+	public firstRetrievedAt: Date;
 
 	/**
 	 * ホスト

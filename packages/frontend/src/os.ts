@@ -4,6 +4,7 @@ import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Misskey from 'misskey-js';
+import { i18n } from './i18n';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import { MenuItem } from '@/types/menu';
@@ -17,9 +18,19 @@ export const apiWithDialog = ((
 ) => {
 	const promise = api(endpoint, data, token);
 	promiseDialog(promise, null, (err) => {
+		let title = null;
+		let text = err.message + '\n' + (err as any).id;
+		if (err.code === 'RATE_LIMIT_EXCEEDED') {
+			title = i18n.ts.cannotPerformTemporary;
+			text = i18n.ts.cannotPerformTemporaryDescription;
+		} else if (err.code.startsWith('TOO_MANY')) {
+			title = i18n.ts.youCannotCreateAnymore;
+			text = `${i18n.ts.error}: ${err.id}`;
+		}
 		alert({
 			type: 'error',
-			text: err.message + '\n' + (err as any).id,
+			title,
+			text,
 		});
 	});
 
@@ -311,9 +322,11 @@ export function form(title, form) {
 	});
 }
 
-export async function selectUser() {
+export async function selectUser(opts: { includeSelf?: boolean } = {}) {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
+			includeSelf: opts.includeSelf,
+		}, {
 			ok: user => {
 				resolve(user);
 			},

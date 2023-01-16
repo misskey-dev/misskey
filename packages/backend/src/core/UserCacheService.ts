@@ -2,10 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
+import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -39,7 +40,7 @@ export class UserCacheService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
+			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'userChangeSuspendedState':
 				case 'remoteUserUpdated': {
@@ -62,10 +63,22 @@ export class UserCacheService implements OnApplicationShutdown {
 					this.localUserByNativeTokenCache.set(body.newToken, user);
 					break;
 				}
+				case 'follow': {
+					const follower = this.userByIdCache.get(body.followerId);
+					if (follower) follower.followingCount++;
+					const followee = this.userByIdCache.get(body.followeeId);
+					if (followee) followee.followersCount++;
+					break;
+				}
 				default:
 					break;
 			}
 		}
+	}
+
+	@bindThis
+	public findById(userId: User['id']) {
+		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }));
 	}
 
 	@bindThis

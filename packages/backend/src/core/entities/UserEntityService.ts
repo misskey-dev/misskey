@@ -423,7 +423,7 @@ export class UserEntityService implements OnModuleInit {
 				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
 				bannerBlurhash: user.banner?.blurhash ?? null,
 				isLocked: user.isLocked,
-				isSilenced: this.roleService.getUserRoleOptions(user.id).then(r => !r.canPublicNote),
+				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
 				isSuspended: user.isSuspended ?? falsy,
 				description: profile!.description,
 				location: profile!.location,
@@ -448,6 +448,14 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).map(role => ({
+					id: role.id,
+					name: role.name,
+					color: role.color,
+					description: role.description,
+					isModerator: role.isModerator,
+					isAdministrator: role.isAdministrator,
+				}))),
 			} : {}),
 
 			...(opts.detail && isMe ? {
@@ -488,7 +496,7 @@ export class UserEntityService implements OnModuleInit {
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				role: this.roleService.getUserRoleOptions(user.id),
+				policies: this.roleService.getUserPolicies(user.id),
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 				securityKeysList: profile!.twoFactorEnabled

@@ -27,11 +27,13 @@ export const paramDef = {
 		name: { type: 'string' },
 		description: { type: 'string' },
 		color: { type: 'string', nullable: true },
+		target: { type: 'string' },
+		condFormula: { type: 'object' },
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
-		options: {
+		policies: {
 			type: 'object',
 		},
 	},
@@ -40,11 +42,13 @@ export const paramDef = {
 		'name',
 		'description',
 		'color',
+		'target',
+		'condFormula',
 		'isPublic',
 		'isModerator',
 		'isAdministrator',
 		'canEditMembersByModerator',
-		'options',
+		'policies',
 	],
 } as const;
 
@@ -69,11 +73,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: ps.name,
 				description: ps.description,
 				color: ps.color,
+				target: ps.target,
+				condFormula: ps.condFormula,
 				isPublic: ps.isPublic,
 				isModerator: ps.isModerator,
 				isAdministrator: ps.isAdministrator,
 				canEditMembersByModerator: ps.canEditMembersByModerator,
-				options: ps.options,
+				policies: ps.policies,
 			});
 			const updated = await this.rolesRepository.findOneByOrFail({ id: ps.roleId });
 			this.globalEventService.publishInternalEvent('roleUpdated', updated);

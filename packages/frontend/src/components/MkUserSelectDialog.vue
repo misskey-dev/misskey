@@ -9,8 +9,8 @@
 	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts.selectUser }}</template>
-	<div class="tbhwbxda">
-		<div class="form">
+	<div :class="$style.root">
+		<div :class="$style.form">
 			<FormSplit :min-width="170">
 				<MkInput v-model="username" :autofocus="true" @update:model-value="search">
 					<template #label>{{ i18n.ts.username }}</template>
@@ -22,27 +22,27 @@
 				</MkInput>
 			</FormSplit>
 		</div>
-		<div v-if="username != '' || host != ''" class="result" :class="{ hit: users.length > 0 }">
-			<div v-if="users.length > 0" class="users">
-				<div v-for="user in users" :key="user.id" class="user" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
-					<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
-					<div class="body">
-						<MkUserName :user="user" class="name"/>
-						<MkAcct :user="user" class="acct"/>
+		<div v-if="username != '' || host != ''" :class="[$style.result, { [$style.hit]: users.length > 0 }]">
+			<div v-if="users.length > 0" :class="$style.users">
+				<div v-for="user in users" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
+					<MkAvatar :user="user" :class="$style.avatar" indicator/>
+					<div :class="$style.userBody">
+						<MkUserName :user="user" :class="$style.userName"/>
+						<MkAcct :user="user" :class="$style.userAcct"/>
 					</div>
 				</div>
 			</div>
-			<div v-else class="empty">
+			<div v-else :class="$style.empty">
 				<span>{{ i18n.ts.noUsers }}</span>
 			</div>
 		</div>
-		<div v-if="username == '' && host == ''" class="recent">
-			<div class="users">
-				<div v-for="user in recentUsers" :key="user.id" class="user" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
-					<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
-					<div class="body">
-						<MkUserName :user="user" class="name"/>
-						<MkAcct :user="user" class="acct"/>
+		<div v-if="username == '' && host == ''" :class="$style.recent">
+			<div :class="$style.users">
+				<div v-for="user in recentUsers" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
+					<MkAvatar :user="user" :class="$style.avatar" indicator/>
+					<div :class="$style.userBody">
+						<MkUserName :user="user" :class="$style.userName"/>
+						<MkAcct :user="user" :class="$style.userAcct"/>
 					</div>
 				</div>
 			</div>
@@ -60,11 +60,16 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
+}>();
+
+const props = defineProps<{
+	includeSelf?: boolean;
 }>();
 
 let username = $ref('');
@@ -110,81 +115,83 @@ onMounted(() => {
 	os.api('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(users => {
-		recentUsers = users;
+		if (props.includeSelf) {
+			recentUsers = [$i, ...users];
+		} else {
+			recentUsers = users;
+		}
 	});
 });
 </script>
 
-<style lang="scss" scoped>
-.tbhwbxda {
-	> .form {
-		padding: 0 var(--root-margin);
+<style lang="scss" module>
+.root {
+}
+
+.form {
+	padding: 0 var(--root-margin);
+}
+
+.result,
+.recent {
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+	height: 100%;
+
+	&.result.hit {
+		padding: 0;
 	}
 
-	> .result, > .recent {
-		display: flex;
-		flex-direction: column;
-		overflow: auto;
-		height: 100%;
-
-		&.result.hit {
-			padding: 0;
-		}
-
-		&.recent {
-			padding: 0;
-		}
-
-		> .users {
-			flex: 1;
-			overflow: auto;
-			padding: 8px 0;
-
-			> .user {
-				display: flex;
-				align-items: center;
-				padding: 8px var(--root-margin);
-				font-size: 14px;
-
-				&:hover {
-					background: var(--X7);
-				}
-
-				&.selected {
-					background: var(--accent);
-					color: #fff;
-				}
-
-				> * {
-					pointer-events: none;
-					user-select: none;
-				}
-
-				> .avatar {
-					width: 45px;
-					height: 45px;
-				}
-
-				> .body {
-					padding: 0 8px;
-					min-width: 0;
-
-					> .name {
-						display: block;
-						font-weight: bold;
-					}
-
-					> .acct {
-						opacity: 0.5;
-					}
-				}
-			}
-		}
-
-		> .empty {
-			opacity: 0.7;
-			text-align: center;
-		}
+	&.recent {
+		padding: 0;
 	}
+}
+
+.users {
+	flex: 1;
+	overflow: auto;
+	padding: 8px 0;
+}
+
+.user {
+	display: flex;
+	align-items: center;
+	padding: 8px var(--root-margin);
+	font-size: 14px;
+
+	&:hover {
+		background: var(--X7);
+	}
+
+	&.selected {
+		background: var(--accent);
+		color: #fff;
+	}
+}
+
+.userBody {
+	padding: 0 8px;
+	min-width: 0;
+}
+
+.avatar {
+	width: 45px;
+	height: 45px;
+}
+
+.userName {
+	display: block;
+	font-weight: bold;
+}
+
+.userAcct {
+	opacity: 0.5;
+}
+
+.empty {
+	opacity: 0.7;
+	text-align: center;
+	padding: 16px;
 }
 </style>

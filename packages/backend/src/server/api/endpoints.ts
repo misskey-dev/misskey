@@ -36,7 +36,7 @@ import * as ep___admin_federation_updateInstance from './endpoints/admin/federat
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
-import * as ep___admin_invite from './endpoints/admin/invite.js';
+import * as ep___invite from './endpoints/invite.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -64,7 +64,7 @@ import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
 import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
 import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
-import * as ep___admin_roles_updateDefaultRoleOverride from './endpoints/admin/roles/update-default-role-override.js';
+import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -368,7 +368,7 @@ const eps = [
 	['admin/get-index-stats', ep___admin_getIndexStats],
 	['admin/get-table-stats', ep___admin_getTableStats],
 	['admin/get-user-ips', ep___admin_getUserIps],
-	['admin/invite', ep___admin_invite],
+	['invite', ep___invite],
 	['admin/promo/create', ep___admin_promo_create],
 	['admin/queue/clear', ep___admin_queue_clear],
 	['admin/queue/deliver-delayed', ep___admin_queue_deliverDelayed],
@@ -396,7 +396,7 @@ const eps = [
 	['admin/roles/update', ep___admin_roles_update],
 	['admin/roles/assign', ep___admin_roles_assign],
 	['admin/roles/unassign', ep___admin_roles_unassign],
-	['admin/roles/update-default-role-override', ep___admin_roles_updateDefaultRoleOverride],
+	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -694,6 +694,8 @@ export interface IEndpointMeta {
 	 * isAdministratorなロールを必要とするか
 	 */
 	readonly requireAdmin?: boolean;
+
+	readonly requireRolePolicy?: string;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ

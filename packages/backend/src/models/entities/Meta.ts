@@ -217,12 +217,6 @@ export class Meta {
 	})
 	public enableSensitiveMediaDetectionForVideos: boolean;
 
-	@Column('integer', {
-		default: 32,
-		comment: 'Drive capacity of a remote user (MB)',
-	})
-	public remoteDriveCapacityMb: number;
-
 	@Column('varchar', {
 		length: 128,
 		nullable: true,
@@ -464,5 +458,5 @@ export class Meta {
 	@Column('jsonb', {
 		default: { },
 	})
-	public defaultRoleOverride: Record<string, any>;
+	public policies: Record<string, any>;
 }

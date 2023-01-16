@@ -6,7 +6,7 @@
 		</template>
 	</div>
 	<span v-else-if="c.type === 'text'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }">{{ c.text }}</span>
-	<Mfm v-else-if="c.type === 'mfm'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, color: c.color ?? null }" :text="c.text"/>
+	<Mfm v-else-if="c.type === 'mfm'" :class="{ [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }" :style="{ fontSize: c.size ? `${c.size * 100}%` : null, fontWeight: c.bold ? 'bold' : null, color: c.color ?? null }" :text="c.text"/>
 	<MkButton v-else-if="c.type === 'button'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" @click="c.onClick">{{ c.text }}</MkButton>
 	<div v-else-if="c.type === 'buttons'" class="_buttons">
 		<MkButton v-for="button in c.buttons" :primary="button.primary" :rounded="button.rounded" :small="size === 'small'" @click="button.onClick">{{ button.text }}</MkButton>
@@ -32,7 +32,7 @@
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 	</MkSelect>
-	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" @click="openPostForm">{{ c.text }}</MkButton>
+	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" inline @click="openPostForm">{{ c.text }}</MkButton>
 	<MkFolder v-else-if="c.type === 'folder'" :default-open="c.opened">
 		<template #label>{{ c.title }}</template>
 		<template v-for="child in c.children" :key="child">

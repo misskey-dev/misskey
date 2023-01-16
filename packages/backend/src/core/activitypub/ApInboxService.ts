@@ -291,7 +291,7 @@ export class ApInboxService {
 
 		// アナウンス先をブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) return;
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) return;
 
 		const unlock = await this.appLockService.getApLock(uri);
 

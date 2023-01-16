@@ -9,7 +9,16 @@
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root, { [$style.noGap]: noGap }]">
-			<MkDateSeparatedList ref="notes" v-slot="{ item: note }" :items="notes" :direction="pagination.reversed ? 'up' : 'down'" :reversed="pagination.reversed" :no-gap="noGap" :ad="true" :class="$style.notes">
+			<MkDateSeparatedList
+				ref="notes"
+				v-slot="{ item: note }"
+				:items="notes"
+				:direction="pagination.reversed ? 'up' : 'down'"
+				:reversed="pagination.reversed"
+				:no-gap="noGap"
+				:ad="true"
+				:class="$style.notes"
+			>
 				<XNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 			</MkDateSeparatedList>
 		</div>

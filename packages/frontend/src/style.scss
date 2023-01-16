@@ -17,7 +17,7 @@
 }
 
 ::selection {
-	color: #fff;
+	color: var(--fgOnAccent);
 	background-color: var(--accent);
 } 
 
@@ -98,9 +98,14 @@ a {
 	color: inherit;
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
 
 	&:hover {
 		text-decoration: underline;
+	}
+
+	&[target="_blank"] {
+		-webkit-touch-callout: default;
 	}
 }
 
@@ -150,10 +155,8 @@ hr {
 }
 
 ._ghost {
-	&, * {
-		@extend ._noSelect;
-		pointer-events: none;
-	}
+	@extend ._noSelect;
+	pointer-events: none;
 }
 
 ._modalBg {
@@ -172,6 +175,7 @@ hr {
 }
 
 ._button {
+	@extend ._noSelect;
 	appearance: none;
 	display: inline-block;
 	padding: 0;
@@ -187,14 +191,6 @@ hr {
 	font-family: inherit;
 	line-height: inherit;
 	max-width: 100%;
-
-	&, * {
-		@extend ._noSelect;
-	}
-
-	* {
-		pointer-events: none;
-	}
 
 	&:focus-visible {
 		outline: none;

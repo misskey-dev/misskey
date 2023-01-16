@@ -5,7 +5,7 @@
 	</div>
 	<article>
 		<header>
-			<MkAvatar :user="post.user" class="avatar"/>
+			<MkAvatar :user="post.user" class="avatar" link preview/>
 		</header>
 		<footer>
 			<span class="title">{{ post.title }}</span>

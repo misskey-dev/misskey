@@ -14,7 +14,7 @@ import type { Page } from '@/models/entities/Page.js';
 import type { Packed } from '@/misc/schema.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import type { Meta } from '@/models/entities/Meta.js';
-import { Role, RoleAssignment } from '@/models';
+import { Following, Role, RoleAssignment } from '@/models';
 import type Emitter from 'strict-event-emitter-types';
 import type { EventEmitter } from 'events';
 
@@ -28,7 +28,9 @@ export interface InternalStreamTypes {
 	userChangeSuspendedState: Serialized<{ id: User['id']; isSuspended: User['isSuspended']; }>;
 	userTokenRegenerated: Serialized<{ id: User['id']; oldToken: User['token']; newToken: User['token']; }>;
 	remoteUserUpdated: Serialized<{ id: User['id']; }>;
-	defaultRoleOverrideUpdated: Serialized<Role['options']>;
+	follow: Serialized<{ followerId: User['id']; followeeId: User['id']; }>;
+	unfollow: Serialized<{ followerId: User['id']; followeeId: User['id']; }>;
+	policiesUpdated: Serialized<Role['options']>;
 	roleCreated: Serialized<Role>;
 	roleDeleted: Serialized<Role>;
 	roleUpdated: Serialized<Role>;

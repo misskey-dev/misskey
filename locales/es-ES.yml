@@ -918,6 +918,13 @@ cannotLoad: "No se puede cargar."
 numberOfProfileView: "Número de vistas de perfil"
 like: "¡Muy bien!"
 show: "Apariencia"
+color: "Color"
+_role:
+  priority: "Prioridad"
+  _priority:
+    low: "Baja"
+    middle: "Mediano"
+    high: "Alta"
 _sensitiveMediaDetection:
   description: "Reduce el esfuerzo de la moderación el el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
   sensitivity: "Sensibilidad de detección"
@@ -950,6 +957,7 @@ _accountDelete:
 _ad:
   back: "Deseleccionar"
   reduceFrequencyOfThisAd: "Mostrar menos este anuncio."
+  hide: "No mostrar"
 _forgotPassword:
   enterEmail: "Ingrese el correo usado para registrar la cuenta. Se enviará un link para resetear la contraseña."
   ifNoEmail: "Si no utilizó un correo para crear la cuenta, contáctese con el administrador."

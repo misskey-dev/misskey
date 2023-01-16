@@ -224,8 +224,11 @@ export class ApiCallService implements OnApplicationShutdown {
 				limit.key = ep.name;
 			}
 
+			// TODO: 毎リクエスト計算するのもあれだしキャッシュしたい
+			const factor = user ? (await this.roleService.getUserPolicies(user.id)).rateLimitFactor : 1;
+
 			// Rate limit
-			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor).catch(err => {
+			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
 				throw new ApiError({
 					message: 'Rate limit exceeded. Please try again later.',
 					code: 'RATE_LIMIT_EXCEEDED',
@@ -267,6 +270,17 @@ export class ApiCallService implements OnApplicationShutdown {
 					message: 'You are not assigned to an administrator role.',
 					code: 'ROLE_PERMISSION_DENIED',
 					id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+				});
+			}
+		}
+
+		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+			const policies = await this.roleService.getUserPolicies(user!.id);
+			if (!policies[ep.meta.requireRolePolicy]) {
+				throw new ApiError({
+					message: 'You are not assigned to a required role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a',
 				});
 			}
 		}

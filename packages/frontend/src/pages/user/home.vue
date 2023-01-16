@@ -28,7 +28,7 @@
 							<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 						</div>
 					</div>
-					<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
+					<MkAvatar class="avatar" :user="user" indicator/>
 					<div class="title">
 						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
@@ -38,9 +38,14 @@
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
+					<div v-if="user.roles.length > 0" class="roles">
+						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">{{ role.name }}</span>
+					</div>
 					<div class="description">
-						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
-						<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+						<MkOmit>
+							<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
+							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+						</MkOmit>
 					</div>
 					<div class="fields system">
 						<dl v-if="user.location" class="field">
@@ -116,6 +121,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkTab from '@/components/MkTab.vue';
+import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { getScrollPosition } from '@/scripts/scroll';
 import { getUserMenu } from '@/scripts/get-user-menu';
@@ -337,6 +343,18 @@ onUnmounted(() => {
 					box-shadow: 1px 1px 3px rgba(#000, 0.2);
 				}
 
+				> .roles {
+					padding: 24px 24px 0 154px;
+					font-size: 0.95em;
+
+					> .role {
+						border: solid 1px var(--color, var(--divider));
+						border-radius: 999px;
+						margin-right: 4px;
+						padding: 3px 8px;
+					}
+				}
+
 				> .description {
 					padding: 24px 24px 24px 154px;
 					font-size: 0.95em;
@@ -465,6 +483,11 @@ onUnmounted(() => {
 					width: 92px;
 					height: 92px;
 					margin: auto;
+				}
+
+				> .roles {
+					padding: 16px 16px 0 16px;
+					text-align: center;
 				}
 
 				> .description {

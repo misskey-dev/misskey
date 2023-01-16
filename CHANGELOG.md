@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.0.0 (unreleased)
+## 13.0.0 (2023/01/16)
 
 ### TL;DR
 - New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
@@ -18,6 +18,12 @@ You should also include the user name that made the change.
 - Various usability improvements
 - Various UI tweaks
 
+### Notable features
+- ロール機能
+	- 従来より柔軟にユーザーのポリシーを管理できます。例えば、「インスタンスのパトロンはアンテナを30個まで作れる」「基本的にLTLは見れないが、許可した人だけ見れる」「招待制インスタンスだけどユーザーなら誰でも他者を招待できる」のような運用はもちろん、「ローカルユーザーかつアカウント作成から1日未満のユーザーはパブリックな投稿を行えない」のように複数条件を組み合わせて、自動でロールを付与する設定も可能です。
+- Misskey Play
+	- 従来の動的なPagesに代わる、新しいプラットフォームです。動的なコンテンツ(アプリケーション)に特化していて、Pagesに比べてはるかに柔軟なアプリケーションを作成可能です。
+
 ### Changes
 #### For server admins
 - Node.js 18.x or later is required
@@ -25,13 +31,17 @@ You should also include the user name that made the change.
 	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
-- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
-	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
-- 従来のモデレーターフラグは廃止され、より高度なロール機能が導入されました
-	- これに伴い、アップデートを行うと全てのモデレーターフラグは失われます。そのため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
+- Yarnからpnpmに移行されました
+  corepackの有効化を推奨します: `sudo corepack enable`
+- インスタンスブロックはサブドメインにも適用されるようになります
+- ロールの導入に伴い、いくつかの機能がロールと統合されました
+	- モデレーターはロールに統合されました。今までのモデレーター情報は失われるため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
 	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
-	- ユーザーごとのドライブ容量設定はロールに統合されました
-	- LTL/GTLの解放状態はロールに統合されました
+	- ユーザーごとのドライブ容量設定はロールに統合されました。
+	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールもしくはコンディショナルロールでドライブ容量を編集してください。
+	- LTL/GTLの解放状態はロールに統合されました。
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+  https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
 - ノートのウォッチ機能が削除されました
@@ -43,7 +53,8 @@ You should also include the user name that made the change.
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
 	- 0.12.x未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
-- Firefox109以下はサポートされなくなりました
+- Firefox110以下はサポートされなくなりました
+  - 109でもContainerQueriesのフラグを有効にする事で問題なく使用できます
 
 #### For app developers
 - API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
@@ -55,6 +66,7 @@ You should also include the user name that made the change.
 - API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
 - API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
+- API: `instance`エンティティの`caughtAt`は`firstRetrievedAt`に名前が変わりました
 
 ### Improvements
 - Role system @syuilo
@@ -65,11 +77,22 @@ You should also include the user name that made the change.
 - Push notification of Antenna note @tamaina
 - AVIF support @tamaina
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- レートリミットをユーザーごとに調整可能に @syuilo
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはインスタンスの招待コードを発行できるように @syuilo
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはカスタム絵文字の追加、編集、削除を行えるように @syuilo
+- クリップおよびクリップ内のノートの作成可能数を設定可能に @syuilo
+- ユーザーリストおよびユーザーリスト内のユーザーの作成可能数を設定可能に @syuilo
+- ハードワードミュートの最大文字数を設定可能に @syuilo
+- Webhookの作成可能数を設定可能に @syuilo
+- ノートをピン留めできる数を設定可能に @syuilo
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
 - Server: Use undici instead of node-fetch and got @tamaina
+- Server: Judge instance block by endsWith @tamaina
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: プロフィールの文字数制限を緩和 @syuilo
+- Server: add rate limits for some endpoints @syuilo
 - Server: improve stats api performance @syuilo
 - Server: improve nodeinfo performance @syuilo
 - Server: delete outdated notifications regularly to improve db performance @syuilo
@@ -81,6 +104,7 @@ You should also include the user name that made the change.
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
 - Client: YouTube window player @sim1222
+- Client: show readable error when rate limit exceeded @syuilo
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
@@ -99,13 +123,16 @@ You should also include the user name that made the change.
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: add new theme @syuilo
+- Client: add new mfm function (position, fg, bg) @syuilo
 - Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
+- Client: AiScriptからカスタム絵文字一覧を参照できるように @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
 - Client: clicker game @syuilo
 
 ### Bugfixes
+- Server: Fix @tensorflow/tfjs-core's MODULE_NOT_FOUND error @ikuradon
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
 - Server: Fix peers API returning suspended instances @ineffyble
@@ -118,6 +145,8 @@ You should also include the user name that made the change.
 - Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
 - Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Server: follow request list api pagination @sim1222
+- Server: ドライブ容量超過時のエラーが適切にレスポンスされない問題を修正 @syuilo
 - Client: パスワードマネージャーなどでユーザー名がオートコンプリートされない問題を修正 @massongit
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz

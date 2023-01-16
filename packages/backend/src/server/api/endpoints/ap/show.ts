@@ -117,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	private async fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
-		if (fetchedMeta.blockedHosts.includes(this.utilityService.extractDbHost(uri))) return null;
+		if (this.utilityService.isBlockedHost(fetchedMeta.blockedHosts, this.utilityService.extractDbHost(uri))) return null;
 
 		let local = await this.mergePack(me, ...await Promise.all([
 			this.apDbResolverService.getUserFromApId(uri),

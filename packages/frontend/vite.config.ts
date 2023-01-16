@@ -1,3 +1,4 @@
+import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
@@ -59,10 +60,11 @@ export default defineConfig(({ command, mode }) => {
 		css: {
 			modules: {
 				generateScopedName: (name, filename, css) => {
+					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					if (process.env.NODE_ENV === 'production') {
-						return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4);
+						return 'x' + toBase62(hash(id)).substring(0, 4);
 					} else {
-						return 'x' + toBase62(hash(`${filename} ${name}`)).substring(0, 4) + '-' + name;
+						return id;
 					}
 				},
 			},

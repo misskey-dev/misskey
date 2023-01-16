@@ -53,7 +53,7 @@ let aiscript: Interpreter;
 const code = ref('');
 const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
-let components: Ref<AsUiComponent>[] = [];
+let components: Ref<AsUiComponent>[] = $ref([]);
 let uiKey = $ref(0);
 
 const saved = miLocalStorage.getItem('scratchpad');

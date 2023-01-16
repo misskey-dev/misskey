@@ -894,6 +894,13 @@ windowRestore: "Відновити"
 caption: "Підпис"
 like: "Вподобати"
 show: "Відображення"
+color: "Колір"
+_role:
+  priority: "Пріоритет"
+  _priority:
+    low: "Низький"
+    middle: "Середній"
+    high: "Високий"
 _sensitiveMediaDetection:
   sensitivity: "Чутливість детектування"
   setSensitiveFlagAutomatically: "Позначити як NSFW"
@@ -919,6 +926,7 @@ _accountDelete:
 _ad:
   back: "Назад"
   reduceFrequencyOfThisAd: "Показувати цю рекламу менше"
+  hide: "Не відображати"
 _gallery:
   my: "Моя галерея"
   liked: "Вподобане"

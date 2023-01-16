@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { MutingsRepository } from '@/models/index.js';
 import type { Muting } from '@/models/entities/Muting.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -14,6 +15,11 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:mutes',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 20,
+	},
 
 	errors: {
 		noSuchUser: {

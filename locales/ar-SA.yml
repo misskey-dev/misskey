@@ -817,6 +817,13 @@ account: "الحسابات"
 cannotLoad: "تعذر التحميل"
 like: "أعجبني"
 show: "المظهر"
+color: "اللون"
+_role:
+  priority: "الأولوية"
+  _priority:
+    low: "منخفضة"
+    middle: "متوسط"
+    high: "عالية"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"
@@ -840,6 +847,7 @@ _accountDelete:
 _ad:
   back: "رجوع"
   reduceFrequencyOfThisAd: "قلل عرض هذا الإعلان"
+  hide: "لا تظهره بتاتًا"
 _forgotPassword:
   enterEmail: "أدخل البريد الإلكتروني المرتبط بحسابك لكي يرسل إليك رابط لإعادة تعيين كلمة المرور."
   ifNoEmail: "إذا لم تربط حسابك ببريد إلكتروني سيتوجب عليك التواصل مع مدير الموقع."

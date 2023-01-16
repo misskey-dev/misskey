@@ -1,8 +1,8 @@
 <template>
 <div ref="elRef" :class="$style.root">
 	<div v-once :class="$style.head">
-		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user"/>
-		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user"/>
+		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user" link preview/>
+		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
 		<img v-else-if="notification.icon" :class="$style.icon" :src="notification.icon" alt=""/>
 		<div :class="[$style.subIcon, $style['t_' + notification.type]]">
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
@@ -35,26 +35,26 @@
 		<div v-once :class="$style.content">
 			<MkA v-if="notification.type === 'reaction'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'renote'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full"/>
+				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full" :author="notification.note.renote.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'reply'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'mention'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'quote'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'pollEnded'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<span v-else-if="notification.type === 'follow'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>

@@ -1,14 +1,16 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" class="mkw-timeline">
+<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" class="mkw-timeline data-cy-mkw-timeline">
+	<template #icon>
+		<i v-if="widgetProps.src === 'home'" class="ti ti-home"></i>
+		<i v-else-if="widgetProps.src === 'local'" class="ti ti-planet"></i>
+		<i v-else-if="widgetProps.src === 'social'" class="ti ti-rocket"></i>
+		<i v-else-if="widgetProps.src === 'global'" class="ti ti-whirl"></i>
+		<i v-else-if="widgetProps.src === 'list'" class="ti ti-list"></i>
+		<i v-else-if="widgetProps.src === 'antenna'" class="ti ti-antenna"></i>
+	</template>
 	<template #header>
 		<button class="_button" @click="choose">
-			<i v-if="widgetProps.src === 'home'" class="ti ti-home"></i>
-			<i v-else-if="widgetProps.src === 'local'" class="ti ti-planet"></i>
-			<i v-else-if="widgetProps.src === 'social'" class="ti ti-rocket"></i>
-			<i v-else-if="widgetProps.src === 'global'" class="ti ti-whirl"></i>
-			<i v-else-if="widgetProps.src === 'list'" class="ti ti-list"></i>
-			<i v-else-if="widgetProps.src === 'antenna'" class="ti ti-antenna"></i>
-			<span style="margin-left: 8px;">{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : $t('_timelines.' + widgetProps.src) }}</span>
+			<span>{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : $t('_timelines.' + widgetProps.src) }}</span>
 			<i :class="menuOpened ? 'ti ti-chevron-up' : 'ti ti-chevron-down'" style="margin-left: 8px;"></i>
 		</button>
 	</template>

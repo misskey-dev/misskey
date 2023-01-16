@@ -26,7 +26,7 @@ export class RateLimiterService {
 	}
 
 	@bindThis
-	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string) {
+	public limit(limitation: IEndpointMeta['limit'] & { key: NonNullable<string> }, actor: string, factor = 1) {
 		return new Promise<void>((ok, reject) => {
 			if (this.disabled) ok();
 
@@ -34,7 +34,7 @@ export class RateLimiterService {
 			const min = (): void => {
 				const minIntervalLimiter = new Limiter({
 					id: `${actor}:${limitation.key}:min`,
-					duration: limitation.minInterval,
+					duration: limitation.minInterval * factor,
 					max: 1,
 					db: this.redisClient,
 				});
@@ -62,8 +62,8 @@ export class RateLimiterService {
 			const max = (): void => {
 				const limiter = new Limiter({
 					id: `${actor}:${limitation.key}`,
-					duration: limitation.duration,
-					max: limitation.max,
+					duration: limitation.duration * factor,
+					max: limitation.max / factor,
 					db: this.redisClient,
 				});
 		

@@ -7,22 +7,48 @@ import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/mode
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
+import { UserCacheService } from '@/core/UserCacheService.js';
+import type { RoleCondFormulaValue } from '@/models/entities/Role.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
-export type RoleOptions = {
+export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
+	canInvite: boolean;
+	canManageCustomEmojis: boolean;
+	canHideAds: boolean;
 	driveCapacityMb: number;
+	pinLimit: number;
 	antennaLimit: number;
+	wordMuteLimit: number;
+	webhookLimit: number;
+	clipLimit: number;
+	noteEachClipsLimit: number;
+	userListLimit: number;
+	userEachUserListsLimit: number;
+	rateLimitFactor: number;
 };
 
-export const DEFAULT_ROLE: RoleOptions = {
+export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
+	canInvite: false,
+	canManageCustomEmojis: false,
+	canHideAds: false,
 	driveCapacityMb: 100,
+	pinLimit: 5,
 	antennaLimit: 5,
+	wordMuteLimit: 200,
+	webhookLimit: 3,
+	clipLimit: 10,
+	noteEachClipsLimit: 200,
+	userListLimit: 10,
+	userEachUserListsLimit: 50,
+	rateLimitFactor: 1,
 };
 
 @Injectable()
@@ -44,6 +70,8 @@ export class RoleService implements OnApplicationShutdown {
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
 		private metaService: MetaService,
+		private userCacheService: UserCacheService,
+		private userEntityService: UserEntityService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -58,7 +86,7 @@ export class RoleService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
+			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'roleCreated': {
 					const cached = this.rolesCache.get(null);
@@ -112,33 +140,102 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	private evalCond(user: User, value: RoleCondFormulaValue): boolean {
+		try {
+			switch (value.type) {
+				case 'and': {
+					return value.values.every(v => this.evalCond(user, v));
+				}
+				case 'or': {
+					return value.values.some(v => this.evalCond(user, v));
+				}
+				case 'not': {
+					return !this.evalCond(user, value.value);
+				}
+				case 'isLocal': {
+					return this.userEntityService.isLocalUser(user);
+				}
+				case 'isRemote': {
+					return this.userEntityService.isRemoteUser(user);
+				}
+				case 'createdLessThan': {
+					return user.createdAt.getTime() > (Date.now() - (value.sec * 1000));
+				}
+				case 'createdMoreThan': {
+					return user.createdAt.getTime() < (Date.now() - (value.sec * 1000));
+				}
+				case 'followersLessThanOrEq': {
+					return user.followersCount <= value.value;
+				}
+				case 'followersMoreThanOrEq': {
+					return user.followersCount >= value.value;
+				}
+				case 'followingLessThanOrEq': {
+					return user.followingCount <= value.value;
+				}
+				case 'followingMoreThanOrEq': {
+					return user.followingCount >= value.value;
+				}
+				default:
+					return false;
+			}
+		} catch (err) {
+			// TODO: log error
+			return false;
+		}
+	}
+
+	@bindThis
 	public async getUserRoles(userId: User['id']) {
 		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
 		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
-		return roles.filter(r => assignedRoleIds.includes(r.id));
+		const assignedRoles = roles.filter(r => assignedRoleIds.includes(r.id));
+		const user = roles.some(r => r.target === 'conditional') ? await this.userCacheService.findById(userId) : null;
+		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, r.condFormula));
+		return [...assignedRoles, ...matchedCondRoles];
 	}
 
 	@bindThis
-	public async getUserRoleOptions(userId: User['id'] | null): Promise<RoleOptions> {
+	public async getUserPolicies(userId: User['id'] | null): Promise<RolePolicies> {
 		const meta = await this.metaService.fetch();
-		const baseRoleOptions = { ...DEFAULT_ROLE, ...meta.defaultRoleOverride };
+		const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
-		if (userId == null) return baseRoleOptions;
+		if (userId == null) return basePolicies;
 
 		const roles = await this.getUserRoles(userId);
 
-		function getOptionValues(option: keyof RoleOptions) {
-			if (roles.length === 0) return [baseRoleOptions[option]];
-			return roles.map(role => (role.options[option] && (role.options[option].useDefault !== true)) ? role.options[option].value : baseRoleOptions[option]);
+		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
+			if (roles.length === 0) return basePolicies[name];
+
+			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
+
+			const p2 = policies.filter(policy => policy.priority === 2);
+			if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+
+			const p1 = policies.filter(policy => policy.priority === 1);
+			if (p1.length > 0) return aggregate(p1.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+
+			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}
 
 		return {
-			gtlAvailable: getOptionValues('gtlAvailable').some(x => x === true),
-			ltlAvailable: getOptionValues('ltlAvailable').some(x => x === true),
-			canPublicNote: getOptionValues('canPublicNote').some(x => x === true),
-			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
-			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
+			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
+			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
+			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
+			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
+			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
+			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
+			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
+			antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),
+			wordMuteLimit: calc('wordMuteLimit', vs => Math.max(...vs)),
+			webhookLimit: calc('webhookLimit', vs => Math.max(...vs)),
+			clipLimit: calc('clipLimit', vs => Math.max(...vs)),
+			noteEachClipsLimit: calc('noteEachClipsLimit', vs => Math.max(...vs)),
+			userListLimit: calc('userListLimit', vs => Math.max(...vs)),
+			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
+			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 		};
 	}
 
