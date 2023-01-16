@@ -935,6 +935,8 @@ manageCustomEmojis: "Manage Custom Emojis"
 youCannotCreateAnymore: "You've hit the creation limit."
 cannotPerformTemporary: "Temporarily unavailable"
 cannotPerformTemporaryDescription: "This action cannot be performed temporarily due to exceeding the execution limit. Please wait for a while and then try again."
+preset: "Presets"
+selectFromPresets: "Choose from presets"
 _role:
   new: "New role"
   edit: "Edit role"
@@ -979,6 +981,7 @@ _role:
     userEachUserListsMax: "Maximum number of users within a user list"
     rateLimitFactor: "Rate limit"
     descriptionOfRateLimitFactor: "Lower rate limits are less restrictive, higher ones more restrictive. "
+    canHideAds: "Remove ads"
   _condition:
     isLocal: "Local user"
     isRemote: "Remote user"
@@ -1023,6 +1026,7 @@ _accountDelete:
 _ad:
   back: "Back"
   reduceFrequencyOfThisAd: "Show this ad less"
+  hide: "Never show"
 _forgotPassword:
   enterEmail: "Enter the email address you used to register. A link with which you can reset your password will then be sent to it."
   ifNoEmail: "If you did not use an email during registration, please contact the instance administrator instead."

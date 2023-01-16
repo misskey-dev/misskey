@@ -10,9 +10,9 @@
 		</div>
 		<MkLoading v-else-if="fetching"/>
 		<div v-else class="users">
-			<MkA v-for="user in users" :key="user.id" class="user">
-				<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
-			</MkA>
+			<span v-for="user in users" :key="user.id" class="user">
+				<MkAvatar :user="user" class="avatar" indicator link preview/>
+			</span>
 		</div>
 	</div>
 </MkContainer>

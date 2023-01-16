@@ -1,7 +1,7 @@
 <template>
 <div class="npcljfve" :class="{ iconOnly }">
 	<button v-click-anime class="item _button account" @click="openAccountMenu">
-		<MkAvatar :user="$i" class="avatar" :disable-link="true"/><MkAcct class="text" :user="$i"/>
+		<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 	</button>
 	<div class="post" data-cy-open-post-form @click="post">
 		<MkButton class="button" gradate full rounded>

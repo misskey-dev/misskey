@@ -9,7 +9,7 @@
 	<header :class="$style.header">
 		<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
 		<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
-			<MkAvatar :user="postAccount ?? $i" :class="$style.avatar" :disable-link="true" />
+			<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
 		</button>
 		<div :class="$style.headerRight">
 			<span :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</span>

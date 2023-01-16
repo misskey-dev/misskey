@@ -121,6 +121,14 @@
 							</MkInput>
 						</MkFolder>
 
+						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.canHideAds }}</template>
+							<template #suffix>{{ policies.canHideAds ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canHideAds">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
@@ -156,6 +164,7 @@ const ROLE_POLICIES = [
 	'canPublicNote',
 	'canInvite',
 	'canManageCustomEmojis',
+	'canHideAds',
 	'driveCapacityMb',
 	'pinLimit',
 	'antennaLimit',
