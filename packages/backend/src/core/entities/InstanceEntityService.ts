@@ -29,7 +29,7 @@ export class InstanceEntityService {
 		const meta = await this.metaService.fetch();
 		return {
 			id: instance.id,
-			caughtAt: instance.caughtAt.toISOString(),
+			firstRetrievedAt: instance.firstRetrievedAt.toISOString(),
 			host: instance.host,
 			usersCount: instance.usersCount,
 			notesCount: instance.notesCount,

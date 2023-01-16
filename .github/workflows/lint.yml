@@ -8,22 +8,26 @@ on:
   pull_request:
 
 jobs:
-  yarn_install:
+  pnpm_install:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.3.0
       with:
         fetch-depth: 0
         submodules: true
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
     - uses: actions/setup-node@v3.6.0
       with:
         node-version: 18.x
-        cache: 'yarn'
+        cache: 'pnpm'
     - run: corepack enable
-    - run: yarn install --immutable
+    - run: pnpm i --frozen-lockfile
 
   lint:
-    needs: [yarn_install]
+    needs: [pnpm_install]
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
@@ -37,10 +41,14 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
     - uses: actions/setup-node@v3.6.0
       with:
         node-version: 18.x
-        cache: 'yarn'
+        cache: 'pnpm'
     - run: corepack enable
-    - run: yarn install --immutable
-    - run: yarn workspace ${{ matrix.workspace }} run lint
+    - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter ${{ matrix.workspace }} run lint

@@ -612,6 +612,12 @@ fast: "Rychlá"
 account: "Účty"
 show: "Zobrazit"
 color: "Barva"
+_role:
+  priority: "Priorita"
+  _priority:
+    low: "Nízká"
+    middle: "Střední"
+    high: "Vysoká"
 _ad:
   back: "Zpět"
 _gallery:

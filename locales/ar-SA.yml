@@ -818,6 +818,12 @@ cannotLoad: "تعذر التحميل"
 like: "أعجبني"
 show: "المظهر"
 color: "اللون"
+_role:
+  priority: "الأولوية"
+  _priority:
+    low: "منخفضة"
+    middle: "متوسط"
+    high: "عالية"
 _emailUnavailable:
   used: "هذا البريد الإلكتروني مستخدم"
   format: "صيغة البريد الإلكتروني غير صالحة"
