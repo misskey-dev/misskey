@@ -1,5 +1,8 @@
-import { UserLists } from '@/models/index.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserListsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -35,16 +38,26 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Fetch the list
-	const userList = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
 
-	if (userList == null) {
-		throw new ApiError(meta.errors.noSuchList);
+		private userListEntityService: UserListEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the list
+			const userList = await this.userListsRepository.findOneBy({
+				id: ps.listId,
+				userId: me.id,
+			});
+
+			if (userList == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			return await this.userListEntityService.pack(userList);
+		});
 	}
-
-	return await UserLists.pack(userList);
-});
+}

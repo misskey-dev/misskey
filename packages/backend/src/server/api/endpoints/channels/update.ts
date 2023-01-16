@@ -1,6 +1,9 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { Channels, DriveFiles } from '@/models/index.js';
 
 export const meta = {
 	tags: ['channels'],
@@ -48,39 +51,52 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const channel = await Channels.findOneBy({
-		id: ps.channelId,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.channelsRepository)
+		private channelsRepository: ChannelsRepository,
 
-	if (channel == null) {
-		throw new ApiError(meta.errors.noSuchChannel);
-	}
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
-	if (channel.userId !== me.id) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
+		private channelEntityService: ChannelEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const channel = await this.channelsRepository.findOneBy({
+				id: ps.channelId,
+			});
 
-	// eslint:disable-next-line:no-unnecessary-initializer
-	let banner = undefined;
-	if (ps.bannerId != null) {
-		banner = await DriveFiles.findOneBy({
-			id: ps.bannerId,
-			userId: me.id,
+			if (channel == null) {
+				throw new ApiError(meta.errors.noSuchChannel);
+			}
+
+			if (channel.userId !== me.id) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			// eslint:disable-next-line:no-unnecessary-initializer
+			let banner = undefined;
+			if (ps.bannerId != null) {
+				banner = await this.driveFilesRepository.findOneBy({
+					id: ps.bannerId,
+					userId: me.id,
+				});
+
+				if (banner == null) {
+					throw new ApiError(meta.errors.noSuchFile);
+				}
+			} else if (ps.bannerId === null) {
+				banner = null;
+			}
+
+			await this.channelsRepository.update(channel.id, {
+				...(ps.name !== undefined ? { name: ps.name } : {}),
+				...(ps.description !== undefined ? { description: ps.description } : {}),
+				...(banner ? { bannerId: banner.id } : {}),
+			});
+
+			return await this.channelEntityService.pack(channel.id, me);
 		});
-
-		if (banner == null) {
-			throw new ApiError(meta.errors.noSuchFile);
-		}
-	} else if (ps.bannerId === null) {
-		banner = null;
 	}
-
-	await Channels.update(channel.id, {
-		...(ps.name !== undefined ? { name: ps.name } : {}),
-		...(ps.description !== undefined ? { description: ps.description } : {}),
-		...(banner ? { bannerId: banner.id } : {}),
-	});
-
-	return await Channels.pack(channel.id, me);
-});
+}

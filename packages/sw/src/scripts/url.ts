@@ -1,4 +1,9 @@
-export function query(obj: {}): string {
+/* objを検査して
+ * 1. 配列に何も入っていない時はクエリを付けない
+ * 2. プロパティがundefinedの時はクエリを付けない
+ * （new URLSearchParams(obj)ではそこまで丁寧なことをしてくれない）
+ */ 
+export function query(obj: object): string {
 	const params = Object.entries(obj)
 		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
 		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>);

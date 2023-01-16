@@ -10,10 +10,10 @@ jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-
+    if: github.repository == 'misskey-dev/misskey'
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.3.0
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3

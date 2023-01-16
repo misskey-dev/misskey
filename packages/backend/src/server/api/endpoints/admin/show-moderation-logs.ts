@@ -1,6 +1,9 @@
-import define from '../../define.js';
-import { ModerationLogs } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { ModerationLogsRepository } from '@/models/index.js';
+import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
+import { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -59,10 +62,21 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const query = makePaginationQuery(ModerationLogs.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.moderationLogsRepository)
+		private moderationLogsRepository: ModerationLogsRepository,
 
-	const reports = await query.take(ps.limit).getMany();
+		private moderationLogEntityService: ModerationLogEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.moderationLogsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-	return await ModerationLogs.packMany(reports);
-});
+			const reports = await query.take(ps.limit).getMany();
+
+			return await this.moderationLogEntityService.packMany(reports);
+		});
+	}
+}

@@ -1,11 +1,16 @@
-import define from '../../../define.js';
-import { getJsonSchema } from '@/services/chart/core.js';
-import { perUserReactionsChart } from '@/services/chart/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { getJsonSchema } from '@/core/chart/core.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
+import { schema } from '@/core/chart/charts/entities/per-user-reactions.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'reactions'],
 
-	res: getJsonSchema(perUserReactionsChart.schema),
+	res: getJsonSchema(schema),
+
+	allowGet: true,
+	cacheSec: 60 * 60,
 } as const;
 
 export const paramDef = {
@@ -20,6 +25,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await perUserReactionsChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private perUserReactionsChart: PerUserReactionsChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.perUserReactionsChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
+		});
+	}
+}

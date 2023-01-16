@@ -1,0 +1,24 @@
+{
+	id: 'dc489603-27b5-424a-9b25-1ff6aec9824a',
+
+	name: 'Mi Green+Orange Dark',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	props: {
+		accent: '#e97f00',
+		bg: '#0C1210',
+		fg: '#dee7e4',
+		fgHighlighted: '#fff',
+		fgOnAccent: '#192320',
+		divider: '#e7fffb24',
+		panel: '#192320',
+		panelHeaderBg: '@panel',
+		panelHeaderDivider: '@divider',
+		popup: '#293330',
+		renote: '@accent',
+		mentionMe: '#b4e900',
+		link: '#24d7ce',
+	},
+}

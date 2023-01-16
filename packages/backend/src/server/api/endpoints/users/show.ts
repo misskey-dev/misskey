@@ -1,10 +1,16 @@
-import { FindOptionsWhere, In, IsNull } from 'typeorm';
-import { resolveUser } from '@/remote/resolve-user.js';
-import { Users } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import define from '../../define.js';
-import { apiLogger } from '../../logger.js';
+import { In, IsNull } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UsersRepository } from '@/models/index.js';
+import type { User } from '@/models/entities/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import { DI } from '@/di-symbols.js';
+import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
+import { ApiLoggerService } from '../../ApiLoggerService.js';
+import type { FindOptionsWhere } from 'typeorm';
 
 export const meta = {
 	tags: ['users'],
@@ -78,53 +84,75 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	let user;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	const isAdminOrModerator = me && (me.isAdmin || me.isModerator);
+		private userEntityService: UserEntityService,
+		private remoteUserResolveService: RemoteUserResolveService,
+		private roleService: RoleService,
+		private perUserPvChart: PerUserPvChart,
+		private apiLoggerService: ApiLoggerService,
+	) {
+		super(meta, paramDef, async (ps, me, _1, _2, _3, ip) => {
+			let user;
 
-	if (ps.userIds) {
-		if (ps.userIds.length === 0) {
-			return [];
-		}
+			const isModerator = await this.roleService.isModerator(me);
 
-		const users = await Users.findBy(isAdminOrModerator ? {
-			id: In(ps.userIds),
-		} : {
-			id: In(ps.userIds),
-			isSuspended: false,
-		});
+			if (ps.userIds) {
+				if (ps.userIds.length === 0) {
+					return [];
+				}
 
-		// リクエストされた通りに並べ替え
-		const _users: User[] = [];
-		for (const id of ps.userIds) {
-			_users.push(users.find(x => x.id === id)!);
-		}
+				const users = await this.usersRepository.findBy(isModerator ? {
+					id: In(ps.userIds),
+				} : {
+					id: In(ps.userIds),
+					isSuspended: false,
+				});
 
-		return await Promise.all(_users.map(u => Users.pack(u, me, {
-			detail: true,
-		})));
-	} else {
-		// Lookup user
-		if (typeof ps.host === 'string' && typeof ps.username === 'string') {
-			user = await resolveUser(ps.username, ps.host).catch(e => {
-				apiLogger.warn(`failed to resolve remote user: ${e}`);
-				throw new ApiError(meta.errors.failedToResolveRemoteUser);
-			});
-		} else {
-			const q: FindOptionsWhere<User> = ps.userId != null
-				? { id: ps.userId }
-				: { usernameLower: ps.username!.toLowerCase(), host: IsNull() };
+				// リクエストされた通りに並べ替え
+				const _users: User[] = [];
+				for (const id of ps.userIds) {
+					_users.push(users.find(x => x.id === id)!);
+				}
 
-			user = await Users.findOneBy(q);
-		}
+				return await Promise.all(_users.map(u => this.userEntityService.pack(u, me, {
+					detail: true,
+				})));
+			} else {
+				// Lookup user
+				if (typeof ps.host === 'string' && typeof ps.username === 'string') {
+					user = await this.remoteUserResolveService.resolveUser(ps.username, ps.host).catch(err => {
+						this.apiLoggerService.logger.warn(`failed to resolve remote user: ${err}`);
+						throw new ApiError(meta.errors.failedToResolveRemoteUser);
+					});
+				} else {
+					const q: FindOptionsWhere<User> = ps.userId != null
+						? { id: ps.userId }
+						: { usernameLower: ps.username!.toLowerCase(), host: IsNull() };
 
-		if (user == null || (!isAdminOrModerator && user.isSuspended)) {
-			throw new ApiError(meta.errors.noSuchUser);
-		}
+					user = await this.usersRepository.findOneBy(q);
+				}
 
-		return await Users.pack(user, me, {
-			detail: true,
+				if (user == null || (!isModerator && user.isSuspended)) {
+					throw new ApiError(meta.errors.noSuchUser);
+				}
+
+				if (user.host == null) {
+					if (me == null && ip != null) {
+						this.perUserPvChart.commitByVisitor(user, ip);
+					} else if (me && me.id !== user.id) {
+						this.perUserPvChart.commitByUser(user, me.id);
+					}
+				}
+
+				return await this.userEntityService.pack(user, me, {
+					detail: true,
+				});
+			}
 		});
 	}
-});
+}
