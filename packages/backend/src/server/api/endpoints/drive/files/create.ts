@@ -1,10 +1,13 @@
 import ms from 'ms';
-import { addFile } from '@/services/drive/add-file.js';
-import { DriveFiles } from '@/models/index.js';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import define from '../../../define.js';
-import { apiLogger } from '../../../logger.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFilesRepository } from '@/models/index.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -35,6 +38,18 @@ export const meta = {
 			code: 'INVALID_FILE_NAME',
 			id: 'f449b209-0c60-4e51-84d5-29486263bfd4',
 		},
+
+		inappropriate: {
+			message: 'Cannot upload the file because it has been determined that it possibly contains inappropriate content.',
+			code: 'INAPPROPRIATE',
+			id: 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2',
+		},
+
+		noFreeSpace: {
+			message: 'Cannot upload the file because you have no free space of drive.',
+			code: 'NO_FREE_SPACE',
+			id: 'd08dbc37-a6a9-463a-8c47-96c32ab5f064',
+		},
 	},
 } as const;
 
@@ -51,44 +66,58 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user, _, file, cleanup, ip, headers) => {
-	// Get 'name' parameter
-	let name = ps.name || file.originalname;
-	if (name !== undefined && name !== null) {
-		name = name.trim();
-		if (name.length === 0) {
-			name = null;
-		} else if (name === 'blob') {
-			name = null;
-		} else if (!DriveFiles.validateFileName(name)) {
-			throw new ApiError(meta.errors.invalidFileName);
-		}
-	} else {
-		name = null;
-	}
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
-	const meta = await fetchMeta();
+		private driveFileEntityService: DriveFileEntityService,
+		private metaService: MetaService,
+		private driveService: DriveService,
+	) {
+		super(meta, paramDef, async (ps, me, _, file, cleanup, ip, headers) => {
+			// Get 'name' parameter
+			let name = ps.name ?? file!.name ?? null;
+			if (name != null) {
+				name = name.trim();
+				if (name.length === 0) {
+					name = null;
+				} else if (name === 'blob') {
+					name = null;
+				} else if (!this.driveFileEntityService.validateFileName(name)) {
+					throw new ApiError(meta.errors.invalidFileName);
+				}
+			}
 
-	try {
-		// Create file
-		const driveFile = await addFile({
-			user,
-			path: file.path,
-			name,
-			comment: ps.comment,
-			folderId: ps.folderId,
-			force: ps.force,
-			sensitive: ps.isSensitive,
-			requestIp: meta.enableIpLogging ? ip : null,
-			requestHeaders: meta.enableIpLogging ? headers : null,
+			const instance = await this.metaService.fetch();
+
+			try {
+				// Create file
+				const driveFile = await this.driveService.addFile({
+					user: me,
+					path: file!.path,
+					name,
+					comment: ps.comment,
+					folderId: ps.folderId,
+					force: ps.force,
+					sensitive: ps.isSensitive,
+					requestIp: instance.enableIpLogging ? ip : null,
+					requestHeaders: instance.enableIpLogging ? headers : null,
+				});
+				return await this.driveFileEntityService.pack(driveFile, { self: true });
+			} catch (err) {
+				if (err instanceof Error || typeof err === 'string') {
+					console.error(err);
+				}
+				if (err instanceof IdentifiableError) {
+					if (err.id === '282f77bf-5816-4f72-9264-aa14d8261a21') throw new ApiError(meta.errors.inappropriate);
+					if (err.id === 'c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6') throw new ApiError(meta.errors.noFreeSpace);
+				}
+				throw new ApiError();
+			} finally {
+				cleanup!();
+			}
 		});
-		return await DriveFiles.pack(driveFile, { self: true });
-	} catch (e) {
-		if (e instanceof Error || typeof e === 'string') {
-			apiLogger.error(e);
-		}
-		throw new ApiError();
-	} finally {
-		cleanup!();
 	}
-});
+}

@@ -1,5 +1,5 @@
-import Resolver from '../../src/remote/activitypub/resolver.js';
-import { IObject } from '../../src/remote/activitypub/type.js';
+import Resolver from '../../src/activitypub/resolver.js';
+import { IObject } from '../../src/activitypub/type.js';
 
 type MockResponse = {
 	type: string;
@@ -15,6 +15,7 @@ export class MockResolver extends Resolver {
 		});
 	}
 
+	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
 		if (typeof value !== 'string') return value;
 

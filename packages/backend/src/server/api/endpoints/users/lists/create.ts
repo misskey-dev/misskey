@@ -1,7 +1,12 @@
-import { UserLists } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import { UserList } from '@/models/entities/user-list.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserListsRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import type { UserList } from '@/models/entities/UserList.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '@/server/api/error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['lists'],
@@ -17,6 +22,14 @@ export const meta = {
 		optional: false, nullable: false,
 		ref: 'UserList',
 	},
+
+	errors: {
+		tooManyUserLists: {
+			message: 'You cannot create user list any more.',
+			code: 'TOO_MANY_USERLISTS',
+			id: '0cf21a28-7715-4f39-a20d-777bfdb8d138',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -28,13 +41,32 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const userList = await UserLists.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-	} as UserList).then(x => UserLists.findOneByOrFail(x.identifiers[0]));
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
 
-	return await UserLists.pack(userList);
-});
+		private userListEntityService: UserListEntityService,
+		private idService: IdService,
+		private roleService: RoleService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const currentCount = await this.userListsRepository.countBy({
+				userId: me.id,
+			});
+			if (currentCount > (await this.roleService.getUserPolicies(me.id)).userListLimit) {
+				throw new ApiError(meta.errors.tooManyUserLists);
+			}
+	
+			const userList = await this.userListsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				userId: me.id,
+				name: ps.name,
+			} as UserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
+
+			return await this.userListEntityService.pack(userList);
+		});
+	}
+}

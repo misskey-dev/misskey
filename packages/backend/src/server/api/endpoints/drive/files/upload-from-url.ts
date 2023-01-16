@@ -1,9 +1,12 @@
 import ms from 'ms';
-import { uploadFromUrl } from '@/services/drive/upload-from-url.js';
-import { DriveFiles } from '@/models/index.js';
-import { publishMainStream } from '@/services/stream.js';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFilesRepository } from '@/models/index.js';
+import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -34,13 +37,25 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user, _1, _2, _3, ip, headers) => {
-	uploadFromUrl({ url: ps.url, user, folderId: ps.folderId, sensitive: ps.isSensitive, force: ps.force, comment: ps.comment, requestIp: ip, requestHeaders: headers }).then(file => {
-		DriveFiles.pack(file, { self: true }).then(packedFile => {
-			publishMainStream(user.id, 'urlUploadFinished', {
-				marker: ps.marker,
-				file: packedFile,
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
+		private driveFileEntityService: DriveFileEntityService,
+		private driveService: DriveService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, user, _1, _2, _3, ip, headers) => {
+			this.driveService.uploadFromUrl({ url: ps.url, user, folderId: ps.folderId, sensitive: ps.isSensitive, force: ps.force, comment: ps.comment, requestIp: ip, requestHeaders: headers }).then(file => {
+				this.driveFileEntityService.pack(file, { self: true }).then(packedFile => {
+					this.globalEventService.publishMainStream(user.id, 'urlUploadFinished', {
+						marker: ps.marker,
+						file: packedFile,
+					});
+				});
 			});
 		});
-	});
-});
+	}
+}

@@ -1,9 +1,9 @@
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { Note } from '@/models/entities/note';
-import { User } from '@/models/entities/user.js';
-import { Webhook } from '@/models/entities/webhook';
-import { IActivity } from '@/remote/activitypub/type.js';
-import httpSignature from '@peertube/http-signature';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { User } from '@/models/entities/User.js';
+import type { Webhook } from '@/models/entities/Webhook.js';
+import type { IActivity } from '@/core/activitypub/type.js';
+import type httpSignature from '@peertube/http-signature';
 
 export type DeliverJobData = {
 	/** Actor */

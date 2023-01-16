@@ -1,6 +1,8 @@
-import define from '../../../define.js';
-import { Ads } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AdsRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -24,16 +26,26 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	await Ads.insert({
-		id: genId(),
-		createdAt: new Date(),
-		expiresAt: new Date(ps.expiresAt),
-		url: ps.url,
-		imageUrl: ps.imageUrl,
-		priority: ps.priority,
-		ratio: ps.ratio,
-		place: ps.place,
-		memo: ps.memo,
-	});
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.adsRepository)
+		private adsRepository: AdsRepository,
+
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			await this.adsRepository.insert({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				expiresAt: new Date(ps.expiresAt),
+				url: ps.url,
+				imageUrl: ps.imageUrl,
+				priority: ps.priority,
+				ratio: ps.ratio,
+				place: ps.place,
+				memo: ps.memo,
+			});
+		});
+	}
+}

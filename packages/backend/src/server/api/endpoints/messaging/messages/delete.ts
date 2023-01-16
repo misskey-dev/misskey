@@ -1,8 +1,10 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { MessagingMessagesRepository } from '@/models/index.js';
+import { MessagingService } from '@/core/MessagingService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { MessagingMessages } from '@/models/index.js';
-import { deleteMessage } from '@/services/messages/delete.js';
 
 export const meta = {
 	tags: ['messaging'],
@@ -35,15 +37,25 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const message = await MessagingMessages.findOneBy({
-		id: ps.messageId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.messagingMessagesRepository)
+		private messagingMessagesRepository: MessagingMessagesRepository,
 
-	if (message == null) {
-		throw new ApiError(meta.errors.noSuchMessage);
+		private messagingService: MessagingService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const message = await this.messagingMessagesRepository.findOneBy({
+				id: ps.messageId,
+				userId: me.id,
+			});
+
+			if (message == null) {
+				throw new ApiError(meta.errors.noSuchMessage);
+			}
+
+			await this.messagingService.deleteMessage(message);
+		});
 	}
-
-	await deleteMessage(message);
-});
+}
