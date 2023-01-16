@@ -33,24 +33,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkInput from '@/components/MkInput.vue';
 import { useRouter } from '@/router';
 
-const router = useRouter();
-
-const props = defineProps<{
-	id?: string;
-}>();
-
-let flash = $ref(null);
-
-if (props.id) {
-	flash = await os.api('flash/show', {
-		flashId: props.id,
-	});
-}
-
-let title = $ref(flash?.title ?? 'New Play');
-let summary = $ref(flash?.summary ?? '');
-let permissions = $ref(flash?.permissions ?? []);
-let script = $ref(flash?.script ?? `/// @ 0.12.2
+const PRESET_DEFAULT = `/// @ 0.12.2
 
 var name = ""
 
@@ -66,13 +49,9 @@ Ui:render([
 		}
 	})
 ])
-`);
+`;
 
-function selectPreset(ev: MouseEvent) {
-	os.popupMenu([{
-		text: 'Omikuji',
-		action: () => {
-			script = `/// @ 0.12.2
+const PRESET_OMIKUJI = `/// @ 0.12.2
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -114,6 +93,91 @@ Ui:render([
 	})
 ])
 `;
+
+const PRESET_TIMELINE = `/// @ 0.12.2
+// APIリクエストを行いローカルタイムラインを表示するプリセット
+
+@fetch() {
+	Ui:render([
+		Ui:C:container({
+			align: 'center'
+			children: [
+				Ui:C:text({ text: "読み込み中..." })
+			]
+		})
+	])
+
+	// タイムライン取得
+	let notes = Mk:api("notes/local-timeline" {})
+
+	// それぞれのノートごとにUI要素作成
+	let noteEls = []
+	each (let note, notes) {
+		let el = Ui:C:container({
+			bgColor: "#444"
+			fgColor: "#fff"
+			padding: 10
+			rounded: true
+			children: [
+				Ui:C:mfm({
+					text: note.user.name
+					bold: true
+				})
+				Ui:C:mfm({
+					text: note.text
+				})
+			]
+		})
+		noteEls.push(el)
+	}
+
+	// UIを表示
+	Ui:render([
+		Ui:C:text({ text: "ローカル タイムライン" })
+		Ui:C:button({
+			text: "更新"
+			onClick: @() {
+				fetch()
+			}
+		})
+		Ui:C:container({
+			children: noteEls
+		})
+	])
+}
+
+fetch()
+`;
+
+const router = useRouter();
+
+const props = defineProps<{
+	id?: string;
+}>();
+
+let flash = $ref(null);
+
+if (props.id) {
+	flash = await os.api('flash/show', {
+		flashId: props.id,
+	});
+}
+
+let title = $ref(flash?.title ?? 'New Play');
+let summary = $ref(flash?.summary ?? '');
+let permissions = $ref(flash?.permissions ?? []);
+let script = $ref(flash?.script ?? PRESET_DEFAULT);
+
+function selectPreset(ev: MouseEvent) {
+	os.popupMenu([{
+		text: 'Omikuji',
+		action: () => {
+			script = PRESET_OMIKUJI;
+		},
+	}, {
+		text: 'Timeline viewer',
+		action: () => {
+			script = PRESET_TIMELINE;
 		},
 	}], ev.currentTarget ?? ev.target);
 }
