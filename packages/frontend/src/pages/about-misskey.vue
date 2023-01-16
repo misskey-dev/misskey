@@ -26,7 +26,7 @@
 							<template #suffix>GitHub</template>
 						</FormLink>
 						<FormLink to="https://github.com/nyaone/misskey" external>
-							<template #icon><i class="fas fa-code"></i></template>
+							<template #icon><i class="ti ti-code"></i></template>
 							喵窝の源代码
 							<template #suffix>GitHub</template>
 						</FormLink>

@@ -1,13 +1,13 @@
 <template>
 	<div v-if="hide" class="audio-nsfw-cover" @click="hide = false">
 		<div>
-			<b><i class="fas fa-exclamation-triangle"/> {{ $ts.sensitive }}</b>
+			<b><i class="ti ti-alert-triangle"/> {{ $ts.sensitive }}</b>
 			<span>{{ $ts.clickToShow }}</span>
 		</div>
 	</div>
 	<div v-else class="audio-viz-player">
 		<Viz class="audio" :audio-src="audio.url"/>
-		<i class="fas fa-eye-slash" @click="hide = true"/>
+		<i class="ti ti-eye-off" @click="hide = true"/>
 	</div>
 </template>
 
