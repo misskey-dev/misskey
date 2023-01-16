@@ -237,20 +237,20 @@ function exec() {
 		const matched: EmojiDef[] = [];
 		const max = 30;
 
-		emojiDb.some(x => {
+		emojiDb.value.some(x => {
 			if (x.name.startsWith(props.q ?? '') && !x.aliasOf && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
 			return matched.length === max;
 		});
 
 		if (matched.length < max) {
-			emojiDb.some(x => {
+			emojiDb.value.some(x => {
 				if (x.name.startsWith(props.q ?? '') && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
 				return matched.length === max;
 			});
 		}
 
 		if (matched.length < max) {
-			emojiDb.some(x => {
+			emojiDb.value.some(x => {
 				if (x.name.includes(props.q ?? '') && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
 				return matched.length === max;
 			});
