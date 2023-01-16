@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.0.0 (unreleased)
+## 13.0.0 (2023/01/16)
 
 ### TL;DR
 - New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
