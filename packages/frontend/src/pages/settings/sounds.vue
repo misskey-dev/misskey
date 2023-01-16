@@ -25,34 +25,22 @@ import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
-import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
-import { playFile } from '@/scripts/sound';
+import { soundConfigStore } from '@/scripts/sound';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const masterVolume = computed({
-	get: () => {
-		return ColdDeviceStorage.get('sound_masterVolume');
-	},
-	set: (value) => {
-		ColdDeviceStorage.set('sound_masterVolume', value);
-	},
-});
-
-const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
+const masterVolume = computed(soundConfigStore.makeGetterSetter('sound_masterVolume'));
 
 const sounds = ref({
-	note: ColdDeviceStorage.get('sound_note'),
-	noteMy: ColdDeviceStorage.get('sound_noteMy'),
-	notification: ColdDeviceStorage.get('sound_notification'),
-	chat: ColdDeviceStorage.get('sound_chat'),
-	chatBg: ColdDeviceStorage.get('sound_chatBg'),
-	antenna: ColdDeviceStorage.get('sound_antenna'),
-	channel: ColdDeviceStorage.get('sound_channel'),
+	note: soundConfigStore.reactiveState.sound_note,
+	noteMy: soundConfigStore.reactiveState.sound_noteMy,
+	notification: soundConfigStore.reactiveState.sound_notification,
+	chat: soundConfigStore.reactiveState.sound_chat,
+	chatBg: soundConfigStore.reactiveState.sound_chatBg,
+	antenna: soundConfigStore.reactiveState.sound_antenna,
+	channel: soundConfigStore.reactiveState.sound_channel,
 });
 
 async function updated(type, sound) {
@@ -61,14 +49,14 @@ async function updated(type, sound) {
 		volume: sound.volume,
 	};
 
-	ColdDeviceStorage.set('sound_' + type, v);
+	soundConfigStore.set('sound_' + type, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value)) {
-		const v = ColdDeviceStorage.default['sound_' + sound];
-		ColdDeviceStorage.set('sound_' + sound, v);
+		const v = soundConfigStore.default['sound_' + sound];
+		soundConfigStore.set('sound_' + sound, v);
 		sounds.value[sound] = v;
 	}
 }
