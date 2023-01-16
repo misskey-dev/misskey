@@ -70,6 +70,7 @@ onMounted(() => {
 		},
 		imageClickAction: 'close',
 		tapAction: 'toggle-controls',
+		bgOpacity: 1,
 		pswpModule: PhotoSwipe,
 	});
 
@@ -101,7 +102,7 @@ onMounted(() => {
 			appendTo: 'wrapper',
 			onInit: (el, pwsp) => {
 				let textBox = document.createElement('p');
-				textBox.className = 'pwsp__alt-text';
+				textBox.className = 'pwsp__alt-text _acrylic';
 				el.appendChild(textBox);
 
 				pwsp.on('change', (a) => {
@@ -205,7 +206,14 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	// なぜか機能しない
   //z-index: v-bind(pswpZIndex);
 	z-index: 2000000;
+	--pswp-bg: var(--modalBg);
 }
+
+.pswp__bg {
+	background: var(--modalBg);
+	backdrop-filter: var(--modalBgFilter);
+}
+
 .pwsp__alt-text-container {
 	display: flex;
 	flex-direction: row;
@@ -217,14 +225,17 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	transform: translateX(-50%);
 
 	width: 75%;
+	max-width: 800px;
 }
 
 .pwsp__alt-text {
-	color: white;
+	color: var(--fg);
 	margin: 0 auto;
 	text-align: center;
-	padding: 10px;
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 5px;
+	padding: var(--margin);
+	border-radius: var(--radius);
+	max-height: 8em;
+	overflow-y: auto;
+	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
 }
 </style>
