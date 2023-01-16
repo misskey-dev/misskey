@@ -32,11 +32,6 @@ export const packedUserLiteSchema = {
 			type: 'any',
 			nullable: true, optional: false,
 		},
-		avatarColor: {
-			type: 'any',
-			nullable: true, optional: false,
-			default: null,
-		},
 		isAdmin: {
 			type: 'boolean',
 			nullable: false, optional: true,
@@ -54,25 +49,6 @@ export const packedUserLiteSchema = {
 		isCat: {
 			type: 'boolean',
 			nullable: false, optional: true,
-		},
-		emojis: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'object',
-				nullable: false, optional: false,
-				properties: {
-					name: {
-						type: 'string',
-						nullable: false, optional: false,
-					},
-					url: {
-						type: 'string',
-						nullable: false, optional: false,
-						format: 'url',
-					},
-				},
-			},
 		},
 		onlineStatus: {
 			type: 'string',
@@ -119,11 +95,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 		bannerBlurhash: {
 			type: 'any',
 			nullable: true, optional: false,
-		},
-		bannerColor: {
-			type: 'any',
-			nullable: true, optional: false,
-			default: null,
 		},
 		isLocked: {
 			type: 'boolean',

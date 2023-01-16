@@ -10,7 +10,7 @@ window.onload = async () => {
 			if (i) data.i = i;
 	
 			// Send request
-			fetch(endpoint.indexOf('://') > -1 ? endpoint : `/api/${endpoint}`, {
+			window.fetch(endpoint.indexOf('://') > -1 ? endpoint : `/api/${endpoint}`, {
 				method: 'POST',
 				body: JSON.stringify(data),
 				credentials: 'omit',

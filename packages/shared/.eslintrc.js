@@ -14,7 +14,7 @@ module.exports = {
 	rules: {
 		'indent': ['warn', 'tab', {
 			'SwitchCase': 1,
-			'MemberExpression': 'off',
+			'MemberExpression': 1,
 			'flatTernaryExpressions': true,
 			'ArrayExpression': 'first',
 			'ObjectExpression': 'first',
@@ -24,6 +24,8 @@ module.exports = {
 		'semi-spacing': ['error', { 'before': false, 'after': true }],
 		'quotes': ['warn', 'single'],
 		'comma-dangle': ['warn', 'always-multiline'],
+		'comma-spacing': ['error', { 'before': false, 'after': true }],
+		'array-bracket-spacing': ['error', 'never'],
 		'keyword-spacing': ['error', {
 			'before': true,
 			'after': true,
@@ -71,6 +73,10 @@ module.exports = {
 		'@typescript-eslint/no-misused-promises': ['error', {
 			'checksVoidReturn': false,
 		}],
+		'@typescript-eslint/consistent-type-imports': 'off',
+		'@typescript-eslint/prefer-nullish-coalescing': [
+			'error',
+		],
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': ['warn'],
 		'import/order': ['warn', {

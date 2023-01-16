@@ -1,7 +1,8 @@
-import acceptFollowRequest from '@/services/following/requests/accept.js';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['following', 'account'],
@@ -33,17 +34,25 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch follower
-	const follower = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private getterService: GetterService,
+		private userFollowingService: UserFollowingService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch follower
+			const follower = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
 
-	await acceptFollowRequest(user, follower).catch(e => {
-		if (e.id === '8884c2dd-5795-4ac9-b27e-6a01d38190f9') throw new ApiError(meta.errors.noFollowRequest);
-		throw e;
-	});
+			await this.userFollowingService.acceptFollowRequest(me, follower).catch(err => {
+				if (err.id === '8884c2dd-5795-4ac9-b27e-6a01d38190f9') throw new ApiError(meta.errors.noFollowRequest);
+				throw err;
+			});
 
-	return;
-});
+			return;
+		});
+	}
+}

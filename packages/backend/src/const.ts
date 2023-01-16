@@ -3,6 +3,22 @@ export const MAX_NOTE_TEXT_LENGTH = 3000;
 export const USER_ONLINE_THRESHOLD = 1000 * 60 * 10; // 10min
 export const USER_ACTIVE_THRESHOLD = 1000 * 60 * 60 * 24 * 3; // 3days
 
+//#region hard limits
+// If you change DB_* values, you must also change the DB schema.
+
+/**
+ * Maximum note text length that can be stored in DB.
+ * Surrogate pairs count as one
+ */
+export const DB_MAX_NOTE_TEXT_LENGTH = 8192;
+
+/**
+ * Maximum image description length that can be stored in DB.
+ * Surrogate pairs count as one
+ */
+export const DB_MAX_IMAGE_COMMENT_LENGTH = 512;
+//#endregion
+
 // ブラウザで直接表示することを許可するファイルの種類のリスト
 // ここに含まれないものは application/octet-stream としてレスポンスされる
 // SVGはXSSを生むので許可しない
@@ -12,6 +28,7 @@ export const FILE_TYPE_BROWSERSAFE = [
 	'image/gif',
 	'image/jpeg',
 	'image/webp',
+	'image/avif',
 	'image/apng',
 	'image/bmp',
 	'image/tiff',

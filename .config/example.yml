@@ -122,10 +122,12 @@ id: 'aid'
 # Proxy for HTTP/HTTPS
 #proxy: http://127.0.0.1:3128
 
-#proxyBypassHosts: [
-#  'example.com',
-#  '192.0.2.8'
-#]
+proxyBypassHosts:
+  - api.deepl.com
+  - api-free.deepl.com
+  - www.recaptcha.net
+  - hcaptcha.com
+  - challenges.cloudflare.com
 
 # Proxy for SMTP/SMTPS
 #proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
@@ -138,8 +140,8 @@ id: 'aid'
 # Proxy remote files (default: false)
 #proxyRemoteFiles: true
 
-# Sign to ActivityPub GET request (default: false)
-#signToActivityPubGet: true
+# Sign to ActivityPub GET request (default: true)
+signToActivityPubGet: true
 
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
