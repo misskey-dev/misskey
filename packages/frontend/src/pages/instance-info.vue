@@ -38,7 +38,7 @@
 			<FormSection>
 				<MkKeyValue oneline style="margin: 1em 0;">
 					<template #key>{{ i18n.ts.registeredAt }}</template>
-					<template #value><MkTime mode="detail" :time="instance.caughtAt"/></template>
+					<template #value><MkTime mode="detail" :time="instance.firstRetrievedAt"/></template>
 				</MkKeyValue>
 				<MkKeyValue oneline style="margin: 1em 0;">
 					<template #key>{{ i18n.ts.updatedAt }}</template>

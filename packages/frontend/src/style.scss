@@ -98,9 +98,14 @@ a {
 	color: inherit;
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
 
 	&:hover {
 		text-decoration: underline;
+	}
+
+	&[target="_blank"] {
+		-webkit-touch-callout: default;
 	}
 }
 

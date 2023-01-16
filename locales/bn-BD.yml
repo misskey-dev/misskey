@@ -854,6 +854,12 @@ account: "অ্যাকাউন্টগুলি"
 like: "পছন্দ করা"
 show: "প্রদর্শন"
 color: "রং"
+_role:
+  priority: "অগ্রাধিকার"
+  _priority:
+    low: "নিম্ন"
+    middle: "মাঝারি"
+    high: "উচ্চ"
 _emailUnavailable:
   used: "এই ইমেইল ঠিকানাটি ইতোমধ্যে ব্যবহৃত হয়েছে"
   format: "এই ইমেল ঠিকানাটি সঠিকভাবে লিখা হয়নি"

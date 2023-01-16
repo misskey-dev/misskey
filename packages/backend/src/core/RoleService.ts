@@ -212,7 +212,7 @@ export class RoleService implements OnApplicationShutdown {
 			if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 
 			const p1 = policies.filter(policy => policy.priority === 1);
-			if (p1.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+			if (p1.length > 0) return aggregate(p1.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 
 			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}

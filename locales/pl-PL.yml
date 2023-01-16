@@ -869,6 +869,12 @@ loggedInAsBot: "Jesteś obecnie zalogowany/a jako bot"
 like: "Polub"
 show: "Wyświetlanie"
 color: "Kolor"
+_role:
+  priority: "Priorytet"
+  _priority:
+    low: "Niski"
+    middle: "Średnie"
+    high: "Wysoki"
 _sensitiveMediaDetection:
   description: "Zmniejsza wysiłek związany z moderacją serwera dzięki automatycznemu rozpoznawaniu zawartości NSFW za pomocą uczenia maszynowego. To nieznacznie zwiększy obciążenie serwera."
   setSensitiveFlagAutomatically: "Oznacz jako NSFW"

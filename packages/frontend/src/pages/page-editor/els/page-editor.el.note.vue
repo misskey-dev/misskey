@@ -37,20 +37,16 @@ const emit = defineEmits<{
 let id: any = $ref(props.modelValue.note);
 let note: any = $ref(null);
 
-watch(id, async () => {
+watch($$(id), async () => {
 	if (id && (id.startsWith('http://') || id.startsWith('https://'))) {
-		emit('update:modelValue', {
-			...props.modelValue,
-			note: (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop(),
-		});
-	} else {
-		emit('update:modelValue', {
-			...props.modelValue,
-			note: id,
-		});
+		id = (id.endsWith('/') ? id.slice(0, -1) : id).split('/').pop();
 	}
 
-	note = await os.api('notes/show', { noteId: props.modelValue.note });
+	emit('update:modelValue', {
+		...props.modelValue,
+		note: id,
+	});
+	note = await os.api('notes/show', { noteId: id });
 }, {
 	immediate: true,
 });
