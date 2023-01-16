@@ -265,6 +265,8 @@ async function deleteProfile() {
 	--deckDividerThickness: 5px;
 
 	display: flex;
+	height: 100vh;
+	height: calc(var(--1dvh, 1vh) * 100);
 	height: 100dvh;
 	box-sizing: border-box;
 	flex: 1;
@@ -362,6 +364,8 @@ async function deleteProfile() {
 	top: 0;
 	left: 0;
 	z-index: 1001;
+	height: 100vh;
+	height: calc(var(--1dvh, 1vh) * 100);
 	height: 100dvh;
 	width: 240px;
 	box-sizing: border-box;

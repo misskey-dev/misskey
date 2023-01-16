@@ -201,6 +201,8 @@ onMounted(() => {
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 
+	min-height: 100vh;
+	min-height: calc(var(--1dvh, 1vh) * 100);
 	min-height: 100dvh;
 	box-sizing: border-box;
 
@@ -301,6 +303,8 @@ onMounted(() => {
 		top: 0;
 		right: 0;
 		z-index: 1001;
+		height: 100vh;
+		height: calc(var(--1dvh, 1vh) * 100);
 		height: 100dvh;
 		padding: var(--margin);
 		box-sizing: border-box;

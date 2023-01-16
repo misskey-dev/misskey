@@ -113,6 +113,8 @@ function more(ev: MouseEvent) {
 		left: 0;
 		z-index: 1001;
 		width: $nav-icon-only-width;
+		height: 100vh;
+		height: calc(var(--1dvh, 1vh) * 100);
 		height: 100dvh;
 		box-sizing: border-box;
 		overflow: auto;

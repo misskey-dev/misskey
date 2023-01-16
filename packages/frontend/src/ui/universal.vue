@@ -250,6 +250,8 @@ $widgets-hide-threshold: 1090px;
 }
 
 .root {
+	min-height: 100vh;
+	min-height: calc(var(--1dvh, 1vh) * 100);
 	min-height: 100dvh;
 	box-sizing: border-box;
 	display: flex;
@@ -303,6 +305,8 @@ $widgets-hide-threshold: 1090px;
 	top: 0;
 	right: 0;
 	z-index: 1001;
+	height: 100vh;
+	height: calc(var(--1dvh, 1vh) * 100);
 	height: 100dvh;
 	padding: var(--margin) !important;
 	box-sizing: border-box;
@@ -397,6 +401,8 @@ $widgets-hide-threshold: 1090px;
 	top: 0;
 	left: 0;
 	z-index: 1001;
+	height: 100vh;
+	height: calc(var(--1dvh, 1vh) * 100);
 	height: 100dvh;
 	width: 240px;
 	box-sizing: border-box;
