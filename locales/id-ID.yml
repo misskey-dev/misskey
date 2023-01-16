@@ -890,6 +890,7 @@ _accountDelete:
 _ad:
   back: "Kembali"
   reduceFrequencyOfThisAd: "Tampilkan iklan ini lebih sedikit"
+  hide: "Jangan tampilkan"
 _forgotPassword:
   enterEmail: "Masukkan alamat surel yang kamu gunakan pada saat mendaftar. Sebuah tautan untuk mengatur ulang kata sandi kamu akan dikirimkan ke alamat surel tersebut."
   ifNoEmail: "Apabila kamu tidak menggunakan surel pada saat pendaftaran, mohon hubungi admin segera."
