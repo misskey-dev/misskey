@@ -1023,6 +1023,7 @@ _accountDelete:
 _ad:
   back: "Indietro"
   reduceFrequencyOfThisAd: "Visualizza questa pubblicità meno spesso"
+  hide: "Nascondi"
 _forgotPassword:
   enterEmail: "Inserisci l'indirizzo di posta elettronica che hai registrato nel tuo profilo. Il collegamento necessario per ripristinare la password verrà inviato a questo indirizzo."
   ifNoEmail: "Se nessun indirizzo e-mail è stato registrato, si prega di contattare l'amministratore·trice dell'istanza."
