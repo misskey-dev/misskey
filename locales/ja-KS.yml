@@ -1023,6 +1023,7 @@ _accountDelete:
 _ad:
   back: "戻る"
   reduceFrequencyOfThisAd: "この広告の表示頻度を下げるで"
+  hide: "表示せん"
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスをここに入力してや。そのアドレス宛に、パスワードリセット用のリンクが送られるから待っててな～。"
   ifNoEmail: "メールアドレスを登録してへんのやったら、管理者まで教えてな～。"
