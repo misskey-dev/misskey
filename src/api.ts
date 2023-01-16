@@ -19,6 +19,7 @@ export type FetchLike = (input: string, init?: {
 		body?: string;
 		credentials?: RequestCredentials;
 		cache?: RequestCache;
+		headers: {[key in string]: string}
 	}) => Promise<{
 		status: number;
 		json(): Promise<any>;
@@ -75,6 +76,9 @@ export class APIClient {
 					...params,
 					i: credential !== undefined ? credential : this.credential,
 				}),
+				headers: {
+					'Content-Type': 'application/json',
+				},
 				credentials: 'omit',
 				cache: 'no-cache',
 			}).then(async (res) => {
