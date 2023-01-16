@@ -1,17 +1,165 @@
 <!--
-## 12.x.x (unreleased)
+## 13.x.x (unreleased)
 
 ### Improvements
 
 ### Bugfixes
-- 
+-
 
 You should also include the user name that made the change.
 -->
 
-## 12.119.2 (2022/12/04)
+## 13.0.0 (2023/01/16)
+
+### TL;DR
+- New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
+- Rewriten backend
+- Better performance (backend and frontend)
+- Various usability improvements
+- Various UI tweaks
+
+### Notable features
+- ロール機能
+	- 従来より柔軟にユーザーのポリシーを管理できます。例えば、「インスタンスのパトロンはアンテナを30個まで作れる」「基本的にLTLは見れないが、許可した人だけ見れる」「招待制インスタンスだけどユーザーなら誰でも他者を招待できる」のような運用はもちろん、「ローカルユーザーかつアカウント作成から1日未満のユーザーはパブリックな投稿を行えない」のように複数条件を組み合わせて、自動でロールを付与する設定も可能です。
+- Misskey Play
+	- 従来の動的なPagesに代わる、新しいプラットフォームです。動的なコンテンツ(アプリケーション)に特化していて、Pagesに比べてはるかに柔軟なアプリケーションを作成可能です。
+
+### Changes
+#### For server admins
+- Node.js 18.x or later is required
+- PostgreSQL 15.x is required
+	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
+- Elasticsearchのサポートが削除されました
+	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
+- Yarnからpnpmに移行されました
+- インスタンスブロックはサブドメインにも適用されるようになります
+- ロールの導入に伴い、いくつかの機能がロールと統合されました
+	- モデレーターはロールに統合されました。今までのモデレーター情報は失われるため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
+	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
+	- ユーザーごとのドライブ容量設定はロールに統合されました。
+	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールのドライブ容量を編集してください。
+	- LTL/GTLの解放状態はロールに統合されました。
+
+#### For users
+- ノートのウォッチ機能が削除されました
+- アンケートに投票された際に通知が作成されなくなりました
+- ノートの数式埋め込みが削除されました
+- 新たに動的なPagesを作ることはできなくなりました
+	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
+- AiScriptが0.12.2にアップデートされました
+	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
+	- 0.12.x未満のプラグインは読み込むことはできません
+- iOS15以下のデバイスはサポートされなくなりました
+- Firefox110以下はサポートされなくなりました
+  - 109でもContainerQueriesのフラグを有効にする事で問題なく使用できます
+
+#### For app developers
+- API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
+	- カスタム絵文字一覧情報を取得するには、`emojis`エンドポイントにリクエストします
+- API: カスタム絵文字エンティティに`url`プロパティが含まれなくなりました
+	- 絵文字画像を表示するには、`<instance host>/emoji/<emoji name>.webp`にリクエストすると画像が返ります。
+	- e.g. `https://p1.a9z.dev/emoji/misskey.webp`
+	- remote: `https://p1.a9z.dev/emoji/syuilo_birth_present@mk.f72u.net.webp`
+- API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
+- API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
+- API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
+- API: `instance`エンティティの`caughtAt`は`firstRetrievedAt`に名前が変わりました
+
+### Improvements
+- Role system @syuilo
+- Misskey Play @syuilo
+- Introduce retention-rate aggregation @syuilo
+- Make possible to export favorited notes @syuilo
+- Add per user pv chart @syuilo
+- Push notification of Antenna note @tamaina
+- AVIF support @tamaina
+- Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- レートリミットをユーザーごとに調整可能に @syuilo
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはインスタンスの招待コードを発行できるように @syuilo
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはカスタム絵文字の追加、編集、削除を行えるように @syuilo
+- クリップおよびクリップ内のノートの作成可能数を設定可能に @syuilo
+- ユーザーリストおよびユーザーリスト内のユーザーの作成可能数を設定可能に @syuilo
+- ハードワードミュートの最大文字数を設定可能に @syuilo
+- Webhookの作成可能数を設定可能に @syuilo
+- ノートをピン留めできる数を設定可能に @syuilo
+- Server: signToActivityPubGet is set to true by default @syuilo
+- Server: improve syslog performance @syuilo
+- Server: Use undici instead of node-fetch and got @tamaina
+- Server: Judge instance block by endsWith @tamaina
+- Server: improve note scoring for featured notes @CyberRex0
+- Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: プロフィールの文字数制限を緩和 @syuilo
+- Server: add rate limits for some endpoints @syuilo
+- Server: improve stats api performance @syuilo
+- Server: improve nodeinfo performance @syuilo
+- Server: delete outdated notifications regularly to improve db performance @syuilo
+- Server: delete outdated hard-mutes regularly to improve db performance @syuilo
+- Server: delete outdated notes of antenna regularly to improve db performance @syuilo
+- Server: improve activitypub deliver performance @syuilo
+- Client: use tabler-icons instead of fontawesome to better design @syuilo
+- Client: Add new gabber kick sounds (thanks for noizenecio)
+- Client: Add link to user RSS feed in profile menu @ssmucny
+- Client: Compress non-animated PNG files @saschanaz
+- Client: YouTube window player @sim1222
+- Client: show readable error when rate limit exceeded @syuilo
+- Client: enhance dashboard of control panel @syuilo
+- Client: Vite is upgraded to v4 @syuilo, @tamaina
+- Client: HMR is available while yarn dev @tamaina
+- Client: Implement the button to subscribe push notification @tamaina
+- Client: Implement the toggle to or not to close push notifications when notifications or messages are read @tamaina
+- Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
+- Client: OpenSearch support @SoniEx2 @chaoticryptidz
+- Client: Support remote objects in search @SoniEx2
+- Client: user activity page @syuilo
+- Client: Make widgets of universal/classic sync between devices @tamaina
+- Client: add user list widget @syuilo
+- Client: Add AiScript App widget
+- Client: add profile widget @syuilo
+- Client: add instance info widget @syuilo
+- Client: Improve RSS widget @tamaina
+- Client: add heatmap of daily active users to about page @syuilo
+- Client: introduce fluent emoji @syuilo
+- Client: add new theme @syuilo
+- Client: add new mfm function (position, fg, bg) @syuilo
+- Client: show fireworks when visit user who today is birthday @syuilo
+- Client: show bot warning on screen when logged in as bot account @syuilo
+- Client: AiScriptからカスタム絵文字一覧を参照できるように @syuilo
+- Client: improve overall performance of client @syuilo
+- Client: ui tweaks @syuilo
+- Client: clicker game @syuilo
+
 ### Bugfixes
-- Server: Backported versions mitigate isn't working @mei23
+- Server: Fix @tensorflow/tfjs-core's MODULE_NOT_FOUND error @ikuradon
+- Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
+- Server: Bug fix for Pinned Users lookup on instance @squidicuzz
+- Server: Fix peers API returning suspended instances @ineffyble
+- Server: trim long text of note from ap @syuilo
+- Server: Ap inboxの最大ペイロードサイズを64kbに制限 @syuilo
+- Server: アンテナの作成数上限を追加 @syuilo
+- Server: pages/likeのエラーIDが重複しているのを修正 @syuilo
+- Server: pages/updateのパラメータによってはsummaryの値が更新されないのを修正 @syuilo
+- Server: Escape SQL LIKE @mei23
+- Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
+- Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
+- Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Server: follow request list api pagination @sim1222
+- Server: ドライブ容量超過時のエラーが適切にレスポンスされない問題を修正 @syuilo
+- Client: パスワードマネージャーなどでユーザー名がオートコンプリートされない問題を修正 @massongit
+- Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
+- Client: case insensitive emoji search @saschanaz
+- Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
+- Client: InAppウィンドウが操作できなくなることがあるのを修正 @tamaina
+- Client: use proxied image for instance icon @syuilo
+- Client: Webhookの編集画面で、内容を保存することができない問題を修正 @m-hayabusa
+- Client: Page編集でブロックの移動が行えない問題を修正 @syuilo
+- Client: update emoji picker immediately on all input @saschanaz
+- Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
+- Client: fix wrong link in tutorial @syuilo
+
+### Special thanks
+- All contributors
+- All who have created instances for the beta test
+- All who participated in the beta test
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes
@@ -372,7 +520,7 @@ same as 12.112.0
 ## 12.104.0 (2022/02/09)
 
 ### Note
-ビルドする前に`npm run clean`を実行してください。
+ビルドする前に`yarn clean`を実行してください。
 
 このリリースはマイグレーションの規模が大きいため、インスタンスによってはマイグレーションに時間がかかる可能性があります。
 マイグレーションが終わらない場合は、チャートの情報はリセットされてしまいますが`__chart__`で始まるテーブルの**レコード**を全て削除(テーブル自体は消さないでください)してから再度試す方法もあります。

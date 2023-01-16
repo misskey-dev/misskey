@@ -1,7 +1,10 @@
-import config from '@/config/index.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
+import { Inject, Injectable } from '@nestjs/common';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import define from '../../define.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/core/MetaService.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -13,14 +16,6 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: false,
 		properties: {
-			driveCapacityPerLocalUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			driveCapacityPerRemoteUserMb: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
 			cacheRemoteFiles: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -42,6 +37,14 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			recaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableTurnstile: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			turnstileSiteKey: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -195,6 +198,10 @@ export const meta = {
 				type: 'string',
 				optional: true, nullable: true,
 			},
+			turnstileSecretKey: {
+				type: 'string',
+				optional: true, nullable: true,
+			},
 			sensitiveMediaDetection: {
 				type: 'string',
 				optional: true, nullable: false,
@@ -340,91 +347,101 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const instance = await fetchMeta(true);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
 
-	return {
-		maintainerName: instance.maintainerName,
-		maintainerEmail: instance.maintainerEmail,
-		version: config.version,
-		name: instance.name,
-		uri: config.url,
-		description: instance.description,
-		langs: instance.langs,
-		tosUrl: instance.ToSUrl,
-		repositoryUrl: instance.repositoryUrl,
-		feedbackUrl: instance.feedbackUrl,
-		disableRegistration: instance.disableRegistration,
-		disableLocalTimeline: instance.disableLocalTimeline,
-		disableGlobalTimeline: instance.disableGlobalTimeline,
-		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
-		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
-		emailRequiredForSignup: instance.emailRequiredForSignup,
-		enableHcaptcha: instance.enableHcaptcha,
-		hcaptchaSiteKey: instance.hcaptchaSiteKey,
-		enableRecaptcha: instance.enableRecaptcha,
-		recaptchaSiteKey: instance.recaptchaSiteKey,
-		swPublickey: instance.swPublicKey,
-		themeColor: instance.themeColor,
-		mascotImageUrl: instance.mascotImageUrl,
-		bannerUrl: instance.bannerUrl,
-		errorImageUrl: instance.errorImageUrl,
-		iconUrl: instance.iconUrl,
-		backgroundImageUrl: instance.backgroundImageUrl,
-		logoImageUrl: instance.logoImageUrl,
-		maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
-		defaultLightTheme: instance.defaultLightTheme,
-		defaultDarkTheme: instance.defaultDarkTheme,
-		enableEmail: instance.enableEmail,
-		enableTwitterIntegration: instance.enableTwitterIntegration,
-		enableGithubIntegration: instance.enableGithubIntegration,
-		enableDiscordIntegration: instance.enableDiscordIntegration,
-		enableServiceWorker: instance.enableServiceWorker,
-		translatorAvailable: instance.deeplAuthKey != null,
-		pinnedPages: instance.pinnedPages,
-		pinnedClipId: instance.pinnedClipId,
-		cacheRemoteFiles: instance.cacheRemoteFiles,
-		useStarForReactionFallback: instance.useStarForReactionFallback,
-		pinnedUsers: instance.pinnedUsers,
-		hiddenTags: instance.hiddenTags,
-		blockedHosts: instance.blockedHosts,
-		hcaptchaSecretKey: instance.hcaptchaSecretKey,
-		recaptchaSecretKey: instance.recaptchaSecretKey,
-		sensitiveMediaDetection: instance.sensitiveMediaDetection,
-		sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
-		setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
-		enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
-		proxyAccountId: instance.proxyAccountId,
-		twitterConsumerKey: instance.twitterConsumerKey,
-		twitterConsumerSecret: instance.twitterConsumerSecret,
-		githubClientId: instance.githubClientId,
-		githubClientSecret: instance.githubClientSecret,
-		discordClientId: instance.discordClientId,
-		discordClientSecret: instance.discordClientSecret,
-		summalyProxy: instance.summalyProxy,
-		email: instance.email,
-		smtpSecure: instance.smtpSecure,
-		smtpHost: instance.smtpHost,
-		smtpPort: instance.smtpPort,
-		smtpUser: instance.smtpUser,
-		smtpPass: instance.smtpPass,
-		swPrivateKey: instance.swPrivateKey,
-		useObjectStorage: instance.useObjectStorage,
-		objectStorageBaseUrl: instance.objectStorageBaseUrl,
-		objectStorageBucket: instance.objectStorageBucket,
-		objectStoragePrefix: instance.objectStoragePrefix,
-		objectStorageEndpoint: instance.objectStorageEndpoint,
-		objectStorageRegion: instance.objectStorageRegion,
-		objectStoragePort: instance.objectStoragePort,
-		objectStorageAccessKey: instance.objectStorageAccessKey,
-		objectStorageSecretKey: instance.objectStorageSecretKey,
-		objectStorageUseSSL: instance.objectStorageUseSSL,
-		objectStorageUseProxy: instance.objectStorageUseProxy,
-		objectStorageSetPublicRead: instance.objectStorageSetPublicRead,
-		objectStorageS3ForcePathStyle: instance.objectStorageS3ForcePathStyle,
-		deeplAuthKey: instance.deeplAuthKey,
-		deeplIsPro: instance.deeplIsPro,
-		enableIpLogging: instance.enableIpLogging,
-		enableActiveEmailValidation: instance.enableActiveEmailValidation,
-	};
-});
+		private metaService: MetaService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const instance = await this.metaService.fetch(true);
+
+			return {
+				maintainerName: instance.maintainerName,
+				maintainerEmail: instance.maintainerEmail,
+				version: this.config.version,
+				name: instance.name,
+				uri: this.config.url,
+				description: instance.description,
+				langs: instance.langs,
+				tosUrl: instance.ToSUrl,
+				repositoryUrl: instance.repositoryUrl,
+				feedbackUrl: instance.feedbackUrl,
+				disableRegistration: instance.disableRegistration,
+				emailRequiredForSignup: instance.emailRequiredForSignup,
+				enableHcaptcha: instance.enableHcaptcha,
+				hcaptchaSiteKey: instance.hcaptchaSiteKey,
+				enableRecaptcha: instance.enableRecaptcha,
+				recaptchaSiteKey: instance.recaptchaSiteKey,
+				enableTurnstile: instance.enableTurnstile,
+				turnstileSiteKey: instance.turnstileSiteKey,
+				swPublickey: instance.swPublicKey,
+				themeColor: instance.themeColor,
+				mascotImageUrl: instance.mascotImageUrl,
+				bannerUrl: instance.bannerUrl,
+				errorImageUrl: instance.errorImageUrl,
+				iconUrl: instance.iconUrl,
+				backgroundImageUrl: instance.backgroundImageUrl,
+				logoImageUrl: instance.logoImageUrl,
+				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
+				defaultLightTheme: instance.defaultLightTheme,
+				defaultDarkTheme: instance.defaultDarkTheme,
+				enableEmail: instance.enableEmail,
+				enableTwitterIntegration: instance.enableTwitterIntegration,
+				enableGithubIntegration: instance.enableGithubIntegration,
+				enableDiscordIntegration: instance.enableDiscordIntegration,
+				enableServiceWorker: instance.enableServiceWorker,
+				translatorAvailable: instance.deeplAuthKey != null,
+				pinnedPages: instance.pinnedPages,
+				pinnedClipId: instance.pinnedClipId,
+				cacheRemoteFiles: instance.cacheRemoteFiles,
+				useStarForReactionFallback: instance.useStarForReactionFallback,
+				pinnedUsers: instance.pinnedUsers,
+				hiddenTags: instance.hiddenTags,
+				blockedHosts: instance.blockedHosts,
+				hcaptchaSecretKey: instance.hcaptchaSecretKey,
+				recaptchaSecretKey: instance.recaptchaSecretKey,
+				turnstileSecretKey: instance.turnstileSecretKey,
+				sensitiveMediaDetection: instance.sensitiveMediaDetection,
+				sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
+				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
+				enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
+				proxyAccountId: instance.proxyAccountId,
+				twitterConsumerKey: instance.twitterConsumerKey,
+				twitterConsumerSecret: instance.twitterConsumerSecret,
+				githubClientId: instance.githubClientId,
+				githubClientSecret: instance.githubClientSecret,
+				discordClientId: instance.discordClientId,
+				discordClientSecret: instance.discordClientSecret,
+				summalyProxy: instance.summalyProxy,
+				email: instance.email,
+				smtpSecure: instance.smtpSecure,
+				smtpHost: instance.smtpHost,
+				smtpPort: instance.smtpPort,
+				smtpUser: instance.smtpUser,
+				smtpPass: instance.smtpPass,
+				swPrivateKey: instance.swPrivateKey,
+				useObjectStorage: instance.useObjectStorage,
+				objectStorageBaseUrl: instance.objectStorageBaseUrl,
+				objectStorageBucket: instance.objectStorageBucket,
+				objectStoragePrefix: instance.objectStoragePrefix,
+				objectStorageEndpoint: instance.objectStorageEndpoint,
+				objectStorageRegion: instance.objectStorageRegion,
+				objectStoragePort: instance.objectStoragePort,
+				objectStorageAccessKey: instance.objectStorageAccessKey,
+				objectStorageSecretKey: instance.objectStorageSecretKey,
+				objectStorageUseSSL: instance.objectStorageUseSSL,
+				objectStorageUseProxy: instance.objectStorageUseProxy,
+				objectStorageSetPublicRead: instance.objectStorageSetPublicRead,
+				objectStorageS3ForcePathStyle: instance.objectStorageS3ForcePathStyle,
+				deeplAuthKey: instance.deeplAuthKey,
+				deeplIsPro: instance.deeplIsPro,
+				enableIpLogging: instance.enableIpLogging,
+				enableActiveEmailValidation: instance.enableActiveEmailValidation,
+				policies: { ...DEFAULT_POLICIES, ...instance.policies },
+			};
+		});
+	}
+}

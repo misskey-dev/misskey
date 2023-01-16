@@ -164,7 +164,6 @@ annotation: "Keterangan konten"
 federation: "Federasi"
 instances: "Instansi"
 registeredAt: "Terdaftar"
-latestRequestSentAt: "Permintaan terakhir dikirim pada"
 latestRequestReceivedAt: "Permintaan terakhir diterima pada"
 latestStatus: "Status terakhir"
 storageUsage: "Penggunaan penyimpanan"
@@ -347,6 +346,8 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "Nyalakan reCAPTCHA"
 recaptchaSiteKey: "Site key"
 recaptchaSecretKey: "Secret Key"
+turnstileSiteKey: "Site key"
+turnstileSecretKey: "Secret Key"
 avoidMultiCaptchaConfirm: "Menggunakan banyak Captcha dapat menyebabkan gangguan. Apakah kamu ingin untuk menonaktifkan Captcha yang lain? Kamu dapat membiarkan fitur ini tetap aktif dengan menekan tombol batal."
 antennas: "Antena"
 manageAntennas: "Pengelola Antena"
@@ -448,7 +449,6 @@ language: "Bahasa"
 uiLanguage: "Bahasa antarmuka pengguna"
 groupInvited: "Telah diundang ke grup"
 aboutX: "Tentang {x}"
-useOsNativeEmojis: "Gunakan Emoji bawaan sistem operasi"
 disableDrawer: "Jangan gunakan menu bergaya laci"
 youHaveNoGroups: "Kamu tidak memiliki grup"
 joinOrCreateGroup: "Bergabunglah dengan grup atau kamu dapat membuat grupmu sendiri."
@@ -501,6 +501,7 @@ deleteAll: "Hapus semua"
 showFixedPostForm: "Tampilkan form posting di atas linimasa."
 newNoteRecived: "Kamu mendapat catatan baru"
 sounds: "Bunyi"
+sound: "Bunyi"
 listen: "Dengarkan"
 none: "Tidak ada"
 showInPage: "Tampilkan di halaman"
@@ -854,6 +855,17 @@ colored: "Diwarnai"
 label: "Label"
 localOnly: "Hanya lokal"
 account: "Akun"
+like: "Suka"
+unlike: "Tidak Suka"
+numberOfLikes: "Jumlah yang disukai"
+show: "Tampilkan"
+color: "Warna"
+_role:
+  priority: "Prioritas"
+  _priority:
+    low: "Rendah"
+    middle: "Sedang"
+    high: "Tinggi"
 _emailUnavailable:
   used: "Alamat surel ini telah digunakan"
   format: "Format tidak valid."
@@ -878,6 +890,7 @@ _accountDelete:
 _ad:
   back: "Kembali"
   reduceFrequencyOfThisAd: "Tampilkan iklan ini lebih sedikit"
+  hide: "Jangan tampilkan"
 _forgotPassword:
   enterEmail: "Masukkan alamat surel yang kamu gunakan pada saat mendaftar. Sebuah tautan untuk mengatur ulang kata sandi kamu akan dikirimkan ke alamat surel tersebut."
   ifNoEmail: "Apabila kamu tidak menggunakan surel pada saat pendaftaran, mohon hubungi admin segera."
@@ -1201,6 +1214,8 @@ _weekday:
   friday: "Jumat"
   saturday: "Sabtu"
 _widgets:
+  profile: "Profil"
+  instanceInfo: "Informasi Instansi"
   memo: "Catatan memo"
   notifications: "Pemberitahuan"
   timeline: "Linimasa"
@@ -1219,7 +1234,10 @@ _widgets:
   jobQueue: "Antrian kerja"
   serverMetric: "Statistik peladen"
   aiscript: "Konsol AiScript"
+  aiscriptApp: "Aplikasi AiScript"
   aichan: "Ai"
+  _userList:
+    chooseList: "Pilih daftar"
 _cw:
   hide: "Sembunyikan"
   show: "Lihat konten"
@@ -1320,6 +1338,21 @@ _timelines:
   local: "Lokal"
   social: "Sosial"
   global: "Global"
+_play:
+  new: "Membuat Permainan"
+  edit: "Menyunting Permainan"
+  created: "Permainan sudah dibuat"
+  updated: "Permainan sudah diperbaharui"
+  deleted: "Hapus permainan"
+  pageSetting: "Pengaturan permainan"
+  editThisPage: "Sunting Permainan ini"
+  viewSource: "Lihat sumber"
+  my: "Permainan saya"
+  liked: "Permainan Disukai"
+  featured: "Populer"
+  title: "Judul"
+  script: "Script"
+  summary: "Deskripsi"
 _pages:
   newPage: "Buat halaman baru"
   editPage: "Sunting halaman"
@@ -1355,8 +1388,6 @@ _pages:
   eyeCatchingImageRemove: "Hapus gambar yang menarik"
   chooseBlock: "Tambahkan blokir"
   selectType: "Pilih jenis"
-  enterVariableName: "Mohon masukkan nama untuk variabel kamu"
-  variableNameIsAlreadyUsed: "Nama ini sudah digunakan oleh variabel lain"
   contentBlocks: "Konten"
   inputBlocks: "Masukan"
   specialBlocks: "Khusus"
@@ -1366,249 +1397,11 @@ _pages:
     section: "Bagian"
     image: "Gambar"
     button: "Tombol"
-    if: "Jika"
-    _if:
-      variable: "Variabel"
-    post: "Buat catatan"
-    _post:
-      text: "Isi"
-      attachCanvasImage: "Posting dengan kanvas sebagai gambar"
-      canvasId: "ID Kanvas"
-    textInput: "Masukan teks"
-    _textInput:
-      name: "Nama variabel"
-      text: "Judul"
-      default: "Nilai bawaan"
-    textareaInput: "Masukan teks multibaris"
-    _textareaInput:
-      name: "Nama variabel"
-      text: "Judul"
-      default: "Nilai bawaan"
-    numberInput: "Masukan angka"
-    _numberInput:
-      name: "Nama variabel"
-      text: "Judul"
-      default: "Nilai bawaan"
-    canvas: "Kanvas"
-    _canvas:
-      id: "ID Kanvas"
-      width: "Lebar"
-      height: "Tinggi"
     note: "Catatan yang ditanam"
     _note:
       id: "ID Catatan"
       idDescription: "Kamu dapat menyetel ini dengan menempelkan tautan URL Catatan."
       detailed: "Tampilan rincian"
-    switch: "Beralih"
-    _switch:
-      name: "Nama variabel"
-      text: "Judul"
-      default: "Nilai bawaan"
-    counter: "Penghitung"
-    _counter:
-      name: "Nama variabel"
-      text: "Judul"
-      inc: "Meningkat dengan"
-    _button:
-      text: "Judul"
-      colored: "Diwarnai"
-      action: "Operasi akan dimulai ketika tombol ditekan"
-      _action:
-        dialog: "Tampilkan dialog"
-        _dialog:
-          content: "Isi"
-        resetRandom: "Atur ulang benih acak"
-        pushEvent: "Kirim event"
-        _pushEvent:
-          event: "Nama event"
-          message: "Pesan yang tampil ketika diaktifkan"
-          variable: "Variable untuk kirim"
-          no-variable: "Tidak ada"
-        callAiScript: "Panggil AiScript"
-        _callAiScript:
-          functionName: "Nama fungsi"
-    radioButton: "Pilihan"
-    _radioButton:
-      name: "Nama variabel"
-      title: "Judul"
-      values: "Daftar pilihan (dipisahkan dengan garis baru)"
-      default: "Nilai bawaan"
-  script:
-    categories:
-      flow: "Arus kendali"
-      logical: "Operasi logis"
-      operation: "Menghitung"
-      comparison: "Membandingkan"
-      random: "Acak"
-      value: "Nilai"
-      fn: "Fungsi"
-      text: "Operasi teks"
-      convert: "Mengubah"
-      list: "Daftar"
-    blocks:
-      text: "Teks"
-      multiLineText: "Teks (multibaris)"
-      textList: "Daftar teks"
-      _textList:
-        info: "Pisahkan setiap entri dengan baris baru"
-      strLen: "Panjang teks"
-      _strLen:
-        arg1: "Teks"
-      strPick: "Ekstrak karakter"
-      _strPick:
-        arg1: "Teks"
-        arg2: "Lokasi karakter"
-      strReplace: "Penggantian teks"
-      _strReplace:
-        arg1: "Teks"
-        arg2: "Teks yang akan diganti"
-        arg3: "Diganti dengan"
-      strReverse: "Balikkan teks"
-      _strReverse:
-        arg1: "Teks"
-      join: "Rangkaian teks"
-      _join:
-        arg1: "Daftar"
-        arg2: "Pemisah"
-      add: "Tambah"
-      _add:
-        arg1: "A"
-        arg2: "B"
-      subtract: "Kurangi"
-      _subtract:
-        arg1: "A"
-        arg2: "B"
-      multiply: "Kali"
-      _multiply:
-        arg1: "A"
-        arg2: "B"
-      divide: "Bagi"
-      _divide:
-        arg1: "A"
-        arg2: "B"
-      mod: "Sisa"
-      _mod:
-        arg1: "A"
-        arg2: "B"
-      round: "Bulat desimal"
-      _round:
-        arg1: "Angka"
-      eq: "A dan B adalah sama"
-      _eq:
-        arg1: "A"
-        arg2: "B"
-      notEq: "A dan B adalah berbeda"
-      _notEq:
-        arg1: "A"
-        arg2: "B"
-      and: "A DAN B"
-      _and:
-        arg1: "A"
-        arg2: "B"
-      or: "A ATAU B"
-      _or:
-        arg1: "A"
-        arg2: "B"
-      lt: "< A ikurang dari B"
-      _lt:
-        arg1: "A"
-        arg2: "B"
-      gt: "> A lebih dari B"
-      _gt:
-        arg1: "A"
-        arg2: "B"
-      ltEq: "<= A kurang dari sama dengan B"
-      _ltEq:
-        arg1: "A"
-        arg2: "B"
-      gtEq: ">= A lebih dari sama dengan B"
-      _gtEq:
-        arg1: "A"
-        arg2: "B"
-      if: "Cabang"
-      _if:
-        arg1: "Jika"
-        arg2: "Jika benar"
-        arg3: "Jika salah"
-      not: "BUKAN"
-      _not:
-        arg1: "NOT"
-      random: "Acak"
-      _random:
-        arg1: "Probabilitas"
-      rannum: "Angka acak"
-      _rannum:
-        arg1: "Nilai minimum"
-        arg2: "Nilai maksimum"
-      randomPick: "Pilih secara acak dari daftar"
-      _randomPick:
-        arg1: "Daftar"
-      dailyRandom: "Acak (bertahan sehari)"
-      _dailyRandom:
-        arg1: "Probabilitas"
-      dailyRannum: "Angka acak (bertahan sehari)"
-      _dailyRannum:
-        arg1: "Nilai minimum"
-        arg2: "Nilai maksimum"
-      dailyRandomPick: "Pilih secara acak dari daftar (bertahan sehari)"
-      _dailyRandomPick:
-        arg1: "Daftar"
-      seedRandom: "Acak (dengan seed)"
-      _seedRandom:
-        arg1: "Seed"
-        arg2: "Probabilitas"
-      seedRannum: "Angka acak (dengan seed)"
-      _seedRannum:
-        arg1: "Seed"
-        arg2: "Nilai minimum"
-        arg3: "Nilai maksimum"
-      seedRandomPick: "Pilih secara acak dari daftar (dengan seed)"
-      _seedRandomPick:
-        arg1: "Seed"
-        arg2: "Daftar"
-      DRPWPM: "Pilih secara acak dari daftar berbobot (bertahan sehari)"
-      _DRPWPM:
-        arg1: "Daftar teks"
-      pick: "Pilih dari daftar"
-      _pick:
-        arg1: "Daftar"
-        arg2: "Posisi"
-      listLen: "Dapatkan panjangnya dari daftar"
-      _listLen:
-        arg1: "Daftar"
-      number: "Angka"
-      stringToNumber: "Teks ke angka"
-      _stringToNumber:
-        arg1: "Teks"
-      numberToString: "Angka ke teks"
-      _numberToString:
-        arg1: "Angka"
-      splitStrByLine: "Pisahkan teks dengan baris baru"
-      _splitStrByLine:
-        arg1: "Teks"
-      ref: "Variabel"
-      aiScriptVar: "Variabel AiScript"
-      fn: "Fungsi"
-      _fn:
-        slots: "Slot"
-        slots-info: "Pisahkan setiap slot dengan baris baru"
-        arg1: "Keluaran"
-      for: "Ulangi"
-      _for:
-        arg1: "Jumlah angka untuk diulangi"
-        arg2: "Aksi"
-    typeError: "Slot {slot} menerima tipe \"{expect}\", sayangnya nilai yang disediakan adalah \"{actual}\"!"
-    thereIsEmptySlot: "Slot {slot} kosong!"
-    types:
-      string: "Teks"
-      number: "Angka"
-      boolean: "Markah"
-      array: "Daftar"
-      stringArray: "Daftar teks"
-    emptySlot: "Slot kosong"
-    enviromentVariables: "Variabel Lingkungan"
-    pageVariables: "Elemen halaman"
-    argVariables: "Masukan slot"
 _relayStatus:
   requesting: "Menunggu"
   accepted: "Disetujui"
@@ -1619,7 +1412,6 @@ _notification:
   youGotReply: "{name} membalas kamu"
   youGotQuote: "{name} mengutip kamu"
   youRenoted: "{name} me-renote kamu"
-  youGotPoll: "{name} memilih di angket kamu"
   youGotMessagingMessageFromUser: "{name} mengirimi kamu pesan"
   youGotMessagingMessageFromGroup: "Sebuah pesan telah dikirim ke grup {name}"
   youWereFollowed: "Mengikuti kamu"
@@ -1636,7 +1428,6 @@ _notification:
     renote: "Renote"
     quote: "Kutip"
     reaction: "Reaksi"
-    pollVote: "Memilih di angket"
     pollEnded: "Jajak pendapat berakhir"
     receiveFollowRequest: "Permintaan mengikuti diterima"
     followRequestAccepted: "Permintaan mengikuti disetujui"

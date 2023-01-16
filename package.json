@@ -1,50 +1,67 @@
 {
 	"name": "misskey",
-	"version": "12.119.2",
-	"codename": "indigo",
+	"version": "13.0.0",
+	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
+	"packageManager": "pnpm@7.24.3",
+	"workspaces": [
+		"packages/frontend",
+		"packages/backend",
+		"packages/sw"
+	],
 	"private": true,
 	"scripts": {
-		"postinstall": "node ./scripts/install-packages.js",
-		"build": "node ./scripts/build.js",
-		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
-		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
-		"init": "npm run migrate",
-		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
-		"migrateandstart": "npm run migrate && npm run start",
-		"gulp": "gulp build",
-		"watch": "npm run dev",
+		"build-pre": "node ./scripts/build-pre.js",
+		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
+		"start": "cd packages/backend && node ./built/boot/index.js",
+		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
+		"init": "pnpm migrate",
+		"migrate": "cd packages/backend && pnpm typeorm migration:run -d ormconfig.js",
+		"migrateandstart": "pnpm migrate && pnpm start",
+		"gulp": "pnpm exec gulp build",
+		"watch": "pnpm dev",
 		"dev": "node ./scripts/dev.js",
-		"lint": "node ./scripts/lint.js",
-		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
-		"cy:run": "cypress run",
-		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
-		"mocha": "cd packages/backend && cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
-		"test": "npm run mocha",
-		"format": "gulp format",
+		"lint": "pnpm -r lint",
+		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
+		"cy:run": "pnpm cypress run",
+		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+		"jest": "cd packages/backend && pnpm cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
+		"jest-and-coverage": "cd packages/backend && pnpm cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
+		"test": "pnpm jest",
+		"test-and-coverage": "pnpm jest-and-coverage",
+		"format": "pnpm exec gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "npm run clean-all"
+		"cleanall": "pnpm clean-all"
+	},
+	"resolutions": {
+		"chokidar": "^3.3.1",
+		"lodash": "^4.17.21"
 	},
 	"dependencies": {
 		"execa": "5.1.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
 		"gulp-rename": "2.0.0",
-		"gulp-replace": "1.1.3",
+		"gulp-replace": "1.1.4",
 		"gulp-terser": "2.1.0",
-		"js-yaml": "4.1.0"
+		"js-yaml": "4.1.0",
+		"typescript": "4.9.4"
 	},
 	"devDependencies": {
-		"@types/gulp": "4.0.9",
+		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/parser": "5.36.2",
+		"@typescript-eslint/eslint-plugin": "5.48.1",
+		"@typescript-eslint/parser": "5.48.1",
 		"cross-env": "7.0.3",
-		"cypress": "10.7.0",
-		"start-server-and-test": "1.14.0",
-		"typescript": "4.8.3"
+		"cypress": "12.3.0",
+		"eslint": "^8.31.0",
+		"start-server-and-test": "1.15.2"
+	},
+	"optionalDependencies": {
+		"@tensorflow/tfjs-core": "^4.2.0"
 	}
 }

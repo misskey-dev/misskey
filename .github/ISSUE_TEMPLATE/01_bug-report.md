@@ -10,6 +10,7 @@ assignees: ''
 <!--
 Thanks for reporting!
 First, in order to avoid duplicate Issues, please search to see if the problem you found has already been reported.
+Also, If you are NOT owner/admin of server, PLEASE DONT REPORT SERVER SPECIFIC ISSUES TO HERE! (e.g. feature XXX is not working in misskey.example) Please try with another misskey servers, and if your issue is only reproducible with specific server, contact your server's owner/admin first.
 -->
 
 ## 💡 Summary

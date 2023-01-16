@@ -1,4 +1,4 @@
-import { Schema } from '@/misc/schema.js';
+import type { Schema } from '@/misc/schema.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -36,9 +36,7 @@ import * as ep___admin_federation_updateInstance from './endpoints/admin/federat
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
-import * as ep___admin_invite from './endpoints/admin/invite.js';
-import * as ep___admin_moderators_add from './endpoints/admin/moderators/add.js';
-import * as ep___admin_moderators_remove from './endpoints/admin/moderators/remove.js';
+import * as ep___invite from './endpoints/invite.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -54,14 +52,19 @@ import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderation-logs.js';
 import * as ep___admin_showUser from './endpoints/admin/show-user.js';
 import * as ep___admin_showUsers from './endpoints/admin/show-users.js';
-import * as ep___admin_silenceUser from './endpoints/admin/silence-user.js';
 import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
-import * as ep___admin_unsilenceUser from './endpoints/admin/unsilence-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
-import * as ep___admin_vacuum from './endpoints/admin/vacuum.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
 import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
+import * as ep___admin_roles_create from './endpoints/admin/roles/create.js';
+import * as ep___admin_roles_delete from './endpoints/admin/roles/delete.js';
+import * as ep___admin_roles_list from './endpoints/admin/roles/list.js';
+import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
+import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
+import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
+import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
+import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -99,6 +102,7 @@ import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
 import * as ep___charts_user_following from './endpoints/charts/user/following.js';
 import * as ep___charts_user_notes from './endpoints/charts/user/notes.js';
+import * as ep___charts_user_pv from './endpoints/charts/user/pv.js';
 import * as ep___charts_user_reactions from './endpoints/charts/user/reactions.js';
 import * as ep___charts_users from './endpoints/charts/users.js';
 import * as ep___clips_addNote from './endpoints/clips/add-note.js';
@@ -176,6 +180,7 @@ import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
 import * as ep___i_exportFollowing from './endpoints/i/export-following.js';
 import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
+import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
@@ -218,6 +223,7 @@ import * as ep___messaging_messages_create from './endpoints/messaging/messages/
 import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
 import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
+import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
@@ -253,8 +259,6 @@ import * as ep___notes_timeline from './endpoints/notes/timeline.js';
 import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
-import * as ep___notes_watching_create from './endpoints/notes/watching/create.js';
-import * as ep___notes_watching_delete from './endpoints/notes/watching/delete.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
 import * as ep___notifications_read from './endpoints/notifications/read.js';
@@ -266,6 +270,15 @@ import * as ep___pages_like from './endpoints/pages/like.js';
 import * as ep___pages_show from './endpoints/pages/show.js';
 import * as ep___pages_unlike from './endpoints/pages/unlike.js';
 import * as ep___pages_update from './endpoints/pages/update.js';
+import * as ep___flash_create from './endpoints/flash/create.js';
+import * as ep___flash_delete from './endpoints/flash/delete.js';
+import * as ep___flash_featured from './endpoints/flash/featured.js';
+import * as ep___flash_like from './endpoints/flash/like.js';
+import * as ep___flash_show from './endpoints/flash/show.js';
+import * as ep___flash_unlike from './endpoints/flash/unlike.js';
+import * as ep___flash_update from './endpoints/flash/update.js';
+import * as ep___flash_my from './endpoints/flash/my.js';
+import * as ep___flash_myLikes from './endpoints/flash/my-likes.js';
 import * as ep___ping from './endpoints/ping.js';
 import * as ep___pinnedUsers from './endpoints/pinned-users.js';
 import * as ep___promo_read from './endpoints/promo/read.js';
@@ -274,6 +287,8 @@ import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
 import * as ep___serverInfo from './endpoints/server-info.js';
 import * as ep___stats from './endpoints/stats.js';
+import * as ep___sw_show_registration from './endpoints/sw/show-registration.js';
+import * as ep___sw_update_registration from './endpoints/sw/update-registration.js';
 import * as ep___sw_register from './endpoints/sw/register.js';
 import * as ep___sw_unregister from './endpoints/sw/unregister.js';
 import * as ep___test from './endpoints/test.js';
@@ -314,7 +329,7 @@ import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
-import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
+import * as ep___retention from './endpoints/retention.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -353,9 +368,7 @@ const eps = [
 	['admin/get-index-stats', ep___admin_getIndexStats],
 	['admin/get-table-stats', ep___admin_getTableStats],
 	['admin/get-user-ips', ep___admin_getUserIps],
-	['admin/invite', ep___admin_invite],
-	['admin/moderators/add', ep___admin_moderators_add],
-	['admin/moderators/remove', ep___admin_moderators_remove],
+	['invite', ep___invite],
 	['admin/promo/create', ep___admin_promo_create],
 	['admin/queue/clear', ep___admin_queue_clear],
 	['admin/queue/deliver-delayed', ep___admin_queue_deliverDelayed],
@@ -371,14 +384,19 @@ const eps = [
 	['admin/show-moderation-logs', ep___admin_showModerationLogs],
 	['admin/show-user', ep___admin_showUser],
 	['admin/show-users', ep___admin_showUsers],
-	['admin/silence-user', ep___admin_silenceUser],
 	['admin/suspend-user', ep___admin_suspendUser],
-	['admin/unsilence-user', ep___admin_unsilenceUser],
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
-	['admin/vacuum', ep___admin_vacuum],
 	['admin/delete-account', ep___admin_deleteAccount],
 	['admin/update-user-note', ep___admin_updateUserNote],
+	['admin/roles/create', ep___admin_roles_create],
+	['admin/roles/delete', ep___admin_roles_delete],
+	['admin/roles/list', ep___admin_roles_list],
+	['admin/roles/show', ep___admin_roles_show],
+	['admin/roles/update', ep___admin_roles_update],
+	['admin/roles/assign', ep___admin_roles_assign],
+	['admin/roles/unassign', ep___admin_roles_unassign],
+	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -416,6 +434,7 @@ const eps = [
 	['charts/user/drive', ep___charts_user_drive],
 	['charts/user/following', ep___charts_user_following],
 	['charts/user/notes', ep___charts_user_notes],
+	['charts/user/pv', ep___charts_user_pv],
 	['charts/user/reactions', ep___charts_user_reactions],
 	['charts/users', ep___charts_users],
 	['clips/add-note', ep___clips_addNote],
@@ -493,6 +512,7 @@ const eps = [
 	['i/export-following', ep___i_exportFollowing],
 	['i/export-mute', ep___i_exportMute],
 	['i/export-notes', ep___i_exportNotes],
+	['i/export-favorites', ep___i_exportFavorites],
 	['i/export-user-lists', ep___i_exportUserLists],
 	['i/favorites', ep___i_favorites],
 	['i/gallery/likes', ep___i_gallery_likes],
@@ -535,6 +555,7 @@ const eps = [
 	['messaging/messages/delete', ep___messaging_messages_delete],
 	['messaging/messages/read', ep___messaging_messages_read],
 	['meta', ep___meta],
+	['emojis', ep___emojis],
 	['miauth/gen-token', ep___miauth_genToken],
 	['mute/create', ep___mute_create],
 	['mute/delete', ep___mute_delete],
@@ -570,8 +591,6 @@ const eps = [
 	['notes/translate', ep___notes_translate],
 	['notes/unrenote', ep___notes_unrenote],
 	['notes/user-list-timeline', ep___notes_userListTimeline],
-	['notes/watching/create', ep___notes_watching_create],
-	['notes/watching/delete', ep___notes_watching_delete],
 	['notifications/create', ep___notifications_create],
 	['notifications/mark-all-as-read', ep___notifications_markAllAsRead],
 	['notifications/read', ep___notifications_read],
@@ -583,6 +602,15 @@ const eps = [
 	['pages/show', ep___pages_show],
 	['pages/unlike', ep___pages_unlike],
 	['pages/update', ep___pages_update],
+	['flash/create', ep___flash_create],
+	['flash/delete', ep___flash_delete],
+	['flash/featured', ep___flash_featured],
+	['flash/like', ep___flash_like],
+	['flash/show', ep___flash_show],
+	['flash/unlike', ep___flash_unlike],
+	['flash/update', ep___flash_update],
+	['flash/my', ep___flash_my],
+	['flash/my-likes', ep___flash_myLikes],
 	['ping', ep___ping],
 	['pinned-users', ep___pinnedUsers],
 	['promo/read', ep___promo_read],
@@ -591,6 +619,8 @@ const eps = [
 	['reset-password', ep___resetPassword],
 	['server-info', ep___serverInfo],
 	['stats', ep___stats],
+	['sw/show-registration', ep___sw_show_registration],
+	['sw/update-registration', ep___sw_update_registration],
 	['sw/register', ep___sw_register],
 	['sw/unregister', ep___sw_unregister],
 	['test', ep___test],
@@ -630,8 +660,8 @@ const eps = [
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
-	['admin/drive-capacity-override', ep___admin_driveCapOverride],
 	['fetch-rss', ep___fetchRss],
+	['retention', ep___retention],
 ];
 
 export interface IEndpointMeta {
@@ -656,14 +686,16 @@ export interface IEndpointMeta {
 	readonly requireCredential?: boolean;
 
 	/**
-	 * 管理者のみ使えるエンドポイントか否か
+	 * isModeratorなロールを必要とするか
+	 */
+	readonly requireModerator?: boolean;
+
+	/**
+	 * isAdministratorなロールを必要とするか
 	 */
 	readonly requireAdmin?: boolean;
 
-	/**
-	 * 管理者またはモデレーターのみ使えるエンドポイントか否か
-	 */
-	readonly requireModerator?: boolean;
+	readonly requireRolePolicy?: string;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ
@@ -727,16 +759,14 @@ export interface IEndpointMeta {
 
 export interface IEndpoint {
 	name: string;
-	exec: any;
 	meta: IEndpointMeta;
 	params: Schema;
 }
 
-const endpoints: IEndpoint[] = eps.map(([name, ep]) => {
+const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {
 	return {
 		name: name,
-		exec: ep.default,
-		meta: ep.meta || {},
+		meta: ep.meta ?? {},
 		params: ep.paramDef,
 	};
 });

@@ -1,9 +1,11 @@
 import * as crypto from 'node:crypto';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { AuthSessions, AccessTokens, Apps } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['auth'],
@@ -30,49 +32,65 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch token
-	const session = await AuthSessions
-		.findOneBy({ token: ps.token });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.appsRepository)
+		private appsRepository: AppsRepository,
 
-	if (session == null) {
-		throw new ApiError(meta.errors.noSuchSession);
-	}
+		@Inject(DI.authSessionsRepository)
+		private authSessionsRepository: AuthSessionsRepository,
 
-	// Generate access token
-	const accessToken = secureRndstr(32, true);
+		@Inject(DI.accessTokensRepository)
+		private accessTokensRepository: AccessTokensRepository,
 
-	// Fetch exist access token
-	const exist = await AccessTokens.findOneBy({
-		appId: session.appId,
-		userId: user.id,
-	});
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch token
+			const session = await this.authSessionsRepository
+				.findOneBy({ token: ps.token });
 
-	if (exist == null) {
-		// Lookup app
-		const app = await Apps.findOneByOrFail({ id: session.appId });
+			if (session == null) {
+				throw new ApiError(meta.errors.noSuchSession);
+			}
 
-		// Generate Hash
-		const sha256 = crypto.createHash('sha256');
-		sha256.update(accessToken + app.secret);
-		const hash = sha256.digest('hex');
+			// Generate access token
+			const accessToken = secureRndstr(32, true);
 
-		const now = new Date();
+			// Fetch exist access token
+			const exist = await this.accessTokensRepository.findOneBy({
+				appId: session.appId,
+				userId: me.id,
+			});
 
-		// Insert access token doc
-		await AccessTokens.insert({
-			id: genId(),
-			createdAt: now,
-			lastUsedAt: now,
-			appId: session.appId,
-			userId: user.id,
-			token: accessToken,
-			hash: hash,
+			if (exist == null) {
+				// Lookup app
+				const app = await this.appsRepository.findOneByOrFail({ id: session.appId });
+
+				// Generate Hash
+				const sha256 = crypto.createHash('sha256');
+				sha256.update(accessToken + app.secret);
+				const hash = sha256.digest('hex');
+
+				const now = new Date();
+
+				// Insert access token doc
+				await this.accessTokensRepository.insert({
+					id: this.idService.genId(),
+					createdAt: now,
+					lastUsedAt: now,
+					appId: session.appId,
+					userId: me.id,
+					token: accessToken,
+					hash: hash,
+				});
+			}
+
+			// Update session
+			await this.authSessionsRepository.update(session.id, {
+				userId: me.id,
+			});
 		});
 	}
-
-	// Update session
-	await AuthSessions.update(session.id, {
-		userId: user.id,
-	});
-});
+}
