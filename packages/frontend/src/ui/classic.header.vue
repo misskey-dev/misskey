@@ -29,7 +29,7 @@
 				<i class="ti ti-settings ti-fw"></i>
 			</MkA>
 			<button v-click-anime class="item _button account" @click="openAccountMenu">
-				<MkAvatar :user="$i" class="avatar" :disable-link="true"/><MkAcct class="acct" :user="$i"/>
+				<MkAvatar :user="$i" class="avatar"/><MkAcct class="acct" :user="$i"/>
 			</button>
 			<div class="post" @click="post">
 				<MkButton class="button" gradate full rounded>

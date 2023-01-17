@@ -9,7 +9,17 @@
 You should also include the user name that made the change.
 -->
 
-## 13.0.0 (unreleased)
+## 13.x.x (unreleased)
+
+### Improvements
+- Playのプリセットを追加
+- AiScript GUIの強化
+- 存在しないカスタム絵文字をテキストで表示するように
+
+### Bugfixes
+- playを削除する手段がなかったのを修正
+
+## 13.0.0 (2023/01/16)
 
 ### TL;DR
 - New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
@@ -32,13 +42,16 @@ You should also include the user name that made the change.
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Yarnからpnpmに移行されました
+  corepackの有効化を推奨します: `sudo corepack enable`
 - インスタンスブロックはサブドメインにも適用されるようになります
 - ロールの導入に伴い、いくつかの機能がロールと統合されました
 	- モデレーターはロールに統合されました。今までのモデレーター情報は失われるため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
 	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
 	- ユーザーごとのドライブ容量設定はロールに統合されました。
-	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールのドライブ容量を編集してください。
+	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールもしくはコンディショナルロールでドライブ容量を編集してください。
 	- LTL/GTLの解放状態はロールに統合されました。
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+  https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
 - ノートのウォッチ機能が削除されました
@@ -123,6 +136,7 @@ You should also include the user name that made the change.
 - Client: add new mfm function (position, fg, bg) @syuilo
 - Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
+- Client: AiScriptからカスタム絵文字一覧を参照できるように @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
 - Client: clicker game @syuilo

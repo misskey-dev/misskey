@@ -1,6 +1,6 @@
 <template>
 <div :class="$style.root">
-	<MkAvatar :class="$style.avatar" :user="note.user"/>
+	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>

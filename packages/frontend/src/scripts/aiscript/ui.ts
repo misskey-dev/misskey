@@ -39,6 +39,7 @@ export type AsUiMfm = AsUiComponentBase & {
 	type: 'mfm';
 	text?: string;
 	size?: number;
+	bold?: boolean;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
 };
@@ -49,6 +50,7 @@ export type AsUiButton = AsUiComponentBase & {
 	onClick?: () => void;
 	primary?: boolean;
 	rounded?: boolean;
+	disabled?: boolean;
 };
 
 export type AsUiButtons = AsUiComponentBase & {
@@ -208,6 +210,8 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	if (text) utils.assertString(text);
 	const size = def.value.get('size');
 	if (size) utils.assertNumber(size);
+	const bold = def.value.get('bold');
+	if (bold) utils.assertBoolean(bold);
 	const color = def.value.get('color');
 	if (color) utils.assertString(color);
 	const font = def.value.get('font');
@@ -216,6 +220,7 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	return {
 		text: text?.value,
 		size: size?.value,
+		bold: bold?.value,
 		color: color?.value,
 		font: font?.value,
 	};
@@ -298,6 +303,8 @@ function getButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	if (primary) utils.assertBoolean(primary);
 	const rounded = def.value.get('rounded');
 	if (rounded) utils.assertBoolean(rounded);
+	const disabled = button.value.get('disabled');
+	if (disabled) utils.assertBoolean(disabled);
 
 	return {
 		text: text?.value,
@@ -306,6 +313,7 @@ function getButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 		},
 		primary: primary?.value,
 		rounded: rounded?.value,
+		disabled: disabled?.value,
 	};
 }
 
@@ -326,6 +334,8 @@ function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn,
 			if (primary) utils.assertBoolean(primary);
 			const rounded = button.value.get('rounded');
 			if (rounded) utils.assertBoolean(rounded);
+			const disabled = button.value.get('disabled');
+			if (disabled) utils.assertBoolean(disabled);
 
 			return {
 				text: text.value,
@@ -334,6 +344,7 @@ function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn,
 				},
 				primary: primary?.value,
 				rounded: rounded?.value,
+				disabled: disabled?.value,
 			};
 		}) : [],
 	};

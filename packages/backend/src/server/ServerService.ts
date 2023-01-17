@@ -14,6 +14,7 @@ import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -22,7 +23,6 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ServerService {
@@ -101,7 +101,12 @@ export class ServerService {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
 			if (emoji == null) {
-				return await reply.redirect('/static-assets/emoji-unknown.png');
+				if ('fallback' in request.query) {
+					return await reply.redirect('/static-assets/emoji-unknown.png');
+				} else {
+					reply.code(404);
+					return;
+				}
 			}
 
 			const url = new URL('/proxy/emoji.webp', this.config.url);
