@@ -1,11 +1,16 @@
 <template>
+<MkStickyContainer>
+<template #header>
+	<MkPageHeader />
+</template>
+<MkSpacer>
 <div
 	ref="rootEl"
-	class="root"
+	:class="$style['root'}"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<div class="body">
+	<div :class="$style['body']">
 		<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -44,6 +49,8 @@
 		<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
 	</footer>
 </div>
+</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -303,103 +310,99 @@ definePageMetadata(computed(() => !fetching ? user ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .root {
 	display: content;
+}
 
-	> .body {
-		min-height: 80%;
+.body {
+	min-height: 80%;
+}
 
-		.more {
-			display: block;
-			margin: 16px auto;
-			padding: 0 12px;
-			line-height: 24px;
-			color: #fff;
-			background: rgba(#000, 0.3);
-			border-radius: 12px;
+.more {
+	display: block;
+	margin: 16px auto;
+	padding: 0 12px;
+	line-height: 24px;
+	color: #fff;
+	background: rgba(#000, 0.3);
+	border-radius: 12px;
+	&:hover {
+		background: rgba(#000, 0.4);
+	}
+	&:active {
+		background: rgba(#000, 0.5);
+	}
+	> i {
+		margin-right: 4px;
+	}
+}
 
-			&:hover {
-				background: rgba(#000, 0.4);
-			}
+.fetching {
+	cursor: wait;
+}
 
-			&:active {
-				background: rgba(#000, 0.5);
-			}
+.messages {
+	padding: 8px 0;
 
-			&.fetching {
-				cursor: wait;
-			}
+	> ::v-deep(*) {
+		margin-bottom: 16px;
+	}
+}
 
-			> i {
-				margin-right: 4px;
-			}
-		}
+.footer {
+	width: 100%;
+	position: sticky;
+	z-index: 2;
+	padding-top: 8px;
+	bottom: 0;
+	bottom: var(--minBottomSpacing);
+}
+.new-message {
+	width: 100%;
+	padding-bottom: 8px;
+	text-align: center;
+}
 
-		.messages {
-			padding: 8px 0;
+.new-message-button {
+	display: inline-block;
+	margin: 0;
+	padding: 0 12px;
+	line-height: 32px;
+	font-size: 12px;
+	border-radius: 16px;
+}
 
-			> ::v-deep(*) {
-				margin-bottom: 16px;
-			}
-		}
+.new-message-icon {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+.typers {
+	position: absolute;
+	bottom: 100%;
+	padding: 0 8px 0 8px;
+	font-size: 0.9em;
+	color: var(--fgTransparentWeak);
+}
+
+.users {
+	> .user + .user:before {
+		content: ", ";
+		font-weight: normal;
 	}
 
-	> footer {
-		width: 100%;
-		position: sticky;
-		z-index: 2;
-		padding-top: 8px;
-		bottom: 0;
-		bottom: env(safe-area-inset-bottom, 0px);
-
-		> .new-message {
-			width: 100%;
-			padding-bottom: 8px;
-			text-align: center;
-
-			> button {
-				display: inline-block;
-				margin: 0;
-				padding: 0 12px;
-				line-height: 32px;
-				font-size: 12px;
-				border-radius: 16px;
-
-				> i {
-					display: inline-block;
-					margin-right: 8px;
-				}
-			}
-		}
-
-		> .typers {
-			position: absolute;
-			bottom: 100%;
-			padding: 0 8px 0 8px;
-			font-size: 0.9em;
-			color: var(--fgTransparentWeak);
-
-			> .users {
-				> .user + .user:before {
-					content: ", ";
-					font-weight: normal;
-				}
-
-				> .user:last-of-type:after {
-					content: " ";
-				}
-			}
-		}
-
-		> .form {
-			max-height: 12em;
-			overflow-y: scroll;
-			border-top: solid 0.5px var(--divider);
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
-		}
+	> .user:last-of-type:after {
+		content: " ";
 	}
+}
+
+.form {
+	max-height: 12em;
+	overflow-y: scroll;
+	border-top: solid 0.5px var(--divider);
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 }
 
 .fade-enter-active, .fade-leave-active {
