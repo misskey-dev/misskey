@@ -3,10 +3,9 @@
 <template #header>
 	<MkPageHeader />
 </template>
-<MkSpacer>
 <div
 	ref="rootEl"
-	:class="$style['root'}"
+	:class="$style['root']"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
@@ -22,7 +21,7 @@
 				<MkDateSeparatedList
 					v-if="messages.length > 0"
 					v-slot="{ item: message }"
-					:class="{ messages: true, 'deny-move-transition': pFetching }"
+					:class="{ [$style['messages']]: true, 'deny-move-transition': pFetching }"
 					:items="messages"
 					direction="up"
 					reversed
@@ -32,24 +31,25 @@
 			</template>
 		</MkPagination>
 	</div>
-	<footer>
-		<div v-if="typers.length > 0" class="typers">
-			<I18n :src="i18n.ts.typingUsers" text-tag="span" class="users">
+	<footer :class="$style['footer']">
+		<div v-if="typers.length > 0" :class="$style['typers']">
+			<I18n :src="i18n.ts.typingUsers" text-tag="span">
 				<template #users>
-					<b v-for="typer in typers" :key="typer.id" class="user">{{ typer.username }}</b>
+					<b v-for="typer in typers" :key="typer.id" :class="$style['user']">{{ typer.username }}</b>
 				</template>
 			</I18n>
 			<MkEllipsis/>
 		</div>
 		<Transition :name="animation ? 'fade' : ''">
-			<div v-show="showIndicator" class="new-message">
-				<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas ti-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
+			<div v-show="showIndicator" :class="$style['new-message']">
+				<button class="_buttonPrimary" @click="onIndicatorClick" :class="$style['new-message-button']">
+					<i class="fas ti-fw fa-arrow-circle-down" :class="$style['new-message-icon']"></i>{{ i18n.ts.newMessageExists }}
+				</button>
 			</div>
 		</Transition>
-		<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
+		<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" :class="$style['form']"/>
 	</footer>
 </div>
-</MkSpacer>
 </MkStickyContainer>
 </template>
 
@@ -343,9 +343,9 @@ definePageMetadata(computed(() => !fetching ? user ? {
 }
 
 .messages {
-	padding: 8px 0;
+	padding: 16px 0 0;
 
-	> ::v-deep(*) {
+	> * {
 		margin-bottom: 16px;
 	}
 }
@@ -358,6 +358,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 	bottom: 0;
 	bottom: var(--minBottomSpacing);
 }
+
 .new-message {
 	width: 100%;
 	padding-bottom: 8px;
@@ -386,15 +387,14 @@ definePageMetadata(computed(() => !fetching ? user ? {
 	color: var(--fgTransparentWeak);
 }
 
-.users {
-	> .user + .user:before {
-		content: ", ";
-		font-weight: normal;
-	}
 
-	> .user:last-of-type:after {
-		content: " ";
-	}
+.user + .user:before {
+	content: ", ";
+	font-weight: normal;
+}
+
+.user:last-of-type:after {
+	content: " ";
 }
 
 .form {
