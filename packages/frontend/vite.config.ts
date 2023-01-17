@@ -97,6 +97,7 @@ export default defineConfig(({ command, mode }) => {
 				output: {
 					manualChunks: {
 						vue: ['vue'],
+						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
 					},
 				},
 			},

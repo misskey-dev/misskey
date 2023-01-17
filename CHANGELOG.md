@@ -12,6 +12,8 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
+- Playのプリセットを追加
+- AiScript GUIの強化
 - 存在しないカスタム絵文字をテキストで表示するように
 
 ### Bugfixes
