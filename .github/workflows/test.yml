@@ -110,12 +110,12 @@ jobs:
     - name: ALSA Env
       run: echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
     - name: Cypress run
-      uses: cypress-io/github-action@v4
+      uses: cypress-io/github-action@v5.0.5
       with:
         install: false
         start: pnpm start:test
         wait-on: 'http://localhost:61812'
-        headless: false
+        headed: false
         browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v2
       if: failure()
