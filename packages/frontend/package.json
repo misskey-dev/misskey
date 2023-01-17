@@ -2,7 +2,7 @@
 	"name": "frontend",
 	"private": true,
 	"scripts": {
-		"watch": "vite",
+		"watch": "vite build --watch",
 		"build": "vite build",
 		"lint": "vue-tsc --noEmit && eslint --quiet \"src/**/*.{ts,vue}\""
 	},
