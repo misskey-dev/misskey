@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 13.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- playを削除する手段がなかったのを修正
+
 ## 13.0.0 (2023/01/16)
 
 ### TL;DR

@@ -16,6 +16,7 @@
 			<div class="_buttons">
 				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
@@ -210,6 +211,19 @@ function show() {
 	} else {
 		os.pageWindow(`/play/${flash.id}`);
 	}
+}
+
+async function del() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('deleteAreYouSure', { x: flash.title }),
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('flash/delete', {
+		flashId: props.id,
+	});
+	router.push('/play');
 }
 
 const headerActions = $computed(() => []);
