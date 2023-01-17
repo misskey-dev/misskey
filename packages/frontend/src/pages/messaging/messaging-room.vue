@@ -355,7 +355,6 @@ definePageMetadata(computed(() => !fetching ? user ? {
 	position: sticky;
 	z-index: 2;
 	padding-top: 8px;
-	bottom: 0;
 	bottom: var(--minBottomSpacing);
 }
 
