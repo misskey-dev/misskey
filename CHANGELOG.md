@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
+- 存在しないカスタム絵文字をテキストで表示するように
 
 ### Bugfixes
 - playを削除する手段がなかったのを修正
