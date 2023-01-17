@@ -1,4 +1,4 @@
-user-agent: *
-allow: /
-
-# todo: sitemap
+User-agent: *
+Disallow: /tags/
+Disallow: /instance-info/
+Disallow: /explore/

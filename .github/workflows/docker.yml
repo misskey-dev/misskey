@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: misskey/misskey
+          images: laoxong/misskey
           tags: |
             type=edge
             type=ref,event=pr
