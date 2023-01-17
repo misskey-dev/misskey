@@ -213,6 +213,14 @@ export class UserProfile {
 	})
 	public mutingNotificationTypes: typeof notificationTypes[number][];
 
+	@Column('jsonb', {
+		default: [],
+	})
+	public achievements: {
+		name: string;
+		unlockcedAt: string;
+	}[];
+
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {
