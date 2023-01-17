@@ -26,9 +26,16 @@ const props = defineProps<{
 const query = props.query;
 
 if ($i != null) {
-	if (query.startsWith('https://') || (query.startsWith('@') && !query.includes(' '))) {
+	if (
+		query.startsWith('https://')
+		||
+		query.startsWith('web+ap://')
+		||
+		(query.startsWith('@') && !query.includes(' '))
+	) {
+		const uri = query.replace(/^web\+ap:\/\//, 'https://');
 		const promise = os.api('ap/show', {
-			uri: props.query,
+			uri: uri,
 		});
 
 		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
