@@ -493,6 +493,7 @@ export class UserEntityService implements OnModuleInit {
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
 				showTimelineReplies: user.showTimelineReplies ?? falsy,
+				achievements: profile!.achievements,
 			} : {}),
 
 			...(opts.includeSecrets ? {

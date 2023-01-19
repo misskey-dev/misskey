@@ -961,6 +961,9 @@ _achievements:
       title: "夜行性"
       description: "深夜にノートを投稿した"
       flavor: "Misskeyにはいつも人がいる"
+    _haveYouReadIt:
+      title: "ちゃんと読んだ？"
+      description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"
 
 _role:
   new: "ロールの作成"

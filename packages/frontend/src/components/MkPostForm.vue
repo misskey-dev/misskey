@@ -98,6 +98,7 @@ import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage';
+import { claimAchievement } from '@/scripts/achievements';
 
 const modal = inject('modal');
 
@@ -630,12 +631,12 @@ async function post(ev?: MouseEvent) {
 
 			incNotesCount();
 			if (notesCount === 1) {
-				os.api('i/claim-achievement', { name: 'justSettingUpMyMsky' });
+				claimAchievement('justSettingUpMyMsky');
 			}
 
 			const text = postData.text?.toLowerCase() ?? '';
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
-				os.api('i/claim-achievement', { name: 'iLoveMisskey' });
+				claimAchievement('iLoveMisskey');
 			}
 		});
 	}).catch(err => {

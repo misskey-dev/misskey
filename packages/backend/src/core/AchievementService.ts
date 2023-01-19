@@ -11,6 +11,7 @@ const ACHIEVEMENT_TYPES = [
 	'myFirstFollower',
 	'iLoveMisskey',
 	'nocturnality',
+	'haveYouReadIt',
 ] as const;
 
 @Injectable()
