@@ -938,26 +938,29 @@ cannotPerformTemporary: "一時的に利用できません"
 cannotPerformTemporaryDescription: "操作回数が制限を超過するため一時的に利用できません。しばらく時間を置いてから再度お試しください。"
 preset: "プリセット"
 selectFromPresets: "プリセットから選択"
+achievements: "実績"
 
 _achievements:
-  _justSettingUpMyMsky:
-    title: "just setting up my msky"
-    description: "初めてノートを投稿した。"
-    flavor: "良いMisskeyライフを！"
-  _myFirstFollow:
-    title: "はじめてのフォロー"
-    description: "初めてフォローした。"
-  _myFirstFollower:
-    title: "はじめてのフォロワー"
-    description: "初めてフォローされた。"
-  _iLoveMisskey:
-    title: "I Love Misskey"
-    description: "\"I ❤ #Misskey\"を投稿した。"
-    flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
-  _nocturnality:
-    title: "夜行性"
-    description: "深夜にノートを投稿した。"
-    flavor: "Misskeyにはいつも人がいる"
+  earnedAt: "獲得日時"
+  _types:
+    _justSettingUpMyMsky:
+      title: "just setting up my msky"
+      description: "初めてノートを投稿した"
+      flavor: "良いMisskeyライフを！"
+    _myFirstFollow:
+      title: "はじめてのフォロー"
+      description: "初めてフォローした"
+    _myFirstFollower:
+      title: "はじめてのフォロワー"
+      description: "初めてフォローされた"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "\"I ❤ #Misskey\"を投稿した"
+      flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
+    _nocturnality:
+      title: "夜行性"
+      description: "深夜にノートを投稿した"
+      flavor: "Misskeyにはいつも人がいる"
 
 _role:
   new: "ロールの作成"
@@ -1655,6 +1658,7 @@ _notification:
   pollEnded: "アンケートの結果が出ました"
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
+  achievementEarned: "実績を獲得"
 
   _types:
     all: "すべて"

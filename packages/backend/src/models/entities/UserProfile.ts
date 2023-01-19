@@ -218,7 +218,7 @@ export class UserProfile {
 	})
 	public achievements: {
 		name: string;
-		unlockcedAt: string;
+		unlockedAt: number;
 	}[];
 
 	//#region Denormalized fields

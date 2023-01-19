@@ -93,7 +93,7 @@ import { defaultStore, notePostInterruptors, postFormActions } from '@/store';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
-import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
+import { $i, notesCount, incNotesCount, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -627,6 +627,16 @@ async function post(ev?: MouseEvent) {
 			}
 			posting = false;
 			postAccount = null;
+
+			incNotesCount();
+			if (notesCount === 1) {
+				os.api('i/claim-achievement', { name: 'justSettingUpMyMsky' });
+			}
+
+			const text = postData.text?.toLowerCase() ?? '';
+			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
+				os.api('i/claim-achievement', { name: 'iLoveMisskey' });
+			}
 		});
 	}).catch(err => {
 		posting = false;

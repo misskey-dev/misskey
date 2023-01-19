@@ -428,6 +428,10 @@ export const routes = [{
 	component: page(() => import('./pages/favorites.vue')),
 	loginRequired: true,
 }, {
+	path: '/my/achievements',
+	component: page(() => import('./pages/achievements.vue')),
+	loginRequired: true,
+}, {
 	name: 'messaging',
 	path: '/my/messaging',
 	component: page(() => import('./pages/messaging/index.vue')),
