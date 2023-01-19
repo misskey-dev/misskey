@@ -939,6 +939,26 @@ cannotPerformTemporaryDescription: "操作回数が制限を超過するため�
 preset: "プリセット"
 selectFromPresets: "プリセットから選択"
 
+_achievements:
+  _justSettingUpMyMsky:
+    title: "just setting up my msky"
+    description: "初めてノートを投稿した。"
+    flavor: "良いMisskeyライフを！"
+  _myFirstFollow:
+    title: "はじめてのフォロー"
+    description: "初めてフォローした。"
+  _myFirstFollower:
+    title: "はじめてのフォロワー"
+    description: "初めてフォローされた。"
+  _iLoveMisskey:
+    title: "I Love Misskey"
+    description: "\"I ❤ #Misskey\"を投稿した。"
+    flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
+  _nocturnality:
+    title: "夜行性"
+    description: "深夜にノートを投稿した。"
+    flavor: "Misskeyにはいつも人がいる"
+
 _role:
   new: "ロールの作成"
   edit: "ロールの編集"
