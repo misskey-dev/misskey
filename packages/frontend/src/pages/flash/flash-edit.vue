@@ -95,6 +95,85 @@ Ui:render([
 ])
 `;
 
+const PRESET_SHUFFLE = `/// @ 0.12.2
+// 巻き戻し可能な文字シャッフルのプリセット
+
+let string = "ペペロンチーノ"
+let length = string.len
+
+// 過去の結果を保存しておくやつ
+var results = []
+
+// どれだけ巻き戻しているか
+var cursor = 0
+
+@do() {
+	if (cursor != 0) {
+		results = results.slice(0 (cursor + 1))
+		cursor = 0
+	}
+
+	let chars = []
+	for (let i, length) {
+		let r = Math:rnd(0 (length - 1))
+		chars.push(string.pick(r))
+	}
+	let result = chars.join("")
+
+	results.push(result)
+
+	// UIを表示
+	render(result)
+}
+
+@back() {
+	cursor = cursor + 1
+	let result = results[results.len - (cursor + 1)]
+	render(result)
+}
+
+@forward() {
+	cursor = cursor - 1
+	let result = results[results.len - (cursor + 1)]
+	render(result)
+}
+
+@render(result) {
+	Ui:render([
+		Ui:C:container({
+			align: 'center'
+			children: [
+				Ui:C:mfm({ text: result })
+				Ui:C:buttons({
+					buttons: [{
+						text: "←"
+						disabled: !(results.len > 1 && (results.len - cursor) > 1)
+						onClick: back
+					} {
+						text: "→"
+						disabled: !(results.len > 1 && cursor > 0)
+						onClick: forward
+					} {
+						text: "引き直す"
+						onClick: do
+					}]
+				})
+				Ui:C:postFormButton({
+					text: "投稿する"
+					rounded: true
+					primary: true
+					form: {
+						text: \`{result}{Str:lf}{THIS_URL}\`
+					}
+				})
+			]
+		})
+	])
+}
+
+do()
+`;
+
 const PRESET_TIMELINE = `/// @ 0.12.2
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
@@ -174,6 +253,11 @@ function selectPreset(ev: MouseEvent) {
 		text: 'Omikuji',
 		action: () => {
 			script = PRESET_OMIKUJI;
+		},
+	}, {
+		text: 'Shuffle',
+		action: () => {
+			script = PRESET_SHUFFLE;
 		},
 	}, {
 		text: 'Timeline viewer',
