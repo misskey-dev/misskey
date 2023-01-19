@@ -130,7 +130,7 @@ const parser = new Parser();
 let started = $ref(false);
 let aiscript = $shallowRef<Interpreter | null>(null);
 const root = ref<AsUiRoot>();
-const components: Ref<AsUiComponent>[] = [];
+const components: Ref<AsUiComponent>[] = $ref([]);
 
 function start() {
 	started = true;

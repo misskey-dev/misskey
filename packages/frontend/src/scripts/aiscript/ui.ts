@@ -39,6 +39,7 @@ export type AsUiMfm = AsUiComponentBase & {
 	type: 'mfm';
 	text?: string;
 	size?: number;
+	bold?: boolean;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
 };
@@ -208,6 +209,8 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	if (text) utils.assertString(text);
 	const size = def.value.get('size');
 	if (size) utils.assertNumber(size);
+	const bold = def.value.get('bold');
+	if (bold) utils.assertBoolean(bold);
 	const color = def.value.get('color');
 	if (color) utils.assertString(color);
 	const font = def.value.get('font');
@@ -216,6 +219,7 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	return {
 		text: text?.value,
 		size: size?.value,
+		bold: bold?.value,
 		color: color?.value,
 		font: font?.value,
 	};

@@ -956,6 +956,7 @@ _accountDelete:
 _ad:
   back: "Späť"
   reduceFrequencyOfThisAd: "Túto reklamu zobrazovať menej"
+  hide: "Nikdy nezobrazovať"
 _forgotPassword:
   enterEmail: "Zadajte emailovú adresu, ktorú ste použili pri registrácii. Pošleme vám na ňu odkaz, cez ktorý si môžete obnoviť heslo."
   ifNoEmail: "Ak ste pri registrácii nepoužili email, prosím kontaktujte administrátora."

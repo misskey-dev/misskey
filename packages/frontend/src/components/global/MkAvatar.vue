@@ -1,11 +1,11 @@
 <template>
-<span v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" class="_noSelect" :style="{ color }" :title="acct(user)" @click="onClick">
+<span v-if="!link" v-user-preview="preview ? user.id : undefined" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" class="_noSelect" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
-	<MkUserOnlineIndicator v-if="showIndicator" :class="$style.indicator" :user="user"/>
+	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 </span>
-<MkA v-else v-user-preview="disablePreview ? undefined : user.id" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :to="userPage(user)" :title="acct(user)" :target="target">
+<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :to="userPage(user)" :title="acct(user)" :target="target">
 	<img :class="$style.inner" :src="url" decoding="async"/>
-	<MkUserOnlineIndicator v-if="showIndicator" :class="$style.indicator" :user="user"/>
+	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 </MkA>
 </template>
 
@@ -21,14 +21,14 @@ import { defaultStore } from '@/store';
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
 	target?: string | null;
-	disableLink?: boolean;
-	disablePreview?: boolean;
-	showIndicator?: boolean;
+	link?: boolean;
+	preview?: boolean;
+	indicator?: boolean;
 }>(), {
 	target: null,
-	disableLink: false,
-	disablePreview: false,
-	showIndicator: false,
+	link: false,
+	preview: false,
+	indicator: false,
 });
 
 const emit = defineEmits<{

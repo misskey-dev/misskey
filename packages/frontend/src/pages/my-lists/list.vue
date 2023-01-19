@@ -19,7 +19,7 @@
 					<div class="">
 						<div class="users">
 							<div v-for="user in users" :key="user.id" class="user _panel">
-								<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
+								<MkAvatar :user="user" class="avatar" indicator link preview/>
 								<div class="body">
 									<MkUserName :user="user" class="name"/>
 									<MkAcct :user="user" class="acct"/>

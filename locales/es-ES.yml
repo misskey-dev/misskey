@@ -957,6 +957,7 @@ _accountDelete:
 _ad:
   back: "Deseleccionar"
   reduceFrequencyOfThisAd: "Mostrar menos este anuncio."
+  hide: "No mostrar"
 _forgotPassword:
   enterEmail: "Ingrese el correo usado para registrar la cuenta. Se enviará un link para resetear la contraseña."
   ifNoEmail: "Si no utilizó un correo para crear la cuenta, contáctese con el administrador."

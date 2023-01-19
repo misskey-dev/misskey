@@ -935,6 +935,7 @@ _accountDelete:
 _ad:
   back: "Quay lại"
   reduceFrequencyOfThisAd: "Hiện ít lại"
+  hide: "Không hiển thị"
 _forgotPassword:
   enterEmail: "Nhập địa chỉ email bạn đã sử dụng để đăng ký. Một liên kết mà bạn có thể đặt lại mật khẩu của mình sau đó sẽ được gửi đến nó."
   ifNoEmail: "Nếu bạn không sử dụng email lúc đăng ký, vui lòng liên hệ với quản trị viên."

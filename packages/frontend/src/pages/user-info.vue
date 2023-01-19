@@ -5,7 +5,7 @@
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="aeakzknw">
-					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
+					<MkAvatar class="avatar" :user="user" indicator link preview/>
 					<div class="body">
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>

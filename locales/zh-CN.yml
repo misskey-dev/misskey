@@ -935,6 +935,8 @@ manageCustomEmojis: "管理自定义表情符号"
 youCannotCreateAnymore: "抱歉，您无法再创建更多了。"
 cannotPerformTemporary: "暂时不可用"
 cannotPerformTemporaryDescription: "因操作过于频繁，暂时不可用，请稍后再试。"
+preset: "預設值"
+selectFromPresets: "從預設值中選擇"
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -1023,6 +1025,7 @@ _accountDelete:
 _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "减少此广告的频率"
+  hide: "不显示"
 _forgotPassword:
   enterEmail: "请输入您验证账号时用的电子邮箱地址，密码重置链接将发送至该邮箱上。"
   ifNoEmail: "如果您没有使用电子邮件地址进行验证，请联系管理员。"

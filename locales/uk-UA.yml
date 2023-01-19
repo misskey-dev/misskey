@@ -926,6 +926,7 @@ _accountDelete:
 _ad:
   back: "Назад"
   reduceFrequencyOfThisAd: "Показувати цю рекламу менше"
+  hide: "Не відображати"
 _gallery:
   my: "Моя галерея"
   liked: "Вподобане"

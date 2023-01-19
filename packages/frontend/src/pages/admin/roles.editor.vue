@@ -335,6 +335,26 @@
 					</MkRange>
 				</div>
 			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canHideAds, 'canHideAds'])">
+				<template #label>{{ i18n.ts._role._options.canHideAds }}</template>
+				<template #suffix>
+					<span v-if="policies.canHideAds.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.canHideAds.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.canHideAds)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="policies.canHideAds.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="policies.canHideAds.value" :disabled="policies.canHideAds.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="policies.canHideAds.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 
@@ -376,6 +396,7 @@ const ROLE_POLICIES = [
 	'canPublicNote',
 	'canInvite',
 	'canManageCustomEmojis',
+	'canHideAds',
 	'driveCapacityMb',
 	'pinLimit',
 	'antennaLimit',

@@ -1,8 +1,8 @@
 <template>
 <div ref="elRef" :class="$style.root">
 	<div v-once :class="$style.head">
-		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user"/>
-		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user"/>
+		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user" link preview/>
+		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
 		<img v-else-if="notification.icon" :class="$style.icon" :src="notification.icon" alt=""/>
 		<div :class="[$style.subIcon, $style['t_' + notification.type]]">
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
