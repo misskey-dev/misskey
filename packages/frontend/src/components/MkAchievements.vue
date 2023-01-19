@@ -13,7 +13,7 @@
 				<div :class="$style.header">
 					<span :class="$style.title">{{ i18n.ts._achievements._types['_' + achievement.name].title }}</span>
 					<span :class="$style.time">
-						{{ i18n.ts._achievements.earnedAt }}: <MkTime mode="detail" :time="new Date(achievement.unlockedAt)"/>
+						{{ i18n.ts._achievements.earnedAt }}: <MkTime mode="absolute" :time="new Date(achievement.unlockedAt)"/>
 					</span>
 				</div>
 				<div :class="$style.description">{{ i18n.ts._achievements._types['_' + achievement.name].description }}</div>
