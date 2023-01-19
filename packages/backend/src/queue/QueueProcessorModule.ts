@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CoreModule } from '@/core/CoreModule.js';
+import { GlobalModule } from '@/GlobalModule.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QueueProcessorService } from './QueueProcessorService.js';
 import { DbQueueProcessorsService } from './DbQueueProcessorsService.js';
@@ -34,6 +35,7 @@ import { ExportFavoritesProcessorService } from './processors/ExportFavoritesPro
 
 @Module({
 	imports: [
+		GlobalModule,
 		CoreModule,
 	],
 	providers: [
