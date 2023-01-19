@@ -13,6 +13,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Playのプリセットを追加
+- Playのscriptの文字数制限を緩和
 - AiScript GUIの強化
 - 存在しないカスタム絵文字をテキストで表示するように
 
