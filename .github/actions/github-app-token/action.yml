@@ -1,0 +1,25 @@
+name: github-app-token
+description: github-app-token
+inputs:
+  app_id:
+    description: app_id
+    required: true
+  private_key:
+    description: private_key
+    required: true
+
+outputs:
+  token:
+    description: token
+    value: ${{ steps.token.outputs.token }}
+
+runs:
+  using: composite
+  steps:
+    - uses: tibdex/github-app-token@v1.7.0
+      with:
+        app_id: ${{ inputs.app_id }}
+        private_key: ${{ inputs.private_key }}
+      env:
+        OPENSSL_CONF: /dev/null
+      id: token
