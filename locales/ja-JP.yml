@@ -943,103 +943,108 @@ achievements: "実績"
 _achievements:
   earnedAt: "獲得日時"
   _types:
-    _bfb4bbb19d5042138db3ae32f23c4aa2:
+    _notes1:
       title: "just setting up my msky"
       description: "初めてノートを投稿した"
       flavor: "良いMisskeyライフを！"
-    _86d5a0fdb382426ab0f01a1a2a9c287f:
-      title: "ビギナーⅠ"
+    _notes10:
+      title: "いくつかのノート"
       description: "ノートを10回投稿した"
-    _7263a10c843d4c26986987850d9ce326:
-      title: "ビギナーⅡ"
+    _notes100:
+      title: "たくさんのノート"
       description: "ノートを100回投稿した"
-      flavor: "慣れてきましたか？"
-    _af59e72ebddf484a97f5333778a56e48:
-      title: "ビギナーⅢ"
+    _notes500:
+      title: "ノートまみれ"
       description: "ノートを500回投稿した"
-    _0dcc42f5aeb44e5eb79c4f1dd7100216:
-      title: "ミスキストⅠ"
+    _notes1000:
+      title: "ノートの山"
       description: "ノートを1,000回投稿した"
-    _329670f100504846988729b1f392395e:
-      title: "ミスキストⅡ"
+    _notes5000:
+      title: "湧き出るノート"
       description: "ノートを5,000回投稿した"
-    _47c1ccc95ba245df8bb1bf245bd9f517:
-      title: "ミスキストⅢ"
+    _notes10000:
+      title: "スーパーノート"
       description: "ノートを10,000回投稿した"
-    _814b0d6655ad4379a28f46b67c188559:
-      title: "ノートマスターⅠ"
+    _notes20000:
+      title: "ニードモアノート"
+      description: "ノートを20,000回投稿した"
+    _notes30000:
+      title: "ノートの惑星"
       description: "ノートを30,000回投稿した"
-    _ef26b5bd8e8b49438779f4a2c80de4ee:
-      title: "ノートマスターⅡ"
+    _notes40000:
+      title: "ノートパルサー"
+      description: "ノートを40,000回投稿した"
+    _notes50000:
+      title: "ノートクエーサー"
       description: "ノートを50,000回投稿した"
-    _d046b1342f9d46c192f899be14cf614a:
-      title: "ノートマスターⅢ"
-      description: "ノートを100,000回投稿した"
-    _98c11358616746b7afbee3190851dfa4:
+    _profileFilled:
       title: "準備万端"
       description: "プロフィール設定を行った"
-    _8d770b0cdda648caa1b1ae920ecd19e6:
+    _following1:
       title: "はじめてのフォロー"
       description: "初めてフォローした"
-    _dc7733a48033407082d20accffc74763:
+    _following10:
       title: "ついてく、ついてく"
       description: "フォローが10人を超した"
-    _1b2308ad4bec49deb62d24b62452c58c:
+    _following50:
       title: "友達たくさん"
       description: "フォローが50人を超した"
-    _c7f0e1f9df2c4798a3785501caef3d14:
+    _following100:
       title: "友達100人"
       description: "フォローが100人を超した"
-    _560f644ae17b40c282f0ee90c9939f56:
+    _following300:
       title: "友達過多"
       description: "フォローが300人を超した"
-    _f2c2ef3eed2a46e2928a3b90ea763c2d:
+    _followers1:
       title: "はじめてのフォロワー"
       description: "初めてフォローされた"
-    _b158c3154a9244779d644af4a7b3907d:
+    _followers10:
       title: "フォローミー！"
       description: "フォロワーが10人を超した"
-    _e1fb8e59f4fc4a0f9d7e5747a103ff16:
+    _followers50:
       title: "ぞろぞろ"
       description: "フォロワーが50人を超した"
-    _3dc5e086638e414e9bd9f605a46cbb5a:
+    _followers100:
       title: "人気者"
       description: "フォロワーが100人を超した"
-    _db2496a32a9c47a2ace6271fb10c9890:
+    _followers300:
       title: "一列でお並びください"
       description: "フォロワーが300人を超した"
-    _4d5abaebc2924792a97d548d4c7c09fe:
+    _followers500:
       title: "基地局"
       description: "フォロワーが500人を超した"
-    _ba6688fa24a3475185a460d11dad47b2:
+    _followers1000:
       title: "インフルエンサー"
       description: "フォロワーが1,000人を超した"
-    _30d049b4deeb4d1382a6702307fd9b8a:
+    _iLoveMisskey:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"を投稿した"
       flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
-    _098fc6d1af604e9588cf2d637870355b:
+    _client30min:
       title: "ひとやすみ"
       description: "クライアントを起動してから30分以上経過した"
-    _455365961ef14786af76b15917b3accd:
+    _postedAtLateNight:
       title: "夜行性"
       description: "深夜にノートを投稿した"
       flavor: "Misskeyにはいつも人がいる"
-    _e9abbdb33ce04a42b62798d4d001c614:
+    _htl20npm:
       title: "流れるTL"
-      description: "タイムラインの流速が20npmを越す"
-    _52dff3050a4a430db49b8f943d03d8d4:
+      description: "ホームタイムラインの流速が20npmを越す"
+    _reactWithoutRead:
       title: "ちゃんと読んだ？"
       description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"
-    _173c61f28a934efbbc5342294b9a13a0:
+    _clickedClickHere:
       title: "ここをクリック"
       description: "ここをクリックした"
-    _a7cb1d292c494008822d69fc02f95e4c:
+    _justPlainLucky:
       title: "単なるラッキー"
       description: "10秒ごとに 1/30,000 の確率で獲得"
-    _e3d7be8f803a47b698c38cc727e0462b:
+    _setNameToSyuilo:
       title: "神様コンプレックス"
       description: "名前を syuilo に設定した"
+    _passedSinceAccountCreated1:
+      title: "一周年"
+      description: "アカウント作成から一年経過した"
 
 _role:
   new: "ロールの作成"

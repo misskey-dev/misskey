@@ -247,6 +247,12 @@ useTooltip(reactionRef, (showing) => {
 	pointer-events: none;
 }
 
+.t_achievementEarned {
+	padding: 3px;
+	background: #88a6b7;
+	pointer-events: none;
+}
+
 .tail {
 	flex: 1;
 	min-width: 0;
