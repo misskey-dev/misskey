@@ -2,7 +2,8 @@ version: "3"
 
 services:
   web:
-    build: .
+    # build: .
+    image: na2na/misskey-na2na:release
     restart: always
     links:
       - db
@@ -10,7 +11,7 @@ services:
 #     - mcaptcha
 #     - meilisearch
     depends_on:
-      db:
+			db:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -25,7 +26,7 @@ services:
 
   redis:
     restart: always
-    image: redis:7-alpine
+    image: redis:7.0.7-alpine
     networks:
       - internal_network
     volumes:
@@ -91,7 +92,6 @@ services:
 #      - internal_network
 #    volumes:
 #      - ./meili_data:/meili_data
-
 networks:
   internal_network:
     internal: true
