@@ -947,23 +947,87 @@ _achievements:
       title: "just setting up my msky"
       description: "初めてノートを投稿した"
       flavor: "良いMisskeyライフを！"
+    _beginnerI:
+      title: "ビギナーⅠ"
+      description: "ノートを10回投稿した"
+    _beginnerII:
+      title: "ビギナーⅡ"
+      description: "ノートを100回投稿した"
+      flavor: "慣れてきましたか？"
+    _beginnerIII:
+      title: "ビギナーⅢ"
+      description: "ノートを500回投稿した"
+    _misskistI:
+      title: "ミスキストⅠ"
+      description: "ノートを1,000回投稿した"
+    _misskistII:
+      title: "ミスキストⅡ"
+      description: "ノートを5,000回投稿した"
+    _misskistIII:
+      title: "ミスキストⅢ"
+      description: "ノートを10,000回投稿した"
+    _noteMasterI:
+      title: "ノートマスターⅠ"
+      description: "ノートを30,000回投稿した"
+    _noteMasterII:
+      title: "ノートマスターⅡ"
+      description: "ノートを50,000回投稿した"
+    _noteMasterIII:
+      title: "ノートマスターⅢ"
+      description: "ノートを100,000回投稿した"
     _iAmReady:
       title: "準備万端"
       description: "プロフィール設定を行った"
     _myFirstFollow:
       title: "はじめてのフォロー"
       description: "初めてフォローした"
+    _iFollowYou:
+      title: "ついてく、ついてく"
+      description: "フォローが10人を超した"
+    _manyFriends:
+      title: "友達たくさん"
+      description: "フォローが50人を超した"
+    _100Friends:
+      title: "友達100人"
+      description: "フォローが100人を超した"
+    _tooManyFriends:
+      title: "友達過多"
+      description: "フォローが300人を超した"
     _myFirstFollower:
       title: "はじめてのフォロワー"
       description: "初めてフォローされた"
+    _followMe:
+      title: "フォローミー！"
+      description: "フォロワーが10人を超した"
+    _inDroves:
+      title: "ぞろぞろ"
+      description: "フォロワーが50人を超した"
+    _youArePopular:
+      title: "人気者"
+      description: "フォロワーが100人を超した"
+    _pleaseStandInLine:
+      title: "一列でお並びください"
+      description: "フォロワーが300人を超した"
+    _baseStation:
+      title: "基地局"
+      description: "フォロワーが500人を超した"
+    _influencer:
+      title: "インフルエンサー"
+      description: "フォロワーが1,000人を超した"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"を投稿した"
       flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
+    _takeABreak:
+      title: "ひとやすみ"
+      description: "クライアントを起動してから30分以上経過した"
     _nocturnality:
       title: "夜行性"
       description: "深夜にノートを投稿した"
       flavor: "Misskeyにはいつも人がいる"
+    _flowingTimeline:
+      title: "流れるTL"
+      description: "タイムラインの流速が20npmを越す"
     _haveYouReadIt:
       title: "ちゃんと読んだ？"
       description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"

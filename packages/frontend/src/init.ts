@@ -353,12 +353,34 @@ import { claimAchievement } from './scripts/achievements';
 		if ($i.followersCount > 0) {
 			claimAchievement('myFirstFollower');
 		}
-
+		if ($i.followersCount >= 10) {
+			claimAchievement('followMe');
+		}
+		if ($i.followersCount >= 50) {
+			claimAchievement('inDroves');
+		}
+		if ($i.followersCount >= 100) {
+			claimAchievement('youArePopular');
+		}
+		if ($i.followersCount >= 300) {
+			claimAchievement('pleaseStandInLine');
+		}
+		if ($i.followersCount >= 500) {
+			claimAchievement('baseStation');
+		}
+		if ($i.followersCount >= 1000) {
+			claimAchievement('influencer');
+		}
+	
 		window.setInterval(() => {
 			if (Math.floor(Math.random() * 30000) === 0) {
 				claimAchievement('justPlainLucky');
 			}
 		}, 1000 * 10);
+
+		window.setTimeout(() => {
+			claimAchievement('takeABreak');
+		}, 1000 * 60 * 30);
 
 		const lastUsed = miLocalStorage.getItem('lastUsed');
 		if (lastUsed) {

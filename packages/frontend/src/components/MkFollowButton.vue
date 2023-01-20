@@ -36,6 +36,7 @@ import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { claimAchievement } from '@/scripts/achievements';
+import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -93,6 +94,19 @@ async function onClick() {
 				hasPendingFollowRequestFromYou = true;
 
 				claimAchievement('myFirstFollow');
+
+				if ($i.followingCount >= 10) {
+					claimAchievement('iFollowYou');
+				}
+				if ($i.followingCount >= 50) {
+					claimAchievement('manyFriends');
+				}
+				if ($i.followingCount >= 100) {
+					claimAchievement('100Friends');
+				}
+				if ($i.followingCount >= 300) {
+					claimAchievement('tooManyFriends');
+				}
 			}
 		}
 	} catch (err) {
