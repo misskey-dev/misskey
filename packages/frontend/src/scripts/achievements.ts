@@ -13,6 +13,11 @@ export const ACHIEVEMENT_TYPES = [
 	'notes30000',
 	'notes40000',
 	'notes50000',
+	'notes60000',
+	'notes70000',
+	'notes80000',
+	'notes90000',
+	'notes100000',
 	'profileFilled',
 	'following1',
 	'following10',
@@ -54,43 +59,68 @@ export const ACHIEVEMENT_BADGES = {
 		frame: 'bronze',
 	},
 	'notes500': {
-		img: '/fluent-emoji/1fab4.png',
+		img: '/fluent-emoji/1f333.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
 	'notes1000': {
 		img: '/fluent-emoji/1f333.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
-		frame: 'silver',
+		frame: 'bronze',
 	},
 	'notes5000': {
-		img: '/fluent-emoji/1f333.png',
+		img: '/fluent-emoji/1f304.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'silver',
 	},
 	'notes10000': {
-		img: '/fluent-emoji/1f333.png',
-		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		img: '/fluent-emoji/1f3d9.png',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'silver',
 	},
 	'notes20000': {
-		img: '/fluent-emoji/1f304.png',
-		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
-		frame: 'gold',
+		img: '/fluent-emoji/1f307.png',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'silver',
 	},
 	'notes30000': {
-		img: '/fluent-emoji/1f304.png',
-		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		img: '/fluent-emoji/1f306.png',
+		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'gold',
 	},
 	'notes40000': {
-		img: '/fluent-emoji/1f304.png',
-		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		img: '/fluent-emoji/1f303.png',
+		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
 		frame: 'gold',
 	},
 	'notes50000': {
-		img: '/fluent-emoji/1f304.png',
-		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		img: '/fluent-emoji/2604.png',
+		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
+		frame: 'gold',
+	},
+	'notes60000': {
+		img: '/fluent-emoji/2604.png',
+		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
+		frame: 'gold',
+	},
+	'notes70000': {
+		img: '/fluent-emoji/1f30c.png',
+		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
+		frame: 'gold',
+	},
+	'notes80000': {
+		img: '/fluent-emoji/1f30c.png',
+		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
+		frame: 'gold',
+	},
+	'notes90000': {
+		img: '/fluent-emoji/1f30c.png',
+		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
+		frame: 'gold',
+	},
+	'notes100000': {
+		img: '/fluent-emoji/267e.png',
+		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
 		frame: 'gold',
 	},
 	'profileFilled': {
@@ -165,7 +195,7 @@ export const ACHIEVEMENT_BADGES = {
 	},
 	'client30min': {
 		img: '/fluent-emoji/1f552.png',
-		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
 	'postedAtLateNight': {
@@ -175,7 +205,7 @@ export const ACHIEVEMENT_BADGES = {
 	},
 	'htl20npm': {
 		img: '/fluent-emoji/1f30a.png',
-		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
 	'reactWithoutRead': {
@@ -215,4 +245,13 @@ export function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	if (claimedAchievements.includes(type)) return;
 	os.api('i/claim-achievement', { name: type });
 	claimedAchievements.push(type);
+}
+
+if (_DEV_) {
+	(window as any).unlockAllAchievements = async () => {
+		for (const t of ACHIEVEMENT_TYPES) {
+			await new Promise(resolve => setTimeout(resolve, 100));
+			claimAchievement(t);
+		}
+	};
 }

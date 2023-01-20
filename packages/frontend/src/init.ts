@@ -357,6 +357,11 @@ import { claimAchievement } from './scripts/achievements';
 		if ($i.notesCount >= 30000) claimAchievement('notes30000');
 		if ($i.notesCount >= 40000) claimAchievement('notes40000');
 		if ($i.notesCount >= 50000) claimAchievement('notes50000');
+		if ($i.notesCount >= 60000) claimAchievement('notes60000');
+		if ($i.notesCount >= 70000) claimAchievement('notes70000');
+		if ($i.notesCount >= 80000) claimAchievement('notes80000');
+		if ($i.notesCount >= 90000) claimAchievement('notes90000');
+		if ($i.notesCount >= 100000) claimAchievement('notes100000');
 
 		if ($i.followersCount > 0) claimAchievement('followers1');
 		if ($i.followersCount >= 10) claimAchievement('followers10');

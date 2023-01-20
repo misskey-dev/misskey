@@ -58,7 +58,12 @@ const lockedAchievements = $computed(() => ACHIEVEMENT_TYPES.filter(x => !(achie
 
 function fetch() {
 	os.api('users/achievements', { userId: props.user.id }).then(res => {
-		achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
+		achievements = [];
+		for (const t of ACHIEVEMENT_TYPES) {
+			const a = res.find(x => x.name === t);
+			if (a) achievements.push(a);
+		}
+		//achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
 	});
 }
 

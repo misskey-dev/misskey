@@ -977,6 +977,21 @@ _achievements:
     _notes50000:
       title: "ノートクエーサー"
       description: "ノートを50,000回投稿した"
+    _notes60000:
+      title: "ブラックノートホール"
+      description: "ノートを60,000回投稿した"
+    _notes70000:
+      title: "ノートギャラクシー"
+      description: "ノートを70,000回投稿した"
+    _notes80000:
+      title: "ノートバース"
+      description: "ノートを80,000回投稿した"
+    _notes90000:
+      title: "マルチノートバース"
+      description: "ノートを90,000回投稿した"
+    _notes100000:
+      title: "無限のノート"
+      description: "ノートを100,000回投稿した"
     _profileFilled:
       title: "準備万端"
       description: "プロフィール設定を行った"
