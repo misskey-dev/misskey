@@ -134,9 +134,9 @@ function save() {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 	});
-	claimAchievement('iAmReady');
+	claimAchievement('98c11358616746b7afbee3190851dfa4');
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
-		claimAchievement('godComplex');
+		claimAchievement('e3d7be8f803a47b698c38cc727e0462b');
 	}
 }
 
@@ -160,7 +160,7 @@ function changeAvatar(ev) {
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
-		claimAchievement('iAmReady');
+		claimAchievement('98c11358616746b7afbee3190851dfa4');
 	});
 }
 

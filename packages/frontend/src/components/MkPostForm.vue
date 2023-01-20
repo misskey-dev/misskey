@@ -631,17 +631,17 @@ async function post(ev?: MouseEvent) {
 
 			incNotesCount();
 			if (notesCount === 1) {
-				claimAchievement('justSettingUpMyMsky');
+				claimAchievement('bfb4bbb19d5042138db3ae32f23c4aa2');
 			}
 
 			const text = postData.text?.toLowerCase() ?? '';
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
-				claimAchievement('iLoveMisskey');
+				claimAchievement('30d049b4deeb4d1382a6702307fd9b8a');
 			}
 
 			const h = new Date().getHours();
 			if (h >= 0 && h <= 3) {
-				claimAchievement('nocturnality');
+				claimAchievement('455365961ef14786af76b15917b3accd');
 			}
 		});
 	}).catch(err => {

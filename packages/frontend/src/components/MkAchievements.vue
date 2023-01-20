@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<template v-if="withLocked">
-			<div v-for="achievement in lockedAchievements" :key="achievement" :class="[$style.achievement, $style.locked]" class="_panel" @click="achievement === 'clickHere' ? clickHere() : () => {}">
+			<div v-for="achievement in lockedAchievements" :key="achievement" :class="[$style.achievement, $style.locked]" class="_panel" @click="achievement === '173c61f28a934efbbc5342294b9a13a0' ? clickHere() : () => {}">
 				<div :class="$style.icon">
 				</div>
 				<div :class="$style.body">
@@ -63,7 +63,7 @@ function fetch() {
 }
 
 function clickHere() {
-	claimAchievement('clickHere');
+	claimAchievement('173c61f28a934efbbc5342294b9a13a0');
 	fetch();
 }
 

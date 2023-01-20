@@ -281,7 +281,7 @@ function react(viaKeyboard = false): void {
 			reaction: reaction,
 		});
 		if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('haveYouReadIt');
+			claimAchievement('52dff3050a4a430db49b8f943d03d8d4');
 		}
 	}, () => {
 		focus();

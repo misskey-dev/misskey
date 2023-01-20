@@ -347,39 +347,39 @@ import { claimAchievement } from './scripts/achievements';
 		}
 
 		if ($i.notesCount > 0) {
-			claimAchievement('justSettingUpMyMsky');
+			claimAchievement('bfb4bbb19d5042138db3ae32f23c4aa2');
 		}
 
 		if ($i.followersCount > 0) {
-			claimAchievement('myFirstFollower');
+			claimAchievement('f2c2ef3eed2a46e2928a3b90ea763c2d');
 		}
 		if ($i.followersCount >= 10) {
-			claimAchievement('followMe');
+			claimAchievement('b158c3154a9244779d644af4a7b3907d');
 		}
 		if ($i.followersCount >= 50) {
-			claimAchievement('inDroves');
+			claimAchievement('e1fb8e59f4fc4a0f9d7e5747a103ff16');
 		}
 		if ($i.followersCount >= 100) {
-			claimAchievement('youArePopular');
+			claimAchievement('3dc5e086638e414e9bd9f605a46cbb5a');
 		}
 		if ($i.followersCount >= 300) {
-			claimAchievement('pleaseStandInLine');
+			claimAchievement('db2496a32a9c47a2ace6271fb10c9890');
 		}
 		if ($i.followersCount >= 500) {
-			claimAchievement('baseStation');
+			claimAchievement('4d5abaebc2924792a97d548d4c7c09fe');
 		}
 		if ($i.followersCount >= 1000) {
-			claimAchievement('influencer');
+			claimAchievement('ba6688fa24a3475185a460d11dad47b2');
 		}
 	
 		window.setInterval(() => {
 			if (Math.floor(Math.random() * 30000) === 0) {
-				claimAchievement('justPlainLucky');
+				claimAchievement('a7cb1d292c494008822d69fc02f95e4c');
 			}
 		}, 1000 * 10);
 
 		window.setTimeout(() => {
-			claimAchievement('takeABreak');
+			claimAchievement('098fc6d1af604e9588cf2d637870355b');
 		}, 1000 * 60 * 30);
 
 		const lastUsed = miLocalStorage.getItem('lastUsed');

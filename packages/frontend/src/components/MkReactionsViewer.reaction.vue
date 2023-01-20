@@ -54,7 +54,7 @@ const toggleReaction = () => {
 			reaction: props.reaction,
 		});
 		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('haveYouReadIt');
+			claimAchievement('52dff3050a4a430db49b8f943d03d8d4');
 		}
 	}
 };

@@ -93,19 +93,19 @@ async function onClick() {
 				});
 				hasPendingFollowRequestFromYou = true;
 
-				claimAchievement('myFirstFollow');
+				claimAchievement('8d770b0cdda648caa1b1ae920ecd19e6');
 
 				if ($i.followingCount >= 10) {
-					claimAchievement('iFollowYou');
+					claimAchievement('dc7733a48033407082d20accffc74763');
 				}
 				if ($i.followingCount >= 50) {
-					claimAchievement('manyFriends');
+					claimAchievement('1b2308ad4bec49deb62d24b62452c58c');
 				}
 				if ($i.followingCount >= 100) {
-					claimAchievement('100Friends');
+					claimAchievement('c7f0e1f9df2c4798a3785501caef3d14');
 				}
 				if ($i.followingCount >= 300) {
-					claimAchievement('tooManyFriends');
+					claimAchievement('560f644ae17b40c282f0ee90c9939f56');
 				}
 			}
 		}
