@@ -141,6 +141,15 @@ mainRouter.on('change', () => {
 
 document.documentElement.style.overflowY = 'scroll';
 
+if (window.innerWidth > 1024) {
+	const tempUI = miLocalStorage.getItem('miux:ui_temp')
+	if (tempUI) {
+		miLocalStorage.setItem('ui', tempUI)
+		miLocalStorage.removeItem('miux:ui_temp')
+		location.reload();
+	}
+}
+
 defaultStore.ready.then(() => {
 	if (defaultStore.state.widgets.length === 0) {
 		defaultStore.set('widgets', [{

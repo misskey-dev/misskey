@@ -124,6 +124,8 @@ function onAiClick(ev) {
 }
 
 if (window.innerWidth < 1024) {
+	const currentUI = miLocalStorage.getItem('ui')
+	miLocalStorage.setItem('miux:ui_temp', currentUI || 'default');
 	miLocalStorage.setItem('ui', 'default');
 	location.reload();
 }
