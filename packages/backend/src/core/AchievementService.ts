@@ -7,11 +7,15 @@ import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 
 const ACHIEVEMENT_TYPES = [
 	'justSettingUpMyMsky',
+	'iAmReady',
 	'myFirstFollow',
 	'myFirstFollower',
 	'iLoveMisskey',
 	'nocturnality',
 	'haveYouReadIt',
+	'clickHere',
+	'justPlainLucky',
+	'godComplex',
 ] as const;
 
 @Injectable()

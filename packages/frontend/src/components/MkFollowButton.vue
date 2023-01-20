@@ -35,6 +35,7 @@ import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -90,6 +91,8 @@ async function onClick() {
 					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou = true;
+
+				claimAchievement('myFirstFollow');
 			}
 		}
 	} catch (err) {

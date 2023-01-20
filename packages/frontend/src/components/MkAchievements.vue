@@ -13,7 +13,7 @@
 				<div :class="$style.header">
 					<span :class="$style.title">{{ i18n.ts._achievements._types['_' + achievement.name].title }}</span>
 					<span :class="$style.time">
-						{{ i18n.ts._achievements.earnedAt }}: <MkTime mode="absolute" :time="new Date(achievement.unlockedAt)"/>
+						{{ i18n.ts._achievements.earnedAt }}: <time v-tooltip="new Date(achievement.unlockedAt).toLocaleString()">{{ new Date(achievement.unlockedAt).getFullYear() }}/{{ new Date(achievement.unlockedAt).getMonth() + 1 }}/{{ new Date(achievement.unlockedAt).getDate() }}</time>
 					</span>
 				</div>
 				<div :class="$style.description">{{ i18n.ts._achievements._types['_' + achievement.name].description }}</div>
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<template v-if="withLocked">
-			<div v-for="achievement in lockedAchievements" :key="achievement" :class="[$style.achievement, $style.locked]" class="_panel">
+			<div v-for="achievement in lockedAchievements" :key="achievement" :class="[$style.achievement, $style.locked]" class="_panel" @click="achievement === 'clickHere' ? clickHere() : () => {}">
 				<div :class="$style.icon">
 				</div>
 				<div :class="$style.body">
@@ -44,7 +44,7 @@ import * as misskey from 'misskey-js';
 import { onMounted } from 'vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES } from '@/scripts/achievements';
+import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements';
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
@@ -56,10 +56,19 @@ const props = withDefaults(defineProps<{
 let achievements = $ref();
 const lockedAchievements = $computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements ?? []).some(a => a.name === x)));
 
-onMounted(() => {
+function fetch() {
 	os.api('users/achievements', { userId: props.user.id }).then(res => {
 		achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
 	});
+}
+
+function clickHere() {
+	claimAchievement('clickHere');
+	fetch();
+}
+
+onMounted(() => {
+	fetch();
 });
 </script>
 
@@ -84,9 +93,19 @@ onMounted(() => {
 	padding: 6px;
 	border-radius: 100%;
 	box-sizing: border-box;
+	pointer-events: none;
+	user-select: none;
+	filter: drop-shadow(0px 2px 2px #00000044);
+	box-shadow: 0 1px 0px #ffffff88 inset;
 }
 .iconFrame_bronze {
 	background: linear-gradient(0deg, #703827, #d37566);
+}
+.iconFrame_silver {
+	background: linear-gradient(0deg, #7c7c7c, #e1e1e1);
+}
+.iconFrame_gold {
+	background: linear-gradient(0deg, #eb7018, #ffee20);
 }
 
 .iconInner {
@@ -94,6 +113,7 @@ onMounted(() => {
 	width: 100%;
 	height: 100%;
 	border-radius: 100%;
+	box-shadow: 0 1px 0px #ffffff88 inset;
 }
 
 .iconImg {
@@ -105,7 +125,7 @@ onMounted(() => {
 	bottom: 0;
 	left: 0;
 	margin: auto;
-	filter: drop-shadow(0px 2px 3px #000);
+	filter: drop-shadow(0px 1px 2px #000000aa);
 }
 
 .body {

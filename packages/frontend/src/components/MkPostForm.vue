@@ -638,6 +638,11 @@ async function post(ev?: MouseEvent) {
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
+
+			const h = new Date().getHours();
+			if (h >= 0 && h <= 3) {
+				claimAchievement('nocturnality');
+			}
 		});
 	}).catch(err => {
 		posting = false;

@@ -947,6 +947,9 @@ _achievements:
       title: "just setting up my msky"
       description: "初めてノートを投稿した"
       flavor: "良いMisskeyライフを！"
+    _iAmReady:
+      title: "準備万端"
+      description: "プロフィール設定を行った"
     _myFirstFollow:
       title: "はじめてのフォロー"
       description: "初めてフォローした"
@@ -964,6 +967,15 @@ _achievements:
     _haveYouReadIt:
       title: "ちゃんと読んだ？"
       description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"
+    _clickHere:
+      title: "ここをクリック"
+      description: "ここをクリックした"
+    _justPlainLucky:
+      title: "単なるラッキー"
+      description: "10秒ごとに 1/30,000 の確率で獲得"
+    _godComplex:
+      title: "神様コンプレックス"
+      description: "名前を syuilo に設定する"
 
 _role:
   new: "ロールの作成"

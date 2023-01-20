@@ -44,6 +44,7 @@ import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { miLocalStorage } from './local-storage';
+import { claimAchievement } from './scripts/achievements';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -344,6 +345,20 @@ import { miLocalStorage } from './local-storage';
 				text: i18n.ts.accountDeletionInProgress,
 			});
 		}
+
+		if ($i.notesCount > 0) {
+			claimAchievement('justSettingUpMyMsky');
+		}
+
+		if ($i.followersCount > 0) {
+			claimAchievement('myFirstFollower');
+		}
+
+		window.setInterval(() => {
+			if (Math.floor(Math.random() * 30000) === 0) {
+				claimAchievement('justPlainLucky');
+			}
+		}, 1000 * 10);
 
 		const lastUsed = miLocalStorage.getItem('lastUsed');
 		if (lastUsed) {
