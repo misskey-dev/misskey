@@ -138,6 +138,9 @@ function save() {
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
 		claimAchievement('setNameToSyuilo');
 	}
+	if (profile.isCat) {
+		claimAchievement('markedAsCat');
+	}
 }
 
 function changeAvatar(ev) {

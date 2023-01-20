@@ -26,7 +26,7 @@
 				</div>
 				<div :class="$style.body">
 					<div :class="$style.header">
-						<span :class="$style.title">{{ i18n.ts._achievements._types['_' + achievement].title }}</span>
+						<span :class="$style.title">???</span>
 					</div>
 					<div :class="$style.description">???</div>
 				</div>
@@ -99,6 +99,11 @@ onMounted(() => {
 	margin-right: 12px;
 }
 
+@keyframes shine {
+	0% { translate: -30px; }
+	100% { translate: -130px; }
+}
+
 .iconFrame {
 	width: 58px;
 	height: 58px;
@@ -109,6 +114,7 @@ onMounted(() => {
 	user-select: none;
 	filter: drop-shadow(0px 2px 2px #00000044);
 	box-shadow: 0 1px 0px #ffffff88 inset;
+	overflow: clip;
 }
 .iconFrame_bronze {
 	background: linear-gradient(0deg, #703827, #d37566);
@@ -118,6 +124,19 @@ onMounted(() => {
 }
 .iconFrame_gold {
 	background: linear-gradient(0deg, #eb7018, #ffee20);
+
+	&:before {
+		content: "";
+		display: block;
+		position: absolute;
+    top: 30px;
+    width: 200px;
+    height: 8px;
+    rotate: -45deg;
+    translate: -30px;
+		background: #ffffffaa;
+		animation: shine 2s infinite;
+	}
 }
 
 .iconInner {
@@ -161,7 +180,7 @@ onMounted(() => {
 }
 
 .description {
-	font-size: 90%;
+	font-size: 85%;
 }
 
 .flavor {

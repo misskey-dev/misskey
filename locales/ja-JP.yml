@@ -969,32 +969,37 @@ _achievements:
       title: "ニードモアノート"
       description: "ノートを20,000回投稿した"
     _notes30000:
-      title: "ノートの惑星"
+      title: "ノートノートノート"
       description: "ノートを30,000回投稿した"
     _notes40000:
-      title: "ノートパルサー"
+      title: "ノート工場"
       description: "ノートを40,000回投稿した"
     _notes50000:
-      title: "ノートクエーサー"
+      title: "ノートの惑星"
       description: "ノートを50,000回投稿した"
     _notes60000:
-      title: "ブラックノートホール"
+      title: "ノートクエーサー"
       description: "ノートを60,000回投稿した"
     _notes70000:
-      title: "ノートギャラクシー"
+      title: "ブラックノートホール"
       description: "ノートを70,000回投稿した"
     _notes80000:
-      title: "ノートバース"
+      title: "ノートギャラクシー"
       description: "ノートを80,000回投稿した"
     _notes90000:
-      title: "マルチノートバース"
+      title: "ノートバース"
       description: "ノートを90,000回投稿した"
     _notes100000:
       title: "無限のノート"
       description: "ノートを100,000回投稿した"
+      flavor: "そんなに書くことある？"
     _profileFilled:
       title: "準備万端"
       description: "プロフィール設定を行った"
+    _markedAsCat:
+      title: "吾輩は猫である"
+      description: "アカウントをCatとして設定した"
+      flavor: "名前はまだない。"
     _following1:
       title: "はじめてのフォロー"
       description: "初めてフォローした"
@@ -1031,6 +1036,9 @@ _achievements:
     _followers1000:
       title: "インフルエンサー"
       description: "フォロワーが1,000人を超した"
+    _collectAchievements30:
+      title: "実績コレクター"
+      description: "実績を30個以上獲得した"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"を投稿した"
@@ -1041,7 +1049,11 @@ _achievements:
     _postedAtLateNight:
       title: "夜行性"
       description: "深夜にノートを投稿した"
-      flavor: "Misskeyにはいつも人がいる"
+      flavor: "そろそろ寝よう。"
+    _postedAt0min0sec:
+      title: "時報"
+      description: "0分0秒にノートを投稿した"
+      flavor: "ポッ ポッ ポッ ピーン"
     _htl20npm:
       title: "流れるTL"
       description: "ホームタイムラインの流速が20npmを越す"
@@ -1059,7 +1071,17 @@ _achievements:
       description: "名前を syuilo に設定した"
     _passedSinceAccountCreated1:
       title: "一周年"
-      description: "アカウント作成から一年経過した"
+      description: "アカウント作成から1年経過した"
+    _passedSinceAccountCreated2:
+      title: "二周年"
+      description: "アカウント作成から2年経過した"
+    _passedSinceAccountCreated3:
+      title: "三周年"
+      description: "アカウント作成から3年経過した"
+    _cookieClicked:
+      title: "クッキーをクリックするゲーム"
+      description: "クッキーをクリックした"
+      flavor: "ソフトウェア間違ってない？"
 
 _role:
   new: "ロールの作成"

@@ -639,9 +639,15 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('iLoveMisskey');
 			}
 
-			const h = new Date().getHours();
+			const date = new Date();
+			const h = date.getHours();
+			const m = date.getMinutes();
+			const s = date.getSeconds();
 			if (h >= 0 && h <= 3) {
 				claimAchievement('postedAtLateNight');
+			}
+			if (m === 0 && s === 0) {
+				claimAchievement('postedAt0min0sec');
 			}
 		});
 	}).catch(err => {

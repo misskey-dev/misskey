@@ -44,7 +44,7 @@ import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { miLocalStorage } from './local-storage';
-import { claimAchievement } from './scripts/achievements';
+import { claimAchievement, claimedAchievements } from './scripts/achievements';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -373,6 +373,16 @@ import { claimAchievement } from './scripts/achievements';
 
 		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365) {
 			claimAchievement('passedSinceAccountCreated1');
+		}
+		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 2) {
+			claimAchievement('passedSinceAccountCreated2');
+		}
+		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 3) {
+			claimAchievement('passedSinceAccountCreated3');
+		}
+
+		if (claimedAchievements.length >= 30) {
+			claimAchievement('collectAchievements30');
 		}
 	
 		window.setInterval(() => {

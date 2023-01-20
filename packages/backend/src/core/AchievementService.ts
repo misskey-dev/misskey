@@ -23,6 +23,7 @@ const ACHIEVEMENT_TYPES = [
 	'notes90000',
 	'notes100000',
 	'profileFilled',
+	'markedAsCat',
 	'following1',
 	'following10',
 	'following50',
@@ -35,15 +36,20 @@ const ACHIEVEMENT_TYPES = [
 	'followers300',
 	'followers500',
 	'followers1000',
+	'collectAchievements30',
 	'iLoveMisskey',
 	'client30min',
 	'postedAtLateNight',
+	'postedAt0min0sec',
 	'htl20npm',
 	'reactWithoutRead',
 	'clickedClickHere',
 	'justPlainLucky',
 	'setNameToSyuilo',
 	'passedSinceAccountCreated1',
+	'passedSinceAccountCreated2',
+	'passedSinceAccountCreated3',
+	'cookieClicked',
 ] as const;
 
 @Injectable()
