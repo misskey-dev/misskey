@@ -51,4 +51,4 @@ jobs:
         if: steps.check-conclusion.outputs.result == 'success'
         uses: okteto/destroy-preview@latest
         with:
-          name: pr-${{ github.event.number }}-syuilo
+          name: na2na-p-misskey-pr-${{ github.event.number }}
