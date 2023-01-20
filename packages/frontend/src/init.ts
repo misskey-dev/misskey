@@ -376,7 +376,7 @@ import { claimAchievement } from './scripts/achievements';
 		}
 	
 		window.setInterval(() => {
-			if (Math.floor(Math.random() * 30000) === 0) {
+			if (Math.floor(Math.random() * 10000) === 0) {
 				claimAchievement('justPlainLucky');
 			}
 		}, 1000 * 10);

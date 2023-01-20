@@ -1,6 +1,6 @@
 <template>
 <div>
-	<div v-if="achievements" class="_gaps">
+	<div v-if="achievements" :class="$style.root">
 		<div v-for="achievement in achievements" :key="achievement" :class="$style.achievement" class="_panel">
 			<div :class="$style.icon">
 				<div :class="[$style.iconFrame, $style['iconFrame_' + ACHIEVEMENT_BADGES[achievement.name].frame]]">
@@ -13,7 +13,7 @@
 				<div :class="$style.header">
 					<span :class="$style.title">{{ i18n.ts._achievements._types['_' + achievement.name].title }}</span>
 					<span :class="$style.time">
-						{{ i18n.ts._achievements.earnedAt }}: <time v-tooltip="new Date(achievement.unlockedAt).toLocaleString()">{{ new Date(achievement.unlockedAt).getFullYear() }}/{{ new Date(achievement.unlockedAt).getMonth() + 1 }}/{{ new Date(achievement.unlockedAt).getDate() }}</time>
+						<time v-tooltip="new Date(achievement.unlockedAt).toLocaleString()">{{ new Date(achievement.unlockedAt).getFullYear() }}/{{ new Date(achievement.unlockedAt).getMonth() + 1 }}/{{ new Date(achievement.unlockedAt).getDate() }}</time>
 					</span>
 				</div>
 				<div :class="$style.description">{{ i18n.ts._achievements._types['_' + achievement.name].description }}</div>
@@ -78,6 +78,13 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
+.root {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, min(380px, 100%));
+	grid-gap: 12px;
+	place-content: center;
+}
+
 .achievement {
 	display: flex;
 	padding: 16px;
@@ -149,7 +156,7 @@ onMounted(() => {
 
 .time {
 	margin-left: auto;
-	font-size: 90%;
+	font-size: 85%;
 	opacity: 0.7;
 }
 
