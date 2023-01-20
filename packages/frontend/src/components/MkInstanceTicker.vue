@@ -77,7 +77,7 @@ $height: 2ex;
 .name {
 	margin-left: 4px;
 	line-height: 1;
-	font-size: 0.9em;
+	font-size: 0.85em;
 	font-weight: bold;
 	white-space: nowrap;
 	overflow: visible;
