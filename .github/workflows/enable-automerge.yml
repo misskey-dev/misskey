@@ -1,0 +1,29 @@
+name: Enable auto merge
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+    branches:
+      - main
+      - develop
+      - misskey-na2na
+      - misskey-na2na-deploy
+      - nmnm
+
+jobs:
+  enable-auto-merge:
+    runs-on: ubuntu-latest
+    # if: github.event.pull_request.user.login == 'renovate[bot]' && contains(github.event.pull_request.labels.*.name, 'dependencies')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Generate github token
+        id: generate_token
+        uses: ./.github/actions/github-app-token
+        with:
+          app_id: ${{ secrets.ZNAZ_APP_ID }}
+          private_key: ${{ secrets.ZNAZ_PRIVATE_KEY }}
+      - uses: alexwilson/enable-github-automerge-action@main
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
