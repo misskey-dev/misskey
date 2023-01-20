@@ -145,6 +145,7 @@ onMounted(() => {
 .time {
 	margin-left: auto;
 	font-size: 90%;
+	opacity: 0.7;
 }
 
 .description {

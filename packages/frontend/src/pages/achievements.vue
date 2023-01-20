@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :content-max="600">
 		<MkAchievements :user="$i"/>
 	</MkSpacer>
 </MkStickyContainer>
