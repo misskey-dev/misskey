@@ -938,19 +938,92 @@ cannotPerformTemporary: "Temporarily unavailable"
 cannotPerformTemporaryDescription: "This action cannot be performed temporarily due to exceeding the execution limit. Please wait for a while and then try again."
 preset: "Preset"
 selectFromPresets: "Choose from presets"
+achievements: "Achievements"
 _achievements:
+  earnedAt: "Unlocked at"
   _types:
     _notes1:
       title: "just setting up my msky"
+      description: "Posted 1 note"
+      flavor: "Have a good Misskey life!"
+    _notes10:
+      title: "Some notes"
+      description: "Posted 10 notes"
+    _notes100:
+      title: "A lot of notes"
+      description: "Posted 100 notes"
+    _notes500:
+      title: "Covered in notes"
+      description: "Posted 500 notes"
+    _notes1000:
+      title: "Mountain of notes"
+      description: "Posted 1,000 notes"
+    _notes5000:
+      title: "Overflowing with notes"
+      description: "Posted 5,000 notes"
+    _notes10000:
+      title: "Super note!"
+      description: "Posted 10,000 notes"
+    _notes20000:
+      title: "Need... more... notes..."
+      description: "Posted 20,000 notes"
+    _notes30000:
+      title: "Notes notes notes!"
+      description: "Posted 30,000 notes"
+    _notes40000:
+      title: "Note factory"
+      description: "Posted 40,000 notes"
+    _notes50000:
+      title: "Planet of notes"
+      description: "Posted 50,000 notes"
+    _notes60000:
+      title: "Note quasar"
+      description: "Posted 60,000 notes"
+    _notes70000:
+      title: "Note black hole"
+      description: "Post 70,000 notes"
+    _notes80000:
+      title: "Note galaxy"
+      description: "Post 80,000 notes"
+    _notes90000:
+      title: "Note universe"
+      description: "Post 90,000 notes"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      flavor: "You sure have a lot to say."
+    _login1000:
+      flavor: "Thank you for using Misskey!"
+    _noteFavorited1:
+      title: "Stargazer"
+    _profileFilled:
+      title: "Well-prepared"
+    _markedAsCat:
+      title: "I Am a Cat"
+    _followers100:
+      title: "Popular"
+    _followers500:
+      title: "Radio Tower"
+    _followers1000:
+      title: "Influencer"
+    _collectAchievements30:
+      title: "Achievement Collector"
     _viewAchievements3min:
       title: "Likes Achievements"
       description: "Look at your list of achievements for at least 3 minutes"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+    _client30min:
+      title: "Short break"
+    _noteDeletedWithin1min:
+      title: "Nevermind"
     _postedAtLateNight:
       title: "Nocturnal"
-      description: "Posted a note late at night"
+      description: "Post a note late at night"
       flavor: "It's about time to go to bed."
     _postedAt0min0sec:
+      title: "Speaking Clock"
       description: "Post a note at 00:00"
+      flavor: "Click Click Click Claaang"
     _selfQuote:
       title: "Self-Reference"
       description: "Quote your own note"
@@ -965,7 +1038,7 @@ _achievements:
       description: "Have at least 3 windows open at the same time"
     _driveFolderCircularReference:
       title: "Circular Reference"
-      description: "Attempted to create a recursive folder in Drive"
+      description: "Attempt to create a recursively nested folder in Drive"
     _reactWithoutRead:
       title: "Did you really read that?"
       description: "React on a note that's over 100 characters long within 3 seconds of it being posted"
@@ -989,7 +1062,7 @@ _achievements:
       description: "Three years have passed since your account was created"
     _loggedInOnBirthday:
       title: "Happy Birthday"
-      description: "Logged in on your birthday"
+      description: "Log in on your birthday"
     _loggedInOnNewYearsDay:
       title: "Happy New Year!"
       description: "Logged in on the first day of the year"
