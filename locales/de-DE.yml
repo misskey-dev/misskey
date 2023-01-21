@@ -991,9 +991,11 @@ _achievements:
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "100.000 Notizen gesendet"
+      flavor: "Gibt es echt so viel, über das du schreiben kannst?"
     _login3:
       title: "Anfänger Ⅰ"
       description: "An 3 Tagen eingeloggt"
+      flavor: "Nenn' mich ab heute Misskist"
     _login7:
       title: "Anfänger Ⅱ"
       description: "An 7 Tagen eingeloggt"
@@ -1092,6 +1094,9 @@ _achievements:
     _collectAchievements30:
       title: "Sammler der Errungenschaften"
       description: "Schalte 30 Errungenschaften frei"
+    _viewAchievements3min:
+      title: "Fan von Errungenschaften"
+      description: "Schau dir die Liste deiner Errungenschaften für mindestens 3 Minuten an"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "Sende \"I ❤ #Misskey\""
@@ -1116,6 +1121,12 @@ _achievements:
     _htl20npm:
       title: "Fließende Chronik"
       description: "Deine Startseitenchronik erreicht eine Geschwindigkeit von 20 npm (Notizen pro Minute)"
+    _outputHelloWorldOnScratchpad:
+      title: "Hallo Welt!"
+      description: "Gib \"hello world\" in der Testumgebung aus"
+    _open3windows:
+      title: "Splitscreen"
+      description: "Habe zur gleichen Zeit mindestens 3 Fenster offen"
     _driveFolderCircularReference:
       title: "Zyklischer Verweis"
       description: "Versuche, in Drive einen Zirkelbezug von Ordnern herzustellen"
@@ -1143,6 +1154,10 @@ _achievements:
     _loggedInOnBirthday:
       title: "Alles Gute Zum Geburtstag"
       description: "Logge dich an deinem Geburtstag ein"
+    _loggedInOnNewYearsDay:
+      title: "Frohes Neujahr"
+      description: "Logge dich am Neujahrstag ein"
+      flavor: "Auf ein weiteres tolles Jahr in dieser Instanz"
     _cookieClicked:
       title: "Ein Spiel, in dem du auf einen Keks klickst"
       description: "Den Keks geklickt"
