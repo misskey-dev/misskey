@@ -110,6 +110,7 @@ clickToShow: "클릭하여 보기"
 sensitive: "열람주의"
 add: "추가"
 reaction: "리액션"
+reactions: "리액션"
 reactionSetting: "선택기에 표시할 리액션"
 reactionSettingDescription2: "끌어서 순서 변경, 클릭해서 삭제, ＋를 눌러서 추가할 수 있습니다."
 rememberNoteVisibility: "공개 범위를 기억하기"
@@ -937,6 +938,221 @@ cannotPerformTemporary: "일시적으로 사용할 수 없음"
 cannotPerformTemporaryDescription: "조작 횟수 제한을 초과하여 일시적으로 사용이 불가합니다. 잠시 후 다시 시도해 주세요."
 preset: "프리셋"
 selectFromPresets: "프리셋에서 선택"
+achievements: "도전과제"
+_achievements:
+  earnedAt: "달성 일시"
+  _types:
+    _notes1:
+      title: "미스키 설정하고 있었는데요"
+      description: "첫 노트를 포스트했습니다"
+      flavor: "Misskey에 오신 것을 환영합니다!"
+    _notes10:
+      title: "노트 조금"
+      description: "10개의 노트를 작성했습니다"
+    _notes100:
+      title: "노트 많이"
+      description: "100개의 노트를 작성했습니다"
+    _notes500:
+      title: "노트로 뒤덮여버렸어"
+      description: "500개의 노트를 작성했습니다"
+    _notes1000:
+      title: "노트만 산더미"
+      description: "1,000개의 노트를 작성했습니다"
+    _notes5000:
+      title: "노트가 어디서 솟아?"
+      description: "5,000개의 노트를 작성했습니다"
+    _notes10000:
+      title: "슈퍼-노트"
+      description: "10,000개의 노트를 작성했습니다"
+    _notes20000:
+      title: "노트 더 없어?"
+      description: "20,000개의 노트를 작성했습니다"
+    _notes30000:
+      title: "노트노트노트"
+      description: "30,000개의 노트를 작성했습니다"
+    _notes40000:
+      title: "노트 공장"
+      description: "40,000개의 노트를 작성했습니다"
+    _notes50000:
+      title: "노트 행성"
+      description: "50,000개의 노트를 작성했습니다"
+    _notes60000:
+      title: "노트 퀘이사"
+      description: "60,000개의 노트를 작성했습니다"
+    _notes70000:
+      title: "노트 블랙홀"
+      description: "70,000개의 노트를 작성했습니다"
+    _notes80000:
+      title: "노트 은하"
+      description: "80,000개의 노트를 작성했습니다"
+    _notes90000:
+      title: "노트 우주"
+      description: "90,000개의 노트를 작성했습니다"
+    _notes100000:
+      title: "네 모든 노트는 내 거야"
+      description: "100,000개의 노트를 작성했습니다"
+      flavor: "이만큼 쓸 일도 없겠지만... 다른 할 일이 있진 않으신가요?"
+    _login3:
+      title: "비기너 I"
+      description: "총 3일간 로그인했습니다"
+      flavor: "오늘부터 여러분도 미스키스트에요!"
+    _login7:
+      title: "비기너 II"
+      description: "총 7일간 로그인했습니다"
+      flavor: "슬슬 익숙해지셨나요?"
+    _login15:
+      title: "비기너 III"
+      description: "총 15일간 로그인했습니다"
+    _login30:
+      title: "미스키스트 I"
+      description: "총 30일간 로그인했습니다"
+    _login60:
+      title: "미스키스트 II"
+      description: "총 60일간 로그인했습니다"
+    _login100:
+      title: "미스키스트 III"
+      description: "총 100일간 로그인했습니다"
+      flavor: "그 유저, 미스키스트를 위하여"
+    _login200:
+      title: "단골 I"
+      description: "총 200일간 로그인했습니다"
+    _login300:
+      title: "단골 II"
+      description: "총 300일간 로그인했습니다"
+    _login400:
+      title: "단골 III"
+      description: "총 400일간 로그인했습니다"
+    _login500:
+      title: "베테랑 I"
+      description: "총 500일간 로그인했습니다"
+      flavor: "여러분, 저 이 노트들 좋아해요"
+    _login600:
+      title: "베테랑 II"
+      description: "총 600일간 로그인했습니다"
+    _login700:
+      title: "베테랑 III"
+      description: "총 700일간 로그인했습니다"
+    _login800:
+      title: "노트 마스터 I"
+      description: "총 800일간 로그인했습니다"
+    _login900:
+      title: "노트 마스터 II"
+      description: "총 900일간 로그인했습니다"
+    _login1000:
+      title: "노트 마스터 III"
+      description: "총 1,000일간 로그인했습니다"
+      flavor: "미스키를 사용해 주셔서 감사합니다!"
+    _noteClipped1:
+      title: "클립할 수밖에 없었어"
+      description: "처음으로 노트를 클립했습니다"
+    _noteFavorited1:
+      title: "별을 바라보는 자"
+      description: "처음으로 노트를 즐겨찾기했습니다"
+    _profileFilled:
+      title: "준비 완료"
+      description: "프로필 설정을 완료했습니다"
+    _markedAsCat:
+      title: "나는 고양이다냥!"
+      description: "계정을 고양이로 설정했습니다냥"
+      flavor: "냐냐냐냐냐냐아아아아앙!"
+    _following1:
+      title: "첫 팔로우"
+      description: "사용자를 처음으로 팔로우했습니다"
+    _following10:
+      title: "팔로우, 팔로우"
+      description: "10명의 사용자를 팔로우했습니다"
+    _following50:
+      title: "친구 잔뜩"
+      description: "50명의 사용자를 팔로우했습니다"
+    _following100:
+      title: "주소록 한 권으론 부족해"
+      description: "100명의 사용자를 팔로우했습니다"
+    _following300:
+      title: "친구가 넘쳐나"
+      description: "300명의 사용자를 팔로우했습니다"
+    _followers1:
+      title: "첫 팔로워"
+      description: "사용자가 처음으로 팔로잉했습니다"
+    _followers10:
+      title: "날 따라와!"
+      description: "10명의 사용자가 팔로우했습니다"
+    _followers50:
+      title: "이곳저곳"
+      description: "50명의 사용자가 팔로우했습니다"
+    _followers100:
+      title: "인기왕"
+      description: "100명의 사용자가 팔로우했습니다"
+    _followers300:
+      title: "줄 좀 서봐요"
+      description: "100명의 사용자가 팔로우했습니다"
+    _followers500:
+      title: "기지국"
+      description: "500명의 사용자가 팔로우했습니다"
+    _followers1000:
+      title: "유명인사"
+      description: "1,000명의 사용자가 팔로우했습니다"
+    _collectAchievements30:
+      title: "도전과제 콜렉터"
+      description: "30개의 도전과제를 획득했습니다"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "\"I ❤ #Misskey\"를 포스트했습니다"
+      flavor: "Misskey를 이용해주셔서 감사합니다! - 개발팀 일동"
+    _client30min:
+      title: "잠깐 쉬어"
+      description: "클라이언트를 시작하고 30분이 경과하였습니다"
+    _noteDeletedWithin1min:
+      title: "있었는데요 없었습니다"
+      description: "노트를 포스트한 후 1분 이내에 삭제했습니다"
+    _postedAtLateNight:
+      title: "올빼미"
+      description: "한밤중에 노트를 포스트했습니다"
+      flavor: "잠 좀 자세요. 걱정돼요."
+    _postedAt0min0sec:
+      title: "정각"
+      description: "1초도 어긋나지 않은 정각에 노트를 포스트했습니다"
+      flavor: "째깍 째깍 째깍 땡!"
+    _selfQuote:
+      title: "혼잣말"
+      description: "자기 노트를 인용했습니다"
+    _htl20npm:
+      title: "타임라인 폭주 중"
+      description: "1분 사이에 홈 타임라인에 노트가 20개 넘게 생성되었습니다"
+    _driveFolderCircularReference:
+      title: "순환 참조"
+      description: "드라이브 폴더를 자신을 가리키도록 만드려 시도했습니다"
+    _reactWithoutRead:
+      title: "읽고 답하긴 하시는 건가요?"
+      description: "100자가 넘는 포스트에 3초 안에 포스트했습니다"
+    _clickedClickHere:
+      title: "여길 눌러보세요"
+      description: "이 곳을 눌러봤습니다"
+    _justPlainLucky:
+      title: "그냥 운이 좋았어"
+      description: "매 10초마다 0.01%의 확률로 달성됩니다"
+    _setNameToSyuilo:
+      title: "신 콤플렉스"
+      description: "이름을 syuilo로 설정했습니다"
+    _passedSinceAccountCreated1:
+      title: "1년"
+      description: "계정을 생성하고 1년이 지났습니다"
+    _passedSinceAccountCreated2:
+      title: "2년"
+      description: "계정을 생성하고 2년이 지났습니다"
+    _passedSinceAccountCreated3:
+      title: "3년"
+      description: "계정을 생성하고 3년이 지났습니다"
+    _loggedInOnBirthday:
+      title: "생일 축하합니다!"
+      description: "설정한 생일에 로그인했습니다"
+    _cookieClicked:
+      title: "쿠키 클리커 게임"
+      description: "쿠키를 클릭했습니다"
+      flavor: "뭔가 문제가 있나요?"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Brain Diver로의 링크를 첨부했습니다"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "새 역할 생성"
   edit: "역할 수정"
@@ -1586,6 +1802,7 @@ _notification:
   pollEnded: "투표 결과가 발표되었습니다"
   unreadAntennaNote: "안테나 {name}"
   emptyPushNotificationMessage: "푸시 알림이 갱신되었습니다"
+  achievementEarned: "도전 과제를 달성했습니다"
   _types:
     all: "전부"
     follow: "팔로잉"

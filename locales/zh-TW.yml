@@ -110,6 +110,7 @@ clickToShow: "按一下以顯示"
 sensitive: "敏感內容"
 add: "新增"
 reaction: "情感"
+reactions: "情感"
 reactionSetting: "在選擇器中顯示反應"
 reactionSettingDescription2: "拖動以重新列序，點擊以刪除，按下 + 添加。"
 rememberNoteVisibility: "記住貼文可見性"
@@ -937,6 +938,62 @@ cannotPerformTemporary: "暫時無法進行"
 cannotPerformTemporaryDescription: "由於超過操作次數限制，暫時無法進行。請過一段時間之後再嘗試。"
 preset: "預設值"
 selectFromPresets: "從預設值中選擇"
+achievements: "成就"
+_achievements:
+  earnedAt: "獲得日期"
+  _types:
+    _notes1:
+      title: "just setting up my msky"
+      description: "發出了第一則貼文"
+      flavor: "祝您的Misskey生活愉快！"
+    _notes10:
+      title: "若干貼文"
+      description: "發表了10則貼文"
+    _notes100:
+      title: "許多的貼文"
+      description: "發表了100則貼文"
+    _notes500:
+      title: "滿滿的貼文"
+      description: "發表了500則貼文"
+    _notes1000:
+      title: "一堆貼文"
+      description: "發表了1000則貼文"
+    _notes5000:
+      title: "滔滔不絕的貼文"
+      description: "發表了5000則貼文"
+    _notes10000:
+      title: "超級貼文"
+      description: "發表了10000則貼文"
+    _notes20000:
+      title: "需要更多的貼文"
+      description: "發表了20000則貼文"
+    _notes30000:
+      title: "貼文貼文貼文"
+      description: "發表了30000則貼文"
+    _notes40000:
+      title: "貼文工廠"
+      description: "發表了40000則貼文"
+    _notes50000:
+      title: "貼文星球"
+      description: "發表了50000則貼文"
+    _notes60000:
+      title: "貼文類星體"
+      description: "發表了60000則貼文"
+    _notes70000:
+      title: "貼文黑洞"
+      description: "發表了70000則貼文"
+    _notes80000:
+      title: "貼文銀河"
+      description: "發表了80000則貼文"
+    _notes90000:
+      title: "貼文宇宙"
+      description: "發表了90000則貼文"
+    _notes100000:
+      description: "發表了100,000則貼文"
+      flavor: "有這麼多東西要寫嗎？"
+    _login3:
+      title: "初學者 I"
+      description: "總登入天數為3天"
 _role:
   new: "建立角色"
   edit: "編輯角色"
