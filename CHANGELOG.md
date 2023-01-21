@@ -19,6 +19,7 @@ You should also include the user name that made the change.
 - リアクション一覧詳細ダイアログを表示できるように
 - 存在しないカスタム絵文字をテキストで表示するように
 - Alt text in image viewer
+- ジョブキューのプロセスとWebサーバーのプロセスを分離
 
 ### Bugfixes
 - playを削除する手段がなかったのを修正
