@@ -35,7 +35,7 @@ const url = computed(() => {
 		const found = customEmojis.find(x => x.name === customEmojiName);
 		return found ? found.url : null;
 	} else {
-		const rawUrl = props.host ? `/emoji/${customEmojiName}@${props.host}.webp` : `/emoji/${customEmojiName}.webp`;
+		const rawUrl = `/emoji/${customEmojiName}@${props.host}.webp`;
 		return defaultStore.state.disableShowingAnimatedImages
 			? getStaticImageUrl(rawUrl)
 			: rawUrl;
