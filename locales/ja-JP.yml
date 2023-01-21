@@ -1158,6 +1158,7 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "あけましておめでとうございます"
       description: "元日にログインした"
+      flavor: "今年も弊インスタンスをよろしくお願いします"
     _cookieClicked:
       title: "クッキーをクリックするゲーム"
       description: "クッキーをクリックした"
