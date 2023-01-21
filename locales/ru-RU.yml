@@ -970,6 +970,14 @@ _achievements:
       description: "Заметка удалена через минуту после публикации"
     _postedAtLateNight:
       title: "Житель ночи"
+      description: "Заметка опубликована в глухую ночь"
+    _postedAt0min0sec:
+      title: "Говорящие часы"
+      description: "Заметка опубликована ровно в 0 минут 0 секунд"
+      flavor: "дин-дон дин-дон"
+    _selfQuote:
+      title: "Самовоспроизведение"
+      description: "Процитирована собственная заметка"
 _role:
   priority: "Приоритет"
   _priority:
