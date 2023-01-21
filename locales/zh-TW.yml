@@ -938,6 +938,20 @@ cannotPerformTemporary: "暫時無法進行"
 cannotPerformTemporaryDescription: "由於超過操作次數限制，暫時無法進行。請過一段時間之後再嘗試。"
 preset: "預設值"
 selectFromPresets: "從預設值中選擇"
+achievements: "成就"
+_achievements:
+  earnedAt: "獲得日期"
+  _types:
+    _notes1:
+      title: "just setting up my msky"
+      description: "發出了第一則貼文"
+      flavor: "祝您的Misskey生活愉快！"
+    _notes10:
+      title: "若干貼文"
+      description: "發表了10則貼文"
+    _notes100:
+      title: "許多的貼文"
+      description: "發表了100則貼文"
 _role:
   new: "建立角色"
   edit: "編輯角色"
