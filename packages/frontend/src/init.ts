@@ -346,6 +346,22 @@ import { claimAchievement, claimedAchievements } from './scripts/achievements';
 			});
 		}
 
+		if ($i.loggedInDays >= 3) claimAchievement('login3');
+		if ($i.loggedInDays >= 7) claimAchievement('login7');
+		if ($i.loggedInDays >= 15) claimAchievement('login15');
+		if ($i.loggedInDays >= 30) claimAchievement('login30');
+		if ($i.loggedInDays >= 60) claimAchievement('login60');
+		if ($i.loggedInDays >= 100) claimAchievement('login100');
+		if ($i.loggedInDays >= 200) claimAchievement('login200');
+		if ($i.loggedInDays >= 300) claimAchievement('login300');
+		if ($i.loggedInDays >= 400) claimAchievement('login400');
+		if ($i.loggedInDays >= 500) claimAchievement('login500');
+		if ($i.loggedInDays >= 600) claimAchievement('login600');
+		if ($i.loggedInDays >= 700) claimAchievement('login700');
+		if ($i.loggedInDays >= 800) claimAchievement('login800');
+		if ($i.loggedInDays >= 900) claimAchievement('login900');
+		if ($i.loggedInDays >= 1000) claimAchievement('login1000');
+
 		if ($i.notesCount > 0) claimAchievement('notes1');
 		if ($i.notesCount >= 10) claimAchievement('notes10');
 		if ($i.notesCount >= 100) claimAchievement('notes100');

@@ -118,12 +118,24 @@ onMounted(() => {
 }
 .iconFrame_bronze {
 	background: linear-gradient(0deg, #703827, #d37566);
+
+	> .iconInner {
+		background: linear-gradient(0deg, #d37566, #703827);
+	}
 }
 .iconFrame_silver {
 	background: linear-gradient(0deg, #7c7c7c, #e1e1e1);
+
+	> .iconInner {
+		background: linear-gradient(0deg, #e1e1e1, #7c7c7c);
+	}
 }
 .iconFrame_gold {
 	background: linear-gradient(0deg, #eb7018, #ffee20);
+
+	> .iconInner {
+		background: linear-gradient(0deg, #ffee20, #eb7018);
+	}
 
 	&:before {
 		content: "";

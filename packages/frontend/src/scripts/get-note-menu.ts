@@ -1,6 +1,7 @@
 import { defineAsyncComponent, Ref, inject } from 'vue';
 import * as misskey from 'misskey-js';
 import { pleaseLogin } from './please-login';
+import { claimAchievement } from './achievements';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
@@ -38,6 +39,10 @@ export function getNoteMenu(props: {
 			os.api('notes/delete', {
 				noteId: appearNote.id,
 			});
+
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+				claimAchievement('noteDeletedWithin1min');
+			}
 		});
 	}
 
@@ -53,6 +58,10 @@ export function getNoteMenu(props: {
 			});
 
 			os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel });
+
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+				claimAchievement('noteDeletedWithin1min');
+			}
 		});
 	}
 

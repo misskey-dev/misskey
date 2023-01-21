@@ -18,6 +18,21 @@ export const ACHIEVEMENT_TYPES = [
 	'notes80000',
 	'notes90000',
 	'notes100000',
+	'login3',
+	'login7',
+	'login15',
+	'login30',
+	'login60',
+	'login100',
+	'login200',
+	'login300',
+	'login400',
+	'login500',
+	'login600',
+	'login700',
+	'login800',
+	'login900',
+	'login1000',
 	'profileFilled',
 	'markedAsCat',
 	'following1',
@@ -35,6 +50,7 @@ export const ACHIEVEMENT_TYPES = [
 	'collectAchievements30',
 	'iLoveMisskey',
 	'client30min',
+	'noteDeletedWithin1min',
 	'postedAtLateNight',
 	'postedAt0min0sec',
 	'htl20npm',
@@ -50,27 +66,27 @@ export const ACHIEVEMENT_TYPES = [
 
 export const ACHIEVEMENT_BADGES = {
 	'notes1': {
-		img: '/fluent-emoji/1f331.png',
+		img: '/fluent-emoji/1f4dd.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
 	'notes10': {
-		img: '/fluent-emoji/1fab4.png',
-		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		img: '/fluent-emoji/1f4d1.png',
+		bg: null,
 		frame: 'bronze',
 	},
 	'notes100': {
-		img: '/fluent-emoji/1fab4.png',
+		img: '/fluent-emoji/1f4d2.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
 	'notes500': {
-		img: '/fluent-emoji/1f333.png',
-		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		img: '/fluent-emoji/1f4da.png',
+		bg: null,
 		frame: 'bronze',
 	},
 	'notes1000': {
-		img: '/fluent-emoji/1f333.png',
+		img: '/fluent-emoji/1f5c3.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
@@ -127,6 +143,81 @@ export const ACHIEVEMENT_BADGES = {
 	'notes100000': {
 		img: '/fluent-emoji/267e.png',
 		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
+		frame: 'gold',
+	},
+	'login3': {
+		img: '/fluent-emoji/1f331.png',
+		bg: null,
+		frame: 'bronze',
+	},
+	'login7': {
+		img: '/fluent-emoji/1f331.png',
+		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		frame: 'bronze',
+	},
+	'login15': {
+		img: '/fluent-emoji/1f331.png',
+		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
+		frame: 'bronze',
+	},
+	'login30': {
+		img: '/fluent-emoji/1fab4.png',
+		bg: null,
+		frame: 'bronze',
+	},
+	'login60': {
+		img: '/fluent-emoji/1fab4.png',
+		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		frame: 'bronze',
+	},
+	'login100': {
+		img: '/fluent-emoji/1fab4.png',
+		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
+		frame: 'silver',
+	},
+	'login200': {
+		img: '/fluent-emoji/1f333.png',
+		bg: null,
+		frame: 'silver',
+	},
+	'login300': {
+		img: '/fluent-emoji/1f333.png',
+		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		frame: 'silver',
+	},
+	'login400': {
+		img: '/fluent-emoji/1f333.png',
+		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
+		frame: 'silver',
+	},
+	'login500': {
+		img: '/fluent-emoji/1f304.png',
+		bg: null,
+		frame: 'silver',
+	},
+	'login600': {
+		img: '/fluent-emoji/1f304.png',
+		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		frame: 'gold',
+	},
+	'login700': {
+		img: '/fluent-emoji/1f304.png',
+		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
+		frame: 'gold',
+	},
+	'login800': {
+		img: '/fluent-emoji/1f307.png',
+		bg: null,
+		frame: 'gold',
+	},
+	'login900': {
+		img: '/fluent-emoji/1f307.png',
+		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
+		frame: 'gold',
+	},
+	'login1000': {
+		img: '/fluent-emoji/1f307.png',
+		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'gold',
 	},
 	'profileFilled': {
@@ -214,6 +305,11 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
+	'noteDeletedWithin1min': {
+		img: '/fluent-emoji/1f5d1.png',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'bronze',
+	},
 	'postedAtLateNight': {
 		img: '/fluent-emoji/1f319.png',
 		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
@@ -251,17 +347,17 @@ export const ACHIEVEMENT_BADGES = {
 	},
 	'passedSinceAccountCreated1': {
 		img: '/fluent-emoji/0031-20e3.png',
-		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
+		bg: null,
 		frame: 'bronze',
 	},
 	'passedSinceAccountCreated2': {
 		img: '/fluent-emoji/0032-20e3.png',
-		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
+		bg: null,
 		frame: 'silver',
 	},
 	'passedSinceAccountCreated3': {
 		img: '/fluent-emoji/0033-20e3.png',
-		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
+		bg: null,
 		frame: 'gold',
 	},
 	'cookieClicked': {
@@ -271,7 +367,7 @@ export const ACHIEVEMENT_BADGES = {
 	},
 } as const satisfies Record<typeof ACHIEVEMENT_TYPES[number], {
 	img: string;
-	bg: string;
+	bg: string | null;
 	frame: 'bronze' | 'silver' | 'gold';
 }>;
 
