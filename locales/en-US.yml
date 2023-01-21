@@ -944,41 +944,41 @@ _achievements:
   _types:
     _notes1:
       title: "just setting up my msky"
-      description: "Posted 1 note"
+      description: "Post 1 note"
       flavor: "Have a good Misskey life!"
     _notes10:
       title: "Some notes"
-      description: "Posted 10 notes"
+      description: "Post 10 notes"
     _notes100:
       title: "A lot of notes"
-      description: "Posted 100 notes"
+      description: "Post 100 notes"
     _notes500:
       title: "Covered in notes"
-      description: "Posted 500 notes"
+      description: "Post 500 notes"
     _notes1000:
       title: "Mountain of notes"
-      description: "Posted 1,000 notes"
+      description: "Post 1,000 notes"
     _notes5000:
       title: "Overflowing with notes"
-      description: "Posted 5,000 notes"
+      description: "Post 5,000 notes"
     _notes10000:
       title: "Super note!"
-      description: "Posted 10,000 notes"
+      description: "Post 10,000 notes"
     _notes20000:
       title: "Need... more... notes..."
-      description: "Posted 20,000 notes"
+      description: "Post 20,000 notes"
     _notes30000:
       title: "Notes notes notes!"
-      description: "Posted 30,000 notes"
+      description: "Post 30,000 notes"
     _notes40000:
       title: "Note factory"
-      description: "Posted 40,000 notes"
+      description: "Post 40,000 notes"
     _notes50000:
       title: "Planet of notes"
-      description: "Posted 50,000 notes"
+      description: "Post 50,000 notes"
     _notes60000:
       title: "Note quasar"
-      description: "Posted 60,000 notes"
+      description: "Post 60,000 notes"
     _notes70000:
       title: "Note black hole"
       description: "Post 70,000 notes"
@@ -990,32 +990,123 @@ _achievements:
       description: "Post 90,000 notes"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "Post 100,000 notes"
       flavor: "You sure have a lot to say."
+    _login3:
+      title: "Beginner I"
+      description: "Log in for 3 total days"
+      flavor: "From today on, an official misskist"
+    _login7:
+      title: "Beginner II"
+      description: "Log in for 7 total days"
+      flavor: "Getting the hang of things"
+    _login15:
+      title: "Beginner III"
+      description: "Log in for 15 total days"
+    _login30:
+      title: "Misskist I"
+      description: "Log in for 30 total days"
+    _login60:
+      title: "Misskist II"
+      description: "Log in for 60 total days"
+    _login100:
+      title: "Misskist III"
+      description: "Log in for 100 total days"
+      flavor: "A true Misskist now"
+    _login200:
+      title: "Regular I"
+      description: "Log in for 200 total days"
+    _login300:
+      title: "Regular II"
+      description: "Log in for 300 total days"
+    _login400:
+      title: "Regular III"
+      description: "Log in for 400 total days"
+    _login500:
+      title: "Expert I"
+      description: "Log in for 500 total days"
+      flavor: "Hello everybody, I like notes"
+    _login600:
+      title: "Expert II"
+      description: "Log in for 600 total days"
+    _login700:
+      title: "Expert III"
+      description: "Log in for 700 total days"
+    _login800:
+      title: "Note Lord I"
+      description: "Log in for 800 total days"
+    _login900:
+      title: "Note Lord II"
+      description: "Log in for 900 total days"
     _login1000:
+      title: "Note Lord III"
+      description: "Log in for 1,000 total days"
       flavor: "Thank you for using Misskey!"
+    _noteClipped1:
+      title: "Need to clip it"
+      description: "Clip 1 note"
     _noteFavorited1:
       title: "Stargazer"
+      description: "Favorite 1 note"
     _profileFilled:
       title: "Well-prepared"
+      description: "Profile set up"
     _markedAsCat:
       title: "I Am a Cat"
+      description: "Mark the account as a cat"
+      flavor: "Meow"
+    _following1:
+      title: "First follow"
+      description: "Follow 1 account"
+    _following10:
+      title: "Follow me, follow me."
+      description: "Follow 10 accounts"
+    _following50:
+      title: "Lots of friends"
+      description: "Follow 50 accounts"
+    _following100:
+      title: "100 Friends"
+      description: "Follow 100 accounts"
+    _following300:
+      title: "Friend overload"
+      description: "Follow 300 accounts"
+    _followers1:
+      title: "First follower"
+      description: "Gain 1 follower"
+    _followers10:
+      title: "Follow me!"
+      description: "Gain 10 followers"
+    _followers50:
+      title: "Coming in crowds"
+      description: "Gain 50 followers"
     _followers100:
       title: "Popular"
+      description: "Gain 100 followers"
+    _followers300:
+      title: "Please line up, single file."
+      description: "Gain 300 followers"
     _followers500:
       title: "Radio Tower"
+      description: "Gain 500 followers"
     _followers1000:
       title: "Influencer"
+      description: "Gain 1,000 followers"
     _collectAchievements30:
       title: "Achievement Collector"
+      description: "Earn 30 achievements"
     _viewAchievements3min:
       title: "Likes Achievements"
       description: "Look at your list of achievements for at least 3 minutes"
     _iLoveMisskey:
       title: "I Love Misskey"
+      description: "Post \"I ❤ #Misskey\""
+      flavor: "Misskey's development team greatly appreciates your support!"
     _client30min:
       title: "Short break"
+      description: "Spend 30 minutes on Misskey"
     _noteDeletedWithin1min:
       title: "Nevermind"
+      description: "Delete a note within a minute of posting it"
     _postedAtLateNight:
       title: "Nocturnal"
       description: "Post a note late at night"
@@ -1070,6 +1161,7 @@ _achievements:
     _cookieClicked:
       title: "A game in which you click cookies"
       description: "Clicked the cookie"
+      flavor: "Are you using the wrong software?"
     _brainDiver:
       title: "Brain Diver"
       description: "Post the link to Brain Diver"
