@@ -938,6 +938,39 @@ cannotPerformTemporary: "Temporarily unavailable"
 cannotPerformTemporaryDescription: "This action cannot be performed temporarily due to exceeding the execution limit. Please wait for a while and then try again."
 preset: "Preset"
 selectFromPresets: "Choose from presets"
+_achievements:
+  _types:
+    _reactWithoutRead:
+      title: "Did you really read that?"
+      description: "React on a note that's over 100 characters long within 3 seconds of it being posted"
+    _clickedClickHere:
+      title: "Click here"
+      description: "You've clicked here"
+    _justPlainLucky:
+      title: "Just Plain Lucky"
+      description: "Has a chance to be obtained with a probability of 0.01% every 10 seconds"
+    _setNameToSyuilo:
+      title: "God Complex"
+      description: "Set your name to \"syuilo\""
+    _passedSinceAccountCreated1:
+      title: "One Year Anniversary"
+      description: "One year has passed since your account was created"
+    _passedSinceAccountCreated2:
+      title: "Two Year Anniversary"
+      description: "Two years have passed since your account was created"
+    _passedSinceAccountCreated3:
+      title: "Three Year Anniversary"
+      description: "Three years have passed since your account was created"
+    _loggedInOnBirthday:
+      title: "Happy Birthday"
+      description: "Logged in on your birthday"
+    _cookieClicked:
+      title: "A game in which you click cookies"
+      description: "Clicked the cookie"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Post the link to Brain Diver"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "New role"
   edit: "Edit role"
@@ -1587,6 +1620,7 @@ _notification:
   pollEnded: "Poll results have become available"
   unreadAntennaNote: "Antenna {name}"
   emptyPushNotificationMessage: "Push notifications have been updated"
+  achievementEarned: "Achievement unlocked"
   _types:
     all: "All"
     follow: "New followers"
