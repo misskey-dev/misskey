@@ -82,12 +82,12 @@ export class ServerService {
 		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
+			reply.header('Cache-Control', 'public, max-age=86400');
+
 			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
 				reply.code(404);
 				return;
 			}
-
-			reply.header('Cache-Control', 'public, max-age=86400');
 
 			const name = path.split('@')[0].replace('.webp', '');
 			const host = path.split('@')[1]?.replace('.webp', '');
@@ -132,6 +132,8 @@ export class ServerService {
 				relations: ['avatar'],
 			});
 
+			reply.header('Cache-Control', 'public, max-age=86400');
+
 			if (user) {
 				reply.redirect(this.userEntityService.getAvatarUrlSync(user));
 			} else {
@@ -143,6 +145,7 @@ export class ServerService {
 			const [temp, cleanup] = await createTemp();
 			await genIdenticon(request.params.x, fs.createWriteStream(temp));
 			reply.header('Content-Type', 'image/png');
+			reply.header('Cache-Control', 'public, max-age=86400');
 			return fs.createReadStream(temp).on('close', () => cleanup());
 		});
 
