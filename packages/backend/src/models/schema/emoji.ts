@@ -29,5 +29,9 @@ export const packedEmojiSchema = {
 			optional: true, nullable: true,
 			description: 'The local host is represented with `null`.',
 		},
+		url: {
+			type: 'string',
+			optional: true, nullable: false,
+		},
 	},
 } as const;
