@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 overrides:
-  chokidar: ^3.3.1
+  chokidar: ^3.5.3
   lodash: ^4.17.21
 
 importers:
@@ -126,7 +126,7 @@ importers:
       cbor: 8.1.0
       chalk: 5.2.0
       chalk-template: 0.4.0
-      chokidar: ^3.3.1
+      chokidar: ^3.5.3
       cli-highlight: 2.1.11
       color-convert: 2.0.1
       content-disposition: 0.5.4
