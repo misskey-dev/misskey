@@ -9,6 +9,11 @@
 You should also include the user name that made the change.
 -->
 
+## 13.1.2 (2023/01/22)
+
+### Bugfixes
+- Client: リアクションのカスタム絵文字の表示の問題を修正
+
 ## 13.1.1 (2023/01/22)
 
 ### Improvements
