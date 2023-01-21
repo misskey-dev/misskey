@@ -1012,6 +1012,36 @@ _achievements:
     _login100:
       title: "Misskeyist ⅠⅠⅠ"
       description: "總登入天數為100天"
+      flavor: "辣個 Misskeyist 用戶"
+    _login200:
+      title: "普通Ⅰ"
+      description: "總登入天數為200天"
+    _login300:
+      title: "普通IⅠ"
+      description: "總登入天數為300天"
+    _login400:
+      title: "普通IIⅠ"
+      description: "總登入天數為400天"
+    _login500:
+      title: "老兵Ⅰ"
+      description: "總登入天數為500天"
+      flavor: "諸君，我喜歡貼文"
+    _login600:
+      title: "老兵ⅠⅠ"
+      description: "總登入天數為600天"
+    _login700:
+      title: "老兵ⅠⅠⅠ"
+      description: "總登入天數為700天"
+    _login800:
+      title: "貼文大師Ⅰ"
+      description: "總登入天數為800天"
+    _login900:
+      title: "貼文大師ⅠⅠ"
+      description: "總登入天數為900天"
+    _login1000:
+      title: "貼文大師ⅠⅠⅠ"
+      description: "總登入天數為1,000天"
+      flavor: "感謝您使用Misskey！"
     _followers500:
       title: "基站"
       description: "超過500名追隨者"
@@ -1055,6 +1085,19 @@ _achievements:
       description: "開啟3個以上的視窗"
     _driveFolderCircularReference:
       title: "循環引用"
+      description: "試圖遞迴套入雲端硬碟資料夾"
+    _reactWithoutRead:
+      title: "有好好讀過嗎？"
+      description: "對包含100字以上內容的貼文做出情感反應"
+    _clickedClickHere:
+      title: "點擊這裡"
+      description: "已點擊這裡了"
+    _justPlainLucky:
+      title: "只是運氣好"
+      description: "每10秒有0.01%的機率獲得"
+    _setNameToSyuilo:
+      title: "神的情結"
+      description: "將名稱設定為 syuilo"
 _role:
   new: "建立角色"
   edit: "編輯角色"
