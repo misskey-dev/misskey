@@ -909,6 +909,67 @@ _achievements:
     _notes60000:
       title: "Замет-квазар"
       description: "Опубликовано 60 000 заметок"
+    _notes70000:
+      title: "Чёрная дыра из заметок"
+      description: "Опубликовано 70 000 заметок"
+    _notes80000:
+      title: "Галактика заметок"
+    _notes90000:
+      title: "Вселенная заметок"
+      description: "Опубликовано 90 000 заметок"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "Опубликовано 100 000 заметок"
+    _login3:
+      title: "Новичок I"
+      description: "3 дня на сайте"
+    _login7:
+      title: "Новичок II"
+      description: "Неделя на сайте"
+    _login15:
+      title: "Новичок III"
+      description: "15 дней на сайте"
+    _login30:
+      title: "Мискиец I"
+      description: "30 дней на сайте"
+    _login60:
+      title: "Мискиец II"
+      description: "60 дней на сайте"
+    _login100:
+      title: "Мискиец III"
+      description: "100 дней на сайте"
+    _followers50:
+      title: "Один за другим"
+      description: "Подписчиков больше 50"
+    _followers100:
+      title: "Всеобщий любимец"
+      description: "Подписчиков больше 100"
+    _followers300:
+      title: "В очередь!"
+      description: "Подписчиков больше 300"
+    _followers500:
+      title: "Радиостанция"
+      description: "Подписчиков больше 300"
+    _followers1000:
+      title: "Авторитет"
+      description: "Подписчиков больше 1000"
+    _collectAchievements30:
+      title: "Достигатор"
+      description: "Получено 30 достижений"
+    _viewAchievements3min:
+      title: "Любовь к успехам"
+      description: "Более 3 минут любования достижениями"
+    _iLoveMisskey:
+      title: "Я люблю Misskey"
+      description: "Написана заметка «I ❤ #Misskey»"
+    _client30min:
+      title: "Перерыв на обед"
+      description: "Прошло 30 минут с момента запуска клиента"
+    _noteDeletedWithin1min:
+      title: "Ой, нет!"
+      description: "Заметка удалена через минуту после публикации"
+    _postedAtLateNight:
+      title: "Житель ночи"
 _role:
   priority: "Приоритет"
   _priority:
