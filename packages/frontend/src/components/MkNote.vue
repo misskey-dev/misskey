@@ -143,6 +143,7 @@ import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -268,6 +269,9 @@ function react(viaKeyboard = false): void {
 			noteId: appearNote.id,
 			reaction: reaction,
 		});
+		if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+			claimAchievement('reactWithoutRead');
+		}
 	}, () => {
 		focus();
 	});

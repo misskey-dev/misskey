@@ -2,6 +2,7 @@
 <div ref="elRef" :class="$style.root">
 	<div v-once :class="$style.head">
 		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user" link preview/>
+		<MkAvatar v-else-if="notification.type === 'achievementEarned'" :class="$style.icon" :user="$i" link preview/>
 		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
 		<img v-else-if="notification.icon" :class="$style.icon" :src="notification.icon" alt=""/>
 		<div :class="[$style.subIcon, $style['t_' + notification.type]]">
@@ -14,6 +15,7 @@
 			<i v-else-if="notification.type === 'mention'" class="ti ti-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
+			<i v-else-if="notification.type === 'achievementEarned'" class="ti ti-military-award"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
 			<MkReactionIcon
 				v-else-if="notification.type === 'reaction'"
@@ -28,6 +30,7 @@
 	<div :class="$style.tail">
 		<header :class="$style.header">
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
+			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
@@ -57,6 +60,9 @@
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
+			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
+				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
+			</MkA>
 			<span v-else-if="notification.type === 'follow'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
 			<span v-else-if="notification.type === 'followRequestAccepted'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
 			<span v-else-if="notification.type === 'receiveFollowRequest'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ i18n.ts.reject }}</button></div></span>
@@ -82,6 +88,7 @@ import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { useTooltip } from '@/scripts/use-tooltip';
+import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
 	notification: misskey.entities.Notification;
@@ -235,6 +242,12 @@ useTooltip(reactionRef, (showing) => {
 }
 
 .t_pollEnded {
+	padding: 3px;
+	background: #88a6b7;
+	pointer-events: none;
+}
+
+.t_achievementEarned {
 	padding: 3px;
 	background: #88a6b7;
 	pointer-events: none;

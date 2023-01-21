@@ -20,6 +20,7 @@ import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
 import * as game from '@/scripts/clicker-game';
 import number from '@/filters/number';
+import { claimAchievement } from '@/scripts/achievements';
 
 defineProps<{
 }>();
@@ -30,14 +31,18 @@ let cps = $ref(0);
 let prevCookies = $ref(0);
 
 function onClick(ev: MouseEvent) {
+	const x = ev.clientX;
+	const y = ev.clientY;
+	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
+
 	saveData.value!.cookies++;
 	saveData.value!.totalCookies++;
 	saveData.value!.totalHandmadeCookies++;
 	saveData.value!.clicked++;
 
-	const x = ev.clientX;
-	const y = ev.clientY;
-	os.popup(MkPlusOneEffect, { x, y }, {}, 'end');
+	if (cookies.value === 1) {
+		claimAchievement('cookieClicked');
+	}
 }
 
 useInterval(() => {
