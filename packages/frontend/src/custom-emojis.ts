@@ -9,8 +9,6 @@ export let customEmojis: {
 	url: string;
 }[] = storageCache ? JSON.parse(storageCache) : [];
 
-fetchCustomEmojis();
-
 export async function fetchCustomEmojis() {
 	const now = Date.now();
 	const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');

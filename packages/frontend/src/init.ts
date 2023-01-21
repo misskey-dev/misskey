@@ -45,6 +45,7 @@ import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
+import { fetchCustomEmojis } from './custom-emojis';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -177,6 +178,10 @@ import { claimAchievement, claimedAchievements } from './scripts/achievements';
 		// Init service worker
 		initializeSw();
 	});
+
+	try {
+		await fetchCustomEmojis();
+	} catch (err) {}
 
 	const app = createApp(
 		window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
