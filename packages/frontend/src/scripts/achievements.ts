@@ -433,16 +433,22 @@ export const ACHIEVEMENT_BADGES = {
 
 export const claimedAchievements = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
 
-export function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
+const claimingQueue = new Set<string>();
+
+export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	if (claimedAchievements.includes(type)) return;
-	os.api('i/claim-achievement', { name: type });
+	claimingQueue.add(type);
 	claimedAchievements.push(type);
+	await new Promise(resolve => setTimeout(resolve, (claimingQueue.size - 1) * 500));
+	window.setTimeout(() => {
+		claimingQueue.delete(type);
+	}, 500);
+	os.api('i/claim-achievement', { name: type });
 }
 
 if (_DEV_) {
-	(window as any).unlockAllAchievements = async () => {
+	(window as any).unlockAllAchievements = () => {
 		for (const t of ACHIEVEMENT_TYPES) {
-			await new Promise(resolve => setTimeout(resolve, 100));
 			claimAchievement(t);
 		}
 	};
