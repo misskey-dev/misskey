@@ -9,6 +9,15 @@
 You should also include the user name that made the change.
 -->
 
+## 13.1.1 (2023/01/22)
+
+### Improvements
+- ローカルのカスタム絵文字を表示する際のパフォーマンスを改善
+- Client: 瞬間的に大量の実績を解除した際の挙動を改善
+
+### Bugfixes
+- Client: アップデート時にローカリゼーションデータが更新されないことがあるのを修正
+
 ## 13.1.0 (2023/01/21)
 
 ### Improvements
