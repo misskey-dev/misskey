@@ -25,7 +25,7 @@ const props = defineProps<{
 const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 const isCustom = computed(() => props.emoji.startsWith(':'));
-const customEmojiName = props.emoji.substr(1, props.emoji.length - 2);
+const customEmojiName = props.emoji.substr(1, props.emoji.length - 2).replace('@.', '');
 const char = computed(() => isCustom.value ? undefined : props.emoji);
 const useOsNativeEmojis = computed(() => defaultStore.state.emojiStyle === 'native' && !props.isReaction);
 const url = computed(() => {
