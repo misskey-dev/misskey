@@ -33,6 +33,8 @@ export const ACHIEVEMENT_TYPES = [
 	'login800',
 	'login900',
 	'login1000',
+	'noteClipped1',
+	'noteFavorited1',
 	'profileFilled',
 	'markedAsCat',
 	'following1',
@@ -220,6 +222,16 @@ export const ACHIEVEMENT_BADGES = {
 		img: '/fluent-emoji/1f307.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'gold',
+	},
+	'noteClipped1': {
+		img: '/fluent-emoji/1f587.png',
+		bg: null,
+		frame: 'bronze',
+	},
+	'noteFavorited1': {
+		img: '/fluent-emoji/1f31f.png',
+		bg: null,
+		frame: 'bronze',
 	},
 	'profileFilled': {
 		img: '/fluent-emoji/1f44c.png',

@@ -37,6 +37,8 @@ const ACHIEVEMENT_TYPES = [
 	'login800',
 	'login900',
 	'login1000',
+	'noteClipped1',
+	'noteFavorited1',
 	'profileFilled',
 	'markedAsCat',
 	'following1',
