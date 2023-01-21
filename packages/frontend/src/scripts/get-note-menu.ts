@@ -187,7 +187,7 @@ export function getNoteMenu(props: {
 		});
 	}
 
-	function notedetails(): void {
+	function openDetail(): void {
 		os.pageWindow(`/notes/${appearNote.id}`);
 	}
 
@@ -225,7 +225,7 @@ export function getNoteMenu(props: {
 			), {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
-				action: notedetails,
+				action: openDetail,
 			}, {
 				icon: 'ti ti-users',
 				text: i18n.ts.reactions,
