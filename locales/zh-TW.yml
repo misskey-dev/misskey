@@ -994,6 +994,8 @@ _achievements:
     _login3:
       title: "初學者 I"
       description: "總登入天數為3天"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello world!"
 _role:
   new: "建立角色"
   edit: "編輯角色"
