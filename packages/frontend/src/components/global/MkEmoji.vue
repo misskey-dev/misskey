@@ -25,7 +25,7 @@ const props = defineProps<{
 const char2path = defaultStore.state.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 const isCustom = computed(() => props.emoji.startsWith(':'));
-const customEmojiName = props.emoji.substr(1, props.emoji.length - 2);
+const customEmojiName = props.emoji.substr(1, props.emoji.length - 2).replace('@.', '');
 const char = computed(() => isCustom.value ? undefined : props.emoji);
 const useOsNativeEmojis = computed(() => defaultStore.state.emojiStyle === 'native' && !props.isReaction);
 const url = computed(() => {
@@ -35,7 +35,7 @@ const url = computed(() => {
 		const found = customEmojis.find(x => x.name === customEmojiName);
 		return found ? found.url : null;
 	} else {
-		const rawUrl = props.host ? `/emoji/${customEmojiName}@${props.host}.webp` : `/emoji/${customEmojiName}.webp`;
+		const rawUrl = `/emoji/${customEmojiName}@${props.host}.webp`;
 		return defaultStore.state.disableShowingAnimatedImages
 			? getStaticImageUrl(rawUrl)
 			: rawUrl;
