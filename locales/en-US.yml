@@ -940,6 +940,9 @@ preset: "Preset"
 selectFromPresets: "Choose from presets"
 _achievements:
   _types:
+    _viewAchievements3min:
+      title: "Likes Achievements"
+      description: "Look at your list of achievements for at least 3 minutes"
     _postedAtLateNight:
       title: "Nocturnal"
       description: "Posted a note late at night"
@@ -952,6 +955,12 @@ _achievements:
     _htl20npm:
       title: "Flowing Timeline"
       description: "Have the speed of your home timeline exceed 20 npm (notes per minute)"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "Output \"hello world\" in the Scratchpad"
+    _open3windows:
+      title: "Multi-Window"
+      description: "Have at least 3 windows open at the same time"
     _driveFolderCircularReference:
       title: "Circular Reference"
       description: "Attempted to create a recursive folder in Drive"
@@ -979,6 +988,10 @@ _achievements:
     _loggedInOnBirthday:
       title: "Happy Birthday"
       description: "Logged in on your birthday"
+    _loggedInOnNewYearsDay:
+      title: "Happy New Year!"
+      description: "Logged in on the first day of the year"
+      flavor: "To another great year on this instance"
     _cookieClicked:
       title: "A game in which you click cookies"
       description: "Clicked the cookie"
