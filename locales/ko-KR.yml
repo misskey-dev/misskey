@@ -1094,6 +1094,9 @@ _achievements:
     _collectAchievements30:
       title: "도전과제 콜렉터"
       description: "30개의 도전과제를 획득했습니다"
+    _viewAchievements3min:
+      title: "저 도전과제 좋아해요"
+      description: "도전과제 목록을 3분 이상 보세요"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"를 포스트했습니다"
@@ -1118,6 +1121,12 @@ _achievements:
     _htl20npm:
       title: "타임라인 폭주 중"
       description: "1분 사이에 홈 타임라인에 노트가 20개 넘게 생성되었습니다"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "스크래치패드에서 hello world를 출력하세요"
+    _open3windows:
+      title: "멀티 윈도우"
+      description: "3개 이상의 창을 여세요"
     _driveFolderCircularReference:
       title: "순환 참조"
       description: "드라이브 폴더를 자신을 가리키도록 만드려 시도했습니다"
@@ -1145,6 +1154,10 @@ _achievements:
     _loggedInOnBirthday:
       title: "생일 축하합니다!"
       description: "설정한 생일에 로그인했습니다"
+    _loggedInOnNewYearsDay:
+      title: "새해 복 많이 받으세요"
+      description: "새해 첫 날에 로그인했습니다"
+      flavor: "올해에도 저희 인스턴스에 관심을 가져 주셔서 감사합니다"
     _cookieClicked:
       title: "쿠키 클리커 게임"
       description: "쿠키를 클릭했습니다"

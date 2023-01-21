@@ -45,6 +45,7 @@ import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
+import { fetchCustomEmojis } from './custom-emojis';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -79,6 +80,19 @@ import { claimAchievement, claimedAchievements } from './scripts/achievements';
 			*/
 		});
 	}
+
+	//#region Detect language & fetch translations
+	const localeVersion = miLocalStorage.getItem('localeVersion');
+	const localeOutdated = (localeVersion == null || localeVersion !== version);
+	if (localeOutdated) {
+		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+		if (res.status === 200) {
+			miLocalStorage.setItem('locale', await res.text());
+			miLocalStorage.setItem('localeVersion', version);
+			location.reload();
+		}
+	}
+	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
@@ -164,6 +178,10 @@ import { claimAchievement, claimedAchievements } from './scripts/achievements';
 		// Init service worker
 		initializeSw();
 	});
+
+	try {
+		await fetchCustomEmojis();
+	} catch (err) {}
 
 	const app = createApp(
 		window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :

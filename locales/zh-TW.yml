@@ -989,11 +989,115 @@ _achievements:
       title: "貼文宇宙"
       description: "發表了90000則貼文"
     _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "發表了100,000則貼文"
       flavor: "有這麼多東西要寫嗎？"
     _login3:
-      title: "初學者 I"
+      title: "初學者Ⅰ"
       description: "總登入天數為3天"
+      flavor: "從今天開始，我就是Misskeyist"
+    _login7:
+      title: "初學者ⅠⅠ"
+      description: "總登入天數為7天"
+      flavor: "您開始習慣了嗎？"
+    _login15:
+      title: "初學者III"
+      description: "總登入天數為15天"
+    _login30:
+      title: "Misskeyist Ⅰ"
+      description: "總登入天數為30天"
+    _login60:
+      title: "Misskeyist ⅠⅠ"
+      description: "總登入天數為60天"
+    _login100:
+      title: "Misskeyist ⅠⅠⅠ"
+      description: "總登入天數為100天"
+      flavor: "辣個 Misskeyist 用戶"
+    _login200:
+      title: "普通Ⅰ"
+      description: "總登入天數為200天"
+    _login300:
+      title: "普通IⅠ"
+      description: "總登入天數為300天"
+    _login400:
+      title: "普通IIⅠ"
+      description: "總登入天數為400天"
+    _login500:
+      title: "老兵Ⅰ"
+      description: "總登入天數為500天"
+      flavor: "諸君，我喜歡貼文"
+    _login600:
+      title: "老兵ⅠⅠ"
+      description: "總登入天數為600天"
+    _login700:
+      title: "老兵ⅠⅠⅠ"
+      description: "總登入天數為700天"
+    _login800:
+      title: "貼文大師Ⅰ"
+      description: "總登入天數為800天"
+    _login900:
+      title: "貼文大師ⅠⅠ"
+      description: "總登入天數為900天"
+    _login1000:
+      title: "貼文大師ⅠⅠⅠ"
+      description: "總登入天數為1,000天"
+      flavor: "感謝您使用Misskey！"
+    _followers500:
+      title: "基站"
+      description: "超過500名追隨者"
+    _followers1000:
+      title: "影響者"
+      description: "超過1000名追隨者"
+    _collectAchievements30:
+      title: "成就收藏家"
+      description: "獲得30個以上的成就"
+    _viewAchievements3min:
+      title: "喜愛成就"
+      description: "看成就列表要花了3分鐘以上"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "發布「I ❤ #Misskey」"
+      flavor: "感謝您使用Misskey！ by 開發團隊"
+    _client30min:
+      title: "休息一下"
+      description: "用戶端啟動已超過30分鐘"
+    _noteDeletedWithin1min:
+      title: "現在沒有"
+      description: "發文後1分鐘內刪文"
+    _postedAtLateNight:
+      title: "夜行性"
+      description: "在深夜發佈貼文"
+      flavor: "該去睡覺了。"
+    _postedAt0min0sec:
+      title: "報時"
+      description: "在0分0秒發佈貼文"
+    _selfQuote:
+      title: "自我引用"
+      description: "引用了自己的貼文"
+    _htl20npm:
+      title: "流動的TL"
+      description: "在首頁時間軸的流速超過20npm"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello world!"
+      description: "在暫存記憶體輸出了 hello world"
+    _open3windows:
+      title: "多重視窗"
+      description: "開啟3個以上的視窗"
+    _driveFolderCircularReference:
+      title: "循環引用"
+      description: "試圖遞迴套入雲端硬碟資料夾"
+    _reactWithoutRead:
+      title: "有好好讀過嗎？"
+      description: "對包含100字以上內容的貼文做出情感反應"
+    _clickedClickHere:
+      title: "點擊這裡"
+      description: "已點擊這裡了"
+    _justPlainLucky:
+      title: "只是運氣好"
+      description: "每10秒有0.01%的機率獲得"
+    _setNameToSyuilo:
+      title: "神的情結"
+      description: "將名稱設定為 syuilo"
 _role:
   new: "建立角色"
   edit: "編輯角色"

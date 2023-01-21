@@ -12,6 +12,7 @@ import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
 import { defaultStore } from '@/store';
 import { getEmojiName } from '@/scripts/emojilist';
+import { customEmojis } from '@/custom-emojis';
 
 const props = defineProps<{
 	emoji: string;
@@ -30,6 +31,9 @@ const useOsNativeEmojis = computed(() => defaultStore.state.emojiStyle === 'nati
 const url = computed(() => {
 	if (char.value) {
 		return char2path(char.value);
+	} else if (props.host == null) {
+		const found = customEmojis.find(x => x.name === customEmojiName);
+		return found ? found.url : null;
 	} else {
 		const rawUrl = props.host ? `/emoji/${customEmojiName}@${props.host}.webp` : `/emoji/${customEmojiName}.webp`;
 		return defaultStore.state.disableShowingAnimatedImages
@@ -38,7 +42,7 @@ const url = computed(() => {
 	}
 });
 const alt = computed(() => isCustom.value ? `:${customEmojiName}:` : char.value);
-let errored = $ref(false);
+let errored = $ref(isCustom.value && url.value == null);
 
 // Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
 function computeTitle(event: PointerEvent): void {
