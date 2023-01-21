@@ -19,6 +19,7 @@ type Keys =
 	'fontSize' |
 	'ui' |
 	'locale' |
+	'localeVersion' |
 	'theme' |
 	'customCss' |
 	'message_drafts' |

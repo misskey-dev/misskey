@@ -80,6 +80,19 @@ import { claimAchievement, claimedAchievements } from './scripts/achievements';
 		});
 	}
 
+	//#region Detect language & fetch translations
+	const localeVersion = miLocalStorage.getItem('localeVersion');
+	const localeOutdated = (localeVersion == null || localeVersion !== version);
+	if (localeOutdated) {
+		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+		if (res.status === 200) {
+			miLocalStorage.setItem('locale', await res.text());
+			miLocalStorage.setItem('localeVersion', version);
+			location.reload();
+		}
+	}
+	//#endregion
+
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
 
