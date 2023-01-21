@@ -991,7 +991,7 @@ _achievements:
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "100.000 Notizen gesendet"
-      flavor: "Gibt es echt so viel, über das du schreiben kannst?"
+      flavor: "Du hast wirklich viel zu sagen."
     _login3:
       title: "Anfänger Ⅰ"
       description: "An 3 Tagen eingeloggt"
@@ -1059,7 +1059,7 @@ _achievements:
       title: "Das Folgen beginnt"
       description: "Du folgst deiner ersten Person"
     _following10:
-      title: "Folgen, folgen"
+      title: "Folge ihnen... folge ihnen..."
       description: "Du folgst über 10 Leuten"
     _following50:
       title: "Viele Freunde"
