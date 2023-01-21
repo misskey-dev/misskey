@@ -940,6 +940,21 @@ preset: "Preset"
 selectFromPresets: "Choose from presets"
 _achievements:
   _types:
+    _postedAtLateNight:
+      title: "Nocturnal"
+      description: "Posted a note late at night"
+      flavor: "It's about time to go to bed."
+    _postedAt0min0sec:
+      description: "Post a note at 00:00"
+    _selfQuote:
+      title: "Self-Reference"
+      description: "Quote your own note"
+    _htl20npm:
+      title: "Flowing Timeline"
+      description: "Have the speed of your home timeline exceed 20 npm (notes per minute)"
+    _driveFolderCircularReference:
+      title: "Circular Reference"
+      description: "Attempted to create a recursive folder in Drive"
     _reactWithoutRead:
       title: "Did you really read that?"
       description: "React on a note that's over 100 characters long within 3 seconds of it being posted"
