@@ -66,6 +66,7 @@ const ACHIEVEMENT_TYPES = [
 	'passedSinceAccountCreated2',
 	'passedSinceAccountCreated3',
 	'cookieClicked',
+	'brainDiver',
 ] as const;
 
 @Injectable()

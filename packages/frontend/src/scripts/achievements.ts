@@ -62,6 +62,7 @@ export const ACHIEVEMENT_TYPES = [
 	'passedSinceAccountCreated2',
 	'passedSinceAccountCreated3',
 	'cookieClicked',
+	'brainDiver',
 ] as const;
 
 export const ACHIEVEMENT_BADGES = {
@@ -363,6 +364,11 @@ export const ACHIEVEMENT_BADGES = {
 	'cookieClicked': {
 		img: '/fluent-emoji/1f36a.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
+		frame: 'bronze',
+	},
+	'brainDiver': {
+		img: '/fluent-emoji/1f9e0.png',
+		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'bronze',
 	},
 } as const satisfies Record<typeof ACHIEVEMENT_TYPES[number], {

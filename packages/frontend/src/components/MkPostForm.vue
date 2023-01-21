@@ -638,6 +638,9 @@ async function post(ev?: MouseEvent) {
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
+			if (text.includes('Efrlqw8ytg4') || text.includes('XVCwzwxdHuA')) {
+				claimAchievement('brainDiver');
+			}
 
 			const date = new Date();
 			const h = date.getHours();

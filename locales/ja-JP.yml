@@ -1135,6 +1135,10 @@ _achievements:
       title: "クッキーをクリックするゲーム"
       description: "クッキーをクリックした"
       flavor: "ソフト間違ってない？"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Brain Diverへのリンクを投稿した"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 
 _role:
   new: "ロールの作成"
