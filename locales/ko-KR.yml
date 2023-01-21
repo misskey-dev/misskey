@@ -1124,6 +1124,35 @@ _achievements:
     _reactWithoutRead:
       title: "읽고 답하긴 하시는 건가요?"
       description: "100자가 넘는 포스트에 3초 안에 포스트했습니다"
+    _clickedClickHere:
+      title: "여길 눌러보세요"
+      description: "이 곳을 눌러봤습니다"
+    _justPlainLucky:
+      title: "그냥 운이 좋았어"
+      description: "매 10초마다 0.01%의 확률로 달성됩니다"
+    _setNameToSyuilo:
+      title: "신 콤플렉스"
+      description: "이름을 syuilo로 설정했습니다"
+    _passedSinceAccountCreated1:
+      title: "1년"
+      description: "계정을 생성하고 1년이 지났습니다"
+    _passedSinceAccountCreated2:
+      title: "2년"
+      description: "계정을 생성하고 2년이 지났습니다"
+    _passedSinceAccountCreated3:
+      title: "3년"
+      description: "계정을 생성하고 3년이 지났습니다"
+    _loggedInOnBirthday:
+      title: "생일 축하합니다!"
+      description: "설정한 생일에 로그인했습니다"
+    _cookieClicked:
+      title: "쿠키 클리커 게임"
+      description: "쿠키를 클릭했습니다"
+      flavor: "뭔가 문제가 있나요?"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Brain Diver로의 링크를 첨부했습니다"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "새 역할 생성"
   edit: "역할 수정"
@@ -1773,6 +1802,7 @@ _notification:
   pollEnded: "투표 결과가 발표되었습니다"
   unreadAntennaNote: "안테나 {name}"
   emptyPushNotificationMessage: "푸시 알림이 갱신되었습니다"
+  achievementEarned: "도전 과제를 달성했습니다"
   _types:
     all: "전부"
     follow: "팔로잉"
