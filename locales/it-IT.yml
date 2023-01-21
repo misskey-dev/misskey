@@ -938,6 +938,161 @@ cannotPerformTemporary: "Indisponibilità temporanea"
 cannotPerformTemporaryDescription: "L'attività non può essere svolta, poiché si è raggiunto il limite di esecuzioni possibili. Per favore, riprova più tardi."
 preset: "Preimpostato"
 selectFromPresets: "Seleziona preimpostato"
+achievements: "Obiettivi raggiunti"
+_achievements:
+  earnedAt: "Data di conseguimento"
+  _types:
+    _notes1:
+      title: "Ho iniziato a usare Misskey"
+      description: "Ho pubblicato la mia prima Nota"
+      flavor: "Goditi la vita su Misskey!"
+    _notes10:
+      title: "Alcune Note"
+      description: "Ho inserito 10 Note"
+    _notes100:
+      title: "Un po' di Note"
+      description: "Ho inserito 100 Note"
+    _notes500:
+      title: "Un bel po' di Note"
+      description: "Ho inserito 500 Note"
+    _notes1000:
+      title: "Una montagna di Note"
+      description: "Ho inserito 1.000 Note"
+    _notes5000:
+      title: "Un sovraccarico di Note!"
+      description: "Ho inserito 5.000 Note"
+    _notes10000:
+      title: "SuperNote!"
+      description: "Ho inserito 10.000 Note"
+    _notes20000:
+      title: "Voglio più... Note!"
+      description: "Ho inserito 20.000 Note"
+    _notes30000:
+      title: "Note, Note, Note!"
+      description: "Ho inserito 30.000 Note"
+    _notes40000:
+      title: "Una fabbrica di Note"
+      description: "Ho inserito 40.000 Note"
+    _notes50000:
+      title: "Un pianeta di Note"
+      description: "Ho inserito 50.000 Note"
+    _notes60000:
+      title: "Un quasar di Note"
+      description: "Ho inserito 60.000 Note"
+    _notes70000:
+      title: "Un buco nero supermassiccio di Note"
+      description: "Ho inserito 70.000 Note"
+    _notes80000:
+      title: "Una galassia di Note"
+      description: "Ho inserito 80.000 Note"
+    _notes90000:
+      title: "Un universo di Note!"
+      description: "Ho inserito 90.000 Note"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "Ho inserito 100.000 Note"
+      flavor: "Hai molto da scrivere?"
+    _login3:
+      title: "Principiante I"
+      description: "Accedi per 3 giorni di fila"
+      flavor: "Da oggi, chiamatemi Misskist"
+    _login7:
+      title: "Principiante II"
+      description: "Accedi per 7 giorni di fila"
+      flavor: "Ti sembra di avere la situazione sotto controllo?"
+    _login15:
+      title: "Principiante III"
+      description: "Accedi per 15 giorni di fila"
+    _login30:
+      title: "Misskist I"
+      description: "Accedi per 30 giorni di fila"
+    _login60:
+      title: "Misskeist II"
+      description: "Accedi per 60 giorni di fila"
+    _login100:
+      title: "Misskeist III"
+      description: "Accedi per 100 giorni di fila"
+      flavor: "Violent Misskeist"
+    _login200:
+      title: "Regolare I"
+      description: "Accedi per 200 giorni totali"
+    _login300:
+      title: "Regolare II"
+      description: "Accedi per un totale di 300 giorni"
+    _login400:
+      title: "Regolare III"
+      description: "Accedi per un totale di 400 giorni"
+    _login500:
+      title: "Professionista I"
+      description: "Accedi per un totale di 500 giorni"
+      flavor: "Amici cari, mi piacciono le Note"
+    _login600:
+      title: "Professionista II"
+      description: "Accedi per un totale di 600 giorni"
+    _login700:
+      title: "Professionista III"
+      description: "Accedi per un totale di 700 giorni"
+    _login800:
+      title: "Maestro di Note I"
+      description: "Accedi per un totale di 800 giorni"
+    _login900:
+      title: "Maestro di Note II"
+      description: "Accedi per un totale di 900 giorni"
+    _login1000:
+      title: "Maestro di Note III"
+      description: "Accedi per un totale di 1.000 giorni"
+      flavor: "Grazie per aver usato Misskey!"
+    _noteClipped1:
+      title: "Devo clippare!"
+      description: "Ho raccolto in Clip la prima Nota"
+    _noteFavorited1:
+      title: "Guarda le stelle"
+      description: "Aggiungi una Nota ai preferiti per la prima volta"
+    _profileFilled:
+      title: "Perfettamente"
+      description: "Imposta il tuo profilo"
+    _markedAsCat:
+      title: "Io sono un gatto"
+      description: "Aggiungi le orecchie da gatto al tuo profilo"
+      flavor: "Ti chiamerò..."
+    _following1:
+      title: "Hai seguito il tuo primo profilo"
+      description: "Il tuo primo profilo Follower"
+    _following10:
+      title: "Segui, segui!"
+      description: "Hai seguito 10 profili"
+    _following50:
+      title: "Tanti amici"
+      description: "Hai seguito 50 profili"
+    _following100:
+      title: "Cento amici"
+      description: "Hai seguito 100 profili"
+    _following300:
+      title: "Sovraccarico di amici"
+      description: "Hai seguito 300 profili"
+    _followers1:
+      title: "Primo Follower"
+      description: "Hai ottenuto un Follower"
+    _followers10:
+      title: "Follow me!"
+      description: "Hai ottenuto 10 Follower"
+    _followers50:
+      title: "Follower a frotte"
+      description: "Hai ottenuto 50 Follower"
+    _followers100:
+      title: "Popolare"
+      description: "Hai ottenuto 100 Follower"
+    _followers300:
+      title: "Mettetevi in fila"
+      description: "Hai ottenuto 300 Follower"
+    _followers500:
+      title: "Trasmettitore"
+      description: "Hai ottenuto 500 Follower"
+    _followers1000:
+      title: "Influenzer"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Pubblica un link a Brain Diver"
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"
@@ -1293,7 +1448,7 @@ _tutorial:
   step3_1: "Hai finito di impostare il tuo profilo?"
   step3_2: "Ora puoi pubblicare una «Nota». Proviamo subito! Premi il bottone con l'icona «penna» per iniziare a scrivere in una finestra di dialogo.  "
   step3_3: "Scritto il testo della nota, puoi pubblicarla premendo il pulsante nella parte superiore destra della finestra di dialogo."
-  step3_4: "Non ti viene niente in mente? Perché non scrivi semplicemente \"Ho appena cominciato a usare Misskey\"?"
+  step3_4: "Non ti viene niente in mente? Perché non scrivi semplicemente \"Ho appena iniziato a usare Misskey\"?"
   step4_1: "Hai pubblicato qualcosa?"
   step4_2: "Se puoi visualizzare la tua nota sulla timeline, ce l'hai fatta!"
   step5_1: "Adesso, cerca di seguire altre persone per vivacizzare la tua timeline. "
@@ -1587,6 +1742,7 @@ _notification:
   pollEnded: "Risultati del sondaggio."
   unreadAntennaNote: "Antenna {name}"
   emptyPushNotificationMessage: "Le notifiche push sono state aggiornate."
+  achievementEarned: "Obiettivo raggiunto"
   _types:
     all: "Tutto"
     follow: "Novità follower"

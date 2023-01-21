@@ -31,11 +31,11 @@ const useOsNativeEmojis = computed(() => defaultStore.state.emojiStyle === 'nati
 const url = computed(() => {
 	if (char.value) {
 		return char2path(char.value);
-	} else if (props.host == null) {
+	} else if (props.host == null && !customEmojiName.includes('@')) {
 		const found = customEmojis.find(x => x.name === customEmojiName);
 		return found ? found.url : null;
 	} else {
-		const rawUrl = `/emoji/${customEmojiName}@${props.host}.webp`;
+		const rawUrl = props.host ? `/emoji/${customEmojiName}@${props.host}.webp` : `/emoji/${customEmojiName}.webp`;
 		return defaultStore.state.disableShowingAnimatedImages
 			? getStaticImageUrl(rawUrl)
 			: rawUrl;

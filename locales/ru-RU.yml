@@ -899,12 +899,16 @@ like: "Нравится!"
 unlike: "Отменить «нравится»"
 show: "Отображение"
 pleaseDonate: "Сайт {host} работает на Misskey. Это бесплатное программное обеспечение, и ваши пожертвования очень бы помогли продолжать его разработку!"
+roles: "Роли"
+role: "Роль"
 color: "Цвет"
+achievements: "Достижения"
 _achievements:
   _types:
     _notes1:
       title: "Первые шаги в Misskey"
       description: "Опубликована первая заметка"
+      flavor: "Приятных дней с Misskey!"
     _notes10:
       title: "Несколько заметок"
       description: "Опубликовано 10 заметок"
@@ -950,9 +954,11 @@ _achievements:
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "Опубликовано 100 000 заметок"
+      flavor: "Вам правда нужно столько писать?"
     _login3:
       title: "Новичок Ⅰ"
       description: "3 дня на сайте"
+      flavor: "С сегодняшнего дня зовите меня просто мискиец"
     _login7:
       title: "Новичок Ⅱ"
       description: "Неделя на сайте"
@@ -981,6 +987,7 @@ _achievements:
     _login500:
       title: "Ветеран Ⅰ"
       description: "500 дней на сайте"
+      flavor: "Господа, я люблю заметки"
     _login600:
       title: "Ветеран Ⅱ"
       description: "600 дней на сайте"
@@ -996,6 +1003,7 @@ _achievements:
     _login1000:
       title: "Повелитель заметок Ⅲ"
       description: "1000 дней на сайте"
+      flavor: "Спасибо, что пользуетесь Misskey!"
     _noteClipped1:
       title: "Нельзя не сохранить"
       description: "Первая заметка в подборке"
@@ -1006,22 +1014,45 @@ _achievements:
       title: "Приготовления закончены"
       description: "Заполнен профиль"
     _markedAsCat:
+      title: "Ваш покорный слуга кот"
       description: "Включена опция «Аккаунт кота»"
+      flavor: "Позвольте представиться: я — кот, просто кот, у меня еще нет имени."
+    _following1:
+      title: "Я не один"
+      description: "Сделана первая подписка"
+    _following10:
+      title: "Не останавливайся… Не останавливайся…"
+      description: "Количество подписок достигло 10"
+    _following50:
+      title: "Много друзей"
+      description: "Количество подписок достигло 50"
+    _following100:
+      title: "Сотня друзей"
+      description: "Количество подписок достигло 100"
+    _following300:
+      title: "Друзья в избытке"
+      description: "Количество подписок достигло 300"
+    _followers1:
+      title: "Первый подписчик"
+      description: "Появился 1 подписчик"
+    _followers10:
+      title: "Следуй за мной!"
+      description: "Количество подписчиков достигло 10"
     _followers50:
       title: "Один за другим"
-      description: "Подписчиков больше 50"
+      description: "Количество подписчиков достигло 50"
     _followers100:
       title: "Всеобщий любимец"
-      description: "Подписчиков больше 100"
+      description: "Количество подписчиков достигло 100"
     _followers300:
       title: "В очередь!"
-      description: "Подписчиков больше 300"
+      description: "Количество подписчиков достигло 300"
     _followers500:
       title: "Радиостанция"
-      description: "Подписчиков больше 300"
+      description: "Количество подписчиков достигло 500"
     _followers1000:
       title: "Авторитет"
-      description: "Подписчиков больше 1000"
+      description: "Количество подписчиков достигло 1000"
     _collectAchievements30:
       title: "Достигатор"
       description: "Получено 30 достижений"
@@ -1031,6 +1062,7 @@ _achievements:
     _iLoveMisskey:
       title: "Я люблю Misskey"
       description: "Написана заметка «I ❤ #Misskey»"
+      flavor: "Спасибо за поддержку Misskey! Ваша команда разработчиков"
     _client30min:
       title: "Перерыв на обед"
       description: "Прошло 30 минут с момента запуска клиента"
@@ -1040,6 +1072,7 @@ _achievements:
     _postedAtLateNight:
       title: "Житель ночи"
       description: "Заметка опубликована в глухую ночь"
+      flavor: "Вроде бы пора спать"
     _postedAt0min0sec:
       title: "Говорящие часы"
       description: "Заметка опубликована ровно в 0 минут 0 секунд"
@@ -1057,6 +1090,7 @@ _achievements:
       title: "Многооконный"
       description: "Открыто одновременно 3 окна"
     _driveFolderCircularReference:
+      title: "Циклическая ссылка"
       description: "Попытка создать на «диске» рекурсивно вложенную папку"
     _reactWithoutRead:
       title: "Не читай @ отвечай!"
@@ -1085,6 +1119,7 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "С Новым годом!"
       description: "Вход на сайт в первый день года"
+      flavor: "Желаем отличного года на нашем сайте!"
     _cookieClicked:
       title: "Игра, в которой вы щёлкаете по печенькам"
       description: "Нажато печенье"
@@ -1094,6 +1129,17 @@ _achievements:
       description: "Опубликована ссылка на песню «Brain Diver»"
       flavor: "Мисски-Мисски Ла-Ту-Ма"
 _role:
+  new: "Новая роль"
+  name: "Название роли"
+  description: "Описание роли"
+  permission: "Ролевые полномочия"
+  assignTarget: "Метод присвоения"
+  manual: "Вручную"
+  conditional: "По условию"
+  isPublic: "Общедоступная роль"
+  descriptionOfIsPublic: "Список тех, кому назначена эта роль будет доступен всем. Кроме того эта роль будет отмечена у каждого в профиле."
+  canEditMembersByModerator: "Могут назначать модераторы"
+  descriptionOfCanEditMembersByModerator: "Если включено, на эту роль могут назначать пользователей как администраторы, так и модераторы. Если выключено, назначать могут только администраторы."
   priority: "Приоритет"
   _priority:
     low: "Низкий"
@@ -1641,6 +1687,7 @@ _notification:
   youReceivedFollowRequest: "У вас новый запрос на подписку."
   yourFollowRequestAccepted: "Ваш запрос на подписку одобрен."
   youWereInvitedToGroup: "Вы приглашены в группу."
+  achievementEarned: "Получено достижение"
   _types:
     all: "Все"
     follow: "Подписки"
