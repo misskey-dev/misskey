@@ -865,9 +865,50 @@ enableAutoSensitiveDescription: "Если доступно, используйт
 account: "Учётные записи"
 windowMaximize: "Развернуть"
 windowRestore: "Восстановить"
+loggedInAsBot: "Вы под аккаунтом бота!"
 like: "Нравится!"
+unlike: "Отменить «нравится»"
 show: "Отображение"
+pleaseDonate: "Сайт {host} работает на Misskey. Это бесплатное программное обеспечение, и ваши пожертвования очень бы помогли продолжать его разработку!"
 color: "Цвет"
+_achievements:
+  _types:
+    _notes1:
+      title: "Первые шаги в Misskey"
+      description: "Опубликована первая заметка"
+    _notes10:
+      title: "Несколько заметок"
+      description: "Опубликовано 10 заметок"
+    _notes100:
+      title: "Много заметок"
+      description: "Опубликовано 100 заметок"
+    _notes500:
+      title: "Всё в заметках"
+      description: "Опубликовано 500 заметок"
+    _notes1000:
+      title: "Гора заметок"
+      description: "Опубликовано 1000 заметок"
+    _notes5000:
+      title: "Заметки льются рекой"
+      description: "Опубликовано 5000 заметок"
+    _notes10000:
+      title: "Превосходство в заметках"
+      description: "Опубликовано 10 000 заметок"
+    _notes20000:
+      title: "Нужно больше заметок!"
+      description: "Опубликовано 20 000 заметок"
+    _notes30000:
+      title: "Заметки, заметки, заметки"
+      description: "Опубликовано 30 000 заметок"
+    _notes40000:
+      title: "Фабрика заметок"
+      description: "Опубликовано 40 000 заметок"
+    _notes50000:
+      title: "Планета заметок"
+      description: "Опубликовано 50 000 заметок"
+    _notes60000:
+      title: "Замет-квазар"
+      description: "Опубликовано 60 000 заметок"
 _role:
   priority: "Приоритет"
   _priority:
