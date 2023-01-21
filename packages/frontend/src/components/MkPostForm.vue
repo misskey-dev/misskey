@@ -638,8 +638,12 @@ async function post(ev?: MouseEvent) {
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
-			if (text.includes('Efrlqw8ytg4') || text.includes('XVCwzwxdHuA')) {
+			if (text.includes('Efrlqw8ytg4'.toLowerCase()) || text.includes('XVCwzwxdHuA'.toLowerCase())) {
 				claimAchievement('brainDiver');
+			}
+
+			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+				claimAchievement('selfQuote');
 			}
 
 			const date = new Date();

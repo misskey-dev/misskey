@@ -1113,6 +1113,9 @@ _achievements:
       title: "時報"
       description: "0分0秒にノートを投稿した"
       flavor: "ポッ ポッ ポッ ピーン"
+    _selfQuote:
+      title: "自己言及"
+      description: "自分のノートを引用した"
     _htl20npm:
       title: "流れるTL"
       description: "ホームタイムラインの流速が20npmを越す"
@@ -1140,6 +1143,9 @@ _achievements:
     _passedSinceAccountCreated3:
       title: "三周年"
       description: "アカウント作成から3年経過した"
+    _loggedInOnBirthday:
+      title: "ハッピーバースデー"
+      description: "誕生日にログインした"
     _cookieClicked:
       title: "クッキーをクリックするゲーム"
       description: "クッキーをクリックした"
