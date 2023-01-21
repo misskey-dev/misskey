@@ -14,7 +14,7 @@ const fs = require('fs');
 		stderr: process.stderr,
 	});
 
-	execa('pnpm', ['dlx', 'gulp', 'watch'], {
+	execa('pnpm', ['exec', 'gulp', 'watch'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
