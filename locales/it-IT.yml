@@ -938,6 +938,14 @@ cannotPerformTemporary: "Indisponibilità temporanea"
 cannotPerformTemporaryDescription: "L'attività non può essere svolta, poiché si è raggiunto il limite di esecuzioni possibili. Per favore, riprova più tardi."
 preset: "Preimpostato"
 selectFromPresets: "Seleziona preimpostato"
+achievements: "Obiettivi raggiunti"
+_achievements:
+  earnedAt: "Data di conseguimento"
+  _types:
+    _notes1:
+      title: "Ho iniziato a usare Misskey"
+      description: "Ho pubblicato la mia prima Nota"
+      flavor: "Goditi la vita su Misskey!"
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"
@@ -1293,7 +1301,7 @@ _tutorial:
   step3_1: "Hai finito di impostare il tuo profilo?"
   step3_2: "Ora puoi pubblicare una «Nota». Proviamo subito! Premi il bottone con l'icona «penna» per iniziare a scrivere in una finestra di dialogo.  "
   step3_3: "Scritto il testo della nota, puoi pubblicarla premendo il pulsante nella parte superiore destra della finestra di dialogo."
-  step3_4: "Non ti viene niente in mente? Perché non scrivi semplicemente \"Ho appena cominciato a usare Misskey\"?"
+  step3_4: "Non ti viene niente in mente? Perché non scrivi semplicemente \"Ho appena iniziato a usare Misskey\"?"
   step4_1: "Hai pubblicato qualcosa?"
   step4_2: "Se puoi visualizzare la tua nota sulla timeline, ce l'hai fatta!"
   step5_1: "Adesso, cerca di seguire altre persone per vivacizzare la tua timeline. "
