@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.1.0 (2023/01/21)
 
 ### Improvements
 - 実績機能
