@@ -1,24 +1,27 @@
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-	<MkSpacer :content-max="1200">
-		<MkAchievements :user="$i"/>
-	</MkSpacer>
-</MkStickyContainer>
+<MkSpacer :content-max="1200">
+	<MkAchievements :user="user" :with-locked="false"/>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
+import * as misskey from 'misskey-js';
 import MkAchievements from '@/components/MkAchievements.vue';
 import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
 import { claimAchievement } from '@/scripts/achievements';
+import { $i } from '@/account';
+
+const props = defineProps<{
+	user: misskey.entities.User;
+}>();
 
 let timer: number | null;
 
 function viewAchievements3min() {
-	claimAchievement('viewAchievements3min');
+	if ($i && (props.user.id === $i.id)) {
+		claimAchievement('viewAchievements3min');
+	}
 }
 
 onMounted(() => {
@@ -41,11 +44,6 @@ onDeactivated(() => {
 		window.clearTimeout(timer);
 		timer = null;
 	}
-});
-
-definePageMetadata({
-	title: i18n.ts.achievements,
-	icon: 'ti ti-military-award',
 });
 </script>
 
