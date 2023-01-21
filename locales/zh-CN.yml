@@ -938,6 +938,21 @@ cannotPerformTemporary: "暂时不可用"
 cannotPerformTemporaryDescription: "因操作过于频繁，暂时不可用，请稍后再试。"
 preset: "預設值"
 selectFromPresets: "從預設值中選擇"
+achievements: "成就"
+_achievements:
+  earnedAt: "达成时间"
+  _types:
+    _notes1:
+      title: "初来乍到"
+      description: "第一次发帖"
+      flavor: "祝您在Misskey玩的愉快～"
+    _viewAchievements3min:
+      description: "盯着成就看三分钟"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+    _loggedInOnNewYearsDay:
+      title: "恭贺新禧"
+      description: "在元旦登入"
 _role:
   new: "创建角色"
   edit: "编辑角色"
