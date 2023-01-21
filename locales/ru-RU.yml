@@ -1006,22 +1006,44 @@ _achievements:
       title: "Приготовления закончены"
       description: "Заполнен профиль"
     _markedAsCat:
+      title: "Ваш покорный слуга кот"
       description: "Включена опция «Аккаунт кота»"
+      flavor: "Позвольте представиться: я — кот, просто кот, у меня еще нет имени."
+    _following1:
+      title: "Я не один"
+      description: "Сделана первая подписка"
+    _following10:
+      description: "Количество подписок достигло 10"
+    _following50:
+      title: "Много друзей"
+      description: "Количество подписок достигло 50"
+    _following100:
+      title: "Сотня друзей"
+      description: "Количество подписок достигло 100"
+    _following300:
+      title: "Друзья в избытке"
+      description: "Количество подписок достигло 300"
+    _followers1:
+      title: "Первый подписчик"
+      description: "Появился 1 подписчик"
+    _followers10:
+      title: "Следуй за мной!"
+      description: "Количество подписчиков достигло 10"
     _followers50:
       title: "Один за другим"
-      description: "Подписчиков больше 50"
+      description: "Количество подписчиков достигло 50"
     _followers100:
       title: "Всеобщий любимец"
-      description: "Подписчиков больше 100"
+      description: "Количество подписчиков достигло 100"
     _followers300:
       title: "В очередь!"
-      description: "Подписчиков больше 300"
+      description: "Количество подписчиков достигло 300"
     _followers500:
       title: "Радиостанция"
-      description: "Подписчиков больше 300"
+      description: "Количество подписчиков достигло 500"
     _followers1000:
       title: "Авторитет"
-      description: "Подписчиков больше 1000"
+      description: "Количество подписчиков достигло 1000"
     _collectAchievements30:
       title: "Достигатор"
       description: "Получено 30 достижений"
