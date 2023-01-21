@@ -989,6 +989,7 @@ _achievements:
       title: "貼文宇宙"
       description: "發表了90000則貼文"
     _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "發表了100,000則貼文"
       flavor: "有這麼多東西要寫嗎？"
     _login3:
