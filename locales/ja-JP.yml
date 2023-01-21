@@ -1116,6 +1116,9 @@ _achievements:
     _htl20npm:
       title: "流れるTL"
       description: "ホームタイムラインの流速が20npmを越す"
+    _driveFolderCircularReference:
+      title: "循環参照"
+      description: "ドライブのフォルダを再帰的な入れ子にしようとした"
     _reactWithoutRead:
       title: "ちゃんと読んだ？"
       description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"

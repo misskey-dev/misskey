@@ -60,6 +60,7 @@ const ACHIEVEMENT_TYPES = [
 	'postedAtLateNight',
 	'postedAt0min0sec',
 	'htl20npm',
+	'driveFolderCircularReference',
 	'reactWithoutRead',
 	'clickedClickHere',
 	'justPlainLucky',

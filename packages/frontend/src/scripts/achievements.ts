@@ -56,6 +56,7 @@ export const ACHIEVEMENT_TYPES = [
 	'postedAtLateNight',
 	'postedAt0min0sec',
 	'htl20npm',
+	'driveFolderCircularReference',
 	'reactWithoutRead',
 	'clickedClickHere',
 	'justPlainLucky',
@@ -146,7 +147,7 @@ export const ACHIEVEMENT_BADGES = {
 	'notes100000': {
 		img: '/fluent-emoji/267e.png',
 		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
-		frame: 'gold',
+		frame: 'platinum',
 	},
 	'login3': {
 		img: '/fluent-emoji/1f331.png',
@@ -221,7 +222,7 @@ export const ACHIEVEMENT_BADGES = {
 	'login1000': {
 		img: '/fluent-emoji/1f307.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
-		frame: 'gold',
+		frame: 'platinum',
 	},
 	'noteClipped1': {
 		img: '/fluent-emoji/1f587.png',
@@ -301,7 +302,7 @@ export const ACHIEVEMENT_BADGES = {
 	'followers1000': {
 		img: '/fluent-emoji/1f451.png',
 		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
-		frame: 'gold',
+		frame: 'platinum',
 	},
 	'collectAchievements30': {
 		img: '/fluent-emoji/1f3c5.png',
@@ -336,6 +337,11 @@ export const ACHIEVEMENT_BADGES = {
 	'htl20npm': {
 		img: '/fluent-emoji/1f30a.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'bronze',
+	},
+	'driveFolderCircularReference': {
+		img: '/fluent-emoji/1f4c2.png',
+		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'bronze',
 	},
 	'reactWithoutRead': {
@@ -386,7 +392,7 @@ export const ACHIEVEMENT_BADGES = {
 } as const satisfies Record<typeof ACHIEVEMENT_TYPES[number], {
 	img: string;
 	bg: string | null;
-	frame: 'bronze' | 'silver' | 'gold';
+	frame: 'bronze' | 'silver' | 'gold' | 'platinum';
 }>;
 
 export const claimedAchievements = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];

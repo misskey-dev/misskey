@@ -131,7 +131,7 @@ onMounted(() => {
 	}
 }
 .iconFrame_gold {
-	background: linear-gradient(0deg, #eb7018, #ffee20);
+	background: linear-gradient(0deg, rgba(255,182,85,1) 0%, rgba(233,133,0,1) 49%, rgba(255,243,93,1) 51%, rgba(255,187,25,1) 100%);
 
 	> .iconInner {
 		background: linear-gradient(0deg, #ffee20, #eb7018);
@@ -146,7 +146,27 @@ onMounted(() => {
     height: 8px;
     rotate: -45deg;
     translate: -30px;
-		background: #ffffffaa;
+		background: #ffffff88;
+		animation: shine 2s infinite;
+	}
+}
+.iconFrame_platinum {
+	background: linear-gradient(0deg, rgba(154,154,154,1) 0%, rgba(226,226,226,1) 49%, rgba(255,255,255,1) 51%, rgba(195,195,195,1) 100%);
+
+	> .iconInner {
+		background: linear-gradient(0deg, #e1e1e1, #7c7c7c);
+	}
+
+	&:before {
+		content: "";
+		display: block;
+		position: absolute;
+    top: 30px;
+    width: 200px;
+    height: 8px;
+    rotate: -45deg;
+    translate: -30px;
+		background: #ffffffee;
 		animation: shine 2s infinite;
 	}
 }
