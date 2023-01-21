@@ -940,6 +940,8 @@ preset: "Preset"
 selectFromPresets: "Choose from presets"
 _achievements:
   _types:
+    _notes1:
+      title: "just setting up my msky"
     _viewAchievements3min:
       title: "Likes Achievements"
       description: "Look at your list of achievements for at least 3 minutes"
