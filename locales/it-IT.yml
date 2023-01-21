@@ -998,24 +998,24 @@ _achievements:
       flavor: "Da oggi, chiamatemi Misskist"
     _login7:
       title: "Principiante II"
-      description: "Accedi per 7 giorni di fila"
+      description: "Accedi per un totale di 7 giorni"
       flavor: "Ti sembra di avere la situazione sotto controllo?"
     _login15:
       title: "Principiante III"
-      description: "Accedi per 15 giorni di fila"
+      description: "Accedi per un totale di 15 giorni"
     _login30:
       title: "Misskist I"
-      description: "Accedi per 30 giorni di fila"
+      description: "Accedi per un totale di 30 giorni"
     _login60:
       title: "Misskeist II"
-      description: "Accedi per 60 giorni di fila"
+      description: "Accedi per un totale di 60 giorni"
     _login100:
       title: "Misskeist III"
-      description: "Accedi per 100 giorni di fila"
+      description: "Accedi per un totale di 100 giorni"
       flavor: "Violent Misskeist"
     _login200:
       title: "Regolare I"
-      description: "Accedi per 200 giorni totali"
+      description: "Accedi per un totale di 200 giorni"
     _login300:
       title: "Regolare II"
       description: "Accedi per un totale di 300 giorni"
