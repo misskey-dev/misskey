@@ -1,6 +1,7 @@
 import { defineAsyncComponent, Ref, inject } from 'vue';
 import * as misskey from 'misskey-js';
 import { pleaseLogin } from './please-login';
+import { claimAchievement } from './achievements';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
@@ -38,6 +39,10 @@ export function getNoteMenu(props: {
 			os.api('notes/delete', {
 				noteId: appearNote.id,
 			});
+
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+				claimAchievement('noteDeletedWithin1min');
+			}
 		});
 	}
 
@@ -53,10 +58,15 @@ export function getNoteMenu(props: {
 			});
 
 			os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel });
+
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+				claimAchievement('noteDeletedWithin1min');
+			}
 		});
 	}
 
 	function toggleFavorite(favorite: boolean): void {
+		claimAchievement('noteFavorited1');
 		os.apiWithDialog(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 			noteId: appearNote.id,
 		});
@@ -118,11 +128,13 @@ export function getNoteMenu(props: {
 
 				const clip = await os.apiWithDialog('clips/create', result);
 
+				claimAchievement('noteClipped1');
 				os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
 			},
 		}, null, ...clips.map(clip => ({
 			text: clip.name,
 			action: () => {
+				claimAchievement('noteClipped1');
 				os.promiseDialog(
 					os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
 					null,
@@ -174,9 +186,17 @@ export function getNoteMenu(props: {
 			url: `${url}/notes/${appearNote.id}`,
 		});
 	}
-	function notedetails(): void {
+
+	function openDetail(): void {
 		os.pageWindow(`/notes/${appearNote.id}`);
 	}
+
+	function showReactions(): void {
+		os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+			noteId: appearNote.id,
+		}, {}, 'closed');
+	}
+
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
@@ -205,7 +225,11 @@ export function getNoteMenu(props: {
 			), {
 				icon: 'ti ti-info-circle',
 				text: i18n.ts.details,
-				action: notedetails,
+				action: openDetail,
+			}, {
+				icon: 'ti ti-users',
+				text: i18n.ts.reactions,
+				action: showReactions,
 			}, {
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,

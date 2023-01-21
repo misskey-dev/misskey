@@ -11,12 +11,14 @@
 		</div>
 
 		<div v-else-if="tab === 'my'" class="my">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
-			<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
-				<div class="_gaps_s">
-					<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
-				</div>
-			</MkPagination>
+			<div class="_gaps">
+				<MkButton class="new" gradate rounded style="margin: 0 auto;" @click="create()"><i class="ti ti-plus"></i></MkButton>
+				<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
+					<div class="_gaps_s">
+						<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
+					</div>
+				</MkPagination>
+			</div>
 		</div>
 
 		<div v-else-if="tab === 'liked'" class="">

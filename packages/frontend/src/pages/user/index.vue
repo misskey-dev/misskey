@@ -6,6 +6,7 @@
 			<div v-if="user">
 				<XHome v-if="tab === 'home'" :user="user"/>
 				<XActivity v-else-if="tab === 'activity'" :user="user"/>
+				<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
 				<XClips v-else-if="tab === 'clips'" :user="user"/>
 				<XPages v-else-if="tab === 'pages'" :user="user"/>
@@ -34,6 +35,7 @@ import { $i } from '@/account';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XActivity = defineAsyncComponent(() => import('./activity.vue'));
+const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
 const XClips = defineAsyncComponent(() => import('./clips.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
@@ -76,7 +78,11 @@ const headerTabs = $computed(() => user ? [{
 	key: 'activity',
 	title: i18n.ts.activity,
 	icon: 'ti ti-chart-line',
-}, ...($i && ($i.id === user.id)) || user.publicReactions ? [{
+}, ...(user.host == null ? [{
+	key: 'achievements',
+	title: i18n.ts.achievements,
+	icon: 'ti ti-military-award',
+}] : []), ...($i && ($i.id === user.id)) || user.publicReactions ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,
 	icon: 'ti ti-mood-happy',

@@ -7,7 +7,7 @@
 				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
-					<div class="_gaps">
+					<div class="_gaps_s">
 						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
 							<template #suffix>{{ Math.floor(policies.rateLimitFactor * 100) }}%</template>

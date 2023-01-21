@@ -12,7 +12,7 @@ import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository, UserProfile } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -343,6 +343,7 @@ export class UserEntityService implements OnModuleInit {
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
+			userProfile?: UserProfile,
 		},
 	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
@@ -375,7 +376,7 @@ export class UserEntityService implements OnModuleInit {
 			.innerJoinAndSelect('pin.note', 'note')
 			.orderBy('pin.id', 'DESC')
 			.getMany() : [];
-		const profile = opts.detail ? await this.userProfilesRepository.findOneByOrFail({ userId: user.id }) : null;
+		const profile = opts.detail ? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id })) : null;
 
 		const followingCount = profile == null ? null :
 			(profile.ffVisibility === 'public') || isMe ? user.followingCount :
@@ -493,6 +494,8 @@ export class UserEntityService implements OnModuleInit {
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
 				showTimelineReplies: user.showTimelineReplies ?? falsy,
+				achievements: profile!.achievements,
+				loggedInDays: profile!.loggedInDates.length,
 			} : {}),
 
 			...(opts.includeSecrets ? {

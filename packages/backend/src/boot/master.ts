@@ -17,6 +17,9 @@ import { JanitorService } from '@/daemons/JanitorService.js';
 import { QueueStatsService } from '@/daemons/QueueStatsService.js';
 import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 import { NestLogger } from '@/NestLogger.js';
+import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
+import { ServerService } from '@/server/ServerService.js';
+import { MainModule } from '@/MainModule.js';
 import { envOption } from '../env.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -70,6 +73,15 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
+	const app = await NestFactory.createApplicationContext(MainModule, {
+		logger: new NestLogger(),
+	});
+	app.enableShutdownHooks();
+
+	// start server
+	const serverService = app.get(ServerService);
+	serverService.launch();
+
 	bootLogger.succ('Misskey initialized');
 
 	if (!envOption.disableClustering) {
@@ -78,15 +90,10 @@ export async function masterMain() {
 
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
 
-	if (!envOption.noDaemons) {
-		const daemons = await NestFactory.createApplicationContext(DaemonModule, {
-			logger: new NestLogger(),
-		});
-		daemons.enableShutdownHooks();
-		daemons.get(JanitorService).start();
-		daemons.get(QueueStatsService).start();
-		daemons.get(ServerStatsService).start();
-	}
+	app.get(ChartManagementService).start();
+	app.get(JanitorService).start();
+	app.get(QueueStatsService).start();
+	app.get(ServerStatsService).start();
 }
 
 function showEnvironment(): void {

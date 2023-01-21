@@ -24,6 +24,11 @@
 
 	const v = localStorage.getItem('v') || VERSION;
 
+	let forceError = localStorage.getItem('forceError');
+	if (forceError != null) {
+		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.')
+	}
+
 	//#region Detect language & fetch translations
 	const localeVersion = localStorage.getItem('localeVersion');
 	const localeOutdated = (localeVersion == null || localeVersion !== v);

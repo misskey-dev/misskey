@@ -26,7 +26,7 @@ services:
 
   redis:
     restart: always
-    image: redis:latest
+    image: redis:alpine
     container_name: misskey_redis
     networks:
       - internal_network
@@ -39,7 +39,7 @@ services:
 
   db:
     restart: always
-    image: postgres:12.2-alpine
+    image: postgres:15-alpine
     container_name: misskey_db
     networks:
       - internal_network

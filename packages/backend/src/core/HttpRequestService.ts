@@ -125,7 +125,7 @@ export class UndiciFetcher {
 				...(options.headers ?? {}),
 			},
 		}).catch((err) => {
-			this.logger?.error('fetch error', err);
+			this.logger?.error(`fetch error to ${typeof url === 'string' ? url : url.href}`, err);
 			throw new StatusError('Resource Unreachable', 500, 'Resource Unreachable');
 		});
 		if (!res.ok && !privateOptions.noOkError) {
