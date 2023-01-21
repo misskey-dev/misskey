@@ -1095,6 +1095,9 @@ _achievements:
     _collectAchievements30:
       title: "実績コレクター"
       description: "実績を30個以上獲得した"
+    _viewAchievements3min:
+      title: "実績好き"
+      description: "実績一覧を3分以上眺め続けた"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"を投稿した"
@@ -1152,6 +1155,9 @@ _achievements:
     _loggedInOnBirthday:
       title: "ハッピーバースデー"
       description: "誕生日にログインした"
+    _loggedInOnNewYearsDay:
+      title: "あけましておめでとうございます"
+      description: "元日にログインした"
     _cookieClicked:
       title: "クッキーをクリックするゲーム"
       description: "クッキーをクリックした"
