@@ -943,6 +943,7 @@ _achievements:
       description: "Опубликовано 70 000 заметок"
     _notes80000:
       title: "Галактика заметок"
+      description: "Опубликовано 80 000 заметок"
     _notes90000:
       title: "Вселенная заметок"
       description: "Опубликовано 90 000 заметок"
@@ -950,23 +951,62 @@ _achievements:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "Опубликовано 100 000 заметок"
     _login3:
-      title: "Новичок I"
+      title: "Новичок Ⅰ"
       description: "3 дня на сайте"
     _login7:
-      title: "Новичок II"
+      title: "Новичок Ⅱ"
       description: "Неделя на сайте"
+      flavor: "Кажется, вы начали свыкаться с этим, нет?"
     _login15:
-      title: "Новичок III"
+      title: "Новичок Ⅲ"
       description: "15 дней на сайте"
     _login30:
-      title: "Мискиец I"
+      title: "Мискиец Ⅰ"
       description: "30 дней на сайте"
     _login60:
-      title: "Мискиец II"
+      title: "Мискиец Ⅱ"
       description: "60 дней на сайте"
     _login100:
-      title: "Мискиец III"
+      title: "Мискиец Ⅲ"
       description: "100 дней на сайте"
+    _login200:
+      title: "Завсегдатай Ⅰ"
+      description: "200 дней на сайте"
+    _login300:
+      title: "Завсегдатай Ⅱ"
+      description: "300 дней на сайте"
+    _login400:
+      title: "Завсегдатай Ⅲ"
+      description: "400 дней на сайте"
+    _login500:
+      title: "Ветеран Ⅰ"
+      description: "500 дней на сайте"
+    _login600:
+      title: "Ветеран Ⅱ"
+      description: "600 дней на сайте"
+    _login700:
+      title: "Ветеран Ⅲ"
+      description: "700 дней на сайте"
+    _login800:
+      title: "Повелитель заметок Ⅰ"
+      description: "800 дней на сайте"
+    _login900:
+      title: "Повелитель заметок Ⅱ"
+      description: "900 дней на сайте"
+    _login1000:
+      title: "Повелитель заметок Ⅲ"
+      description: "1000 дней на сайте"
+    _noteClipped1:
+      title: "Нельзя не сохранить"
+      description: "Первая заметка в подборке"
+    _noteFavorited1:
+      title: "Смотрящий на звёзды"
+      description: "Первое добавление в избранное"
+    _profileFilled:
+      title: "Приготовления закончены"
+      description: "Заполнен профиль"
+    _markedAsCat:
+      description: "Включена опция «Аккаунт кота»"
     _followers50:
       title: "Один за другим"
       description: "Подписчиков больше 50"
@@ -1003,10 +1043,56 @@ _achievements:
     _postedAt0min0sec:
       title: "Говорящие часы"
       description: "Заметка опубликована ровно в 0 минут 0 секунд"
-      flavor: "дин-дон дин-дон"
+      flavor: "Дин-дон дин-дон"
     _selfQuote:
       title: "Самовоспроизведение"
       description: "Процитирована собственная заметка"
+    _htl20npm:
+      title: "В потоке"
+      description: "Достигнута скорость домашней ленты в 20 з/мин (заметок минуту)"
+    _outputHelloWorldOnScratchpad:
+      title: "Привет, мир!"
+      description: "Выведен текст «hello world» в Когтеточке"
+    _open3windows:
+      title: "Многооконный"
+      description: "Открыто одновременно 3 окна"
+    _driveFolderCircularReference:
+      description: "Попытка создать на «диске» рекурсивно вложенную папку"
+    _reactWithoutRead:
+      title: "Не читай @ отвечай!"
+      description: "На заметку более чем 100 знаков написан ответ в первые же 3 секунды с её появления."
+    _clickedClickHere:
+      title: "Нажмите здесь"
+      description: "Нажато здесь"
+    _justPlainLucky:
+      title: "Чистая удача"
+      description: "Может достаться с вероятностью 0,01% каждые 10 секунд."
+    _setNameToSyuilo:
+      title: "Комплекс бога"
+      description: "Установлено «syuilo» в качестве имени"
+    _passedSinceAccountCreated1:
+      title: "Первая годовщина"
+      description: "Прошёл 1 год с момента регистрации"
+    _passedSinceAccountCreated2:
+      title: "Вторая годовщина"
+      description: "Прошло 2 года с момента регистрации"
+    _passedSinceAccountCreated3:
+      title: "Третья годовщина"
+      description: "Прошло 3 года с момента регистрации"
+    _loggedInOnBirthday:
+      title: "С днём рождения!"
+      description: "Вход на сайт в свой день рождения"
+    _loggedInOnNewYearsDay:
+      title: "С Новым годом!"
+      description: "Вход на сайт в первый день года"
+    _cookieClicked:
+      title: "Игра, в которой вы щёлкаете по печенькам"
+      description: "Нажато печенье"
+      flavor: "Стоп, вы вообще на том сайте-то?"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Опубликована ссылка на песню «Brain Diver»"
+      flavor: "Мисски-Мисски Ла-Ту-Ма"
 _role:
   priority: "Приоритет"
   _priority:
