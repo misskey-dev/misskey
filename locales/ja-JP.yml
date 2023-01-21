@@ -1119,6 +1119,12 @@ _achievements:
     _htl20npm:
       title: "流れるTL"
       description: "ホームタイムラインの流速が20npmを越す"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "スクラッチパッドで hello world を出力した"
+    _open3windows:
+      title: "マルチウィンドウ"
+      description: "ウィンドウを3つ以上開いた状態にした"
     _driveFolderCircularReference:
       title: "循環参照"
       description: "ドライブのフォルダを再帰的な入れ子にしようとした"

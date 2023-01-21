@@ -65,6 +65,8 @@ const ACHIEVEMENT_TYPES = [
 	'postedAt0min0sec',
 	'selfQuote',
 	'htl20npm',
+	'outputHelloWorldOnScratchpad',
+	'open3windows',
 	'driveFolderCircularReference',
 	'reactWithoutRead',
 	'clickedClickHere',

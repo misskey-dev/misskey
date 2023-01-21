@@ -61,6 +61,8 @@ export const ACHIEVEMENT_TYPES = [
 	'postedAt0min0sec',
 	'selfQuote',
 	'htl20npm',
+	'outputHelloWorldOnScratchpad',
+	'open3windows',
 	'driveFolderCircularReference',
 	'reactWithoutRead',
 	'clickedClickHere',
@@ -344,6 +346,16 @@ export const ACHIEVEMENT_BADGES = {
 	'htl20npm': {
 		img: '/fluent-emoji/1f30a.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'bronze',
+	},
+	'outputHelloWorldOnScratchpad': {
+		img: '/fluent-emoji/1f530.png',
+		bg: 'linear-gradient(0deg, rgb(58 231 198), rgb(37 194 255))',
+		frame: 'bronze',
+	},
+	'open3windows': {
+		img: '/fluent-emoji/1f5a5.png',
+		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'bronze',
 	},
 	'driveFolderCircularReference': {
