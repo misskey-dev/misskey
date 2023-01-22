@@ -76,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 			} else {
 				this.globalEventService.publishBroadcastStream('emojiDeleted', {
-					emojis: [ emoji ],
+					emojis: [ await this.emojiEntityService.pack(emoji) ],
 				});
 
 				this.globalEventService.publishBroadcastStream('emojiAdded', {

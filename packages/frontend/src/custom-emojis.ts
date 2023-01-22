@@ -17,7 +17,9 @@ export const customEmojiCategories = computed<string[]>(() => {
 fetchCustomEmojis();
 
 stream.on('emojiAdded', emojiData => {
-	customEmojis.value = [ emojiData.emoji, ...customEmojis.value ]
+	setTimeout(() => {
+		customEmojis.value = [ emojiData.emoji, ...customEmojis.value ]
+	}, 100);
 });
 
 stream.on('emojiUpdated', emojiData => {
@@ -25,7 +27,7 @@ stream.on('emojiUpdated', emojiData => {
 });
 
 stream.on('emojiDeleted', emojiData => {
-	customEmojis.value = customEmojis.value.filter(item => !emojiData.emojis.some(search => search.name === item.name))
+	customEmojis.value = customEmojis.value.filter(item => !emojiData.emojis.some(search => search.name === item.name));
 });
 
 export async function fetchCustomEmojis() {
