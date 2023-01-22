@@ -1106,7 +1106,7 @@ _achievements:
       flavor: "Danke, dass du Misskey verwendest! - vom Entwicklerteam"
     _client30min:
       title: "Kleine Pause"
-      description: "Seit dem Öffnen deines Clients sind 30 Minuten vergangen"
+      description: "Habe Misskey für 30 Minuten geöffnet"
     _noteDeletedWithin1min:
       title: "Ups"
       description: "Lösche eine Notiz innerhalb von 1 Minute nachdem sie gesendet wurde"
