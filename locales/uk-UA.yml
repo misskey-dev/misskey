@@ -937,6 +937,7 @@ _achievements:
       title: "Планета нотаток"
       description: "50 000 нотаток відправлено"
     _notes60000:
+      title: "Нотатковий квазар"
       description: "60 000 нотаток відправлено"
     _notes70000:
       title: "Чорна нотаткова діра"
@@ -950,6 +951,13 @@ _achievements:
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "100 000 нотаток відправлено"
+      flavor: "Так багато потрібно сказати?"
+    _login3:
+      title: "Новачок I"
+    _login7:
+      title: "Новачок II"
+    _login15:
+      title: "Новачок III"
 _role:
   priority: "Пріоритет"
   _priority:
