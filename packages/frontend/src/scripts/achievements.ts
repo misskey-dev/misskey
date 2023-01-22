@@ -65,6 +65,7 @@ export const ACHIEVEMENT_TYPES = [
 	'postedAt0min0sec',
 	'selfQuote',
 	'htl20npm',
+	'viewInstanceChart',
 	'outputHelloWorldOnScratchpad',
 	'open3windows',
 	'driveFolderCircularReference',
@@ -367,6 +368,11 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
+	'viewInstanceChart': {
+		img: '/fluent-emoji/1f4ca.png',
+		bg: 'linear-gradient(0deg, rgb(58 231 198), rgb(37 194 255))',
+		frame: 'bronze',
+	},
 	'outputHelloWorldOnScratchpad': {
 		img: '/fluent-emoji/1f530.png',
 		bg: 'linear-gradient(0deg, rgb(58 231 198), rgb(37 194 255))',
@@ -448,6 +454,7 @@ export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i
 const claimingQueue = new Set<string>();
 
 export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
+	if ($i == null) return;
 	if (claimedAchievements.includes(type)) return;
 	claimingQueue.add(type);
 	claimedAchievements.push(type);

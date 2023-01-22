@@ -95,7 +95,7 @@ follow: "Segui"
 followRequest: "Richiesta di follow"
 followRequests: "Richieste di follow"
 unfollow: "Smetti di seguire"
-followRequestPending: "La richiesta di follow deve essere approvata"
+followRequestPending: "Richiesta in approvazione"
 enterEmoji: "Inserisci emoji"
 renote: "Rinota"
 unrenote: "Annulla rinota"
@@ -1048,6 +1048,9 @@ _achievements:
     _noteFavorited1:
       title: "Guarda le stelle"
       description: "Aggiungi una Nota ai preferiti per la prima volta"
+    _myNoteFavorited1:
+      title: "Fornitura stelline"
+      description: "Qualcuno ha preferito una delle tue Note"
     _profileFilled:
       title: "Perfettamente"
       description: "Imposta il tuo profilo"

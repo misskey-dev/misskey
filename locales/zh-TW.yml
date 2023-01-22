@@ -1047,25 +1047,59 @@ _achievements:
       description: "第一次將貼文收進摘錄"
     _noteFavorited1:
       title: "觀星者"
-      description: "第一次將貼文收進我的最愛"
+      description: "第一次將貼文收藏至我的最愛"
+    _myNoteFavorited1:
+      title: "想要星星"
+      description: "自己的貼文被他人收藏至「我的最愛」了"
     _profileFilled:
       title: "有備而來"
       description: "設定了個人檔案"
     _markedAsCat:
       title: "我是貓"
       description: "已將帳戶設定為貓"
+      flavor: "還沒有名字。"
+    _following1:
+      title: "首次追隨"
+      description: "首次追隨了"
+    _following10:
+      title: "跟著跟著"
+      description: "跟隨超過10人了"
+    _following50:
+      title: "朋友很多"
+      description: "跟隨超過50人了"
+    _following100:
+      title: "100位朋友"
+      description: "跟隨超過100人了"
+    _following300:
+      title: "朋友過多"
+      description: "跟隨超過300人了"
+    _followers1:
+      title: "第一個追隨者"
+      description: "第一次被追隨"
+    _followers10:
+      title: "Follow me!"
+      description: "跟隨者超過10人了"
+    _followers50:
+      title: "成群結隊"
+      description: "跟隨者超過50人了"
+    _followers100:
+      title: "紅人"
+      description: "跟隨者超過100人了"
+    _followers300:
+      title: "請排成一排"
+      description: "跟隨者超過300人了"
     _followers500:
       title: "基站"
-      description: "超過500名追隨者"
+      description: "超過500名追隨者了"
     _followers1000:
       title: "影響者"
-      description: "超過1000名追隨者"
+      description: "超過1000名追隨者了"
     _collectAchievements30:
       title: "成就收藏家"
       description: "獲得30個以上的成就"
     _viewAchievements3min:
       title: "喜愛成就"
-      description: "看成就列表要花了3分鐘以上"
+      description: "看成就列表要花3分鐘以上"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "發布「I ❤ #Misskey」"
@@ -1083,6 +1117,7 @@ _achievements:
     _postedAt0min0sec:
       title: "報時"
       description: "在0分0秒發佈貼文"
+      flavor: "啵．啵．啵．嗶ー"
     _selfQuote:
       title: "自我引用"
       description: "引用了自己的貼文"
@@ -1094,7 +1129,7 @@ _achievements:
       description: "在暫存記憶體輸出了 hello world"
     _open3windows:
       title: "多重視窗"
-      description: "開啟3個以上的視窗"
+      description: "開啟了3個以上的視窗"
     _driveFolderCircularReference:
       title: "循環引用"
       description: "試圖遞迴套入雲端硬碟資料夾"
@@ -1110,6 +1145,30 @@ _achievements:
     _setNameToSyuilo:
       title: "神的情結"
       description: "將名稱設定為 syuilo"
+    _passedSinceAccountCreated1:
+      title: "一周年"
+      description: "自建立帳戶開始過了1年"
+    _passedSinceAccountCreated2:
+      title: "二周年"
+      description: "自建立帳戶開始過了2年"
+    _passedSinceAccountCreated3:
+      title: "三周年"
+      description: "自建立帳戶開始過了3年"
+    _loggedInOnBirthday:
+      title: "生日快樂"
+      description: "在生日當天登入了"
+    _loggedInOnNewYearsDay:
+      title: "新年快樂"
+      description: "在元旦當天登入了"
+      flavor: "今年也請對敝實例多多指教"
+    _cookieClicked:
+      title: "點擊餅乾的遊戲"
+      description: "點擊了餅乾"
+      flavor: "是不是軟體有問題？"
+    _brainDiver:
+      title: "Brain Driver"
+      description: "發佈了Brain Driver的連結"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "建立角色"
   edit: "編輯角色"
@@ -1759,6 +1818,7 @@ _notification:
   pollEnded: "問卷調查已產生結果"
   unreadAntennaNote: "天線 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
+  achievementEarned: "獲得成就"
   _types:
     all: "全部 "
     follow: "追隨中"
