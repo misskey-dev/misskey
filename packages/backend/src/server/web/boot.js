@@ -55,7 +55,7 @@
 			renderError('META_FETCH');
 			return;
 		}
-		const meta = await res.json();
+		const meta = await metaRes.json();
 		const v = meta.version;
 		if (v == null) {
 			renderError('META_FETCH_V');
