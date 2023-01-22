@@ -40,6 +40,7 @@ export const ACHIEVEMENT_TYPES = [
 	'loggedInOnNewYearsDay',
 	'noteClipped1',
 	'noteFavorited1',
+	'myNoteFavorited1',
 	'profileFilled',
 	'markedAsCat',
 	'following1',
@@ -239,6 +240,11 @@ export const ACHIEVEMENT_BADGES = {
 		img: '/fluent-emoji/1f31f.png',
 		bg: null,
 		frame: 'bronze',
+	},
+	'myNoteFavorited1': {
+		img: '/fluent-emoji/1f320.png',
+		bg: null,
+		frame: 'silver',
 	},
 	'profileFilled': {
 		img: '/fluent-emoji/1f44c.png',

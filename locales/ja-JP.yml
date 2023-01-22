@@ -1049,6 +1049,9 @@ _achievements:
     _noteFavorited1:
       title: "星をみるひと"
       description: "初めてノートをお気に入りに登録した"
+    _myNoteFavorited1:
+      title: "星が欲しい"
+      description: "自分のノートが他の人からお気に入りに登録された"
     _profileFilled:
       title: "準備万端"
       description: "プロフィール設定を行った"
