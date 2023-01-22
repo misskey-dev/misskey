@@ -69,6 +69,7 @@ const ACHIEVEMENT_TYPES = [
 	'postedAt0min0sec',
 	'selfQuote',
 	'htl20npm',
+	'viewInstanceChart',
 	'outputHelloWorldOnScratchpad',
 	'open3windows',
 	'driveFolderCircularReference',

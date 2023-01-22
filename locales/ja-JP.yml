@@ -1128,6 +1128,9 @@ _achievements:
     _htl20npm:
       title: "流れるTL"
       description: "ホームタイムラインの流速が20npmを越す"
+    _viewInstanceChart:
+      title: "アナリスト"
+      description: "インスタンスのチャートを表示した"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
       description: "スクラッチパッドで hello world を出力した"
