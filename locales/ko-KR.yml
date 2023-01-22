@@ -1048,6 +1048,9 @@ _achievements:
     _noteFavorited1:
       title: "별을 바라보는 자"
       description: "처음으로 노트를 즐겨찾기했습니다"
+    _myNoteFavorited1:
+      title: "I wanna Star"
+      description: "다른 사람이 당신의 노트를 즐겨찾기했습니다"
     _profileFilled:
       title: "준비 완료"
       description: "프로필 설정을 완료했습니다"
