@@ -79,7 +79,6 @@ import { selectFile, selectFiles } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { fetchCustomEmojis, customEmojis } from '@/custom-emojis';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -131,7 +130,6 @@ const add = async (ev: MouseEvent) => {
 	})));
 	promise.then(() => {
 		emojisPaginationComponent.value.reload();
-		fetchCustomEmojis();
 	});
 	os.promiseDialog(promise);
 };
@@ -146,26 +144,8 @@ const edit = (emoji) => {
 					...oldEmoji,
 					...result.updated,
 				}));
-
-				if (!customEmojis.value.some(e => e.name === emoji.name)) {
-					customEmojis.value = [
-						{
-							name: result.updated.name,
-							aliases: result.updated.aliases,
-							category: result.updated.category,
-						},
-						...customEmojis.value,
-					];
-				} else {
-					customEmojis.value = customEmojis.value.map(e => e.name !== emoji.name ? e : {
-						name: result.updated.name,
-						aliases: result.updated.aliases,
-						category: result.updated.category,
-					});
-				}
 			} else if (result.deleted) {
 				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
-				customEmojis.value = customEmojis.value.filter(e => e.name !== emoji.name);
 			}
 		},
 	}, 'closed');
@@ -240,7 +220,6 @@ const setCategoryBulk = async () => {
 		category: result,
 	});
 	emojisPaginationComponent.value.reload();
-	fetchCustomEmojis();
 };
 
 const addTagBulk = async () => {
@@ -253,7 +232,6 @@ const addTagBulk = async () => {
 		aliases: result.split(' '),
 	});
 	emojisPaginationComponent.value.reload();
-	fetchCustomEmojis();
 };
 
 const removeTagBulk = async () => {
@@ -266,7 +244,6 @@ const removeTagBulk = async () => {
 		aliases: result.split(' '),
 	});
 	emojisPaginationComponent.value.reload();
-	fetchCustomEmojis();
 };
 
 const setTagBulk = async () => {
@@ -279,7 +256,6 @@ const setTagBulk = async () => {
 		aliases: result.split(' '),
 	});
 	emojisPaginationComponent.value.reload();
-	fetchCustomEmojis();
 };
 
 const delBulk = async () => {
@@ -292,7 +268,6 @@ const delBulk = async () => {
 		ids: selectedEmojis.value,
 	});
 	emojisPaginationComponent.value.reload();
-	fetchCustomEmojis();
 };
 
 const headerActions = $computed(() => [{
