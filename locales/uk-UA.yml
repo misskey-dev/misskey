@@ -958,6 +958,10 @@ _achievements:
       title: "Новачок II"
     _login15:
       title: "Новачок III"
+    _login60:
+      title: "Міскієць II"
+    _login100:
+      title: "Міскієць III"
 _role:
   priority: "Пріоритет"
   _priority:
