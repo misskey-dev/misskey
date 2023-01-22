@@ -899,6 +899,45 @@ unlike: "Не вподобати"
 numberOfLikes: "Вподобання"
 show: "Відображення"
 color: "Колір"
+achievements: "Досягнення"
+_achievements:
+  _types:
+    _notes1:
+      title: "налаштовую свій msky"
+      description: "Перша нотатка"
+      flavor: "Приємного часу з Misskey!"
+    _notes10:
+      title: "Декілька нотаток"
+      description: "10 нотаток відправлено"
+    _notes100:
+      description: "100 нотаток відправлено"
+    _notes500:
+      description: "500 нотаток відправлено"
+    _notes1000:
+      description: "1 000 нотаток відправлено"
+    _notes5000:
+      description: "5 000 нотаток відправлено"
+    _notes10000:
+      description: "10 000 нотаток відправлено"
+    _notes20000:
+      description: "20 000 нотаток відправлено"
+    _notes30000:
+      description: "30 000 нотаток відправлено"
+    _notes40000:
+      description: "40 000 нотаток відправлено"
+    _notes50000:
+      description: "50 000 нотаток відправлено"
+    _notes60000:
+      description: "60 000 нотаток відправлено"
+    _notes70000:
+      description: "70 000 нотаток відправлено"
+    _notes80000:
+      description: "80 000 нотаток відправлено"
+    _notes90000:
+      description: "90 000 нотаток відправлено"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "100 000 нотаток відправлено"
 _role:
   priority: "Пріоритет"
   _priority:
