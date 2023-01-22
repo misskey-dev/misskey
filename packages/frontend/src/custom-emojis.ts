@@ -33,7 +33,7 @@ stream.on('emojiDeleted', emojiData => {
 export async function fetchCustomEmojis() {
 	const now = Date.now();
 	const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');
-	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60) return;
+	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return;
 
 	const res = await apiGet('emojis', {});
 
