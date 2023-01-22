@@ -899,6 +899,15 @@ unlike: "Не вподобати"
 numberOfLikes: "Вподобання"
 show: "Відображення"
 color: "Колір"
+achievements: "Досягнення"
+_achievements:
+  _types:
+    _notes1:
+      title: "налаштовую свій msky"
+      description: "Перша нотатка"
+      flavor: "Приємного часу з Misskey!"
+    _notes10:
+      title: "Декілька нотаток"
 _role:
   priority: "Пріоритет"
   _priority:

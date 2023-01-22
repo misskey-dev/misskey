@@ -200,6 +200,12 @@ export default defineComponent({
 							style = `transform: translateX(${x}em) translateY(${y}em);`;
 							break;
 						}
+						case 'scale': {
+							const x = Math.min(parseInt(token.props.args.x ?? '1'), 5);
+							const y = Math.min(parseInt(token.props.args.y ?? '1'), 5);
+							style = `transform: scale(${x}, ${y});`;
+							break;
+						}
 						case 'fg': {
 							let color = token.props.args.color;
 							if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';

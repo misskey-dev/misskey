@@ -4,11 +4,14 @@
 	<div style="overflow: clip;">
 		<MkSpacer :content-max="600" :margin-min="20">
 			<div class="_gaps_m znqjceqz">
-				<div ref="containerEl" v-panel class="about" :class="{ playing: easterEggEngine != null }">
-					<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
-					<div class="misskey">Misskey</div>
-					<div class="version">v{{ version }}</div>
-					<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :is-reaction="false" :normal="true" :no-style="true"/></span>
+				<div v-panel class="about">
+					<div ref="containerEl" class="container" :class="{ playing: easterEggEngine != null }">
+						<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded" @click="gravity"/>
+						<div class="misskey">Misskey</div>
+						<div class="version">v{{ version }}</div>
+						<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :is-reaction="false" :normal="true" :no-style="true"/></span>
+					</div>
+					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
 				</div>
 				<div style="text-align: center;">
 					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
@@ -70,6 +73,8 @@ import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
+import { $i } from '@/account';
 
 const patrons = [
 	'まっちゃとーにゅ',
@@ -152,6 +157,8 @@ const patrons = [
 	'pixeldesu',
 ];
 
+let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));
+
 let easterEggReady = false;
 let easterEggEmojis = $ref([]);
 let easterEggEngine = $ref(null);
@@ -187,6 +194,11 @@ function iLoveMisskey() {
 	});
 }
 
+function getTreasure() {
+	thereIsTreasure = false;
+	claimAchievement('foundTreasure');
+}
+
 onBeforeUnmount(() => {
 	if (easterEggEngine) {
 		easterEggEngine.stop();
@@ -207,52 +219,77 @@ definePageMetadata({
 .znqjceqz {
 	> .about {
 		position: relative;
-		text-align: center;
-		padding: 16px;
 		border-radius: var(--radius);
 
-		&.playing {
-			&, * {
-				user-select: none;
-			}
-
-			* {
-				will-change: transform;
-			}
-
-			> .emoji {
-				visibility: visible;
-			}
-		}
-
-		> .icon {
-			display: block;
-			width: 80px;
-			margin: 0 auto;
-			border-radius: 16px;
-		}
-
-		> .misskey {
-			margin: 0.75em auto 0 auto;
-			width: max-content;
-		}
-
-		> .version {
-			margin: 0 auto;
-			width: max-content;
-			opacity: 0.5;
-		}
-
-		> .emoji {
+		> .treasure {
 			position: absolute;
-			top: 0;
+			top: 60px;
 			left: 0;
-			visibility: hidden;
+			right: 0;
+			margin: 0 auto;
+			width: min-content;
+
+			> .treasureImg {
+				width: 25px;
+				vertical-align: bottom;
+			}
+		}
+
+		> .container {
+			position: relative;
+			text-align: center;
+			padding: 16px;
+
+			&.playing {
+				&, * {
+					user-select: none;
+				}
+
+				* {
+					will-change: transform;
+				}
+
+				> .emoji {
+					visibility: visible;
+				}
+			}
+
+			> .icon {
+				display: block;
+				width: 80px;
+				margin: 0 auto;
+				border-radius: 16px;
+				position: relative;
+				z-index: 1;
+			}
+
+			> .misskey {
+				margin: 0.75em auto 0 auto;
+				width: max-content;
+				position: relative;
+				z-index: 1;
+			}
+
+			> .version {
+				margin: 0 auto;
+				width: max-content;
+				opacity: 0.5;
+				position: relative;
+				z-index: 1;
+			}
 
 			> .emoji {
-				pointer-events: none;
-				font-size: 24px;
-				width: 24px;
+				position: absolute;
+				z-index: 1;
+				top: 0;
+				left: 0;
+				visibility: hidden;
+
+				> .emoji {
+					pointer-events: none;
+					font-size: 24px;
+					width: 24px;
+				}
 			}
 		}
 	}

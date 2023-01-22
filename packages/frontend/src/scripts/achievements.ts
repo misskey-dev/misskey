@@ -58,12 +58,14 @@ export const ACHIEVEMENT_TYPES = [
 	'collectAchievements30',
 	'viewAchievements3min',
 	'iLoveMisskey',
+	'foundTreasure',
 	'client30min',
 	'noteDeletedWithin1min',
 	'postedAtLateNight',
 	'postedAt0min0sec',
 	'selfQuote',
 	'htl20npm',
+	'viewInstanceChart',
 	'outputHelloWorldOnScratchpad',
 	'open3windows',
 	'driveFolderCircularReference',
@@ -331,6 +333,11 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
 		frame: 'silver',
 	},
+	'foundTreasure': {
+		img: '/fluent-emoji/1f3c6.png',
+		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
+		frame: 'gold',
+	},
 	'client30min': {
 		img: '/fluent-emoji/1f552.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
@@ -359,6 +366,11 @@ export const ACHIEVEMENT_BADGES = {
 	'htl20npm': {
 		img: '/fluent-emoji/1f30a.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'bronze',
+	},
+	'viewInstanceChart': {
+		img: '/fluent-emoji/1f4ca.png',
+		bg: 'linear-gradient(0deg, rgb(58 231 198), rgb(37 194 255))',
 		frame: 'bronze',
 	},
 	'outputHelloWorldOnScratchpad': {
@@ -437,11 +449,12 @@ export const ACHIEVEMENT_BADGES = {
 	frame: 'bronze' | 'silver' | 'gold' | 'platinum';
 }>;
 
-export const claimedAchievements = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
+export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
 
 const claimingQueue = new Set<string>();
 
 export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
+	if ($i == null) return;
 	if (claimedAchievements.includes(type)) return;
 	claimingQueue.add(type);
 	claimedAchievements.push(type);

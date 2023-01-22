@@ -1105,6 +1105,9 @@ _achievements:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"を投稿した"
       flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
+    _foundTreasure:
+      title: "宝探し"
+      description: "隠されたお宝を発見した"
     _client30min:
       title: "ひとやすみ"
       description: "クライアントを起動してから30分以上経過した"
@@ -1125,6 +1128,9 @@ _achievements:
     _htl20npm:
       title: "流れるTL"
       description: "ホームタイムラインの流速が20npmを越す"
+    _viewInstanceChart:
+      title: "アナリスト"
+      description: "インスタンスのチャートを表示した"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
       description: "スクラッチパッドで hello world を出力した"
