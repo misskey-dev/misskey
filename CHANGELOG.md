@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 13.1.4 (2023/01/22)
+
+### Improvements
+- 新たな実績を追加
+
+### Bugfixes
+- Client: ローカリゼーション更新時にリロードが繰り返されることがあるのを修正
+
 ## 13.1.3 (2023/01/22)
 
 ### Bugfixes
