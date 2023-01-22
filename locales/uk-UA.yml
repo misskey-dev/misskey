@@ -962,6 +962,12 @@ _achievements:
       title: "Міскієць II"
     _login100:
       title: "Міскієць III"
+    _login200:
+      title: "Завсідник I"
+    _login300:
+      title: "Завсідник II"
+    _login400:
+      title: "Завсідник III"
 _role:
   priority: "Пріоритет"
   _priority:
