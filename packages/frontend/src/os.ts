@@ -9,7 +9,7 @@ import * as Misskey from 'misskey-js';
 import { i18n } from './i18n';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
-import MkPageWindow from '@/components/MkPageWindow.vue'
+import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
 import MkDialog from '@/components/MkDialog.vue';
 import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
@@ -17,6 +17,8 @@ import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
+
+export const openingWindowsCount = ref(0);
 
 export const apiWithDialog = ((
 	endpoint: string,

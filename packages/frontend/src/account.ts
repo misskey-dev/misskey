@@ -2,11 +2,11 @@ import { defineAsyncComponent, reactive } from 'vue';
 import * as misskey from 'misskey-js';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';
 import { i18n } from './i18n';
+import { miLocalStorage } from './local-storage';
 import { del, get, set } from '@/scripts/idb-proxy';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
-import { miLocalStorage } from './local-storage';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -19,6 +19,11 @@ export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : n
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
 export const iAmAdmin = $i != null && $i.isAdmin;
+
+export let notesCount = $i == null ? 0 : $i.notesCount;
+export function incNotesCount() {
+	notesCount++;
+}
 
 export async function signout() {
 	waiting();

@@ -1,32 +1,23 @@
 import cluster from 'node:cluster';
 import { NestFactory } from '@nestjs/core';
-import { envOption } from '@/env.js';
 import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
-import { ServerService } from '@/server/ServerService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
 import { NestLogger } from '@/NestLogger.js';
-import { RootModule } from '../RootModule.js';
+import { QueueProcessorModule } from '@/queue/QueueProcessorModule.js';
 
 /**
  * Init worker process
  */
 export async function workerMain() {
-	const app = await NestFactory.createApplicationContext(RootModule, {
+	const jobQueue = await NestFactory.createApplicationContext(QueueProcessorModule, {
 		logger: new NestLogger(),
 	});
-	app.enableShutdownHooks();
-
-	// start server
-	const serverService = app.get(ServerService);
-	serverService.launch();
+	jobQueue.enableShutdownHooks();
 
 	// start job queue
-	if (!envOption.onlyServer) {
-		const queueProcessorService = app.get(QueueProcessorService);
-		queueProcessorService.start();
-	}
+	jobQueue.get(QueueProcessorService).start();
 
-	app.get(ChartManagementService).run();
+	jobQueue.get(ChartManagementService).start();
 
 	if (cluster.isWorker) {
 		// Send a 'ready' message to parent process

@@ -22,18 +22,13 @@
 		renderError('SOMETHING_HAPPENED_IN_PROMISE', e);
 	};
 
-	const v = localStorage.getItem('v') || VERSION;
-
 	let forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.')
 	}
 
 	//#region Detect language & fetch translations
-	const localeVersion = localStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== v);
-
-	if (!localStorage.hasOwnProperty('locale') || localeOutdated) {
+	if (!localStorage.hasOwnProperty('locale')) {
 		const supportedLangs = LANGS;
 		let lang = localStorage.getItem('lang');
 		if (lang == null || !supportedLangs.includes(lang)) {
@@ -47,13 +42,31 @@
 			}
 		}
 
-		const res = await window.fetch(`/assets/locales/${lang}.${v}.json`);
-		if (res.status === 200) {
+		const metaRes = await window.fetch('/api/meta', {
+			method: 'POST',
+			body: JSON.stringify({}),
+			credentials: 'omit',
+			cache: 'no-cache',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (metaRes.status !== 200) {
+			renderError('META_FETCH');
+			return;
+		}
+		const meta = await metaRes.json();
+		const v = meta.version;
+		if (v == null) {
+			renderError('META_FETCH_V');
+			return;
+		}
+		const localRes = await window.fetch(`/assets/locales/${lang}.${v}.json`);
+		if (localRes.status === 200) {
 			localStorage.setItem('lang', lang);
-			localStorage.setItem('locale', await res.text());
+			localStorage.setItem('locale', await localRes.text());
 			localStorage.setItem('localeVersion', v);
 		} else {
-			await checkUpdate();
 			renderError('LOCALE_FETCH');
 			return;
 		}
@@ -64,7 +77,6 @@
 	function importAppScript() {
 		import(`/vite/${CLIENT_ENTRY}`)
 			.catch(async e => {
-				await checkUpdate();
 				console.error(e);
 				renderError('APP_IMPORT', e);
 			});
@@ -290,49 +302,5 @@
 				width: 50%;
 			}
 		`)
-	}
-
-	// eslint-disable-next-line no-inner-declarations
-	async function checkUpdate() {
-		try {
-			const res = await window.fetch('/api/meta', {
-				method: 'POST',
-				cache: 'no-cache',
-				body: '{}',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-
-			const meta = await res.json();
-
-			if (meta.version == null) {
-				throw new Error('failed to fetch instance metadata');
-			}
-
-			if (meta.version != v) {
-				localStorage.setItem('v', meta.version);
-				refresh();
-			}
-		} catch (e) {
-			console.error(e);
-			renderError('UPDATE_CHECK', e);
-			throw e;
-		}
-	}
-
-	// eslint-disable-next-line no-inner-declarations
-	function refresh() {
-		// Clear cache (service worker)
-		try {
-			navigator.serviceWorker.controller.postMessage('clear');
-			navigator.serviceWorker.getRegistrations().then(registrations => {
-				registrations.forEach(registration => registration.unregister());
-			});
-		} catch (e) {
-			console.error(e);
-		}
-
-		location.reload();
 	}
 })();

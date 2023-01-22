@@ -9,18 +9,49 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.1.4 (2023/01/22)
 
 ### Improvements
+- 新たな実績を追加
+
+### Bugfixes
+- Client: ローカリゼーション更新時にリロードが繰り返されることがあるのを修正
+
+## 13.1.3 (2023/01/22)
+
+### Bugfixes
+- Client: リアクションのカスタム絵文字の表示の問題を修正
+
+## 13.1.2 (2023/01/22)
+
+### Bugfixes
+- Client: リアクションのカスタム絵文字の表示の問題を修正
+
+## 13.1.1 (2023/01/22)
+
+### Improvements
+- ローカルのカスタム絵文字を表示する際のパフォーマンスを改善
+- Client: 瞬間的に大量の実績を解除した際の挙動を改善
+
+### Bugfixes
+- Client: アップデート時にローカリゼーションデータが更新されないことがあるのを修正
+
+## 13.1.0 (2023/01/21)
+
+### Improvements
+- 実績機能
 - Playのプリセットを追加
 - Playのscriptの文字数制限を緩和
 - AiScript GUIの強化
 - リアクション一覧詳細ダイアログを表示できるように
 - 存在しないカスタム絵文字をテキストで表示するように
 - Alt text in image viewer
+- ジョブキューのプロセスとWebサーバーのプロセスを分離
 
 ### Bugfixes
 - playを削除する手段がなかったのを修正
+- The … button on notes does nothing when not logged in
+- twitterと連携するときに autwh is not a function になるのを修正
 
 ## 13.0.0 (2023/01/16)
 
@@ -42,6 +73,7 @@ You should also include the user name that made the change.
 - Node.js 18.x or later is required
 - PostgreSQL 15.x is required
 	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
+	- Docker環境でPostgreSQLのアップデートを行う際のガイドはこちら: https://github.com/misskey-dev/misskey/pull/9641#issue-1536336620
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Yarnからpnpmに移行されました
