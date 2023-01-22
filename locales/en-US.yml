@@ -1048,6 +1048,9 @@ _achievements:
     _noteFavorited1:
       title: "Stargazer"
       description: "Favorite your first note"
+    _myNoteFavorited1:
+      title: "Seeking Stars"
+      description: "Have somebody else favorite one of your notes"
     _profileFilled:
       title: "Well-prepared"
       description: "Set up your profile"

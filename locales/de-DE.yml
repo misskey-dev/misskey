@@ -1048,6 +1048,9 @@ _achievements:
     _noteFavorited1:
       title: "Sternengucker"
       description: "Eine Notiz als Favorit markiert"
+    _myNoteFavorited1:
+      title: "Sternensucher"
+      description: "Ein anderer Benutzer hat eine deiner Notizen als Favoriten markiert"
     _profileFilled:
       title: "Perfekte Vorbereitung"
       description: "Fülle dein Profil aus"
