@@ -1,17 +1,19 @@
 import { apiGet } from './os';
 import { miLocalStorage } from './local-storage';
-import { shallowRef, computed, markRaw, watch } from 'vue';
+import { shallowRef, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { stream } from '@/stream';
 
 const storageCache = miLocalStorage.getItem('emojis');
 export const customEmojis = shallowRef<Misskey.entities.CustomEmoji[]>(storageCache ? JSON.parse(storageCache) : []);
-export const customEmojiCategories = computed<string[]>(() => {
+export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
 	const categories = new Set<string>();
 	for (const emoji of customEmojis.value) {
-		categories.add(emoji.category);
+		if (emoji.category && emoji.category !== 'null') {
+			categories.add(emoji.category);
+		}
 	}
-	return markRaw(Array.from(categories));
+	return markRaw([ ...Array.from(categories), null ]);
 });
 
 stream.on('emojiAdded', emojiData => {
