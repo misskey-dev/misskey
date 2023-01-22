@@ -938,6 +938,82 @@ cannotPerformTemporary: "暂时不可用"
 cannotPerformTemporaryDescription: "因操作过于频繁，暂时不可用，请稍后再试。"
 preset: "預設值"
 selectFromPresets: "從預設值中選擇"
+achievements: "成就"
+_achievements:
+  earnedAt: "达成时间"
+  _types:
+    _notes1:
+      title: "初来乍到"
+      description: "第一次发帖"
+      flavor: "祝您在Misskey玩的愉快～"
+    _notes10:
+      title: "一些帖子"
+      description: "发布了10篇帖子"
+    _notes100:
+      title: "很多帖子"
+      description: "发布了100篇帖子"
+    _notes500:
+      title: "满是帖子"
+      description: "发布了500篇帖子"
+    _notes1000:
+      title: "帖子成山"
+      description: "发布了1,000篇帖子"
+    _notes5000:
+      title: "帖如泉涌"
+      description: "发布了5,000篇帖子"
+    _notes10000:
+      title: "超级帖"
+      description: "发布了10,000篇帖子"
+    _notes20000:
+      title: "还想要更多帖子"
+      description: "发布了20,000篇帖子"
+    _notes30000:
+      title: "帖子帖子帖子"
+      description: "发布了30,000篇帖子"
+    _notes40000:
+      title: "帖子工厂"
+      description: "发布了40,000篇帖子"
+    _notes50000:
+      title: "帖子星球"
+      description: "发布了50,000篇帖子"
+    _notes60000:
+      title: "帖子类星体"
+      description: "发布了60,000篇帖子"
+    _notes70000:
+      title: "帖子黑洞"
+      description: "发布了70,000篇帖子"
+    _notes80000:
+      title: "帖子星系"
+      description: "发布了80,000篇帖子"
+    _notes90000:
+      title: "帖子起源"
+      description: "发布了90,000篇帖子"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "发布了100,000篇帖子"
+      flavor: "真的有那么多可以写的东西吗？"
+    _login1000:
+      flavor: "感谢您使用Misskey！"
+    _noteFavorited1:
+      title: "观星者"
+    _markedAsCat:
+      title: "我是猫"
+    _following50:
+      title: "我的朋友很多"
+    _viewAchievements3min:
+      description: "盯着成就看三分钟"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "发布\"I ❤ #Misskey\"帖子"
+      flavor: "感谢您使用 Misskey ！ by 开发团队"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+    _loggedInOnBirthday:
+      title: "生日快乐"
+      description: "在生日当天登录"
+    _loggedInOnNewYearsDay:
+      title: "恭贺新禧"
+      description: "在元旦登入"
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -1587,6 +1663,7 @@ _notification:
   pollEnded: "问卷调查结果已生成。"
   unreadAntennaNote: "天线 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
+  achievementEarned: "获得成就"
   _types:
     all: "全部"
     follow: "关注中"
