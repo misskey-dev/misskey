@@ -223,7 +223,7 @@ definePageMetadata({
 
 		> .treasure {
 			position: absolute;
-			top: 55px;
+			top: 60px;
 			left: 0;
 			right: 0;
 			margin: 0 auto;
@@ -266,16 +266,21 @@ definePageMetadata({
 			> .misskey {
 				margin: 0.75em auto 0 auto;
 				width: max-content;
+				position: relative;
+				z-index: 1;
 			}
 
 			> .version {
 				margin: 0 auto;
 				width: max-content;
 				opacity: 0.5;
+				position: relative;
+				z-index: 1;
 			}
 
 			> .emoji {
 				position: absolute;
+				z-index: 1;
 				top: 0;
 				left: 0;
 				visibility: hidden;

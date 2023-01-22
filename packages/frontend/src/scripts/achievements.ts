@@ -334,7 +334,7 @@ export const ACHIEVEMENT_BADGES = {
 	},
 	'foundTreasure': {
 		img: '/fluent-emoji/1f3c6.png',
-		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
+		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
 		frame: 'gold',
 	},
 	'client30min': {
