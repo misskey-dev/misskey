@@ -1,6 +1,6 @@
 import { apiGet } from './os';
 import { miLocalStorage } from './local-storage';
-import { shallowRef, computed, markRaw } from 'vue';
+import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { stream } from '@/stream';
 
@@ -14,12 +14,12 @@ export const customEmojiCategories = computed<string[]>(() => {
 	return markRaw(Array.from(categories));
 });
 
-fetchCustomEmojis();
+watch(customEmojis, (newVal) => {
+	console.log('new', newVal)
+});
 
 stream.on('emojiAdded', emojiData => {
-	setTimeout(() => {
-		customEmojis.value = [ emojiData.emoji, ...customEmojis.value ]
-	}, 100);
+	customEmojis.value = [ emojiData.emoji, ...customEmojis.value ];
 });
 
 stream.on('emojiUpdated', emojiData => {
