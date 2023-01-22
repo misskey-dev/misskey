@@ -62,6 +62,7 @@ const ACHIEVEMENT_TYPES = [
 	'collectAchievements30',
 	'viewAchievements3min',
 	'iLoveMisskey',
+	'foundTreasure',
 	'client30min',
 	'noteDeletedWithin1min',
 	'postedAtLateNight',

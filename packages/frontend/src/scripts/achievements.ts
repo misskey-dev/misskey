@@ -58,6 +58,7 @@ export const ACHIEVEMENT_TYPES = [
 	'collectAchievements30',
 	'viewAchievements3min',
 	'iLoveMisskey',
+	'foundTreasure',
 	'client30min',
 	'noteDeletedWithin1min',
 	'postedAtLateNight',
@@ -331,6 +332,11 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
 		frame: 'silver',
 	},
+	'foundTreasure': {
+		img: '/fluent-emoji/1f3c6.png',
+		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
+		frame: 'gold',
+	},
 	'client30min': {
 		img: '/fluent-emoji/1f552.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
@@ -437,7 +443,7 @@ export const ACHIEVEMENT_BADGES = {
 	frame: 'bronze' | 'silver' | 'gold' | 'platinum';
 }>;
 
-export const claimedAchievements = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
+export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
 
 const claimingQueue = new Set<string>();
 
