@@ -974,6 +974,12 @@ _achievements:
       title: "Ветеран II"
     _login700:
       title: "Ветеран III"
+    _passedSinceAccountCreated3:
+      description: "Минуло 3 роки з моменту створення акаунта"
+    _loggedInOnBirthday:
+      title: "З Днем народження!"
+    _brainDiver:
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   priority: "Пріоритет"
   _priority:
