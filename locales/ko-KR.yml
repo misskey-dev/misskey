@@ -938,13 +938,13 @@ cannotPerformTemporary: "일시적으로 사용할 수 없음"
 cannotPerformTemporaryDescription: "조작 횟수 제한을 초과하여 일시적으로 사용이 불가합니다. 잠시 후 다시 시도해 주세요."
 preset: "프리셋"
 selectFromPresets: "프리셋에서 선택"
-achievements: "도전과제"
+achievements: "도전 과제"
 _achievements:
   earnedAt: "달성 일시"
   _types:
     _notes1:
       title: "미스키 설정하고 있었는데요"
-      description: "첫 노트를 포스트했습니다"
+      description: "첫 노트를 작성했습니다"
       flavor: "Misskey에 오신 것을 환영합니다!"
     _notes10:
       title: "노트 조금"
