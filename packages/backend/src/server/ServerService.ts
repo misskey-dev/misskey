@@ -14,6 +14,7 @@ import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -22,7 +23,6 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ServerService {
@@ -82,12 +82,12 @@ export class ServerService {
 		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
+			reply.header('Cache-Control', 'public, max-age=86400');
+
 			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
 				reply.code(404);
 				return;
 			}
-
-			reply.header('Cache-Control', 'public, max-age=86400');
 
 			const name = path.split('@')[0].replace('.webp', '');
 			const host = path.split('@')[1]?.replace('.webp', '');
@@ -101,7 +101,12 @@ export class ServerService {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
 			if (emoji == null) {
-				return await reply.redirect('/static-assets/emoji-unknown.png');
+				if ('fallback' in request.query) {
+					return await reply.redirect('/static-assets/emoji-unknown.png');
+				} else {
+					reply.code(404);
+					return;
+				}
 			}
 
 			const url = new URL('/proxy/emoji.webp', this.config.url);
@@ -127,6 +132,8 @@ export class ServerService {
 				relations: ['avatar'],
 			});
 
+			reply.header('Cache-Control', 'public, max-age=86400');
+
 			if (user) {
 				reply.redirect(this.userEntityService.getAvatarUrlSync(user));
 			} else {
@@ -138,6 +145,7 @@ export class ServerService {
 			const [temp, cleanup] = await createTemp();
 			await genIdenticon(request.params.x, fs.createWriteStream(temp));
 			reply.header('Content-Type', 'image/png');
+			reply.header('Cache-Control', 'public, max-age=86400');
 			return fs.createReadStream(temp).on('close', () => cleanup());
 		});
 

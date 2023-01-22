@@ -45,7 +45,8 @@ onMounted(() => {
 					src: media.url,
 					w: media.properties.width,
 					h: media.properties.height,
-					alt: media.name,
+					alt: media.comment || media.name,
+					comment: media.comment || media.name,
 				};
 				if (media.properties.orientation != null && media.properties.orientation >= 5) {
 					[item.w, item.h] = [item.h, item.w];
@@ -69,6 +70,7 @@ onMounted(() => {
 		},
 		imageClickAction: 'close',
 		tapAction: 'toggle-controls',
+		bgOpacity: 1,
 		pswpModule: PhotoSwipe,
 	});
 
@@ -88,7 +90,26 @@ onMounted(() => {
 			[itemData.w, itemData.h] = [itemData.h, itemData.w];
 		}
 		itemData.msrc = file.thumbnailUrl;
+		itemData.alt = file.comment || file.name;
+		itemData.comment = file.comment || file.name;
 		itemData.thumbCropped = true;
+	});
+
+	lightbox.on('uiRegister', () => {
+		lightbox.pswp.ui.registerElement({
+			name: 'altText',
+			className: 'pwsp__alt-text-container',
+			appendTo: 'wrapper',
+			onInit: (el, pwsp) => {
+				let textBox = document.createElement('p');
+				textBox.className = 'pwsp__alt-text _acrylic';
+				el.appendChild(textBox);
+
+				pwsp.on('change', (a) => {
+					textBox.textContent = pwsp.currSlide.data.comment;
+				});
+			},
+		});
 	});
 
 	lightbox.init();
@@ -185,5 +206,36 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	// なぜか機能しない
   //z-index: v-bind(pswpZIndex);
 	z-index: 2000000;
+	--pswp-bg: var(--modalBg);
+}
+
+.pswp__bg {
+	background: var(--modalBg);
+	backdrop-filter: var(--modalBgFilter);
+}
+
+.pwsp__alt-text-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	position: absolute;
+	bottom: 30px;
+	left: 50%;
+	transform: translateX(-50%);
+
+	width: 75%;
+	max-width: 800px;
+}
+
+.pwsp__alt-text {
+	color: var(--fg);
+	margin: 0 auto;
+	text-align: center;
+	padding: var(--margin);
+	border-radius: var(--radius);
+	max-height: 8em;
+	overflow-y: auto;
+	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
 }
 </style>
