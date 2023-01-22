@@ -910,14 +910,19 @@ _achievements:
       title: "Декілька нотаток"
       description: "10 нотаток відправлено"
     _notes100:
+      title: "Купа нотаток"
       description: "100 нотаток відправлено"
     _notes500:
+      title: "Все в нотатках"
       description: "500 нотаток відправлено"
     _notes1000:
+      title: "Гора нотаток"
       description: "1 000 нотаток відправлено"
     _notes5000:
+      title: "Переповнюючі нотатки"
       description: "5 000 нотаток відправлено"
     _notes10000:
+      title: "Супернотатка"
       description: "10 000 нотаток відправлено"
     _notes20000:
       description: "20 000 нотаток відправлено"
