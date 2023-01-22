@@ -925,20 +925,27 @@ _achievements:
       title: "Супернотатка"
       description: "10 000 нотаток відправлено"
     _notes20000:
+      title: "Треба Більше Нотаток"
       description: "20 000 нотаток відправлено"
     _notes30000:
+      title: "Нотатки нотатки нотатки"
       description: "30 000 нотаток відправлено"
     _notes40000:
+      title: "Фабрика нотаток"
       description: "40 000 нотаток відправлено"
     _notes50000:
+      title: "Планета нотаток"
       description: "50 000 нотаток відправлено"
     _notes60000:
       description: "60 000 нотаток відправлено"
     _notes70000:
+      title: "Чорна нотаткова діра"
       description: "70 000 нотаток відправлено"
     _notes80000:
+      title: "Галактика нотаток"
       description: "80 000 нотаток відправлено"
     _notes90000:
+      title: "Нотатковерс"
       description: "90 000 нотаток відправлено"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
