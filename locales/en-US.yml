@@ -1106,7 +1106,7 @@ _achievements:
       flavor: "Misskey's development team greatly appreciates your support!"
     _foundTreasure:
       title: "Treasure Hunt"
-      description: "Find a hidden treasure"
+      description: "You've found the hidden treasure"
     _client30min:
       title: "Short break"
       description: "Spend 30 minutes on Misskey"
@@ -1129,7 +1129,7 @@ _achievements:
       description: "Have the speed of your home timeline exceed 20 npm (notes per minute)"
     _viewInstanceChart:
       title: "Analyst"
-      description: "View instance chart"
+      description: "View your instance's charts"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
       description: "Output \"hello world\" in the Scratchpad"
