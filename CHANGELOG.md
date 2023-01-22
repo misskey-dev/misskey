@@ -9,6 +9,11 @@
 You should also include the user name that made the change.
 -->
 
+## 13.x.x (unreleased)
+
+### Bugfixes
+- Client: classicモード使用時にwindowサイズによってdefaultに変更された後に、windowサイズが元に戻ったらclassicに戻すように修正 #9669
+
 ## 13.1.4 (2023/01/22)
 
 ### Improvements
