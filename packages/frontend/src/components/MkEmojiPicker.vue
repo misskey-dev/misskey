@@ -64,7 +64,7 @@
 				v-for="category in customEmojiCategories"
 				:key="`custom:${category}`"
 				:initial-shown="false"
-				:emojis="computed(() => customEmojis.filter(e => category === null ? e.category == null || e.category === 'null' : e.category === category).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).map(e => `:${e.name}:`))"
 				@chosen="chosen"
 			>
 				{{ category || i18n.ts.other }}
