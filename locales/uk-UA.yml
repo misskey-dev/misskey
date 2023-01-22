@@ -968,6 +968,12 @@ _achievements:
       title: "Завсідник II"
     _login400:
       title: "Завсідник III"
+    _login500:
+      title: "Ветеран I"
+    _login600:
+      title: "Ветеран II"
+    _login700:
+      title: "Ветеран III"
 _role:
   priority: "Пріоритет"
   _priority:
