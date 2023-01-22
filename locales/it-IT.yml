@@ -1,7 +1,7 @@
 ---
 _lang_: "Italiano"
 headlineMisskey: "Rete collegata tramite note"
-introMisskey: "Eccoci! Misskey è un servizio di microblogging decentralizzato, libero e aperto. \n📡 Puoi pubblicare «Note» per condividere ciò che sta succedendo o per dire a tutti qualcosa su di te. \n👍 Puoi reagire inviando emoji rapidi alle «Note» provenienti da altri profili nel Fediverso.\n🚀 Esplora un nuovo mondo insieme a noi!"
+introMisskey: "Eccoci! Misskey è un servizio di microblogging decentralizzato, libero e aperto. \n\n📡 Puoi pubblicare «Note» per condividere ciò che sta succedendo o per dire a tutti qualcosa su di te. \n\n👍 Puoi reagire inviando emoji rapidi alle «Note» provenienti da altri profili nel Fediverso.\n\n🚀 Esplora un nuovo mondo insieme a noi!"
 poweredByMisskeyDescription: "{name} è uno dei servizi (chiamati istanze) che utilizzano la piattaforma open source <b>Misskey</b>."
 monthAndDay: "{day}/{month}"
 search: "Cerca"
@@ -943,79 +943,79 @@ _achievements:
   earnedAt: "Data di conseguimento"
   _types:
     _notes1:
-      title: "Ho iniziato a usare Misskey"
-      description: "Ho pubblicato la mia prima Nota"
+      title: "Hai iniziato a usare Misskey"
+      description: "Hai pubblicato la prima Nota"
       flavor: "Goditi la vita su Misskey!"
     _notes10:
       title: "Alcune Note"
-      description: "Ho inserito 10 Note"
+      description: "Hai inserito 10 Note"
     _notes100:
       title: "Un po' di Note"
-      description: "Ho inserito 100 Note"
+      description: "Hai inserito 100 Note"
     _notes500:
       title: "Un bel po' di Note"
-      description: "Ho inserito 500 Note"
+      description: "Hai inserito 500 Note"
     _notes1000:
       title: "Una montagna di Note"
-      description: "Ho inserito 1.000 Note"
+      description: "Hai inserito 1.000 Note"
     _notes5000:
       title: "Un sovraccarico di Note!"
-      description: "Ho inserito 5.000 Note"
+      description: "Hai inserito 5.000 Note"
     _notes10000:
       title: "SuperNote!"
-      description: "Ho inserito 10.000 Note"
+      description: "Hai inserito 10.000 Note"
     _notes20000:
       title: "Voglio più... Note!"
-      description: "Ho inserito 20.000 Note"
+      description: "Hai inserito 20.000 Note"
     _notes30000:
       title: "Note, Note, Note!"
-      description: "Ho inserito 30.000 Note"
+      description: "Hai inserito 30.000 Note"
     _notes40000:
       title: "Una fabbrica di Note"
-      description: "Ho inserito 40.000 Note"
+      description: "Hai inserito 40.000 Note"
     _notes50000:
       title: "Un pianeta di Note"
-      description: "Ho inserito 50.000 Note"
+      description: "Hai inserito 50.000 Note"
     _notes60000:
       title: "Un quasar di Note"
-      description: "Ho inserito 60.000 Note"
+      description: "Hai inserito 60.000 Note"
     _notes70000:
       title: "Un buco nero supermassiccio di Note"
-      description: "Ho inserito 70.000 Note"
+      description: "Hai inserito 70.000 Note"
     _notes80000:
       title: "Una galassia di Note"
-      description: "Ho inserito 80.000 Note"
+      description: "Hai inserito 80.000 Note"
     _notes90000:
       title: "Un universo di Note!"
-      description: "Ho inserito 90.000 Note"
+      description: "Hai inserito 90.000 Note"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
-      description: "Ho inserito 100.000 Note"
+      description: "Hai inserito 100.000 Note"
       flavor: "Hai molto da scrivere?"
     _login3:
       title: "Principiante I"
-      description: "Accedi per 3 giorni di fila"
+      description: "Accedi per un totale di 3 giorni"
       flavor: "Da oggi, chiamatemi Misskist"
     _login7:
       title: "Principiante II"
-      description: "Accedi per 7 giorni di fila"
+      description: "Accedi per un totale di 7 giorni"
       flavor: "Ti sembra di avere la situazione sotto controllo?"
     _login15:
       title: "Principiante III"
-      description: "Accedi per 15 giorni di fila"
+      description: "Accedi per un totale di 15 giorni"
     _login30:
       title: "Misskist I"
-      description: "Accedi per 30 giorni di fila"
+      description: "Accedi per un totale di 30 giorni"
     _login60:
       title: "Misskeist II"
-      description: "Accedi per 60 giorni di fila"
+      description: "Accedi per un totale di 60 giorni"
     _login100:
       title: "Misskeist III"
-      description: "Accedi per 100 giorni di fila"
+      description: "Accedi per un totale di 100 giorni"
       flavor: "Violent Misskeist"
     _login200:
       title: "Regolare I"
-      description: "Accedi per 200 giorni totali"
+      description: "Accedi per un totale di 200 giorni"
     _login300:
       title: "Regolare II"
       description: "Accedi per un totale di 300 giorni"
@@ -1090,9 +1090,82 @@ _achievements:
       description: "Hai ottenuto 500 Follower"
     _followers1000:
       title: "Influenzer"
+      description: "Hai superato i 1.000 Follower"
+    _collectAchievements30:
+      title: "Collezionista di successi"
+      description: "Hai raggiunto 30 obiettivi"
+    _viewAchievements3min:
+      title: "Mi piacciono i risultati"
+      description: "Guarda la tua collezione di obiettivi per almeno 3 minuti"
+    _iLoveMisskey:
+      title: "I LOVE Misskey"
+      description: "Pubblica «I ♥ #Misskey»"
+      flavor: "Grazie per aver utilizzato Misskey! Dal team di sviluppo"
+    _client30min:
+      title: "Piccola pausa"
+      description: "Hai passato più di 30 minuti di fila su Misskey"
+    _noteDeletedWithin1min:
+      title: "Ooops!"
+      description: "Hai eliminato una nota entro un minuto dalla sua pubblicazione"
+    _postedAtLateNight:
+      title: "Biassanot!"
+      description: "Hai pubblicato una nota in tarda notte"
+      flavor: "Andiamo a dormire presto"
+    _postedAt0min0sec:
+      title: "Mezzanotte"
+      description: "Hai pubblicato una Nota a mezzanotte in punto"
+      flavor: "tic, tac, tic, tac! Gong!"
+    _selfQuote:
+      title: "Autoreferenziale"
+      description: "Hai citato una delle tue Note"
+    _htl20npm:
+      title: "Timeline scorrevole"
+      description: "La tua Timeline personale ha superato la velocità di 20 Note orarie (Note al minuto)"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "Hai scritto «Hello world» nel blocco appunti"
+    _open3windows:
+      title: "Finestrato"
+      description: "Hai aperto almeno 3 finestre contemporaneamente"
+    _driveFolderCircularReference:
+      title: "Riferimento circolare"
+      description: "Hai provato a nidificare in modo ricorsivo le cartelle del Drive"
+    _reactWithoutRead:
+      title: "Hai letto bene?"
+      description: "Hai reagito ad una Nota più lunga di 100 caratteri entro 3 secondi dalla sua pubblicazione"
+    _clickedClickHere:
+      title: "Clicca qui"
+      description: "Hai cliccato qui"
+    _justPlainLucky:
+      title: "Proprio fortunato"
+      description: "Ottenuto con una probabilità dello 0,01% ogni 10 secondi"
+    _setNameToSyuilo:
+      title: "Complesso divino"
+      description: "Hai impostati il tuo nome in «syuilo»"
+    _passedSinceAccountCreated1:
+      title: "Primo Anniversario"
+      description: "È passato un anno da quando hai creato il profilo"
+    _passedSinceAccountCreated2:
+      title: "Secondo Anniversario"
+      description: "Sono passati due anni da quando hai creato il profilo"
+    _passedSinceAccountCreated3:
+      title: "Terzo Anniversario"
+      description: "Sono passati tre anni da quando hai creato il profilo"
+    _loggedInOnBirthday:
+      title: "Buon compleanno!"
+      description: "Hai effettuato l'accesso il giorno del tuo compleanno"
+    _loggedInOnNewYearsDay:
+      title: "Buon anno nuovo!"
+      description: "Hai usato effettuato l'accesso il giorno di capodanno"
+      flavor: "Anche quest'anno, grazie per il tuo continuo supporto a questa istanza"
+    _cookieClicked:
+      title: "Clicca il biscotto"
+      description: "Hai giocato a cliccare il cookie"
+      flavor: "Hai autorizzato i cookie?"
     _brainDiver:
       title: "Brain Diver"
       description: "Pubblica un link a Brain Diver"
+      flavor: "Sulle note di Brain Diver"
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"

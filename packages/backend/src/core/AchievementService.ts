@@ -44,6 +44,7 @@ const ACHIEVEMENT_TYPES = [
 	'loggedInOnNewYearsDay',
 	'noteClipped1',
 	'noteFavorited1',
+	'myNoteFavorited1',
 	'profileFilled',
 	'markedAsCat',
 	'following1',
@@ -94,7 +95,7 @@ export class AchievementService {
 	@bindThis
 	public async create(
 		userId: User['id'],
-		type: string,
+		type: typeof ACHIEVEMENT_TYPES[number],
 	): Promise<void> {
 		if (!ACHIEVEMENT_TYPES.includes(type)) return;
 

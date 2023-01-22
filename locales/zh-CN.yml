@@ -992,22 +992,53 @@ _achievements:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "发布了100,000篇帖子"
       flavor: "真的有那么多可以写的东西吗？"
+    _login3:
+      title: "初学者 I"
+      description: "连续登录3天"
+    _login7:
+      description: "连续登录7天"
+    _login15:
+      description: "连续登录15天"
+    _login30:
+      description: "连续登录30天"
+    _login60:
+      description: "连续登录60天"
     _login1000:
       flavor: "感谢您使用Misskey！"
     _noteFavorited1:
       title: "观星者"
     _markedAsCat:
       title: "我是猫"
+      description: "将账户设定为一只猫"
+    _following10:
+      title: "关注，跟随"
     _following50:
       title: "我的朋友很多"
+    _following300:
+      description: "关注数超过300"
+    _followers100:
+      title: "胜友如云"
+    _collectAchievements30:
+      description: "获得超过30个成就"
     _viewAchievements3min:
       description: "盯着成就看三分钟"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "发布\"I ❤ #Misskey\"帖子"
       flavor: "感谢您使用 Misskey ！ by 开发团队"
+    _noteDeletedWithin1min:
+      description: "发帖后一分钟内就将其删除"
+    _postedAtLateNight:
+      title: "夜行者"
+      description: "深夜发布帖子"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
+    _passedSinceAccountCreated1:
+      description: "账户创建时间超过1年"
+    _passedSinceAccountCreated2:
+      description: "账户创建时间超过2年"
+    _passedSinceAccountCreated3:
+      description: "账户创建时间超过3年"
     _loggedInOnBirthday:
       title: "生日快乐"
       description: "在生日当天登录"

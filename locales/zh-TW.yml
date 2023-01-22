@@ -1042,6 +1042,18 @@ _achievements:
       title: "貼文大師ⅠⅠⅠ"
       description: "總登入天數為1,000天"
       flavor: "感謝您使用Misskey！"
+    _noteClipped1:
+      title: "忍不住要收進摘錄裡"
+      description: "第一次將貼文收進摘錄"
+    _noteFavorited1:
+      title: "觀星者"
+      description: "第一次將貼文收進我的最愛"
+    _profileFilled:
+      title: "有備而來"
+      description: "設定了個人檔案"
+    _markedAsCat:
+      title: "我是貓"
+      description: "已將帳戶設定為貓"
     _followers500:
       title: "基站"
       description: "超過500名追隨者"

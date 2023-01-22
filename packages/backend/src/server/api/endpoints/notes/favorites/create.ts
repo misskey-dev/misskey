@@ -6,6 +6,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
+import { AchievementService } from '@/core/AchievementService.js';
 
 export const meta = {
 	tags: ['notes', 'favorites'],
@@ -51,6 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private idService: IdService,
 		private getterService: GetterService,
+		private achievementService: AchievementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get favoritee
@@ -76,6 +78,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				noteId: note.id,
 				userId: me.id,
 			});
+
+			if (note.userHost == null) {
+				this.achievementService.create(note.userId, 'myNoteFavorited1');
+			}
 		});
 	}
 }
