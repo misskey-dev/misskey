@@ -1,11 +1,11 @@
 import { computed, ref, reactive } from 'vue';
 import { $i } from './account';
+import { miLocalStorage } from './local-storage';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
 import { unisonReload } from '@/scripts/unison-reload';
-import { miLocalStorage } from './local-storage';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -102,6 +102,12 @@ export const navbarItemDef = reactive({
 		title: i18n.ts.channel,
 		icon: 'ti ti-device-tv',
 		to: '/channels',
+	},
+	achievements: {
+		title: i18n.ts.achievements,
+		icon: 'ti ti-military-award',
+		show: computed(() => $i != null),
+		to: '/my/achievements',
 	},
 	ui: {
 		title: i18n.ts.switchUi,

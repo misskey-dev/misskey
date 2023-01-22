@@ -110,6 +110,7 @@ clickToShow: "按一下以顯示"
 sensitive: "敏感內容"
 add: "新增"
 reaction: "情感"
+reactions: "情感"
 reactionSetting: "在選擇器中顯示反應"
 reactionSettingDescription2: "拖動以重新列序，點擊以刪除，按下 + 添加。"
 rememberNoteVisibility: "記住貼文可見性"
@@ -389,7 +390,7 @@ administrator: "管理員"
 token: "權杖"
 twoStepAuthentication: "兩階段驗證"
 moderator: "監察員"
-moderation: "言論調節"
+moderation: "監察"
 nUsersMentioned: "提到了{n}"
 securityKey: "安全金鑰"
 securityKeyName: "金鑰名稱"
@@ -932,8 +933,242 @@ assign: "指派"
 unassign: "取消指派"
 color: "顏色"
 manageCustomEmojis: "管理自訂表情符號"
+youCannotCreateAnymore: "您無法再建立更多了。"
 cannotPerformTemporary: "暫時無法進行"
 cannotPerformTemporaryDescription: "由於超過操作次數限制，暫時無法進行。請過一段時間之後再嘗試。"
+preset: "預設值"
+selectFromPresets: "從預設值中選擇"
+achievements: "成就"
+_achievements:
+  earnedAt: "獲得日期"
+  _types:
+    _notes1:
+      title: "just setting up my msky"
+      description: "發出了第一則貼文"
+      flavor: "祝您的Misskey生活愉快！"
+    _notes10:
+      title: "若干貼文"
+      description: "發表了10則貼文"
+    _notes100:
+      title: "許多的貼文"
+      description: "發表了100則貼文"
+    _notes500:
+      title: "滿滿的貼文"
+      description: "發表了500則貼文"
+    _notes1000:
+      title: "一堆貼文"
+      description: "發表了1000則貼文"
+    _notes5000:
+      title: "滔滔不絕的貼文"
+      description: "發表了5000則貼文"
+    _notes10000:
+      title: "超級貼文"
+      description: "發表了10000則貼文"
+    _notes20000:
+      title: "需要更多的貼文"
+      description: "發表了20000則貼文"
+    _notes30000:
+      title: "貼文貼文貼文"
+      description: "發表了30000則貼文"
+    _notes40000:
+      title: "貼文工廠"
+      description: "發表了40000則貼文"
+    _notes50000:
+      title: "貼文星球"
+      description: "發表了50000則貼文"
+    _notes60000:
+      title: "貼文類星體"
+      description: "發表了60000則貼文"
+    _notes70000:
+      title: "貼文黑洞"
+      description: "發表了70000則貼文"
+    _notes80000:
+      title: "貼文銀河"
+      description: "發表了80000則貼文"
+    _notes90000:
+      title: "貼文宇宙"
+      description: "發表了90000則貼文"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "發表了100,000則貼文"
+      flavor: "有這麼多東西要寫嗎？"
+    _login3:
+      title: "初學者Ⅰ"
+      description: "總登入天數為3天"
+      flavor: "從今天開始，我就是Misskeyist"
+    _login7:
+      title: "初學者ⅠⅠ"
+      description: "總登入天數為7天"
+      flavor: "您開始習慣了嗎？"
+    _login15:
+      title: "初學者III"
+      description: "總登入天數為15天"
+    _login30:
+      title: "Misskeyist Ⅰ"
+      description: "總登入天數為30天"
+    _login60:
+      title: "Misskeyist ⅠⅠ"
+      description: "總登入天數為60天"
+    _login100:
+      title: "Misskeyist ⅠⅠⅠ"
+      description: "總登入天數為100天"
+      flavor: "辣個 Misskeyist 用戶"
+    _login200:
+      title: "普通Ⅰ"
+      description: "總登入天數為200天"
+    _login300:
+      title: "普通IⅠ"
+      description: "總登入天數為300天"
+    _login400:
+      title: "普通IIⅠ"
+      description: "總登入天數為400天"
+    _login500:
+      title: "老兵Ⅰ"
+      description: "總登入天數為500天"
+      flavor: "諸君，我喜歡貼文"
+    _login600:
+      title: "老兵ⅠⅠ"
+      description: "總登入天數為600天"
+    _login700:
+      title: "老兵ⅠⅠⅠ"
+      description: "總登入天數為700天"
+    _login800:
+      title: "貼文大師Ⅰ"
+      description: "總登入天數為800天"
+    _login900:
+      title: "貼文大師ⅠⅠ"
+      description: "總登入天數為900天"
+    _login1000:
+      title: "貼文大師ⅠⅠⅠ"
+      description: "總登入天數為1,000天"
+      flavor: "感謝您使用Misskey！"
+    _noteClipped1:
+      title: "忍不住要收進摘錄裡"
+      description: "第一次將貼文收進摘錄"
+    _noteFavorited1:
+      title: "觀星者"
+      description: "第一次將貼文收藏至我的最愛"
+    _myNoteFavorited1:
+      title: "想要星星"
+      description: "自己的貼文被他人收藏至「我的最愛」了"
+    _profileFilled:
+      title: "有備而來"
+      description: "設定了個人檔案"
+    _markedAsCat:
+      title: "我是貓"
+      description: "已將帳戶設定為貓"
+      flavor: "還沒有名字。"
+    _following1:
+      title: "首次追隨"
+      description: "首次追隨了"
+    _following10:
+      title: "跟著跟著"
+      description: "跟隨超過10人了"
+    _following50:
+      title: "朋友很多"
+      description: "跟隨超過50人了"
+    _following100:
+      title: "100位朋友"
+      description: "跟隨超過100人了"
+    _following300:
+      title: "朋友過多"
+      description: "跟隨超過300人了"
+    _followers1:
+      title: "第一個追隨者"
+      description: "第一次被追隨"
+    _followers10:
+      title: "Follow me!"
+      description: "跟隨者超過10人了"
+    _followers50:
+      title: "成群結隊"
+      description: "跟隨者超過50人了"
+    _followers100:
+      title: "紅人"
+      description: "跟隨者超過100人了"
+    _followers300:
+      title: "請排成一排"
+      description: "跟隨者超過300人了"
+    _followers500:
+      title: "基站"
+      description: "超過500名追隨者了"
+    _followers1000:
+      title: "影響者"
+      description: "超過1000名追隨者了"
+    _collectAchievements30:
+      title: "成就收藏家"
+      description: "獲得30個以上的成就"
+    _viewAchievements3min:
+      title: "喜愛成就"
+      description: "看成就列表要花3分鐘以上"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "發布「I ❤ #Misskey」"
+      flavor: "感謝您使用Misskey！ by 開發團隊"
+    _client30min:
+      title: "休息一下"
+      description: "用戶端啟動已超過30分鐘"
+    _noteDeletedWithin1min:
+      title: "現在沒有"
+      description: "發文後1分鐘內刪文"
+    _postedAtLateNight:
+      title: "夜行性"
+      description: "在深夜發佈貼文"
+      flavor: "該去睡覺了。"
+    _postedAt0min0sec:
+      title: "報時"
+      description: "在0分0秒發佈貼文"
+      flavor: "啵．啵．啵．嗶ー"
+    _selfQuote:
+      title: "自我引用"
+      description: "引用了自己的貼文"
+    _htl20npm:
+      title: "流動的TL"
+      description: "在首頁時間軸的流速超過20npm"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello world!"
+      description: "在暫存記憶體輸出了 hello world"
+    _open3windows:
+      title: "多重視窗"
+      description: "開啟了3個以上的視窗"
+    _driveFolderCircularReference:
+      title: "循環引用"
+      description: "試圖遞迴套入雲端硬碟資料夾"
+    _reactWithoutRead:
+      title: "有好好讀過嗎？"
+      description: "對包含100字以上內容的貼文做出情感反應"
+    _clickedClickHere:
+      title: "點擊這裡"
+      description: "已點擊這裡了"
+    _justPlainLucky:
+      title: "只是運氣好"
+      description: "每10秒有0.01%的機率獲得"
+    _setNameToSyuilo:
+      title: "神的情結"
+      description: "將名稱設定為 syuilo"
+    _passedSinceAccountCreated1:
+      title: "一周年"
+      description: "自建立帳戶開始過了1年"
+    _passedSinceAccountCreated2:
+      title: "二周年"
+      description: "自建立帳戶開始過了2年"
+    _passedSinceAccountCreated3:
+      title: "三周年"
+      description: "自建立帳戶開始過了3年"
+    _loggedInOnBirthday:
+      title: "生日快樂"
+      description: "在生日當天登入了"
+    _loggedInOnNewYearsDay:
+      title: "新年快樂"
+      description: "在元旦當天登入了"
+      flavor: "今年也請對敝實例多多指教"
+    _cookieClicked:
+      title: "點擊餅乾的遊戲"
+      description: "點擊了餅乾"
+      flavor: "是不是軟體有問題？"
+    _brainDiver:
+      title: "Brain Driver"
+      description: "發佈了Brain Driver的連結"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "建立角色"
   edit: "編輯角色"
@@ -970,8 +1205,15 @@ _role:
     driveCapacity: "雲端硬碟容量"
     pinMax: "置頂貼文的最大數量"
     antennaMax: "可建立的天線數量"
+    wordMuteMax: "靜音文字的最大字數"
     webhookMax: "可建立的Webhook數量"
     clipMax: "可建立的摘錄數量"
+    noteEachClipsMax: "摘錄內貼文的最大數量"
+    userListMax: "可建立的使用者清單數量"
+    userEachUserListsMax: "使用者清單內使用者的最大數量"
+    rateLimitFactor: "速率限制"
+    descriptionOfRateLimitFactor: "值越小限制越少，值越大限制越多。"
+    canHideAds: "不顯示廣告"
   _condition:
     isLocal: "本地使用者"
     isRemote: "遠端使用者"
@@ -1576,6 +1818,7 @@ _notification:
   pollEnded: "問卷調查已產生結果"
   unreadAntennaNote: "天線 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
+  achievementEarned: "獲得成就"
   _types:
     all: "全部 "
     follow: "追隨中"

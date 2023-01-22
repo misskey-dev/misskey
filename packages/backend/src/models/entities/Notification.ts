@@ -64,6 +64,7 @@ export class Notification {
 	 * receiveFollowRequest - フォローリクエストされた
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
 	 * groupInvited - グループに招待された
+	 * achievementEarned - 実績を獲得
 	 * app - アプリ通知
 	 */
 	@Index()
@@ -128,6 +129,11 @@ export class Notification {
 		nullable: true,
 	})
 	public choice: number | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public achievement: string | null;
 
 	/**
 	 * アプリ通知のbody

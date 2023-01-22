@@ -113,7 +113,8 @@
 
 						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
 							<MkRolePreview :class="$style.role" :role="role"/>
-							<button class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 						</div>
 					</div>
 				</MkFolder>

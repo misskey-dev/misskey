@@ -110,6 +110,7 @@ clickToShow: "点击以显示"
 sensitive: "敏感内容"
 add: "添加"
 reaction: "回应"
+reactions: "回应"
 reactionSetting: "在选择器中显示的回应"
 reactionSettingDescription2: "拖动重新排序，单击删除，点击 + 添加。"
 rememberNoteVisibility: "保存上次设置的可见性"
@@ -607,7 +608,7 @@ wordMute: "文字屏蔽"
 regexpError: "正则表达式错误"
 regexpErrorDescription: "{tab} 屏蔽文字的第 {line} 行的正则表达式有错误："
 instanceMute: "实例的屏蔽"
-userSaysSomething: "{name}说了什么,但是被您屏蔽了"
+userSaysSomething: "{name}说了什么,但是被屏蔽词过滤了"
 makeActive: "启用"
 display: "显示"
 copy: "复制"
@@ -826,7 +827,7 @@ makeReactionsPublicDescription: "将您发表过的回应设置成公开可见�
 classic: "经典"
 muteThread: "屏蔽帖子列表"
 unmuteThread: "取消屏蔽帖子列表"
-ffVisibility: "连接的可见范围"
+ffVisibility: "关注关系的可见范围"
 ffVisibilityDescription: "您可以设置您的关注/关注者信息的公开范围"
 continueThread: "查看更多帖子"
 deleteAccountConfirm: "将要删除账户。是否确认？"
@@ -937,6 +938,113 @@ cannotPerformTemporary: "暂时不可用"
 cannotPerformTemporaryDescription: "因操作过于频繁，暂时不可用，请稍后再试。"
 preset: "預設值"
 selectFromPresets: "從預設值中選擇"
+achievements: "成就"
+_achievements:
+  earnedAt: "达成时间"
+  _types:
+    _notes1:
+      title: "初来乍到"
+      description: "第一次发帖"
+      flavor: "祝您在Misskey玩的愉快～"
+    _notes10:
+      title: "一些帖子"
+      description: "发布了10篇帖子"
+    _notes100:
+      title: "很多帖子"
+      description: "发布了100篇帖子"
+    _notes500:
+      title: "满是帖子"
+      description: "发布了500篇帖子"
+    _notes1000:
+      title: "积帖成山"
+      description: "发布了1,000篇帖子"
+    _notes5000:
+      title: "帖如泉涌"
+      description: "发布了5,000篇帖子"
+    _notes10000:
+      title: "超级帖"
+      description: "发布了10,000篇帖子"
+    _notes20000:
+      title: "还想要更多帖子"
+      description: "发布了20,000篇帖子"
+    _notes30000:
+      title: "帖子帖子帖子"
+      description: "发布了30,000篇帖子"
+    _notes40000:
+      title: "帖子工厂"
+      description: "发布了40,000篇帖子"
+    _notes50000:
+      title: "帖子星球"
+      description: "发布了50,000篇帖子"
+    _notes60000:
+      title: "帖子类星体"
+      description: "发布了60,000篇帖子"
+    _notes70000:
+      title: "帖子黑洞"
+      description: "发布了70,000篇帖子"
+    _notes80000:
+      title: "帖子星系"
+      description: "发布了80,000篇帖子"
+    _notes90000:
+      title: "帖子起源"
+      description: "发布了90,000篇帖子"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "发布了100,000篇帖子"
+      flavor: "真的有那么多可以写的东西吗？"
+    _login3:
+      title: "初学者 I"
+      description: "连续登录3天"
+    _login7:
+      description: "连续登录7天"
+    _login15:
+      description: "连续登录15天"
+    _login30:
+      description: "连续登录30天"
+    _login60:
+      description: "连续登录60天"
+    _login1000:
+      flavor: "感谢您使用Misskey！"
+    _noteFavorited1:
+      title: "观星者"
+    _markedAsCat:
+      title: "我是猫"
+      description: "将账户设定为一只猫"
+    _following10:
+      title: "关注，跟随"
+    _following50:
+      title: "我的朋友很多"
+    _following300:
+      description: "关注数超过300"
+    _followers100:
+      title: "胜友如云"
+    _collectAchievements30:
+      description: "获得超过30个成就"
+    _viewAchievements3min:
+      description: "盯着成就看三分钟"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "发布\"I ❤ #Misskey\"帖子"
+      flavor: "感谢您使用 Misskey ！ by 开发团队"
+    _noteDeletedWithin1min:
+      description: "发帖后一分钟内就将其删除"
+    _postedAtLateNight:
+      title: "夜行者"
+      description: "深夜发布帖子"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+    _passedSinceAccountCreated1:
+      description: "账户创建时间超过1年"
+    _passedSinceAccountCreated2:
+      description: "账户创建时间超过2年"
+    _passedSinceAccountCreated3:
+      description: "账户创建时间超过3年"
+    _loggedInOnBirthday:
+      title: "生日快乐"
+      description: "在生日当天登录"
+    _loggedInOnNewYearsDay:
+      title: "恭贺新禧"
+      description: "在元旦登入"
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -981,6 +1089,7 @@ _role:
     userEachUserListsMax: "单个用户列表内用户数量限制"
     rateLimitFactor: "速率限制"
     descriptionOfRateLimitFactor: "值越小限制越少，值越大限制越多。"
+    canHideAds: "可以隐藏广告"
   _condition:
     isLocal: "是本地用户"
     isRemote: "是远程用户"
@@ -1008,7 +1117,7 @@ _emailUnavailable:
   mx: "邮件服务器不正确"
   smtp: "邮件服务器没有响应"
 _ffVisibility:
-  public: "发布"
+  public: "公开"
   followers: "只有关注你的用户能看到"
   private: "私密"
 _signup:
@@ -1585,6 +1694,7 @@ _notification:
   pollEnded: "问卷调查结果已生成。"
   unreadAntennaNote: "天线 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
+  achievementEarned: "获得成就"
   _types:
     all: "全部"
     follow: "关注中"
