@@ -33,7 +33,6 @@ const url = computed(() => {
 		return char2path(char.value);
 	} else if (props.host == null && !customEmojiName.value.includes('@')) {
 		const found = customEmojis.value.find(x => x.name === customEmojiName.value);
-		console.log(found)
 		return found ? found.url : null;
 	} else {
 		const rawUrl = props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;

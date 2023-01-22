@@ -14,10 +14,6 @@ export const customEmojiCategories = computed<string[]>(() => {
 	return markRaw(Array.from(categories));
 });
 
-watch(customEmojis, (newVal) => {
-	console.log('new', newVal)
-});
-
 stream.on('emojiAdded', emojiData => {
 	customEmojis.value = [ emojiData.emoji, ...customEmojis.value ];
 });
