@@ -974,6 +974,8 @@ _achievements:
       title: "Ветеран II"
     _login700:
       title: "Ветеран III"
+    _login1000:
+      flavor: "Дякуємо, що користуєтеся Misskey!"
     _passedSinceAccountCreated3:
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
