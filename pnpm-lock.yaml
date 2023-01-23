@@ -48,9 +48,9 @@ importers:
 
   packages/backend:
     specifiers:
-      '@bull-board/api': ^4.10.2
-      '@bull-board/fastify': ^4.10.2
-      '@bull-board/ui': ^4.10.2
+      '@bull-board/api': ^4.11.0
+      '@bull-board/fastify': ^4.11.0
+      '@bull-board/ui': ^4.11.0
       '@discordapp/twemoji': 14.0.2
       '@fastify/accepts': 4.1.0
       '@fastify/cookie': ^8.3.0
@@ -202,7 +202,7 @@ importers:
       typeorm: 0.3.11
       typescript: 4.9.4
       ulid: 2.3.0
-      undici: ^5.15.1
+      undici: ^5.16.0
       unzipper: 0.10.11
       uuid: 9.0.0
       vary: 1.1.2
@@ -211,9 +211,9 @@ importers:
       ws: 8.12.0
       xev: 3.0.2
     dependencies:
-      '@bull-board/api': 4.10.2
-      '@bull-board/fastify': 4.10.2
-      '@bull-board/ui': 4.10.2
+      '@bull-board/api': 4.11.0
+      '@bull-board/fastify': 4.11.0
+      '@bull-board/ui': 4.11.0
       '@discordapp/twemoji': 14.0.2
       '@fastify/accepts': 4.1.0
       '@fastify/cookie': 8.3.0
@@ -308,7 +308,7 @@ importers:
       typeorm: 0.3.11_ioredis@4.28.5+pg@8.8.0
       typescript: 4.9.4
       ulid: 2.3.0
-      undici: 5.15.1
+      undici: 5.16.0
       unzipper: 0.10.11
       uuid: 9.0.0
       vary: 1.1.2
@@ -915,17 +915,17 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@bull-board/api/4.10.2:
-    resolution: {integrity: sha512-lRHo0A7hsz71aOx1ZN0SmLLWfSuvKdL6EZ4imlgo5SuXGozybvlRc5KPIJU2/E1w5meoUGi+nFezBwp1gT/SMw==}
+  /@bull-board/api/4.11.0:
+    resolution: {integrity: sha512-qFnG63s3BkaslsNnXYagEUcdeK9SijZTJ+I4vMU+OiZt9VlKh01X1KjNlqjF9guvWcjk+Rg8UOMm0fWwM6PK6g==}
     dependencies:
       redis-info: 3.1.0
     dev: false
 
-  /@bull-board/fastify/4.10.2:
-    resolution: {integrity: sha512-yp/TlfyfMBgR6vibyCUBOTKn2BFlBSLxkJxzlvIcMDs2Vl3PMXMs4YoCr2o3m+dXxSNzpTfomxAc5XQfJdp0VQ==}
+  /@bull-board/fastify/4.11.0:
+    resolution: {integrity: sha512-G4sAFVx5kGT5T/F2gL91RjZ2+YrMHNrLWoVo/QfHMcZe3RoOP4PpbOLgLC/O67KYn3JK6t8ysGyyP035OSJ2HA==}
     dependencies:
-      '@bull-board/api': 4.10.2
-      '@bull-board/ui': 4.10.2
+      '@bull-board/api': 4.11.0
+      '@bull-board/ui': 4.11.0
       '@fastify/static': 6.6.1
       '@fastify/view': 7.4.0
       ejs: 3.1.8
@@ -933,10 +933,10 @@ packages:
       - supports-color
     dev: false
 
-  /@bull-board/ui/4.10.2:
-    resolution: {integrity: sha512-vaHGojG5D3xjnaed3nwOaLy4Y06RgDJdYRaFR5E06SjZ0vOvjVYGD6s4cykK512Aw/ElFhKDPwzhf8BvpwAtDQ==}
+  /@bull-board/ui/4.11.0:
+    resolution: {integrity: sha512-/Yb7x/3tWxysA2jRDQ89xEPnscvfGQdf4MmDRzWH5lDkVmL8b1HvZAQxLrHcxwB6y16oorQTf/1KbRZl0rJDHg==}
     dependencies:
-      '@bull-board/api': 4.10.2
+      '@bull-board/api': 4.11.0
     dev: false
 
   /@chainsafe/is-ip/2.0.1:
@@ -1077,7 +1077,7 @@ packages:
     dependencies:
       ky: 0.30.0
       ky-universal: 0.10.1_ky@0.30.0
-      undici: 5.15.1
+      undici: 5.16.0
     transitivePeerDependencies:
       - web-streams-polyfill
     dev: false
@@ -1402,7 +1402,7 @@ packages:
       fastify-plugin: 4.5.0
       pump: 3.0.0
       tiny-lru: 10.0.1
-      undici: 5.15.1
+      undici: 5.16.0
     dev: false
 
   /@fastify/send/1.0.0:
@@ -13541,8 +13541,8 @@ packages:
       undertaker-registry: 1.0.1
     dev: false
 
-  /undici/5.15.1:
-    resolution: {integrity: sha512-XLk8g0WAngdvFqTI+VKfBtM4YWXgdxkf1WezC771Es0Dd+Pm1KmNx8t93WTC+Hh9tnghmVxkclU1HN+j+CvIUA==}
+  /undici/5.16.0:
+    resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0

@@ -6,21 +6,12 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
 import semver from 'semver';
-import { NestFactory } from '@nestjs/core';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
-import { lessThan } from '@/misc/prelude/array.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { DaemonModule } from '@/daemons/DaemonModule.js';
-import { JanitorService } from '@/daemons/JanitorService.js';
-import { QueueStatsService } from '@/daemons/QueueStatsService.js';
-import { ServerStatsService } from '@/daemons/ServerStatsService.js';
-import { NestLogger } from '@/NestLogger.js';
-import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
-import { ServerService } from '@/server/ServerService.js';
-import { MainModule } from '@/MainModule.js';
-import { envOption } from '../env.js';
+import { envOption } from '@/env.js';
+import { jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -73,14 +64,13 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
-	const app = await NestFactory.createApplicationContext(MainModule, {
-		logger: new NestLogger(),
-	});
-	app.enableShutdownHooks();
-
-	// start server
-	const serverService = app.get(ServerService);
-	serverService.launch();
+	if (envOption.onlyServer) {
+		await server();
+	} else if (envOption.onlyQueue) {
+		await jobQueue();
+	} else {
+		await server();
+	}
 
 	bootLogger.succ('Misskey initialized');
 
@@ -89,11 +79,6 @@ export async function masterMain() {
 	}
 
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
-
-	app.get(ChartManagementService).start();
-	app.get(JanitorService).start();
-	app.get(QueueStatsService).start();
-	app.get(ServerStatsService).start();
 }
 
 function showEnvironment(): void {
