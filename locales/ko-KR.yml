@@ -989,7 +989,7 @@ _achievements:
       title: "노트 우주"
       description: "90,000개의 노트를 작성했습니다"
     _notes100000:
-      title: "네 모든 노트는 내 거야"
+      title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "100,000개의 노트를 작성했습니다"
       flavor: "이만큼 쓸 일도 없겠지만... 다른 할 일이 있진 않으신가요?"
     _login3:
@@ -1012,7 +1012,7 @@ _achievements:
     _login100:
       title: "미스키스트 III"
       description: "총 100일간 로그인했습니다"
-      flavor: "그 유저, 미스키스트를 위하여"
+      flavor: "그 유저, 미스키스트이다"
     _login200:
       title: "단골 I"
       description: "총 200일간 로그인했습니다"
@@ -1025,7 +1025,7 @@ _achievements:
     _login500:
       title: "베테랑 I"
       description: "총 500일간 로그인했습니다"
-      flavor: "여러분, 저 이 노트들 좋아해요"
+      flavor: "제군, 나는 노트가 좋다"
     _login600:
       title: "베테랑 II"
       description: "총 600일간 로그인했습니다"
@@ -1049,7 +1049,7 @@ _achievements:
       title: "별을 바라보는 자"
       description: "처음으로 노트를 즐겨찾기했습니다"
     _myNoteFavorited1:
-      title: "I wanna Star"
+      title: "별을 원하는 자"
       description: "다른 사람이 당신의 노트를 즐겨찾기했습니다"
     _profileFilled:
       title: "준비 완료"
@@ -1095,7 +1095,7 @@ _achievements:
       title: "유명인사"
       description: "1,000명의 사용자가 팔로우했습니다"
     _collectAchievements30:
-      title: "도전과제 콜렉터"
+      title: "도전 과제 콜렉터"
       description: "30개의 도전과제를 획득했습니다"
     _viewAchievements3min:
       title: "저 도전과제 좋아해요"
@@ -1126,19 +1126,19 @@ _achievements:
       description: "1분 사이에 홈 타임라인에 노트가 20개 넘게 생성되었습니다"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
-      description: "스크래치패드에서 hello world를 출력하세요"
+      description: "스크래치패드에서 hello world를 출력했습니다"
     _open3windows:
       title: "멀티 윈도우"
-      description: "3개 이상의 창을 여세요"
+      description: "3개 이상의 창을 열었습니다"
     _driveFolderCircularReference:
       title: "순환 참조"
       description: "드라이브 폴더를 자신을 가리키도록 만드려 시도했습니다"
     _reactWithoutRead:
       title: "읽고 답하긴 하시는 건가요?"
-      description: "100자가 넘는 포스트에 3초 안에 포스트했습니다"
+      description: "100자가 넘는 노트가 작성되고 3초 안에 반응했습니다"
     _clickedClickHere:
       title: "여길 눌러보세요"
-      description: "이 곳을 눌러봤습니다"
+      description: "여길을 눌러봤습니다"
     _justPlainLucky:
       title: "그냥 운이 좋았어"
       description: "매 10초마다 0.01%의 확률로 달성됩니다"
@@ -1146,13 +1146,13 @@ _achievements:
       title: "신 콤플렉스"
       description: "이름을 syuilo로 설정했습니다"
     _passedSinceAccountCreated1:
-      title: "1년"
+      title: "1주년"
       description: "계정을 생성하고 1년이 지났습니다"
     _passedSinceAccountCreated2:
-      title: "2년"
+      title: "2주년"
       description: "계정을 생성하고 2년이 지났습니다"
     _passedSinceAccountCreated3:
-      title: "3년"
+      title: "3주년"
       description: "계정을 생성하고 3년이 지났습니다"
     _loggedInOnBirthday:
       title: "생일 축하합니다!"
@@ -1162,9 +1162,9 @@ _achievements:
       description: "새해 첫 날에 로그인했습니다"
       flavor: "올해에도 저희 인스턴스에 관심을 가져 주셔서 감사합니다"
     _cookieClicked:
-      title: "쿠키 클리커 게임"
+      title: "쿠키를 클릭하는 게임"
       description: "쿠키를 클릭했습니다"
-      flavor: "뭔가 문제가 있나요?"
+      flavor: "소프트웨어 착각하지 않으셨나요?"
     _brainDiver:
       title: "Brain Diver"
       description: "Brain Diver로의 링크를 첨부했습니다"
