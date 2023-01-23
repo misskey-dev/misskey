@@ -16,8 +16,8 @@
 						<time v-tooltip="new Date(achievement.unlockedAt).toLocaleString()">{{ new Date(achievement.unlockedAt).getFullYear() }}/{{ new Date(achievement.unlockedAt).getMonth() + 1 }}/{{ new Date(achievement.unlockedAt).getDate() }}</time>
 					</span>
 				</div>
-				<div :class="$style.description">{{ i18n.ts._achievements._types['_' + achievement.name].description }}</div>
-				<div v-if="i18n.ts._achievements._types['_' + achievement.name].flavor" :class="$style.flavor">{{ i18n.ts._achievements._types['_' + achievement.name].flavor }}</div>
+				<div :class="$style.description">{{ withDescription ? i18n.ts._achievements._types['_' + achievement.name].description : '???' }}</div>
+				<div v-if="i18n.ts._achievements._types['_' + achievement.name].flavor && withDescription" :class="$style.flavor">{{ i18n.ts._achievements._types['_' + achievement.name].flavor }}</div>
 			</div>
 		</div>
 		<template v-if="withLocked">
@@ -49,8 +49,10 @@ import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scrip
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
 	withLocked: boolean;
+	withDescription: boolean;
 }>(), {
 	withLocked: true,
+	withDescription: true,
 });
 
 let achievements = $ref();

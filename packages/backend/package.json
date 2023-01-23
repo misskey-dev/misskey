@@ -23,9 +23,9 @@
 		"@tensorflow/tfjs-node": "4.1.0"
 	},
 	"dependencies": {
-		"@bull-board/api": "^4.10.2",
-		"@bull-board/fastify": "^4.10.2",
-		"@bull-board/ui": "^4.10.2",
+		"@bull-board/api": "^4.11.0",
+		"@bull-board/fastify": "^4.11.0",
+		"@bull-board/ui": "^4.11.0",
 		"@discordapp/twemoji": "14.0.2",
 		"@fastify/accepts": "4.1.0",
 		"@fastify/cookie": "^8.3.0",
@@ -120,7 +120,7 @@
 		"typeorm": "0.3.11",
 		"typescript": "4.9.4",
 		"ulid": "2.3.0",
-		"undici": "^5.15.1",
+		"undici": "^5.16.0",
 		"unzipper": "0.10.11",
 		"uuid": "9.0.0",
 		"vary": "1.1.2",
