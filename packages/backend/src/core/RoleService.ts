@@ -19,6 +19,7 @@ export type RolePolicies = {
 	canPublicNote: boolean;
 	canInvite: boolean;
 	canManageCustomEmojis: boolean;
+	canHideAds: boolean;
 	driveCapacityMb: number;
 	pinLimit: number;
 	antennaLimit: number;
@@ -37,6 +38,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canPublicNote: true,
 	canInvite: false,
 	canManageCustomEmojis: false,
+	canHideAds: false,
 	driveCapacityMb: 100,
 	pinLimit: 5,
 	antennaLimit: 5,
@@ -212,7 +214,7 @@ export class RoleService implements OnApplicationShutdown {
 			if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 
 			const p1 = policies.filter(policy => policy.priority === 1);
-			if (p1.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+			if (p1.length > 0) return aggregate(p1.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 
 			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}
@@ -223,6 +225,7 @@ export class RoleService implements OnApplicationShutdown {
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
 			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
 			antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),

@@ -1,5 +1,7 @@
 <template>
-<div class="driuhtrh">
+<div class="driuhtrh _gaps">
+	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
+
 	<div class="query">
 		<MkInput v-model="q" class="" :placeholder="$ts.search">
 			<template #prefix><i class="ti ti-search"></i></template>
@@ -38,6 +40,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
 import { customEmojis, getCustomEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
+import { i18n } from '@/i18n';
 
 const customEmojiCategories = getCustomEmojiCategories();
 const customEmojiTags = getCustomEmojiTags();
@@ -81,7 +84,6 @@ watch($$(selectedTags), () => {
 
 	> .query {
 		background: var(--bg);
-		padding: 16px;
 
 		> .tags {
 			> .tag {
@@ -101,13 +103,10 @@ watch($$(selectedTags), () => {
 	}
 
 	> .emojis {
-		--x-padding: 0 16px;
-
 		.zuvgdzyt {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
-			margin: 0 var(--margin) var(--margin) var(--margin);
 		}
 	}
 }

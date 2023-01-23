@@ -5,7 +5,7 @@
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="aeakzknw">
-					<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
+					<MkAvatar class="avatar" :user="user" indicator link preview/>
 					<div class="body">
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
@@ -113,7 +113,8 @@
 
 						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
 							<MkRolePreview :class="$style.role" :role="role"/>
-							<button class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 						</div>
 					</div>
 				</MkFolder>

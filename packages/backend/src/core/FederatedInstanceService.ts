@@ -34,7 +34,7 @@ export class FederatedInstanceService {
 			const i = await this.instancesRepository.insert({
 				id: this.idService.genId(),
 				host,
-				caughtAt: new Date(),
+				firstRetrievedAt: new Date(),
 			}).then(x => this.instancesRepository.findOneByOrFail(x.identifiers[0]));
 	
 			this.cache.set(host, i);

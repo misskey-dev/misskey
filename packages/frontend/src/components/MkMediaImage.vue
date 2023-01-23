@@ -13,7 +13,7 @@
 		:href="image.url"
 		:title="image.name"
 	>
-		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment" :title="image.comment" :cover="false"/>
+		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :cover="false"/>
 		<div v-if="image.type === 'image/gif'" class="gif">GIF</div>
 	</a>
 	<button v-tooltip="$ts.hide" class="_button hide" @click="hide = true"><i class="ti ti-eye-off"></i></button>

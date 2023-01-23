@@ -2,14 +2,17 @@ import { api } from './os';
 import { miLocalStorage } from './local-storage';
 
 const storageCache = miLocalStorage.getItem('emojis');
-export let customEmojis = storageCache ? JSON.parse(storageCache) : [];
-
-fetchCustomEmojis();
+export let customEmojis: {
+	name: string;
+	aliases: string[];
+	category: string;
+	url: string;
+}[] = storageCache ? JSON.parse(storageCache) : [];
 
 export async function fetchCustomEmojis() {
 	const now = Date.now();
 	const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');
-	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return;
+	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60 * 24) return;
 
 	const res = await api('emojis', {});
 

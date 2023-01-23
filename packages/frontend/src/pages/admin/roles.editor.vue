@@ -14,7 +14,7 @@
 	</MkInput>
 
 	<MkSelect v-model="rolePermission" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.permission }}</template>
+		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
 		<option value="normal">{{ i18n.ts.normalUser }}</option>
 		<option value="moderator">{{ i18n.ts.moderator }}</option>
@@ -22,7 +22,7 @@
 	</MkSelect>
 
 	<MkSelect v-model="target" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.assignTarget }}</template>
+		<template #label><i class="ti ti-users"></i> {{ i18n.ts._role.assignTarget }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
 		<option value="manual">{{ i18n.ts._role.manual }}</option>
 		<option value="conditional">{{ i18n.ts._role.conditional }}</option>
@@ -36,11 +36,19 @@
 	</MkFolder>
 
 	<FormSlot>
-		<template #label>{{ i18n.ts._role.policies }}</template>
+		<template #label><i class="ti ti-license"></i> {{ i18n.ts._role.policies }}</template>
 		<div class="_gaps_s">
-			<MkFolder>
+			<MkInput v-model="q" type="search">
+				<template #prefix><i class="ti ti-search"></i></template>
+			</MkInput>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.rateLimitFactor, 'rateLimitFactor'])">
 				<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
-				<template #suffix>{{ policies.rateLimitFactor.useDefault ? i18n.ts._role.useBaseValue : `${Math.floor(policies.rateLimitFactor.value * 100)}%` }} <i :class="getPriorityIcon(policies.rateLimitFactor)"></i></template>
+				<template #suffix>
+					<span v-if="policies.rateLimitFactor.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ `${Math.floor(policies.rateLimitFactor.value * 100)}%` }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.rateLimitFactor)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.rateLimitFactor.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -55,9 +63,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.gtlAvailable, 'gtlAvailable'])">
 				<template #label>{{ i18n.ts._role._options.gtlAvailable }}</template>
-				<template #suffix>{{ policies.gtlAvailable.useDefault ? i18n.ts._role.useBaseValue : (policies.gtlAvailable.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(policies.gtlAvailable)"></i></template>
+				<template #suffix>
+					<span v-if="policies.gtlAvailable.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.gtlAvailable.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.gtlAvailable)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.gtlAvailable.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -71,9 +83,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.ltlAvailable, 'ltlAvailable'])">
 				<template #label>{{ i18n.ts._role._options.ltlAvailable }}</template>
-				<template #suffix>{{ policies.ltlAvailable.useDefault ? i18n.ts._role.useBaseValue : (policies.ltlAvailable.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(policies.ltlAvailable)"></i></template>
+				<template #suffix>
+					<span v-if="policies.ltlAvailable.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.ltlAvailable.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.ltlAvailable)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.ltlAvailable.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -87,9 +103,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canPublicNote, 'canPublicNote'])">
 				<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
-				<template #suffix>{{ policies.canPublicNote.useDefault ? i18n.ts._role.useBaseValue : (policies.canPublicNote.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(policies.canPublicNote)"></i></template>
+				<template #suffix>
+					<span v-if="policies.canPublicNote.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.canPublicNote.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.canPublicNote)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.canPublicNote.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -103,9 +123,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
 				<template #label>{{ i18n.ts._role._options.canInvite }}</template>
-				<template #suffix>{{ policies.canInvite.useDefault ? i18n.ts._role.useBaseValue : (policies.canInvite.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(policies.canInvite)"></i></template>
+				<template #suffix>
+					<span v-if="policies.canInvite.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.canInvite.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.canInvite)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.canInvite.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -119,9 +143,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canManageCustomEmojis, 'canManageCustomEmojis'])">
 				<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
-				<template #suffix>{{ policies.canManageCustomEmojis.useDefault ? i18n.ts._role.useBaseValue : (policies.canManageCustomEmojis.value ? i18n.ts.yes : i18n.ts.no) }} <i :class="getPriorityIcon(policies.canManageCustomEmojis)"></i></template>
+				<template #suffix>
+					<span v-if="policies.canManageCustomEmojis.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.canManageCustomEmojis.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.canManageCustomEmojis)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.canManageCustomEmojis.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -135,9 +163,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.driveCapacity, 'driveCapacityMb'])">
 				<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
-				<template #suffix>{{ policies.driveCapacityMb.useDefault ? i18n.ts._role.useBaseValue : (policies.driveCapacityMb.value + 'MB') }} <i :class="getPriorityIcon(policies.driveCapacityMb)"></i></template>
+				<template #suffix>
+					<span v-if="policies.driveCapacityMb.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.driveCapacityMb.value + 'MB' }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.driveCapacityMb)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.driveCapacityMb.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -151,9 +183,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.pinMax, 'pinLimit'])">
 				<template #label>{{ i18n.ts._role._options.pinMax }}</template>
-				<template #suffix>{{ policies.pinLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.pinLimit.value) }} <i :class="getPriorityIcon(policies.pinLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.pinLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.pinLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.pinLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.pinLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -166,9 +202,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.antennaMax, 'antennaLimit'])">
 				<template #label>{{ i18n.ts._role._options.antennaMax }}</template>
-				<template #suffix>{{ policies.antennaLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.antennaLimit.value) }} <i :class="getPriorityIcon(policies.antennaLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.antennaLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.antennaLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.antennaLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.antennaLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -181,9 +221,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.wordMuteMax, 'wordMuteLimit'])">
 				<template #label>{{ i18n.ts._role._options.wordMuteMax }}</template>
-				<template #suffix>{{ policies.wordMuteLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.wordMuteLimit.value) }} <i :class="getPriorityIcon(policies.wordMuteLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.wordMuteLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.wordMuteLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.wordMuteLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.wordMuteLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -197,9 +241,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.webhookMax, 'webhookLimit'])">
 				<template #label>{{ i18n.ts._role._options.webhookMax }}</template>
-				<template #suffix>{{ policies.webhookLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.webhookLimit.value) }} <i :class="getPriorityIcon(policies.webhookLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.webhookLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.webhookLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.webhookLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.webhookLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -212,9 +260,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.clipMax, 'clipLimit'])">
 				<template #label>{{ i18n.ts._role._options.clipMax }}</template>
-				<template #suffix>{{ policies.clipLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.clipLimit.value) }} <i :class="getPriorityIcon(policies.clipLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.clipLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.clipLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.clipLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.clipLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -227,9 +279,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.noteEachClipsMax, 'noteEachClipsLimit'])">
 				<template #label>{{ i18n.ts._role._options.noteEachClipsMax }}</template>
-				<template #suffix>{{ policies.noteEachClipsLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.noteEachClipsLimit.value) }} <i :class="getPriorityIcon(policies.noteEachClipsLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.noteEachClipsLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.noteEachClipsLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.noteEachClipsLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.noteEachClipsLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -242,9 +298,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.userListMax, 'userListLimit'])">
 				<template #label>{{ i18n.ts._role._options.userListMax }}</template>
-				<template #suffix>{{ policies.userListLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.userListLimit.value) }} <i :class="getPriorityIcon(policies.userListLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.userListLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.userListLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.userListLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.userListLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -257,9 +317,13 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.userEachUserListsMax, 'userEachUserListsLimit'])">
 				<template #label>{{ i18n.ts._role._options.userEachUserListsMax }}</template>
-				<template #suffix>{{ policies.userEachUserListsLimit.useDefault ? i18n.ts._role.useBaseValue : (policies.userEachUserListsLimit.value) }} <i :class="getPriorityIcon(policies.userEachUserListsLimit)"></i></template>
+				<template #suffix>
+					<span v-if="policies.userEachUserListsLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.userEachUserListsLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.userEachUserListsLimit)"></i></span>
+				</template>
 				<div class="_gaps">
 					<MkSwitch v-model="policies.userEachUserListsLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
@@ -267,6 +331,26 @@
 					<MkInput v-model="policies.userEachUserListsLimit.value" :disabled="policies.userEachUserListsLimit.useDefault" type="number" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="policies.userEachUserListsLimit.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canHideAds, 'canHideAds'])">
+				<template #label>{{ i18n.ts._role._options.canHideAds }}</template>
+				<template #suffix>
+					<span v-if="policies.canHideAds.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ policies.canHideAds.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policies.canHideAds)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="policies.canHideAds.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="policies.canHideAds.value" :disabled="policies.canHideAds.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="policies.canHideAds.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
@@ -312,6 +396,7 @@ const ROLE_POLICIES = [
 	'canPublicNote',
 	'canInvite',
 	'canManageCustomEmojis',
+	'canHideAds',
 	'driveCapacityMb',
 	'pinLimit',
 	'antennaLimit',
@@ -335,6 +420,7 @@ const props = defineProps<{
 }>();
 
 const role = props.role;
+let q = $ref('');
 
 let name = $ref(role?.name ?? 'New Role');
 let description = $ref(role?.description ?? '');
@@ -365,6 +451,11 @@ function getPriorityIcon(option) {
 	if (option.priority === 2) return 'ti ti-arrows-up';
 	if (option.priority === 1) return 'ti ti-arrow-narrow-up';
 	return 'ti ti-point';
+}
+
+function matchQuery(keywords: string[]): boolean {
+	if (q.trim().length === 0) return true;
+	return keywords.some(keyword => keyword.toLowerCase().includes(q.toLowerCase()));
 }
 
 async function save() {
@@ -403,5 +494,11 @@ async function save() {
 </script>
 
 <style lang="scss" module>
+.useDefaultLabel {
+	opacity: 0.7;
+}
 
+.priorityIndicator {
+	margin-left: 8px;
+}
 </style>

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { v4 as uuid } from 'uuid';
 import { IsNull } from 'typeorm';
-import autwh from 'autwh';
+import * as autwh from 'autwh';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';

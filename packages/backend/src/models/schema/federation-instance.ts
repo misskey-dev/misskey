@@ -6,7 +6,7 @@ export const packedFederationInstanceSchema = {
 			optional: false, nullable: false,
 			format: 'id',
 		},
-		caughtAt: {
+		firstRetrievedAt: {
 			type: 'string',
 			optional: false, nullable: false,
 			format: 'date-time',
