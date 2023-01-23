@@ -943,7 +943,7 @@ _achievements:
   earnedAt: "달성 일시"
   _types:
     _notes1:
-      title: "미스키 설정하고 있었는데요"
+      title: "미스키 시작했는데요"
       description: "첫 노트를 작성했습니다"
       flavor: "Misskey에 오신 것을 환영합니다!"
     _notes10:
@@ -1041,7 +1041,7 @@ _achievements:
     _login1000:
       title: "노트 마스터 III"
       description: "총 1,000일간 로그인했습니다"
-      flavor: "미스키를 사용해 주셔서 감사합니다!"
+      flavor: "Misskey를 사용해 주셔서 감사합니다!"
     _noteClipped1:
       title: "클립할 수밖에 없었어"
       description: "처음으로 노트를 클립했습니다"
@@ -1077,7 +1077,7 @@ _achievements:
       title: "첫 팔로워"
       description: "사용자가 처음으로 팔로잉했습니다"
     _followers10:
-      title: "날 따라와!"
+      title: "팔로우 미!"
       description: "10명의 사용자가 팔로우했습니다"
     _followers50:
       title: "이곳저곳"
@@ -1104,6 +1104,9 @@ _achievements:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"를 포스트했습니다"
       flavor: "Misskey를 이용해주셔서 감사합니다! - 개발팀 일동"
+    _foundTreasure:
+      title: "보물찾기"
+      description: "숨겨진 보물을 발견했습니다"
     _client30min:
       title: "잠깐 쉬어"
       description: "클라이언트를 시작하고 30분이 경과하였습니다"
@@ -1116,7 +1119,7 @@ _achievements:
       flavor: "잠 좀 자세요. 걱정돼요."
     _postedAt0min0sec:
       title: "정각"
-      description: "1초도 어긋나지 않은 정각에 노트를 포스트했습니다"
+      description: "0분 0초 정각에 노트를 포스트했습니다"
       flavor: "째깍 째깍 째깍 땡!"
     _selfQuote:
       title: "혼잣말"
@@ -1124,6 +1127,9 @@ _achievements:
     _htl20npm:
       title: "타임라인 폭주 중"
       description: "1분 사이에 홈 타임라인에 노트가 20개 넘게 생성되었습니다"
+    _viewInstanceChart:
+      title: "애널리스트"
+      description: "인스턴스의 차트를 열었습니다"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
       description: "스크래치패드에서 hello world를 출력했습니다"
@@ -1156,7 +1162,7 @@ _achievements:
       description: "계정을 생성하고 3년이 지났습니다"
     _loggedInOnBirthday:
       title: "생일 축하합니다!"
-      description: "설정한 생일에 로그인했습니다"
+      description: "생일에 로그인했습니다"
     _loggedInOnNewYearsDay:
       title: "새해 복 많이 받으세요"
       description: "새해 첫 날에 로그인했습니다"
