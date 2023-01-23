@@ -1104,6 +1104,9 @@ _achievements:
       title: "I LOVE Misskey"
       description: "Pubblica «I ♥ #Misskey»"
       flavor: "Grazie per aver utilizzato Misskey! Dal team di sviluppo"
+    _foundTreasure:
+      title: "Caccia al tesoro"
+      description: "Hai trovato un tesoro nascosto"
     _client30min:
       title: "Piccola pausa"
       description: "Hai passato più di 30 minuti di fila su Misskey"
@@ -1124,6 +1127,9 @@ _achievements:
     _htl20npm:
       title: "Timeline scorrevole"
       description: "La tua Timeline personale ha superato la velocità di 20 Note orarie (Note al minuto)"
+    _viewInstanceChart:
+      title: "Analista"
+      description: "Visualizza i grafici dell'istanza"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
       description: "Hai scritto «Hello world» nel blocco appunti"
