@@ -38,7 +38,7 @@
 							<template #label>Access key</template>
 						</MkInput>
 
-						<MkInput v-model="objectStorageSecretKey">
+						<MkInput v-model="objectStorageSecretKey" type="password">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Secret key</template>
 						</MkInput>
