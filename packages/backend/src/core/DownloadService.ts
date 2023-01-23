@@ -4,7 +4,6 @@ import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
-import got, * as Got from 'got';
 import chalk from 'chalk';
 import { buildConnector } from 'undici';
 import { DI } from '@/di-symbols.js';
