@@ -12,6 +12,10 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
+- onlyServer / onlyQueue オプションを復活
+- 他人の実績閲覧時は獲得条件を表示しないように
+- アニメーション減らすオプション有効時はリアクションのアニメーションを無効に
+- カスタム絵文字一覧のパフォーマンスを改善
 
 ### Bugfixes
 - Aiscript: button is not defined
