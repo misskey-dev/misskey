@@ -942,6 +942,8 @@ achievements: "ความสำเร็จ"
 _achievements:
   earnedAt: "ได้รับเมื่อ"
   _types:
+    _notes1:
+      title: "เพียงแค่ตั้งค่า msky ของฉัน"
     _followers100:
       title: "บุคคลที่เป็นที่นิยม"
     _followers500:
@@ -965,6 +967,9 @@ _achievements:
       description: "ดูแผนภูมิอินสแตนซ์ของคุณ"
     _driveFolderCircularReference:
       title: "อ้างอิงวงจร"
+    _clickedClickHere:
+      title: "คลิ๊กที่นี่"
+      description: "คุณได้คลิกที่นี่"
     _passedSinceAccountCreated1:
       title: "ครบรอบหนึ่งปี"
     _passedSinceAccountCreated2:
@@ -977,8 +982,11 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "สวัสดีปีใหม่!"
       description: "เข้าสู่ระบบในวันแรกของปี"
+    _cookieClicked:
+      description: "คลิกคุกกี้"
     _brainDiver:
       title: "Brain Diver"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "บทบาทใหม่"
   edit: "แก้ไขบทบาท"
