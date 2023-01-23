@@ -111,7 +111,7 @@ export class FileServerService {
 					const response = await this.downloadService.fetchUrl(file.uri);
 					const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
-					const { mime, ext } = await this.fileInfoService.detectRequestType(response, path, fileSaving);
+					const { mime, ext } = await this.fileInfoService.detectResponseType(response, path, fileSaving);
 
 					const convertFile = async () => {
 						if (isThumbnail) {

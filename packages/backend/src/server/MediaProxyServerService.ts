@@ -77,7 +77,7 @@ export class MediaProxyServerService {
 			const response = await this.downloadService.fetchUrl(url);
 			const fileSaving = this.downloadService.pipeRequestToFile(response, path);
 
-			const { mime, ext } = await this.fileInfoService.detectRequestType(response, path, fileSaving);
+			const { mime, ext } = await this.fileInfoService.detectResponseType(response, path, fileSaving);
 			const isConvertibleImage = isMimeImage(mime, 'sharp-convertible-image');
 			const isAnimationConvertibleImage = isMimeImage(mime, 'sharp-animation-convertible-image');
 

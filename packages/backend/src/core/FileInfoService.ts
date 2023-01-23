@@ -344,7 +344,7 @@ export class FileInfoService {
 	 * Detect MIME Type and extension by stream and path for performance
 	 */
 	@bindThis
-	public async detectRequestType(_response: Response, path?: string, fileSavingPromise: Promise<any> = Promise.resolve()): Promise<{
+	public async detectResponseType(_response: Response, path?: string, fileSavingPromise: Promise<any> = Promise.resolve()): Promise<{
 		mime: string;
 		ext: string | null;
 	}> {
