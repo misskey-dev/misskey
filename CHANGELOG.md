@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.2.0 (2021/01/23)
 
 ### Improvements
 - onlyServer / onlyQueue オプションを復活
