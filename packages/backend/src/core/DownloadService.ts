@@ -4,7 +4,6 @@ import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
-import got, * as Got from 'got';
 import chalk from 'chalk';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -83,16 +82,8 @@ export class DownloadService {
 			throw new StatusError('No body', 400, 'No body');
 		}
 
-		try {
-			this.logger.info(`Saving File to ${chalk.cyanBright(path)} from downloading ...`);
-			await pipeline(stream.Readable.fromWeb(response.body), fs.createWriteStream(path));
-		} catch (e) {
-			if (e instanceof Got.HTTPError) {
-				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
-			} else {
-				throw e;
-			}
-		}
+		this.logger.info(`Saving File to ${chalk.cyanBright(path)} from downloading ...`);
+		await pipeline(stream.Readable.fromWeb(response.body), fs.createWriteStream(path));
 	}
 
 	@bindThis
