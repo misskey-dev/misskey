@@ -20,7 +20,7 @@ import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
-import { PassThrough, Readable, pipeline } from 'node:stream';
+import { Readable, pipeline } from 'node:stream';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import sharp from 'sharp';
 
@@ -81,17 +81,20 @@ export class FileServerService {
 		});
 
 		fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
-			await this.sendDriveFile(request, reply).catch(err => this.errorHandler(request, reply, err));
+			return await this.sendDriveFile(request, reply)
+				.catch(err => this.errorHandler(request, reply, err));
 		});
 		fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
-			await this.sendDriveFile(request, reply).catch(err => this.errorHandler(request, reply, err));
+			return await this.sendDriveFile(request, reply)
+				.catch(err => this.errorHandler(request, reply, err));
 		});
 
 		fastify.get<{
 			Params: { url: string; };
 			Querystring: { url?: string; };
 		}>('/proxy/:url*', async (request, reply) => {
-			await this.proxyHandler(request, reply).catch(err => this.errorHandler(request, reply, err));
+			return await this.proxyHandler(request, reply)
+				.catch(err => this.errorHandler(request, reply, err));
 		});
 
 		done();
@@ -118,7 +121,7 @@ export class FileServerService {
 	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
 		const key = request.params.key;
 		const file = await this.getFileFromKey(key).then();
-		console.log(file);
+
 		if (file === '404') {
 			reply.code(404);
 			reply.header('Cache-Control', 'max-age=86400');
@@ -208,7 +211,6 @@ export class FileServerService {
 
 		// Create temp file
 		const file = await this.getStreamAndTypeFromUrl(url);
-		console.log(file)
 		if (file === '404') {
 			reply.code(404);
 			reply.header('Cache-Control', 'max-age=86400');
@@ -356,7 +358,7 @@ export class FileServerService {
 	
 			return {
 				state: 'remote',
-				stream: Readable.fromWeb(response.body).pipe(new PassThrough()),
+				stream: Readable.fromWeb(response.body),
 				mime, ext,
 				path, cleanup,
 				fileSaving,
