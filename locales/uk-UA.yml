@@ -901,6 +901,7 @@ show: "Відображення"
 color: "Колір"
 achievements: "Досягнення"
 _achievements:
+  earnedAt: "Відкрито"
   _types:
     _notes1:
       title: "налаштовую свій msky"
