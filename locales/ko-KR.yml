@@ -962,7 +962,7 @@ _achievements:
       title: "노트가 어디서 솟아?"
       description: "5,000개의 노트를 작성했습니다"
     _notes10000:
-      title: "슈퍼-노트"
+      title: "슈퍼 노트"
       description: "10,000개의 노트를 작성했습니다"
     _notes20000:
       title: "노트 더 없어?"
