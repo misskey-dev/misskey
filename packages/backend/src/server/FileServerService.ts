@@ -21,7 +21,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { Readable, pipeline } from 'node:stream';
-import { isMimeImage } from '@/misc/is-mime-image';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 import sharp from 'sharp';
 
 const _filename = fileURLToPath(import.meta.url);
