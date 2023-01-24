@@ -249,7 +249,7 @@ useTooltip(reactionRef, (showing) => {
 
 .t_achievementEarned {
 	padding: 3px;
-	background: #88a6b7;
+	background: #cb9a11;
 	pointer-events: none;
 }
 
