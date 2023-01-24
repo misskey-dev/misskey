@@ -1099,7 +1099,7 @@ _achievements:
       description: "30개의 도전과제를 획득했습니다"
     _viewAchievements3min:
       title: "저 도전과제 좋아해요"
-      description: "도전과제 목록을 3분 이상 보세요"
+      description: "도전 과제 목록을 3분 이상 쳐다봤습니다"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "\"I ❤ #Misskey\"를 포스트했습니다"
@@ -1119,7 +1119,7 @@ _achievements:
       flavor: "잠 좀 자세요. 걱정돼요."
     _postedAt0min0sec:
       title: "정각"
-      description: "0분 0초 정각에 노트를 포스트했습니다"
+      description: "0분 0초 정각에 노트를 작성했습니다"
       flavor: "째깍 째깍 째깍 땡!"
     _selfQuote:
       title: "혼잣말"
