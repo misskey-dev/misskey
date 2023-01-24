@@ -4,8 +4,8 @@ import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
-import got, * as Got from 'got';
 import chalk from 'chalk';
+import { buildConnector } from 'undici';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
@@ -13,7 +13,6 @@ import { createTemp } from '@/misc/create-temp.js';
 import { StatusError } from '@/misc/status-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
-import { buildConnector } from 'undici';
 
 const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
@@ -32,23 +31,20 @@ export class DownloadService {
 	) {
 		this.logger = this.loggerService.getLogger('download');
 
-		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption(
-			{
-				connect: process.env.NODE_ENV === 'development' ?
-					this.httpRequestService.clientDefaults.connect
-					:
-					this.httpRequestService.getConnectorWithIpCheck(
-						buildConnector({
-							...this.httpRequestService.clientDefaults.connect,
-						}),
-						(ip) => !this.isPrivateIp(ip)
-					),
-				bodyTimeout: 30 * 1000,
-			},
-			{
-				connect: this.httpRequestService.clientDefaults.connect,
-			}
-		), this.logger);
+		this.undiciFetcher = this.httpRequestService.createFetcher({
+			connect: process.env.NODE_ENV === 'development' ?
+				this.httpRequestService.clientDefaults.connect
+				:
+				this.httpRequestService.getConnectorWithIpCheck(
+					buildConnector({
+						...this.httpRequestService.clientDefaults.connect,
+					}),
+					(ip) => !this.isPrivateIp(ip),
+				),
+			bodyTimeout: 30 * 1000,
+		}, {
+			connect: this.httpRequestService.clientDefaults.connect,
+		}, this.logger);
 	}
 
 	@bindThis

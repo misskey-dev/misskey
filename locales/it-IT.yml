@@ -1059,8 +1059,8 @@ _achievements:
       description: "Aggiungi le orecchie da gatto al tuo profilo"
       flavor: "Ti chiamerò..."
     _following1:
-      title: "Hai seguito il tuo primo profilo"
-      description: "Il tuo primo profilo Follower"
+      title: "Il mio primo Follow"
+      description: "Hai seguito il tuo primo profilo"
     _following10:
       title: "Segui, segui!"
       description: "Hai seguito 10 profili"
@@ -1074,17 +1074,17 @@ _achievements:
       title: "Sovraccarico di amici"
       description: "Hai seguito 300 profili"
     _followers1:
-      title: "Primo Follower"
-      description: "Hai ottenuto un Follower"
+      title: "Il primo profilo tuo Follower"
+      description: "Hai ottenuto il tuo primo Follower"
     _followers10:
       title: "Follow me!"
-      description: "Hai ottenuto 10 Follower"
+      description: "Hai ottenuto 10 profili Follower"
     _followers50:
       title: "Follower a frotte"
       description: "Hai ottenuto 50 Follower"
     _followers100:
       title: "Popolare"
-      description: "Hai ottenuto 100 Follower"
+      description: "Hai ottenuto 100 profili Follower"
     _followers300:
       title: "Mettetevi in fila"
       description: "Hai ottenuto 300 Follower"
@@ -1093,7 +1093,7 @@ _achievements:
       description: "Hai ottenuto 500 Follower"
     _followers1000:
       title: "Influenzer"
-      description: "Hai superato i 1.000 Follower"
+      description: "Hai superato i 1.000 profili Follower"
     _collectAchievements30:
       title: "Collezionista di successi"
       description: "Hai raggiunto 30 obiettivi"
@@ -1104,9 +1104,12 @@ _achievements:
       title: "I LOVE Misskey"
       description: "Pubblica «I ♥ #Misskey»"
       flavor: "Grazie per aver utilizzato Misskey! Dal team di sviluppo"
+    _foundTreasure:
+      title: "Caccia al tesoro"
+      description: "Hai trovato un tesoro nascosto"
     _client30min:
       title: "Piccola pausa"
-      description: "Hai passato più di 30 minuti di fila su Misskey"
+      description: "Hai passato più di 30 minuti su Misskey"
     _noteDeletedWithin1min:
       title: "Ooops!"
       description: "Hai eliminato una nota entro un minuto dalla sua pubblicazione"
@@ -1124,6 +1127,9 @@ _achievements:
     _htl20npm:
       title: "Timeline scorrevole"
       description: "La tua Timeline personale ha superato la velocità di 20 Note orarie (Note al minuto)"
+    _viewInstanceChart:
+      title: "Analista"
+      description: "Visualizza i grafici dell'istanza"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
       description: "Hai scritto «Hello world» nel blocco appunti"
@@ -1501,8 +1507,8 @@ _sfx:
   channel: "Notifiche di canale"
 _ago:
   future: "Futuro"
-  justNow: "Ora"
-  secondsAgo: "{n}s fa"
+  justNow: "Adesso"
+  secondsAgo: "{n} sec fa"
   minutesAgo: "{n} min fa"
   hoursAgo: "{n} ore fa"
   daysAgo: "{n} gg fa"

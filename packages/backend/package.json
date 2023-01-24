@@ -19,8 +19,8 @@
 		"test-and-coverage": "pnpm jest-and-coverage"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs": "^4.1.0",
-		"@tensorflow/tfjs-node": "4.1.0"
+		"@tensorflow/tfjs": "^4.2.0",
+		"@tensorflow/tfjs-node": "4.2.0"
 	},
 	"dependencies": {
 		"@bull-board/api": "^4.11.0",
@@ -69,9 +69,8 @@
 		"ip-cidr": "3.0.11",
 		"is-svg": "4.3.2",
 		"js-yaml": "4.1.0",
-		"jsdom": "21.0.0",
+		"jsdom": "21.1.0",
 		"json5": "2.2.3",
-		"json5-loader": "4.0.1",
 		"jsonld": "8.1.0",
 		"jsrsasign": "10.6.1",
 		"mfm-js": "0.23.3",
@@ -176,8 +175,8 @@
 		"@types/web-push": "3.3.2",
 		"@types/websocket": "1.0.5",
 		"@types/ws": "8.5.4",
-		"@typescript-eslint/eslint-plugin": "5.48.2",
-		"@typescript-eslint/parser": "5.48.2",
+		"@typescript-eslint/eslint-plugin": "5.49.0",
+		"@typescript-eslint/parser": "5.49.0",
 		"cross-env": "7.0.3",
 		"eslint": "8.32.0",
 		"eslint-plugin-import": "2.27.5",

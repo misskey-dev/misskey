@@ -950,13 +950,13 @@ _achievements:
       title: "若干貼文"
       description: "發表了10則貼文"
     _notes100:
-      title: "許多的貼文"
+      title: "許多貼文"
       description: "發表了100則貼文"
     _notes500:
       title: "滿滿的貼文"
       description: "發表了500則貼文"
     _notes1000:
-      title: "一堆貼文"
+      title: "堆積如山的貼文"
       description: "發表了1000則貼文"
     _notes5000:
       title: "滔滔不絕的貼文"
@@ -1104,6 +1104,9 @@ _achievements:
       title: "I Love Misskey"
       description: "發布「I ❤ #Misskey」"
       flavor: "感謝您使用Misskey！ by 開發團隊"
+    _foundTreasure:
+      title: "尋寶"
+      description: "發現了隱藏的寶藏"
     _client30min:
       title: "休息一下"
       description: "用戶端啟動已超過30分鐘"
@@ -1124,6 +1127,9 @@ _achievements:
     _htl20npm:
       title: "流動的TL"
       description: "在首頁時間軸的流速超過20npm"
+    _viewInstanceChart:
+      title: "分析師"
+      description: "顯示了實例的圖表"
     _outputHelloWorldOnScratchpad:
       title: "Hello world!"
       description: "在暫存記憶體輸出了 hello world"
