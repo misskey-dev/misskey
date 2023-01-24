@@ -998,6 +998,7 @@ _achievements:
       flavor: "Дякуємо, що користуєтеся Misskey!"
     _following100:
       title: "100 друзів"
+      description: "Кількість підписок сягнула 100"
     _passedSinceAccountCreated3:
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
