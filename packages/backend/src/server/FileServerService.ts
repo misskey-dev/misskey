@@ -20,7 +20,7 @@ import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
-import { Readable, pipeline } from 'node:stream';
+import { PassThrough, Readable, pipeline } from 'node:stream';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import sharp from 'sharp';
 
@@ -118,7 +118,7 @@ export class FileServerService {
 	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
 		const key = request.params.key;
 		const file = await this.getFileFromKey(key).then();
-
+		console.log(file);
 		if (file === '404') {
 			reply.code(404);
 			reply.header('Cache-Control', 'max-age=86400');
@@ -208,7 +208,7 @@ export class FileServerService {
 
 		// Create temp file
 		const file = await this.getStreamAndTypeFromUrl(url);
-
+		console.log(file)
 		if (file === '404') {
 			reply.code(404);
 			reply.header('Cache-Control', 'max-age=86400');
@@ -356,7 +356,7 @@ export class FileServerService {
 	
 			return {
 				state: 'remote',
-				stream: Readable.fromWeb(response.body),
+				stream: Readable.fromWeb(response.body).pipe(new PassThrough()),
 				mime, ext,
 				path, cleanup,
 				fileSaving,
