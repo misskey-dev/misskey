@@ -135,8 +135,33 @@ export class UndiciFetcher {
 	}
 
 	@bindThis
+	public async request(
+		url: string | URL,
+		options: { dispatcher?: undici.Dispatcher } & Omit<undici.Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> & Partial<Pick<undici.Dispatcher.RequestOptions, 'method'>> = {},
+		privateOptions: { noOkError?: boolean; bypassProxy?: boolean; } = { noOkError: false, bypassProxy: false },
+	): Promise<undici.Dispatcher.ResponseData> {
+		const res = await undici.request(url, {
+			dispatcher: this.getAgentByUrl(new URL(url), privateOptions.bypassProxy),
+			...options,
+			headers: {
+				'user-agent': this.userAgent ?? '',
+				...(options.headers ?? {}),
+			},
+		}).catch((err) => {
+			this.logger?.error(`fetch error to ${typeof url === 'string' ? url : url.href}`, err);
+			throw new StatusError('Resource Unreachable', 500, 'Resource Unreachable');
+		});
+
+		if (res.statusCode >= 400) {
+			throw new StatusError(`${res.statusCode}`, res.statusCode, '');
+		}
+
+		return res;
+	}
+
+	@bindThis
 	public async getJson<T extends unknown>(url: string, accept = 'application/json, */*', headers?: Record<string, string>): Promise<T> {
-		const res = await this.fetch(
+		const { body } = await this.request( 
 			url,
 			{
 				headers: Object.assign({
@@ -145,12 +170,12 @@ export class UndiciFetcher {
 			},
 		);
 
-		return await res.json() as T;
+		return await body.json() as T;
 	}
 
 	@bindThis
 	public async getHtml(url: string, accept = 'text/html, */*', headers?: Record<string, string>): Promise<string> {
-		const res = await this.fetch(
+		const { body } = await this.request(
 			url,
 			{
 				headers: Object.assign({
@@ -159,7 +184,7 @@ export class UndiciFetcher {
 			},
 		);
 
-		return await res.text();
+		return await body.text();
 	}
 }
 
@@ -167,6 +192,7 @@ export class UndiciFetcher {
 export class HttpRequestService {
 	public defaultFetcher: UndiciFetcher;
 	public fetch: UndiciFetcher['fetch'];
+	public request: UndiciFetcher['request'];
 	public getHtml: UndiciFetcher['getHtml'];
 	public defaultJsonFetcher: UndiciFetcher;
 	public getJson: UndiciFetcher['getJson'];
@@ -221,11 +247,12 @@ export class HttpRequestService {
 			},
 		};
 
-		this.maxSockets = Math.max(64, this.config.deliverJobConcurrency ?? 128);
+		this.maxSockets = Math.max(64, ((this.config.deliverJobConcurrency ?? 128) / (this.config.clusterLimit ?? 1)));
 
 		this.defaultFetcher = this.createFetcher({}, {}, this.logger);
 
 		this.fetch = this.defaultFetcher.fetch;
+		this.request = this.defaultFetcher.request;
 		this.getHtml = this.defaultFetcher.getHtml;
 
 		this.defaultJsonFetcher = this.createFetcher({

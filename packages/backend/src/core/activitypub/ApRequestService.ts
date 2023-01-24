@@ -9,10 +9,12 @@ import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js'
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
+import type { Dispatcher } from 'undici';
+import { DevNull } from '@/misc/dev-null.js';
 
 type Request = {
 	url: string;
-	method: string;
+	method: Dispatcher.HttpMethod;
 	headers: Record<string, string>;
 };
 
@@ -163,7 +165,7 @@ export class ApRequestService {
 			},
 		});
 
-		await this.undiciFetcher.fetch(
+		const response = await this.undiciFetcher.request(
 			url,
 			{
 				method: req.request.method,
@@ -171,6 +173,7 @@ export class ApRequestService {
 				body,
 			},
 		);
+		response.body.pipe(new DevNull());
 	}
 
 	/**
