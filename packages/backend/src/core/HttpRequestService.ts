@@ -247,7 +247,7 @@ export class HttpRequestService {
 			},
 		};
 
-		this.maxSockets = Math.max(64, this.config.deliverJobConcurrency ?? 128);
+		this.maxSockets = Math.max(64, ((this.config.deliverJobConcurrency ?? 128) / (this.config.clusterLimit ?? 1)));
 
 		this.defaultFetcher = this.createFetcher({}, {}, this.logger);
 
