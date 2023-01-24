@@ -950,13 +950,13 @@ _achievements:
       title: "若干貼文"
       description: "發表了10則貼文"
     _notes100:
-      title: "許多的貼文"
+      title: "許多貼文"
       description: "發表了100則貼文"
     _notes500:
       title: "滿滿的貼文"
       description: "發表了500則貼文"
     _notes1000:
-      title: "一堆貼文"
+      title: "堆積如山的貼文"
       description: "發表了1000則貼文"
     _notes5000:
       title: "滔滔不絕的貼文"
