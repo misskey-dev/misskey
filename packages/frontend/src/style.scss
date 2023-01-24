@@ -127,11 +127,13 @@ hr {
 }
 
 .ti {
-	vertical-align: -70%;
-	line-height: 0.5em;
+	vertical-align: -40%;
+	line-height: 1em;
 
 	&:before {
-		font-size: 150%;
+		display: inline-block;
+		font-size: 165%;
+		width: 0.74em;
 	}
 }
 
