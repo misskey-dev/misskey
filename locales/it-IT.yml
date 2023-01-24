@@ -1507,8 +1507,8 @@ _sfx:
   channel: "Notifiche di canale"
 _ago:
   future: "Futuro"
-  justNow: "Ora"
-  secondsAgo: "{n}s fa"
+  justNow: "Adesso"
+  secondsAgo: "{n} sec fa"
   minutesAgo: "{n} min fa"
   hoursAgo: "{n} ore fa"
   daysAgo: "{n} gg fa"
