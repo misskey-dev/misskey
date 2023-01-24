@@ -996,6 +996,8 @@ _achievements:
     _login1000:
       description: "1000 днів користування загально"
       flavor: "Дякуємо, що користуєтеся Misskey!"
+    _following100:
+      title: "100 друзів"
     _passedSinceAccountCreated3:
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
