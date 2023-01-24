@@ -1006,8 +1006,12 @@ _achievements:
       description: "Кількість підписок сягнула 300"
     _followers1:
       title: "Перший підписник"
+      description: "З'явився перший підписник"
     _followers10:
       title: "Follow me!"
+      description: "Кількість підписників досягла 10"
+    _followers50:
+      description: "Кількість підписників досягла 50"
     _passedSinceAccountCreated3:
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
