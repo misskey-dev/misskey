@@ -57,6 +57,7 @@
 		"content-disposition": "0.5.4",
 		"date-fns": "2.29.3",
 		"deep-email-validator": "0.1.21",
+		"dev-null": "^0.1.1",
 		"escape-regexp": "0.0.1",
 		"fastify": "4.12.0",
 		"feed": "4.2.2",
