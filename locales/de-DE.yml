@@ -1104,9 +1104,12 @@ _achievements:
       title: "I Love Misskey"
       description: "Sende \"I ❤ #Misskey\""
       flavor: "Danke, dass du Misskey verwendest! - vom Entwicklerteam"
+    _foundTreasure:
+      title: "Schatzsuche"
+      description: "Du hast einen verborgenen Schatz gefunden"
     _client30min:
-      title: "Kleine Pause"
-      description: "Seit dem Öffnen deines Clients sind 30 Minuten vergangen"
+      title: "Kurze Pause"
+      description: "Habe Misskey für 30 Minuten geöffnet"
     _noteDeletedWithin1min:
       title: "Ups"
       description: "Lösche eine Notiz innerhalb von 1 Minute nachdem sie gesendet wurde"
@@ -1124,6 +1127,9 @@ _achievements:
     _htl20npm:
       title: "Fließende Chronik"
       description: "Deine Startseitenchronik erreicht eine Geschwindigkeit von 20 npm (Notizen pro Minute)"
+    _viewInstanceChart:
+      title: "Analyst"
+      description: "Schau dir die Messwerte der Instanz an"
     _outputHelloWorldOnScratchpad:
       title: "Hallo Welt!"
       description: "Gib \"hello world\" in der Testumgebung aus"

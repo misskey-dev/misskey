@@ -8,13 +8,13 @@ import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js'
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
-import { LoggerService } from '@/core/LoggerService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
-import type Logger from '@/logger.js';
 
 export class Resolver {
 	private history: Set<string>;
@@ -39,10 +39,10 @@ export class Resolver {
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
-		this.logger = this.loggerService?.getLogger('ap-resolve');  // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
-		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
+		this.logger = this.loggerService?.getLogger('ap-resolve'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
+		this.undiciFetcher = this.httpRequestService.createFetcher({
 			maxRedirections: 0,
-		}), this.logger);
+		}, {}, this.logger);
 	}
 
 	@bindThis

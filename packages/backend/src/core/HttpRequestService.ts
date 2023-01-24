@@ -1,14 +1,14 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
+import { LookupFunction } from 'node:net';
 import CacheableLookup from 'cacheable-lookup';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import { Inject, Injectable } from '@nestjs/common';
+import * as undici from 'undici';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
-import * as undici from 'undici';
-import { LookupFunction } from 'node:net';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 
@@ -62,7 +62,7 @@ export class UndiciFetcher {
 					undici.buildConnector(args.agentOptions.connect as undici.buildConnector.BuildOptions)(options, (err, socket) => {
 						this.logger?.debug('Socket connector called', socket);
 						if (err) {
-							this.logger?.debug(`Socket error`, err);
+							this.logger?.debug('Socket error', err);
 							cb(new Error(`Error while socket connecting\n${err}`), null);
 							return;
 						}
@@ -79,20 +79,20 @@ export class UndiciFetcher {
 
 				uri: args.proxy.uri,
 
-				connect: (process.env.NODE_ENV !== 'production' && typeof (args.proxy?.options?.connect ?? args.agentOptions.connect) !== 'function')
+				connect: (process.env.NODE_ENV !== 'production' && typeof (args.proxy.options?.connect ?? args.agentOptions.connect) !== 'function')
 					? (options, cb) => {
 						// Custom connector for debug
 						undici.buildConnector((args.proxy?.options?.connect ?? args.agentOptions.connect) as undici.buildConnector.BuildOptions)(options, (err, socket) => {
 							this.logger?.debug('Socket connector called (secure)', socket);
 							if (err) {
-								this.logger?.debug(`Socket error`, err);
+								this.logger?.debug('Socket error', err);
 								cb(new Error(`Error while socket connecting\n${err}`), null);
 								return;
 							}
 							this.logger?.debug(`Socket connected (secure): port ${socket.localPort} => remote ${socket.remoteAddress}`);
 							cb(null, socket);
 						});
-					} : (args.proxy?.options?.connect ?? args.agentOptions.connect),
+					} : (args.proxy.options?.connect ?? args.agentOptions.connect),
 			})
 			: this.nonProxiedAgent;
 	}
@@ -115,7 +115,7 @@ export class UndiciFetcher {
 	public async fetch(
 		url: string | URL,
 		options: undici.RequestInit = {},
-		privateOptions: { noOkError?: boolean; bypassProxy?: boolean; } = { noOkError: false, bypassProxy: false }
+		privateOptions: { noOkError?: boolean; bypassProxy?: boolean; } = { noOkError: false, bypassProxy: false },
 	): Promise<undici.Response> {
 		const res = await undici.fetch(url, {
 			dispatcher: this.getAgentByUrl(new URL(url), privateOptions.bypassProxy),
@@ -135,31 +135,56 @@ export class UndiciFetcher {
 	}
 
 	@bindThis
+	public async request(
+		url: string | URL,
+		options: { dispatcher?: undici.Dispatcher } & Omit<undici.Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> & Partial<Pick<undici.Dispatcher.RequestOptions, 'method'>> = {},
+		privateOptions: { noOkError?: boolean; bypassProxy?: boolean; } = { noOkError: false, bypassProxy: false },
+	): Promise<undici.Dispatcher.ResponseData> {
+		const res = await undici.request(url, {
+			dispatcher: this.getAgentByUrl(new URL(url), privateOptions.bypassProxy),
+			...options,
+			headers: {
+				'user-agent': this.userAgent ?? '',
+				...(options.headers ?? {}),
+			},
+		}).catch((err) => {
+			this.logger?.error(`fetch error to ${typeof url === 'string' ? url : url.href}`, err);
+			throw new StatusError('Resource Unreachable', 500, 'Resource Unreachable');
+		});
+
+		if (res.statusCode >= 400) {
+			throw new StatusError(`${res.statusCode}`, res.statusCode, '');
+		}
+
+		return res;
+	}
+
+	@bindThis
 	public async getJson<T extends unknown>(url: string, accept = 'application/json, */*', headers?: Record<string, string>): Promise<T> {
-		const res = await this.fetch(
+		const { body } = await this.request( 
 			url,
 			{
 				headers: Object.assign({
 					Accept: accept,
 				}, headers ?? {}),
-			}
+			},
 		);
 
-		return await res.json() as T;
+		return await body.json() as T;
 	}
 
 	@bindThis
 	public async getHtml(url: string, accept = 'text/html, */*', headers?: Record<string, string>): Promise<string> {
-		const res = await this.fetch(
+		const { body } = await this.request(
 			url,
 			{
 				headers: Object.assign({
 					Accept: accept,
 				}, headers ?? {}),
-			}
+			},
 		);
 
-		return await res.text();
+		return await body.text();
 	}
 }
 
@@ -167,6 +192,7 @@ export class UndiciFetcher {
 export class HttpRequestService {
 	public defaultFetcher: UndiciFetcher;
 	public fetch: UndiciFetcher['fetch'];
+	public request: UndiciFetcher['request'];
 	public getHtml: UndiciFetcher['getHtml'];
 	public defaultJsonFetcher: UndiciFetcher;
 	public getJson: UndiciFetcher['getJson'];
@@ -219,18 +245,19 @@ export class HttpRequestService {
 				maxCachedSessions: 300, // TLSセッションのキャッシュ数 https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L80
 				lookup: this.dnsCache.lookup as LookupFunction, // https://github.com/nodejs/undici/blob/v5.14.0/lib/core/connect.js#L98
 			},
-		}
+		};
 
-		this.maxSockets = Math.max(64, this.config.deliverJobConcurrency ?? 128);
+		this.maxSockets = Math.max(64, ((this.config.deliverJobConcurrency ?? 128) / (this.config.clusterLimit ?? 1)));
 
-		this.defaultFetcher = new UndiciFetcher(this.getStandardUndiciFetcherOption(), this.logger);
+		this.defaultFetcher = this.createFetcher({}, {}, this.logger);
 
 		this.fetch = this.defaultFetcher.fetch;
+		this.request = this.defaultFetcher.request;
 		this.getHtml = this.defaultFetcher.getHtml;
 
-		this.defaultJsonFetcher = new UndiciFetcher(this.getStandardUndiciFetcherOption({
+		this.defaultJsonFetcher = this.createFetcher({
 			maxResponseSize: 1024 * 256,
-		}), this.logger);
+		}, {}, this.logger);
 
 		this.getJson = this.defaultJsonFetcher.getJson;
 
@@ -272,23 +299,28 @@ export class HttpRequestService {
 	}
 
 	@bindThis
-	public getStandardUndiciFetcherOption(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}) {
+	private getStandardUndiciFetcherOption(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}) {
 		return {
 			agentOptions: {
 				...this.clientDefaults,
 				...opts,
 			},
 			...(this.config.proxy ? {
-			proxy: {
-				uri: this.config.proxy,
-				options: {
-					connections: this.maxSockets,
-					...proxyOpts,
-				}
-			}
+				proxy: {
+					uri: this.config.proxy,
+					options: {
+						connections: this.maxSockets,
+						...proxyOpts,
+					},
+				},
 			} : {}),
 			userAgent: this.config.userAgent,
-		}
+		};
+	}
+
+	@bindThis
+	public createFetcher(opts: undici.Agent.Options = {}, proxyOpts: undici.Agent.Options = {}, logger: Logger) {
+		return new UndiciFetcher(this.getStandardUndiciFetcherOption(opts, proxyOpts), logger);
 	}
 
 	/**
@@ -314,13 +346,13 @@ export class HttpRequestService {
 			connector(options, (err, socket) => {
 				this.logger.debug('Socket connector (with ip checker) called', socket);
 				if (err) {
-					this.logger.error(`Socket error`, err)
+					this.logger.error('Socket error', err);
 					cb(new Error(`Error while socket connecting\n${err}`), null);
 					return;
 				}
 
 				if (socket.remoteAddress == undefined) {
-					this.logger.error(`Socket error: remoteAddress is undefined`);
+					this.logger.error('Socket error: remoteAddress is undefined');
 					cb(new Error('remoteAddress is undefined (maybe socket destroyed)'), null);
 					return;
 				}

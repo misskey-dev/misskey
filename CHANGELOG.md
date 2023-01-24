@@ -9,7 +9,12 @@
 You should also include the user name that made the change.
 -->
 
-## 13.2.0 (2021/01/23)
+## 13.2.1 (2023/01/24)
+### Improvements
+- デザインの調整
+- サーバーのパフォーマンスを改善
+
+## 13.2.0 (2023/01/23)
 
 ### Improvements
 - onlyServer / onlyQueue オプションを復活

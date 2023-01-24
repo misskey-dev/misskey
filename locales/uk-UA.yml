@@ -910,34 +910,80 @@ _achievements:
       title: "Декілька нотаток"
       description: "10 нотаток відправлено"
     _notes100:
+      title: "Купа нотаток"
       description: "100 нотаток відправлено"
     _notes500:
+      title: "Все в нотатках"
       description: "500 нотаток відправлено"
     _notes1000:
+      title: "Гора нотаток"
       description: "1 000 нотаток відправлено"
     _notes5000:
+      title: "Переповнюючі нотатки"
       description: "5 000 нотаток відправлено"
     _notes10000:
+      title: "Супернотатка"
       description: "10 000 нотаток відправлено"
     _notes20000:
+      title: "Треба Більше Нотаток"
       description: "20 000 нотаток відправлено"
     _notes30000:
+      title: "Нотатки нотатки нотатки"
       description: "30 000 нотаток відправлено"
     _notes40000:
+      title: "Фабрика нотаток"
       description: "40 000 нотаток відправлено"
     _notes50000:
+      title: "Планета нотаток"
       description: "50 000 нотаток відправлено"
     _notes60000:
+      title: "Нотатковий квазар"
       description: "60 000 нотаток відправлено"
     _notes70000:
+      title: "Чорна нотаткова діра"
       description: "70 000 нотаток відправлено"
     _notes80000:
+      title: "Галактика нотаток"
       description: "80 000 нотаток відправлено"
     _notes90000:
+      title: "Нотатковерс"
       description: "90 000 нотаток відправлено"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "100 000 нотаток відправлено"
+      flavor: "Так багато потрібно сказати?"
+    _login3:
+      title: "Новачок I"
+    _login7:
+      title: "Новачок II"
+    _login15:
+      title: "Новачок III"
+    _login30:
+      title: "Міскієць I"
+    _login60:
+      title: "Міскієць II"
+    _login100:
+      title: "Міскієць III"
+    _login200:
+      title: "Завсідник I"
+    _login300:
+      title: "Завсідник II"
+    _login400:
+      title: "Завсідник III"
+    _login500:
+      title: "Ветеран I"
+    _login600:
+      title: "Ветеран II"
+    _login700:
+      title: "Ветеран III"
+    _login1000:
+      flavor: "Дякуємо, що користуєтеся Misskey!"
+    _passedSinceAccountCreated3:
+      description: "Минуло 3 роки з моменту створення акаунта"
+    _loggedInOnBirthday:
+      title: "З Днем народження!"
+    _brainDiver:
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   priority: "Пріоритет"
   _priority:
