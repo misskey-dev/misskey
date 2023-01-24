@@ -81,7 +81,7 @@ const headerTabs = $computed(() => user ? [{
 }, ...(user.host == null ? [{
 	key: 'achievements',
 	title: i18n.ts.achievements,
-	icon: 'ti ti-military-award',
+	icon: 'ti ti-medal',
 }] : []), ...($i && ($i.id === user.id)) || user.publicReactions ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,

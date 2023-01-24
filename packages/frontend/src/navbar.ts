@@ -105,7 +105,7 @@ export const navbarItemDef = reactive({
 	},
 	achievements: {
 		title: i18n.ts.achievements,
-		icon: 'ti ti-military-award',
+		icon: 'ti ti-medal',
 		show: computed(() => $i != null),
 		to: '/my/achievements',
 	},
