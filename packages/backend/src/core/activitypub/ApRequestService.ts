@@ -41,10 +41,10 @@ export class ApRequestService {
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
-		this.logger = this.loggerService?.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
-		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption({
+		this.logger = this.loggerService.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
+		this.undiciFetcher = this.httpRequestService.createFetcher({
 			maxRedirections: 0,
-		}), this.logger );
+		}, {}, this.logger);
 	}
 
 	@bindThis
@@ -169,7 +169,7 @@ export class ApRequestService {
 				method: req.request.method,
 				headers: req.request.headers,
 				body,
-			}
+			},
 		);
 	}
 
@@ -197,7 +197,7 @@ export class ApRequestService {
 			{
 				method: req.request.method,
 				headers: req.request.headers,
-			}
+			},
 		);
 
 		return await res.json();
