@@ -19,13 +19,13 @@
 		"test-and-coverage": "pnpm jest-and-coverage"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs": "^4.1.0",
-		"@tensorflow/tfjs-node": "4.1.0"
+		"@tensorflow/tfjs": "^4.2.0",
+		"@tensorflow/tfjs-node": "4.2.0"
 	},
 	"dependencies": {
-		"@bull-board/api": "^4.10.2",
-		"@bull-board/fastify": "^4.10.2",
-		"@bull-board/ui": "^4.10.2",
+		"@bull-board/api": "^4.11.0",
+		"@bull-board/fastify": "^4.11.0",
+		"@bull-board/ui": "^4.11.0",
 		"@discordapp/twemoji": "14.0.2",
 		"@fastify/accepts": "4.1.0",
 		"@fastify/cookie": "^8.3.0",
@@ -63,15 +63,14 @@
 		"file-type": "18.2.0",
 		"fluent-ffmpeg": "2.1.2",
 		"form-data": "^4.0.0",
-		"got": "12.5.3",
+		"got": "^12.5.3",
 		"hpagent": "1.2.0",
 		"ioredis": "4.28.5",
 		"ip-cidr": "3.0.11",
 		"is-svg": "4.3.2",
 		"js-yaml": "4.1.0",
-		"jsdom": "21.0.0",
+		"jsdom": "21.1.0",
 		"json5": "2.2.3",
-		"json5-loader": "4.0.1",
 		"jsonld": "8.1.0",
 		"jsrsasign": "10.6.1",
 		"mfm-js": "0.23.3",
@@ -120,14 +119,14 @@
 		"typeorm": "0.3.11",
 		"typescript": "4.9.4",
 		"ulid": "2.3.0",
-		"undici": "^5.15.1",
 		"unzipper": "0.10.11",
 		"uuid": "9.0.0",
 		"vary": "1.1.2",
 		"web-push": "3.5.0",
 		"websocket": "1.0.34",
 		"ws": "8.12.0",
-		"xev": "3.0.2"
+		"xev": "3.0.2",
+		"node-fetch": "3.3.0"
 	},
 	"devDependencies": {
 		"@redocly/openapi-core": "1.0.0-beta.120",
@@ -176,14 +175,13 @@
 		"@types/web-push": "3.3.2",
 		"@types/websocket": "1.0.5",
 		"@types/ws": "8.5.4",
-		"@typescript-eslint/eslint-plugin": "5.48.2",
-		"@typescript-eslint/parser": "5.48.2",
+		"@typescript-eslint/eslint-plugin": "5.49.0",
+		"@typescript-eslint/parser": "5.49.0",
 		"cross-env": "7.0.3",
 		"eslint": "8.32.0",
 		"eslint-plugin-import": "2.27.5",
 		"execa": "6.1.0",
 		"jest": "29.3.1",
-		"jest-mock": "^29.3.1",
-		"node-fetch": "3.3.0"
+		"jest-mock": "^29.3.1"
 	}
 }

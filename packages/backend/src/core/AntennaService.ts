@@ -77,10 +77,16 @@ export class AntennaService implements OnApplicationShutdown {
 			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'antennaCreated':
-					this.antennas.push(body);
+					this.antennas.push({
+						...body,
+						createdAt: new Date(body.createdAt),
+					});
 					break;
 				case 'antennaUpdated':
-					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = body;
+					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
+						...body,
+						createdAt: new Date(body.createdAt),
+					};
 					break;
 				case 'antennaDeleted':
 					this.antennas = this.antennas.filter(a => a.id !== body.id);

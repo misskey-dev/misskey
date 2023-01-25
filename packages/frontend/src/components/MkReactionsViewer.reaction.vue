@@ -21,6 +21,7 @@ import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import { claimAchievement } from '@/scripts/achievements';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	reaction: string;
@@ -61,6 +62,7 @@ const toggleReaction = () => {
 
 const anime = () => {
 	if (document.hidden) return;
+	if (!defaultStore.state.animation) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
