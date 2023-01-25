@@ -91,10 +91,12 @@ export class RoleService implements OnApplicationShutdown {
 				case 'roleCreated': {
 					const cached = this.rolesCache.get(null);
 					if (cached) {
-						body.createdAt = new Date(body.createdAt);
-						body.updatedAt = new Date(body.updatedAt);
-						body.lastUsedAt = new Date(body.lastUsedAt);
-						cached.push(body);
+						cached.push({
+							...body,
+							createdAt: new Date(body.createdAt),
+							updatedAt: new Date(body.updatedAt),
+							lastUsedAt: new Date(body.lastUsedAt),
+						});
 					}
 					break;
 				}
@@ -103,10 +105,12 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						const i = cached.findIndex(x => x.id === body.id);
 						if (i > -1) {
-							body.createdAt = new Date(body.createdAt);
-							body.updatedAt = new Date(body.updatedAt);
-							body.lastUsedAt = new Date(body.lastUsedAt);
-							cached[i] = body;
+							cached[i] = {
+								...body,
+								createdAt: new Date(body.createdAt),
+								updatedAt: new Date(body.updatedAt),
+								lastUsedAt: new Date(body.lastUsedAt),
+							};
 						}
 					}
 					break;
@@ -121,8 +125,10 @@ export class RoleService implements OnApplicationShutdown {
 				case 'userRoleAssigned': {
 					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
 					if (cached) {
-						body.createdAt = new Date(body.createdAt);
-						cached.push(body);
+						cached.push({
+							...body,
+							createdAt: new Date(body.createdAt),
+						});
 					}
 					break;
 				}
