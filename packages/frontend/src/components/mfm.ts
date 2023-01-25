@@ -190,19 +190,19 @@ export default defineComponent({
 							return h(MkSparkle, {}, genEl(token.children));
 						}
 						case 'rotate': {
-							const degrees = parseInt(token.props.args.deg) ?? '90';
+							const degrees = parseFloat(token.props.args.deg) ?? '90';
 							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 							break;
 						}
 						case 'position': {
-							const x = parseInt(token.props.args.x ?? '0');
-							const y = parseInt(token.props.args.y ?? '0');
+							const x = parseFloat(token.props.args.x ?? '0');
+							const y = parseFloat(token.props.args.y ?? '0');
 							style = `transform: translateX(${x}em) translateY(${y}em);`;
 							break;
 						}
 						case 'scale': {
-							const x = Math.min(parseInt(token.props.args.x ?? '1'), 5);
-							const y = Math.min(parseInt(token.props.args.y ?? '1'), 5);
+							const x = Math.min(parseFloat(token.props.args.x ?? '1'), 5);
+							const y = Math.min(parseFloat(token.props.args.y ?? '1'), 5);
 							style = `transform: scale(${x}, ${y});`;
 							break;
 						}
