@@ -142,7 +142,7 @@ importers:
       file-type: 18.2.0
       fluent-ffmpeg: 2.1.2
       form-data: ^4.0.0
-      got: 12.5.3
+      got: ^12.5.3
       hpagent: 1.2.0
       ioredis: 4.28.5
       ip-cidr: 3.0.11
@@ -201,7 +201,6 @@ importers:
       typeorm: 0.3.11
       typescript: 4.9.4
       ulid: 2.3.0
-      undici: ^5.16.0
       unzipper: 0.10.11
       uuid: 9.0.0
       vary: 1.1.2
@@ -265,6 +264,7 @@ importers:
       misskey-js: 0.0.14
       ms: 3.0.0-canary.1
       nested-property: 4.0.0
+      node-fetch: 3.3.0
       nodemailer: 6.9.0
       nsfwjs: 2.4.2_@tensorflow+tfjs@4.2.0
       oauth: 0.10.0
@@ -306,7 +306,6 @@ importers:
       typeorm: 0.3.11_ioredis@4.28.5+pg@8.8.0
       typescript: 4.9.4
       ulid: 2.3.0
-      undici: 5.16.0
       unzipper: 0.10.11
       uuid: 9.0.0
       vary: 1.1.2
@@ -372,7 +371,6 @@ importers:
       execa: 6.1.0
       jest: 29.3.1_@types+node@18.11.18
       jest-mock: 29.3.1
-      node-fetch: 3.3.0
 
   packages/frontend:
     specifiers:
@@ -3801,7 +3799,7 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -3809,7 +3807,7 @@ packages:
   /axios/0.27.2_debug@4.3.4:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -6973,7 +6971,7 @@ packages:
       readable-stream: 2.3.7
     dev: false
 
-  /follow-redirects/1.15.2_debug@4.3.4:
+  /follow-redirects/1.15.2:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -6981,8 +6979,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dependencies:
-      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
