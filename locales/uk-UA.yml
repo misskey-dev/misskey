@@ -956,9 +956,11 @@ _achievements:
     _login3:
       title: "Новачок I"
       description: "3 дні користування загально"
+      flavor: "Відсьогодні називайте мене \"Місскіст\""
     _login7:
       title: "Новачок II"
       description: "7 днів користування загально"
+      flavor: "Ви звикли до цього?"
     _login15:
       title: "Новачок III"
       description: "15 днів користування загально"
