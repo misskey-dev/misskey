@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 13.2.2 (2023/01/25)
+### Improvements
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- サインイン時に誤ったレートリミットがかかることがある問題を修正
+- MFMのposition、rotate、scaleで小数が使えない問題を修正
+
 ## 13.2.1 (2023/01/24)
 ### Improvements
 - デザインの調整
