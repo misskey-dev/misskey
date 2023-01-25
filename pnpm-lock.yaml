@@ -142,7 +142,7 @@ importers:
       file-type: 18.2.0
       fluent-ffmpeg: 2.1.2
       form-data: ^4.0.0
-      got: 12.5.3
+      got: ^12.5.3
       hpagent: 1.2.0
       ioredis: 4.28.5
       ip-cidr: 3.0.11
@@ -201,7 +201,6 @@ importers:
       typeorm: 0.3.11
       typescript: 4.9.4
       ulid: 2.3.0
-      undici: ^5.16.0
       unzipper: 0.10.11
       uuid: 9.0.0
       vary: 1.1.2
@@ -306,7 +305,6 @@ importers:
       typeorm: 0.3.11_ioredis@4.28.5+pg@8.8.0
       typescript: 4.9.4
       ulid: 2.3.0
-      undici: 5.16.0
       unzipper: 0.10.11
       uuid: 9.0.0
       vary: 1.1.2
