@@ -901,6 +901,7 @@ show: "Відображення"
 color: "Колір"
 achievements: "Досягнення"
 _achievements:
+  earnedAt: "Відкрито"
   _types:
     _notes1:
       title: "налаштовую свій msky"
@@ -954,30 +955,72 @@ _achievements:
       flavor: "Так багато потрібно сказати?"
     _login3:
       title: "Новачок I"
+      description: "3 дні користування загально"
     _login7:
       title: "Новачок II"
+      description: "7 днів користування загально"
     _login15:
       title: "Новачок III"
+      description: "15 днів користування загально"
     _login30:
       title: "Міскієць I"
+      description: "30 днів користування загально"
     _login60:
       title: "Міскієць II"
+      description: "60 днів користування загально"
     _login100:
       title: "Міскієць III"
+      description: "100 днів користування загально"
     _login200:
       title: "Завсідник I"
+      description: "200 днів користування загально"
     _login300:
       title: "Завсідник II"
+      description: "300 днів користування загально"
     _login400:
       title: "Завсідник III"
+      description: "400 днів користування загально"
     _login500:
       title: "Ветеран I"
+      description: "500 днів користування загально"
     _login600:
       title: "Ветеран II"
+      description: "600 днів користування загально"
     _login700:
       title: "Ветеран III"
+      description: "700 днів користування загально"
+    _login800:
+      description: "800 днів користування загально"
+    _login900:
+      description: "900 днів користування загально"
     _login1000:
+      description: "1000 днів користування загально"
       flavor: "Дякуємо, що користуєтеся Misskey!"
+    _following50:
+      description: "Кількість підписок сягнула 50"
+    _following100:
+      title: "100 друзів"
+      description: "Кількість підписок сягнула 100"
+    _following300:
+      title: "Надлишок друзів"
+      description: "Кількість підписок сягнула 300"
+    _followers1:
+      title: "Перший підписник"
+      description: "З'явився перший підписник"
+    _followers10:
+      title: "Follow me!"
+      description: "Кількість підписників досягла 10"
+    _followers50:
+      description: "Кількість підписників досягла 50"
+    _followers100:
+      description: "Кількість підписників досягла 100"
+    _followers300:
+      description: "Кількість підписників досягла 300"
+    _followers500:
+      description: "Кількість підписників досягла 500"
+    _followers1000:
+      title: "Інфлюенсер"
+      description: "Кількість підписників досягла 1000"
     _passedSinceAccountCreated3:
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
