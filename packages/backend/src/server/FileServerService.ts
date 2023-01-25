@@ -1,4 +1,5 @@
 import * as fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
@@ -12,7 +13,7 @@ import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
+import { IImage, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
@@ -138,7 +139,7 @@ export class FileServerService {
 				const convertFile = async () => {
 					if (file.fileRole === 'thumbnail') {
 						if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(file.mime)) {
-							return this.imageProcessingService.convertToWebpStream(
+							return await this.imageProcessingService.convertToWebp(
 								file.path,
 								498,
 								280
@@ -150,7 +151,7 @@ export class FileServerService {
 
 					if (file.fileRole === 'webpublic') {
 						if (['image/svg+xml'].includes(file.mime)) {
-							return this.imageProcessingService.convertToWebpStream(
+							return await this.imageProcessingService.convertToWebp(
 								file.path,
 								2048,
 								2048,
@@ -160,18 +161,13 @@ export class FileServerService {
 					}
 
 					return {
-						data: fs.createReadStream(file.path),
+						data: await readFile(file.path),
 						ext: file.ext,
 						type: file.mime,
 					};
 				};
 
 				const image = await convertFile();
-
-				if (typeof image.data === 'object' && 'pipe' in image.data && typeof image.data.pipe === 'function') {
-					image.data.on('end', file.cleanup);
-					image.data.on('close', file.cleanup);
-				}
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
@@ -196,9 +192,8 @@ export class FileServerService {
 				reply.header('Content-Disposition', contentDisposition('inline', file.file.name));
 				return stream;
 			}
-		} catch (e) {
+		} finally {
 			if ('cleanup' in file) file.cleanup();
-			throw e;
 		}
 	}
 
@@ -229,11 +224,11 @@ export class FileServerService {
 			const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image');
 			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image');
 
-			let image: IImageStreamable | null = null;
+			let image: IImage | null = null;
 			if ('emoji' in request.query && isConvertibleImage) {
 				if (!isAnimationConvertibleImage && !('static' in request.query)) {
 					image = {
-						data: fs.createReadStream(file.path),
+						data: await readFile(file.path),
 						ext: file.ext,
 						type: file.mime,
 					};
@@ -252,9 +247,9 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 498, 280);
+				image = await this.imageProcessingService.convertToWebp(file.path, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 200, 200);
+				image = await this.imageProcessingService.convertToWebp(file.path, 200, 200);
 			} else if ('badge' in request.query) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
@@ -291,30 +286,24 @@ export class FileServerService {
 					type: 'image/png',
 				};
 			} else if (file.mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
+				image = await this.imageProcessingService.convertToWebp(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			}
 
 			if (!image) {
 				image = {
-					data: fs.createReadStream(file.path),
+					data: await readFile(file.path),
 					ext: file.ext,
 					type: file.mime,
 				};
 			}
 
-			if (typeof image.data === 'object' && 'pipe' in image.data && typeof image.data.pipe === 'function' && 'cleanup' in file) {
-				image.data.on('end', file.cleanup);
-				image.data.on('close', file.cleanup);
-			}
-
 			reply.header('Content-Type', image.type);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			return image.data;
-		} catch (e) {
+		} finally {
 			if ('cleanup' in file) file.cleanup();
-			throw e;
 		}
 	}
 
