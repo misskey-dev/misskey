@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { Readable } from 'node:stream';
 
 export type IImage = {
 	data: Buffer;
@@ -11,7 +10,7 @@ export type IImage = {
 };
 
 export type IImageStream = {
-	data: NodeJS.ReadableStream;
+	data: Readable;
 	ext: string | null;
 	type: string;
 };
@@ -28,6 +27,7 @@ export const webpDefault: sharp.WebpOptions = {
 };
 
 import { bindThis } from '@/decorators.js';
+import { Readable } from 'node:stream';
 
 @Injectable()
 export class ImageProcessingService {
@@ -72,38 +72,20 @@ export class ImageProcessingService {
 	 *   with resize, remove metadata, resolve orientation, stop animation
 	 */
 	@bindThis
-	public convertSharpToWebpStream(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): sharp.Sharp {
-		return sharp
-			.resize(width, height, {
-				fit: 'inside',
-				withoutEnlargement: true,
-			})
-			.rotate()
-			.webp(options);
-	}
-	
-	@bindThis
-	public convertSharpToWebpStreamObj(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageStream {
-		return {
-			data: this.convertSharpToWebpStream(sharp, width, height, options),
-			ext: 'webp',
-			type: 'image/webp',
-		}
-	}
-
-	@bindThis
-	public convertToWebpFromReadable(readable: Readable, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageStream {
-		return this.convertSharpToWebpStreamObj(readable.pipe(sharp()), width, height, options);
-	}
-
-	@bindThis
 	public async convertToWebp(path: string, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
 		return this.convertSharpToWebp(await sharp(path), width, height, options);
 	}
 
 	@bindThis
 	public async convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
-		const data = await this.convertSharpToWebpStream(sharp, width, height, options).toBuffer();
+		const data = await sharp
+			.resize(width, height, {
+				fit: 'inside',
+				withoutEnlargement: true,
+			})
+			.rotate()
+			.webp(options)
+			.toBuffer();
 
 		return {
 			data,

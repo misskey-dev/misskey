@@ -11,12 +11,12 @@ import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
-import { DownloadService, NonNullBodyResponse } from '@/core/DownloadService.js';
+import { DownloadService } from '@/core/DownloadService.js';
 import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
-import { FileInfoService, TYPE_SVG } from '@/core/FileInfoService.js';
+import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
@@ -139,13 +139,12 @@ export class FileServerService {
 				const convertFile = async () => {
 					if (file.fileRole === 'thumbnail') {
 						if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(file.mime)) {
-							return this.imageProcessingService.convertToWebpFromReadable(
-								file.stream,
+							return this.imageProcessingService.convertToWebp(
+								file.path,
 								498,
 								280
 							);
 						} else if (file.mime.startsWith('video/')) {
-							await file.fileSaving;
 							return await this.videoProcessingService.generateVideoThumbnail(file.path);
 						}
 					}
@@ -153,8 +152,8 @@ export class FileServerService {
 					if (file.fileRole === 'webpublic') {
 						if (['image/svg+xml'].includes(file.mime)) {
 							return {
-								data: this.imageProcessingService.convertToWebpFromReadable(
-										file.stream,
+								data: this.imageProcessingService.convertToWebp(
+										file.path,
 										2048,
 										2048,
 										{ ...webpDefault, lossless: true }
@@ -166,7 +165,7 @@ export class FileServerService {
 					}
 
 					return {
-						data: file.stream,
+						data: fs.createReadStream(file.path),
 						ext: file.ext,
 						type: file.mime,
 					};
@@ -187,13 +186,14 @@ export class FileServerService {
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.mime) ? file.mime : 'application/octet-stream');
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition', contentDisposition('inline', filename));
-				return file.stream;
+				return fs.createReadStream(file.path);
 			} else {
-				file.stream.on('error', this.commonReadableHandlerGenerator(reply));
+				const stream = fs.createReadStream(file.path);
+				stream.on('error', this.commonReadableHandlerGenerator(reply));
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.file.type) ? file.file.type : 'application/octet-stream');
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				reply.header('Content-Disposition', contentDisposition('inline', file.file.name));
-				return file.stream;
+				return stream;
 			}
 		} finally {
 			if ('cleanup' in file) file.cleanup();
@@ -231,26 +231,18 @@ export class FileServerService {
 			if ('emoji' in request.query && isConvertibleImage) {
 				if (!isAnimationConvertibleImage && !('static' in request.query)) {
 					image = {
-						data: file.stream,
+						data: fs.createReadStream(file.path),
 						ext: file.ext,
 						type: file.mime,
 					};
 				} else {
-					const data = pipeline(
-						file.stream,
-						sharp({ animated: !('static' in request.query) })
+					const data = sharp(file.path, { animated: !('static' in request.query) })
 							.resize({
 								height: 128,
 								withoutEnlargement: true,
 							})
-							.webp(webpDefault),
-						err => {
-							if (err) {
-								this.logger.error('Sharp pipeline error (emoji)', err);
-								throw new StatusError('Internal Error occured (in emoji pipeline, MediaProxy)', 500, 'Internal Error occured');
-							}
-						}
-					);
+							.webp(webpDefault)
+							.toBuffer();
 
 					image = {
 						data,
@@ -259,25 +251,16 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertToWebpFromReadable(file.stream, 498, 280);
+				image = this.imageProcessingService.convertToWebp(file.path, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertToWebpFromReadable(file.stream, 200, 200);
+				image = this.imageProcessingService.convertToWebp(file.path, 200, 200);
 			} else if ('badge' in request.query) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
 					throw new StatusError('Unexpected mime', 404);
 				}
 
-				const path = await (async () => {
-					if (file.state === 'stored_internal') {
-						return file.path;
-					} else {
-						await file.fileSaving;
-						return file.path;
-					}
-				})();
-
-				const mask = sharp(path)
+				const mask = sharp(file.path)
 					.resize(96, 96, {
 						fit: 'inside',
 						withoutEnlargement: false,
@@ -307,14 +290,14 @@ export class FileServerService {
 					type: 'image/png',
 				};
 			} else if (file.mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertToWebpFromReadable(file.stream, 2048, 2048);
+				image = this.imageProcessingService.convertToWebp(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			}
 
 			if (!image) {
 				image = {
-					data: file.stream,
+					data: fs.createReadStream(file.path),
 					ext: file.ext,
 					type: file.mime,
 				};
@@ -330,8 +313,8 @@ export class FileServerService {
 
 	@bindThis
 	private async getStreamAndTypeFromUrl(url: string): Promise<
-		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: DriveFile; stream: Readable; mime: string; ext: string | null; path: string; cleanup: () => void; fileSaving: Promise<any> }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; stream: Readable; mime: string; ext: string | null; path: string; }
+		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; }
 		| '404'
 		| '204'
 	> {
@@ -347,21 +330,18 @@ export class FileServerService {
 
 	@bindThis
 	private async downloadAndDetectTypeFromUrl(url: string): Promise<
-		{ state: 'remote' ; stream: Readable; mime: string; ext: string | null; path: string; cleanup: () => void; fileSaving: Promise<any> }
+		{ state: 'remote' ; mime: string; ext: string | null; path: string; cleanup: () => void; }
 	> {
 		const [path, cleanup] = await createTemp();
 		try {
-			const response = await this.downloadService.fetchUrl(url);
-			const fileSaving = this.downloadService.pipeRequestToFile(response, path);
-	
-			const { mime, ext } = await this.fileInfoService.detectResponseType(response, path, fileSaving);
+			const response = await this.downloadService.downloadUrl(url, path);
+
+			const { mime, ext } = await this.fileInfoService.detectType(path);
 	
 			return {
 				state: 'remote',
-				stream: Readable.fromWeb(response.body),
 				mime, ext,
 				path, cleanup,
-				fileSaving,
 			}
 		} catch (e) {
 			cleanup();
@@ -371,8 +351,8 @@ export class FileServerService {
 
 	@bindThis
 	private async getFileFromKey(key: string): Promise<
-		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; stream: Readable; mime: string; ext: string | null; path: string; cleanup: () => void; fileSaving: Promise<any> }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; stream: Readable; mime: string; ext: string | null; path: string; }
+		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; }
 		| '404'
 		| '204'
 	> {
@@ -406,7 +386,6 @@ export class FileServerService {
 				state: 'stored_internal',
 				fileRole: isThumbnail ? 'thumbnail' : 'webpublic',
 				file,
-				stream: this.internalStorageService.read(key),
 				mime, ext,
 				path,
 			};
@@ -416,7 +395,6 @@ export class FileServerService {
 			state: 'stored_internal',
 			fileRole: 'original',
 			file,
-			stream: this.internalStorageService.read(file.accessKey!),
 			mime: file.type,
 			ext: null,
 			path,

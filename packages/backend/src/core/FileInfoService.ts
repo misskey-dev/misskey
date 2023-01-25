@@ -5,7 +5,7 @@ import * as stream from 'node:stream';
 import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
-import { fileTypeFromFile, fileTypeFromStream } from 'file-type';
+import { fileTypeFromFile } from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
@@ -15,8 +15,6 @@ import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { bindThis } from '@/decorators.js';
-import { Response } from 'undici';
-import { StatusError } from '@/misc/status-error.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -41,7 +39,7 @@ const TYPE_OCTET_STREAM = {
 	ext: null,
 };
 
-export const TYPE_SVG = {
+const TYPE_SVG = {
 	mime: 'image/svg+xml',
 	ext: 'svg',
 };
@@ -308,9 +306,9 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async detectType(path: string): Promise<{
-		mime: string;
-		ext: string | null;
-	}> {
+	mime: string;
+	ext: string | null;
+}> {
 	// Check 0 byte
 		const fileSize = await this.getFileSize(path);
 		if (fileSize === 0) {
@@ -341,47 +339,6 @@ export class FileInfoService {
 	}
 
 	/**
-	 * Detect MIME Type and extension by stream and path for performance
-	 */
-	@bindThis
-	public async detectResponseType(_response: Response, path?: string, fileSavingPromise: Promise<any> = Promise.resolve()): Promise<{
-		mime: string;
-		ext: string | null;
-	}> {
-		const response = _response.clone();
-
-		if (!response.body) {
-			throw new StatusError('No Body', 400, 'No Body');
-		}
-
-		const type = await fileTypeFromStream(stream.Readable.fromWeb(response.body));
-
-		if (type) {
-			// XMLはSVGかもしれない
-			if (path && type.mime === 'application/xml') {
-				await fileSavingPromise;
-				if (await this.checkSvg(path)) {
-					return TYPE_SVG;
-				}	
-			}
-
-			return {
-				mime: type.mime,
-				ext: type.ext,
-			};
-		}
-
-		// 種類が不明でもSVGかもしれない
-		if (path) {
-			await fileSavingPromise;
-			if (await this.checkSvg(path)) return TYPE_SVG;
-		}
-
-		// 種類が不明なら application/octet-stream にする
-		return TYPE_OCTET_STREAM;
-	}
-
-	/**
 	 * Check the file is SVG or not
 	 */
 	@bindThis
@@ -389,7 +346,7 @@ export class FileInfoService {
 		try {
 			const size = await this.getFileSize(path);
 			if (size > 1 * 1024 * 1024) return false;
-			return isSvg(await fs.promises.readFile(path));
+			return isSvg(fs.readFileSync(path));
 		} catch {
 			return false;
 		}
