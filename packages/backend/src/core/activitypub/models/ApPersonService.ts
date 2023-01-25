@@ -566,22 +566,22 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Updating the featured: ${user.uri}`);
 
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		const _resolver = resolver ?? this.apResolverService.createResolver();
 
 		// Resolve to (Ordered)Collection Object
-		const collection = await resolver.resolveCollection(user.featured);
+		const collection = await _resolver.resolveCollection(user.featured);
 		if (!isCollectionOrOrderedCollection(collection)) throw new Error('Object is not Collection or OrderedCollection');
 
 		// Resolve to Object(may be Note) arrays
 		const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
-		const items = await Promise.all(toArray(unresolvedItems).map(x => resolver.resolve(x)));
+		const items = await Promise.all(toArray(unresolvedItems).map(x => _resolver.resolve(x)));
 
 		// Resolve and regist Notes
 		const limit = promiseLimit<Note | null>(2);
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 			.slice(0, 5)
-			.map(item => limit(() => this.apNoteService.resolveNote(item, resolver))));
+			.map(item => limit(() => this.apNoteService.resolveNote(item, _resolver))));
 
 		await this.db.transaction(async transactionalEntityManager => {
 			await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
