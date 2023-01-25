@@ -1007,7 +1007,12 @@ _achievements:
       title: "У пошуках зірок"
     _markedAsCat:
       flavor: "Я дам тобі ім'я пізніше"
+    _following1:
+      title: "Перша підписка"
+    _following10:
+      title: "Так тримати"
     _following50:
+      title: "Багато друзів"
       description: "Кількість підписок сягнула 50"
     _following100:
       title: "100 друзів"
