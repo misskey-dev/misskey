@@ -167,6 +167,12 @@ export class FileServerService {
 				};
 
 				const image = await convertFile();
+
+				if (typeof image.data === 'object' && 'pipe' in image.data && typeof image.data.pipe === 'function') {
+					image.data.on('end', file.cleanup);
+					image.data.on('close', file.cleanup);
+				}
+
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				return image.data;
@@ -190,8 +196,9 @@ export class FileServerService {
 				reply.header('Content-Disposition', contentDisposition('inline', file.file.name));
 				return stream;
 			}
-		} finally {
+		} catch (e) {
 			if ('cleanup' in file) file.cleanup();
+			throw e;
 		}
 	}
 
@@ -297,11 +304,17 @@ export class FileServerService {
 				};
 			}
 
+			if (typeof image.data === 'object' && 'pipe' in image.data && typeof image.data.pipe === 'function' && 'cleanup' in file) {
+				image.data.on('end', file.cleanup);
+				image.data.on('close', file.cleanup);
+			}
+
 			reply.header('Content-Type', image.type);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			return image.data;
-		} finally {
+		} catch (e) {
 			if ('cleanup' in file) file.cleanup();
+			throw e;
 		}
 	}
 
