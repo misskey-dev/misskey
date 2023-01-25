@@ -1005,6 +1005,8 @@ _achievements:
       flavor: "Дякуємо, що користуєтеся Misskey!"
     _myNoteFavorited1:
       title: "У пошуках зірок"
+    _markedAsCat:
+      flavor: "Я дам тобі ім'я пізніше"
     _following50:
       description: "Кількість підписок сягнула 50"
     _following100:
