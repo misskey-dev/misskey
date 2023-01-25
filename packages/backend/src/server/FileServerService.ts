@@ -139,7 +139,7 @@ export class FileServerService {
 				const convertFile = async () => {
 					if (file.fileRole === 'thumbnail') {
 						if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(file.mime)) {
-							return this.imageProcessingService.convertToWebp(
+							return this.imageProcessingService.convertToWebpStream(
 								file.path,
 								498,
 								280
@@ -151,16 +151,12 @@ export class FileServerService {
 
 					if (file.fileRole === 'webpublic') {
 						if (['image/svg+xml'].includes(file.mime)) {
-							return {
-								data: this.imageProcessingService.convertToWebp(
-										file.path,
-										2048,
-										2048,
-										{ ...webpDefault, lossless: true }
-									),
-								ext: 'webp',
-								type: 'image/webp',
-							};
+							return this.imageProcessingService.convertToWebpStream(
+								file.path,
+								2048,
+								2048,
+								{ ...webpDefault, lossless: true }
+							)
 						}
 					}
 
@@ -241,8 +237,7 @@ export class FileServerService {
 								height: 128,
 								withoutEnlargement: true,
 							})
-							.webp(webpDefault)
-							.toBuffer();
+							.webp(webpDefault);
 
 					image = {
 						data,
@@ -251,9 +246,9 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertToWebp(file.path, 498, 280);
+				image = this.imageProcessingService.convertToWebpStream(file.path, 498, 280);
 			} else if ('preview' in request.query && isConvertibleImage) {
-				image = this.imageProcessingService.convertToWebp(file.path, 200, 200);
+				image = this.imageProcessingService.convertToWebpStream(file.path, 200, 200);
 			} else if ('badge' in request.query) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
@@ -290,7 +285,7 @@ export class FileServerService {
 					type: 'image/png',
 				};
 			} else if (file.mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertToWebp(file.path, 2048, 2048);
+				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			}
