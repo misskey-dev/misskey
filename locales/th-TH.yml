@@ -942,14 +942,51 @@ achievements: "ความสำเร็จ"
 _achievements:
   earnedAt: "ได้รับเมื่อ"
   _types:
+    _notes1:
+      title: "เพียงแค่ตั้งค่า msky ของฉัน"
     _followers100:
       title: "บุคคลที่เป็นที่นิยม"
     _followers500:
       title: "เสาสัญญาณ"
+    _followers1000:
+      title: "ผู้ทรงอิทธิพล"
     _iLoveMisskey:
       title: "ฉันรัก Misskey"
+      description: "โพสต์ \"I ❤ #Misskey\""
+    _foundTreasure:
+      title: "ล่าสมบัติ"
+      description: "คุณพบสมบัติที่ซ่อนอยู่"
+    _client30min:
+      title: "พักผ่อนสักหน่อย"
+    _noteDeletedWithin1min:
+      title: "ไม่เป็นไร"
+    _postedAtLateNight:
+      title: "กลางคืน"
+    _viewInstanceChart:
+      title: "วิเคราะห์"
+      description: "ดูแผนภูมิอินสแตนซ์ของคุณ"
     _driveFolderCircularReference:
       title: "อ้างอิงวงจร"
+    _clickedClickHere:
+      title: "คลิ๊กที่นี่"
+      description: "คุณได้คลิกที่นี่"
+    _passedSinceAccountCreated1:
+      title: "ครบรอบหนึ่งปี"
+    _passedSinceAccountCreated2:
+      title: "ครบรอบสองปี"
+    _passedSinceAccountCreated3:
+      title: "ครบรอบสามปี"
+    _loggedInOnBirthday:
+      title: "สุขสันต์วันเกิด"
+      description: "เข้าสู่ระบบในวันเกิดของคุณ"
+    _loggedInOnNewYearsDay:
+      title: "สวัสดีปีใหม่!"
+      description: "เข้าสู่ระบบในวันแรกของปี"
+    _cookieClicked:
+      description: "คลิกคุกกี้"
+    _brainDiver:
+      title: "Brain Diver"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "บทบาทใหม่"
   edit: "แก้ไขบทบาท"

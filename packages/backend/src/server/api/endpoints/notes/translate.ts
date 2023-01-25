@@ -7,8 +7,8 @@ import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -83,20 +83,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const endpoint = instance.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
 
-			const res = await this.httpRequestService.fetch(
-				endpoint,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-						Accept: 'application/json, */*',
-					},
-					body: params.toString(),
+			const res = await this.httpRequestService.send(endpoint, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					Accept: 'application/json, */*',
 				},
-				{
-					noOkError: false,
-				}
-			);
+				body: params.toString(),
+			});
 
 			const json = (await res.json()) as {
 				translations: {

@@ -496,10 +496,10 @@ export class UserEntityService implements OnModuleInit {
 				showTimelineReplies: user.showTimelineReplies ?? falsy,
 				achievements: profile!.achievements,
 				loggedInDays: profile!.loggedInDates.length,
+				policies: this.roleService.getUserPolicies(user.id),
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				policies: this.roleService.getUserPolicies(user.id),
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 				securityKeysList: profile!.twoFactorEnabled
