@@ -328,7 +328,7 @@ export class FileServerService {
 	> {
 		const [path, cleanup] = await createTemp();
 		try {
-			const response = await this.downloadService.downloadUrl(url, path);
+			await this.downloadService.downloadUrl(url, path);
 
 			const { mime, ext } = await this.fileInfoService.detectType(path);
 	
