@@ -4,6 +4,7 @@ import MkUrl from '@/components/global/MkUrl.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
+import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import { concat } from '@/scripts/array';
 import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
@@ -46,6 +47,10 @@ export default defineComponent({
 		isNote: {
 			type: Boolean,
 			default: true,
+		},
+		emojiUrls: {
+			type: Object,
+			default: null,
 		},
 	},
 
@@ -301,20 +306,35 @@ export default defineComponent({
 				}
 
 				case 'emojiCode': {
-					return [h(MkEmoji, {
-						key: Math.random(),
-						emoji: `:${token.props.name}:`,
-						normal: this.plain,
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+					if (this.author?.host == null) {
+						return [h(MkCustomEmoji, {
+							key: Math.random(),
+							name: token.props.name,
+							normal: this.plain,
+							host: null,
+						})];
+					} else {
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						host: this.author?.host,
-					})];
+						if (this.emojiUrls && (this.emojiUrls[token.props.name] == null)) {
+							return [h('span', `:${token.props.name}:`)];
+						} else {
+							return [h(MkCustomEmoji, {
+								key: Math.random(),
+								name: token.props.name,
+								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+								url: this.emojiUrls ? this.emojiUrls[token.props.name] : null,
+								normal: this.plain,
+								host: this.author.host,
+							})];
+						}
+					}
 				}
 
 				case 'unicodeEmoji': {
 					return [h(MkEmoji, {
 						key: Math.random(),
 						emoji: token.props.emoji,
-						normal: this.plain,
 					})];
 				}
 
