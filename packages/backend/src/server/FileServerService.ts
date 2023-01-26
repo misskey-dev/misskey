@@ -170,9 +170,13 @@ export class FileServerService {
 
 				const image = await convertFile();
 
-				if (typeof image.data === 'object' && 'pipe' in image.data && typeof image.data.pipe === 'function') {
+				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
+					// image.dataがstreamなら、stream終了後にcleanup
 					image.data.on('end', file.cleanup);
 					image.data.on('close', file.cleanup);
+				} else {
+					// image.dataがstreamでないなら直ちにcleanup
+					file.cleanup();
 				}
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
@@ -306,9 +310,15 @@ export class FileServerService {
 				};
 			}
 
-			if (typeof image.data === 'object' && 'pipe' in image.data && typeof image.data.pipe === 'function' && 'cleanup' in file) {
-				image.data.on('end', file.cleanup);
-				image.data.on('close', file.cleanup);
+			if ('cleanup' in file) {
+				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
+					// image.dataがstreamなら、stream終了後にcleanup
+					image.data.on('end', file.cleanup);
+					image.data.on('close', file.cleanup);
+				} else {
+					// image.dataがstreamでないなら直ちにcleanup
+					file.cleanup();
+				}
 			}
 
 			reply.header('Content-Type', image.type);
