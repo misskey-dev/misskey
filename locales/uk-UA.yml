@@ -956,9 +956,11 @@ _achievements:
     _login3:
       title: "Новачок I"
       description: "3 дні користування загально"
+      flavor: "Відсьогодні називайте мене \"Місскіст\""
     _login7:
       title: "Новачок II"
       description: "7 днів користування загально"
+      flavor: "Ви звикли до цього?"
     _login15:
       title: "Новачок III"
       description: "15 днів користування загально"
@@ -971,6 +973,7 @@ _achievements:
     _login100:
       title: "Міскієць III"
       description: "100 днів користування загально"
+      flavor: "Цей юзер лютий місскіст"
     _login200:
       title: "Завсідник I"
       description: "200 днів користування загально"
@@ -983,6 +986,7 @@ _achievements:
     _login500:
       title: "Ветеран I"
       description: "500 днів користування загально"
+      flavor: "Meine Kameraden, ich liebe sie, die Notizen."
     _login600:
       title: "Ветеран II"
       description: "600 днів користування загально"
@@ -990,13 +994,25 @@ _achievements:
       title: "Ветеран III"
       description: "700 днів користування загально"
     _login800:
+      title: "Майстер нотаток I"
       description: "800 днів користування загально"
     _login900:
+      title: "Майстер нотаток II"
       description: "900 днів користування загально"
     _login1000:
+      title: "Майстер нотаток III"
       description: "1000 днів користування загально"
       flavor: "Дякуємо, що користуєтеся Misskey!"
+    _myNoteFavorited1:
+      title: "У пошуках зірок"
+    _markedAsCat:
+      flavor: "Я дам тобі ім'я пізніше"
+    _following1:
+      title: "Перша підписка"
+    _following10:
+      title: "Продовжуй, продовжуй"
     _following50:
+      title: "Багато друзів"
       description: "Кількість підписок сягнула 50"
     _following100:
       title: "100 друзів"
@@ -1013,6 +1029,7 @@ _achievements:
     _followers50:
       description: "Кількість підписників досягла 50"
     _followers100:
+      title: "Популярна особа"
       description: "Кількість підписників досягла 100"
     _followers300:
       description: "Кількість підписників досягла 300"
@@ -1021,11 +1038,17 @@ _achievements:
     _followers1000:
       title: "Інфлюенсер"
       description: "Кількість підписників досягла 1000"
+    _passedSinceAccountCreated1:
+      title: "Перша річниця"
+    _passedSinceAccountCreated2:
+      title: "Друга річниця"
     _passedSinceAccountCreated3:
+      title: "Третя річниця"
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
       title: "З Днем народження!"
     _brainDiver:
+      title: "Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   priority: "Пріоритет"
