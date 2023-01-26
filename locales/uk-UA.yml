@@ -1006,6 +1006,8 @@ _achievements:
     _noteClipped1:
       title: "Не можна не зберегти"
       description: "Перша нотатка у добірці"
+    _noteFavorited1:
+      title: "Дивитися на зірки"
     _myNoteFavorited1:
       title: "У пошуках зірок"
     _markedAsCat:
