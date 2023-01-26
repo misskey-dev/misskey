@@ -11,7 +11,8 @@
 			class="_button item"
 			@click="emit('chosen', emoji, $event)"
 		>
-			<MkEmoji class="emoji" :emoji="emoji" :normal="true"/>
+			<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+			<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
 		</button>
 	</div>
 </section>
