@@ -1003,6 +1003,9 @@ _achievements:
       title: "Майстер нотаток III"
       description: "1000 днів користування загально"
       flavor: "Дякуємо, що користуєтеся Misskey!"
+    _noteClipped1:
+      title: "Не можна не зберегти"
+      description: "Перша нотатка у добірці"
     _myNoteFavorited1:
       title: "У пошуках зірок"
     _markedAsCat:
