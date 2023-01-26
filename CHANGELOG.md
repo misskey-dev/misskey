@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 13.2.3 (2023/01/26)
+### Improvements
+- カスタム絵文字の更新をリアルタイムで反映するように
+
+### Bugfixes
+- turnstile-failed: missing-input-secret
+
 ## 13.2.2 (2023/01/25)
 ### Improvements
 - サーバーのパフォーマンスを改善
