@@ -103,6 +103,8 @@ export class FileServerService {
 	private async errorHandler(request: FastifyRequest<{ Params?: { [x: string]: any }; Querystring?: { [x: string]: any }; }>, reply: FastifyReply, err?: any) {
 		this.logger.error(`${err}`);
 
+		reply.header('Cache-Control', 'max-age=300');
+
 		if (request.query && 'fallback' in request.query) {
 			return reply.sendFile('/dummy.png', assets);
 		}
