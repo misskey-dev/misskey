@@ -72,7 +72,7 @@ export class FileServerService {
 			serve: false,
 		});
 
-		fastify.get('/app-default.jpg', (request, reply) => {
+		fastify.get('/files/app-default.jpg', (request, reply) => {
 			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
 			reply.header('Content-Type', 'image/jpeg');
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
