@@ -39,13 +39,13 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
-import { customEmojis, getCustomEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
+import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
 import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
 
-const customEmojiCategories = getCustomEmojiCategories();
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');
-let searchEmojis = $ref(null);
+let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
 let selectedTags = $ref(new Set());
 
 function search() {
@@ -55,9 +55,9 @@ function search() {
 	}
 
 	if (selectedTags.size === 0) {
-		searchEmojis = customEmojis.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+		searchEmojis = customEmojis.value.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
 	} else {
-		searchEmojis = customEmojis.filter(emoji => (emoji.name.includes(q) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
+		searchEmojis = customEmojis.value.filter(emoji => (emoji.name.includes(q) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
 	}
 }
 

@@ -154,7 +154,7 @@
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
 			<h1>出现了一些问题！</h1>
-			<button class="button-big" onclick="location.reload(true);">
+			<button class="button-big" onclick="location.reload();">
 				<span class="button-label-big">刷新</span>
 			</button>
 			<p class="dont-worry">不用担心，这(应该)不是您的错。</p>
