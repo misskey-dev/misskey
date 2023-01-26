@@ -18,16 +18,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed, Ref } from 'vue';
 
 const props = defineProps<{
-	emojis: string[];
+	emojis: string[] | Ref<string[]>;
 	initialShown?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'chosen', v: string, event: MouseEvent): void;
 }>();
+
+const emojis = computed(() => Array.isArray(props.emojis) ? props.emojis : props.emojis.value);
 
 const shown = ref(!!props.initialShown);
 </script>

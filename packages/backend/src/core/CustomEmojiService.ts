@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { EmojisRepository } from '@/models/index.js';
@@ -17,6 +19,8 @@ export class CustomEmojiService {
 		private emojisRepository: EmojisRepository,
 
 		private idService: IdService,
+		private emojiEntityService: EmojiEntityService,
+		private globalEventService: GlobalEventService,
 	) {
 	}
 
@@ -41,6 +45,10 @@ export class CustomEmojiService {
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		await this.db.queryResultCache!.remove(['meta_emojis']);
+
+		this.globalEventService.publishBroadcastStream('emojiAdded', {
+			emoji: await this.emojiEntityService.pack(emoji.id),
+		});
 
 		return emoji;
 	}
