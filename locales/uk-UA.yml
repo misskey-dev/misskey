@@ -688,7 +688,7 @@ pageLikesCount: "Кількість отриманих вподобань сто
 pageLikedCount: "Кількість вподобаних сторінок"
 contact: "Контакт"
 useSystemFont: "Використовувати стандартний шрифт системи"
-clips: "Добірка"
+clips: "Добірки"
 experimentalFeatures: "Експериментальні функції"
 developer: "Розробник"
 makeExplorable: "Зробіть обліковий запис видимим у розділі \"Огляд\""
@@ -1010,7 +1010,12 @@ _achievements:
       title: "Дивитися на зірки"
     _myNoteFavorited1:
       title: "У пошуках зірок"
+    _profileFilled:
+      title: "Повна готовність"
+      description: "Профіль заповнено"
     _markedAsCat:
+      title: "Я кіт"
+      description: "Позначено як акаунт кота"
       flavor: "Я дам тобі ім'я пізніше"
     _following1:
       title: "Перша підписка"
@@ -1052,6 +1057,8 @@ _achievements:
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
       title: "З Днем народження!"
+    _loggedInOnNewYearsDay:
+      description: "Увійшли в перший день року"
     _brainDiver:
       title: "Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
