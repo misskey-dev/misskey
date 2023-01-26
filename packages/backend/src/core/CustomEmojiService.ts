@@ -117,7 +117,11 @@ export class CustomEmojiService {
 
 		const isLocal = emoji.host == null;
 		const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-		const url = isLocal ? emojiUrl : `${this.config.url}/proxy/${encodeURIComponent((new URL(emojiUrl)).pathname)}?${query({ url: emojiUrl })}`;
+		const url = isLocal
+			? emojiUrl
+			: this.config.proxyRemoteFiles
+				? `${this.config.url}/proxy/${encodeURIComponent((new URL(emojiUrl)).pathname)}?${query({ url: emojiUrl })}`
+				: emojiUrl;
 
 		return url;
 	}
