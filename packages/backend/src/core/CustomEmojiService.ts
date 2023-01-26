@@ -44,11 +44,13 @@ export class CustomEmojiService {
 			type: data.driveFile.webpublicType ?? data.driveFile.type,
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
-		await this.db.queryResultCache!.remove(['meta_emojis']);
+		if (data.host == null) {
+			await this.db.queryResultCache!.remove(['meta_emojis']);
 
-		this.globalEventService.publishBroadcastStream('emojiAdded', {
-			emoji: await this.emojiEntityService.pack(emoji.id),
-		});
+			this.globalEventService.publishBroadcastStream('emojiAdded', {
+				emoji: await this.emojiEntityService.pack(emoji.id),
+			});
+		}
 
 		return emoji;
 	}
