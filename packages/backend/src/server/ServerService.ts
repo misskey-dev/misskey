@@ -20,7 +20,6 @@ import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
-import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 
@@ -48,7 +47,6 @@ export class ServerService {
 		private wellKnownServerService: WellKnownServerService,
 		private nodeinfoServerService: NodeinfoServerService,
 		private fileServerService: FileServerService,
-		private mediaProxyServerService: MediaProxyServerService,
 		private clientServerService: ClientServerService,
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
@@ -73,8 +71,7 @@ export class ServerService {
 		}
 
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
-		fastify.register(this.fileServerService.createServer, { prefix: '/files' });
-		fastify.register(this.mediaProxyServerService.createServer, { prefix: '/proxy' });
+		fastify.register(this.fileServerService.createServer);
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
@@ -82,12 +79,12 @@ export class ServerService {
 		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
+			reply.header('Cache-Control', 'public, max-age=86400');
+
 			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
 				reply.code(404);
 				return;
 			}
-
-			reply.header('Cache-Control', 'public, max-age=86400');
 
 			const name = path.split('@')[0].replace('.webp', '');
 			const host = path.split('@')[1]?.replace('.webp', '');
@@ -132,6 +129,8 @@ export class ServerService {
 				relations: ['avatar'],
 			});
 
+			reply.header('Cache-Control', 'public, max-age=86400');
+
 			if (user) {
 				reply.redirect(this.userEntityService.getAvatarUrlSync(user));
 			} else {
@@ -143,6 +142,7 @@ export class ServerService {
 			const [temp, cleanup] = await createTemp();
 			await genIdenticon(request.params.x, fs.createWriteStream(temp));
 			reply.header('Content-Type', 'image/png');
+			reply.header('Cache-Control', 'public, max-age=86400');
 			return fs.createReadStream(temp).on('close', () => cleanup());
 		});
 

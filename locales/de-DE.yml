@@ -110,6 +110,7 @@ clickToShow: "Zum Anzeigen anklicken"
 sensitive: "NSFW"
 add: "Hinzufügen"
 reaction: "Reaktionen"
+reactions: "Reaktionen"
 reactionSetting: "In der Reaktionsauswahl anzuzeigende Reaktionen"
 reactionSettingDescription2: "Ziehe um Anzuordnen, klicke um zu löschen, drücke „+“ um hinzuzufügen"
 rememberNoteVisibility: "Notizsichtbarkeit merken"
@@ -931,10 +932,249 @@ undefined: "Undefiniert"
 assign: "Zuweisen"
 unassign: "Entfernen"
 color: "Farbe"
-manageCustomEmojis: "Benutzerdefinierte Emojis verwalten"
+manageCustomEmojis: "Kann benutzerdefinierte Emojis verwalten"
 youCannotCreateAnymore: "Du hast das Erstellungslimit erreicht."
 cannotPerformTemporary: "Vorübergehend nicht verfügbar"
 cannotPerformTemporaryDescription: "Diese Aktion ist wegen des Überschreitenes des Ausführungslimits temporär nicht verfügbar. Bitte versuche es nach einiger Zeit erneut."
+preset: "Vorlage"
+selectFromPresets: "Aus Vorlagen wählen"
+achievements: "Errungenschaften"
+_achievements:
+  earnedAt: "Freigeschaltet am"
+  _types:
+    _notes1:
+      title: "Hallo Misskey!"
+      description: "Sende deine erste Notiz"
+      flavor: "Hab eine schöne Zeit mit Misskey!"
+    _notes10:
+      title: "Ein paar Notizen"
+      description: "10 Notizen gesendet"
+    _notes100:
+      title: "Viele Notizen"
+      description: "100 Notizen gesendet"
+    _notes500:
+      title: "Überschüttet mit Notizen"
+      description: "500 Notizen gesendet"
+    _notes1000:
+      title: "Berg an Notizen"
+      description: "1.000 Notizen gesendet"
+    _notes5000:
+      title: "Überquellende Notizen"
+      description: "5.000 Notizen gesendet"
+    _notes10000:
+      title: "Supernotiz"
+      description: "10.000 Notizen gesendet"
+    _notes20000:
+      title: "Brauche... mehr... Notizen"
+      description: "20.000 Notizen gesendet"
+    _notes30000:
+      title: "Notizen, Notizen, Notizen"
+      description: "30.000 Notizen gesendet"
+    _notes40000:
+      title: "Notizfabrik"
+      description: "40.000 Notizen gesendet"
+    _notes50000:
+      title: "Planet der Notizen"
+      description: "50.000 Notizen gesendet"
+    _notes60000:
+      title: "Notizquasar"
+      description: "60.000 Notizen gesendet"
+    _notes70000:
+      title: "Schwarzes Notizloch"
+      description: "70.000 Notizen gesendet"
+    _notes80000:
+      title: "Notizgalaxie"
+      description: "80.000 Notizen gesendet"
+    _notes90000:
+      title: "Notizversum"
+      description: "90.000 Notizen gesendet"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "100.000 Notizen gesendet"
+      flavor: "Du hast wirklich viel zu sagen."
+    _login3:
+      title: "Anfänger Ⅰ"
+      description: "An 3 Tagen eingeloggt"
+      flavor: "Nenn' mich ab heute Misskist"
+    _login7:
+      title: "Anfänger Ⅱ"
+      description: "An 7 Tagen eingeloggt"
+      flavor: "Na, eingewöht?"
+    _login15:
+      title: "Anfänger Ⅲ"
+      description: "An 15 Tagen eingeloggt"
+    _login30:
+      title: "Misskist Ⅰ"
+      description: "An 30 Tagen eingeloggt"
+    _login60:
+      title: "Misskist Ⅱ"
+      description: "An 60 Tagen eingeloggt"
+    _login100:
+      title: "Misskist Ⅲ"
+      description: "An 100 Tagen eingeloggt"
+      flavor: "Violent Misskist"
+    _login200:
+      title: "Stammbesucher Ⅰ"
+      description: "An 200 Tagen eingeloggt"
+    _login300:
+      title: "Stammbesucher Ⅱ"
+      description: "An 300 Tagen eingeloggt"
+    _login400:
+      title: "Stammbesucher Ⅲ"
+      description: "An 400 Tagen eingeloggt"
+    _login500:
+      title: "Veteran Ⅰ"
+      description: "An 500 Tagen eingeloggt"
+      flavor: "Meine Kameraden, ich liebe sie, die Notizen."
+    _login600:
+      title: "Veteran Ⅱ"
+      description: "An 600 Tagen eingeloggt"
+    _login700:
+      title: "Veteran Ⅲ"
+      description: "An 700 Tagen eingeloggt"
+    _login800:
+      title: "Meister der Notizen Ⅰ"
+      description: "An 800 Tagen eingeloggt"
+    _login900:
+      title: "Meister der Notizen Ⅱ"
+      description: "An 900 Tagen eingeloggt"
+    _login1000:
+      title: "Meister der Notizen Ⅲ"
+      description: "An 1000 Tagen eingeloggt"
+      flavor: "Danke, dass du Misskey nutzt!"
+    _noteClipped1:
+      title: "Muss... clippen..."
+      description: "Die erste Notiz geclippt"
+    _noteFavorited1:
+      title: "Sternengucker"
+      description: "Eine Notiz als Favorit markiert"
+    _myNoteFavorited1:
+      title: "Sternensucher"
+      description: "Ein anderer Benutzer hat eine deiner Notizen als Favoriten markiert"
+    _profileFilled:
+      title: "Perfekte Vorbereitung"
+      description: "Fülle dein Profil aus"
+    _markedAsCat:
+      title: "Ich der Kater"
+      description: "Markiere dein Konto als Katze"
+      flavor: "Einen Namen bekommst du später. "
+    _following1:
+      title: "Das Folgen beginnt"
+      description: "Du folgst deiner ersten Person"
+    _following10:
+      title: "Folge ihnen... folge ihnen..."
+      description: "Du folgst über 10 Leuten"
+    _following50:
+      title: "Viele Freunde"
+      description: "Du folgst über 50 Leuten"
+    _following100:
+      title: "100 Freunde"
+      description: "Du folgst über 100 Leuten"
+    _following300:
+      title: "Freundeüberschuss"
+      description: "Du folgst über 300 Leuten"
+    _followers1:
+      title: "Der erste Follower"
+      description: "Du hast deinen ersten Follower erhalten"
+    _followers10:
+      title: "Mir nach!"
+      description: "Die Anzahl deiner Follower hat 10 überschritten"
+    _followers50:
+      title: "Wirrwarr"
+      description: "Die Anzahl deiner Follower hat 50 überschritten"
+    _followers100:
+      title: "Beliebt"
+      description: "Die Anzahl deiner Follower hat 100 überschritten"
+    _followers300:
+      title: "Stellt euch bitte in einer Reihe auf"
+      description: "Die Anzahl deiner Follower hat 300 überschritten"
+    _followers500:
+      title: "Funkmast"
+      description: "Die Anzahl deiner Follower hat 500 überschritten"
+    _followers1000:
+      title: "Influencer"
+      description: "Die Anzahl deiner Follower hat 1000 überschritten"
+    _collectAchievements30:
+      title: "Sammler der Errungenschaften"
+      description: "Schalte 30 Errungenschaften frei"
+    _viewAchievements3min:
+      title: "Fan von Errungenschaften"
+      description: "Schau dir die Liste deiner Errungenschaften für mindestens 3 Minuten an"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "Sende \"I ❤ #Misskey\""
+      flavor: "Danke, dass du Misskey verwendest! - vom Entwicklerteam"
+    _foundTreasure:
+      title: "Schatzsuche"
+      description: "Du hast einen verborgenen Schatz gefunden"
+    _client30min:
+      title: "Kurze Pause"
+      description: "Habe Misskey für 30 Minuten geöffnet"
+    _noteDeletedWithin1min:
+      title: "Ups"
+      description: "Lösche eine Notiz innerhalb von 1 Minute nachdem sie gesendet wurde"
+    _postedAtLateNight:
+      title: "Nachtaktiv"
+      description: "Sende mitten in der Nacht eine Notiz"
+      flavor: "Geh bald schlafen."
+    _postedAt0min0sec:
+      title: "Zeitansage"
+      description: "Sende um 00:00 eine Notiz"
+      flavor: "Klick Klick Klick Dooong"
+    _selfQuote:
+      title: "Selbstzitat"
+      description: "Zitiere eine eigene Notiz"
+    _htl20npm:
+      title: "Fließende Chronik"
+      description: "Deine Startseitenchronik erreicht eine Geschwindigkeit von 20 npm (Notizen pro Minute)"
+    _viewInstanceChart:
+      title: "Analyst"
+      description: "Schau dir die Messwerte der Instanz an"
+    _outputHelloWorldOnScratchpad:
+      title: "Hallo Welt!"
+      description: "Gib \"hello world\" in der Testumgebung aus"
+    _open3windows:
+      title: "Splitscreen"
+      description: "Habe zur gleichen Zeit mindestens 3 Fenster offen"
+    _driveFolderCircularReference:
+      title: "Zyklischer Verweis"
+      description: "Versuche, in Drive einen Zirkelbezug von Ordnern herzustellen"
+    _reactWithoutRead:
+      title: "Hast du das wirklich gelesen?"
+      description: "Reagiere auf eine Notiz mit mindestens 100 Zeichen innerhalb von 3 Sekunden der Erstellung der Notiz"
+    _clickedClickHere:
+      title: "Klicke hier"
+      description: "Du hast hier geklickt"
+    _justPlainLucky:
+      title: "Pures Glück"
+      description: "Kann alle 10 Sekunden mit einer Warscheinlichkeit von 0.01% erhalten werden"
+    _setNameToSyuilo:
+      title: "Gottkomplex"
+      description: "Setze deinen Namen auf \"syuilo\""
+    _passedSinceAccountCreated1:
+      title: "Einjahresjubiläum"
+      description: "Seit der Erstellung deines Kontos ist 1 Jahr vergangen"
+    _passedSinceAccountCreated2:
+      title: "Zweijahresjubiläum"
+      description: "Seit der Erstellung deines Kontos sind 2 Jahre vergangen"
+    _passedSinceAccountCreated3:
+      title: "Dreijahresjubiläum"
+      description: "Seit der Erstellung deines Kontos sind 3 Jahre vergangen"
+    _loggedInOnBirthday:
+      title: "Alles Gute Zum Geburtstag"
+      description: "Logge dich an deinem Geburtstag ein"
+    _loggedInOnNewYearsDay:
+      title: "Frohes Neujahr"
+      description: "Logge dich am Neujahrstag ein"
+      flavor: "Auf ein weiteres tolles Jahr in dieser Instanz"
+    _cookieClicked:
+      title: "Ein Spiel, in dem du auf einen Keks klickst"
+      description: "Den Keks geklickt"
+      flavor: "Bist du hier richtig?"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Sende den Link zu Brain Diver"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "Rolle erstellen"
   edit: "Rolle bearbeiten"
@@ -943,7 +1183,7 @@ _role:
   permission: "Rollenberechtigungen"
   descriptionOfPermission: "<b>Moderatoren</b> können grundlegende Verwaltungsaufgaben erledigen.\n<b>Administratoren</b> können alle Einstellungen der Instanz verwalten."
   assignTarget: "Zuweisungsart"
-  descriptionOfAssignTarget: "<b>Manuell</b> bedeutet, dass die Liste der Benutzer einer Rolle manuell verwaltet wird.\n<b>Konditionell</b> bedeutet, dass die Liste der Benutzer einer Rolle durch eine Bedingung automatisch verwaltet wird."
+  descriptionOfAssignTarget: "<b>Manuell</b> bedeutet, dass die Liste der Benutzer einer Rolle manuell verwaltet wird.\n<b>Konditional</b> bedeutet, dass die Liste der Benutzer einer Rolle durch eine Bedingung automatisch verwaltet wird."
   manual: "Manuell"
   conditional: "Konditional"
   condition: "Bedingung"
@@ -966,7 +1206,7 @@ _role:
     gtlAvailable: "Kann auf die globale Chronik zugreifen"
     ltlAvailable: "Kann auf die lokale Chronik zugreifen"
     canPublicNote: "Kann öffentliche Notizen erstellen"
-    canInvite: "Einladungscodes für diese Instanz erstellen"
+    canInvite: "Kann Einladungscodes für diese Instanz erstellen"
     canManageCustomEmojis: "Benutzerdefinierte Emojis verwalten"
     driveCapacity: "Drive-Kapazität"
     pinMax: "Maximale Anzahl an angehefteten Notizen"
@@ -979,6 +1219,7 @@ _role:
     userEachUserListsMax: "Maximale Anzahl an Benutzerlisten"
     rateLimitFactor: "Versuchsanzahl"
     descriptionOfRateLimitFactor: "Je niedriger desto weniger restriktiv, je höher destro restriktiver."
+    canHideAds: "Kann Werbung ausblenden"
   _condition:
     isLocal: "Lokaler Benutzer"
     isRemote: "Benutzer fremder Instanz"
@@ -1023,7 +1264,7 @@ _accountDelete:
 _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
-  hide: "Nie anzeigen"
+  hide: "Ausblenden"
 _forgotPassword:
   enterEmail: "Gib die Email-Adresse ein, mit der du dich registriert hast. An diese wird ein Link gesendet, mit dem du dein Passwort zurücksetzen kannst."
   ifNoEmail: "Solltest du bei der Registrierung keine Email-Adresse angegeben haben, wende dich bitte an den Administrator."
@@ -1583,6 +1824,7 @@ _notification:
   pollEnded: "Umfrageergebnisse sind verfügbar"
   unreadAntennaNote: "Antenne {name}"
   emptyPushNotificationMessage: "Push-Benachrichtigungen wurden aktualisiert"
+  achievementEarned: "Errungenschaft freigeschaltet"
   _types:
     all: "Alle"
     follow: "Neue Follower"

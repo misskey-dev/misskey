@@ -5,14 +5,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import fastifyStatic from '@fastify/static';
 import rename from 'rename';
 import type { Config } from '@/config.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFile, DriveFilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
@@ -20,6 +20,8 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import { isMimeImage } from '@/misc/is-mime-image.js';
+import sharp from 'sharp';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -57,7 +59,7 @@ export class FileServerService {
 			reply.header('Cache-Control', 'max-age=300');
 		};
 	}
-	
+
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addHook('onRequest', (request, reply, done) => {
@@ -70,23 +72,309 @@ export class FileServerService {
 			serve: false,
 		});
 
-		fastify.get('/app-default.jpg', (request, reply) => {
+		fastify.get('/files/app-default.jpg', (request, reply) => {
 			const file = fs.createReadStream(`${_dirname}/assets/dummy.png`);
 			reply.header('Content-Type', 'image/jpeg');
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
 			return reply.send(file);
 		});
 
-		fastify.get<{ Params: { key: string; } }>('/:key', async (request, reply) => await this.sendDriveFile(request, reply));
-		fastify.get<{ Params: { key: string; } }>('/:key/*', async (request, reply) => await this.sendDriveFile(request, reply));
+		fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
+			return await this.sendDriveFile(request, reply)
+				.catch(err => this.errorHandler(request, reply, err));
+		});
+		fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
+			return await this.sendDriveFile(request, reply)
+				.catch(err => this.errorHandler(request, reply, err));
+		});
+
+		fastify.get<{
+			Params: { url: string; };
+			Querystring: { url?: string; };
+		}>('/proxy/:url*', async (request, reply) => {
+			return await this.proxyHandler(request, reply)
+				.catch(err => this.errorHandler(request, reply, err));
+		});
 
 		done();
 	}
 
 	@bindThis
+	private async errorHandler(request: FastifyRequest<{ Params?: { [x: string]: any }; Querystring?: { [x: string]: any }; }>, reply: FastifyReply, err?: any) {
+		this.logger.error(`${err}`);
+
+		reply.header('Cache-Control', 'max-age=300');
+
+		if (request.query && 'fallback' in request.query) {
+			return reply.sendFile('/dummy.png', assets);
+		}
+
+		if (err instanceof StatusError && (err.statusCode === 302 || err.isClientError)) {
+			reply.code(err.statusCode);
+			return;
+		}
+
+		reply.code(500);
+		return;
+	}
+
+	@bindThis
 	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
 		const key = request.params.key;
+		const file = await this.getFileFromKey(key).then();
 
+		if (file === '404') {
+			reply.code(404);
+			reply.header('Cache-Control', 'max-age=86400');
+			return reply.sendFile('/dummy.png', assets);
+		}
+
+		if (file === '204') {
+			reply.code(204);
+			reply.header('Cache-Control', 'max-age=86400');
+			return;
+		}
+
+		try {
+			if (file.state === 'remote') {
+				const convertFile = async () => {
+					if (file.fileRole === 'thumbnail') {
+						if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(file.mime)) {
+							return this.imageProcessingService.convertToWebpStream(
+								file.path,
+								498,
+								280
+							);
+						} else if (file.mime.startsWith('video/')) {
+							return await this.videoProcessingService.generateVideoThumbnail(file.path);
+						}
+					}
+
+					if (file.fileRole === 'webpublic') {
+						if (['image/svg+xml'].includes(file.mime)) {
+							return this.imageProcessingService.convertToWebpStream(
+								file.path,
+								2048,
+								2048,
+								{ ...webpDefault, lossless: true }
+							)
+						}
+					}
+
+					return {
+						data: fs.createReadStream(file.path),
+						ext: file.ext,
+						type: file.mime,
+					};
+				};
+
+				const image = await convertFile();
+
+				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
+					// image.dataがstreamなら、stream終了後にcleanup
+					image.data.on('end', file.cleanup);
+					image.data.on('close', file.cleanup);
+				} else {
+					// image.dataがstreamでないなら直ちにcleanup
+					file.cleanup();
+				}
+
+				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+				reply.header('Cache-Control', 'max-age=31536000, immutable');
+				return image.data;
+			}
+
+			if (file.fileRole !== 'original') {
+				const filename = rename(file.file.name, {
+					suffix: file.fileRole === 'thumbnail' ? '-thumb' : '-web',
+					extname: file.ext ? `.${file.ext}` : undefined,
+				}).toString();
+
+				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.mime) ? file.mime : 'application/octet-stream');
+				reply.header('Cache-Control', 'max-age=31536000, immutable');
+				reply.header('Content-Disposition', contentDisposition('inline', filename));
+				return fs.createReadStream(file.path);
+			} else {
+				const stream = fs.createReadStream(file.path);
+				stream.on('error', this.commonReadableHandlerGenerator(reply));
+				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.file.type) ? file.file.type : 'application/octet-stream');
+				reply.header('Cache-Control', 'max-age=31536000, immutable');
+				reply.header('Content-Disposition', contentDisposition('inline', file.file.name));
+				return stream;
+			}
+		} catch (e) {
+			if ('cleanup' in file) file.cleanup();
+			throw e;
+		}
+	}
+
+	@bindThis
+	private async proxyHandler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {
+		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
+
+		if (typeof url !== 'string') {
+			reply.code(400);
+			return;
+		}
+
+		// Create temp file
+		const file = await this.getStreamAndTypeFromUrl(url);
+		if (file === '404') {
+			reply.code(404);
+			reply.header('Cache-Control', 'max-age=86400');
+			return reply.sendFile('/dummy.png', assets);
+		}
+
+		if (file === '204') {
+			reply.code(204);
+			reply.header('Cache-Control', 'max-age=86400');
+			return;
+		}
+
+		try {
+			const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image');
+			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image');
+
+			let image: IImageStreamable | null = null;
+			if ('emoji' in request.query && isConvertibleImage) {
+				if (!isAnimationConvertibleImage && !('static' in request.query)) {
+					image = {
+						data: fs.createReadStream(file.path),
+						ext: file.ext,
+						type: file.mime,
+					};
+				} else {
+					const data = sharp(file.path, { animated: !('static' in request.query) })
+							.resize({
+								height: 128,
+								withoutEnlargement: true,
+							})
+							.webp(webpDefault);
+
+					image = {
+						data,
+						ext: 'webp',
+						type: 'image/webp',
+					};
+				}
+			} else if ('static' in request.query && isConvertibleImage) {
+				image = this.imageProcessingService.convertToWebpStream(file.path, 498, 280);
+			} else if ('preview' in request.query && isConvertibleImage) {
+				image = this.imageProcessingService.convertToWebpStream(file.path, 200, 200);
+			} else if ('badge' in request.query) {
+				if (!isConvertibleImage) {
+					// 画像でないなら404でお茶を濁す
+					throw new StatusError('Unexpected mime', 404);
+				}
+
+				const mask = sharp(file.path)
+					.resize(96, 96, {
+						fit: 'inside',
+						withoutEnlargement: false,
+					})
+					.greyscale()
+					.normalise()
+					.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
+					.flatten({ background: '#000' })
+					.toColorspace('b-w');
+	
+				const stats = await mask.clone().stats();
+	
+				if (stats.entropy < 0.1) {
+					// エントロピーがあまりない場合は404にする
+					throw new StatusError('Skip to provide badge', 404);
+				}
+	
+				const data = sharp({
+					create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+				})
+					.pipelineColorspace('b-w')
+					.boolean(await mask.png().toBuffer(), 'eor');
+	
+				image = {
+					data: await data.png().toBuffer(),
+					ext: 'png',
+					type: 'image/png',
+				};
+			} else if (file.mime === 'image/svg+xml') {
+				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
+			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
+				throw new StatusError('Rejected type', 403, 'Rejected type');
+			}
+
+			if (!image) {
+				image = {
+					data: fs.createReadStream(file.path),
+					ext: file.ext,
+					type: file.mime,
+				};
+			}
+
+			if ('cleanup' in file) {
+				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
+					// image.dataがstreamなら、stream終了後にcleanup
+					image.data.on('end', file.cleanup);
+					image.data.on('close', file.cleanup);
+				} else {
+					// image.dataがstreamでないなら直ちにcleanup
+					file.cleanup();
+				}
+			}
+
+			reply.header('Content-Type', image.type);
+			reply.header('Cache-Control', 'max-age=31536000, immutable');
+			return image.data;
+		} catch (e) {
+			if ('cleanup' in file) file.cleanup();
+			throw e;
+		}
+	}
+
+	@bindThis
+	private async getStreamAndTypeFromUrl(url: string): Promise<
+		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; }
+		| '404'
+		| '204'
+	> {
+		if (url.startsWith(`${this.config.url}/files/`)) {
+			const key = url.replace(`${this.config.url}/files/`, '').split('/').shift();
+			if (!key) throw new StatusError('Invalid File Key', 400, 'Invalid File Key');
+
+			return await this.getFileFromKey(key);
+		}
+
+		return await this.downloadAndDetectTypeFromUrl(url);
+	}
+
+	@bindThis
+	private async downloadAndDetectTypeFromUrl(url: string): Promise<
+		{ state: 'remote' ; mime: string; ext: string | null; path: string; cleanup: () => void; }
+	> {
+		const [path, cleanup] = await createTemp();
+		try {
+			await this.downloadService.downloadUrl(url, path);
+
+			const { mime, ext } = await this.fileInfoService.detectType(path);
+	
+			return {
+				state: 'remote',
+				mime, ext,
+				path, cleanup,
+			}
+		} catch (e) {
+			cleanup();
+			throw e;
+		}
+	}
+
+	@bindThis
+	private async getFileFromKey(key: string): Promise<
+		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; }
+		| '404'
+		| '204'
+	> {
 		// Fetch drive file
 		const file = await this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.accessKey = :accessKey', { accessKey: key })
@@ -94,89 +382,41 @@ export class FileServerService {
 			.orWhere('file.webpublicAccessKey = :webpublicAccessKey', { webpublicAccessKey: key })
 			.getOne();
 
-		if (file == null) {
-			reply.code(404);
-			reply.header('Cache-Control', 'max-age=86400');
-			return reply.sendFile('/dummy.png', assets);
-		}
+		if (file == null) return '404';
 
 		const isThumbnail = file.thumbnailAccessKey === key;
 		const isWebpublic = file.webpublicAccessKey === key;
 
 		if (!file.storedInternal) {
-			if (file.isLink && file.uri) {	// 期限切れリモートファイル
-				const [path, cleanup] = await createTemp();
-
-				try {
-					await this.downloadService.downloadUrl(file.uri, path);
-
-					const { mime, ext } = await this.fileInfoService.detectType(path);
-
-					const convertFile = async () => {
-						if (isThumbnail) {
-							if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(mime)) {
-								return await this.imageProcessingService.convertToWebp(path, 498, 280);
-							} else if (mime.startsWith('video/')) {
-								return await this.videoProcessingService.generateVideoThumbnail(path);
-							}
-						}
-
-						if (isWebpublic) {
-							if (['image/svg+xml'].includes(mime)) {
-								return await this.imageProcessingService.convertToPng(path, 2048, 2048);
-							}
-						}
-
-						return {
-							data: fs.readFileSync(path),
-							ext,
-							type: mime,
-						};
-					};
-
-					const image = await convertFile();
-					reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
-					reply.header('Cache-Control', 'max-age=31536000, immutable');
-					return image.data;
-				} catch (err) {
-					this.logger.error(`${err}`);
-
-					if (err instanceof StatusError && err.isClientError) {
-						reply.code(err.statusCode);
-						reply.header('Cache-Control', 'max-age=86400');
-					} else {
-						reply.code(500);
-						reply.header('Cache-Control', 'max-age=300');
-					}
-				} finally {
-					cleanup();
-				}
-				return;
+			if (!(file.isLink && file.uri)) return '204';
+			const result = await this.downloadAndDetectTypeFromUrl(file.uri);
+			return {
+				...result,
+				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
+				file,
 			}
-
-			reply.code(204);
-			reply.header('Cache-Control', 'max-age=86400');
-			return;
 		}
 
-		if (isThumbnail || isWebpublic) {
-			const { mime, ext } = await this.fileInfoService.detectType(this.internalStorageService.resolvePath(key));
-			const filename = rename(file.name, {
-				suffix: isThumbnail ? '-thumb' : '-web',
-				extname: ext ? `.${ext}` : undefined,
-			}).toString();
+		const path = this.internalStorageService.resolvePath(key);
 
-			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream');
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			reply.header('Content-Disposition', contentDisposition('inline', filename));
-			return this.internalStorageService.read(key);
-		} else {
-			const readable = this.internalStorageService.read(file.accessKey!);
-			readable.on('error', this.commonReadableHandlerGenerator(reply));
-			reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.type) ? file.type : 'application/octet-stream');
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			reply.header('Content-Disposition', contentDisposition('inline', file.name));
-			return readable;
+		if (isThumbnail || isWebpublic) {
+			const { mime, ext } = await this.fileInfoService.detectType(path);
+			return {
+				state: 'stored_internal',
+				fileRole: isThumbnail ? 'thumbnail' : 'webpublic',
+				file,
+				mime, ext,
+				path,
+			};
+		}
+
+		return {
+			state: 'stored_internal',
+			fileRole: 'original',
+			file,
+			mime: file.type,
+			ext: null,
+			path,
 		}
 	}
 }

@@ -110,6 +110,7 @@ clickToShow: "クリックして表示"
 sensitive: "閲覧注意"
 add: "追加"
 reaction: "リアクション"
+reactions: "リアクション"
 reactionSetting: "ピッカーに表示するリアクション"
 reactionSettingDescription2: "ドラッグして並び替え、クリックして削除、＋を押して追加します。"
 rememberNoteVisibility: "公開範囲を記憶する"
@@ -937,6 +938,244 @@ cannotPerformTemporary: "一時的に利用できません"
 cannotPerformTemporaryDescription: "操作回数が制限を超過するため一時的に利用できません。しばらく時間を置いてから再度お試しください。"
 preset: "プリセット"
 selectFromPresets: "プリセットから選択"
+achievements: "実績"
+
+_achievements:
+  earnedAt: "獲得日時"
+  _types:
+    _notes1:
+      title: "just setting up my msky"
+      description: "初めてノートを投稿した"
+      flavor: "良いMisskeyライフを！"
+    _notes10:
+      title: "いくつかのノート"
+      description: "ノートを10回投稿した"
+    _notes100:
+      title: "たくさんのノート"
+      description: "ノートを100回投稿した"
+    _notes500:
+      title: "ノートまみれ"
+      description: "ノートを500回投稿した"
+    _notes1000:
+      title: "ノートの山"
+      description: "ノートを1,000回投稿した"
+    _notes5000:
+      title: "湧き出るノート"
+      description: "ノートを5,000回投稿した"
+    _notes10000:
+      title: "スーパーノート"
+      description: "ノートを10,000回投稿した"
+    _notes20000:
+      title: "ニードモアノート"
+      description: "ノートを20,000回投稿した"
+    _notes30000:
+      title: "ノートノートノート"
+      description: "ノートを30,000回投稿した"
+    _notes40000:
+      title: "ノート工場"
+      description: "ノートを40,000回投稿した"
+    _notes50000:
+      title: "ノートの惑星"
+      description: "ノートを50,000回投稿した"
+    _notes60000:
+      title: "ノートクエーサー"
+      description: "ノートを60,000回投稿した"
+    _notes70000:
+      title: "ブラックノートホール"
+      description: "ノートを70,000回投稿した"
+    _notes80000:
+      title: "ノートギャラクシー"
+      description: "ノートを80,000回投稿した"
+    _notes90000:
+      title: "ノートバース"
+      description: "ノートを90,000回投稿した"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "ノートを100,000回投稿した"
+      flavor: "そんなに書くことある？"
+    _login3:
+      title: "ビギナーⅠ"
+      description: "通算ログイン日数が3日"
+      flavor: "今日からね僕は ミスキストってことで"
+    _login7:
+      title: "ビギナーⅡ"
+      description: "通算ログイン日数が7日"
+      flavor: "慣れてきましたか？"
+    _login15:
+      title: "ビギナーⅢ"
+      description: "通算ログイン日数が15日"
+    _login30:
+      title: "ミスキストⅠ"
+      description: "通算ログイン日数が30日"
+    _login60:
+      title: "ミスキストⅡ"
+      description: "通算ログイン日数が60日"
+    _login100:
+      title: "ミスキストⅢ"
+      description: "通算ログイン日数が100日"
+      flavor: "そのユーザー、ミスキストにつき"
+    _login200:
+      title: "常連Ⅰ"
+      description: "通算ログイン日数が200日"
+    _login300:
+      title: "常連Ⅱ"
+      description: "通算ログイン日数が300日"
+    _login400:
+      title: "常連Ⅲ"
+      description: "通算ログイン日数が400日"
+    _login500:
+      title: "ベテランⅠ"
+      description: "通算ログイン日数が500日"
+      flavor: "諸君、私はノートが好きだ"
+    _login600:
+      title: "ベテランⅡ"
+      description: "通算ログイン日数が600日"
+    _login700:
+      title: "ベテランⅢ"
+      description: "通算ログイン日数が700日"
+    _login800:
+      title: "ノートマスターⅠ"
+      description: "通算ログイン日数が800日"
+    _login900:
+      title: "ノートマスターⅡ"
+      description: "通算ログイン日数が900日"
+    _login1000:
+      title: "ノートマスターⅢ"
+      description: "通算ログイン日数が1,000日"
+      flavor: "Misskeyを使ってくれてありがとう！"
+    _noteClipped1:
+      title: "クリップせずにはいられないな"
+      description: "初めてノートをクリップした"
+    _noteFavorited1:
+      title: "星をみるひと"
+      description: "初めてノートをお気に入りに登録した"
+    _myNoteFavorited1:
+      title: "星が欲しい"
+      description: "自分のノートが他の人からお気に入りに登録された"
+    _profileFilled:
+      title: "準備万端"
+      description: "プロフィール設定を行った"
+    _markedAsCat:
+      title: "吾輩は猫である"
+      description: "アカウントをCatとして設定した"
+      flavor: "名前はまだない。"
+    _following1:
+      title: "はじめてのフォロー"
+      description: "初めてフォローした"
+    _following10:
+      title: "ついてく、ついてく"
+      description: "フォローが10人を超した"
+    _following50:
+      title: "友達たくさん"
+      description: "フォローが50人を超した"
+    _following100:
+      title: "友達100人"
+      description: "フォローが100人を超した"
+    _following300:
+      title: "友達過多"
+      description: "フォローが300人を超した"
+    _followers1:
+      title: "はじめてのフォロワー"
+      description: "初めてフォローされた"
+    _followers10:
+      title: "フォローミー！"
+      description: "フォロワーが10人を超した"
+    _followers50:
+      title: "ぞろぞろ"
+      description: "フォロワーが50人を超した"
+    _followers100:
+      title: "人気者"
+      description: "フォロワーが100人を超した"
+    _followers300:
+      title: "一列でお並びください"
+      description: "フォロワーが300人を超した"
+    _followers500:
+      title: "基地局"
+      description: "フォロワーが500人を超した"
+    _followers1000:
+      title: "インフルエンサー"
+      description: "フォロワーが1,000人を超した"
+    _collectAchievements30:
+      title: "実績コレクター"
+      description: "実績を30個以上獲得した"
+    _viewAchievements3min:
+      title: "実績好き"
+      description: "実績一覧を3分以上眺め続けた"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "\"I ❤ #Misskey\"を投稿した"
+      flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
+    _foundTreasure:
+      title: "宝探し"
+      description: "隠されたお宝を発見した"
+    _client30min:
+      title: "ひとやすみ"
+      description: "クライアントを起動してから30分以上経過した"
+    _noteDeletedWithin1min:
+      title: "いまのなし"
+      description: "投稿してから1分以内にその投稿を削除した"
+    _postedAtLateNight:
+      title: "夜行性"
+      description: "深夜にノートを投稿した"
+      flavor: "そろそろ寝よう。"
+    _postedAt0min0sec:
+      title: "時報"
+      description: "0分0秒にノートを投稿した"
+      flavor: "ポッ ポッ ポッ ピーン"
+    _selfQuote:
+      title: "自己言及"
+      description: "自分のノートを引用した"
+    _htl20npm:
+      title: "流れるTL"
+      description: "ホームタイムラインの流速が20npmを越す"
+    _viewInstanceChart:
+      title: "アナリスト"
+      description: "インスタンスのチャートを表示した"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "スクラッチパッドで hello world を出力した"
+    _open3windows:
+      title: "マルチウィンドウ"
+      description: "ウィンドウを3つ以上開いた状態にした"
+    _driveFolderCircularReference:
+      title: "循環参照"
+      description: "ドライブのフォルダを再帰的な入れ子にしようとした"
+    _reactWithoutRead:
+      title: "ちゃんと読んだ？"
+      description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"
+    _clickedClickHere:
+      title: "ここをクリック"
+      description: "ここをクリックした"
+    _justPlainLucky:
+      title: "単なるラッキー"
+      description: "10秒ごとに0.01%の確率で獲得"
+    _setNameToSyuilo:
+      title: "神様コンプレックス"
+      description: "名前を syuilo に設定した"
+    _passedSinceAccountCreated1:
+      title: "一周年"
+      description: "アカウント作成から1年経過した"
+    _passedSinceAccountCreated2:
+      title: "二周年"
+      description: "アカウント作成から2年経過した"
+    _passedSinceAccountCreated3:
+      title: "三周年"
+      description: "アカウント作成から3年経過した"
+    _loggedInOnBirthday:
+      title: "ハッピーバースデー"
+      description: "誕生日にログインした"
+    _loggedInOnNewYearsDay:
+      title: "あけましておめでとうございます"
+      description: "元日にログインした"
+      flavor: "今年も弊インスタンスをよろしくお願いします"
+    _cookieClicked:
+      title: "クッキーをクリックするゲーム"
+      description: "クッキーをクリックした"
+      flavor: "ソフト間違ってない？"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Brain Diverへのリンクを投稿した"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 
 _role:
   new: "ロールの作成"
@@ -1634,6 +1873,7 @@ _notification:
   pollEnded: "アンケートの結果が出ました"
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
+  achievementEarned: "実績を獲得"
 
   _types:
     all: "すべて"

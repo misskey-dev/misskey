@@ -110,6 +110,7 @@ clickToShow: "Click to show"
 sensitive: "NSFW"
 add: "Add"
 reaction: "Reactions"
+reactions: "Reactions"
 reactionSetting: "Reactions to show in the reaction picker"
 reactionSettingDescription2: "Drag to reorder, click to delete, press \"+\" to add."
 rememberNoteVisibility: "Remember note visibility settings"
@@ -935,8 +936,245 @@ manageCustomEmojis: "Manage Custom Emojis"
 youCannotCreateAnymore: "You've hit the creation limit."
 cannotPerformTemporary: "Temporarily unavailable"
 cannotPerformTemporaryDescription: "This action cannot be performed temporarily due to exceeding the execution limit. Please wait for a while and then try again."
-preset: "Presets"
+preset: "Preset"
 selectFromPresets: "Choose from presets"
+achievements: "Achievements"
+_achievements:
+  earnedAt: "Unlocked at"
+  _types:
+    _notes1:
+      title: "just setting up my msky"
+      description: "Post your first note"
+      flavor: "Have a good time with Misskey!"
+    _notes10:
+      title: "Some notes"
+      description: "Post 10 notes"
+    _notes100:
+      title: "A lot of notes"
+      description: "Post 100 notes"
+    _notes500:
+      title: "Covered in notes"
+      description: "Post 500 notes"
+    _notes1000:
+      title: "A mountain of notes"
+      description: "Post 1,000 notes"
+    _notes5000:
+      title: "Overflowing notes"
+      description: "Post 5,000 notes"
+    _notes10000:
+      title: "Supernote"
+      description: "Post 10,000 notes"
+    _notes20000:
+      title: "Need... more... notes..."
+      description: "Post 20,000 notes"
+    _notes30000:
+      title: "Notes notes notes!"
+      description: "Post 30,000 notes"
+    _notes40000:
+      title: "Note factory"
+      description: "Post 40,000 notes"
+    _notes50000:
+      title: "Planet of notes"
+      description: "Post 50,000 notes"
+    _notes60000:
+      title: "Note quasar"
+      description: "Post 60,000 notes"
+    _notes70000:
+      title: "Note black hole"
+      description: "Post 70,000 notes"
+    _notes80000:
+      title: "Note galaxy"
+      description: "Post 80,000 notes"
+    _notes90000:
+      title: "Note universe"
+      description: "Post 90,000 notes"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "Post 100,000 notes"
+      flavor: "You sure have a lot to say."
+    _login3:
+      title: "Beginner I"
+      description: "Log in for a total of 3 days"
+      flavor: "Starting today, just call me Misskist"
+    _login7:
+      title: "Beginner II"
+      description: "Log in for a total of 7 days"
+      flavor: "Feel like you've gotten the hang of things yet?"
+    _login15:
+      title: "Beginner III"
+      description: "Log in for a total of 15 days"
+    _login30:
+      title: "Misskist I"
+      description: "Log in for a total of 30 days"
+    _login60:
+      title: "Misskist II"
+      description: "Log in for a total of 60 days"
+    _login100:
+      title: "Misskist III"
+      description: "Log in for a total of 100 days"
+      flavor: "Violent Misskist"
+    _login200:
+      title: "Regular I"
+      description: "Log in for a total of 200 days"
+    _login300:
+      title: "Regular II"
+      description: "Log in for a total of 300 days"
+    _login400:
+      title: "Regular III"
+      description: "Log in for a total of 400 days"
+    _login500:
+      title: "Expert I"
+      description: "Log in for a total of 500 days"
+      flavor: "My friends, it has often been said that I like notes"
+    _login600:
+      title: "Expert II"
+      description: "Log in for a total of 600 days"
+    _login700:
+      title: "Expert III"
+      description: "Log in for a total of 700 days"
+    _login800:
+      title: "Master of Notes I"
+      description: "Log in for a total of 800 days"
+    _login900:
+      title: "Master of Notes II"
+      description: "Log in for a total of 900 days"
+    _login1000:
+      title: "Master of Notes III"
+      description: "Log in for a total of 1,000 days"
+      flavor: "Thank you for using Misskey!"
+    _noteClipped1:
+      title: "Must... clip..."
+      description: "Clip your first note"
+    _noteFavorited1:
+      title: "Stargazer"
+      description: "Favorite your first note"
+    _myNoteFavorited1:
+      title: "Seeking Stars"
+      description: "Have somebody else favorite one of your notes"
+    _profileFilled:
+      title: "Well-prepared"
+      description: "Set up your profile"
+    _markedAsCat:
+      title: "I Am a Cat"
+      description: "Mark your account as a cat"
+      flavor: "I'll give you a name later."
+    _following1:
+      title: "Following your first user"
+      description: "Follow a user"
+    _following10:
+      title: "Keep up... keep up..."
+      description: "Follow 10 users"
+    _following50:
+      title: "Lots of friends"
+      description: "Follow 50 accounts"
+    _following100:
+      title: "100 Friends"
+      description: "Follow 100 accounts"
+    _following300:
+      title: "Friend overload"
+      description: "Follow 300 accounts"
+    _followers1:
+      title: "First follower"
+      description: "Gain 1 follower"
+    _followers10:
+      title: "Follow me!"
+      description: "Gain 10 followers"
+    _followers50:
+      title: "Coming in crowds"
+      description: "Gain 50 followers"
+    _followers100:
+      title: "Popular"
+      description: "Gain 100 followers"
+    _followers300:
+      title: "Please form a single line"
+      description: "Gain 300 followers"
+    _followers500:
+      title: "Radio Tower"
+      description: "Gain 500 followers"
+    _followers1000:
+      title: "Influencer"
+      description: "Gain 1,000 followers"
+    _collectAchievements30:
+      title: "Achievement Collector"
+      description: "Earn 30 achievements"
+    _viewAchievements3min:
+      title: "Likes Achievements"
+      description: "Look at your list of achievements for at least 3 minutes"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "Post \"I ❤ #Misskey\""
+      flavor: "Misskey's development team greatly appreciates your support!"
+    _foundTreasure:
+      title: "Treasure Hunt"
+      description: "You've found the hidden treasure"
+    _client30min:
+      title: "Short break"
+      description: "Spend 30 minutes on Misskey"
+    _noteDeletedWithin1min:
+      title: "Nevermind"
+      description: "Delete a note within a minute of posting it"
+    _postedAtLateNight:
+      title: "Nocturnal"
+      description: "Post a note late at night"
+      flavor: "It's about time to go to bed."
+    _postedAt0min0sec:
+      title: "Speaking Clock"
+      description: "Post a note at 00:00"
+      flavor: "Click Click Click Claaang"
+    _selfQuote:
+      title: "Self-Reference"
+      description: "Quote your own note"
+    _htl20npm:
+      title: "Flowing Timeline"
+      description: "Have the speed of your home timeline exceed 20 npm (notes per minute)"
+    _viewInstanceChart:
+      title: "Analyst"
+      description: "View your instance's charts"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "Output \"hello world\" in the Scratchpad"
+    _open3windows:
+      title: "Multi-Window"
+      description: "Have at least 3 windows open at the same time"
+    _driveFolderCircularReference:
+      title: "Circular Reference"
+      description: "Attempt to create a recursively nested folder in Drive"
+    _reactWithoutRead:
+      title: "Did you really read that?"
+      description: "React on a note that's over 100 characters long within 3 seconds of it being posted"
+    _clickedClickHere:
+      title: "Click here"
+      description: "You've clicked here"
+    _justPlainLucky:
+      title: "Just Plain Lucky"
+      description: "Has a chance to be obtained with a probability of 0.01% every 10 seconds"
+    _setNameToSyuilo:
+      title: "God Complex"
+      description: "Set your name to \"syuilo\""
+    _passedSinceAccountCreated1:
+      title: "One Year Anniversary"
+      description: "One year has passed since your account was created"
+    _passedSinceAccountCreated2:
+      title: "Two Year Anniversary"
+      description: "Two years have passed since your account was created"
+    _passedSinceAccountCreated3:
+      title: "Three Year Anniversary"
+      description: "Three years have passed since your account was created"
+    _loggedInOnBirthday:
+      title: "Happy Birthday"
+      description: "Log in on your birthday"
+    _loggedInOnNewYearsDay:
+      title: "Happy New Year!"
+      description: "Logged in on the first day of the year"
+      flavor: "To another great year on this instance"
+    _cookieClicked:
+      title: "A game in which you click cookies"
+      description: "Clicked the cookie"
+      flavor: "Wait, are you on the correct website?"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Post the link to Brain Diver"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "New role"
   edit: "Edit role"
@@ -954,10 +1192,10 @@ _role:
   descriptionOfIsPublic: "Anyone will be able to view a list of users assigned to this role. In addition, this role will be displayed in the profiles of assigned users."
   options: "Role options"
   policies: "Policies"
-  baseRole: "Base role"
-  useBaseValue: "Use base role value"
+  baseRole: "Role template"
+  useBaseValue: "Use role template value"
   chooseRoleToAssign: "Select the role to assign"
-  canEditMembersByModerator: "Allow moderators to edit the list members of this role"
+  canEditMembersByModerator: "Allow moderators to edit the list of members for this role"
   descriptionOfCanEditMembersByModerator: "When turned on, moderators as well as administrators will be able to assign and unassign users to this role. When turned off, only administrators will be able to assign users."
   priority: "Priority"
   _priority:
@@ -965,11 +1203,11 @@ _role:
     middle: "Medium"
     high: "High"
   _options:
-    gtlAvailable: "Viewing the global timeline"
-    ltlAvailable: "Viewing the local timeline"
+    gtlAvailable: "Can view the global timeline"
+    ltlAvailable: "Can view the local timeline"
     canPublicNote: "Can send public notes"
-    canInvite: "Create instance invite codes"
-    canManageCustomEmojis: "Manage Custom Emojis"
+    canInvite: "Can create instance invite codes"
+    canManageCustomEmojis: "Can manage custom emojis"
     driveCapacity: "Drive capacity"
     pinMax: "Maximum number of pinned notes"
     antennaMax: "Maximum number of antennas"
@@ -981,7 +1219,7 @@ _role:
     userEachUserListsMax: "Maximum number of users within a user list"
     rateLimitFactor: "Rate limit"
     descriptionOfRateLimitFactor: "Lower rate limits are less restrictive, higher ones more restrictive. "
-    canHideAds: "Remove ads"
+    canHideAds: "Can hide ads"
   _condition:
     isLocal: "Local user"
     isRemote: "Remote user"
@@ -1026,7 +1264,7 @@ _accountDelete:
 _ad:
   back: "Back"
   reduceFrequencyOfThisAd: "Show this ad less"
-  hide: "Never show"
+  hide: "Hide"
 _forgotPassword:
   enterEmail: "Enter the email address you used to register. A link with which you can reset your password will then be sent to it."
   ifNoEmail: "If you did not use an email during registration, please contact the instance administrator instead."
@@ -1586,6 +1824,7 @@ _notification:
   pollEnded: "Poll results have become available"
   unreadAntennaNote: "Antenna {name}"
   emptyPushNotificationMessage: "Push notifications have been updated"
+  achievementEarned: "Achievement unlocked"
   _types:
     all: "All"
     follow: "New followers"

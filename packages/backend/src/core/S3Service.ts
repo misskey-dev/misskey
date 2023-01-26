@@ -33,7 +33,7 @@ export class S3Service {
 				? false
 				: meta.objectStorageS3ForcePathStyle,
 			httpOptions: {
-				agent: this.httpRequestService.getHttpAgentByUrl(new URL(u), !meta.objectStorageUseProxy),
+				agent: this.httpRequestService.getAgentByUrl(new URL(u), !meta.objectStorageUseProxy),
 			},
 		});
 	}

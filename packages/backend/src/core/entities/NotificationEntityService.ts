@@ -114,6 +114,9 @@ export class NotificationEntityService implements OnModuleInit {
 			...(notification.type === 'groupInvited' ? {
 				invitation: this.userGroupInvitationEntityService.pack(notification.userGroupInvitationId!),
 			} : {}),
+			...(notification.type === 'achievementEarned' ? {
+				achievement: notification.achievement,
+			} : {}),
 			...(notification.type === 'app' ? {
 				body: notification.customBody,
 				header: notification.customHeader ?? token?.name,
@@ -142,6 +145,8 @@ export class NotificationEntityService implements OnModuleInit {
 		for (const target of targets) {
 			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) ?? null);
 		}
+
+		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
 
 		return await Promise.all(notifications.map(x => this.pack(x, {
 			_hintForEachNotes_: {
