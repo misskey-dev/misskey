@@ -1010,7 +1010,7 @@ _achievements:
     _following1:
       title: "Перша підписка"
     _following10:
-      title: "Так тримати"
+      title: "Продовжуй, продовжуй"
     _following50:
       title: "Багато друзів"
       description: "Кількість підписок сягнула 50"
@@ -1029,6 +1029,7 @@ _achievements:
     _followers50:
       description: "Кількість підписників досягла 50"
     _followers100:
+      title: "Популярна особа"
       description: "Кількість підписників досягла 100"
     _followers300:
       description: "Кількість підписників досягла 300"
@@ -1037,11 +1038,17 @@ _achievements:
     _followers1000:
       title: "Інфлюенсер"
       description: "Кількість підписників досягла 1000"
+    _passedSinceAccountCreated1:
+      title: "Перша річниця"
+    _passedSinceAccountCreated2:
+      title: "Друга річниця"
     _passedSinceAccountCreated3:
+      title: "Третя річниця"
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
       title: "З Днем народження!"
     _brainDiver:
+      title: "Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   priority: "Пріоритет"
