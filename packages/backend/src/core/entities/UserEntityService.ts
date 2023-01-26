@@ -413,6 +413,7 @@ export class UserEntityService implements OnModuleInit {
 				faviconUrl: instance.faviconUrl,
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
+			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 
 			...(opts.detail ? {
@@ -496,10 +497,10 @@ export class UserEntityService implements OnModuleInit {
 				showTimelineReplies: user.showTimelineReplies ?? falsy,
 				achievements: profile!.achievements,
 				loggedInDays: profile!.loggedInDates.length,
+				policies: this.roleService.getUserPolicies(user.id),
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				policies: this.roleService.getUserPolicies(user.id),
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 				securityKeysList: profile!.twoFactorEnabled

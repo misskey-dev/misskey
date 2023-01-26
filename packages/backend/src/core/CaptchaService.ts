@@ -23,9 +23,9 @@ export class CaptchaService {
 	
 		const res = await this.httpRequestService.send(url, {
 			method: 'POST',
-			body: JSON.stringify(params),
+			body: params.toString(),
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 		}, { throwErrorWhenResponseNotOk: false });
 	

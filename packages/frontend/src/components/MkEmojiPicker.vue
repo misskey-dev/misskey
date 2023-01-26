@@ -12,7 +12,7 @@
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<MkEmoji class="emoji" :emoji="`:${emoji.name}:`"/>
+					<MkCustomEmoji class="emoji" :name="emoji.name"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
@@ -39,7 +39,8 @@
 						tabindex="0"
 						@click="chosen(emoji, $event)"
 					>
-						<MkEmoji class="emoji" :emoji="emoji" :normal="true"/>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
 					</button>
 				</div>
 			</section>
@@ -53,14 +54,23 @@
 						class="_button item"
 						@click="chosen(emoji, $event)"
 					>
-						<MkEmoji class="emoji" :emoji="emoji" :normal="true"/>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
 					</button>
 				</div>
 			</section>
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
-			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')" @chosen="chosen">{{ category || i18n.ts.other }}</XSection>
+			<XSection
+				v-for="category in customEmojiCategories"
+				:key="`custom:${category}`"
+				:initial-shown="false"
+				:emojis="computed(() => customEmojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).map(e => `:${e.name}:`))"
+				@chosen="chosen"
+			>
+				{{ category || i18n.ts.other }}
+			</XSection>
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
@@ -88,7 +98,7 @@ import { deviceKind } from '@/scripts/device-kind';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
-import { getCustomEmojiCategories, customEmojis } from '@/custom-emojis';
+import { customEmojiCategories, customEmojis } from '@/custom-emojis';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -104,7 +114,6 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
 }>();
 
-const customEmojiCategories = getCustomEmojiCategories();
 const searchEl = shallowRef<HTMLInputElement>();
 const emojisEl = shallowRef<HTMLDivElement>();
 
@@ -138,7 +147,7 @@ watch(q, () => {
 
 	const searchCustom = () => {
 		const max = 8;
-		const emojis = customEmojis;
+		const emojis = customEmojis.value;
 		const matches = new Set<Misskey.entities.CustomEmoji>();
 
 		const exactMatch = emojis.find(emoji => emoji.name === newQ);
@@ -323,7 +332,7 @@ function done(query?: string): boolean | void {
 	if (query == null || typeof query !== 'string') return;
 
 	const q2 = query.replace(/:/g, '');
-	const exactMatchCustom = customEmojis.find(emoji => emoji.name === q2);
+	const exactMatchCustom = customEmojis.value.find(emoji => emoji.name === q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
 		return true;

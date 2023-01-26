@@ -1,0 +1,61 @@
+<template>
+<span v-if="errored">:{{ customEmojiName }}:</span>
+<img v-else :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="alt" :title="alt" decoding="async" @error="errored = true" @load="errored = false"/>
+</template>
+
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { getStaticImageUrl } from '@/scripts/media-proxy';
+import { defaultStore } from '@/store';
+import { customEmojis } from '@/custom-emojis';
+
+const props = defineProps<{
+	name: string;
+	normal?: boolean;
+	noStyle?: boolean;
+	host?: string | null;
+	url?: string;
+}>();
+
+const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substr(1, props.name.length - 2) : props.name).replace('@.', ''));
+const url = computed(() => {
+	if (props.url) {
+		return props.url;
+	} else if (props.host == null && !customEmojiName.value.includes('@')) {
+		const found = customEmojis.value.find(x => x.name === customEmojiName.value);
+		return found ? defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(found.url) : found.url : null;
+	} else {
+		const rawUrl = props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
+		return defaultStore.state.disableShowingAnimatedImages
+			? getStaticImageUrl(rawUrl)
+			: rawUrl;
+	}
+});
+const alt = computed(() => `:${customEmojiName.value}:`);
+let errored = $ref(url.value == null);
+</script>
+
+<style lang="scss" module>
+.root {
+	height: 2.5em;
+	vertical-align: middle;
+	transition: transform 0.2s ease;
+
+	&:hover {
+		transform: scale(1.2);
+	}
+}
+
+.normal {
+	height: 1.25em;
+	vertical-align: -0.25em;
+
+	&:hover {
+		transform: none;
+	}
+}
+
+.noStyle {
+	height: auto !important;
+}
+</style>
