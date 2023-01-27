@@ -1042,6 +1042,7 @@ _achievements:
       title: "Популярна особа"
       description: "Кількість підписників досягла 100"
     _followers300:
+      title: "Ставайте в чергу"
       description: "Кількість підписників досягла 300"
     _followers500:
       title: "Радіовежа"
@@ -1049,6 +1050,9 @@ _achievements:
     _followers1000:
       title: "Інфлюенсер"
       description: "Кількість підписників досягла 1000"
+    _collectAchievements30:
+      title: "Збирач досягнень"
+      description: "Отримано 30 досягнень"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "Відправлено \"I ❤ #Misskey\""
