@@ -37,9 +37,7 @@ import * as ep___admin_federation_updateInstance from './endpoints/admin/federat
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
-import * as ep___admin_invite from './endpoints/admin/invite.js';
-import * as ep___admin_moderators_add from './endpoints/admin/moderators/add.js';
-import * as ep___admin_moderators_remove from './endpoints/admin/moderators/remove.js';
+import * as ep___invite from './endpoints/invite.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -55,13 +53,19 @@ import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderation-logs.js';
 import * as ep___admin_showUser from './endpoints/admin/show-user.js';
 import * as ep___admin_showUsers from './endpoints/admin/show-users.js';
-import * as ep___admin_silenceUser from './endpoints/admin/silence-user.js';
 import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
-import * as ep___admin_unsilenceUser from './endpoints/admin/unsilence-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
 import * as ep___admin_deleteAccount from './endpoints/admin/delete-account.js';
 import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
+import * as ep___admin_roles_create from './endpoints/admin/roles/create.js';
+import * as ep___admin_roles_delete from './endpoints/admin/roles/delete.js';
+import * as ep___admin_roles_list from './endpoints/admin/roles/list.js';
+import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
+import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
+import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
+import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
+import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -171,6 +175,7 @@ import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
 import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
+import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
 import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
@@ -325,8 +330,8 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
-import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -368,9 +373,7 @@ const $admin_federation_updateInstance: Provider = { provide: 'ep:admin/federati
 const $admin_getIndexStats: Provider = { provide: 'ep:admin/get-index-stats', useClass: ep___admin_getIndexStats.default };
 const $admin_getTableStats: Provider = { provide: 'ep:admin/get-table-stats', useClass: ep___admin_getTableStats.default };
 const $admin_getUserIps: Provider = { provide: 'ep:admin/get-user-ips', useClass: ep___admin_getUserIps.default };
-const $admin_invite: Provider = { provide: 'ep:admin/invite', useClass: ep___admin_invite.default };
-const $admin_moderators_add: Provider = { provide: 'ep:admin/moderators/add', useClass: ep___admin_moderators_add.default };
-const $admin_moderators_remove: Provider = { provide: 'ep:admin/moderators/remove', useClass: ep___admin_moderators_remove.default };
+const $invite: Provider = { provide: 'ep:invite', useClass: ep___invite.default };
 const $admin_promo_create: Provider = { provide: 'ep:admin/promo/create', useClass: ep___admin_promo_create.default };
 const $admin_queue_clear: Provider = { provide: 'ep:admin/queue/clear', useClass: ep___admin_queue_clear.default };
 const $admin_queue_deliverDelayed: Provider = { provide: 'ep:admin/queue/deliver-delayed', useClass: ep___admin_queue_deliverDelayed.default };
@@ -386,13 +389,19 @@ const $admin_serverInfo: Provider = { provide: 'ep:admin/server-info', useClass:
 const $admin_showModerationLogs: Provider = { provide: 'ep:admin/show-moderation-logs', useClass: ep___admin_showModerationLogs.default };
 const $admin_showUser: Provider = { provide: 'ep:admin/show-user', useClass: ep___admin_showUser.default };
 const $admin_showUsers: Provider = { provide: 'ep:admin/show-users', useClass: ep___admin_showUsers.default };
-const $admin_silenceUser: Provider = { provide: 'ep:admin/silence-user', useClass: ep___admin_silenceUser.default };
 const $admin_suspendUser: Provider = { provide: 'ep:admin/suspend-user', useClass: ep___admin_suspendUser.default };
-const $admin_unsilenceUser: Provider = { provide: 'ep:admin/unsilence-user', useClass: ep___admin_unsilenceUser.default };
 const $admin_unsuspendUser: Provider = { provide: 'ep:admin/unsuspend-user', useClass: ep___admin_unsuspendUser.default };
 const $admin_updateMeta: Provider = { provide: 'ep:admin/update-meta', useClass: ep___admin_updateMeta.default };
 const $admin_deleteAccount: Provider = { provide: 'ep:admin/delete-account', useClass: ep___admin_deleteAccount.default };
 const $admin_updateUserNote: Provider = { provide: 'ep:admin/update-user-note', useClass: ep___admin_updateUserNote.default };
+const $admin_roles_create: Provider = { provide: 'ep:admin/roles/create', useClass: ep___admin_roles_create.default };
+const $admin_roles_delete: Provider = { provide: 'ep:admin/roles/delete', useClass: ep___admin_roles_delete.default };
+const $admin_roles_list: Provider = { provide: 'ep:admin/roles/list', useClass: ep___admin_roles_list.default };
+const $admin_roles_show: Provider = { provide: 'ep:admin/roles/show', useClass: ep___admin_roles_show.default };
+const $admin_roles_update: Provider = { provide: 'ep:admin/roles/update', useClass: ep___admin_roles_update.default };
+const $admin_roles_assign: Provider = { provide: 'ep:admin/roles/assign', useClass: ep___admin_roles_assign.default };
+const $admin_roles_unassign: Provider = { provide: 'ep:admin/roles/unassign', useClass: ep___admin_roles_unassign.default };
+const $admin_roles_updateDefaultPolicies: Provider = { provide: 'ep:admin/roles/update-default-policies', useClass: ep___admin_roles_updateDefaultPolicies.default };
 const $announcements: Provider = { provide: 'ep:announcements', useClass: ep___announcements.default };
 const $antennas_create: Provider = { provide: 'ep:antennas/create', useClass: ep___antennas_create.default };
 const $antennas_delete: Provider = { provide: 'ep:antennas/delete', useClass: ep___antennas_delete.default };
@@ -502,6 +511,7 @@ const $i_2fa_removeKey: Provider = { provide: 'ep:i/2fa/remove-key', useClass: e
 const $i_2fa_unregister: Provider = { provide: 'ep:i/2fa/unregister', useClass: ep___i_2fa_unregister.default };
 const $i_apps: Provider = { provide: 'ep:i/apps', useClass: ep___i_apps.default };
 const $i_authorizedApps: Provider = { provide: 'ep:i/authorized-apps', useClass: ep___i_authorizedApps.default };
+const $i_claimAchievement: Provider = { provide: 'ep:i/claim-achievement', useClass: ep___i_claimAchievement.default };
 const $i_changePassword: Provider = { provide: 'ep:i/change-password', useClass: ep___i_changePassword.default };
 const $i_deleteAccount: Provider = { provide: 'ep:i/delete-account', useClass: ep___i_deleteAccount.default };
 const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass: ep___i_exportBlocking.default };
@@ -656,7 +666,7 @@ const $users_searchByUsernameAndHost: Provider = { provide: 'ep:users/search-by-
 const $users_search: Provider = { provide: 'ep:users/search', useClass: ep___users_search.default };
 const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_show.default };
 const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
-const $admin_driveCapOverride: Provider = { provide: 'ep:admin/drive-capacity-override', useClass: ep___admin_driveCapOverride.default };
+const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
@@ -703,9 +713,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_getIndexStats,
 		$admin_getTableStats,
 		$admin_getUserIps,
-		$admin_invite,
-		$admin_moderators_add,
-		$admin_moderators_remove,
+		$invite,
 		$admin_promo_create,
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
@@ -721,13 +729,19 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_showModerationLogs,
 		$admin_showUser,
 		$admin_showUsers,
-		$admin_silenceUser,
 		$admin_suspendUser,
-		$admin_unsilenceUser,
 		$admin_unsuspendUser,
 		$admin_updateMeta,
 		$admin_deleteAccount,
 		$admin_updateUserNote,
+		$admin_roles_create,
+		$admin_roles_delete,
+		$admin_roles_list,
+		$admin_roles_show,
+		$admin_roles_update,
+		$admin_roles_assign,
+		$admin_roles_unassign,
+		$admin_roles_updateDefaultPolicies,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -837,6 +851,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
+		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
 		$i_exportBlocking,
@@ -991,7 +1006,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_search,
 		$users_show,
 		$users_stats,
-		$admin_driveCapOverride,
+		$users_achievements,
 		$fetchRss,
 		$retention,
 	],
@@ -1032,9 +1047,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_getIndexStats,
 		$admin_getTableStats,
 		$admin_getUserIps,
-		$admin_invite,
-		$admin_moderators_add,
-		$admin_moderators_remove,
+		$invite,
 		$admin_promo_create,
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
@@ -1050,13 +1063,19 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_showModerationLogs,
 		$admin_showUser,
 		$admin_showUsers,
-		$admin_silenceUser,
 		$admin_suspendUser,
-		$admin_unsilenceUser,
 		$admin_unsuspendUser,
 		$admin_updateMeta,
 		$admin_deleteAccount,
 		$admin_updateUserNote,
+		$admin_roles_create,
+		$admin_roles_delete,
+		$admin_roles_list,
+		$admin_roles_show,
+		$admin_roles_update,
+		$admin_roles_assign,
+		$admin_roles_unassign,
+		$admin_roles_updateDefaultPolicies,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -1166,6 +1185,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
+		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
 		$i_exportBlocking,
@@ -1318,7 +1338,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_search,
 		$users_show,
 		$users_stats,
-		$admin_driveCapOverride,
+		$users_achievements,
 		$fetchRss,
 		$retention,
 	],

@@ -29,6 +29,7 @@ import type { ChannelsRepository, ClipsRepository, EmojisRepository, FlashsRepos
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -83,6 +84,7 @@ export class ClientServerService {
 		private metaService: MetaService,
 		private urlPreviewService: UrlPreviewService,
 		private feedService: FeedService,
+		private roleService: RoleService,
 
 		@Inject('queue:system') public systemQueue: SystemQueue,
 		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
@@ -125,7 +127,12 @@ export class ClientServerService {
 					throw new Error('login required');
 				}
 				const user = await this.usersRepository.findOneBy({ token });
-				if (user == null || !(user.isAdmin || user.isModerator)) {
+				if (user == null) {
+					reply.code(403);
+					throw new Error('no such user');
+				}
+				const isAdministrator = await this.roleService.isAdministrator(user);
+				if (!isAdministrator) {
 					reply.code(403);
 					throw new Error('access denied');
 				}

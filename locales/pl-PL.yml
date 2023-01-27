@@ -110,6 +110,7 @@ clickToShow: "Kliknij, aby wyświetlić"
 sensitive: "NSFW"
 add: "Dodaj"
 reaction: "Reakcja"
+reactions: "Reakcja"
 reactionSetting: "Reakcje do pokazania w wyborniku reakcji"
 reactionSettingDescription2: "Przeciągnij aby zmienić kolejność, naciśnij aby usunąć, naciśnij „+” aby dodać"
 rememberNoteVisibility: "Zapamiętuj ustawienia widoczności wpisu"
@@ -868,6 +869,13 @@ sendPushNotificationReadMessageCaption: "Chwilowo pojawi się powiadomienie \"{e
 loggedInAsBot: "Jesteś obecnie zalogowany/a jako bot"
 like: "Polub"
 show: "Wyświetlanie"
+color: "Kolor"
+_role:
+  priority: "Priorytet"
+  _priority:
+    low: "Niski"
+    middle: "Średnie"
+    high: "Wysoki"
 _sensitiveMediaDetection:
   description: "Zmniejsza wysiłek związany z moderacją serwera dzięki automatycznemu rozpoznawaniu zawartości NSFW za pomocą uczenia maszynowego. To nieznacznie zwiększy obciążenie serwera."
   setSensitiveFlagAutomatically: "Oznacz jako NSFW"
@@ -895,6 +903,7 @@ _accountDelete:
 _ad:
   back: "Wróć"
   reduceFrequencyOfThisAd: "Pokazuj tę reklamę rzadziej"
+  hide: "Nigdy nie pokazuj"
 _forgotPassword:
   enterEmail: "Wpisz adres e-mail użyty do rejestracji. Zostanie do niego wysłany link, za pomocą którego możesz zresetować hasło."
   ifNoEmail: "Jeżeli nie podano adresu e-mail podczas rejestracji, skontaktuj się z administratorem zamiast tego."

@@ -9,6 +9,14 @@ export type IImage = {
 	type: string;
 };
 
+export type IImageStream = {
+	data: Readable;
+	ext: string | null;
+	type: string;
+};
+
+export type IImageStreamable = IImage | IImageStream;
+
 export const webpDefault: sharp.WebpOptions = {
 	quality: 85,
 	alphaQuality: 95,
@@ -19,6 +27,7 @@ export const webpDefault: sharp.WebpOptions = {
 };
 
 import { bindThis } from '@/decorators.js';
+import { Readable } from 'node:stream';
 
 @Injectable()
 export class ImageProcessingService {
@@ -64,7 +73,7 @@ export class ImageProcessingService {
 	 */
 	@bindThis
 	public async convertToWebp(path: string, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
-		return this.convertSharpToWebp(await sharp(path), width, height, options);
+		return this.convertSharpToWebp(sharp(path), width, height, options);
 	}
 
 	@bindThis
@@ -85,6 +94,27 @@ export class ImageProcessingService {
 		};
 	}
 
+	@bindThis
+	public convertToWebpStream(path: string, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageStream {
+		return this.convertSharpToWebpStream(sharp(path), width, height, options);
+	}
+
+	@bindThis
+	public convertSharpToWebpStream(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageStream {
+		const data = sharp
+			.resize(width, height, {
+				fit: 'inside',
+				withoutEnlargement: true,
+			})
+			.rotate()
+			.webp(options)
+
+		return {
+			data,
+			ext: 'webp',
+			type: 'image/webp',
+		};
+	}
 	/**
 	 * Convert to PNG
 	 *   with resize, remove metadata, resolve orientation, stop animation

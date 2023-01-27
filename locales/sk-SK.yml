@@ -110,6 +110,7 @@ clickToShow: "Kliknutím zobrazíte"
 sensitive: "NSFW"
 add: "Pridať"
 reaction: "Reakcie"
+reactions: "Reakcie"
 reactionSetting: "Reakcie zobrazené vo výbere reakcií"
 reactionSettingDescription2: "Ťahaním preusporiadate, kliknutím odstránite, Stlačením \"+\" pridáte"
 rememberNoteVisibility: "Zapamätať nastavenia viditeľnosti poznámky"
@@ -917,6 +918,13 @@ neverShow: "Nabudúce nezobrazovať"
 remindMeLater: "Pripomenúť neskôr"
 didYouLikeMisskey: "Páči sa vám Misskey?"
 pleaseDonate: "Misskey je bezplatný softvér, ktorý používa {host}. Prosím, prispejte, aby sme ho mohli ďalej rozvíjať!"
+color: "Farba"
+_role:
+  priority: "Priorita"
+  _priority:
+    low: "Málo"
+    middle: "Stredné"
+    high: "Vysoká"
 _sensitiveMediaDetection:
   description: "Strojové učenie sa použije na automatickú detekciu citlivých médií na účely ich moderovania. Mierne sa zvýši zaťaženie servera."
   sensitivity: "Citlivosť detekcie"
@@ -949,6 +957,7 @@ _accountDelete:
 _ad:
   back: "Späť"
   reduceFrequencyOfThisAd: "Túto reklamu zobrazovať menej"
+  hide: "Nikdy nezobrazovať"
 _forgotPassword:
   enterEmail: "Zadajte emailovú adresu, ktorú ste použili pri registrácii. Pošleme vám na ňu odkaz, cez ktorý si môžete obnoviť heslo."
   ifNoEmail: "Ak ste pri registrácii nepoužili email, prosím kontaktujte administrátora."

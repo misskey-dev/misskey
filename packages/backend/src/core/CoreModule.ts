@@ -4,6 +4,7 @@ import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AntennaService } from './AntennaService.js';
 import { AppLockService } from './AppLockService.js';
+import { AchievementService } from './AchievementService.js';
 import { CaptchaService } from './CaptchaService.js';
 import { CreateNotificationService } from './CreateNotificationService.js';
 import { CreateSystemUserService } from './CreateSystemUserService.js';
@@ -35,6 +36,7 @@ import { PushNotificationService } from './PushNotificationService.js';
 import { QueryService } from './QueryService.js';
 import { ReactionService } from './ReactionService.js';
 import { RelayService } from './RelayService.js';
+import { RoleService } from './RoleService.js';
 import { S3Service } from './S3Service.js';
 import { SignupService } from './SignupService.js';
 import { TwoFactorAuthenticationService } from './TwoFactorAuthenticationService.js';
@@ -97,6 +99,7 @@ import { UserGroupInvitationEntityService } from './entities/UserGroupInvitation
 import { UserListEntityService } from './entities/UserListEntityService.js';
 import { FlashEntityService } from './entities/FlashEntityService.js';
 import { FlashLikeEntityService } from './entities/FlashLikeEntityService.js';
+import { RoleEntityService } from './entities/RoleEntityService.js';
 import { ApAudienceService } from './activitypub/ApAudienceService.js';
 import { ApDbResolverService } from './activitypub/ApDbResolverService.js';
 import { ApDeliverManagerService } from './activitypub/ApDeliverManagerService.js';
@@ -126,6 +129,7 @@ const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useEx
 const $AiService: Provider = { provide: 'AiService', useExisting: AiService };
 const $AntennaService: Provider = { provide: 'AntennaService', useExisting: AntennaService };
 const $AppLockService: Provider = { provide: 'AppLockService', useExisting: AppLockService };
+const $AchievementService: Provider = { provide: 'AchievementService', useExisting: AchievementService };
 const $CaptchaService: Provider = { provide: 'CaptchaService', useExisting: CaptchaService };
 const $CreateNotificationService: Provider = { provide: 'CreateNotificationService', useExisting: CreateNotificationService };
 const $CreateSystemUserService: Provider = { provide: 'CreateSystemUserService', useExisting: CreateSystemUserService };
@@ -158,6 +162,7 @@ const $PushNotificationService: Provider = { provide: 'PushNotificationService',
 const $QueryService: Provider = { provide: 'QueryService', useExisting: QueryService };
 const $ReactionService: Provider = { provide: 'ReactionService', useExisting: ReactionService };
 const $RelayService: Provider = { provide: 'RelayService', useExisting: RelayService };
+const $RoleService: Provider = { provide: 'RoleService', useExisting: RoleService };
 const $S3Service: Provider = { provide: 'S3Service', useExisting: S3Service };
 const $SignupService: Provider = { provide: 'SignupService', useExisting: SignupService };
 const $TwoFactorAuthenticationService: Provider = { provide: 'TwoFactorAuthenticationService', useExisting: TwoFactorAuthenticationService };
@@ -220,6 +225,7 @@ const $UserGroupInvitationEntityService: Provider = { provide: 'UserGroupInvitat
 const $UserListEntityService: Provider = { provide: 'UserListEntityService', useExisting: UserListEntityService };
 const $FlashEntityService: Provider = { provide: 'FlashEntityService', useExisting: FlashEntityService };
 const $FlashLikeEntityService: Provider = { provide: 'FlashLikeEntityService', useExisting: FlashLikeEntityService };
+const $RoleEntityService: Provider = { provide: 'RoleEntityService', useExisting: RoleEntityService };
 
 const $ApAudienceService: Provider = { provide: 'ApAudienceService', useExisting: ApAudienceService };
 const $ApDbResolverService: Provider = { provide: 'ApDbResolverService', useExisting: ApDbResolverService };
@@ -251,6 +257,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AiService,
 		AntennaService,
 		AppLockService,
+		AchievementService,
 		CaptchaService,
 		CreateNotificationService,
 		CreateSystemUserService,
@@ -283,6 +290,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueryService,
 		ReactionService,
 		RelayService,
+		RoleService,
 		S3Service,
 		SignupService,
 		TwoFactorAuthenticationService,
@@ -344,6 +352,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
+		RoleEntityService,
 		ApAudienceService,
 		ApDbResolverService,
 		ApDeliverManagerService,
@@ -370,6 +379,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AiService,
 		$AntennaService,
 		$AppLockService,
+		$AchievementService,
 		$CaptchaService,
 		$CreateNotificationService,
 		$CreateSystemUserService,
@@ -402,6 +412,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$QueryService,
 		$ReactionService,
 		$RelayService,
+		$RoleService,
 		$S3Service,
 		$SignupService,
 		$TwoFactorAuthenticationService,
@@ -463,6 +474,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
+		$RoleEntityService,
 		$ApAudienceService,
 		$ApDbResolverService,
 		$ApDeliverManagerService,
@@ -490,6 +502,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AiService,
 		AntennaService,
 		AppLockService,
+		AchievementService,
 		CaptchaService,
 		CreateNotificationService,
 		CreateSystemUserService,
@@ -522,6 +535,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		QueryService,
 		ReactionService,
 		RelayService,
+		RoleService,
 		S3Service,
 		SignupService,
 		TwoFactorAuthenticationService,
@@ -582,6 +596,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
+		RoleEntityService,
 		ApAudienceService,
 		ApDbResolverService,
 		ApDeliverManagerService,
@@ -608,6 +623,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AiService,
 		$AntennaService,
 		$AppLockService,
+		$AchievementService,
 		$CaptchaService,
 		$CreateNotificationService,
 		$CreateSystemUserService,
@@ -640,6 +656,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$QueryService,
 		$ReactionService,
 		$RelayService,
+		$RoleService,
 		$S3Service,
 		$SignupService,
 		$TwoFactorAuthenticationService,
@@ -700,6 +717,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
+		$RoleEntityService,
 		$ApAudienceService,
 		$ApDbResolverService,
 		$ApDeliverManagerService,

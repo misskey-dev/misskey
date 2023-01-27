@@ -25,10 +25,10 @@ import JSON5 from 'json5';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang, host } from '@/config';
+import { version, ui, lang, host, updateLocale } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { i18n } from '@/i18n';
+import { i18n, updateI18n } from '@/i18n';
 import { confirm, alert, post, popup, toast } from '@/os';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
@@ -45,6 +45,8 @@ import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { deckStore } from './ui/deck/deck-store';
 import { miLocalStorage } from './local-storage';
+import { claimAchievement, claimedAchievements } from './scripts/achievements';
+import { fetchCustomEmojis } from './custom-emojis';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -80,7 +82,21 @@ import { miLocalStorage } from './local-storage';
 		});
 	}
 
-	await defaultStore.ready;
+	//#region Detect language & fetch translations
+	const localeVersion = miLocalStorage.getItem('localeVersion');
+	const localeOutdated = (localeVersion == null || localeVersion !== version);
+	if (localeOutdated) {
+		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+		if (res.status === 200) {
+			const newLocale = await res.text();
+			const parsedNewLocale = JSON.parse(newLocale);
+			miLocalStorage.setItem('locale', newLocale);
+			miLocalStorage.setItem('localeVersion', version);
+			updateLocale(parsedNewLocale);
+			updateI18n(parsedNewLocale);
+		}
+	}
+	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
@@ -167,6 +183,10 @@ import { miLocalStorage } from './local-storage';
 		initializeSw();
 	});
 
+	try {
+		await fetchCustomEmojis();
+	} catch (err) {}
+
 	const app = createApp(
 		window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
@@ -250,6 +270,8 @@ import { miLocalStorage } from './local-storage';
 		}
 	}
 
+	await defaultStore.loaded;
+
 	// NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
@@ -321,11 +343,6 @@ import { miLocalStorage } from './local-storage';
 		}
 	});
 
-	stream.on('emojiAdded', emojiData => {
-		// TODO
-		//store.commit('instance/set', );
-	});
-
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 		import('./plugin').then(({ install }) => {
 			install(plugin);
@@ -349,6 +366,87 @@ import { miLocalStorage } from './local-storage';
 				text: i18n.ts.accountDeletionInProgress,
 			});
 		}
+
+		const now = new Date();
+		const m = now.getMonth() + 1;
+		const d = now.getDate();
+		
+		if ($i.birthday) {
+			const bm = parseInt($i.birthday.split('-')[1]);
+			const bd = parseInt($i.birthday.split('-')[2]);
+			if (m === bm && d === bd) {
+				claimAchievement('loggedInOnBirthday');
+			}
+		}
+
+		if (m === 1 && d === 1) {
+			claimAchievement('loggedInOnNewYearsDay');
+		}
+
+		if ($i.loggedInDays >= 3) claimAchievement('login3');
+		if ($i.loggedInDays >= 7) claimAchievement('login7');
+		if ($i.loggedInDays >= 15) claimAchievement('login15');
+		if ($i.loggedInDays >= 30) claimAchievement('login30');
+		if ($i.loggedInDays >= 60) claimAchievement('login60');
+		if ($i.loggedInDays >= 100) claimAchievement('login100');
+		if ($i.loggedInDays >= 200) claimAchievement('login200');
+		if ($i.loggedInDays >= 300) claimAchievement('login300');
+		if ($i.loggedInDays >= 400) claimAchievement('login400');
+		if ($i.loggedInDays >= 500) claimAchievement('login500');
+		if ($i.loggedInDays >= 600) claimAchievement('login600');
+		if ($i.loggedInDays >= 700) claimAchievement('login700');
+		if ($i.loggedInDays >= 800) claimAchievement('login800');
+		if ($i.loggedInDays >= 900) claimAchievement('login900');
+		if ($i.loggedInDays >= 1000) claimAchievement('login1000');
+
+		if ($i.notesCount > 0) claimAchievement('notes1');
+		if ($i.notesCount >= 10) claimAchievement('notes10');
+		if ($i.notesCount >= 100) claimAchievement('notes100');
+		if ($i.notesCount >= 500) claimAchievement('notes500');
+		if ($i.notesCount >= 1000) claimAchievement('notes1000');
+		if ($i.notesCount >= 5000) claimAchievement('notes5000');
+		if ($i.notesCount >= 10000) claimAchievement('notes10000');
+		if ($i.notesCount >= 20000) claimAchievement('notes20000');
+		if ($i.notesCount >= 30000) claimAchievement('notes30000');
+		if ($i.notesCount >= 40000) claimAchievement('notes40000');
+		if ($i.notesCount >= 50000) claimAchievement('notes50000');
+		if ($i.notesCount >= 60000) claimAchievement('notes60000');
+		if ($i.notesCount >= 70000) claimAchievement('notes70000');
+		if ($i.notesCount >= 80000) claimAchievement('notes80000');
+		if ($i.notesCount >= 90000) claimAchievement('notes90000');
+		if ($i.notesCount >= 100000) claimAchievement('notes100000');
+
+		if ($i.followersCount > 0) claimAchievement('followers1');
+		if ($i.followersCount >= 10) claimAchievement('followers10');
+		if ($i.followersCount >= 50) claimAchievement('followers50');
+		if ($i.followersCount >= 100) claimAchievement('followers100');
+		if ($i.followersCount >= 300) claimAchievement('followers300');
+		if ($i.followersCount >= 500) claimAchievement('followers500');
+		if ($i.followersCount >= 1000) claimAchievement('followers1000');
+
+		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365) {
+			claimAchievement('passedSinceAccountCreated1');
+		}
+		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 2) {
+			claimAchievement('passedSinceAccountCreated2');
+		}
+		if (Date.now() - new Date($i.createdAt).getTime() > 1000 * 60 * 60 * 24 * 365 * 3) {
+			claimAchievement('passedSinceAccountCreated3');
+		}
+
+		if (claimedAchievements.length >= 30) {
+			claimAchievement('collectAchievements30');
+		}
+	
+		window.setInterval(() => {
+			if (Math.floor(Math.random() * 10000) === 0) {
+				claimAchievement('justPlainLucky');
+			}
+		}, 1000 * 10);
+
+		window.setTimeout(() => {
+			claimAchievement('client30min');
+		}, 1000 * 60 * 30);
 
 		const lastUsed = miLocalStorage.getItem('lastUsed');
 		if (lastUsed) {

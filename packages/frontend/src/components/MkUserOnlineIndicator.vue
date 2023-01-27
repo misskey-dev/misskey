@@ -1,5 +1,5 @@
 <template>
-<div v-tooltip="text" class="fzgwjkgc" :class="user.onlineStatus"></div>
+<div v-tooltip="text" :class="[$style.root, $style['status_' + user.onlineStatus]]"></div>
 </template>
 
 <script lang="ts" setup>
@@ -21,24 +21,24 @@ const text = $computed(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.fzgwjkgc {
+<style lang="scss" module>
+.root {
 	box-shadow: 0 0 0 3px var(--panel);
 	border-radius: 120%; // Blinkのバグか知らんけど、100%ぴったりにすると何故か若干楕円でレンダリングされる
 
-	&.online {
+	&.status_online {
 		background: #58d4c9;
 	}
 
-	&.active {
+	&.status_active {
 		background: #e4bc48;
 	}
 
-	&.offline {
+	&.status_offline {
 		background: #ea5353;
 	}
 
-	&.unknown {
+	&.status_unknown {
 		background: #888;
 	}
 }

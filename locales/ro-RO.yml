@@ -107,6 +107,7 @@ clickToShow: "Click pentru a afișa"
 sensitive: "NSFW"
 add: "Adaugă"
 reaction: "Reacție"
+reactions: "Reacție"
 reactionSetting: "Reacții care să apară in selectorul de reacții"
 reactionSettingDescription2: "Trage pentru a rearanja, apasă pe \"+\" pentru a adăuga."
 rememberNoteVisibility: "Amintește setarea de vizibilitate a notelor"
@@ -648,6 +649,9 @@ sent: "Trimite"
 searchByGoogle: "Caută"
 file: "Fișiere"
 show: "Arată"
+_role:
+  _priority:
+    middle: "Mediu"
 _email:
   _follow:
     title: "te-a urmărit"

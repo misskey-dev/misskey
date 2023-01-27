@@ -6,7 +6,9 @@ import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
 
 type Request = {
 	url: string;
@@ -28,13 +30,18 @@ type PrivateKey = {
 
 @Injectable()
 export class ApRequestService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
 
 		private userKeypairStoreService: UserKeypairStoreService,
 		private httpRequestService: HttpRequestService,
+		private loggerService: LoggerService,
 	) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		this.logger = this.loggerService?.getLogger('ap-request'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 	}
 
 	@bindThis
@@ -47,7 +54,7 @@ export class ApRequestService {
 			method: 'POST',
 			headers: this.objectAssignWithLcKey({
 				'Date': new Date().toUTCString(),
-				'Host': u.hostname,
+				'Host': u.host,
 				'Content-Type': 'application/activity+json',
 				'Digest': digestHeader,
 			}, args.additionalHeaders),
@@ -73,7 +80,7 @@ export class ApRequestService {
 			headers: this.objectAssignWithLcKey({
 				'Accept': 'application/activity+json, application/ld+json',
 				'Date': new Date().toUTCString(),
-				'Host': new URL(args.url).hostname,
+				'Host': new URL(args.url).host,
 			}, args.additionalHeaders),
 		};
 
@@ -96,6 +103,8 @@ export class ApRequestService {
 		request.headers = this.objectAssignWithLcKey(request.headers, {
 			Signature: signatureHeader,
 		});
+		// node-fetch will generate this for us. if we keep 'Host', it won't change with redirects!
+		delete request.headers['host'];
 
 		return {
 			request,
@@ -148,12 +157,10 @@ export class ApRequestService {
 			url,
 			body,
 			additionalHeaders: {
-				'User-Agent': this.config.userAgent,
 			},
 		});
 
-		await this.httpRequestService.getResponse({
-			url,
+		await this.httpRequestService.send(url, {
 			method: req.request.method,
 			headers: req.request.headers,
 			body,
@@ -176,12 +183,10 @@ export class ApRequestService {
 			},
 			url,
 			additionalHeaders: {
-				'User-Agent': this.config.userAgent,
 			},
 		});
 
-		const res = await this.httpRequestService.getResponse({
-			url,
+		const res = await this.httpRequestService.send(url, {
 			method: req.request.method,
 			headers: req.request.headers,
 		});

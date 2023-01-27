@@ -1,7 +1,7 @@
 <template>
 <div :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
-		<MkAvatar :class="$style.avatar" :user="note.user"/>
+		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 		<div :class="$style.body">
 			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>

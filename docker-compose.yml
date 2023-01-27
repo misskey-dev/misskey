@@ -8,6 +8,11 @@ services:
       - db
       - redis
 #      - es
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "3000:3000"
     networks:
@@ -19,21 +24,29 @@ services:
 
   redis:
     restart: always
-    image: redis:4.0-alpine
+    image: redis:7-alpine
     networks:
       - internal_network
     volumes:
       - ./redis:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 5s
+      retries: 20
 
   db:
     restart: always
-    image: postgres:12.2-alpine
+    image: postgres:15-alpine
     networks:
       - internal_network
     env_file:
       - .config/docker.env
     volumes:
       - ./db:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+      interval: 5s
+      retries: 20
 
 #  es:
 #    restart: always

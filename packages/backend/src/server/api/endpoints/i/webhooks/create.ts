@@ -5,6 +5,8 @@ import type { WebhooksRepository } from '@/models/index.js';
 import { webhookEventTypes } from '@/models/entities/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['webhooks'],
@@ -12,6 +14,14 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:account',
+
+	errors: {
+		tooManyWebhooks: {
+			message: 'You cannot create webhook any more.',
+			code: 'TOO_MANY_WEBHOOKS',
+			id: '87a9bb19-111e-4e37-81d3-a3e7426453b0',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -38,8 +48,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const currentWebhooksCount = await this.webhooksRepository.countBy({
+				userId: me.id,
+			});
+			if (currentWebhooksCount > (await this.roleService.getUserPolicies(me.id)).webhookLimit) {
+				throw new ApiError(meta.errors.tooManyWebhooks);
+			}
+
 			const webhook = await this.webhooksRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),

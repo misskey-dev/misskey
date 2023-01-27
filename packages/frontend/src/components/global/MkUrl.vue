@@ -14,7 +14,7 @@
 	<span v-if="pathname != ''" :class="$style.pathname">{{ self ? pathname.substring(1) : pathname }}</span>
 	<span :class="$style.query">{{ query }}</span>
 	<span :class="$style.hash">{{ hash }}</span>
-	<i v-if="target === '_blank'" class="ti ti-external-link icon"></i>
+	<i v-if="target === '_blank'" :class="$style.icon" class="ti ti-external-link"></i>
 </component>
 </template>
 

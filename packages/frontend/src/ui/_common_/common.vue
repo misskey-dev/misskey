@@ -149,6 +149,7 @@ if ($i) {
 	z-index: 4000000;
 	top: 15px;
 	right: 15px;
+	pointer-events: none;
 
 	&:before {
 		content: "";

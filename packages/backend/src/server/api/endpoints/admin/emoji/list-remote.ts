@@ -11,7 +11,7 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
 
 	res: {
 		type: 'array',
@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return this.emojiEntityService.packMany(emojis);
+			return this.emojiEntityService.packMany(emojis, { omitHost: false, omitId: false, withUrl: false });
 		});
 	}
 }

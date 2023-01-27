@@ -16,6 +16,7 @@ import { DI } from '@/di-symbols.js';
 import type { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -73,13 +74,19 @@ export class AntennaService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message;
+			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'antennaCreated':
-					this.antennas.push(body);
+					this.antennas.push({
+						...body,
+						createdAt: new Date(body.createdAt),
+					});
 					break;
 				case 'antennaUpdated':
-					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = body;
+					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
+						...body,
+						createdAt: new Date(body.createdAt),
+					};
 					break;
 				case 'antennaDeleted':
 					this.antennas = this.antennas.filter(a => a.id !== body.id);

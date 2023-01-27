@@ -12,7 +12,9 @@ import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository, UserProfile } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -41,7 +43,6 @@ function isRemoteUser<T extends { host: User['host'] }>(user: T): user is T & { 
 function isRemoteUser(user: User | { host: User['host'] }): boolean {
 	return !isLocalUser(user);
 }
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserEntityService implements OnModuleInit {
@@ -50,6 +51,7 @@ export class UserEntityService implements OnModuleInit {
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
+	private roleService: RoleService;
 	private userInstanceCache: Cache<Instance | null>;
 
 	constructor(
@@ -120,6 +122,7 @@ export class UserEntityService implements OnModuleInit {
 		//private pageEntityService: PageEntityService,
 		//private customEmojiService: CustomEmojiService,
 		//private antennaService: AntennaService,
+		//private roleService: RoleService,
 	) {
 		this.userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
 	}
@@ -130,6 +133,7 @@ export class UserEntityService implements OnModuleInit {
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.antennaService = this.moduleRef.get('AntennaService');
+		this.roleService = this.moduleRef.get('RoleService');
 	}
 
 	//#region Validators
@@ -339,6 +343,7 @@ export class UserEntityService implements OnModuleInit {
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
+			userProfile?: UserProfile,
 		},
 	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
@@ -371,7 +376,7 @@ export class UserEntityService implements OnModuleInit {
 			.innerJoinAndSelect('pin.note', 'note')
 			.orderBy('pin.id', 'DESC')
 			.getMany() : [];
-		const profile = opts.detail ? await this.userProfilesRepository.findOneByOrFail({ userId: user.id }) : null;
+		const profile = opts.detail ? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id })) : null;
 
 		const followingCount = profile == null ? null :
 			(profile.ffVisibility === 'public') || isMe ? user.followingCount :
@@ -383,6 +388,9 @@ export class UserEntityService implements OnModuleInit {
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
+		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
+		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
+
 		const falsy = opts.detail ? false : undefined;
 
 		const packed = {
@@ -392,8 +400,6 @@ export class UserEntityService implements OnModuleInit {
 			host: user.host,
 			avatarUrl: this.getAvatarUrlSync(user),
 			avatarBlurhash: user.avatar?.blurhash ?? null,
-			isAdmin: user.isAdmin ?? falsy,
-			isModerator: user.isModerator ?? falsy,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
 			instance: user.host ? this.userInstanceCache.fetch(user.host,
@@ -407,6 +413,7 @@ export class UserEntityService implements OnModuleInit {
 				faviconUrl: instance.faviconUrl,
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
+			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 
 			...(opts.detail ? {
@@ -418,7 +425,7 @@ export class UserEntityService implements OnModuleInit {
 				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
 				bannerBlurhash: user.banner?.blurhash ?? null,
 				isLocked: user.isLocked,
-				isSilenced: user.isSilenced ?? falsy,
+				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
 				isSuspended: user.isSuspended ?? falsy,
 				description: profile!.description,
 				location: profile!.location,
@@ -443,14 +450,21 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
-				...(isMe || opts.includeSecrets ? {
-					driveCapacityOverrideMb: user.driveCapacityOverrideMb,
-				} : {}),
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).map(role => ({
+					id: role.id,
+					name: role.name,
+					color: role.color,
+					description: role.description,
+					isModerator: role.isModerator,
+					isAdministrator: role.isAdministrator,
+				}))),
 			} : {}),
 
 			...(opts.detail && isMe ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
+				isModerator: isModerator,
+				isAdmin: isAdmin,
 				injectFeaturedNote: profile!.injectFeaturedNote,
 				receiveAnnouncementEmail: profile!.receiveAnnouncementEmail,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
@@ -481,6 +495,9 @@ export class UserEntityService implements OnModuleInit {
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
 				showTimelineReplies: user.showTimelineReplies ?? falsy,
+				achievements: profile!.achievements,
+				loggedInDays: profile!.loggedInDates.length,
+				policies: this.roleService.getUserPolicies(user.id),
 			} : {}),
 
 			...(opts.includeSecrets ? {

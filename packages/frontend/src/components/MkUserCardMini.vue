@@ -1,6 +1,6 @@
 <template>
-<div :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
-	<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
+<div v-adaptive-bg :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
+	<MkAvatar class="avatar" :user="user" indicator/>
 	<div class="body">
 		<span class="name"><MkUserName class="name" :user="user"/></span>
 		<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
@@ -11,20 +11,28 @@
 
 <script lang="ts" setup>
 import * as misskey from 'misskey-js';
+import { onMounted } from 'vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 import { acct } from '@/filters/user';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
-}>();
+	withChart: boolean;
+}>(), {
+	withChart: true,
+});
 
 let chartValues = $ref<number[] | null>(null);
 
-os.apiGet('charts/user/notes', { userId: props.user.id, limit: 16 + 1, span: 'day' }).then(res => {
-	// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
-	res.inc.splice(0, 1);
-	chartValues = res.inc;
+onMounted(() => {
+	if (props.withChart) {
+		os.apiGet('charts/user/notes', { userId: props.user.id, limit: 16 + 1, span: 'day' }).then(res => {
+			// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
+			res.inc.splice(0, 1);
+			chartValues = res.inc;
+		});
+	}
 });
 </script>
 

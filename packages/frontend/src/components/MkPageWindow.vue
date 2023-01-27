@@ -17,14 +17,14 @@
 		</template>
 	</template>
 
-	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
+	<div :class="$style.root" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
 		<RouterView :router="router"/>
 	</div>
 </MkWindow>
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, inject, provide } from 'vue';
+import { ComputedRef, inject, onMounted, onUnmounted, provide } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout';
@@ -35,6 +35,8 @@ import { mainRouter, routes } from '@/router';
 import { Router } from '@/nirax';
 import { i18n } from '@/i18n';
 import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { openingWindowsCount } from '@/os';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = defineProps<{
 	initialPath: string;
@@ -128,13 +130,24 @@ function popout() {
 	windowEl.close();
 }
 
+onMounted(() => {
+	openingWindowsCount.value++;
+	if (openingWindowsCount.value >= 3) {
+		claimAchievement('open3windows');
+	}
+});
+
+onUnmounted(() => {
+	openingWindowsCount.value--;
+});
+
 defineExpose({
 	close,
 });
 </script>
 
-<style lang="scss" scoped>
-.yrolvcoq {
+<style lang="scss" module>
+.root {
 	min-height: 100%;
 	background: var(--bg);
 

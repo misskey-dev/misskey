@@ -86,6 +86,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: [] as string[],
 	},
+	hiddenAds: {
+		where: 'account',
+		default: [] as string[],
+	},
 
 	menu: {
 		where: 'deviceAccount',
@@ -152,7 +156,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animation: {
 		where: 'device',
-		default: true,
+		default: !matchMedia('(prefers-reduced-motion)').matches,
 	},
 	animatedMfm: {
 		where: 'device',
@@ -180,11 +184,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useBlurEffectForModal: {
 		where: 'device',
-		default: true,
+		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
 	},
 	useBlurEffect: {
 		where: 'device',
-		default: true,
+		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
 	},
 	showFixedPostForm: {
 		where: 'device',
@@ -293,10 +297,10 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
+import { miLocalStorage } from './local-storage';
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
 import { Note, UserDetailed } from 'misskey-js/built/entities';
-import { miLocalStorage } from './local-storage';
 
 export class ColdDeviceStorage {
 	public static default = {

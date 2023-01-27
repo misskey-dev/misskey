@@ -9,35 +9,152 @@
 You should also include the user name that made the change.
 -->
 
-## 13.0.0 (unreleased)
+## 13.x.x (unreleased)
+
+### Bugfixes
+- Client: classicモード使用時にwindowサイズによってdefaultに変更された後に、windowサイズが元に戻ったらclassicに戻すように修正 #9669
+
+## 13.2.4 (2023/01/27)
+### Improvements
+- リモートカスタム絵文字表示時のパフォーマンスを改善
+- Default to `animation: false` when prefers-reduced-motion is set
+- リアクション履歴が公開なら、ログインしていなくても表示できるように
+- tweak blur setting
+- tweak custom emoji cache
+
+### Bugfixes
+- fix aggregation of retention
+- ダッシュボードでオンラインユーザー数が表示されない問題を修正
+- フォロー申請・フォローのボタンが、通知から消えている問題を修正
+
+## 13.2.3 (2023/01/26)
+### Improvements
+- カスタム絵文字の更新をリアルタイムで反映するように
+
+### Bugfixes
+- turnstile-failed: missing-input-secret
+
+## 13.2.2 (2023/01/25)
+### Improvements
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- サインイン時に誤ったレートリミットがかかることがある問題を修正
+- MFMのposition、rotate、scaleで小数が使えない問題を修正
+
+## 13.2.1 (2023/01/24)
+### Improvements
+- デザインの調整
+- サーバーのパフォーマンスを改善
+
+## 13.2.0 (2023/01/23)
+
+### Improvements
+- onlyServer / onlyQueue オプションを復活
+- 他人の実績閲覧時は獲得条件を表示しないように
+- アニメーション減らすオプション有効時はリアクションのアニメーションを無効に
+- カスタム絵文字一覧のパフォーマンスを改善
+
+### Bugfixes
+- Aiscript: button is not defined
+
+## 13.1.7 (2023/01/22)
+
+### Improvements
+- 新たな実績を追加
+- MFMにscaleタグを追加
+
+## 13.1.4 (2023/01/22)
+
+### Improvements
+- 新たな実績を追加
+
+### Bugfixes
+- Client: ローカリゼーション更新時にリロードが繰り返されることがあるのを修正
+
+## 13.1.3 (2023/01/22)
+
+### Bugfixes
+- Client: リアクションのカスタム絵文字の表示の問題を修正
+
+## 13.1.2 (2023/01/22)
+
+### Bugfixes
+- Client: リアクションのカスタム絵文字の表示の問題を修正
+
+## 13.1.1 (2023/01/22)
+
+### Improvements
+- ローカルのカスタム絵文字を表示する際のパフォーマンスを改善
+- Client: 瞬間的に大量の実績を解除した際の挙動を改善
+
+### Bugfixes
+- Client: アップデート時にローカリゼーションデータが更新されないことがあるのを修正
+
+## 13.1.0 (2023/01/21)
+
+### Improvements
+- 実績機能
+- Playのプリセットを追加
+- Playのscriptの文字数制限を緩和
+- AiScript GUIの強化
+- リアクション一覧詳細ダイアログを表示できるように
+- 存在しないカスタム絵文字をテキストで表示するように
+- Alt text in image viewer
+- ジョブキューのプロセスとWebサーバーのプロセスを分離
+
+### Bugfixes
+- playを削除する手段がなかったのを修正
+- The … button on notes does nothing when not logged in
+- twitterと連携するときに autwh is not a function になるのを修正
+
+## 13.0.0 (2023/01/16)
 
 ### TL;DR
-- New features (Play, new widgets, new charts, 🍪👈, etc)
+- New features (Role system, Misskey Play, New widgets, New charts, 🍪👈, etc)
 - Rewriten backend
 - Better performance (backend and frontend)
 - Various usability improvements
 - Various UI tweaks
+
+### Notable features
+- ロール機能
+	- 従来より柔軟にユーザーのポリシーを管理できます。例えば、「インスタンスのパトロンはアンテナを30個まで作れる」「基本的にLTLは見れないが、許可した人だけ見れる」「招待制インスタンスだけどユーザーなら誰でも他者を招待できる」のような運用はもちろん、「ローカルユーザーかつアカウント作成から1日未満のユーザーはパブリックな投稿を行えない」のように複数条件を組み合わせて、自動でロールを付与する設定も可能です。
+- Misskey Play
+	- 従来の動的なPagesに代わる、新しいプラットフォームです。動的なコンテンツ(アプリケーション)に特化していて、Pagesに比べてはるかに柔軟なアプリケーションを作成可能です。
 
 ### Changes
 #### For server admins
 - Node.js 18.x or later is required
 - PostgreSQL 15.x is required
 	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
+	- Docker環境でPostgreSQLのアップデートを行う際のガイドはこちら: https://github.com/misskey-dev/misskey/pull/9641#issue-1536336620
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
-- Migrate to Yarn Berry (v3.2.1) @ThatOneCalculator
-	- You may have to `yarn run clean-all`, `sudo corepack enable` and `yarn set version berry` before running `yarn install` if you're still on yarn classic
+- Yarnからpnpmに移行されました
+  corepackの有効化を推奨します: `sudo corepack enable`
+- インスタンスブロックはサブドメインにも適用されるようになります
+- ロールの導入に伴い、いくつかの機能がロールと統合されました
+	- モデレーターはロールに統合されました。今までのモデレーター情報は失われるため、予めモデレーター一覧を記録しておき、アップデート後にモデレーターロールを作りアサインし直してください。
+	- サイレンスはロールに統合されました。今までのユーザーは恩赦されるため、予めサイレンス一覧を記録しておくのをおすすめします。
+	- ユーザーごとのドライブ容量設定はロールに統合されました。
+	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールもしくはコンディショナルロールでドライブ容量を編集してください。
+	- LTL/GTLの解放状態はロールに統合されました。
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+  https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
 - ノートのウォッチ機能が削除されました
 - アンケートに投票された際に通知が作成されなくなりました
+- ノートの数式埋め込みが削除されました
 - 新たに動的なPagesを作ることはできなくなりました
 	- 代わりにAiScriptを用いてより柔軟に動的なコンテンツを作成できるMisskey Play機能が実装されています。
 - AiScriptが0.12.2にアップデートされました
 	- 0.12.xの変更点についてはこちら https://github.com/syuilo/aiscript/blob/master/CHANGELOG.md#0120
 	- 0.12.x未満のプラグインは読み込むことはできません
 - iOS15以下のデバイスはサポートされなくなりました
-- Firefox109以下はサポートされなくなりました
+- Firefox110以下はサポートされなくなりました
+  - 109でもContainerQueriesのフラグを有効にする事で問題なく使用できます
 
 #### For app developers
 - API: metaのレスポンスに`emojis`プロパティが含まれなくなりました
@@ -49,8 +166,10 @@ You should also include the user name that made the change.
 - API: `user`および`note`エンティティに`emojis`プロパティが含まれなくなりました
 - API: `user`エンティティに`avatarColor`および`bannerColor`プロパティが含まれなくなりました
 - API: `instance`エンティティに`latestStatus`、`lastCommunicatedAt`、`latestRequestSentAt`プロパティが含まれなくなりました
+- API: `instance`エンティティの`caughtAt`は`firstRetrievedAt`に名前が変わりました
 
 ### Improvements
+- Role system @syuilo
 - Misskey Play @syuilo
 - Introduce retention-rate aggregation @syuilo
 - Make possible to export favorited notes @syuilo
@@ -58,10 +177,22 @@ You should also include the user name that made the change.
 - Push notification of Antenna note @tamaina
 - AVIF support @tamaina
 - Add Cloudflare Turnstile CAPTCHA support @CyberRex0
+- レートリミットをユーザーごとに調整可能に @syuilo
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはインスタンスの招待コードを発行できるように @syuilo
+- 非モデレーターでも、権限を持つロールをアサインされたユーザーはカスタム絵文字の追加、編集、削除を行えるように @syuilo
+- クリップおよびクリップ内のノートの作成可能数を設定可能に @syuilo
+- ユーザーリストおよびユーザーリスト内のユーザーの作成可能数を設定可能に @syuilo
+- ハードワードミュートの最大文字数を設定可能に @syuilo
+- Webhookの作成可能数を設定可能に @syuilo
+- ノートをピン留めできる数を設定可能に @syuilo
 - Server: signToActivityPubGet is set to true by default @syuilo
 - Server: improve syslog performance @syuilo
+- Server: Use undici instead of node-fetch and got @tamaina
+- Server: Judge instance block by endsWith @tamaina
 - Server: improve note scoring for featured notes @CyberRex0
 - Server: アンケート選択肢の文字数制限を緩和 @syuilo
+- Server: プロフィールの文字数制限を緩和 @syuilo
+- Server: add rate limits for some endpoints @syuilo
 - Server: improve stats api performance @syuilo
 - Server: improve nodeinfo performance @syuilo
 - Server: delete outdated notifications regularly to improve db performance @syuilo
@@ -73,6 +204,7 @@ You should also include the user name that made the change.
 - Client: Add link to user RSS feed in profile menu @ssmucny
 - Client: Compress non-animated PNG files @saschanaz
 - Client: YouTube window player @sim1222
+- Client: show readable error when rate limit exceeded @syuilo
 - Client: enhance dashboard of control panel @syuilo
 - Client: Vite is upgraded to v4 @syuilo, @tamaina
 - Client: HMR is available while yarn dev @tamaina
@@ -91,13 +223,16 @@ You should also include the user name that made the change.
 - Client: add heatmap of daily active users to about page @syuilo
 - Client: introduce fluent emoji @syuilo
 - Client: add new theme @syuilo
+- Client: add new mfm function (position, fg, bg) @syuilo
 - Client: show fireworks when visit user who today is birthday @syuilo
 - Client: show bot warning on screen when logged in as bot account @syuilo
+- Client: AiScriptからカスタム絵文字一覧を参照できるように @syuilo
 - Client: improve overall performance of client @syuilo
 - Client: ui tweaks @syuilo
 - Client: clicker game @syuilo
 
 ### Bugfixes
+- Server: Fix @tensorflow/tfjs-core's MODULE_NOT_FOUND error @ikuradon
 - Server: 引用内の文章がnyaizeされてしまう問題を修正 @kabo2468
 - Server: Bug fix for Pinned Users lookup on instance @squidicuzz
 - Server: Fix peers API returning suspended instances @ineffyble
@@ -110,6 +245,9 @@ You should also include the user name that made the change.
 - Server: 特定のPNG画像のアップロードに失敗する問題を修正 @usbharu
 - Server: 非公開のクリップのURLでOGPレンダリングされる問題を修正 @syuilo
 - Server: アンテナタイムライン（ストリーミング）が、フォローしていないユーザーの鍵投稿も拾ってしまう @syuilo
+- Server: follow request list api pagination @sim1222
+- Server: ドライブ容量超過時のエラーが適切にレスポンスされない問題を修正 @syuilo
+- Client: パスワードマネージャーなどでユーザー名がオートコンプリートされない問題を修正 @massongit
 - Client: 日付形式の文字列などがカスタム絵文字として表示されるのを修正 @syuilo
 - Client: case insensitive emoji search @saschanaz
 - Client: 画面の幅が狭いとウィジェットドロワーを閉じる手段がなくなるのを修正 @syuilo
@@ -120,6 +258,11 @@ You should also include the user name that made the change.
 - Client: update emoji picker immediately on all input @saschanaz
 - Client: チャートのツールチップが画面に残ることがあるのを修正 @syuilo
 - Client: fix wrong link in tutorial @syuilo
+
+### Special thanks
+- All contributors
+- All who have created instances for the beta test
+- All who participated in the beta test
 
 ## 12.119.1 (2022/12/03)
 ### Bugfixes

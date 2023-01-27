@@ -6,10 +6,10 @@ import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { StatusError } from '@/misc/status-error.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { WebhookDeliverJobData } from '../types.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class WebhookDeliverProcessorService {
@@ -33,8 +33,7 @@ export class WebhookDeliverProcessorService {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
 	
-			const res = await this.httpRequestService.getResponse({
-				url: job.data.to,
+			const res = await this.httpRequestService.send(job.data.to, {
 				method: 'POST',
 				headers: {
 					'User-Agent': 'Misskey-Hooks',

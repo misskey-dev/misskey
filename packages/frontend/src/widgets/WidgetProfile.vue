@@ -2,7 +2,7 @@
 <div class="_panel">
 	<div :class="$style.container" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div :class="$style.avatarContainer">
-			<MkAvatar :class="$style.avatar" :user="$i" :disable-link="true" :disable-preview="true"/>
+			<MkAvatar :class="$style.avatar" :user="$i"/>
 		</div>
 		<div :class="$style.bodyContainer">
 			<div :class="$style.body">

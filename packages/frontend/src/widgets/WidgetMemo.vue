@@ -1,10 +1,11 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-memo">
-	<template #header><i class="ti ti-note"></i>{{ i18n.ts._widgets.memo }}</template>
+<MkContainer :show-header="widgetProps.showHeader" class="mkw-memo data-cy-mkw-memo">
+	<template #icon><i class="ti ti-note"></i></template>
+	<template #header>{{ i18n.ts._widgets.memo }}</template>
 
-	<div class="otgbylcu">
-		<textarea v-model="text" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
-		<button :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ i18n.ts.save }}</button>
+	<div :class="$style.root">
+		<textarea v-model="text" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
+		<button :class="$style.save" :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ i18n.ts.save }}</button>
 	</div>
 </MkContainer>
 </template>
@@ -67,45 +68,45 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.otgbylcu {
+<style lang="scss" module>
+.root {
 	padding-bottom: 28px + 16px;
+}
 
-	> textarea {
-		display: block;
-		width: 100%;
-		max-width: 100%;
-		min-width: 100%;
-		padding: 16px;
-		color: var(--fg);
-		background: transparent;
-		border: none;
-		border-bottom: solid 0.5px var(--divider);
-		border-radius: 0;
-		box-sizing: border-box;
-		font: inherit;
-		font-size: 0.9em;
+.textarea {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	min-width: 100%;
+	padding: 16px;
+	color: var(--fg);
+	background: transparent;
+	border: none;
+	border-bottom: solid 0.5px var(--divider);
+	border-radius: 0;
+	box-sizing: border-box;
+	font: inherit;
+	font-size: 0.9em;
 
-		&:focus-visible {
-			outline: none;
-		}
-	}
-
-	> button {
-		display: block;
-		position: absolute;
-		bottom: 8px;
-		right: 8px;
-		margin: 0;
-		padding: 0 10px;
-		height: 28px;
+	&:focus-visible {
 		outline: none;
-		border-radius: 4px;
+	}
+}
 
-		&:disabled {
-			opacity: 0.7;
-			cursor: default;
-		}
+.save {
+	display: block;
+	position: absolute;
+	bottom: 8px;
+	right: 8px;
+	margin: 0;
+	padding: 0 10px;
+	height: 28px;
+	outline: none;
+	border-radius: 4px;
+
+	&:disabled {
+		opacity: 0.7;
+		cursor: default;
 	}
 }
 </style>

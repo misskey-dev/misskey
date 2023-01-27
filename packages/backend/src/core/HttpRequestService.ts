@@ -95,15 +95,14 @@ export class HttpRequestService {
 	}
 
 	@bindThis
-	public async getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>): Promise<unknown> {
-		const res = await this.getResponse({
-			url,
+	public async getJson(url: string, accept = 'application/json, */*', headers?: Record<string, string>): Promise<unknown> {
+		const res = await this.send(url, {
 			method: 'GET',
 			headers: Object.assign({
 				'User-Agent': this.config.userAgent,
 				Accept: accept,
 			}, headers ?? {}),
-			timeout,
+			timeout: 5000,
 			size: 1024 * 256,
 		});
 
@@ -111,47 +110,48 @@ export class HttpRequestService {
 	}
 
 	@bindThis
-	public async getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: Record<string, string>): Promise<string> {
-		const res = await this.getResponse({
-			url,
+	public async getHtml(url: string, accept = 'text/html, */*', headers?: Record<string, string>): Promise<string> {
+		const res = await this.send(url, {
 			method: 'GET',
 			headers: Object.assign({
 				'User-Agent': this.config.userAgent,
 				Accept: accept,
 			}, headers ?? {}),
-			timeout,
+			timeout: 5000,
 		});
 
 		return await res.text();
 	}
 
 	@bindThis
-	public async getResponse(args: {
-		url: string,
-		method: string,
+	public async send(url: string, args: {
+		method?: string,
 		body?: string,
-		headers: Record<string, string>,
+		headers?: Record<string, string>,
 		timeout?: number,
 		size?: number,
+	} = {}, extra: {
+		throwErrorWhenResponseNotOk: boolean;
+	} = {
+		throwErrorWhenResponseNotOk: true,
 	}): Promise<Response> {
-		const timeout = args.timeout ?? 10 * 1000;
+		const timeout = args.timeout ?? 5000;
 
 		const controller = new AbortController();
 		setTimeout(() => {
 			controller.abort();
-		}, timeout * 6);
+		}, timeout);
 
-		const res = await fetch(args.url, {
-			method: args.method,
+		const res = await fetch(url, {
+			method: args.method ?? 'GET',
 			headers: args.headers,
 			body: args.body,
-			timeout,
 			size: args.size ?? 10 * 1024 * 1024,
 			agent: (url) => this.getAgentByUrl(url),
 			signal: controller.signal,
 		});
 
-		if (!res.ok) {
+		if (!res.ok && extra.throwErrorWhenResponseNotOk) {
 			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
 		}
 

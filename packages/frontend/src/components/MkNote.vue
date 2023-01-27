@@ -12,7 +12,7 @@
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
-		<MkAvatar v-once :class="$style.renoteAvatar" :user="note.user"/>
+		<MkAvatar v-once :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<article :class="$style.article" @contextmenu.stop="onContextmenu">
-		<MkAvatar v-once :class="$style.avatar" :user="appearNote.user"/>
+		<MkAvatar v-once :class="$style.avatar" :user="appearNote.user" link preview/>
 		<div :class="$style.main">
 			<MkNoteHeader :class="$style.header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :class="$style.ticker" :instance="appearNote.user.instance"/>
@@ -48,12 +48,12 @@
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-						<Mfm v-if="appearNote.text" v-once :text="appearNote.text" :author="appearNote.user" :i="$i"/>
+						<Mfm v-if="appearNote.text" v-once :text="appearNote.text" :author="appearNote.user" :i="$i" :emoji-urls="appearNote.emojis"/>
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else :class="$style.translated">
 								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :i="$i"/>
+								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :emoji-urls="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -143,6 +143,7 @@ import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -268,6 +269,9 @@ function react(viaKeyboard = false): void {
 			noteId: appearNote.id,
 			reaction: reaction,
 		});
+		if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+			claimAchievement('reactWithoutRead');
+		}
 	}, () => {
 		focus();
 	});
@@ -493,7 +497,7 @@ function readPromo() {
 	bottom: 1em;
 }
 
-.howLessLabel {
+.showLessLabel {
 	display: inline-block;
 	background: var(--popup);
 	padding: 6px 10px;

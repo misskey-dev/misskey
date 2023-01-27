@@ -35,6 +35,8 @@ import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
+import { claimAchievement } from '@/scripts/achievements';
+import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -90,6 +92,21 @@ async function onClick() {
 					userId: props.user.id,
 				});
 				hasPendingFollowRequestFromYou = true;
+
+				claimAchievement('following1');
+
+				if ($i.followingCount >= 10) {
+					claimAchievement('following10');
+				}
+				if ($i.followingCount >= 50) {
+					claimAchievement('following50');
+				}
+				if ($i.followingCount >= 100) {
+					claimAchievement('following100');
+				}
+				if ($i.followingCount >= 300) {
+					claimAchievement('following300');
+				}
 			}
 		}
 	} catch (err) {

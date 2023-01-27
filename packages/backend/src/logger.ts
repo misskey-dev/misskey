@@ -68,6 +68,7 @@ export default class Logger {
 		if (envOption.withLogTime) log = chalk.gray(time) + ' ' + log;
 
 		console.log(important ? chalk.bold(log) : log);
+		if (level === 'error' && data) console.log(data);
 
 		if (store) {
 			if (this.syslogClient) {

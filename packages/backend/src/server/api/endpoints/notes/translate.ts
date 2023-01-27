@@ -1,5 +1,4 @@
 import { URLSearchParams } from 'node:url';
-import fetch from 'node-fetch';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -8,8 +7,8 @@ import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -84,25 +83,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const endpoint = instance.deeplIsPro ? 'https://api.deepl.com/v2/translate' : 'https://api-free.deepl.com/v2/translate';
 
-			const res = await fetch(endpoint, {
+			const res = await this.httpRequestService.send(endpoint, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
-					'User-Agent': config.userAgent,
 					Accept: 'application/json, */*',
 				},
-				body: params,
-				// TODO
-				//timeout: 10000,
-				agent: (url) => this.httpRequestService.getAgentByUrl(url),
+				body: params.toString(),
 			});
 
 			const json = (await res.json()) as {
-		translations: {
-			detected_source_language: string;
-			text: string;
-		}[];
-	};
+				translations: {
+					detected_source_language: string;
+					text: string;
+				}[];
+			};
 
 			return {
 				sourceLang: json.translations[0].detected_source_language,

@@ -85,6 +85,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 .ebkgoccj {
+	margin: auto;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;

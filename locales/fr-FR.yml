@@ -110,6 +110,7 @@ clickToShow: "Cliquer pour afficher"
 sensitive: "Contenu sensible"
 add: "Ajouter"
 reaction: "Réactions"
+reactions: "Réactions"
 reactionSetting: "Réactions à afficher dans le sélecteur de réactions"
 reactionSettingDescription2: "Déplacer pour réorganiser, cliquer pour effacer, utiliser « + » pour ajouter."
 rememberNoteVisibility: "Activer l'option \" se souvenir de la visibilité des notes \" vous permet de réutiliser automatiquement la visibilité utilisée lors de la publication de votre note précédente."
@@ -911,7 +912,17 @@ loggedInAsBot: "Connecté actuellement en tant que bot"
 tools: "Outils"
 cannotLoad: "Chargement impossible"
 like: "J'aime"
+numberOfLikes: "Favoris"
 show: "Affichage"
+neverShow: "Ne plus afficher"
+remindMeLater: "Peut-être plus tard"
+color: "Couleur"
+_role:
+  priority: "Priorité"
+  _priority:
+    low: "Basse"
+    middle: "Moyen"
+    high: "Haute"
 _sensitiveMediaDetection:
   description: "L'apprentissage automatique peut être utilisé pour détecter automatiquement les médias sensibles à modérer. La sollicitation des serveurs augmente légèrement."
   sensitivity: "Sensibilité de la détection"
@@ -944,6 +955,7 @@ _accountDelete:
 _ad:
   back: "Retour"
   reduceFrequencyOfThisAd: "Voir cette publicité moins souvent"
+  hide: "Cacher "
 _forgotPassword:
   enterEmail: "Entrez ici l'adresse e-mail que vous avez enregistrée pour votre compte. Un lien vous permettant de réinitialiser votre mot de passe sera envoyé à cette adresse."
   ifNoEmail: "Si vous n'avez pas enregistré d'adresse e-mail, merci de contacter l'administrateur·rice de votre instance."

@@ -141,6 +141,15 @@ mainRouter.on('change', () => {
 
 document.documentElement.style.overflowY = 'scroll';
 
+if (window.innerWidth > 1024) {
+	const tempUI = miLocalStorage.getItem('ui_temp')
+	if (tempUI) {
+		miLocalStorage.setItem('ui', tempUI)
+		miLocalStorage.removeItem('ui_temp')
+		location.reload();
+	}
+}
+
 defaultStore.loaded.then(() => {
 	if (defaultStore.state.widgets.length === 0) {
 		defaultStore.set('widgets', [{
@@ -376,6 +385,7 @@ $widgets-hide-threshold: 1090px;
 
 .navButtonIcon {
 	font-size: 18px;
+	vertical-align: middle;
 }
 
 .navButtonIndicator {

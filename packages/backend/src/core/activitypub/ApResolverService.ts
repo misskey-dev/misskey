@@ -8,6 +8,8 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
@@ -17,6 +19,7 @@ import type { IObject, ICollection, IOrderedCollection } from './type.js';
 export class Resolver {
 	private history: Set<string>;
 	private user?: ILocalUser;
+	private logger: Logger;
 
 	constructor(
 		private config: Config,
@@ -31,9 +34,12 @@ export class Resolver {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
+		private loggerService: LoggerService,
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		this.logger = this.loggerService?.getLogger('ap-resolve'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
 	}
 
 	@bindThis
@@ -87,7 +93,7 @@ export class Resolver {
 		}
 
 		const meta = await this.metaService.fetch();
-		if (meta.blockedHosts.includes(host)) {
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
 			throw new Error('Instance is blocked');
 		}
 
@@ -96,7 +102,7 @@ export class Resolver {
 		}
 
 		const object = (this.user
-			? await this.apRequestService.signedGet(value, this.user)
+			? await this.apRequestService.signedGet(value, this.user) as IObject
 			: await this.httpRequestService.getJson(value, 'application/activity+json, application/ld+json')) as IObject;
 
 		if (object == null || (

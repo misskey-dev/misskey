@@ -146,6 +146,7 @@ onBeforeUnmount(() => {
 <style lang="scss" module>
 .root {
 	position: relative;
+	margin: auto;
 	padding: 32px;
 	min-width: 320px;
 	max-width: 480px;

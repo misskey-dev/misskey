@@ -2,12 +2,12 @@
 <button
 	ref="buttonEl"
 	v-ripple="canToggle"
-	class="hkzvhatu _button"
-	:class="{ reacted: note.myReaction == reaction, canToggle }"
+	class="_button"
+	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle }]"
 	@click="toggleReaction()"
 >
-	<MkReactionIcon class="icon" :reaction="reaction"/>
-	<span class="count">{{ count }}</span>
+	<MkReactionIcon :class="$style.icon" :reaction="reaction" :emoji-url="note.reactionEmojis[reaction.substr(1, reaction.length - 2)]"/>
+	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
 
@@ -20,6 +20,8 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
+import { claimAchievement } from '@/scripts/achievements';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	reaction: string;
@@ -52,11 +54,15 @@ const toggleReaction = () => {
 			noteId: props.note.id,
 			reaction: props.reaction,
 		});
+		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
+			claimAchievement('reactWithoutRead');
+		}
 	}
 };
 
 const anime = () => {
 	if (document.hidden) return;
+	if (!defaultStore.state.animation) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
@@ -92,8 +98,8 @@ useTooltip(buttonEl, async (showing) => {
 }, 100);
 </script>
 
-<style lang="scss" scoped>
-.hkzvhatu {
+<style lang="scss" module>
+.root {
 	display: inline-block;
 	height: 32px;
 	margin: 2px;
@@ -127,11 +133,11 @@ useTooltip(buttonEl, async (showing) => {
 			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 		}
 	}
+}
 
-	> .count {
-		font-size: 0.9em;
-		line-height: 32px;
-		margin: 0 0 0 4px;
-	}
+.count {
+	font-size: 0.9em;
+	line-height: 32px;
+	margin: 0 0 0 4px;
 }
 </style>

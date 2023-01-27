@@ -4,8 +4,8 @@ import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
-import got, * as Got from 'got';
 import chalk from 'chalk';
+import got, * as Got from 'got';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -34,11 +34,11 @@ export class DownloadService {
 	@bindThis
 	public async downloadUrl(url: string, path: string): Promise<void> {
 		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
-	
+
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
-	
+
 		const req = got.stream(url, {
 			headers: {
 				'User-Agent': this.config.userAgent,
@@ -67,7 +67,7 @@ export class DownloadService {
 					req.destroy();
 				}
 			}
-	
+
 			const contentLength = res.headers['content-length'];
 			if (contentLength != null) {
 				const size = Number(contentLength);
@@ -82,7 +82,7 @@ export class DownloadService {
 				req.destroy();
 			}
 		});
-	
+
 		try {
 			await pipeline(req, fs.createWriteStream(path));
 		} catch (e) {
@@ -92,7 +92,7 @@ export class DownloadService {
 				throw e;
 			}
 		}
-	
+
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}
 
@@ -114,7 +114,7 @@ export class DownloadService {
 			cleanup();
 		}
 	}
-	
+
 	@bindThis
 	private isPrivateIp(ip: string): boolean {
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
@@ -124,6 +124,6 @@ export class DownloadService {
 			}
 		}
 
-		return PrivateIp(ip);
+		return PrivateIp(ip) ?? false;
 	}
 }

@@ -28,8 +28,8 @@
 				<option value="-following">{{ i18n.ts.following }} ({{ i18n.ts.ascendingOrder }})</option>
 				<option value="+followers">{{ i18n.ts.followers }} ({{ i18n.ts.descendingOrder }})</option>
 				<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-caughtAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
 			</MkSelect>
 		</FormSplit>
 	</div>

@@ -33,6 +33,7 @@ const modal = $shallowRef<InstanceType<typeof MkModal>>();
 
 <style lang="scss" scoped>
 .xubzgfga {
+	margin: auto;
 	display: flex;
 	flex-direction: column;
 	height: 100%;

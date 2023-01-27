@@ -28,7 +28,7 @@
 							</div>
 						</div>
 						<div class="user">
-							<MkAvatar :user="post.user" class="avatar"/>
+							<MkAvatar :user="post.user" class="avatar" link preview/>
 							<div class="name">
 								<MkUserName :user="post.user" style="display: block;"/>
 								<MkAcct :user="post.user"/>
@@ -38,7 +38,8 @@
 					</div>
 					<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 					<MkContainer :max-height="300" :foldable="true" class="other">
-						<template #header><i class="ti ti-clock"></i> {{ i18n.ts.recentPosts }}</template>
+						<template #icon><i class="ti ti-clock"></i></template>
+						<template #header>{{ i18n.ts.recentPosts }}</template>
 						<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
 							<div class="sdrarzaf">
 								<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
