@@ -12,7 +12,7 @@
 					tabindex="0"
 					@click="chosen(emoji, $event)"
 				>
-					<MkEmoji class="emoji" :emoji="`:${emoji.name}:`"/>
+					<MkCustomEmoji class="emoji" :name="emoji.name"/>
 				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
@@ -39,7 +39,8 @@
 						tabindex="0"
 						@click="chosen(emoji, $event)"
 					>
-						<MkEmoji class="emoji" :emoji="emoji" :normal="true"/>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
 					</button>
 				</div>
 			</section>
@@ -53,7 +54,8 @@
 						class="_button item"
 						@click="chosen(emoji, $event)"
 					>
-						<MkEmoji class="emoji" :emoji="emoji" :normal="true"/>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
 					</button>
 				</div>
 			</section>

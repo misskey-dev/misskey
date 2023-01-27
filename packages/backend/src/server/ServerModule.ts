@@ -3,7 +3,6 @@ import { EndpointsModule } from '@/server/api/EndpointsModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { ApiCallService } from './api/ApiCallService.js';
 import { FileServerService } from './FileServerService.js';
-import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ServerService } from './ServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
@@ -51,7 +50,6 @@ import { UserListChannelService } from './api/stream/channels/user-list.js';
 		UrlPreviewService,
 		ActivityPubServerService,
 		FileServerService,
-		MediaProxyServerService,
 		NodeinfoServerService,
 		ServerService,
 		WellKnownServerService,
