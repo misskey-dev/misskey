@@ -995,6 +995,7 @@ _achievements:
     _login3:
       title: "初学者 I"
       description: "连续登录3天"
+      flavor: "今天开始我就是Misskist！"
     _login7:
       title: "初学者 II"
       description: "连续登录7天"
@@ -1008,6 +1009,16 @@ _achievements:
       description: "连续登录60天"
     _login100:
       description: "总登入100天"
+      flavor: "那个用户，是Misskist喔"
+    _login200:
+      title: "定期联系Ⅰ"
+      description: "总登录天数200天"
+    _login300:
+      title: "定期联系Ⅱ"
+      description: "总登录天数300天"
+    _login400:
+      title: "定期联系Ⅲ"
+      description: "总登录天数400天"
     _login500:
       flavor: "诸君，我喜欢贴文"
     _login1000:
@@ -1016,8 +1027,10 @@ _achievements:
       description: "第一次将贴文贴进便签"
     _noteFavorited1:
       title: "观星者"
+      description: "第一次将帖子加入收藏"
     _myNoteFavorited1:
       title: "想要星星"
+      description: "自己的帖子被其他人加入收藏了"
     _profileFilled:
       title: "整装待发"
       description: "设置了个人资料"
@@ -1031,12 +1044,20 @@ _achievements:
       title: "我的朋友很多"
     _following300:
       description: "关注数超过300"
+    _followers1:
+      title: "最初的关注者"
+      description: "第一次被关注"
+    _followers10:
+      title: "跟随我吧！"
+      description: "关注者超过10人"
     _followers50:
+      title: "三五成群"
       description: "关注者超过50人"
     _followers100:
       title: "胜友如云"
       description: "关注者超过100人"
     _followers300:
+      title: "排列成行"
       description: "关注者超过300人"
     _followers500:
       description: "关注者超过500人"
@@ -1052,11 +1073,19 @@ _achievements:
       flavor: "感谢您使用 Misskey ！ by 开发团队"
     _foundTreasure:
       description: "发现了隐藏的宝藏"
+    _client30min:
+      title: "休息一下！"
+      description: "启动客户端超过30分钟"
     _noteDeletedWithin1min:
+      title: "无话可说"
       description: "发帖后一分钟内就将其删除"
     _postedAtLateNight:
       title: "夜行者"
       description: "深夜发布帖子"
+      flavor: "差不多该去睡了喔。"
+    _postedAt0min0sec:
+      title: "报时"
+      description: "在0点发布一篇帖子"
     _selfQuote:
       title: "自我提及"
       description: "引用了自己的帖子"
@@ -1067,6 +1096,7 @@ _achievements:
       description: "打开了三个或更多的窗口"
     _reactWithoutRead:
       title: "有好好读过吗？"
+      description: "在含有100字以上的帖子被发出三秒内做出回应"
     _setNameToSyuilo:
       description: "将名称设定为syuilo"
     _passedSinceAccountCreated1:
