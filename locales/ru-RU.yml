@@ -1096,6 +1096,9 @@ _achievements:
       title: "Я люблю Misskey"
       description: "Написана заметка «I ❤ #Misskey»"
       flavor: "Спасибо за поддержку Misskey! Ваша команда разработчиков"
+    _foundTreasure:
+      title: "Охота за сокровищами"
+      description: "Найдено спрятанное сокровище"
     _client30min:
       title: "Перерыв на обед"
       description: "Прошло 30 минут с момента запуска клиента"
@@ -1116,6 +1119,8 @@ _achievements:
     _htl20npm:
       title: "В потоке"
       description: "Достигнута скорость домашней ленты в 20 з/мин (заметок минуту)"
+    _viewInstanceChart:
+      title: "Аналитик"
     _outputHelloWorldOnScratchpad:
       title: "Привет, мир!"
       description: "Выведен текст «hello world» в Когтеточке"
