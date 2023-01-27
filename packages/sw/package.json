@@ -7,7 +7,7 @@
 		"lint": "tsc --noEmit && eslint --quiet src/**/*.ts"
 	},
 	"dependencies": {
-		"esbuild": "^0.17.4",
+		"esbuild": "^0.14.42",
 		"idb-keyval": "^6.2.0",
 		"misskey-js": "0.0.14"
 	},
