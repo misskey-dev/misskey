@@ -1051,6 +1051,7 @@ _achievements:
       description: "Кількість підписників досягла 1000"
     _iLoveMisskey:
       title: "I Love Misskey"
+      description: "Відправлено \"I ❤ #Misskey\""
     _passedSinceAccountCreated1:
       title: "Перша річниця"
     _passedSinceAccountCreated2:
