@@ -1020,8 +1020,18 @@ _achievements:
       title: "定期联系Ⅲ"
       description: "总登录天数400天"
     _login500:
+      description: "总登录天数500天"
       flavor: "诸君，我喜欢贴文"
+    _login600:
+      description: "总登录天数600天"
+    _login700:
+      description: "总登录天数700天"
+    _login800:
+      description: "总登录天数800天"
+    _login900:
+      description: "总登录天数900天"
     _login1000:
+      description: "总登录天数1000天"
       flavor: "感谢您使用Misskey！"
     _noteClipped1:
       description: "第一次将贴文贴进便签"
@@ -1043,6 +1053,7 @@ _achievements:
     _following50:
       title: "我的朋友很多"
     _following300:
+      title: "朋友成群"
       description: "关注数超过300"
     _followers1:
       title: "最初的关注者"
@@ -1094,9 +1105,13 @@ _achievements:
     _open3windows:
       title: "多窗口"
       description: "打开了三个或更多的窗口"
+    _driveFolderCircularReference:
+      title: "循环引用"
     _reactWithoutRead:
       title: "有好好读过吗？"
       description: "在含有100字以上的帖子被发出三秒内做出回应"
+    _justPlainLucky:
+      description: "每10秒有0.01的概率获得"
     _setNameToSyuilo:
       description: "将名称设定为syuilo"
     _passedSinceAccountCreated1:
