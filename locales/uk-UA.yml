@@ -1052,6 +1052,15 @@ _achievements:
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "Відправлено \"I ❤ #Misskey\""
+    _foundTreasure:
+      title: "Пошуки скарбів"
+      description: "Ви знайшли прихований скарб"
+    _client30min:
+      title: "Коротка перерва"
+      description: "З моменту запуску клієнта минуло 30 хвилин"
+    _noteDeletedWithin1min:
+      title: "Не зважай"
+      description: "Допис видалено протягом 1 хвилини після публікації"
     _passedSinceAccountCreated1:
       title: "Перша річниця"
     _passedSinceAccountCreated2:
