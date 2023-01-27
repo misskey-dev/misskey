@@ -1,6 +1,6 @@
 import { shallowRef, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
-import { apiGet } from './os';
+import { api, apiGet } from './os';
 import { miLocalStorage } from './local-storage';
 import { stream } from '@/stream';
 
@@ -28,12 +28,17 @@ stream.on('emojiDeleted', emojiData => {
 	customEmojis.value = customEmojis.value.filter(item => !emojiData.emojis.some(search => search.name === item.name));
 });
 
-export async function fetchCustomEmojis() {
+export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();
-	const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');
-	if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return;
 
-	const res = await apiGet('emojis', {});
+	let res;
+	if (force) {
+		res = await api('emojis', {});
+	} else {
+		const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');
+		if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return;
+		res = await apiGet('emojis', {});
+	}
 
 	customEmojis.value = res.emojis;
 	miLocalStorage.setItem('emojis', JSON.stringify(res.emojis));

@@ -688,7 +688,7 @@ pageLikesCount: "Кількість отриманих вподобань сто
 pageLikedCount: "Кількість вподобаних сторінок"
 contact: "Контакт"
 useSystemFont: "Використовувати стандартний шрифт системи"
-clips: "Добірка"
+clips: "Добірки"
 experimentalFeatures: "Експериментальні функції"
 developer: "Розробник"
 makeExplorable: "Зробіть обліковий запис видимим у розділі \"Огляд\""
@@ -1003,9 +1003,19 @@ _achievements:
       title: "Майстер нотаток III"
       description: "1000 днів користування загально"
       flavor: "Дякуємо, що користуєтеся Misskey!"
+    _noteClipped1:
+      title: "Не можна не зберегти"
+      description: "Перша нотатка у добірці"
+    _noteFavorited1:
+      title: "Дивитися на зірки"
     _myNoteFavorited1:
       title: "У пошуках зірок"
+    _profileFilled:
+      title: "Повна готовність"
+      description: "Профіль заповнено"
     _markedAsCat:
+      title: "Я кіт"
+      description: "Позначено як акаунт кота"
       flavor: "Я дам тобі ім'я пізніше"
     _following1:
       title: "Перша підписка"
@@ -1034,6 +1044,7 @@ _achievements:
     _followers300:
       description: "Кількість підписників досягла 300"
     _followers500:
+      title: "Радіовежа"
       description: "Кількість підписників досягла 500"
     _followers1000:
       title: "Інфлюенсер"
@@ -1047,6 +1058,8 @@ _achievements:
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
       title: "З Днем народження!"
+    _loggedInOnNewYearsDay:
+      description: "Увійшли в перший день року"
     _brainDiver:
       title: "Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
@@ -1586,6 +1599,7 @@ _notification:
   youReceivedFollowRequest: "Ви отримали запит на підписку"
   yourFollowRequestAccepted: "Запит на підписку прийнято"
   youWereInvitedToGroup: "Запрошення до групи"
+  achievementEarned: "Досягнення відкрито"
   _types:
     all: "Все"
     follow: "Підписки"

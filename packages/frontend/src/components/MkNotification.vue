@@ -38,26 +38,26 @@
 		<div v-once :class="$style.content">
 			<MkA v-if="notification.type === 'reaction'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'renote'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full" :author="notification.note.renote.user"/>
+				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :author="notification.note.renote.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'reply'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'mention'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'quote'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'pollEnded'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
@@ -68,7 +68,7 @@
 			<span v-else-if="notification.type === 'receiveFollowRequest'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ i18n.ts.reject }}</button></div></span>
 			<span v-else-if="notification.type === 'groupInvited'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ i18n.ts.reject }}</button></div></span>
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
-				<Mfm :text="notification.body" :nowrap="!full"/>
+				<Mfm :text="notification.body" :nowrap="false"/>
 			</span>
 		</div>
 	</div>
