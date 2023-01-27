@@ -1052,6 +1052,7 @@ _achievements:
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "Відправлено \"I ❤ #Misskey\""
+      flavor: "Дякуємо вам, що користуєтесь Misskey!  – команда розробників"
     _foundTreasure:
       title: "Пошуки скарбів"
       description: "Ви знайшли прихований скарб"
