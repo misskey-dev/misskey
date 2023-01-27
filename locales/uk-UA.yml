@@ -1049,6 +1049,8 @@ _achievements:
     _followers1000:
       title: "Інфлюенсер"
       description: "Кількість підписників досягла 1000"
+    _iLoveMisskey:
+      title: "I Love Misskey"
     _passedSinceAccountCreated1:
       title: "Перша річниця"
     _passedSinceAccountCreated2:
