@@ -1044,6 +1044,7 @@ _achievements:
     _followers300:
       description: "Кількість підписників досягла 300"
     _followers500:
+      title: "Радіовежа"
       description: "Кількість підписників досягла 500"
     _followers1000:
       title: "Інфлюенсер"
