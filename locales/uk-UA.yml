@@ -688,7 +688,7 @@ pageLikesCount: "Кількість отриманих вподобань сто
 pageLikedCount: "Кількість вподобаних сторінок"
 contact: "Контакт"
 useSystemFont: "Використовувати стандартний шрифт системи"
-clips: "Добірка"
+clips: "Добірки"
 experimentalFeatures: "Експериментальні функції"
 developer: "Розробник"
 makeExplorable: "Зробіть обліковий запис видимим у розділі \"Огляд\""
@@ -901,6 +901,7 @@ show: "Відображення"
 color: "Колір"
 achievements: "Досягнення"
 _achievements:
+  earnedAt: "Відкрито"
   _types:
     _notes1:
       title: "налаштовую свій msky"
@@ -910,34 +911,158 @@ _achievements:
       title: "Декілька нотаток"
       description: "10 нотаток відправлено"
     _notes100:
+      title: "Купа нотаток"
       description: "100 нотаток відправлено"
     _notes500:
+      title: "Все в нотатках"
       description: "500 нотаток відправлено"
     _notes1000:
+      title: "Гора нотаток"
       description: "1 000 нотаток відправлено"
     _notes5000:
+      title: "Переповнюючі нотатки"
       description: "5 000 нотаток відправлено"
     _notes10000:
+      title: "Супернотатка"
       description: "10 000 нотаток відправлено"
     _notes20000:
+      title: "Треба Більше Нотаток"
       description: "20 000 нотаток відправлено"
     _notes30000:
+      title: "Нотатки нотатки нотатки"
       description: "30 000 нотаток відправлено"
     _notes40000:
+      title: "Фабрика нотаток"
       description: "40 000 нотаток відправлено"
     _notes50000:
+      title: "Планета нотаток"
       description: "50 000 нотаток відправлено"
     _notes60000:
+      title: "Нотатковий квазар"
       description: "60 000 нотаток відправлено"
     _notes70000:
+      title: "Чорна нотаткова діра"
       description: "70 000 нотаток відправлено"
     _notes80000:
+      title: "Галактика нотаток"
       description: "80 000 нотаток відправлено"
     _notes90000:
+      title: "Нотатковерс"
       description: "90 000 нотаток відправлено"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "100 000 нотаток відправлено"
+      flavor: "Так багато потрібно сказати?"
+    _login3:
+      title: "Новачок I"
+      description: "3 дні користування загально"
+      flavor: "Відсьогодні називайте мене \"Місскіст\""
+    _login7:
+      title: "Новачок II"
+      description: "7 днів користування загально"
+      flavor: "Ви звикли до цього?"
+    _login15:
+      title: "Новачок III"
+      description: "15 днів користування загально"
+    _login30:
+      title: "Міскієць I"
+      description: "30 днів користування загально"
+    _login60:
+      title: "Міскієць II"
+      description: "60 днів користування загально"
+    _login100:
+      title: "Міскієць III"
+      description: "100 днів користування загально"
+      flavor: "Цей юзер лютий місскіст"
+    _login200:
+      title: "Завсідник I"
+      description: "200 днів користування загально"
+    _login300:
+      title: "Завсідник II"
+      description: "300 днів користування загально"
+    _login400:
+      title: "Завсідник III"
+      description: "400 днів користування загально"
+    _login500:
+      title: "Ветеран I"
+      description: "500 днів користування загально"
+      flavor: "Meine Kameraden, ich liebe sie, die Notizen."
+    _login600:
+      title: "Ветеран II"
+      description: "600 днів користування загально"
+    _login700:
+      title: "Ветеран III"
+      description: "700 днів користування загально"
+    _login800:
+      title: "Майстер нотаток I"
+      description: "800 днів користування загально"
+    _login900:
+      title: "Майстер нотаток II"
+      description: "900 днів користування загально"
+    _login1000:
+      title: "Майстер нотаток III"
+      description: "1000 днів користування загально"
+      flavor: "Дякуємо, що користуєтеся Misskey!"
+    _noteClipped1:
+      title: "Не можна не зберегти"
+      description: "Перша нотатка у добірці"
+    _noteFavorited1:
+      title: "Дивитися на зірки"
+    _myNoteFavorited1:
+      title: "У пошуках зірок"
+    _profileFilled:
+      title: "Повна готовність"
+      description: "Профіль заповнено"
+    _markedAsCat:
+      title: "Я кіт"
+      description: "Позначено як акаунт кота"
+      flavor: "Я дам тобі ім'я пізніше"
+    _following1:
+      title: "Перша підписка"
+    _following10:
+      title: "Продовжуй, продовжуй"
+    _following50:
+      title: "Багато друзів"
+      description: "Кількість підписок сягнула 50"
+    _following100:
+      title: "100 друзів"
+      description: "Кількість підписок сягнула 100"
+    _following300:
+      title: "Надлишок друзів"
+      description: "Кількість підписок сягнула 300"
+    _followers1:
+      title: "Перший підписник"
+      description: "З'явився перший підписник"
+    _followers10:
+      title: "Follow me!"
+      description: "Кількість підписників досягла 10"
+    _followers50:
+      description: "Кількість підписників досягла 50"
+    _followers100:
+      title: "Популярна особа"
+      description: "Кількість підписників досягла 100"
+    _followers300:
+      description: "Кількість підписників досягла 300"
+    _followers500:
+      title: "Радіовежа"
+      description: "Кількість підписників досягла 500"
+    _followers1000:
+      title: "Інфлюенсер"
+      description: "Кількість підписників досягла 1000"
+    _passedSinceAccountCreated1:
+      title: "Перша річниця"
+    _passedSinceAccountCreated2:
+      title: "Друга річниця"
+    _passedSinceAccountCreated3:
+      title: "Третя річниця"
+      description: "Минуло 3 роки з моменту створення акаунта"
+    _loggedInOnBirthday:
+      title: "З Днем народження!"
+    _loggedInOnNewYearsDay:
+      description: "Увійшли в перший день року"
+    _brainDiver:
+      title: "Brain Diver"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   priority: "Пріоритет"
   _priority:
@@ -1474,6 +1599,7 @@ _notification:
   youReceivedFollowRequest: "Ви отримали запит на підписку"
   yourFollowRequestAccepted: "Запит на підписку прийнято"
   youWereInvitedToGroup: "Запрошення до групи"
+  achievementEarned: "Досягнення відкрито"
   _types:
     all: "Все"
     follow: "Підписки"

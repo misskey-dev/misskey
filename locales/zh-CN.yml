@@ -1007,6 +1007,9 @@ _achievements:
       flavor: "感谢您使用Misskey！"
     _noteFavorited1:
       title: "观星者"
+    _profileFilled:
+      title: "整装待发"
+      description: "设置了个人资料"
     _markedAsCat:
       title: "我是猫"
       description: "将账户设定为一只猫"

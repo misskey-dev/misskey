@@ -945,7 +945,7 @@ _achievements:
     _notes1:
       title: "just setting up my msky"
       description: "Post your first note"
-      flavor: "Have a good Misskey life!"
+      flavor: "Have a good time with Misskey!"
     _notes10:
       title: "Some notes"
       description: "Post 10 notes"
@@ -1104,6 +1104,9 @@ _achievements:
       title: "I Love Misskey"
       description: "Post \"I ❤ #Misskey\""
       flavor: "Misskey's development team greatly appreciates your support!"
+    _foundTreasure:
+      title: "Treasure Hunt"
+      description: "You've found the hidden treasure"
     _client30min:
       title: "Short break"
       description: "Spend 30 minutes on Misskey"
@@ -1124,6 +1127,9 @@ _achievements:
     _htl20npm:
       title: "Flowing Timeline"
       description: "Have the speed of your home timeline exceed 20 npm (notes per minute)"
+    _viewInstanceChart:
+      title: "Analyst"
+      description: "View your instance's charts"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
       description: "Output \"hello world\" in the Scratchpad"
