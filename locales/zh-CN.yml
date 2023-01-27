@@ -1031,28 +1031,52 @@ _achievements:
       title: "我的朋友很多"
     _following300:
       description: "关注数超过300"
+    _followers50:
+      description: "关注者超过50人"
     _followers100:
       title: "胜友如云"
+      description: "关注者超过100人"
+    _followers300:
+      description: "关注者超过300人"
+    _followers500:
+      description: "关注者超过500人"
     _collectAchievements30:
+      title: "成就收藏家"
       description: "获得超过30个成就"
     _viewAchievements3min:
+      title: "成就爱好者"
       description: "盯着成就看三分钟"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "发布\"I ❤ #Misskey\"帖子"
       flavor: "感谢您使用 Misskey ！ by 开发团队"
+    _foundTreasure:
+      description: "发现了隐藏的宝藏"
     _noteDeletedWithin1min:
       description: "发帖后一分钟内就将其删除"
     _postedAtLateNight:
       title: "夜行者"
       description: "深夜发布帖子"
+    _selfQuote:
+      title: "自我提及"
+      description: "引用了自己的帖子"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
+    _open3windows:
+      title: "多窗口"
+      description: "打开了三个或更多的窗口"
+    _reactWithoutRead:
+      title: "有好好读过吗？"
+    _setNameToSyuilo:
+      description: "将名称设定为syuilo"
     _passedSinceAccountCreated1:
+      title: "一周年"
       description: "账户创建时间超过1年"
     _passedSinceAccountCreated2:
+      title: "二周年"
       description: "账户创建时间超过2年"
     _passedSinceAccountCreated3:
+      title: "三周年"
       description: "账户创建时间超过3年"
     _loggedInOnBirthday:
       title: "生日快乐"
