@@ -10,6 +10,8 @@ You should also include the user name that made the change.
 -->
 
 ## 13.x.x (unreleased)
+### Changes
+- docker-compose.ymlをdocker-compose.yml.exampleにしました。docker-compose.ymlとしてコピーしてから使用してください。
 
 ### Bugfixes
 - Client: classicモード使用時にwindowサイズによってdefaultに変更された後に、windowサイズが元に戻ったらclassicに戻すように修正 #9669
