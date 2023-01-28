@@ -1111,7 +1111,7 @@ _achievements:
       title: "休息一下"
       description: "用戶端啟動已超過30分鐘"
     _noteDeletedWithin1min:
-      title: "現在沒有"
+      title: "現在沒有了"
       description: "發文後1分鐘內刪文"
     _postedAtLateNight:
       title: "夜行性"
