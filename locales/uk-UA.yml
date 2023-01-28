@@ -1082,6 +1082,7 @@ _achievements:
       description: "Увійшли в перший день року"
     _brainDiver:
       title: "Brain Diver"
+      description: "Відправити посилання на \"Brain Diver\""
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   priority: "Пріоритет"
