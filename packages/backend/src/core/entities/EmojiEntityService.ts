@@ -22,8 +22,10 @@ export class EmojiEntityService {
 	@bindThis
 	public async pack(
 		src: Emoji['id'] | Emoji,
-		opts: { omitHost?: boolean; omitId?: boolean; } = {},
+		opts: { omitHost?: boolean; omitId?: boolean; withUrl?: boolean; } = { omitHost: true, omitId: true, withUrl: true },
 	): Promise<Packed<'Emoji'>> {
+		opts = { omitHost: true, omitId: true, withUrl: true, ...opts }
+
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 
 		return {
@@ -32,13 +34,15 @@ export class EmojiEntityService {
 			name: emoji.name,
 			category: emoji.category,
 			host: opts.omitHost ? undefined : emoji.host,
+			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+			url: opts.withUrl ? (emoji.publicUrl || emoji.originalUrl) : undefined,
 		};
 	}
 
 	@bindThis
 	public packMany(
 		emojis: any[],
-		opts: { omitHost?: boolean; omitId?: boolean; } = {},
+		opts: { omitHost?: boolean; omitId?: boolean; withUrl?: boolean; } = {},
 	) {
 		return Promise.all(emojis.map(x => this.pack(x, opts)));
 	}

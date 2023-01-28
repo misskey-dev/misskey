@@ -1,0 +1,28 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
+import { AchievementService } from '@/core/AchievementService.js';
+
+export const meta = {
+	requireCredential: true,
+} as const;
+
+export const paramDef = {
+	type: 'object',
+	properties: {
+		name: { type: 'string' },
+	},
+	required: ['name'],
+} as const;
+
+// eslint-disable-next-line import/no-default-export
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private achievementService: AchievementService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			await this.achievementService.create(me.id, ps.name);
+		});
+	}
+}

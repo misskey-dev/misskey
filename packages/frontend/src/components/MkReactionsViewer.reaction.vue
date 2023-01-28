@@ -6,7 +6,7 @@
 	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle }]"
 	@click="toggleReaction()"
 >
-	<MkReactionIcon :class="$style.icon" :reaction="reaction"/>
+	<MkReactionIcon :class="$style.icon" :reaction="reaction" :emoji-url="note.reactionEmojis[reaction.substr(1, reaction.length - 2)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -20,6 +20,8 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
+import { claimAchievement } from '@/scripts/achievements';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	reaction: string;
@@ -52,11 +54,15 @@ const toggleReaction = () => {
 			noteId: props.note.id,
 			reaction: props.reaction,
 		});
+		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
+			claimAchievement('reactWithoutRead');
+		}
 	}
 };
 
 const anime = () => {
 	if (document.hidden) return;
+	if (!defaultStore.state.animation) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;

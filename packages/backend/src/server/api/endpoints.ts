@@ -64,7 +64,7 @@ import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
 import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
 import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
-import * as ep___admin_roles_updateDefaultRoleOverride from './endpoints/admin/roles/update-default-role-override.js';
+import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -174,6 +174,7 @@ import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
 import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
+import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
 import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
@@ -328,6 +329,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 
@@ -396,7 +398,7 @@ const eps = [
 	['admin/roles/update', ep___admin_roles_update],
 	['admin/roles/assign', ep___admin_roles_assign],
 	['admin/roles/unassign', ep___admin_roles_unassign],
-	['admin/roles/update-default-role-override', ep___admin_roles_updateDefaultRoleOverride],
+	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -506,6 +508,7 @@ const eps = [
 	['i/2fa/unregister', ep___i_2fa_unregister],
 	['i/apps', ep___i_apps],
 	['i/authorized-apps', ep___i_authorizedApps],
+	['i/claim-achievement', ep___i_claimAchievement],
 	['i/change-password', ep___i_changePassword],
 	['i/delete-account', ep___i_deleteAccount],
 	['i/export-blocking', ep___i_exportBlocking],
@@ -660,6 +663,7 @@ const eps = [
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
+	['users/achievements', ep___users_achievements],
 	['fetch-rss', ep___fetchRss],
 	['retention', ep___retention],
 ];
@@ -695,7 +699,7 @@ export interface IEndpointMeta {
 	 */
 	readonly requireAdmin?: boolean;
 
-	readonly requireRoleOption?: string;
+	readonly requireRolePolicy?: string;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ

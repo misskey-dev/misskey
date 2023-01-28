@@ -6,7 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import type { User } from '@/models/entities/User.js';
 import type { Role } from '@/models/entities/Role.js';
 import { bindThis } from '@/decorators.js';
-import { DEFAULT_ROLE } from '@/core/RoleService.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -40,10 +40,11 @@ export class RoleEntityService {
 			roleId: role.id,
 		});
 
-		const roleOptions = { ...role.options };
-		for (const [k, v] of Object.entries(DEFAULT_ROLE)) {
-			if (roleOptions[k] == null) roleOptions[k] = {
+		const policies = { ...role.policies };
+		for (const [k, v] of Object.entries(DEFAULT_POLICIES)) {
+			if (policies[k] == null) policies[k] = {
 				useDefault: true,
+				priority: 0,
 				value: v,
 			};
 		}
@@ -61,7 +62,7 @@ export class RoleEntityService {
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,
 			canEditMembersByModerator: role.canEditMembersByModerator,
-			options: roleOptions,
+			policies: policies,
 			usersCount: assigns.length,
 			...(opts.detail ? {
 				users: this.userEntityService.packMany(assigns.map(x => x.userId), me),

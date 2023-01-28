@@ -1,6 +1,6 @@
 <template>
 <div class="thvuemwp" :class="{ isMe }">
-	<MkAvatar class="avatar" :user="message.user" :show-indicator="true"/>
+	<MkAvatar class="avatar" :user="message.user" indicator link preview/>
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }">
 			<button v-if="isMe" class="delete-button" :title="$ts.delete" @click="del">

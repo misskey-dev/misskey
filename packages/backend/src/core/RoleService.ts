@@ -13,12 +13,13 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
-export type RoleOptions = {
+export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
 	canInvite: boolean;
 	canManageCustomEmojis: boolean;
+	canHideAds: boolean;
 	driveCapacityMb: number;
 	pinLimit: number;
 	antennaLimit: number;
@@ -28,14 +29,16 @@ export type RoleOptions = {
 	noteEachClipsLimit: number;
 	userListLimit: number;
 	userEachUserListsLimit: number;
+	rateLimitFactor: number;
 };
 
-export const DEFAULT_ROLE: RoleOptions = {
+export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	canPublicNote: true,
 	canInvite: false,
 	canManageCustomEmojis: false,
+	canHideAds: false,
 	driveCapacityMb: 100,
 	pinLimit: 5,
 	antennaLimit: 5,
@@ -45,6 +48,7 @@ export const DEFAULT_ROLE: RoleOptions = {
 	noteEachClipsLimit: 200,
 	userListLimit: 10,
 	userEachUserListsLimit: 50,
+	rateLimitFactor: 1,
 };
 
 @Injectable()
@@ -87,10 +91,12 @@ export class RoleService implements OnApplicationShutdown {
 				case 'roleCreated': {
 					const cached = this.rolesCache.get(null);
 					if (cached) {
-						body.createdAt = new Date(body.createdAt);
-						body.updatedAt = new Date(body.updatedAt);
-						body.lastUsedAt = new Date(body.lastUsedAt);
-						cached.push(body);
+						cached.push({
+							...body,
+							createdAt: new Date(body.createdAt),
+							updatedAt: new Date(body.updatedAt),
+							lastUsedAt: new Date(body.lastUsedAt),
+						});
 					}
 					break;
 				}
@@ -99,10 +105,12 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						const i = cached.findIndex(x => x.id === body.id);
 						if (i > -1) {
-							body.createdAt = new Date(body.createdAt);
-							body.updatedAt = new Date(body.updatedAt);
-							body.lastUsedAt = new Date(body.lastUsedAt);
-							cached[i] = body;
+							cached[i] = {
+								...body,
+								createdAt: new Date(body.createdAt),
+								updatedAt: new Date(body.updatedAt),
+								lastUsedAt: new Date(body.lastUsedAt),
+							};
 						}
 					}
 					break;
@@ -117,8 +125,10 @@ export class RoleService implements OnApplicationShutdown {
 				case 'userRoleAssigned': {
 					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
 					if (cached) {
-						body.createdAt = new Date(body.createdAt);
-						cached.push(body);
+						cached.push({
+							...body,
+							createdAt: new Date(body.createdAt),
+						});
 					}
 					break;
 				}
@@ -193,34 +203,45 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async getUserRoleOptions(userId: User['id'] | null): Promise<RoleOptions> {
+	public async getUserPolicies(userId: User['id'] | null): Promise<RolePolicies> {
 		const meta = await this.metaService.fetch();
-		const baseRoleOptions = { ...DEFAULT_ROLE, ...meta.defaultRoleOverride };
+		const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
-		if (userId == null) return baseRoleOptions;
+		if (userId == null) return basePolicies;
 
 		const roles = await this.getUserRoles(userId);
 
-		function getOptionValues(option: keyof RoleOptions) {
-			if (roles.length === 0) return [baseRoleOptions[option]];
-			return roles.map(role => (role.options[option] && (role.options[option].useDefault !== true)) ? role.options[option].value : baseRoleOptions[option]);
+		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
+			if (roles.length === 0) return basePolicies[name];
+
+			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
+
+			const p2 = policies.filter(policy => policy.priority === 2);
+			if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+
+			const p1 = policies.filter(policy => policy.priority === 1);
+			if (p1.length > 0) return aggregate(p1.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+
+			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}
 
 		return {
-			gtlAvailable: getOptionValues('gtlAvailable').some(x => x === true),
-			ltlAvailable: getOptionValues('ltlAvailable').some(x => x === true),
-			canPublicNote: getOptionValues('canPublicNote').some(x => x === true),
-			canInvite: getOptionValues('canInvite').some(x => x === true),
-			canManageCustomEmojis: getOptionValues('canManageCustomEmojis').some(x => x === true),
-			driveCapacityMb: Math.max(...getOptionValues('driveCapacityMb')),
-			pinLimit: Math.max(...getOptionValues('pinLimit')),
-			antennaLimit: Math.max(...getOptionValues('antennaLimit')),
-			wordMuteLimit: Math.max(...getOptionValues('wordMuteLimit')),
-			webhookLimit: Math.max(...getOptionValues('webhookLimit')),
-			clipLimit: Math.max(...getOptionValues('clipLimit')),
-			noteEachClipsLimit: Math.max(...getOptionValues('noteEachClipsLimit')),
-			userListLimit: Math.max(...getOptionValues('userListLimit')),
-			userEachUserListsLimit: Math.max(...getOptionValues('userEachUserListsLimit')),
+			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
+			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
+			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
+			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
+			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
+			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
+			pinLimit: calc('pinLimit', vs => Math.max(...vs)),
+			antennaLimit: calc('antennaLimit', vs => Math.max(...vs)),
+			wordMuteLimit: calc('wordMuteLimit', vs => Math.max(...vs)),
+			webhookLimit: calc('webhookLimit', vs => Math.max(...vs)),
+			clipLimit: calc('clipLimit', vs => Math.max(...vs)),
+			noteEachClipsLimit: calc('noteEachClipsLimit', vs => Math.max(...vs)),
+			userListLimit: calc('userListLimit', vs => Math.max(...vs)),
+			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
+			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 		};
 	}
 

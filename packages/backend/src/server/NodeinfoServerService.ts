@@ -10,7 +10,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import NotesChart from '@/core/chart/charts/notes.js';
 import UsersChart from '@/core/chart/charts/users.js';
-import { DEFAULT_ROLE } from '@/core/RoleService.js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
@@ -74,7 +74,7 @@ export class NodeinfoServerService {
 
 			const proxyAccount = meta.proxyAccountId ? await this.userEntityService.pack(meta.proxyAccountId).catch(() => null) : null;
 
-			const baseRoleOptions = { ...DEFAULT_ROLE, ...meta.defaultRoleOverride };
+			const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
 			return {
 				software: {
@@ -105,8 +105,8 @@ export class NodeinfoServerService {
 					repositoryUrl: meta.repositoryUrl,
 					feedbackUrl: meta.feedbackUrl,
 					disableRegistration: meta.disableRegistration,
-					disableLocalTimeline: !baseRoleOptions.ltlAvailable,
-					disableGlobalTimeline: !baseRoleOptions.gtlAvailable,
+					disableLocalTimeline: !basePolicies.ltlAvailable,
+					disableGlobalTimeline: !basePolicies.gtlAvailable,
 					emailRequiredForSignup: meta.emailRequiredForSignup,
 					enableHcaptcha: meta.enableHcaptcha,
 					enableRecaptcha: meta.enableRecaptcha,

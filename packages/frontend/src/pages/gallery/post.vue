@@ -28,7 +28,7 @@
 							</div>
 						</div>
 						<div class="user">
-							<MkAvatar :user="post.user" class="avatar"/>
+							<MkAvatar :user="post.user" class="avatar" link preview/>
 							<div class="name">
 								<MkUserName :user="post.user" style="display: block;"/>
 								<MkAcct :user="post.user"/>

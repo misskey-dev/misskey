@@ -30,7 +30,9 @@ coverage
 # config
 /.config/*
 !/.config/example.yml
+!/.config/docker_example.yml
 !/.config/docker_example.env
+docker-compose.yml
 
 # misskey
 /build

@@ -1,11 +1,11 @@
 <template>
 <div v-if="show" ref="el" :class="[$style.root, { [$style.slim]: narrow, [$style.thin]: thin_ }]" :style="{ background: bg }" @click="onClick">
 	<div v-if="narrow" :class="$style.buttonsLeft">
-		<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :disable-preview="true"/>
+		<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i"/>
 	</div>
 	<template v-if="metadata">
 		<div v-if="!hideTitle" :class="$style.titleContainer" @click="showTabsPopup">
-			<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" :disable-preview="true" :show-indicator="true"/>
+			<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
 			<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
 
 			<div :class="$style.title">

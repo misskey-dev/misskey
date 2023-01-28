@@ -65,7 +65,7 @@ import * as ep___admin_roles_show from './endpoints/admin/roles/show.js';
 import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
 import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
-import * as ep___admin_roles_updateDefaultRoleOverride from './endpoints/admin/roles/update-default-role-override.js';
+import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -175,6 +175,7 @@ import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
 import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
+import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
 import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
@@ -329,6 +330,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
@@ -399,7 +401,7 @@ const $admin_roles_show: Provider = { provide: 'ep:admin/roles/show', useClass: 
 const $admin_roles_update: Provider = { provide: 'ep:admin/roles/update', useClass: ep___admin_roles_update.default };
 const $admin_roles_assign: Provider = { provide: 'ep:admin/roles/assign', useClass: ep___admin_roles_assign.default };
 const $admin_roles_unassign: Provider = { provide: 'ep:admin/roles/unassign', useClass: ep___admin_roles_unassign.default };
-const $admin_roles_updateDefaultRoleOverride: Provider = { provide: 'ep:admin/roles/update-default-role-override', useClass: ep___admin_roles_updateDefaultRoleOverride.default };
+const $admin_roles_updateDefaultPolicies: Provider = { provide: 'ep:admin/roles/update-default-policies', useClass: ep___admin_roles_updateDefaultPolicies.default };
 const $announcements: Provider = { provide: 'ep:announcements', useClass: ep___announcements.default };
 const $antennas_create: Provider = { provide: 'ep:antennas/create', useClass: ep___antennas_create.default };
 const $antennas_delete: Provider = { provide: 'ep:antennas/delete', useClass: ep___antennas_delete.default };
@@ -509,6 +511,7 @@ const $i_2fa_removeKey: Provider = { provide: 'ep:i/2fa/remove-key', useClass: e
 const $i_2fa_unregister: Provider = { provide: 'ep:i/2fa/unregister', useClass: ep___i_2fa_unregister.default };
 const $i_apps: Provider = { provide: 'ep:i/apps', useClass: ep___i_apps.default };
 const $i_authorizedApps: Provider = { provide: 'ep:i/authorized-apps', useClass: ep___i_authorizedApps.default };
+const $i_claimAchievement: Provider = { provide: 'ep:i/claim-achievement', useClass: ep___i_claimAchievement.default };
 const $i_changePassword: Provider = { provide: 'ep:i/change-password', useClass: ep___i_changePassword.default };
 const $i_deleteAccount: Provider = { provide: 'ep:i/delete-account', useClass: ep___i_deleteAccount.default };
 const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass: ep___i_exportBlocking.default };
@@ -663,6 +666,7 @@ const $users_searchByUsernameAndHost: Provider = { provide: 'ep:users/search-by-
 const $users_search: Provider = { provide: 'ep:users/search', useClass: ep___users_search.default };
 const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_show.default };
 const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
+const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
@@ -737,7 +741,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_update,
 		$admin_roles_assign,
 		$admin_roles_unassign,
-		$admin_roles_updateDefaultRoleOverride,
+		$admin_roles_updateDefaultPolicies,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -847,6 +851,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
+		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
 		$i_exportBlocking,
@@ -1001,6 +1006,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_search,
 		$users_show,
 		$users_stats,
+		$users_achievements,
 		$fetchRss,
 		$retention,
 	],
@@ -1069,7 +1075,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_update,
 		$admin_roles_assign,
 		$admin_roles_unassign,
-		$admin_roles_updateDefaultRoleOverride,
+		$admin_roles_updateDefaultPolicies,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -1179,6 +1185,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
+		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
 		$i_exportBlocking,
@@ -1331,6 +1338,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_search,
 		$users_show,
 		$users_stats,
+		$users_achievements,
 		$fetchRss,
 		$retention,
 	],

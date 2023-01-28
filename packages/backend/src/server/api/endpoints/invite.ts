@@ -9,7 +9,7 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: true,
-	requireRoleOption: 'canInvite',
+	requireRolePolicy: 'canInvite',
 
 	res: {
 		type: 'object',

@@ -5,7 +5,7 @@
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
 				<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
 			</div>
-			<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
+			<MkAvatar class="avatar" :user="user" indicator/>
 			<div class="title">
 				<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 				<p class="username"><MkAcct :user="user"/></p>

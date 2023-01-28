@@ -2,7 +2,7 @@
 <div class="bcekxzvu _margin _panel">
 	<div class="target">
 		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`">
-			<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true" :disable-link="true"/>
+			<MkAvatar class="avatar" :user="report.targetUser" indicator/>
 			<div class="names">
 				<MkUserName class="name" :user="report.targetUser"/>
 				<MkAcct class="acct" :user="report.targetUser" style="display: block;"/>

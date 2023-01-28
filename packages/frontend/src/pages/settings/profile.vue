@@ -2,7 +2,7 @@
 <div class="_gaps_m">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
-			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
+			<MkAvatar class="avatar" :user="$i" @click="changeAvatar"/>
 			<MkButton primary rounded class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
 		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
@@ -85,6 +85,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { langmap } from '@/scripts/langmap';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { claimAchievement } from '@/scripts/achievements';
 
 const profile = reactive({
 	name: $i.name,
@@ -133,6 +134,13 @@ function save() {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 	});
+	claimAchievement('profileFilled');
+	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
+		claimAchievement('setNameToSyuilo');
+	}
+	if (profile.isCat) {
+		claimAchievement('markedAsCat');
+	}
 }
 
 function changeAvatar(ev) {
@@ -155,6 +163,7 @@ function changeAvatar(ev) {
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
+		claimAchievement('profileFilled');
 	});
 }
 

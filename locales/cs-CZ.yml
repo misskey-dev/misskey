@@ -105,6 +105,7 @@ clickToShow: "Klikněte pro zobrazení"
 sensitive: "NSFW"
 add: "Přidat"
 reaction: "Reakce"
+reactions: "Reakce"
 reactionSettingDescription2: "Přetažením změníte pořadí, kliknutím smažete, zmáčkněte \"+\" k přidání"
 rememberNoteVisibility: "Zapamatovat nastavení zobrazení poznámky"
 attachCancel: "Odstranit přílohu"
@@ -612,6 +613,12 @@ fast: "Rychlá"
 account: "Účty"
 show: "Zobrazit"
 color: "Barva"
+_role:
+  priority: "Priorita"
+  _priority:
+    low: "Nízká"
+    middle: "Střední"
+    high: "Vysoká"
 _ad:
   back: "Zpět"
 _gallery:

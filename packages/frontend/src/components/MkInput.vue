@@ -78,9 +78,9 @@ const inputEl = shallowRef<HTMLElement>();
 const prefixEl = shallowRef<HTMLElement>();
 const suffixEl = shallowRef<HTMLElement>();
 const height =
-	props.small ? 34 :
-	props.large ? 40 :
-	37;
+	props.small ? 33 :
+	props.large ? 39 :
+	36;
 
 const focus = () => inputEl.value.focus();
 const onInput = (ev: KeyboardEvent) => {
@@ -88,6 +88,8 @@ const onInput = (ev: KeyboardEvent) => {
 	emit('change', ev);
 };
 const onKeydown = (ev: KeyboardEvent) => {
+	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
+
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {

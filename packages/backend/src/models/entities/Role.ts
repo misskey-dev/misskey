@@ -136,8 +136,9 @@ export class Role {
 	@Column('jsonb', {
 		default: { },
 	})
-	public options: Record<string, {
+	public policies: Record<string, {
 		useDefault: boolean;
+		priority: number;
 		value: any;
 	}>;
 }

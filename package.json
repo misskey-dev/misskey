@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "13.0.0-rc.6",
-	"codename": "indigo",
+	"version": "13.2.5",
+	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "yarn@3.3.0",
+	"packageManager": "pnpm@7.24.3",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -15,30 +15,30 @@
 	"private": true,
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
-		"build": "yarn build-pre && yarn workspaces foreach run build && yarn run gulp",
+		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
 		"start": "cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
-		"init": "yarn migrate",
-		"migrate": "cd packages/backend && yarn run typeorm migration:run -d ormconfig.js",
-		"migrateandstart": "yarn migrate && yarn start",
-		"gulp": "gulp build",
-		"watch": "yarn dev",
+		"init": "pnpm migrate",
+		"migrate": "cd packages/backend && pnpm typeorm migration:run -d ormconfig.js",
+		"migrateandstart": "pnpm migrate && pnpm start",
+		"gulp": "pnpm exec gulp build",
+		"watch": "pnpm dev",
 		"dev": "node ./scripts/dev.js",
-		"lint": "yarn workspaces foreach run lint",
-		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
-		"cy:run": "cypress run",
-		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
-		"jest": "cd packages/backend && cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
-		"jest-and-coverage": "cd packages/backend && cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
-		"test": "yarn jest",
-		"test-and-coverage": "yarn jest-and-coverage",
-		"format": "gulp format",
+		"lint": "pnpm -r lint",
+		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
+		"cy:run": "pnpm cypress run",
+		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+		"jest": "cd packages/backend && pnpm cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
+		"jest-and-coverage": "cd packages/backend && pnpm cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
+		"test": "pnpm jest",
+		"test-and-coverage": "pnpm jest-and-coverage",
+		"format": "pnpm exec gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "yarn clean-all"
+		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
-		"chokidar": "^3.3.1",
+		"chokidar": "^3.5.3",
 		"lodash": "^4.17.21"
 	},
 	"dependencies": {
@@ -48,20 +48,20 @@
 		"gulp-rename": "2.0.0",
 		"gulp-replace": "1.1.4",
 		"gulp-terser": "2.1.0",
-		"js-yaml": "4.1.0"
+		"js-yaml": "4.1.0",
+		"typescript": "4.9.4"
 	},
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.48.0",
-		"@typescript-eslint/parser": "5.48.0",
+		"@typescript-eslint/eslint-plugin": "5.49.0",
+		"@typescript-eslint/parser": "5.49.0",
 		"cross-env": "7.0.3",
-		"cypress": "12.3.0",
-		"eslint": "^8.31.0",
-		"start-server-and-test": "1.15.2",
-		"typescript": "4.9.4"
+		"cypress": "12.4.0",
+		"eslint": "^8.32.0",
+		"start-server-and-test": "1.15.3"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "^4.1.0"
+		"@tensorflow/tfjs-core": "^4.2.0"
 	}
 }

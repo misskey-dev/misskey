@@ -34,6 +34,7 @@ import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
 import { miLocalStorage } from '@/local-storage';
+import { fetchCustomEmojis } from '@/custom-emojis';
 
 const indexInfo = {
 	title: i18n.ts.settings,
@@ -180,11 +181,13 @@ const menuDef = computed(() => [{
 		type: 'button',
 		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
-		action: () => {
+		action: async () => {
+			os.waiting();
 			miLocalStorage.removeItem('locale');
 			miLocalStorage.removeItem('theme');
 			miLocalStorage.removeItem('emojis');
 			miLocalStorage.removeItem('lastEmojisFetchedAt');
+			await fetchCustomEmojis();
 			unisonReload();
 		},
 	}, {

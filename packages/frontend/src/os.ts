@@ -1,5 +1,7 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
+import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api';
+export { pendingApiRequestsCount, api, apiGet };
 import { Component, markRaw, Ref, ref, defineAsyncComponent } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -7,9 +9,16 @@ import * as Misskey from 'misskey-js';
 import { i18n } from './i18n';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
+import MkPageWindow from '@/components/MkPageWindow.vue';
+import MkToast from '@/components/MkToast.vue';
+import MkDialog from '@/components/MkDialog.vue';
+import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
+import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
+import MkPopupMenu from '@/components/MkPopupMenu.vue';
+import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
-import { pendingApiRequestsCount, api, apiGet } from '@/scripts/api';
-export { pendingApiRequestsCount, api, apiGet };
+
+export const openingWindowsCount = ref(0);
 
 export const apiWithDialog = ((
 	endpoint: string,
@@ -20,7 +29,10 @@ export const apiWithDialog = ((
 	promiseDialog(promise, null, (err) => {
 		let title = null;
 		let text = err.message + '\n' + (err as any).id;
-		if (err.code.startsWith('TOO_MANY')) {
+		if (err.code === 'RATE_LIMIT_EXCEEDED') {
+			title = i18n.ts.cannotPerformTemporary;
+			text = i18n.ts.cannotPerformTemporaryDescription;
+		} else if (err.code.startsWith('TOO_MANY')) {
 			title = i18n.ts.youCannotCreateAnymore;
 			text = `${i18n.ts.error}: ${err.id}`;
 		}
@@ -121,7 +133,7 @@ export async function popup(component: Component, props: Record<string, any>, ev
 }
 
 export function pageWindow(path: string) {
-	popup(defineAsyncComponent(() => import('@/components/MkPageWindow.vue')), {
+	popup(MkPageWindow, {
 		initialPath: path,
 	}, {}, 'closed');
 }
@@ -133,7 +145,7 @@ export function modalPageWindow(path: string) {
 }
 
 export function toast(message: string) {
-	popup(defineAsyncComponent(() => import('@/components/MkToast.vue')), {
+	popup(MkToast, {
 		message,
 	}, {}, 'closed');
 }
@@ -144,7 +156,7 @@ export function alert(props: {
 	text?: string | null;
 }): Promise<void> {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), props, {
+		popup(MkDialog, props, {
 			done: result => {
 				resolve();
 			},
@@ -158,7 +170,7 @@ export function confirm(props: {
 	text?: string | null;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
+		popup(MkDialog, {
 			...props,
 			showCancelButton: true,
 		}, {
@@ -179,7 +191,7 @@ export function inputText(props: {
 	canceled: false; result: string;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
+		popup(MkDialog, {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -204,7 +216,7 @@ export function inputNumber(props: {
 	canceled: false; result: number;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
+		popup(MkDialog, {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -229,7 +241,7 @@ export function inputDate(props: {
 	canceled: false; result: Date;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
+		popup(MkDialog, {
 			title: props.title,
 			text: props.text,
 			input: {
@@ -266,7 +278,7 @@ export function select<C = any>(props: {
 	canceled: false; result: C;
 }> {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
+		popup(MkDialog, {
 			title: props.title,
 			text: props.text,
 			select: {
@@ -288,7 +300,7 @@ export function success() {
 		window.setTimeout(() => {
 			showing.value = false;
 		}, 1000);
-		popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
+		popup(MkWaitingDialog, {
 			success: true,
 			showing: showing,
 		}, {
@@ -300,7 +312,7 @@ export function success() {
 export function waiting() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
+		popup(MkWaitingDialog, {
 			success: false,
 			showing: showing,
 		}, {
@@ -319,9 +331,11 @@ export function form(title, form) {
 	});
 }
 
-export async function selectUser() {
+export async function selectUser(opts: { includeSelf?: boolean } = {}) {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {}, {
+		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
+			includeSelf: opts.includeSelf,
+		}, {
 			ok: user => {
 				resolve(user);
 			},
@@ -361,7 +375,7 @@ export async function selectDriveFolder(multiple: boolean) {
 
 export async function pickEmoji(src: HTMLElement | null, opts) {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
+		popup(MkEmojiPickerDialog, {
 			src,
 			...opts,
 		}, {
@@ -426,7 +440,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 		characterData: false,
 	});
 
-	openingEmojiPicker = await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
+	openingEmojiPicker = await popup(MkEmojiPickerWindow, {
 		src,
 		...opts,
 	}, {
@@ -449,7 +463,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 }) {
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(defineAsyncComponent(() => import('@/components/MkPopupMenu.vue')), {
+		popup(MkPopupMenu, {
 			items,
 			src,
 			width: options?.width,
@@ -473,7 +487,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(defineAsyncComponent(() => import('@/components/MkContextMenu.vue')), {
+		popup(MkContextMenu, {
 			items,
 			ev,
 		}, {

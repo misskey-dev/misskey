@@ -24,7 +24,7 @@ services:
 
   redis:
     restart: always
-    image: redis:4.0-alpine
+    image: redis:7-alpine
     networks:
       - internal_network
     volumes:
@@ -36,7 +36,7 @@ services:
 
   db:
     restart: always
-    image: postgres:12.2-alpine
+    image: postgres:15-alpine
     networks:
       - internal_network
     env_file:
@@ -44,7 +44,7 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
     healthcheck:
-      test: "pg_isready"
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
 
