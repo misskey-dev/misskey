@@ -1066,6 +1066,8 @@ _achievements:
     _noteDeletedWithin1min:
       title: "Не зважай"
       description: "Допис видалено протягом 1 хвилини після публікації"
+    _postedAt0min0sec:
+      description: "Відправити нотатку о 00:00"
     _setNameToSyuilo:
       title: "Комплекс бога"
       description: "Встановлено ім'я \"syuilo\""
