@@ -43,11 +43,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	ffmpeg tini \
+	&& rm -rf /var/lib/apt/lists \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
-    && find / -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
-    && find / -type f -perm /g+s -ignore_readdir_race -exec chmod g-s {} \;
+  && find / -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
+  && find / -type f -perm /g+s -ignore_readdir_race -exec chmod g-s {} \;
 
 USER misskey
 WORKDIR /misskey
