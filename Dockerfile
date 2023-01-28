@@ -23,6 +23,7 @@ COPY . ./
 
 RUN git submodule update --init
 RUN yarn build
+RUN rm -rf .git/
 
 FROM node:${NODE_VERSION}-slim AS runner
 
@@ -49,8 +50,6 @@ COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/node_modul
 COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/built ./packages/backend/built
 COPY --chown=misskey:misskey --from=builder /misskey/packages/frontend/node_modules ./packages/frontend/node_modules
 COPY --chown=misskey:misskey . ./
-
-RUN rm -rf .git/
 
 ENV NODE_ENV=production
 HEALTHCHECK --interval=5s --retries=20 CMD ["curl", "-s", "-S", "-o", "/dev/null", "http://localhost:3000/"]
