@@ -42,10 +42,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	ffmpeg tini wget \
+	ffmpeg tini wget ca-certificates \
 	&& wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq \
     && chmod +x /usr/bin/yq \
-    && apt-get remove -y wget \
+    && apt-get remove -y wget ca-certificates \
     && rm -rf /var/lib/apt/lists \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
