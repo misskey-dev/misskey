@@ -42,7 +42,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	ffmpeg tini \
+	ffmpeg tini yq \
 	&& rm -rf /var/lib/apt/lists \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
@@ -62,6 +62,6 @@ COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/flue
 COPY --chown=misskey:misskey . ./
 
 ENV NODE_ENV=production
-HEALTHCHECK --interval=5s --retries=20 CMD ["curl", "-s", "-S", "-o", "/dev/null", "http://localhost:3000/"]
+HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["pnpm", "run", "migrateandstart"]
