@@ -993,26 +993,26 @@ _achievements:
       description: "發表了100,000則貼文"
       flavor: "有這麼多東西要寫嗎？"
     _login3:
-      title: "初學者I"
+      title: "初學者Ⅰ"
       description: "總登入天數為3天"
-      flavor: "從今天開始，我就是Misskeyist"
+      flavor: "從今天開始，我就是Misskist"
     _login7:
-      title: "初學者II"
+      title: "初學者ⅠⅠ"
       description: "總登入天數為7天"
       flavor: "您開始習慣了嗎？"
     _login15:
-      title: "初學者III"
+      title: "初學者ⅠⅠⅠ"
       description: "總登入天數為15天"
     _login30:
-      title: "Misskeyist I"
+      title: "Misskist Ⅰ"
       description: "總登入天數為30天"
     _login60:
-      title: "Misskeyist II"
+      title: "Misskist ⅠⅠ"
       description: "總登入天數為60天"
     _login100:
-      title: "Misskeyist III"
+      title: "Misskist ⅠⅠⅠ"
       description: "總登入天數為100天"
-      flavor: "辣個 Misskeyist 用戶"
+      flavor: "辣個 Misskist 用戶"
     _login200:
       title: "普通Ⅰ"
       description: "總登入天數為200天"
