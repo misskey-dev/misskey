@@ -13,6 +13,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - Client: classicモード使用時にwindowサイズによってdefaultに変更された後に、windowサイズが元に戻ったらclassicに戻すように修正 #9669
+- Client: Chromeで検索ダイアログで変換確定するとそのまま検索されてしまう問題を修正
 
 ## 13.2.4 (2023/01/27)
 ### Improvements
