@@ -13,10 +13,18 @@ import _emojilist from '../emojilist.json';
 export const emojilist = _emojilist as UnicodeEmojiDef[];
 
 const _indexByChar: { [name: string]: number } = {};
+const _charGroupByCategory: { [name: string]: [string] } = {};
 for (let i = 0; i < emojilist.length; i++) {
 	const emo = emojilist[i];
 	_indexByChar[emo.char] = i;
+	if (emo.category in _charGroupByCategory) {
+		_charGroupByCategory[emo.category].push(emo.char);
+	} else {
+		_charGroupByCategory[emo.category] = [emo.char];
+	}
 }
+
+export const emojiCharByCategory = _charGroupByCategory;
 
 export function getEmojiName(char: string): string | undefined {
 	const idx: number | undefined = _indexByChar[char];
