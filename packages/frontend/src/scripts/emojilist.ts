@@ -12,6 +12,17 @@ import _emojilist from '../emojilist.json';
 
 export const emojilist = _emojilist as UnicodeEmojiDef[];
 
+const _indexByChar: { [name: string]: number } = {};
+for (let i = 0; i < emojilist.length; i++) {
+	const emo = emojilist[i];
+	_indexByChar[emo.char] = i;
+}
+
 export function getEmojiName(char: string): string | undefined {
-	return emojilist.find(emo => emo.char === char)?.name;
+	const idx: number | undefined = _indexByChar[char];
+	if (typeof idx === 'undefined') {
+		return undefined;
+	} else {
+		return emojilist[idx].name;
+	}
 }
