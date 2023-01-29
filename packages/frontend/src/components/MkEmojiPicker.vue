@@ -4,59 +4,44 @@
 	<div ref="emojisEl" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
-				<button
+				<MkEmojiPickerIconButton
 					v-for="emoji in searchResultCustom"
 					:key="emoji.name"
-					class="_button item"
-					:title="emoji.name"
-					tabindex="0"
+					:emoji="emoji"
 					@click="chosen(emoji, $event)"
-				>
-					<MkCustomEmoji class="emoji" :name="emoji.name"/>
-				</button>
+				/>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
-				<button
+				<MkEmojiPickerIconButton
 					v-for="emoji in searchResultUnicode"
 					:key="emoji.name"
-					class="_button item"
-					:title="emoji.name"
-					tabindex="0"
+					:emoji="emoji.char"
 					@click="chosen(emoji, $event)"
-				>
-					<MkEmoji class="emoji" :emoji="emoji.char"/>
-				</button>
+				/>
 			</div>
 		</section>
 
 		<div v-if="tab === 'index'" class="group index">
 			<section v-if="showPinned">
 				<div class="body">
-					<button
+					<MkEmojiPickerIconButton
 						v-for="emoji in pinned"
 						:key="emoji"
-						class="_button item"
-						tabindex="0"
+						:emoji="emoji"
 						@click="chosen(emoji, $event)"
-					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-					</button>
+					/>
 				</div>
 			</section>
 
 			<section>
 				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
 				<div class="body">
-					<button
+					<MkEmojiPickerIconButton
 						v-for="emoji in recentlyUsedEmojis"
 						:key="emoji"
-						class="_button item"
+						:emoji="emoji"
 						@click="chosen(emoji, $event)"
-					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-					</button>
+					/>
 				</div>
 			</section>
 		</div>
@@ -91,6 +76,7 @@ import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
+import MkEmojiPickerIconButton from '@/components/MkEmojiPickerIconButton.vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';

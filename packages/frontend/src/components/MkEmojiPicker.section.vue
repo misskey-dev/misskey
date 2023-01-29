@@ -5,21 +5,19 @@
 		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
 	</header>
 	<div v-if="shown" class="body">
-		<button
+		<MkEmojiPickerIconButton
 			v-for="emoji in emojis"
 			:key="emoji"
-			class="_button item"
+			:emoji="emoji"
 			@click="emit('chosen', emoji, $event)"
-		>
-			<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-			<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-		</button>
+		/>
 	</div>
 </section>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, Ref } from 'vue';
+import MkEmojiPickerIconButton from '@/components/MkEmojiPickerIconButton.vue';
 
 const props = defineProps<{
 	emojis: string[] | Ref<string[]>;
