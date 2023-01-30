@@ -984,8 +984,10 @@ _achievements:
       description: "เข้าสู่ระบบในวันแรกของปี"
     _cookieClicked:
       description: "คลิกคุกกี้"
+      flavor: "เดี๋ยวก่อนนะ คุณอยู่ในเว็บไซต์ที่ถูกต้องแน่อย่างงั้นเหรอ?"
     _brainDiver:
       title: "Brain Diver"
+      description: "โพสต์ลิงก์ไปยัง Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "บทบาทใหม่"
