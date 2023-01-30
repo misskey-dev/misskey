@@ -1004,10 +1004,13 @@ _achievements:
       title: "初学者 III"
       description: "连续登录15天"
     _login30:
+      title: "Misskist Ⅰ"
       description: "连续登录30天"
     _login60:
+      title: "Misskist Ⅱ"
       description: "连续登录60天"
     _login100:
+      title: "Misskist Ⅲ"
       description: "总登入100天"
       flavor: "那个用户，是Misskist喔"
     _login200:
@@ -1034,6 +1037,7 @@ _achievements:
       description: "总登录天数1000天"
       flavor: "感谢您使用Misskey！"
     _noteClipped1:
+      title: "忍不住要收藏到便签"
       description: "第一次将贴文贴进便签"
     _noteFavorited1:
       title: "观星者"
@@ -1057,6 +1061,9 @@ _achievements:
     _following50:
       title: "我的朋友很多"
       description: "关注超过50人"
+    _following100:
+      title: "我的朋友很多"
+      description: "关注超过100人"
     _following300:
       title: "朋友成群"
       description: "关注数超过300"
@@ -1103,6 +1110,7 @@ _achievements:
     _postedAt0min0sec:
       title: "报时"
       description: "在0点发布一篇帖子"
+      flavor: "嘣 嘣 嘣 Biu——！"
     _selfQuote:
       title: "自我提及"
       description: "引用了自己的帖子"
@@ -1116,7 +1124,11 @@ _achievements:
     _reactWithoutRead:
       title: "有好好读过吗？"
       description: "在含有100字以上的帖子被发出三秒内做出回应"
+    _clickedClickHere:
+      title: "点这里"
+      description: "点了这里"
     _justPlainLucky:
+      title: "超高校级的幸运"
       description: "每10秒有0.01的概率获得"
     _setNameToSyuilo:
       title: "像神一样呐"
@@ -1137,6 +1149,14 @@ _achievements:
       title: "恭贺新禧"
       description: "在元旦登入"
       flavor: "今年也请对本实例多多指教！"
+    _cookieClicked:
+      title: "点击饼干小游戏"
+      description: "点击了可疑的饼干"
+      flavor: "是不是软件有问题？"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "发布了包含Brain Diver链接的帖子"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "创建角色"
   edit: "编辑角色"
