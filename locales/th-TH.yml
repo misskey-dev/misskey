@@ -960,6 +960,24 @@ _achievements:
       title: "ปรมาจารย์ด้านโน้ต II"
     _login1000:
       title: "ปรมาจารย์ด้านโน้ต III"
+    _profileFilled:
+      description: "ตั้งค่าโปรไฟล์ของคุณ"
+    _markedAsCat:
+      title: "ฉันเป็นแมว"
+      description: "ทำเครื่องหมายบัญชีของคุณว่าเป็นแมว"
+      flavor: "ฉันจะให้ชื่อคุณภายหลังนะ"
+    _following1:
+      title: "กำลังติดตามผู้ใช้คนแรกของคุณ"
+      description: "ติดตามผู้ใช้"
+    _following10:
+      title: "ทำต่อไป... ทำต่อไป..."
+      description: "ติดตาม 10 บัญชีผู้ใช้"
+    _following50:
+      title: "มีเพื่อนมากมาย"
+      description: "ติดตาม 50 บัญชี"
+    _following100:
+      title: "เพื่อน 100 คน"
+      description: "ติดตาม 100 บัญชี"
     _following300:
       title: "เพื่อนโอเวอร์โหลด"
       description: "ติดตาม 300 บัญชี"
