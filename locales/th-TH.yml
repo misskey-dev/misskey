@@ -944,45 +944,101 @@ _achievements:
   _types:
     _notes1:
       title: "เพียงแค่ตั้งค่า msky ของฉัน"
+    _followers1:
+      description: "ได้รับ 1 ผู้ติดตาม"
+    _followers10:
+      title: "ติดตามฉัน!"
+      description: "ได้รับ 10 คนผู้ติดตาม"
+    _followers50:
+      title: "มากันเป็นฝูง"
+      description: "ได้รับ 50 ผู้ติดตาม"
     _followers100:
       title: "บุคคลที่เป็นที่นิยม"
+      description: "ได้รับ 100 ผู้ติดตาม"
+    _followers300:
+      title: "กรุณาสร้างบรรทัดเดียวนะคะ"
+      description: "ได้รับ 300 คนผู้ติดตาม"
     _followers500:
       title: "เสาสัญญาณ"
+      description: "ได้รับ 500 คนผู้ติดตาม"
     _followers1000:
       title: "ผู้ทรงอิทธิพล"
+      description: "ได้รับ 1,000 ผู้ติดตาม"
+    _collectAchievements30:
+      title: "นักสะสมความสำเร็จ"
+      description: "ได้รับความสำเร็จ 30 ครั้ง"
+    _viewAchievements3min:
+      title: "ชอบบรรลุผลสําเร็จ"
+      description: "มองดูรายการความสำเร็จของคุณเป็นเวลาอย่างน้อย 3 นาที"
     _iLoveMisskey:
       title: "ฉันรัก Misskey"
       description: "โพสต์ \"I ❤ #Misskey\""
+      flavor: "ทีมผู้พัฒนา Misskey ได้ขอบคุณสำหรับการสนับสนุนของคุณ!"
     _foundTreasure:
       title: "ล่าสมบัติ"
       description: "คุณพบสมบัติที่ซ่อนอยู่"
     _client30min:
       title: "พักผ่อนสักหน่อย"
+      description: "ใช้เวลา 30 นาทีบน Misskey"
     _noteDeletedWithin1min:
       title: "ไม่เป็นไร"
+      description: "ลบโน้ตภายในหนึ่งนาทีหลังจากที่โพสต์"
     _postedAtLateNight:
       title: "กลางคืน"
+      description: "โพสต์โน้ตตอนดึกๆ"
+      flavor: "ได้เวลาเข้านอนแล้วนะ"
+    _postedAt0min0sec:
+      title: "นาฬิกาพูดได้"
+      description: "โพสต์บนโน้ตเมื่อเวลา 00:00 น."
+      flavor: "คลิก คลิก คลิก แกล๊งๆ"
+    _selfQuote:
+      title: "อ้างอิงตนเอง"
+      description: "อ้างโน้ตย่อของคุณเอง"
+    _htl20npm:
+      title: "ไทม์ไลน์ไหล"
+      description: "มีการทำความเร็วของไทม์ไลน์ที่บ้านของคุณเกิน 20 npm (โน้ตต่อนาที)"
     _viewInstanceChart:
       title: "วิเคราะห์"
       description: "ดูแผนภูมิอินสแตนซ์ของคุณ"
+    _outputHelloWorldOnScratchpad:
+      title: "หวัดดีชาวโลก!"
+      description: "เอาพุต \"hello world\" ใน Scratchpad"
+    _open3windows:
+      title: "มัลติวินโดว์"
+      description: "มีการเปิดหน้าต่างอย่างน้อย 3 หน้าต่างพร้อมกัน"
     _driveFolderCircularReference:
       title: "อ้างอิงวงจร"
+      description: "พยายามสร้างโฟลเดอร์ที่ซ้อนกันแบบวนซ้ำในไดรฟ์"
+    _reactWithoutRead:
+      title: "คุณอ่านมันจริงๆหรือเปล่า?"
+      description: "มีการโต้ตอบกับโน้ตที่มีความยาวมากกว่า 100 ตัวอักษรภายใน 3 วินาทีหลังจากที่โพสต์"
     _clickedClickHere:
       title: "คลิ๊กที่นี่"
       description: "คุณได้คลิกที่นี่"
+    _justPlainLucky:
+      title: "แค่ลัคกี้ธรรมดา"
+      description: "มีโอกาสที่จะได้รับด้วยความน่าจะเป็นไปได้ 0.01% ทุก ๆ 10 วินาที"
+    _setNameToSyuilo:
+      title: "พระเจ้าคอมเพล็กซ์"
+      description: "ตั้งชื่อของคุณเป็น \"syuilo\""
     _passedSinceAccountCreated1:
       title: "ครบรอบหนึ่งปี"
+      description: "ผ่านไปหนึ่งปีแล้วนะตั้งแต่บัญชีของคุณถูกสร้างขึ้นมาน่ะ"
     _passedSinceAccountCreated2:
       title: "ครบรอบสองปี"
+      description: "ผ่านไปสองปีแล้วนะตั้งแต่บัญชีของคุณถูกสร้างขึ้นมาน่ะ"
     _passedSinceAccountCreated3:
       title: "ครบรอบสามปี"
+      description: "ผ่านไปสามปีแล้วนะตั้งแต่บัญชีของคุณถูกสร้างขึ้นมาน่ะ"
     _loggedInOnBirthday:
       title: "สุขสันต์วันเกิด"
       description: "เข้าสู่ระบบในวันเกิดของคุณ"
     _loggedInOnNewYearsDay:
       title: "สวัสดีปีใหม่!"
       description: "เข้าสู่ระบบในวันแรกของปี"
+      flavor: "อีกปีที่ยอดเยี่ยมในโอกาสนี้เลย"
     _cookieClicked:
+      title: "เกมที่คุณคลิกที่คุกกี้"
       description: "คลิกคุกกี้"
       flavor: "เดี๋ยวก่อนนะ คุณอยู่ในเว็บไซต์ที่ถูกต้องแน่อย่างงั้นเหรอ?"
     _brainDiver:
