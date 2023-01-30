@@ -1053,6 +1053,9 @@ _achievements:
     _collectAchievements30:
       title: "Збирач досягнень"
       description: "Отримано 30 досягнень"
+    _viewAchievements3min:
+      title: "Шанувальник досягнень"
+      description: "Переглядати список досягнень принаймні 3 хвилини"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "Відправлено \"I ❤ #Misskey\""
@@ -1066,6 +1069,8 @@ _achievements:
     _noteDeletedWithin1min:
       title: "Не зважай"
       description: "Допис видалено протягом 1 хвилини після публікації"
+    _postedAtLateNight:
+      title: "Нічне життя"
     _postedAt0min0sec:
       title: "Сигнал часу"
       description: "Відправити нотатку о 00:00"
