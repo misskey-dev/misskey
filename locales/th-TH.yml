@@ -944,7 +944,27 @@ _achievements:
   _types:
     _notes1:
       title: "เพียงแค่ตั้งค่า msky ของฉัน"
+    _login300:
+      title: "ลูกค้าประจำ II"
+    _login400:
+      title: "ลูกค้าประจำ III"
+    _login500:
+      title: "ผู้เชี่ยวชาญ I"
+    _login600:
+      title: "ผู้เชี่ยวชาญ II"
+    _login700:
+      title: "ผู้เชี่ยวชาญ III"
+    _login800:
+      title: "ปรมาจารย์ด้านโน้ต I"
+    _login900:
+      title: "ปรมาจารย์ด้านโน้ต II"
+    _login1000:
+      title: "ปรมาจารย์ด้านโน้ต III"
+    _following300:
+      title: "เพื่อนโอเวอร์โหลด"
+      description: "ติดตาม 300 บัญชี"
     _followers1:
+      title: "ผู้ติดตามคนแรก"
       description: "ได้รับ 1 ผู้ติดตาม"
     _followers10:
       title: "ติดตามฉัน!"
