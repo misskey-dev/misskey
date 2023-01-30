@@ -1048,10 +1048,15 @@ _achievements:
       title: "我是猫"
       description: "将账户设定为一只猫"
       flavor: "还没有名字"
+    _following1:
+      title: "首次关注"
+      description: "第一次关注别人"
     _following10:
       title: "关注，跟随"
+      description: "关注超过10人"
     _following50:
       title: "我的朋友很多"
+      description: "关注超过50人"
     _following300:
       title: "朋友成群"
       description: "关注数超过300"
@@ -1059,7 +1064,7 @@ _achievements:
       title: "最初的关注者"
       description: "第一次被关注"
     _followers10:
-      title: "跟随我吧！"
+      title: "关注我吧！"
       description: "关注者超过10人"
     _followers50:
       title: "三五成群"
@@ -1071,6 +1076,7 @@ _achievements:
       title: "排列成行"
       description: "关注者超过300人"
     _followers500:
+      title: "风向标"
       description: "关注者超过500人"
     _collectAchievements30:
       title: "成就收藏家"
@@ -1113,6 +1119,7 @@ _achievements:
     _justPlainLucky:
       description: "每10秒有0.01的概率获得"
     _setNameToSyuilo:
+      title: "像神一样呐"
       description: "将名称设定为syuilo"
     _passedSinceAccountCreated1:
       title: "一周年"
@@ -1129,6 +1136,7 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "恭贺新禧"
       description: "在元旦登入"
+      flavor: "今年也请对本实例多多指教！"
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -1647,7 +1655,7 @@ _profile:
   name: "昵称"
   username: "用户名"
   description: "个人简介"
-  youCanIncludeHashtags: "您可以包含一个哈希标签。"
+  youCanIncludeHashtags: "你可以在个人简介中包含一个#标签。"
   metadata: "附加信息"
   metadataEdit: "附加信息编辑"
   metadataDescription: "最多可以在个人资料中以表格形式显示四条其他信息。"
