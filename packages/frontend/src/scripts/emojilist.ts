@@ -13,7 +13,7 @@ import _emojilist from '../emojilist.json';
 export const emojilist = _emojilist as UnicodeEmojiDef[];
 
 const _indexByChar = new Map<string, number>();
-const _charGroupByCategory = new Map<string, [string]>();
+const _charGroupByCategory = new Map<string, string[]>();
 emojilist.forEach((emo, i) => {
 	_indexByChar.set(emo.char, i);
 
