@@ -944,23 +944,115 @@ _achievements:
   _types:
     _notes1:
       title: "เพียงแค่ตั้งค่า msky ของฉัน"
+      description: "โพสต์โน้ตครั้งแรกของคุณ"
+      flavor: "ขอให้มีช่วงเวลาที่ดีกับ Misskey นะคะ!"
+    _notes10:
+      title: "โน้ตบางอย่าง"
+      description: "โพสต์ 10 โน้ต"
+    _notes100:
+      title: "โน้ตจำนวนมาก"
+      description: "โพสต์ 100 โน้ต"
+    _notes500:
+      title: "ครอบคลุมในโน้ต"
+      description: "โพสต์ 500 โน้ต"
+    _notes1000:
+      title: "ภูเขาแห่งโน้ต"
+      description: "โพสต์ 1,000 โน้ต"
+    _notes5000:
+      title: "โน้ตล้น"
+      description: "โพสต์ 5,000 โน้ต"
+    _notes10000:
+      title: "ซุปเปอร์โน้ต"
+      description: "โพสต์ 10,000 โน้ต"
+    _notes20000:
+      title: "ต้องการ... เพิ่มเติม... โน้ต..."
+      description: "โพสต์ 20,000 โน้ต"
+    _notes30000:
+      title: "โน้ต โน้ต โน้ต!"
+      description: "โพสต์ 30,000 โน้ต"
+    _notes40000:
+      title: "โน้ตโรงงาน"
+      description: "โพสต์ 40,000 โน้ต"
+    _notes50000:
+      title: "ดาวเคราะห์แห่งโน้ต"
+      description: "โพสต์ 50,000 โน้ต"
+    _notes60000:
+      title: "โน้ตควอซาร์"
+      description: "โพสต์ 60,000 โน้ต"
+    _notes70000:
+      title: "โน้ตหลุมดำ"
+      description: "โพสต์ 70,000 โน้ต"
+    _notes80000:
+      title: "โน้ต กาแล็กซี่"
+      description: "โพสต์ 80,000 โน้ต"
+    _notes90000:
+      title: "โน้ต จักรวาล"
+      description: "โพสต์ 90,000 โน้ต"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "โพสต์ 100,000 โน้ต"
+      flavor: "นายแน่ใจก็มีอะไรจะพูดมากมายได้นะ"
+    _login3:
+      title: "มือใหม่ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 3 วัน"
+      flavor: "เริ่มตั้งแต่วันนี้ เรียกฉันว่ามิสคิสต์"
+    _login7:
+      title: "มือใหม่ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 7 วัน"
+      flavor: "รู้สึกเหมือนคุณได้แขวนของสิ่งต่างๆ หรือยังคะ?"
+    _login15:
+      title: "มือใหม่ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 15 วัน"
+    _login30:
+      title: "มิสคิสท์ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 30 วัน"
+    _login60:
+      title: "มิสคิสท์ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 60 วัน"
+    _login100:
+      title: "มิสคิสท์ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 100 วัน"
+      flavor: "ความรุนแรง Misskist"
+    _login200:
+      title: "ลูกค้าประจำ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 200 วัน"
     _login300:
       title: "ลูกค้าประจำ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 300 วัน"
     _login400:
       title: "ลูกค้าประจำ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 400 วัน"
     _login500:
       title: "ผู้เชี่ยวชาญ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 500 วัน"
+      flavor: "เพื่อนของผมนะมักจะกล่าวว่าผมนะชอบจดโน้ต"
     _login600:
       title: "ผู้เชี่ยวชาญ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 600 วัน"
     _login700:
       title: "ผู้เชี่ยวชาญ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 700 วัน"
     _login800:
       title: "ปรมาจารย์ด้านโน้ต I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 800 วัน"
     _login900:
       title: "ปรมาจารย์ด้านโน้ต II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 900 วัน"
     _login1000:
       title: "ปรมาจารย์ด้านโน้ต III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 1,000 วัน"
+      flavor: "ขอบคุณที่ใช้ Misskeyนะ !"
+    _noteClipped1:
+      title: "จะต้อง... คลิป..."
+      description: "คลิปโน้ตตัวแรกของคุณ"
+    _noteFavorited1:
+      title: "สตาร์เกเซอร์"
+      description: "ชื่นชอบโน้ตแรกของคุณ"
+    _myNoteFavorited1:
+      title: "แสวงหาดวงดาว"
+      description: "มีคนอื่นๆที่ชื่นชอบหนึ่งในโน้ตของคุณ"
     _profileFilled:
+      title: "เตรียมไว้อย่างดี"
       description: "ตั้งค่าโปรไฟล์ของคุณ"
     _markedAsCat:
       title: "ฉันเป็นแมว"
