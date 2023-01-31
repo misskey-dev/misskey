@@ -991,7 +991,7 @@ _achievements:
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "โพสต์ 100,000 โน้ต"
-      flavor: "นายแน่ใจก็มีอะไรจะพูดมากมายได้นะ"
+      flavor: "นายแน่ใจล่ะก็ มีอะไรพูดมาได้นะ"
     _login3:
       title: "มือใหม่ I"
       description: "เข้าสู่ระบบเป็นเวลารวม 3 วัน"
@@ -1041,7 +1041,7 @@ _achievements:
     _login1000:
       title: "ปรมาจารย์ด้านโน้ต III"
       description: "เข้าสู่ระบบเป็นเวลารวม 1,000 วัน"
-      flavor: "ขอบคุณที่ใช้ Misskeyนะ !"
+      flavor: "ขอบคุณที่ใช้ Misskey นะ !"
     _noteClipped1:
       title: "จะต้อง... คลิป..."
       description: "คลิปโน้ตตัวแรกของคุณ"
