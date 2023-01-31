@@ -88,6 +88,8 @@ const onInput = (ev: KeyboardEvent) => {
 	emit('change', ev);
 };
 const onKeydown = (ev: KeyboardEvent) => {
+	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
+
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {
