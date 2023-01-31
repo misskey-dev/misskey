@@ -1071,6 +1071,7 @@ _achievements:
       description: "Допис видалено протягом 1 хвилини після публікації"
     _postedAtLateNight:
       title: "Нічне життя"
+      description: "Відправити нотатку посеред ночі"
     _postedAt0min0sec:
       title: "Сигнал часу"
       description: "Відправити нотатку о 00:00"
