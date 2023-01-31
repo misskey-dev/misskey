@@ -6,18 +6,12 @@ import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
 import semver from 'semver';
-import { NestFactory } from '@nestjs/core';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
-import { lessThan } from '@/misc/prelude/array.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { DaemonModule } from '@/daemons/DaemonModule.js';
-import { JanitorService } from '@/daemons/JanitorService.js';
-import { QueueStatsService } from '@/daemons/QueueStatsService.js';
-import { ServerStatsService } from '@/daemons/ServerStatsService.js';
-import { NestLogger } from '@/NestLogger.js';
-import { envOption } from '../env.js';
+import { envOption } from '@/env.js';
+import { jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -70,6 +64,14 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
+	if (envOption.onlyServer) {
+		await server();
+	} else if (envOption.onlyQueue) {
+		await jobQueue();
+	} else {
+		await server();
+	}
+
 	bootLogger.succ('Misskey initialized');
 
 	if (!envOption.disableClustering) {
@@ -77,16 +79,6 @@ export async function masterMain() {
 	}
 
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
-
-	if (!envOption.noDaemons) {
-		const daemons = await NestFactory.createApplicationContext(DaemonModule, {
-			logger: new NestLogger(),
-		});
-		daemons.enableShutdownHooks();
-		daemons.get(JanitorService).start();
-		daemons.get(QueueStatsService).start();
-		daemons.get(ServerStatsService).start();
-	}
 }
 
 function showEnvironment(): void {

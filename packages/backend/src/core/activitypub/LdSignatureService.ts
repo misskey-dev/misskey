@@ -9,7 +9,7 @@ import { CONTEXTS } from './misc/contexts.js';
 class LdSignature {
 	public debug = false;
 	public preLoad = true;
-	public loderTimeout = 10 * 1000;
+	public loderTimeout = 5000;
 
 	constructor(
 		private httpRequestService: HttpRequestService,
@@ -115,19 +115,12 @@ class LdSignature {
 
 	@bindThis
 	private async fetchDocument(url: string) {
-		const json = await this.httpRequestService.fetch(
-			url,
-			{
-				headers: {
-					Accept: 'application/ld+json, application/json',
-				},
-				// TODO
-				//timeout: this.loderTimeout,
+		const json = await this.httpRequestService.send(url, {
+			headers: {
+				Accept: 'application/ld+json, application/json',
 			},
-			{
-				noOkError: true,
-			}
-		).then(res => {
+			timeout: this.loderTimeout,
+		}, { throwErrorWhenResponseNotOk: false }).then(res => {
 			if (!res.ok) {
 				throw `${res.status} ${res.statusText}`;
 			} else {

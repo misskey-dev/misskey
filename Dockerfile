@@ -2,9 +2,15 @@ ARG NODE_VERSION=18.13.0-bullseye
 
 FROM node:${NODE_VERSION} AS builder
 
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt,sharing=locked \
+	rm -f /etc/apt/apt.conf.d/docker-clean \
+	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
+	&& apt-get update \
+	&& apt-get install -yqq --no-install-recommends \
 	build-essential
+
+RUN corepack enable
 
 WORKDIR /misskey
 
@@ -14,8 +20,8 @@ COPY ["packages/backend/package.json", "./packages/backend/"]
 COPY ["packages/frontend/package.json", "./packages/frontend/"]
 COPY ["packages/sw/package.json", "./packages/sw/"]
 
-RUN npm i -g pnpm
-RUN pnpm i --frozen-lockfile
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
+	pnpm i --frozen-lockfile --aggregate-output
 
 COPY . ./
 
@@ -29,15 +35,17 @@ FROM node:${NODE_VERSION}-slim AS runner
 ARG UID="991"
 ARG GID="991"
 
-RUN apt-get update \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt,sharing=locked \
+	rm -f /etc/apt/apt.conf.d/docker-clean \
+	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
+	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	ffmpeg tini \
-	&& apt-get -y clean \
-	&& rm -rf /var/lib/apt/lists/* \
+	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey
 
-RUN npm i -g pnpm
 USER misskey
 WORKDIR /misskey
 

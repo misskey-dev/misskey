@@ -10,7 +10,7 @@ export function createAiScriptEnv(opts) {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
-		CUSTOM_EMOJIS: utils.jsToVal(customEmojis),
+		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
 			await os.alert({
 				type: type ? type.value : 'info',

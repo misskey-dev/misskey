@@ -1,11 +1,15 @@
 <template>
+<MkStickyContainer>
+<template #header>
+	<MkPageHeader />
+</template>
 <div
 	ref="rootEl"
-	class="root"
+	:class="$style['root']"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<div class="body">
+	<div :class="$style['body']">
 		<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -17,7 +21,7 @@
 				<MkDateSeparatedList
 					v-if="messages.length > 0"
 					v-slot="{ item: message }"
-					:class="{ messages: true, 'deny-move-transition': pFetching }"
+					:class="{ [$style['messages']]: true, 'deny-move-transition': pFetching }"
 					:items="messages"
 					direction="up"
 					reversed
@@ -27,23 +31,26 @@
 			</template>
 		</MkPagination>
 	</div>
-	<footer>
-		<div v-if="typers.length > 0" class="typers">
-			<I18n :src="i18n.ts.typingUsers" text-tag="span" class="users">
+	<footer :class="$style['footer']">
+		<div v-if="typers.length > 0" :class="$style['typers']">
+			<I18n :src="i18n.ts.typingUsers" text-tag="span">
 				<template #users>
-					<b v-for="typer in typers" :key="typer.id" class="user">{{ typer.username }}</b>
+					<b v-for="typer in typers" :key="typer.id" :class="$style['user']">{{ typer.username }}</b>
 				</template>
 			</I18n>
 			<MkEllipsis/>
 		</div>
 		<Transition :name="animation ? 'fade' : ''">
-			<div v-show="showIndicator" class="new-message">
-				<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas ti-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
+			<div v-show="showIndicator" :class="$style['new-message']">
+				<button class="_buttonPrimary" @click="onIndicatorClick" :class="$style['new-message-button']">
+					<i class="fas ti-fw fa-arrow-circle-down" :class="$style['new-message-icon']"></i>{{ i18n.ts.newMessageExists }}
+				</button>
 			</div>
 		</Transition>
-		<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
+		<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" :class="$style['form']"/>
 	</footer>
 </div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -303,103 +310,98 @@ definePageMetadata(computed(() => !fetching ? user ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .root {
 	display: content;
+}
 
-	> .body {
-		min-height: 80%;
+.body {
+	min-height: 80%;
+}
 
-		.more {
-			display: block;
-			margin: 16px auto;
-			padding: 0 12px;
-			line-height: 24px;
-			color: #fff;
-			background: rgba(#000, 0.3);
-			border-radius: 12px;
-
-			&:hover {
-				background: rgba(#000, 0.4);
-			}
-
-			&:active {
-				background: rgba(#000, 0.5);
-			}
-
-			&.fetching {
-				cursor: wait;
-			}
-
-			> i {
-				margin-right: 4px;
-			}
-		}
-
-		.messages {
-			padding: 8px 0;
-
-			> ::v-deep(*) {
-				margin-bottom: 16px;
-			}
-		}
+.more {
+	display: block;
+	margin: 16px auto;
+	padding: 0 12px;
+	line-height: 24px;
+	color: #fff;
+	background: rgba(#000, 0.3);
+	border-radius: 12px;
+	&:hover {
+		background: rgba(#000, 0.4);
 	}
-
-	> footer {
-		width: 100%;
-		position: sticky;
-		z-index: 2;
-		padding-top: 8px;
-		bottom: 0;
-		bottom: env(safe-area-inset-bottom, 0px);
-
-		> .new-message {
-			width: 100%;
-			padding-bottom: 8px;
-			text-align: center;
-
-			> button {
-				display: inline-block;
-				margin: 0;
-				padding: 0 12px;
-				line-height: 32px;
-				font-size: 12px;
-				border-radius: 16px;
-
-				> i {
-					display: inline-block;
-					margin-right: 8px;
-				}
-			}
-		}
-
-		> .typers {
-			position: absolute;
-			bottom: 100%;
-			padding: 0 8px 0 8px;
-			font-size: 0.9em;
-			color: var(--fgTransparentWeak);
-
-			> .users {
-				> .user + .user:before {
-					content: ", ";
-					font-weight: normal;
-				}
-
-				> .user:last-of-type:after {
-					content: " ";
-				}
-			}
-		}
-
-		> .form {
-			max-height: 12em;
-			overflow-y: scroll;
-			border-top: solid 0.5px var(--divider);
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
-		}
+	&:active {
+		background: rgba(#000, 0.5);
 	}
+	> i {
+		margin-right: 4px;
+	}
+}
+
+.fetching {
+	cursor: wait;
+}
+
+.messages {
+	padding: 16px 0 0;
+
+	> * {
+		margin-bottom: 16px;
+	}
+}
+
+.footer {
+	width: 100%;
+	position: sticky;
+	z-index: 2;
+	padding-top: 8px;
+	bottom: var(--minBottomSpacing);
+}
+
+.new-message {
+	width: 100%;
+	padding-bottom: 8px;
+	text-align: center;
+}
+
+.new-message-button {
+	display: inline-block;
+	margin: 0;
+	padding: 0 12px;
+	line-height: 32px;
+	font-size: 12px;
+	border-radius: 16px;
+}
+
+.new-message-icon {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+.typers {
+	position: absolute;
+	bottom: 100%;
+	padding: 0 8px 0 8px;
+	font-size: 0.9em;
+	color: var(--fgTransparentWeak);
+}
+
+
+.user + .user:before {
+	content: ", ";
+	font-weight: normal;
+}
+
+.user:last-of-type:after {
+	content: " ";
+}
+
+.form {
+	max-height: 12em;
+	overflow-y: scroll;
+	border-top: solid 0.5px var(--divider);
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 }
 
 .fade-enter-active, .fade-leave-active {

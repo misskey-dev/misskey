@@ -6,7 +6,8 @@
 			<Sortable v-model="reactions" class="zoaiodol" :item-key="item => item" :animation="150" :delay="100" :delay-on-touch-only="true">
 				<template #item="{element}">
 					<button class="_button item" @click="remove(element, $event)">
-						<MkEmoji :emoji="element" :normal="true"/>
+						<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
+						<MkEmoji v-else :emoji="element" :normal="true"/>
 					</button>
 				</template>
 				<template #footer>

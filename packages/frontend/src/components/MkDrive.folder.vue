@@ -33,6 +33,7 @@ import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { claimAchievement } from '@/scripts/achievements';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -159,9 +160,11 @@ function onDrop(ev: DragEvent) {
 		}).then(() => {
 			// noop
 		}).catch(err => {
-			switch (err) {
-				case 'detected-circular-definition':
+			switch (err.code) {
+				case 'RECURSIVE_NESTING':
+					claimAchievement('driveFolderCircularReference');
 					os.alert({
+						type: 'error',
 						title: i18n.ts.unableToProcess,
 						text: i18n.ts.circularReferenceFolder,
 					});

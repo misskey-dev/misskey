@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
 
-			if (me == null || (me.id !== ps.userId && !profile.publicReactions)) {
+			if ((me == null || me.id !== ps.userId) && !profile.publicReactions) {
 				throw new ApiError(meta.errors.reactionsNotPublic);
 			}
 

@@ -4,16 +4,15 @@ import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
-import got, * as Got from 'got';
 import chalk from 'chalk';
+import got, * as Got from 'got';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { HttpRequestService, UndiciFetcher } from '@/core/HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { StatusError } from '@/misc/status-error.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
-import { buildConnector } from 'undici';
 
 const pipeline = util.promisify(stream.pipeline);
 import { bindThis } from '@/decorators.js';
@@ -21,7 +20,6 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class DownloadService {
 	private logger: Logger;
-	private undiciFetcher: UndiciFetcher;
 
 	constructor(
 		@Inject(DI.config)
@@ -31,24 +29,6 @@ export class DownloadService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('download');
-
-		this.undiciFetcher = new UndiciFetcher(this.httpRequestService.getStandardUndiciFetcherOption(
-			{
-				connect: process.env.NODE_ENV === 'development' ?
-					this.httpRequestService.clientDefaults.connect
-					:
-					this.httpRequestService.getConnectorWithIpCheck(
-						buildConnector({
-							...this.httpRequestService.clientDefaults.connect,
-						}),
-						(ip) => !this.isPrivateIp(ip)
-					),
-				bodyTimeout: 30 * 1000,
-			},
-			{
-				connect: this.httpRequestService.clientDefaults.connect,
-			}
-		), this.logger);
 	}
 
 	@bindThis
@@ -59,13 +39,59 @@ export class DownloadService {
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
 
-		const response = await this.undiciFetcher.fetch(url);
+		const req = got.stream(url, {
+			headers: {
+				'User-Agent': this.config.userAgent,
+			},
+			timeout: {
+				lookup: timeout,
+				connect: timeout,
+				secureConnect: timeout,
+				socket: timeout,	// read timeout
+				response: timeout,
+				send: timeout,
+				request: operationTimeout,	// whole operation timeout
+			},
+			agent: {
+				http: this.httpRequestService.httpAgent,
+				https: this.httpRequestService.httpsAgent,
+			},
+			http2: false,	// default
+			retry: {
+				limit: 0,
+			},
+		}).on('response', (res: Got.Response) => {
+			if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !this.config.proxy && res.ip) {
+				if (this.isPrivateIp(res.ip)) {
+					this.logger.warn(`Blocked address: ${res.ip}`);
+					req.destroy();
+				}
+			}
 
-		if (response.body === null) {
-			throw new StatusError('No body', 400, 'No body');
+			const contentLength = res.headers['content-length'];
+			if (contentLength != null) {
+				const size = Number(contentLength);
+				if (size > maxSize) {
+					this.logger.warn(`maxSize exceeded (${size} > ${maxSize}) on response`);
+					req.destroy();
+				}
+			}
+		}).on('downloadProgress', (progress: Got.Progress) => {
+			if (progress.transferred > maxSize) {
+				this.logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
+				req.destroy();
+			}
+		});
+
+		try {
+			await pipeline(req, fs.createWriteStream(path));
+		} catch (e) {
+			if (e instanceof Got.HTTPError) {
+				throw new StatusError(`${e.response.statusCode} ${e.response.statusMessage}`, e.response.statusCode, e.response.statusMessage);
+			} else {
+				throw e;
+			}
 		}
-
-		await pipeline(stream.Readable.fromWeb(response.body), fs.createWriteStream(path));
 
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
 	}

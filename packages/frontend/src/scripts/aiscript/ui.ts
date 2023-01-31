@@ -50,6 +50,7 @@ export type AsUiButton = AsUiComponentBase & {
 	onClick?: () => void;
 	primary?: boolean;
 	rounded?: boolean;
+	disabled?: boolean;
 };
 
 export type AsUiButtons = AsUiComponentBase & {
@@ -302,6 +303,8 @@ function getButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	if (primary) utils.assertBoolean(primary);
 	const rounded = def.value.get('rounded');
 	if (rounded) utils.assertBoolean(rounded);
+	const disabled = def.value.get('disabled');
+	if (disabled) utils.assertBoolean(disabled);
 
 	return {
 		text: text?.value,
@@ -310,6 +313,7 @@ function getButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 		},
 		primary: primary?.value,
 		rounded: rounded?.value,
+		disabled: disabled?.value,
 	};
 }
 
@@ -330,6 +334,8 @@ function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn,
 			if (primary) utils.assertBoolean(primary);
 			const rounded = button.value.get('rounded');
 			if (rounded) utils.assertBoolean(rounded);
+			const disabled = button.value.get('disabled');
+			if (disabled) utils.assertBoolean(disabled);
 
 			return {
 				text: text.value,
@@ -338,6 +344,7 @@ function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn,
 				},
 				primary: primary?.value,
 				rounded: rounded?.value,
+				disabled: disabled?.value,
 			};
 		}) : [],
 	};
