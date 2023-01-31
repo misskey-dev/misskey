@@ -1076,6 +1076,9 @@ _achievements:
     _postedAt0min0sec:
       title: "Сигнал часу"
       description: "Відправити нотатку о 00:00"
+    _selfQuote:
+      title: "Самопосилання"
+      description: "Процитувати власну нотатку"
     _clickedClickHere:
       title: "Натисніть тут"
       description: "Натиснуто тут"
