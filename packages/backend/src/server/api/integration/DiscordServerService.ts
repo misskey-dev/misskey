@@ -134,7 +134,7 @@ export class DiscordServerService {
 			reply.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		fastify.get('/dc/cb', async (request, reply) => {
+		fastify.get<{ Querystring: { code: string; state: string; } }>('/dc/cb', async (request, reply) => {
 			const userToken = this.getUserToken(request);
 
 			const oauth2 = await getOAuth2();
