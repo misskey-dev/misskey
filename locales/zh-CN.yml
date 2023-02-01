@@ -1114,6 +1114,8 @@ _achievements:
     _selfQuote:
       title: "自我提及"
       description: "引用了自己的帖子"
+    _htl20npm:
+      title: "流动的时间线"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
     _open3windows:
