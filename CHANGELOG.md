@@ -9,11 +9,16 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.2.6 (2023/02/01)
 ### Changes
 - docker-compose.ymlをdocker-compose.yml.exampleにしました。docker-compose.ymlとしてコピーしてから使用してください。
 
+### Improvements
+- 絵文字ピッカーのパフォーマンスを改善
+- AiScriptを0.12.4に更新
+
 ### Bugfixes
+- Server: リレーと通信できない問題を修正
 - Client: classicモード使用時にwindowサイズによってdefaultに変更された後に、windowサイズが元に戻ったらclassicに戻すように修正 #9669
 - Client: Chromeで検索ダイアログで変換確定するとそのまま検索されてしまう問題を修正
 

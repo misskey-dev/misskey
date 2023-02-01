@@ -12,6 +12,25 @@ import _emojilist from '../emojilist.json';
 
 export const emojilist = _emojilist as UnicodeEmojiDef[];
 
+const _indexByChar = new Map<string, number>();
+const _charGroupByCategory = new Map<string, string[]>();
+emojilist.forEach((emo, i) => {
+	_indexByChar.set(emo.char, i);
+
+	if (_charGroupByCategory.has(emo.category)) {
+		_charGroupByCategory.get(emo.category)?.push(emo.char);
+	} else {
+		_charGroupByCategory.set(emo.category, [emo.char]);
+	}
+});
+
+export const emojiCharByCategory = _charGroupByCategory;
+
 export function getEmojiName(char: string): string | undefined {
-	return emojilist.find(emo => emo.char === char)?.name;
+	const idx = _indexByChar.get(char);
+	if (typeof idx === 'undefined') {
+		return undefined;
+	} else {
+		return emojilist[idx].name;
+	}
 }
