@@ -147,9 +147,9 @@ export class Storage<T extends StateDef> {
 					})
 					.then(() => resolve());
 				}, 1);
+			} else {
+				resolve();
 			}
-
-			resolve();
 		});
 	}
 
