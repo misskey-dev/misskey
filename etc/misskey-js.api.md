@@ -2187,6 +2187,9 @@ type FetchLike = (input: string, init?: {
     body?: string;
     credentials?: RequestCredentials;
     cache?: RequestCache;
+    headers: {
+        [key in string]: string;
+    };
 }) => Promise<{
     status: number;
     json(): Promise<any>;
