@@ -918,14 +918,121 @@ tools: "Utilidades"
 cannotLoad: "No se puede cargar."
 numberOfProfileView: "Número de vistas de perfil"
 like: "¡Muy bien!"
+unlike: "Quitar 'me gusta'"
+numberOfLikes: "Cantidad de 'Me gusta'"
 show: "Apariencia"
+neverShow: "No mostrar de nuevo"
+remindMeLater: "Recordar después"
+didYouLikeMisskey: "¿Te gusta Misskey?"
+pleaseDonate: "Misskey es software libre, y es usado por {host} . Por favor, ¡considera donar al proyecto principal para que podamos continuar!"
+roles: "Roles"
+role: "Roles"
+normalUser: "Usuario normal"
+undefined: "Indefinido"
+assign: "Asignar"
+unassign: "Quitar"
 color: "Color"
+manageCustomEmojis: "Administrar emojis personalizados"
+youCannotCreateAnymore: "Se alcanzó el límite de creación"
+cannotPerformTemporary: "Indisponible temporalmente"
+cannotPerformTemporaryDescription: "Esta acción no se puede realizar porque se excedió el límite de ejecución. Espera un poco y prueba de nuevo."
+preset: "Predefinido"
+selectFromPresets: "Escoger desde predefinidos"
+achievements: "Logros"
+_achievements:
+  earnedAt: "Desbloqueado el"
+  _types:
+    _notes1:
+      title: "Configurando mis espacio"
+      description: "Publicar tu primera nota"
+      flavor: "¡Pasándola bien con Misskey!"
+    _notes10:
+      title: "Algunas notas"
+      description: "10 notas publicadas"
+    _notes100:
+      title: "¡Muchas notas!"
+      description: "100 notas publicadas"
+    _notes500:
+      title: "¡Cubierto de notas!"
+      description: "500 notas publicadas"
+    _notes1000:
+      title: "¡Una montaña de notas!"
+      description: "1000 notas publicadas"
+    _notes5000:
+      title: "¡Exceso de notas!"
+      description: "5000 notas publicadas"
+    _notes10000:
+      title: "¡Súpernota!"
+      description: "10000 notas publicadas"
+    _notes20000:
+      title: "Necesito... Más... ¡Notas!"
+      description: "20000 notas publicadas"
+    _notes30000:
+      title: "¡Notas! ¡Notas! ¡Notas!"
+      description: "30000 notas publicadas"
+    _notes40000:
+      title: "Fábrica de notas"
+      description: "40000 notas publicadas"
+    _notes50000:
+      title: "¡Un planeta de notas!"
+      description: "50000 notas publicadas"
+    _notes60000:
+      title: "¡Un cuásar de notas!"
+      description: "60000 notas publicadas"
+    _notes70000:
+      title: "¡Un hoyo negro de notas!"
+      description: "70000 notas publicadas"
+    _notes80000:
+      title: "¡Una galaxia de notas!"
+      description: "80000 notas publicadas"
+    _notes90000:
+      title: "¡Todo un universo de notas!"
+    _following1:
+      title: "Primera vez siguiendo a alguien"
+      description: "Seguir a un usuario"
+    _following10:
+      title: "Ahí la llevas, ahí la llevas..."
+      description: "10 usuarios seguidos"
+    _following50:
+      title: "¡Un puñado de amigos!"
+      description: "50 cuentas seguidas"
+    _following100:
+      title: "100 amigos"
+      description: "100 cuentas seguidas"
+    _following300:
+      title: "¡Sobrecarga de amigos!"
+      description: "300 cuentas seguidas"
+    _followers1:
+      title: "¡Tu primer seguidor!"
+      description: "1 seguidor ganado"
+    _followers10:
+      title: "¡Sígueme!"
+      description: "10 seguidores ganados"
+    _followers50:
+      title: "Viniendo en parvada"
+      description: "50 seguidores ganados"
+    _followers100:
+      title: "Popular"
+      description: "100 cuentas seguidas"
+    _followers300:
+      title: "Por favor, hagan una fila"
+      description: "300 seguidores ganados"
+    _followers500:
+      title: "¡Toda una torre de radio!"
+    _foundTreasure:
+      title: "Búsqueda del tesoro"
+      description: "Encontraste un tesoro"
+    _viewInstanceChart:
+      title: "Analista"
+      description: "Gráficas de la instancia mostradas"
 _role:
   priority: "Prioridad"
   _priority:
     low: "Baja"
     middle: "Mediano"
     high: "Alta"
+  _options:
+    canManageCustomEmojis: "Administrar emojis personalizados"
 _sensitiveMediaDetection:
   description: "Reduce el esfuerzo de la moderación el el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
   sensitivity: "Sensibilidad de detección"
