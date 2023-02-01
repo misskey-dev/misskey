@@ -1086,6 +1086,7 @@ _achievements:
       title: "Аналітик"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
+      description: "Вивести \"hello world\" у Скретчпаді"
     _clickedClickHere:
       title: "Натисніть тут"
       description: "Натиснуто тут"
