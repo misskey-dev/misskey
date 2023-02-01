@@ -1090,6 +1090,8 @@ _achievements:
     _clickedClickHere:
       title: "Натисніть тут"
       description: "Натиснуто тут"
+    _justPlainLucky:
+      title: "Просто вдача"
     _setNameToSyuilo:
       title: "Комплекс бога"
       description: "Встановлено ім'я \"syuilo\""
