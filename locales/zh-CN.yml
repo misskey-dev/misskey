@@ -995,52 +995,152 @@ _achievements:
     _login3:
       title: "初学者 I"
       description: "连续登录3天"
+      flavor: "今天开始我就是Misskist！"
     _login7:
+      title: "初学者 II"
       description: "连续登录7天"
+      flavor: "您开始习惯了吗？"
     _login15:
+      title: "初学者 III"
       description: "连续登录15天"
     _login30:
+      title: "Misskist Ⅰ"
       description: "连续登录30天"
     _login60:
+      title: "Misskist Ⅱ"
       description: "连续登录60天"
+    _login100:
+      title: "Misskist Ⅲ"
+      description: "总登入100天"
+      flavor: "那个用户，是Misskist喔"
+    _login200:
+      title: "定期联系Ⅰ"
+      description: "总登录天数200天"
+    _login300:
+      title: "定期联系Ⅱ"
+      description: "总登录天数300天"
+    _login400:
+      title: "定期联系Ⅲ"
+      description: "总登录天数400天"
+    _login500:
+      description: "总登录天数500天"
+      flavor: "诸君，我喜欢贴文"
+    _login600:
+      description: "总登录天数600天"
+    _login700:
+      description: "总登录天数700天"
+    _login800:
+      description: "总登录天数800天"
+    _login900:
+      description: "总登录天数900天"
     _login1000:
+      description: "总登录天数1000天"
       flavor: "感谢您使用Misskey！"
+    _noteClipped1:
+      title: "忍不住要收藏到便签"
+      description: "第一次将贴文贴进便签"
     _noteFavorited1:
       title: "观星者"
+      description: "第一次将帖子加入收藏"
+    _myNoteFavorited1:
+      title: "想要星星"
+      description: "自己的帖子被其他人加入收藏了"
     _profileFilled:
       title: "整装待发"
       description: "设置了个人资料"
     _markedAsCat:
       title: "我是猫"
       description: "将账户设定为一只猫"
+      flavor: "还没有名字"
+    _following1:
+      title: "首次关注"
+      description: "第一次关注别人"
     _following10:
       title: "关注，跟随"
+      description: "关注超过10人"
     _following50:
       title: "我的朋友很多"
+      description: "关注超过50人"
+    _following100:
+      title: "我的朋友很多"
+      description: "关注超过100人"
     _following300:
+      title: "朋友成群"
       description: "关注数超过300"
+    _followers1:
+      title: "最初的关注者"
+      description: "第一次被关注"
+    _followers10:
+      title: "关注我吧！"
+      description: "关注者超过10人"
+    _followers50:
+      title: "三五成群"
+      description: "关注者超过50人"
     _followers100:
       title: "胜友如云"
+      description: "关注者超过100人"
+    _followers300:
+      title: "排列成行"
+      description: "关注者超过300人"
+    _followers500:
+      title: "风向标"
+      description: "关注者超过500人"
     _collectAchievements30:
+      title: "成就收藏家"
       description: "获得超过30个成就"
     _viewAchievements3min:
+      title: "成就爱好者"
       description: "盯着成就看三分钟"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "发布\"I ❤ #Misskey\"帖子"
       flavor: "感谢您使用 Misskey ！ by 开发团队"
+    _foundTreasure:
+      description: "发现了隐藏的宝藏"
+    _client30min:
+      title: "休息一下！"
+      description: "启动客户端超过30分钟"
     _noteDeletedWithin1min:
+      title: "无话可说"
       description: "发帖后一分钟内就将其删除"
     _postedAtLateNight:
       title: "夜行者"
       description: "深夜发布帖子"
+      flavor: "差不多该去睡了喔。"
+    _postedAt0min0sec:
+      title: "报时"
+      description: "在0点发布一篇帖子"
+      flavor: "嘣 嘣 嘣 Biu——！"
+    _selfQuote:
+      title: "自我提及"
+      description: "引用了自己的帖子"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
+    _open3windows:
+      title: "多窗口"
+      description: "打开了三个或更多的窗口"
+    _driveFolderCircularReference:
+      title: "循环引用"
+    _reactWithoutRead:
+      title: "有好好读过吗？"
+      description: "在含有100字以上的帖子被发出三秒内做出回应"
+    _clickedClickHere:
+      title: "点这里"
+      description: "点了这里"
+    _justPlainLucky:
+      title: "超高校级的幸运"
+      description: "每10秒有0.01的概率获得"
+    _setNameToSyuilo:
+      title: "像神一样呐"
+      description: "将名称设定为syuilo"
     _passedSinceAccountCreated1:
+      title: "一周年"
       description: "账户创建时间超过1年"
     _passedSinceAccountCreated2:
+      title: "二周年"
       description: "账户创建时间超过2年"
     _passedSinceAccountCreated3:
+      title: "三周年"
       description: "账户创建时间超过3年"
     _loggedInOnBirthday:
       title: "生日快乐"
@@ -1048,6 +1148,15 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "恭贺新禧"
       description: "在元旦登入"
+      flavor: "今年也请对本实例多多指教！"
+    _cookieClicked:
+      title: "点击饼干小游戏"
+      description: "点击了可疑的饼干"
+      flavor: "是不是软件有问题？"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "发布了包含Brain Diver链接的帖子"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "创建角色"
   edit: "编辑角色"
@@ -1566,7 +1675,7 @@ _profile:
   name: "昵称"
   username: "用户名"
   description: "个人简介"
-  youCanIncludeHashtags: "您可以包含一个哈希标签。"
+  youCanIncludeHashtags: "你可以在个人简介中包含一个#标签。"
   metadata: "附加信息"
   metadataEdit: "附加信息编辑"
   metadataDescription: "最多可以在个人资料中以表格形式显示四条其他信息。"

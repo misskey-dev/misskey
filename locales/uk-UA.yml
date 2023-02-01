@@ -904,7 +904,7 @@ _achievements:
   earnedAt: "Відкрито"
   _types:
     _notes1:
-      title: "налаштовую свій msky"
+      title: "Привіт, Misskey!"
       description: "Перша нотатка"
       flavor: "Приємного часу з Misskey!"
     _notes10:
@@ -1042,6 +1042,7 @@ _achievements:
       title: "Популярна особа"
       description: "Кількість підписників досягла 100"
     _followers300:
+      title: "Ставайте в чергу"
       description: "Кількість підписників досягла 300"
     _followers500:
       title: "Радіовежа"
@@ -1049,6 +1050,46 @@ _achievements:
     _followers1000:
       title: "Інфлюенсер"
       description: "Кількість підписників досягла 1000"
+    _collectAchievements30:
+      title: "Збирач досягнень"
+      description: "Отримано 30 досягнень"
+    _viewAchievements3min:
+      title: "Шанувальник досягнень"
+      description: "Переглядати список досягнень принаймні 3 хвилини"
+    _iLoveMisskey:
+      title: "I Love Misskey"
+      description: "Відправлено \"I ❤ #Misskey\""
+      flavor: "Дякуємо вам, що користуєтесь Misskey!  – команда розробників"
+    _foundTreasure:
+      title: "Пошуки скарбів"
+      description: "Ви знайшли прихований скарб"
+    _client30min:
+      title: "Коротка перерва"
+      description: "З моменту запуску клієнта минуло 30 хвилин"
+    _noteDeletedWithin1min:
+      title: "Не зважай"
+      description: "Допис видалено протягом 1 хвилини після публікації"
+    _postedAtLateNight:
+      title: "Нічне життя"
+      description: "Відправити нотатку посеред ночі"
+      flavor: "Час лягати спати"
+    _postedAt0min0sec:
+      title: "Сигнал часу"
+      description: "Відправити нотатку о 00:00"
+    _selfQuote:
+      title: "Самопосилання"
+      description: "Процитувати власну нотатку"
+    _htl20npm:
+      title: "Плинна стрічка"
+      description: "Перевищити швидкість домашньої стрічки 20npm (нотаток на хвилину)"
+    _viewInstanceChart:
+      title: "Аналітик"
+    _clickedClickHere:
+      title: "Натисніть тут"
+      description: "Натиснуто тут"
+    _setNameToSyuilo:
+      title: "Комплекс бога"
+      description: "Встановлено ім'я \"syuilo\""
     _passedSinceAccountCreated1:
       title: "Перша річниця"
     _passedSinceAccountCreated2:
@@ -1062,6 +1103,7 @@ _achievements:
       description: "Увійшли в перший день року"
     _brainDiver:
       title: "Brain Diver"
+      description: "Відправити посилання на \"Brain Diver\""
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   priority: "Пріоритет"
@@ -1335,7 +1377,7 @@ _tutorial:
   step3_1: "Ви успішно налаштували свій обліковий запис?"
   step3_2: "Наступним кроком є написання нотатки. Це можна зробити, натиснувши зображення олівця на екрані."
   step3_3: "Після написання вмісту ви можете опублікувати його, натиснувши кнопку у верхньому правому куті форми."
-  step3_4: "Не знаєте що написати? Спробуйте \"налаштовую свій msky\"!"
+  step3_4: "Не знаєте що написати? Спробуйте \"Привіт, Misskey!\""
   step4_1: "Ви розмістили свій перший запис?"
   step4_2: "Ура! Ваш перший запис відображається на вашій стрічці подій."
   step5_1: "Настав час оживити вашу стрічку подій підписавшись на інших користувачів."
