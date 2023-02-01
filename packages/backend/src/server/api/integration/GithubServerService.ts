@@ -132,7 +132,7 @@ export class GithubServerService {
 			reply.redirect(oauth2!.getAuthorizeUrl(params));
 		});
 
-		fastify.get('/gh/cb', async (request, reply) => {
+		fastify.get<{ Querystring: { code: string; state: string; } }>('/gh/cb', async (request, reply) => {
 			const userToken = this.getUserToken(request);
 
 			const oauth2 = await getOath2();
