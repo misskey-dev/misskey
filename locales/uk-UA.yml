@@ -529,7 +529,7 @@ state: "Стан"
 sort: "Сортування"
 ascendingOrder: "За зростанням"
 descendingOrder: "За спаданням"
-scratchpad: "Чернетка"
+scratchpad: "Scratchpad"
 scratchpadDescription: "Scratchpad надає середовище для експериментів з AiScript. Ви можете писати, виконувати його і тестувати взаємодію з Misskey."
 output: "Вихід"
 script: "Скрипт"
@@ -1084,6 +1084,8 @@ _achievements:
       description: "Перевищити швидкість домашньої стрічки 20npm (нотаток на хвилину)"
     _viewInstanceChart:
       title: "Аналітик"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
     _clickedClickHere:
       title: "Натисніть тут"
       description: "Натиснуто тут"
