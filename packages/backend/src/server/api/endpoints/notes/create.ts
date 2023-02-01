@@ -96,24 +96,7 @@ export const paramDef = {
 		noExtractMentions: { type: 'boolean', default: false },
 		noExtractHashtags: { type: 'boolean', default: false },
 		noExtractEmojis: { type: 'boolean', default: false },
-		fileIds: {
-			type: 'array',
-			uniqueItems: true,
-			minItems: 1,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
-		mediaIds: {
-			deprecated: true,
-			description: 'Use `fileIds` instead. If both are specified, this property is discarded.',
-			type: 'array',
-			uniqueItems: true,
-			minItems: 1,
-			maxItems: 16,
-			items: { type: 'string', format: 'misskey:id' },
-		},
 		replyId: { type: 'string', format: 'misskey:id', nullable: true },
-		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true },
 		poll: {
 			type: 'object',
@@ -143,10 +126,30 @@ export const paramDef = {
 		},
 		{
 			// (re)note with files, text and poll are optional
+			properties: {
+				fileIds: {
+					type: 'array',
+					uniqueItems: true,
+					minItems: 1,
+					maxItems: 16,
+					items: { type: 'string', format: 'misskey:id' },
+				},
+			},
 			required: ['fileIds'],
 		},
 		{
 			// (re)note with files, text and poll are optional
+			properties: {
+				mediaIds: {
+					deprecated: true,
+					description: 'Use `fileIds` instead. If both are specified, this property is discarded.',
+					type: 'array',
+					uniqueItems: true,
+					minItems: 1,
+					maxItems: 16,
+					items: { type: 'string', format: 'misskey:id' },
+				},
+			},
 			required: ['mediaIds'],
 		},
 		{
@@ -158,6 +161,9 @@ export const paramDef = {
 		},
 		{
 			// pure renote
+			properties: {
+				renoteId: { type: 'string', format: 'misskey:id', nullable: true },
+			},
 			required: ['renoteId'],
 		},
 	],
