@@ -270,7 +270,7 @@ import { fetchCustomEmojis } from './custom-emojis';
 		}
 	}
 
-	await defaultStore.loaded;
+	await defaultStore.ready;
 
 	// NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
