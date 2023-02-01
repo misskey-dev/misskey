@@ -378,7 +378,7 @@ importers:
       '@rollup/plugin-alias': 4.0.3
       '@rollup/plugin-json': 6.0.0
       '@rollup/pluginutils': 5.0.2
-      '@syuilo/aiscript': 0.12.2
+      '@syuilo/aiscript': 0.12.4
       '@tabler/icons-webfont': ^2.1.2
       '@types/escape-regexp': 0.0.1
       '@types/glob': 8.0.1
@@ -463,7 +463,7 @@ importers:
       '@rollup/plugin-alias': 4.0.3_rollup@3.11.0
       '@rollup/plugin-json': 6.0.0_rollup@3.11.0
       '@rollup/pluginutils': 5.0.2_rollup@3.11.0
-      '@syuilo/aiscript': 0.12.2
+      '@syuilo/aiscript': 0.12.4
       '@tabler/icons-webfont': 2.1.2
       '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
       '@vue/compiler-sfc': 3.2.45
@@ -2300,8 +2300,8 @@ packages:
       jsonc-parser: 3.2.0
     dev: true
 
-  /@syuilo/aiscript/0.12.2:
-    resolution: {integrity: sha512-bXEYgFGW2uDFr2Vl5TmBtZqzgAtobT4k4ZSWwEbmwB3x5S7WrgJ7MNbpe3AszJ+I6BOQpB6uHHwr+KMNx9pWCQ==}
+  /@syuilo/aiscript/0.12.4:
+    resolution: {integrity: sha512-fIWEAHsnw9vMWTcjmSM2rCsadhb+BLirLDLW6lnRw3PFC8LV76Np8Ih8ssfAb00udh6oiGBSj+WiBdkMagbjmQ==}
     dependencies:
       autobind-decorator: 2.4.0
       seedrandom: 3.0.5
