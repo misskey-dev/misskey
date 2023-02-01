@@ -1019,12 +1019,54 @@ _achievements:
       description: "300 seguidores ganados"
     _followers500:
       title: "¡Toda una torre de radio!"
+      description: "500 seguidores ganados"
+    _followers1000:
+      title: "\"Influyente\""
+      description: "1000 seguidores gandos"
+    _collectAchievements30:
+      title: "Coleccionista"
+      description: "30 logros ganados"
+    _viewAchievements3min:
+      title: "¡Te gustan los logros!"
+      description: "Mirando tus logros por 3 minutos"
+    _iLoveMisskey:
+      title: "¡AMO Misskey!"
+      description: "\"I ❤ #Misskey\" Publicado"
+      flavor: "El equipo de desarrollo de Misskey, en verdad, ¡aprecia tu apoyo!"
     _foundTreasure:
       title: "Búsqueda del tesoro"
       description: "Encontraste un tesoro"
+    _client30min:
+      title: "Un descansito"
+      description: "30 minutos dedicados a Misskey"
+    _noteDeletedWithin1min:
+      title: "Ah... Mejor no..."
+      description: "Borrar una nota antes que de pase 1 minuto"
+    _postedAtLateNight:
+      title: "Nocturno"
+      description: "Una nota publicada por la noche"
+      flavor: "¡Ya casi es hora de dormir!"
+    _postedAt0min0sec:
+      title: "Reloj parlante"
+      description: "Publicar una nota a las 00:00 de la madrugada"
+      flavor: "Tic, tic, tic ¡TUUUUUN!"
+    _selfQuote:
+      title: "Autoreferencia"
+      description: "Citar tu propia nota"
+    _htl20npm:
+      title: "Línea de tiempo fluyendo"
+      description: "La velocidad de tu línea de tiempo excede las 20 npm (notas por minuto)"
     _viewInstanceChart:
       title: "Analista"
       description: "Gráficas de la instancia mostradas"
+    _outputHelloWorldOnScratchpad:
+      title: "¡Hola mundo!"
+      description: "Escribir \"hello world\" en el compositor"
+    _open3windows:
+      title: "Multiventana"
+      description: "Tener más de 3 ventanas al mismo tiempo"
+    _driveFolderCircularReference:
+      title: "Referencia circular"
 _role:
   priority: "Prioridad"
   _priority:
@@ -1032,7 +1074,32 @@ _role:
     middle: "Mediano"
     high: "Alta"
   _options:
+    canInvite: "Puede crear códigos de invitación"
     canManageCustomEmojis: "Administrar emojis personalizados"
+    driveCapacity: "Capacidad de almacenamiento"
+    pinMax: "Máximo de notas fijadas"
+    antennaMax: "Máximo de antenas"
+    wordMuteMax: "Máximo de caracteres en palabras silenciadas"
+    webhookMax: "Máximo de Webhooks"
+    clipMax: "Máximo de clips"
+    noteEachClipsMax: "Máximo de notas con clip"
+    userListMax: "Máximo de listas de usuarios"
+    userEachUserListsMax: "Máximo de usuarios en una lista"
+    rateLimitFactor: "Limitador"
+    descriptionOfRateLimitFactor: "Límites más bajos son menos restrictivos, más altos menos restrictivos"
+    canHideAds: "Puede ocultar anuncios"
+  _condition:
+    isLocal: "Usuario local"
+    isRemote: "Usuario remoto"
+    createdLessThan: "Menos de X han pasado desde la creación de la cuenta"
+    createdMoreThan: "Más de X han pasado desde la creación de la cuenta"
+    followersLessThanOrEq: "Tiene X o menos seguidores"
+    followersMoreThanOrEq: "Tiene X o más seguidores"
+    followingLessThanOrEq: "Sigue X o menos cuentas"
+    followingMoreThanOrEq: "Sigue X o más cuentas"
+    and: "Condicional AND"
+    or: "Condicional OR"
+    not: "Condicional NOT"
 _sensitiveMediaDetection:
   description: "Reduce el esfuerzo de la moderación el el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
   sensitivity: "Sensibilidad de detección"
@@ -1435,10 +1502,12 @@ _widgets:
   jobQueue: "Cola de trabajos"
   serverMetric: "Estadísticas del servidor"
   aiscript: "Consola de AiScript"
+  aiscriptApp: "Aplicación AiScript"
   aichan: "indigo"
   userList: "Lista de usuarios"
   _userList:
     chooseList: "Seleccione una lista"
+  clicker: "Cliqueador"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
@@ -1614,6 +1683,7 @@ _notification:
   pollEnded: "Estan disponibles los resultados de la encuesta"
   unreadAntennaNote: "Antena {name}"
   emptyPushNotificationMessage: "Se han actualizado las notificaciones push"
+  achievementEarned: "Logro desbloqueado"
   _types:
     all: "Todo"
     follow: "Siguiendo"
