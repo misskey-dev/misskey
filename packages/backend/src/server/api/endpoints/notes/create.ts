@@ -90,7 +90,6 @@ export const paramDef = {
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
-		text: { type: 'string', maxLength: MAX_NOTE_TEXT_LENGTH, nullable: true },
 		cw: { type: 'string', nullable: true, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
 		noExtractMentions: { type: 'boolean', default: false },
@@ -98,23 +97,6 @@ export const paramDef = {
 		noExtractEmojis: { type: 'boolean', default: false },
 		replyId: { type: 'string', format: 'misskey:id', nullable: true },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true },
-		poll: {
-			type: 'object',
-			nullable: true,
-			properties: {
-				choices: {
-					type: 'array',
-					uniqueItems: true,
-					minItems: 2,
-					maxItems: 10,
-					items: { type: 'string', minLength: 1, maxLength: 50 },
-				},
-				multiple: { type: 'boolean', default: false },
-				expiresAt: { type: 'integer', nullable: true },
-				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
-			},
-			required: ['choices'],
-		},
 	},
 	anyOf: [
 		{
@@ -155,7 +137,23 @@ export const paramDef = {
 		{
 			// (re)note with poll, text and files are optional
 			properties: {
-				poll: { type: 'object', nullable: false },
+				poll: {
+					type: 'object',
+					nullable: true,
+					properties: {
+						choices: {
+							type: 'array',
+							uniqueItems: true,
+							minItems: 2,
+							maxItems: 10,
+							items: { type: 'string', minLength: 1, maxLength: 50 },
+						},
+						multiple: { type: 'boolean' },
+						expiresAt: { type: 'integer', nullable: true },
+						expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
+					},
+					required: ['choices'],
+				},
 			},
 			required: ['poll'],
 		},
