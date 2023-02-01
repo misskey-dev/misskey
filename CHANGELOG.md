@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.2.6 (2023/02/01)
 ### Changes
 - docker-compose.ymlをdocker-compose.yml.exampleにしました。docker-compose.ymlとしてコピーしてから使用してください。
 
