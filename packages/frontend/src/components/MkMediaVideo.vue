@@ -6,19 +6,20 @@
 	</div>
 </div>
 <div v-else class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
-	<video
-		:poster="video.thumbnailUrl"
-		:title="video.comment"
-		:alt="video.comment"
-		preload="none"
-		controls
-		@contextmenu.stop
-	>
-		<source 
+	<vue-plyr>
+		<video
+		  controls
+		  crossorigin
+		  playsinline
+		  :data-poster="video.thumbnailUrl"
+		>
+		  <source
+			size="720"
 			:src="video.url" 
 			:type="video.type"
-		>
-	</video>
+		  />
+		</video>
+	  </vue-plyr>
 	<i class="ti ti-eye-off" @click="hide = true"></i>
 </div>
 </template>
@@ -27,6 +28,8 @@
 import { ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { defaultStore } from '@/store';
+import VuePlyr from 'vue-plyr'
+import 'vue-plyr/dist/vue-plyr.css'
 
 const props = defineProps<{
 	video: misskey.entities.DriveFile;

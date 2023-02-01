@@ -64,6 +64,7 @@
 		"vanilla-tilt": "1.8.0",
 		"vite": "4.0.4",
 		"vue": "3.2.45",
+		"vue-plyr": "^7.0.0",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vuedraggable": "next"
 	},
