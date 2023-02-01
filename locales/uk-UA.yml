@@ -1079,6 +1079,11 @@ _achievements:
     _selfQuote:
       title: "Самопосилання"
       description: "Процитувати власну нотатку"
+    _htl20npm:
+      title: "Плинна стрічка"
+      description: "Перевищити швидкість домашньої стрічки 20npm (нотаток на хвилину)"
+    _viewInstanceChart:
+      title: "Аналітик"
     _clickedClickHere:
       title: "Натисніть тут"
       description: "Натиснуто тут"
