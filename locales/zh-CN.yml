@@ -1116,6 +1116,7 @@ _achievements:
       description: "引用了自己的帖子"
     _htl20npm:
       title: "流动的时间线"
+      description: "在首页时间线的流速超过20npm"
     _viewInstanceChart:
       title: "分析师"
       description: "查看了实例信息中的图表"
