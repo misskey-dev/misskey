@@ -102,7 +102,7 @@ describe('RoleService', () => {
 	});
 
 	describe('getUserPolicies', () => {
-		it('instance default policies', async () => {	
+		test('instance default policies', async () => {	
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
 				policies: {
@@ -115,7 +115,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(false);
 		});
 	
-		it('instance default policies 2', async () => {	
+		test('instance default policies 2', async () => {	
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
 				policies: {
@@ -128,7 +128,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 	
-		it('with role', async () => {	
+		test('with role', async () => {	
 			const user = await createUser();
 			const role = await createRole({
 				name: 'a',
@@ -152,7 +152,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 
-		it('priority', async () => {	
+		test('priority', async () => {	
 			const user = await createUser();
 			const role1 = await createRole({
 				name: 'role1',
@@ -187,7 +187,7 @@ describe('RoleService', () => {
 			expect(result.driveCapacityMb).toBe(100);
 		});
 
-		it('conditional role', async () => {	
+		test('conditional role', async () => {	
 			const user1 = await createUser({
 				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 			});

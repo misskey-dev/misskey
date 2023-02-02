@@ -54,7 +54,7 @@ describe('FileInfoService', () => {
 		await app.close();
 	});
 
-	it('Empty file', async () => {
+	test('Empty file', async () => {
 		const path = `${resources}/emptyfile`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -74,7 +74,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('Generic JPEG', async () => {
+	test('Generic JPEG', async () => {
 		const path = `${resources}/Lenna.jpg`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -94,7 +94,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('Generic APNG', async () => {
+	test('Generic APNG', async () => {
 		const path = `${resources}/anime.png`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -114,7 +114,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('Generic AGIF', async () => {
+	test('Generic AGIF', async () => {
 		const path = `${resources}/anime.gif`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -134,7 +134,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('PNG with alpha', async () => {
+	test('PNG with alpha', async () => {
 		const path = `${resources}/with-alpha.png`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -154,7 +154,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('Generic SVG', async () => {
+	test('Generic SVG', async () => {
 		const path = `${resources}/image.svg`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -174,7 +174,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('SVG with XML definition', async () => {
+	test('SVG with XML definition', async () => {
 		// https://github.com/misskey-dev/misskey/issues/4413
 		const path = `${resources}/with-xml-def.svg`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
@@ -195,7 +195,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('Dimension limit', async () => {
+	test('Dimension limit', async () => {
 		const path = `${resources}/25000x25000.png`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
@@ -215,7 +215,7 @@ describe('FileInfoService', () => {
 		});
 	});
 
-	it('Rotate JPEG', async () => {
+	test('Rotate JPEG', async () => {
 		const path = `${resources}/rotate.jpg`;
 		const info = await fileInfoService.getFileInfo(path, { skipSensitiveDetection: true }) as any;
 		delete info.warnings;
