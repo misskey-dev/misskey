@@ -509,7 +509,7 @@ objectStorageSetPublicRead: "Seleccionar \"public-read\" al subir "
 serverLogs: "Registros del servidor"
 deleteAll: "Eliminar todos"
 showFixedPostForm: "Mostrar el formulario de las entradas encima de la línea de tiempo"
-newNoteRecived: "Tienes una nota nuevo"
+newNoteRecived: "Tienes una nota nueva"
 sounds: "Sonidos"
 sound: "Sonidos"
 listen: "Escuchar"
@@ -1080,7 +1080,7 @@ _achievements:
       title: "¡Sígueme!"
       description: "10 seguidores ganados"
     _followers50:
-      title: "Viniendo en parvada"
+      title: "Viniendo en manada"
       description: "50 seguidores ganados"
     _followers100:
       title: "Popular"
