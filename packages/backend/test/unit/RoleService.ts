@@ -50,6 +50,15 @@ describe('RoleService', () => {
 			.then(x => rolesRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
+	async function assign(roleId: Role['id'], userId: User['id']) {
+		await roleAssignmentsRepository.insert({
+			id: genAid(new Date()),
+			createdAt: new Date(),
+			roleId,
+			userId,
+		});
+	}
+
 	beforeEach(async () => {
 		app = await Test.createTestingModule({
 			imports: [
@@ -131,12 +140,7 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await roleAssignmentsRepository.insert({
-				id: 'a',
-				createdAt: new Date(),
-				roleId: role.id,
-				userId: user.id,
-			});
+			await assign(role.id, user.id);
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,
@@ -170,18 +174,8 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await roleAssignmentsRepository.insert({
-				id: genAid(new Date()),
-				createdAt: new Date(),
-				roleId: role1.id,
-				userId: user.id,
-			});
-			await roleAssignmentsRepository.insert({
-				id: genAid(new Date()),
-				createdAt: new Date(),
-				roleId: role2.id,
-				userId: user.id,
-			});
+			await assign(role1.id, user.id);
+			await assign(role2.id, user.id);
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					driveCapacityMb: 50,
