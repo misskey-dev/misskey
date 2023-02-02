@@ -112,7 +112,7 @@ command.
 - Service Worker is watched by esbuild.
 
 ## Testing
-- Test codes are located in [`/test`](/test).
+- Test codes are located in [`/packages/backend/test`](/packages/backend/test).
 
 ### Run test
 Create a config file.
