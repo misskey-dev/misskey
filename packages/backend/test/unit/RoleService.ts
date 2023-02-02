@@ -148,6 +148,51 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 
+		it('priority', async () => {	
+			const user = await createUser();
+			const role1 = await createRole({
+				name: 'role1',
+				policies: {
+					driveCapacityMb: {
+						useDefault: false,
+						priority: 0,
+						value: 200,
+					},
+				},
+			});
+			const role2 = await createRole({
+				name: 'role2',
+				policies: {
+					driveCapacityMb: {
+						useDefault: false,
+						priority: 1,
+						value: 100,
+					},
+				},
+			});
+			await roleAssignmentsRepository.insert({
+				id: genAid(new Date()),
+				createdAt: new Date(),
+				roleId: role1.id,
+				userId: user.id,
+			});
+			await roleAssignmentsRepository.insert({
+				id: genAid(new Date()),
+				createdAt: new Date(),
+				roleId: role2.id,
+				userId: user.id,
+			});
+			metaService.fetch.mockResolvedValue({
+				policies: {
+					driveCapacityMb: 50,
+				},
+			} as any);
+	
+			const result = await roleService.getUserPolicies(user.id);
+	
+			expect(result.driveCapacityMb).toBe(100);
+		});
+
 		it('conditional role', async () => {	
 			const user1 = await createUser({
 				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
