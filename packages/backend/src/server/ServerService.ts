@@ -20,7 +20,6 @@ import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
-import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 
@@ -48,7 +47,6 @@ export class ServerService {
 		private wellKnownServerService: WellKnownServerService,
 		private nodeinfoServerService: NodeinfoServerService,
 		private fileServerService: FileServerService,
-		private mediaProxyServerService: MediaProxyServerService,
 		private clientServerService: ClientServerService,
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
@@ -73,8 +71,7 @@ export class ServerService {
 		}
 
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
-		fastify.register(this.fileServerService.createServer, { prefix: '/files' });
-		fastify.register(this.mediaProxyServerService.createServer, { prefix: '/proxy' });
+		fastify.register(this.fileServerService.createServer);
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);

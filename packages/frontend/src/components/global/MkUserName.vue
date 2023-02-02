@@ -1,5 +1,5 @@
 <template>
-<Mfm :text="user.name ?? user.username" :author="user" :plain="true" :nowrap="nowrap"/>
+<Mfm :text="user.name ?? user.username" :author="user" :plain="true" :nowrap="nowrap" :emoji-urls="user.emojis"/>
 </template>
 
 <script lang="ts" setup>

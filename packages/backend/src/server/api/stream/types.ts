@@ -49,6 +49,16 @@ export interface BroadcastTypes {
 	emojiAdded: {
 		emoji: Packed<'Emoji'>;
 	};
+	emojiUpdated: {
+		emojis: Packed<'Emoji'>[];
+	};
+	emojiDeleted: {
+		emojis: {
+			id?: string;
+			name: string;
+			[other: string]: any;
+		}[];
+	};
 }
 
 export interface UserStreamTypes {

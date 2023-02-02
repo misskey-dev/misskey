@@ -9,6 +9,39 @@
 You should also include the user name that made the change.
 -->
 
+## 13.2.6 (2023/02/01)
+### Changes
+- docker-compose.ymlをdocker-compose.yml.exampleにしました。docker-compose.ymlとしてコピーしてから使用してください。
+
+### Improvements
+- 絵文字ピッカーのパフォーマンスを改善
+- AiScriptを0.12.4に更新
+
+### Bugfixes
+- Server: リレーと通信できない問題を修正
+- Client: classicモード使用時にwindowサイズによってdefaultに変更された後に、windowサイズが元に戻ったらclassicに戻すように修正 #9669
+- Client: Chromeで検索ダイアログで変換確定するとそのまま検索されてしまう問題を修正
+
+## 13.2.4 (2023/01/27)
+### Improvements
+- リモートカスタム絵文字表示時のパフォーマンスを改善
+- Default to `animation: false` when prefers-reduced-motion is set
+- リアクション履歴が公開なら、ログインしていなくても表示できるように
+- tweak blur setting
+- tweak custom emoji cache
+
+### Bugfixes
+- fix aggregation of retention
+- ダッシュボードでオンラインユーザー数が表示されない問題を修正
+- フォロー申請・フォローのボタンが、通知から消えている問題を修正
+
+## 13.2.3 (2023/01/26)
+### Improvements
+- カスタム絵文字の更新をリアルタイムで反映するように
+
+### Bugfixes
+- turnstile-failed: missing-input-secret
+
 ## 13.2.2 (2023/01/25)
 ### Improvements
 - サーバーのパフォーマンスを改善

@@ -944,48 +944,236 @@ _achievements:
   _types:
     _notes1:
       title: "เพียงแค่ตั้งค่า msky ของฉัน"
+      description: "โพสต์โน้ตครั้งแรกของคุณ"
+      flavor: "ขอให้มีช่วงเวลาที่ดีกับ Misskey นะคะ!"
+    _notes10:
+      title: "โน้ตบางอย่าง"
+      description: "โพสต์ 10 โน้ต"
+    _notes100:
+      title: "โน้ตจำนวนมาก"
+      description: "โพสต์ 100 โน้ต"
+    _notes500:
+      title: "ครอบคลุมในโน้ต"
+      description: "โพสต์ 500 โน้ต"
+    _notes1000:
+      title: "ภูเขาแห่งโน้ต"
+      description: "โพสต์ 1,000 โน้ต"
+    _notes5000:
+      title: "โน้ตล้น"
+      description: "โพสต์ 5,000 โน้ต"
+    _notes10000:
+      title: "ซุปเปอร์โน้ต"
+      description: "โพสต์ 10,000 โน้ต"
+    _notes20000:
+      title: "ต้องการ... เพิ่มเติม... โน้ต..."
+      description: "โพสต์ 20,000 โน้ต"
+    _notes30000:
+      title: "โน้ต โน้ต โน้ต!"
+      description: "โพสต์ 30,000 โน้ต"
+    _notes40000:
+      title: "โน้ตโรงงาน"
+      description: "โพสต์ 40,000 โน้ต"
+    _notes50000:
+      title: "ดาวเคราะห์แห่งโน้ต"
+      description: "โพสต์ 50,000 โน้ต"
+    _notes60000:
+      title: "โน้ตควอซาร์"
+      description: "โพสต์ 60,000 โน้ต"
+    _notes70000:
+      title: "โน้ตหลุมดำ"
+      description: "โพสต์ 70,000 โน้ต"
+    _notes80000:
+      title: "โน้ต กาแล็กซี่"
+      description: "โพสต์ 80,000 โน้ต"
+    _notes90000:
+      title: "โน้ต จักรวาล"
+      description: "โพสต์ 90,000 โน้ต"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "โพสต์ 100,000 โน้ต"
+      flavor: "นายแน่ใจล่ะก็ มีอะไรพูดมาได้นะ"
+    _login3:
+      title: "มือใหม่ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 3 วัน"
+      flavor: "เริ่มตั้งแต่วันนี้ เรียกฉันว่ามิสคิสต์"
+    _login7:
+      title: "มือใหม่ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 7 วัน"
+      flavor: "รู้สึกเหมือนคุณได้แขวนของสิ่งต่างๆ หรือยังคะ?"
+    _login15:
+      title: "มือใหม่ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 15 วัน"
+    _login30:
+      title: "มิสคิสท์ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 30 วัน"
+    _login60:
+      title: "มิสคิสท์ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 60 วัน"
+    _login100:
+      title: "มิสคิสท์ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 100 วัน"
+      flavor: "ความรุนแรง Misskist"
+    _login200:
+      title: "ลูกค้าประจำ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 200 วัน"
+    _login300:
+      title: "ลูกค้าประจำ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 300 วัน"
+    _login400:
+      title: "ลูกค้าประจำ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 400 วัน"
+    _login500:
+      title: "ผู้เชี่ยวชาญ I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 500 วัน"
+      flavor: "เพื่อนของผมนะมักจะกล่าวว่าผมนะชอบจดโน้ต"
+    _login600:
+      title: "ผู้เชี่ยวชาญ II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 600 วัน"
+    _login700:
+      title: "ผู้เชี่ยวชาญ III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 700 วัน"
+    _login800:
+      title: "ปรมาจารย์ด้านโน้ต I"
+      description: "เข้าสู่ระบบเป็นเวลารวม 800 วัน"
+    _login900:
+      title: "ปรมาจารย์ด้านโน้ต II"
+      description: "เข้าสู่ระบบเป็นเวลารวม 900 วัน"
+    _login1000:
+      title: "ปรมาจารย์ด้านโน้ต III"
+      description: "เข้าสู่ระบบเป็นเวลารวม 1,000 วัน"
+      flavor: "ขอบคุณที่ใช้ Misskey นะ !"
+    _noteClipped1:
+      title: "จะต้อง... คลิป..."
+      description: "คลิปโน้ตตัวแรกของคุณ"
+    _noteFavorited1:
+      title: "สตาร์เกเซอร์"
+      description: "ชื่นชอบโน้ตแรกของคุณ"
+    _myNoteFavorited1:
+      title: "แสวงหาดวงดาว"
+      description: "มีคนอื่นๆที่ชื่นชอบหนึ่งในโน้ตของคุณ"
+    _profileFilled:
+      title: "เตรียมไว้อย่างดี"
+      description: "ตั้งค่าโปรไฟล์ของคุณ"
+    _markedAsCat:
+      title: "ฉันเป็นแมว"
+      description: "ทำเครื่องหมายบัญชีของคุณว่าเป็นแมว"
+      flavor: "ฉันจะให้ชื่อคุณภายหลังนะ"
+    _following1:
+      title: "กำลังติดตามผู้ใช้คนแรกของคุณ"
+      description: "ติดตามผู้ใช้"
+    _following10:
+      title: "ทำต่อไป... ทำต่อไป..."
+      description: "ติดตาม 10 บัญชีผู้ใช้"
+    _following50:
+      title: "มีเพื่อนมากมาย"
+      description: "ติดตาม 50 บัญชี"
+    _following100:
+      title: "เพื่อน 100 คน"
+      description: "ติดตาม 100 บัญชี"
+    _following300:
+      title: "เพื่อนโอเวอร์โหลด"
+      description: "ติดตาม 300 บัญชี"
+    _followers1:
+      title: "ผู้ติดตามคนแรก"
+      description: "ได้รับ 1 ผู้ติดตาม"
+    _followers10:
+      title: "ติดตามฉัน!"
+      description: "ได้รับ 10 คนผู้ติดตาม"
+    _followers50:
+      title: "มากันเป็นฝูง"
+      description: "ได้รับ 50 ผู้ติดตาม"
     _followers100:
       title: "บุคคลที่เป็นที่นิยม"
+      description: "ได้รับ 100 ผู้ติดตาม"
+    _followers300:
+      title: "กรุณาสร้างบรรทัดเดียวนะคะ"
+      description: "ได้รับ 300 คนผู้ติดตาม"
     _followers500:
       title: "เสาสัญญาณ"
+      description: "ได้รับ 500 คนผู้ติดตาม"
     _followers1000:
       title: "ผู้ทรงอิทธิพล"
+      description: "ได้รับ 1,000 ผู้ติดตาม"
+    _collectAchievements30:
+      title: "นักสะสมความสำเร็จ"
+      description: "ได้รับความสำเร็จ 30 ครั้ง"
+    _viewAchievements3min:
+      title: "ชอบบรรลุผลสําเร็จ"
+      description: "มองดูรายการความสำเร็จของคุณเป็นเวลาอย่างน้อย 3 นาที"
     _iLoveMisskey:
       title: "ฉันรัก Misskey"
       description: "โพสต์ \"I ❤ #Misskey\""
+      flavor: "ทีมผู้พัฒนา Misskey ได้ขอบคุณสำหรับการสนับสนุนของคุณ!"
     _foundTreasure:
       title: "ล่าสมบัติ"
       description: "คุณพบสมบัติที่ซ่อนอยู่"
     _client30min:
       title: "พักผ่อนสักหน่อย"
+      description: "ใช้เวลา 30 นาทีบน Misskey"
     _noteDeletedWithin1min:
       title: "ไม่เป็นไร"
+      description: "ลบโน้ตภายในหนึ่งนาทีหลังจากที่โพสต์"
     _postedAtLateNight:
       title: "กลางคืน"
+      description: "โพสต์โน้ตตอนดึกๆ"
+      flavor: "ได้เวลาเข้านอนแล้วนะ"
+    _postedAt0min0sec:
+      title: "นาฬิกาพูดได้"
+      description: "โพสต์บนโน้ตเมื่อเวลา 00:00 น."
+      flavor: "คลิก คลิก คลิก แกล๊งๆ"
+    _selfQuote:
+      title: "อ้างอิงตนเอง"
+      description: "อ้างโน้ตย่อของคุณเอง"
+    _htl20npm:
+      title: "ไทม์ไลน์ไหล"
+      description: "มีการทำความเร็วของไทม์ไลน์ที่บ้านของคุณเกิน 20 npm (โน้ตต่อนาที)"
     _viewInstanceChart:
       title: "วิเคราะห์"
       description: "ดูแผนภูมิอินสแตนซ์ของคุณ"
+    _outputHelloWorldOnScratchpad:
+      title: "หวัดดีชาวโลก!"
+      description: "เอาพุต \"hello world\" ใน Scratchpad"
+    _open3windows:
+      title: "มัลติวินโดว์"
+      description: "มีการเปิดหน้าต่างอย่างน้อย 3 หน้าต่างพร้อมกัน"
     _driveFolderCircularReference:
       title: "อ้างอิงวงจร"
+      description: "พยายามสร้างโฟลเดอร์ที่ซ้อนกันแบบวนซ้ำในไดรฟ์"
+    _reactWithoutRead:
+      title: "คุณอ่านมันจริงๆหรือเปล่า?"
+      description: "มีการโต้ตอบกับโน้ตที่มีความยาวมากกว่า 100 ตัวอักษรภายใน 3 วินาทีหลังจากที่โพสต์"
     _clickedClickHere:
       title: "คลิ๊กที่นี่"
       description: "คุณได้คลิกที่นี่"
+    _justPlainLucky:
+      title: "แค่ลัคกี้ธรรมดา"
+      description: "มีโอกาสที่จะได้รับด้วยความน่าจะเป็นไปได้ 0.01% ทุก ๆ 10 วินาที"
+    _setNameToSyuilo:
+      title: "พระเจ้าคอมเพล็กซ์"
+      description: "ตั้งชื่อของคุณเป็น \"syuilo\""
     _passedSinceAccountCreated1:
       title: "ครบรอบหนึ่งปี"
+      description: "ผ่านไปหนึ่งปีแล้วนะตั้งแต่บัญชีของคุณถูกสร้างขึ้นมาน่ะ"
     _passedSinceAccountCreated2:
       title: "ครบรอบสองปี"
+      description: "ผ่านไปสองปีแล้วนะตั้งแต่บัญชีของคุณถูกสร้างขึ้นมาน่ะ"
     _passedSinceAccountCreated3:
       title: "ครบรอบสามปี"
+      description: "ผ่านไปสามปีแล้วนะตั้งแต่บัญชีของคุณถูกสร้างขึ้นมาน่ะ"
     _loggedInOnBirthday:
       title: "สุขสันต์วันเกิด"
       description: "เข้าสู่ระบบในวันเกิดของคุณ"
     _loggedInOnNewYearsDay:
       title: "สวัสดีปีใหม่!"
       description: "เข้าสู่ระบบในวันแรกของปี"
+      flavor: "อีกปีที่ยอดเยี่ยมในโอกาสนี้เลย"
     _cookieClicked:
+      title: "เกมที่คุณคลิกที่คุกกี้"
       description: "คลิกคุกกี้"
+      flavor: "เดี๋ยวก่อนนะ คุณอยู่ในเว็บไซต์ที่ถูกต้องแน่อย่างงั้นเหรอ?"
     _brainDiver:
       title: "Brain Diver"
+      description: "โพสต์ลิงก์ไปยัง Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "บทบาทใหม่"

@@ -154,7 +154,7 @@
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
 			<h1>An error has occurred!</h1>
-			<button class="button-big" onclick="location.reload(true);">
+			<button class="button-big" onclick="location.reload();">
 				<span class="button-label-big">Refresh</span>
 			</button>
 			<p class="dont-worry">Don't worry, it's (probably) not your fault.</p>
