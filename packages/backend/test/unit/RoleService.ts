@@ -4,12 +4,15 @@ import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
+import rndstr from 'rndstr';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
-import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository } from '@/models/index.js';
+import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository, User } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { MetaService } from '@/core/MetaService.js';
+import { genAid } from '@/misc/id/aid.js';
+import { UserCacheService } from '@/core/UserCacheService.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -23,19 +26,21 @@ describe('RoleService', () => {
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
 	let metaService: jest.Mocked<MetaService>;
 
-	function createUser() {
+	function createUser(data: Partial<User> = {}) {
+		const un = rndstr('a-z0-9', 16);
 		return usersRepository.insert({
-			id: 'a',
+			id: genAid(new Date()),
 			createdAt: new Date(),
-			username: 'a',
-			usernameLower: 'a',
+			username: un,
+			usernameLower: un,
+			...data,
 		})
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	function createRole(data: Partial<Role>) {
+	function createRole(data: Partial<Role> = {}) {
 		return rolesRepository.insert({
-			id: 'a',
+			id: genAid(new Date()),
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			lastUsedAt: new Date(),
@@ -52,6 +57,7 @@ describe('RoleService', () => {
 			],
 			providers: [
 				RoleService,
+				UserCacheService,
 			],
 		})
 			.useMocker((token) => {
@@ -93,7 +99,7 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: false,
 				},
-			});
+			} as any);
 	
 			const result = await roleService.getUserPolicies(user.id);
 	
@@ -106,7 +112,7 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: true,
 				},
-			});
+			} as any);
 	
 			const result = await roleService.getUserPolicies(user.id);
 	
@@ -135,11 +141,53 @@ describe('RoleService', () => {
 				policies: {
 					canManageCustomEmojis: false,
 				},
-			});
+			} as any);
 	
 			const result = await roleService.getUserPolicies(user.id);
 	
 			expect(result.canManageCustomEmojis).toBe(true);
+		});
+
+		it('conditional role', async () => {	
+			const user1 = await createUser({
+				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
+			});
+			const user2 = await createUser({
+				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
+				followersCount: 10,
+			});
+			const role = await createRole({
+				name: 'a',
+				policies: {
+					canManageCustomEmojis: {
+						useDefault: false,
+						priority: 0,
+						value: true,
+					},
+				},
+				target: 'conditional',
+				condFormula: {
+					type: 'and',
+					values: [{
+						type: 'followersMoreThanOrEq',
+						value: 10,
+					}, {
+						type: 'createdMoreThan',
+						sec: 60 * 60 * 24 * 7,
+					}],
+				},
+			});
+
+			metaService.fetch.mockResolvedValue({
+				policies: {
+					canManageCustomEmojis: false,
+				},
+			} as any);
+	
+			const user1Policies = await roleService.getUserPolicies(user1.id);
+			const user2Policies = await roleService.getUserPolicies(user2.id);
+			expect(user1Policies.canManageCustomEmojis).toBe(false);
+			expect(user2Policies.canManageCustomEmojis).toBe(true);
 		});
 	});
 });
