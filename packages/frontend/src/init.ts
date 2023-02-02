@@ -43,6 +43,7 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { deckStore } from './ui/deck/deck-store';
 import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
 import { fetchCustomEmojis } from './custom-emojis';
@@ -216,6 +217,8 @@ if (splash) splash.addEventListener('transitionend', () => {
 	splash.remove();
 });
 
+await deckStore.ready;
+
 // https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 // なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
 const rootEl = (() => {
@@ -265,6 +268,8 @@ if (lastVersion !== version) {
 	} catch (err) {
 	}
 }
+
+await defaultStore.ready;
 
 // NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {

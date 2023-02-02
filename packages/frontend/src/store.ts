@@ -333,6 +333,16 @@ export class ColdDeviceStorage {
 		}
 	}
 
+	public static getAll(): Partial<typeof this.default> {
+		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce((acc, key) => {
+			const value = localStorage.getItem(PREFIX + key);
+			if (value != null) {
+				acc[key] = JSON.parse(value);
+			}
+			return acc;
+		}, {} as any);
+	}
+
 	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
 		// 呼び出し側のバグ等で undefined が来ることがある
 		// undefined を文字列として miLocalStorage に入れると参照する際の JSON.parse でコケて不具合の元になるため無視
