@@ -98,7 +98,7 @@ if (localeOutdated) {
 //#endregion
 
 // タッチデバイスでCSSの:hoverを機能させる
-document.addEventListener('touchend', () => { }, { passive: true });
+document.addEventListener('touchend', () => {}, { passive: true });
 
 // 一斉リロード
 reloadChannel.addEventListener('message', path => {
@@ -184,14 +184,14 @@ fetchInstanceMetaPromise.then(() => {
 
 try {
 	await fetchCustomEmojis();
-} catch (err) { }
+} catch (err) {}
 
 const app = createApp(
 	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
-		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
-			ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-				ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
-					defineAsyncComponent(() => import('@/ui/universal.vue')),
+	!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+	ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+	ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+	defineAsyncComponent(() => import('@/ui/universal.vue')),
 );
 
 if (_DEV_) {
@@ -369,7 +369,7 @@ if ($i) {
 	const now = new Date();
 	const m = now.getMonth() + 1;
 	const d = now.getDate();
-
+	
 	if ($i.birthday) {
 		const bm = parseInt($i.birthday.split('-')[1]);
 		const bd = parseInt($i.birthday.split('-')[2]);
