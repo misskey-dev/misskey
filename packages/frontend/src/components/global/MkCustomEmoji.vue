@@ -18,19 +18,23 @@ const props = defineProps<{
 }>();
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substr(1, props.name.length - 2) : props.name).replace('@.', ''));
-const url = computed(() => {
+
+const rawUrl = computed(() => {
 	if (props.url) {
 		return props.url;
-	} else if (props.host == null && !customEmojiName.value.includes('@')) {
-		const found = customEmojis.value.find(x => x.name === customEmojiName.value);
-		return found ? defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(found.url) : found.url : null;
-	} else {
-		const rawUrl = props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
-		return defaultStore.state.disableShowingAnimatedImages
-			? getStaticImageUrl(rawUrl)
-			: rawUrl;
 	}
+	if (props.host == null && !customEmojiName.value.includes('@')) {
+		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url || null;
+	}
+	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });
+
+const url = computed(() =>
+	defaultStore.reactiveState.disableShowingAnimatedImages.value && rawUrl.value
+		? getStaticImageUrl(rawUrl.value)
+		: rawUrl.value
+);
+
 const alt = computed(() => `:${customEmojiName.value}:`);
 let errored = $ref(url.value == null);
 </script>
