@@ -81,7 +81,7 @@ export class DriveFileEntityService {
 		);
 
 		// リモートかつメディアプロキシ
-		if (file.uri != null && file.userHost != null) {
+		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
 			return proxiedUrl(file.uri);
 		}
 
