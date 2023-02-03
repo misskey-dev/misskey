@@ -32,6 +32,8 @@ const props = defineProps<{
 	raw?: boolean;
 }>();
 
+console.log(MediaList)
+
 const gallery = ref(null);
 const pswpZIndex = os.claimZIndex('middle');
 
