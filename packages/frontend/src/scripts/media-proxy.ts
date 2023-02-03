@@ -38,10 +38,7 @@ export function getStaticImageUrl(baseUrl: string): string {
 		return u.href;
 	}
 
-	// 拡張子がないとキャッシュしてくれないCDNがあるのでダミーの名前を指定する
-	const dummy = `${encodeURIComponent(`${u.host}${u.pathname}`)}.webp`;
-
-	return `${instance.mediaProxy}/${dummy}?${query({
+	return `${instance.mediaProxy}/static.webp?${query({
 		url: u.href,
 		static: '1',
 	})}`;

@@ -143,7 +143,7 @@ export class FileServerService {
 					if (isMimeImage(file.mime, 'sharp-convertible-image')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = new URL(`${this.config.mediaProxy}/thumbnail.webp`);
+						const url = new URL(`${this.config.mediaProxy}/static.webp`);
 						url.searchParams.set('url', file.url);
 						url.searchParams.set('static', '1');
 						return await reply.redirect(301, url.toString());
