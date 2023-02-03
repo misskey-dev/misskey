@@ -41,7 +41,8 @@
 		"test-and-coverage": "pnpm -r test-and-coverage",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "pnpm clean-all"
+		"cleanall": "pnpm clean-all",
+		"server-update": "git reset --hard origin/deploy/on-premise && docker-compose build && docker-compose down && docker-compose up -d"
 	},
 	"resolutions": {
 		"chokidar": "3.5.3",
