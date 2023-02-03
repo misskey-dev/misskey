@@ -68,15 +68,6 @@ export const paramDef = {
 		summalyProxy: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
-		enableTwitterIntegration: { type: 'boolean' },
-		twitterConsumerKey: { type: 'string', nullable: true },
-		twitterConsumerSecret: { type: 'string', nullable: true },
-		enableGithubIntegration: { type: 'boolean' },
-		githubClientId: { type: 'string', nullable: true },
-		githubClientSecret: { type: 'string', nullable: true },
-		enableDiscordIntegration: { type: 'boolean' },
-		discordClientId: { type: 'string', nullable: true },
-		discordClientSecret: { type: 'string', nullable: true },
 		enableEmail: { type: 'boolean' },
 		email: { type: 'string', nullable: true },
 		smtpSecure: { type: 'boolean' },
@@ -268,42 +259,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.summalyProxy !== undefined) {
 				set.summalyProxy = ps.summalyProxy;
-			}
-
-			if (ps.enableTwitterIntegration !== undefined) {
-				set.enableTwitterIntegration = ps.enableTwitterIntegration;
-			}
-
-			if (ps.twitterConsumerKey !== undefined) {
-				set.twitterConsumerKey = ps.twitterConsumerKey;
-			}
-
-			if (ps.twitterConsumerSecret !== undefined) {
-				set.twitterConsumerSecret = ps.twitterConsumerSecret;
-			}
-
-			if (ps.enableGithubIntegration !== undefined) {
-				set.enableGithubIntegration = ps.enableGithubIntegration;
-			}
-
-			if (ps.githubClientId !== undefined) {
-				set.githubClientId = ps.githubClientId;
-			}
-
-			if (ps.githubClientSecret !== undefined) {
-				set.githubClientSecret = ps.githubClientSecret;
-			}
-
-			if (ps.enableDiscordIntegration !== undefined) {
-				set.enableDiscordIntegration = ps.enableDiscordIntegration;
-			}
-
-			if (ps.discordClientId !== undefined) {
-				set.discordClientId = ps.discordClientId;
-			}
-
-			if (ps.discordClientSecret !== undefined) {
-				set.discordClientSecret = ps.discordClientSecret;
 			}
 
 			if (ps.enableEmail !== undefined) {
