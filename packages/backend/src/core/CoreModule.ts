@@ -62,7 +62,6 @@ import PerUserNotesChart from './chart/charts/per-user-notes.js';
 import PerUserPvChart from './chart/charts/per-user-pv.js';
 import DriveChart from './chart/charts/drive.js';
 import PerUserReactionsChart from './chart/charts/per-user-reactions.js';
-import HashtagChart from './chart/charts/hashtag.js';
 import PerUserFollowingChart from './chart/charts/per-user-following.js';
 import PerUserDriveChart from './chart/charts/per-user-drive.js';
 import ApRequestChart from './chart/charts/ap-request.js';
@@ -187,7 +186,6 @@ const $PerUserNotesChart: Provider = { provide: 'PerUserNotesChart', useExisting
 const $PerUserPvChart: Provider = { provide: 'PerUserPvChart', useExisting: PerUserPvChart };
 const $DriveChart: Provider = { provide: 'DriveChart', useExisting: DriveChart };
 const $PerUserReactionsChart: Provider = { provide: 'PerUserReactionsChart', useExisting: PerUserReactionsChart };
-const $HashtagChart: Provider = { provide: 'HashtagChart', useExisting: HashtagChart };
 const $PerUserFollowingChart: Provider = { provide: 'PerUserFollowingChart', useExisting: PerUserFollowingChart };
 const $PerUserDriveChart: Provider = { provide: 'PerUserDriveChart', useExisting: PerUserDriveChart };
 const $ApRequestChart: Provider = { provide: 'ApRequestChart', useExisting: ApRequestChart };
@@ -315,7 +313,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PerUserPvChart,
 		DriveChart,
 		PerUserReactionsChart,
-		HashtagChart,
 		PerUserFollowingChart,
 		PerUserDriveChart,
 		ApRequestChart,
@@ -437,7 +434,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PerUserPvChart,
 		$DriveChart,
 		$PerUserReactionsChart,
-		$HashtagChart,
 		$PerUserFollowingChart,
 		$PerUserDriveChart,
 		$ApRequestChart,
@@ -559,7 +555,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PerUserPvChart,
 		DriveChart,
 		PerUserReactionsChart,
-		HashtagChart,
 		PerUserFollowingChart,
 		PerUserDriveChart,
 		ApRequestChart,
@@ -680,7 +675,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PerUserPvChart,
 		$DriveChart,
 		$PerUserReactionsChart,
-		$HashtagChart,
 		$PerUserFollowingChart,
 		$PerUserDriveChart,
 		$ApRequestChart,

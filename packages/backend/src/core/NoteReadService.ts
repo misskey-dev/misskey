@@ -9,9 +9,9 @@ import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { UsersRepository, NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository, FollowingsRepository, ChannelFollowingsRepository, AntennaNotesRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import { NotificationService } from './NotificationService.js';
 import { AntennaService } from './AntennaService.js';
-import { bindThis } from '@/decorators.js';
 import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
@@ -107,12 +107,6 @@ export class NoteReadService {
 			followingChannels: Set<Channel['id']>;
 		},
 	): Promise<void> {
-		const following = info?.following ? info.following : new Set<string>((await this.followingsRepository.find({
-			where: {
-				followerId: userId,
-			},
-			select: ['followeeId'],
-		})).map(x => x.followeeId));
 		const followingChannels = info?.followingChannels ? info.followingChannels : new Set<string>((await this.channelFollowingsRepository.find({
 			where: {
 				followerId: userId,
@@ -139,7 +133,7 @@ export class NoteReadService {
 	
 			if (note.user != null) { // たぶんnullになることは無いはずだけど一応
 				for (const antenna of myAntennas) {
-					if (await this.antennaService.checkHitAntenna(antenna, note, note.user, undefined, Array.from(following))) {
+					if (await this.antennaService.checkHitAntenna(antenna, note, note.user)) {
 						readAntennaNotes.push(note);
 					}
 				}
