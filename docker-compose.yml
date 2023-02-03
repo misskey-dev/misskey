@@ -48,9 +48,10 @@ services:
       retries: 20
 
   tunnel:
-    container_name: cloudflared-tunnel
     image: cloudflare/cloudflared:2023.1.0
     restart: unless-stopped
+    links:
+      - nginx
     depends_on:
       web:
         condition: service_started
@@ -61,18 +62,22 @@ services:
     env_file:
       - ./infra/cloudflare/.env
 
-  # nginx:
-  #   container_name: nginx
-  #   image: nginx:1.23.3
-  #   restart: unless-stopped
-  #   depends_on:
-  #     web:
-  #       condition: service_started
-  #   networks:
-  #     - internal_network
-  #     - external_network
-  #   volumes:
-  #     - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  nginx:
+    build: 
+      context: ./infra/nginx
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    links:
+      - web
+    depends_on:
+      web:
+        condition: service_started
+    networks:
+      - internal_network
+      - external_network
+    command: /bin/sh -c "envsubst '$$SERVER_NAME $$S3_PROXY_PASS'< /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    env_file:
+      - ./infra/nginx/.env
 
   # es:
   #   restart: always
