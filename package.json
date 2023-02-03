@@ -38,8 +38,8 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
-		"chokidar": "^3.5.3",
-		"lodash": "^4.17.21"
+		"chokidar": "3.5.3",
+		"lodash": "4.17.21"
 	},
 	"dependencies": {
 		"execa": "5.1.1",
@@ -49,19 +49,19 @@
 		"gulp-replace": "1.1.4",
 		"gulp-terser": "2.1.0",
 		"js-yaml": "4.1.0",
-		"typescript": "4.9.4"
+		"typescript": "4.9.5"
 	},
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.49.0",
-		"@typescript-eslint/parser": "5.49.0",
+		"@typescript-eslint/eslint-plugin": "5.50.0",
+		"@typescript-eslint/parser": "5.50.0",
 		"cross-env": "7.0.3",
-		"cypress": "12.4.0",
-		"eslint": "^8.32.0",
+		"cypress": "12.5.1",
+		"eslint": "8.33.0",
 		"start-server-and-test": "1.15.3"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "^4.2.0"
+		"@tensorflow/tfjs-core": "4.2.0"
 	}
 }
