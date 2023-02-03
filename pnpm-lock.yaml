@@ -516,6 +516,7 @@ importers:
       vue: 3.2.47
       vue-prism-editor: 2.0.0-alpha.2_vue@3.2.47
       vuedraggable: 4.1.0_vue@3.2.47
+			vue-plyr: 7.0.0
     devDependencies:
       '@types/escape-regexp': 0.0.1
       '@types/glob': 8.0.1
