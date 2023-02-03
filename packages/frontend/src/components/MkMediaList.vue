@@ -32,7 +32,7 @@ const props = defineProps<{
 	raw?: boolean;
 }>();
 
-console.log(MediaList)
+console.log(MediaList.toString)
 
 const gallery = ref(null);
 const pswpZIndex = os.claimZIndex('middle');
