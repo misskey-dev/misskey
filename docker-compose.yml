@@ -7,10 +7,12 @@ services:
     restart: always
     links:
       - redis
-      # - db
+      - db
       # - es
     depends_on:
       redis:
+        condition: service_healthy
+      db:
         condition: service_healthy
     ports:
       - "3000:3000"
@@ -34,7 +36,7 @@ services:
       retries: 20
   db:
     restart: always
-    image: postgres:15-alpine
+    image: postgres:15.1-bullseye
     networks:
       - internal_network
     env_file:
@@ -45,6 +47,19 @@ services:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared:2023.1.0
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_started
+    command: tunnel --no-autoupdate run
+    networks:
+      - internal_network
+      - external_network
+    env_file:
+      - ./infra/cloudflare/.env
   # es:
   #   restart: always
   #   image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
