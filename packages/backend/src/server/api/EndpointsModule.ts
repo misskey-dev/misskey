@@ -97,7 +97,6 @@ import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
 import * as ep___charts_federation from './endpoints/charts/federation.js';
-import * as ep___charts_hashtag from './endpoints/charts/hashtag.js';
 import * as ep___charts_instance from './endpoints/charts/instance.js';
 import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
@@ -433,7 +432,6 @@ const $charts_activeUsers: Provider = { provide: 'ep:charts/active-users', useCl
 const $charts_apRequest: Provider = { provide: 'ep:charts/ap-request', useClass: ep___charts_apRequest.default };
 const $charts_drive: Provider = { provide: 'ep:charts/drive', useClass: ep___charts_drive.default };
 const $charts_federation: Provider = { provide: 'ep:charts/federation', useClass: ep___charts_federation.default };
-const $charts_hashtag: Provider = { provide: 'ep:charts/hashtag', useClass: ep___charts_hashtag.default };
 const $charts_instance: Provider = { provide: 'ep:charts/instance', useClass: ep___charts_instance.default };
 const $charts_notes: Provider = { provide: 'ep:charts/notes', useClass: ep___charts_notes.default };
 const $charts_user_drive: Provider = { provide: 'ep:charts/user/drive', useClass: ep___charts_user_drive.default };
@@ -773,7 +771,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$charts_apRequest,
 		$charts_drive,
 		$charts_federation,
-		$charts_hashtag,
 		$charts_instance,
 		$charts_notes,
 		$charts_user_drive,
@@ -1107,7 +1104,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$charts_apRequest,
 		$charts_drive,
 		$charts_federation,
-		$charts_hashtag,
 		$charts_instance,
 		$charts_notes,
 		$charts_user_drive,

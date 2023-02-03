@@ -12,7 +12,6 @@ import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
 import DriveChart from '@/core/chart/charts/drive.js';
 import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
-import HashtagChart from '@/core/chart/charts/hashtag.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
@@ -37,7 +36,6 @@ export class TickChartsProcessorService {
 		private perUserPvChart: PerUserPvChart,
 		private driveChart: DriveChart,
 		private perUserReactionsChart: PerUserReactionsChart,
-		private hashtagChart: HashtagChart,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private apRequestChart: ApRequestChart,
@@ -61,7 +59,6 @@ export class TickChartsProcessorService {
 			this.perUserPvChart.tick(false),
 			this.driveChart.tick(false),
 			this.perUserReactionsChart.tick(false),
-			this.hashtagChart.tick(false),
 			this.perUserFollowingChart.tick(false),
 			this.perUserDriveChart.tick(false),
 			this.apRequestChart.tick(false),

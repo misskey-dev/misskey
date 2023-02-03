@@ -184,11 +184,6 @@ export class UserProfile {
 	@JoinColumn()
 	public pinnedPage: Page | null;
 
-	@Column('jsonb', {
-		default: {},
-	})
-	public integrations: Record<string, any>;
-
 	@Index()
 	@Column('boolean', {
 		default: false, select: false,
