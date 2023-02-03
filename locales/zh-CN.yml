@@ -1083,7 +1083,7 @@ _achievements:
       title: "排列成行"
       description: "关注者超过300人"
     _followers500:
-      title: "风向标"
+      title: "信号塔"
       description: "关注者超过500人"
     _collectAchievements30:
       title: "成就收藏家"
@@ -1104,7 +1104,7 @@ _achievements:
       title: "无话可说"
       description: "发帖后一分钟内就将其删除"
     _postedAtLateNight:
-      title: "夜行者"
+      title: "夜猫子"
       description: "深夜发布帖子"
       flavor: "差不多该去睡了喔。"
     _postedAt0min0sec:
@@ -1114,6 +1114,12 @@ _achievements:
     _selfQuote:
       title: "自我提及"
       description: "引用了自己的帖子"
+    _htl20npm:
+      title: "流动的时间线"
+      description: "在首页时间线的流速超过20npm"
+    _viewInstanceChart:
+      title: "分析师"
+      description: "查看了实例信息中的图表"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
     _open3windows:
@@ -1129,7 +1135,7 @@ _achievements:
       description: "点了这里"
     _justPlainLucky:
       title: "超高校级的幸运"
-      description: "每10秒有0.01的概率获得"
+      description: "每10秒有0.01的概率自动获得"
     _setNameToSyuilo:
       title: "像神一样呐"
       description: "将名称设定为syuilo"
