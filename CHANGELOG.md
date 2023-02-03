@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.3.0 (2023/02/03)
 ### Changes
 - twitter/github/discord連携機能が削除されました
 - ハッシュタグごとのチャートが削除されました
@@ -17,8 +17,6 @@ You should also include the user name that made the change.
 
 ### Improvements
 - ロールで広告の非表示が有効になっている場合は最初から広告を非表示にするように
-
-### Bugfixes
 
 ## 13.2.6 (2023/02/01)
 ### Changes
