@@ -1096,6 +1096,7 @@ _achievements:
       description: "发布\"I ❤ #Misskey\"帖子"
       flavor: "感谢您使用 Misskey ！ by 开发团队"
     _foundTreasure:
+      title: "寻宝"
       description: "发现了隐藏的宝藏"
     _client30min:
       title: "休息一下！"
