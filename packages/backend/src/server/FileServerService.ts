@@ -139,7 +139,7 @@ export class FileServerService {
 			if (file.state === 'remote') {
 				const convertFile = async () => {
 					if (file.fileRole === 'thumbnail') {
-						if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(file.mime)) {
+						if (isMimeImage(file.mime, 'sharp-convertible-image')) {
 							return this.imageProcessingService.convertToWebpStream(
 								file.path,
 								498,
