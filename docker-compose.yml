@@ -2,8 +2,8 @@ version: "3"
 
 services:
   web:
-    # build: .
-    image: na2na/misskey-na2na:release
+    build: .
+    # image: na2na/misskey-na2na:release
     restart: always
     links:
       - redis
@@ -49,7 +49,7 @@ services:
 
   tunnel:
     image: cloudflare/cloudflared:2023.1.0
-    restart: unless-stopped
+    restart: always
     links:
       - nginx
     depends_on:
@@ -66,7 +66,7 @@ services:
     build: 
       context: ./infra/nginx
       dockerfile: ./Dockerfile
-    restart: unless-stopped
+    restart: always
     links:
       - web
     depends_on:
