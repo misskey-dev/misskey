@@ -74,7 +74,7 @@ export class DriveFileEntityService {
 	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null) {
-			return appendQuery(this.config.mediaProxy, query({
+			return appendQuery(`${this.config.mediaProxy}/`, query({
 				url: file.uri,
 				thumbnail: thumbnail ? '1' : undefined,
 			}));
