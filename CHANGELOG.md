@@ -13,6 +13,7 @@ You should also include the user name that made the change.
 ### Changes
 - twitter/github/discord連携機能が削除されました
 - ハッシュタグごとのチャートが削除されました
+- syslogのサポートが削除されました
 
 ### Improvements
 

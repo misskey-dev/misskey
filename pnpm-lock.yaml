@@ -104,7 +104,6 @@ importers:
       '@types/sharp': 0.31.1
       '@types/sinonjs__fake-timers': 8.1.2
       '@types/speakeasy': 2.0.7
-      '@types/syslog-pro': 1.0.0
       '@types/tinycolor2': 1.4.3
       '@types/tmp': 0.2.3
       '@types/unzipper': 0.10.5
@@ -192,7 +191,6 @@ importers:
       strict-event-emitter-types: 2.0.0
       stringz: 2.1.0
       summaly: 2.7.0
-      syslog-pro: git+https://github.com/misskey-dev/SyslogPro#0.2.9-misskey.2
       systeminformation: 5.17.8
       tinycolor2: 1.5.2
       tmp: 0.2.1
@@ -297,7 +295,6 @@ importers:
       strict-event-emitter-types: 2.0.0
       stringz: 2.1.0
       summaly: 2.7.0
-      syslog-pro: github.com/misskey-dev/SyslogPro/2772b33fa126784fc6e21377786471a918b22dc7
       systeminformation: 5.17.8
       tinycolor2: 1.5.2
       tmp: 0.2.1
@@ -356,7 +353,6 @@ importers:
       '@types/sharp': 0.31.1
       '@types/sinonjs__fake-timers': 8.1.2
       '@types/speakeasy': 2.0.7
-      '@types/syslog-pro': 1.0.0
       '@types/tinycolor2': 1.4.3
       '@types/tmp': 0.2.3
       '@types/unzipper': 0.10.5
@@ -2815,10 +2811,6 @@ packages:
 
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
-    dev: true
-
-  /@types/syslog-pro/1.0.0:
-    resolution: {integrity: sha512-yFQ7QbEQrswboLGflCumcUMLeD5GgnaHH80khqoYDdeEqVST5UWTppit8BtavxhrkWjfeX8aPI6c047ooWQrdw==}
     dev: true
 
   /@types/throttle-debounce/5.0.0:
@@ -9489,10 +9481,6 @@ packages:
       obliterator: 2.0.4
     dev: false
 
-  /moment/2.29.4:
-    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
-    dev: false
-
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
     dev: false
@@ -13660,15 +13648,6 @@ packages:
       archiver-utils: 2.1.0
       compress-commons: 4.1.1
       readable-stream: 3.6.0
-    dev: false
-
-  github.com/misskey-dev/SyslogPro/2772b33fa126784fc6e21377786471a918b22dc7:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/SyslogPro/tar.gz/2772b33fa126784fc6e21377786471a918b22dc7}
-    name: '@zeit/syslog-pro'
-    version: 0.2.9-misskey.2
-    engines: {node: '>=10.0.0'}
-    dependencies:
-      moment: 2.29.4
     dev: false
 
   github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
