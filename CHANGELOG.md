@@ -16,6 +16,7 @@ You should also include the user name that made the change.
 - syslogのサポートが削除されました
 
 ### Improvements
+- ロールで広告の非表示が有効になっている場合は最初から広告を非表示にするように
 
 ### Bugfixes
 
