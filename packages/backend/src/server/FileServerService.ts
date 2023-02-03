@@ -414,6 +414,8 @@ export class FileServerService {
 			}
 		}
 
+		if (this.internalStorageService.exists(key) === false) return '404';
+
 		const path = this.internalStorageService.resolvePath(key);
 
 		if (isThumbnail || isWebpublic) {

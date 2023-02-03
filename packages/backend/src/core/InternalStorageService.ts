@@ -26,6 +26,11 @@ export class InternalStorageService {
 	}
 
 	@bindThis
+	public exists(key: string) {
+		return fs.existsSync(this.resolvePath(key));
+	}
+
+	@bindThis
 	public read(key: string) {
 		return fs.createReadStream(this.resolvePath(key));
 	}
