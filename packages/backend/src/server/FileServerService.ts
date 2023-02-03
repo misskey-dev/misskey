@@ -217,6 +217,23 @@ export class FileServerService {
 			return;
 		}
 
+		if (this.config.externalMediaProxyEnabled) {
+			// 外部のメディアプロキシが有効なら、そちらにリダイレクト
+
+			reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
+
+			const url = new URL(`${this.config.mediaProxy}/${request.params.url || ''}`);
+
+			for (const [key, value] of Object.entries(request.query)) {
+				url.searchParams.append(key, value);
+			}
+
+			return await reply.redirect(
+				301,
+				url.toString(),
+			);
+		}
+
 		// Create temp file
 		const file = await this.getStreamAndTypeFromUrl(url);
 		if (file === '404') {
