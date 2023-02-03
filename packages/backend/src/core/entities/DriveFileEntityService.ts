@@ -76,7 +76,7 @@ export class DriveFileEntityService {
 		if (file.uri != null && file.userHost != null) {
 			return appendQuery(`${this.config.mediaProxy}/`, query({
 				url: file.uri,
-				thumbnail: thumbnail ? '1' : undefined,
+				static: thumbnail ? '1' : undefined,
 			}));
 		}
 
