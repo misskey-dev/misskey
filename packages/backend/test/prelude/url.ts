@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { query } from '../../src/misc/prelude/url.js';
 
 describe('url', () => {
-	it('query', () => {
+	test('query', () => {
 		const s = query({
 			foo: 'ふぅ',
 			bar: 'b a r',

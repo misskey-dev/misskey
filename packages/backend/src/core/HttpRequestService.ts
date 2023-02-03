@@ -95,7 +95,7 @@ export class HttpRequestService {
 	}
 
 	@bindThis
-	public async getJson(url: string, accept = 'application/json, */*', headers?: Record<string, string>): Promise<unknown> {
+	public async getJson<T = unknown>(url: string, accept = 'application/json, */*', headers?: Record<string, string>): Promise<T> {
 		const res = await this.send(url, {
 			method: 'GET',
 			headers: Object.assign({
@@ -106,7 +106,7 @@ export class HttpRequestService {
 			size: 1024 * 256,
 		});
 
-		return await res.json();
+		return await res.json() as T;
 	}
 
 	@bindThis

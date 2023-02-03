@@ -65,11 +65,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				};
 			}
 
-			const maskedKeys = ['accessToken', 'accessTokenSecret', 'refreshToken'];
-			Object.keys(profile.integrations).forEach(integration => {
-				maskedKeys.forEach(key => profile.integrations[integration][key] = '<MASKED>');
-			});
-
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
 			const roles = await this.roleService.getUserRoles(user.id);
@@ -84,7 +79,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				carefulBot: profile.carefulBot,
 				injectFeaturedNote: profile.injectFeaturedNote,
 				receiveAnnouncementEmail: profile.receiveAnnouncementEmail,
-				integrations: profile.integrations,
 				mutedWords: profile.mutedWords,
 				mutedInstances: profile.mutedInstances,
 				mutingNotificationTypes: profile.mutingNotificationTypes,
