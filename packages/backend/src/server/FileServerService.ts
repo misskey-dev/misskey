@@ -252,7 +252,7 @@ export class FileServerService {
 			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image');
 
 			let image: IImageStreamable | null = null;
-			if ('emoji' in request.query && isConvertibleImage) {
+			if (('emoji' in request.query || 'avatar' in request.query) && isConvertibleImage) {
 				if (!isAnimationConvertibleImage && !('static' in request.query)) {
 					image = {
 						data: fs.createReadStream(file.path),
@@ -262,7 +262,7 @@ export class FileServerService {
 				} else {
 					const data = sharp(file.path, { animated: !('static' in request.query) })
 							.resize({
-								height: 128,
+								height: 'emoji' in request.query ? 128 : 320,
 								withoutEnlargement: true,
 							})
 							.webp(webpDefault);
