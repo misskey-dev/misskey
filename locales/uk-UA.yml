@@ -529,7 +529,7 @@ state: "Стан"
 sort: "Сортування"
 ascendingOrder: "За зростанням"
 descendingOrder: "За спаданням"
-scratchpad: "Чернетка"
+scratchpad: "Scratchpad"
 scratchpadDescription: "Scratchpad надає середовище для експериментів з AiScript. Ви можете писати, виконувати його і тестувати взаємодію з Misskey."
 output: "Вихід"
 script: "Скрипт"
@@ -1084,22 +1084,32 @@ _achievements:
       description: "Перевищити швидкість домашньої стрічки 20npm (нотаток на хвилину)"
     _viewInstanceChart:
       title: "Аналітик"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "Вивести \"hello world\" у Скретчпаді"
     _clickedClickHere:
       title: "Натисніть тут"
       description: "Натиснуто тут"
+    _justPlainLucky:
+      title: "Просто вдача"
+      description: "Можна отримати з ймовірністю 0,01% кожні 10 секунд"
     _setNameToSyuilo:
       title: "Комплекс бога"
       description: "Встановлено ім'я \"syuilo\""
     _passedSinceAccountCreated1:
       title: "Перша річниця"
+      description: "Минув рік з моменту створення акаунта"
     _passedSinceAccountCreated2:
       title: "Друга річниця"
+      description: "Минуло 2 роки з моменту створення акаунта"
     _passedSinceAccountCreated3:
       title: "Третя річниця"
       description: "Минуло 3 роки з моменту створення акаунта"
     _loggedInOnBirthday:
       title: "З Днем народження!"
+      description: "Увійти у свій день народження"
     _loggedInOnNewYearsDay:
+      title: "З Новим роком!"
       description: "Увійшли в перший день року"
     _brainDiver:
       title: "Brain Diver"
