@@ -35,7 +35,6 @@ let player = $ref({
 	width: null,
 	height: null,
 });
-
 const ytFetch = (): void => {
 	fetching = true;
 	window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
@@ -44,12 +43,12 @@ const ytFetch = (): void => {
 			title = info.title;
 			fetching = false;
 			player = info.player;
-			console.log(player)
 		});
 	});
 };
 
 ytFetch();
+console.log(player)
 
 </script>
 
