@@ -25,6 +25,7 @@ const props = defineProps<{
 	url: string;
 }>();
 
+
 const requestUrl = new URL(props.url);
 
 let fetching = $ref(true);
@@ -43,6 +44,7 @@ const ytFetch = (): void => {
 			title = info.title;
 			fetching = false;
 			player = info.player;
+			console.log(player)
 		});
 	});
 };
