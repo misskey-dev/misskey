@@ -14,8 +14,6 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
-    ports:
-      - "3000:3000"
     networks:
       - internal_network
       - external_network
@@ -34,6 +32,7 @@ services:
       test: "redis-cli ping"
       interval: 5s
       retries: 20
+
   db:
     restart: always
     image: postgres:15.1-bullseye
@@ -47,6 +46,7 @@ services:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
+
   tunnel:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared:2023.1.0
@@ -60,6 +60,20 @@ services:
       - external_network
     env_file:
       - ./infra/cloudflare/.env
+
+  # nginx:
+  #   container_name: nginx
+  #   image: nginx:1.23.3
+  #   restart: unless-stopped
+  #   depends_on:
+  #     web:
+  #       condition: service_started
+  #   networks:
+  #     - internal_network
+  #     - external_network
+  #   volumes:
+  #     - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
   # es:
   #   restart: always
   #   image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
