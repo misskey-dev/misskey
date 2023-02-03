@@ -70,3 +70,5 @@ tsdoc-metadata.json
 
 # VSCode addon
 .favorites.json
+# nginx
+default.conf
