@@ -12,10 +12,11 @@ import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { DI } from '@/di-symbols.js';
-import type { BlockingsRepository, FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -48,13 +49,11 @@ export class UserFollowingService {
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
 		private userEntityService: UserEntityService,
+		private userBlockingService: UserBlockingService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
@@ -62,7 +61,6 @@ export class UserFollowingService {
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
-		private globalEventService: GlobalEventService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
@@ -77,26 +75,20 @@ export class UserFollowingService {
 
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
-			this.blockingsRepository.findOneBy({
-				blockerId: follower.id,
-				blockeeId: followee.id,
-			}),
-			this.blockingsRepository.findOneBy({
-				blockerId: followee.id,
-				blockeeId: follower.id,
-			}),
+			this.userBlockingService.checkBlocked(follower.id, followee.id),
+			this.userBlockingService.checkBlocked(followee.id, follower.id),
 		]);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocked) {
-		// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
+			// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
 			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, requestId), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 			return;
 		} else if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocking) {
-		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
-			await this.blockingsRepository.delete(blocking.id);
+			// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
+			await this.userBlockingService.unblock(follower, followee);
 		} else {
-		// それ以外は単純に例外
+			// それ以外は単純に例外
 			if (blocking != null) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
 			if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 		}
@@ -357,14 +349,8 @@ export class UserFollowingService {
 	
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
-			this.blockingsRepository.findOneBy({
-				blockerId: follower.id,
-				blockeeId: followee.id,
-			}),
-			this.blockingsRepository.findOneBy({
-				blockerId: followee.id,
-				blockeeId: follower.id,
-			}),
+			this.userBlockingService.checkBlocked(follower.id, followee.id),
+			this.userBlockingService.checkBlocked(followee.id, follower.id),
 		]);
 	
 		if (blocking != null) throw new Error('blocking');
