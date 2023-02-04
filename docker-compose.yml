@@ -27,7 +27,7 @@ services:
     networks:
       - internal_network
     volumes:
-      - ./redis:/data
+      - redis:/data
     healthcheck:
       test: "redis-cli ping"
       interval: 5s
@@ -41,7 +41,7 @@ services:
     env_file:
       - .config/docker.env
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
@@ -102,3 +102,7 @@ networks:
   internal_network:
     internal: true
   external_network:
+
+volumes:
+  postgres:
+  redis:
