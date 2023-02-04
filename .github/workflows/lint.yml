@@ -50,5 +50,5 @@ jobs:
         node-version: 18.x
         cache: 'pnpm'
     - run: corepack enable
-    - run: NODE_ENV=dev pnpm i --frozen-lockfile
-    - run: NODE_ENV=dev pnpm --filter ${{ matrix.workspace }} run lint
+    - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter ${{ matrix.workspace }} run lint
