@@ -9,8 +9,6 @@
 	<vue-plyr>
 		<video
 			controls
-			crossorigin
-			playsinline
 			:data-poster="video.thumbnailUrl"
 		>
 			<source
