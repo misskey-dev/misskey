@@ -29,14 +29,22 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		username: { type: 'string', nullable: true },
-		host: { type: 'string', nullable: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		detail: { type: 'boolean', default: true },
 	},
 	anyOf: [
-		{ required: ['username'] },
-		{ required: ['host'] },
+		{
+			properties: {
+				username: { type: 'string', nullable: true },
+			},
+			required: ['username']
+		},
+		{
+			properties: {
+				host: { type: 'string', nullable: true },
+			},
+			required: ['host']
+		},
 	],
 } as const;
 
