@@ -5,8 +5,8 @@
 		<div ref="gallery" :data-count="mediaList.filter(media => previewable(media)).length">
 			<template v-for="media in mediaList.filter(media => previewable(media))">
 				<XVideo v-if="media.type.startsWith('video')" :key="media.id" :video="media"/>
-				<XAudio v-else-if="media.type.startsWith('audio')" :key="media.id" :audio="media"/>
 				<XImage v-else-if="media.type.startsWith('image')" :key="media.id" class="image" :data-id="media.id" :image="media" :raw="raw"/>
+				<XAudio v-else-if="media.type.startWith('audio')" :key="media.id" :audio="media"/>
 			</template>
 		</div>
 	</div>
@@ -118,8 +118,9 @@ onMounted(() => {
 });
 
 const previewable = (file: misskey.entities.DriveFile): boolean => {
+	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
-	return FILE_TYPE_BROWSERSAFE.includes(file.type);
+	return (file.type.startsWith('video') || file.type.startsWith('image') || file.type.startsWith('audio')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
 </script>
 

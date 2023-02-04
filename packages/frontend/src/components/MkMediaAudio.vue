@@ -1,32 +1,56 @@
 <template>
-	<div v-if="hide" class="audio-nsfw-cover" @click="hide = false">
-		<div>
-			<b><i class="ti ti-alert-triangle"/> {{ $ts.sensitive }}</b>
-			<span>{{ $ts.clickToShow }}</span>
-		</div>
+<div v-if="hide" class="mk-media-audio-cw" @click="hide = false">
+	<div>
+		<b><i class="ti ti-alert-triangle"></i> {{ $ts.sensitive }}</b>
+		<span>{{ $ts.clickToShow }}</span>
 	</div>
-	<div v-else class="audio-viz-player">
-		<Viz class="audio" :audio-src="audio.url"/>
-		<i class="ti ti-eye-off" @click="hide = true"/>
-	</div>
+</div>
+<div v-else class="mk-media-audio">
+	<vue-plyr>
+		<audio
+			ref="audioEl"
+			class="audio"
+			:src="audio.url"
+			:title="audio.name"
+			controls
+			preload="metadata"
+			@volumechange="volumechange"
+		/>
+	</vue-plyr>
+	<i class="ti ti-eye-off" @click="hide = true"></i>
+</div>
 </template>
-
+	
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { onMounted } from 'vue';
 import * as misskey from 'misskey-js';
-import Viz from '@/components/nya/Viz.vue';
-import { defaultStore } from '@/store';
+import VuePlyr from 'vue-plyr';
+import { defaultStore, ColdDeviceStorage } from '@/store';
+import 'vue-plyr/dist/vue-plyr.css';
 
 const props = defineProps<{
 	audio: misskey.entities.DriveFile;
 }>();
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.audio.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
-</script>
 
+const audioEl = $shallowRef<HTMLAudioElement | null>();
+
+const volumechange = () => {
+	if (audioEl) ColdDeviceStorage.set('mediaVolume', audioEl.volume);
+}
+
+onMounted(() => {
+	if (audioEl) audioEl.volume = ColdDeviceStorage.get('mediaVolume');
+});
+</script>
+	
 <style lang="scss" scoped>
-.audio-viz-player {
+.mk-media-audio {
 	position: relative;
+
+	--plyr-color-main: var(--accent);
 
 	> i {
 		display: block;
@@ -48,7 +72,7 @@ const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.audio.isSe
 		justify-content: center;
 		align-items: center;
 
-		//font-size: 3.5em;
+		font-size: 3.5em;
 		overflow: hidden;
 		background-position: center;
 		background-size: cover;
@@ -57,7 +81,7 @@ const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.audio.isSe
 	}
 }
 
-.audio-nsfw-cover {
+.mk-media-audio-cw {
 	display: flex;
 	justify-content: center;
 	align-items: center;
