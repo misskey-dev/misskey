@@ -7,7 +7,6 @@ import { entity as PerUserNotesChart } from './charts/entities/per-user-notes.js
 import { entity as PerUserPvChart } from './charts/entities/per-user-pv.js';
 import { entity as DriveChart } from './charts/entities/drive.js';
 import { entity as PerUserReactionsChart } from './charts/entities/per-user-reactions.js';
-import { entity as HashtagChart } from './charts/entities/hashtag.js';
 import { entity as PerUserFollowingChart } from './charts/entities/per-user-following.js';
 import { entity as PerUserDriveChart } from './charts/entities/per-user-drive.js';
 import { entity as ApRequestChart } from './charts/entities/ap-request.js';
@@ -27,7 +26,6 @@ export const entities = [
 	PerUserPvChart.hour, PerUserPvChart.day,
 	DriveChart.hour, DriveChart.day,
 	PerUserReactionsChart.hour, PerUserReactionsChart.day,
-	HashtagChart.hour, HashtagChart.day,
 	PerUserFollowingChart.hour, PerUserFollowingChart.day,
 	PerUserDriveChart.hour, PerUserDriveChart.day,
 	ApRequestChart.hour, ApRequestChart.day,

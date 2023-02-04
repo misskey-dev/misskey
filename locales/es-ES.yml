@@ -509,7 +509,7 @@ objectStorageSetPublicRead: "Seleccionar \"public-read\" al subir "
 serverLogs: "Registros del servidor"
 deleteAll: "Eliminar todos"
 showFixedPostForm: "Mostrar el formulario de las entradas encima de la línea de tiempo"
-newNoteRecived: "Tienes una nota nuevo"
+newNoteRecived: "Tienes una nota nueva"
 sounds: "Sonidos"
 sound: "Sonidos"
 listen: "Escuchar"
@@ -918,17 +918,323 @@ tools: "Utilidades"
 cannotLoad: "No se puede cargar."
 numberOfProfileView: "Número de vistas de perfil"
 like: "¡Muy bien!"
+unlike: "Quitar 'me gusta'"
+numberOfLikes: "Cantidad de 'Me gusta'"
 show: "Apariencia"
+neverShow: "No mostrar de nuevo"
+remindMeLater: "Recordar después"
+didYouLikeMisskey: "¿Te gusta Misskey?"
+pleaseDonate: "Misskey es software libre, y es usado por {host} . Por favor, ¡considera donar al proyecto principal para que podamos continuar!"
+roles: "Roles"
+role: "Roles"
+normalUser: "Usuario normal"
+undefined: "Indefinido"
+assign: "Asignar"
+unassign: "Quitar"
 color: "Color"
+manageCustomEmojis: "Administrar emojis personalizados"
+youCannotCreateAnymore: "Se alcanzó el límite de creación"
+cannotPerformTemporary: "Indisponible temporalmente"
+cannotPerformTemporaryDescription: "Esta acción no se puede realizar porque se excedió el límite de ejecución. Espera un poco y prueba de nuevo."
+preset: "Predefinido"
+selectFromPresets: "Escoger desde predefinidos"
+achievements: "Logros"
+_achievements:
+  earnedAt: "Desbloqueado el"
+  _types:
+    _notes1:
+      title: "¡Hola Misskey!"
+      description: "Publicaste tu primera nota"
+      flavor: "¡Pasándola bien con Misskey!"
+    _notes10:
+      title: "Algunas notas"
+      description: "10 notas publicadas"
+    _notes100:
+      title: "¡Muchas notas!"
+      description: "100 notas publicadas"
+    _notes500:
+      title: "¡Cubierto de notas!"
+      description: "500 notas publicadas"
+    _notes1000:
+      title: "¡Una montaña de notas!"
+      description: "1000 notas publicadas"
+    _notes5000:
+      title: "¡Exceso de notas!"
+      description: "5000 notas publicadas"
+    _notes10000:
+      title: "¡Súpernota!"
+      description: "10000 notas publicadas"
+    _notes20000:
+      title: "Necesito... Más... ¡Notas!"
+      description: "20000 notas publicadas"
+    _notes30000:
+      title: "¡Notas! ¡Notas! ¡Notas!"
+      description: "30000 notas publicadas"
+    _notes40000:
+      title: "Fábrica de notas"
+      description: "40000 notas publicadas"
+    _notes50000:
+      title: "¡Un planeta de notas!"
+      description: "50000 notas publicadas"
+    _notes60000:
+      title: "¡Un cuásar de notas!"
+      description: "60000 notas publicadas"
+    _notes70000:
+      title: "¡Un hoyo negro de notas!"
+      description: "70000 notas publicadas"
+    _notes80000:
+      title: "¡Una galaxia de notas!"
+      description: "80000 notas publicadas"
+    _notes90000:
+      title: "¡Todo un universo de notas!"
+      description: "90000 notas publicadas"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "100000 notas publicadas"
+      flavor: "¿Tienes tanto para publicar?"
+    _login3:
+      title: "Principiante I"
+      description: "Días desde el inicio de sesión: 3"
+      flavor: "Desde hoy, soy Misskero"
+    _login7:
+      title: "Principiante II"
+      description: "Días desde el inicio de sesión: 7"
+      flavor: "¿Ya te acostumbraste?"
+    _login15:
+      title: "Principiante III"
+      description: "Días desde el inicio de sesión: 15"
+    _login30:
+      title: "Misskero I"
+      description: "Días desde el inicio de sesión: 30"
+    _login60:
+      title: "Misskero II"
+      description: "Días desde el inicio de sesión: 60"
+    _login100:
+      title: "Misskero III"
+      description: "Días desde el inicio de sesión: 100"
+      flavor: "Para este usuario, Misskaína"
+    _login200:
+      title: "Regular I"
+      description: "Días desde el inicio de sesión: 200"
+    _login300:
+      title: "Regular II"
+      description: "Días desde el inicio de sesión: 300"
+    _login400:
+      title: "Regular III"
+      description: "Días desde el inicio de sesión: 400"
+    _login500:
+      title: "Veterano I"
+      description: "Días desde el inicio de sesión: 500"
+      flavor: "Chicos, me encantan las libretas..."
+    _login600:
+      title: "Veterano II"
+      description: "Días desde el inicio de sesión: 600"
+    _login700:
+      title: "Veterano III"
+      description: "Días desde el inicio de sesión: 700"
+    _login800:
+      title: "Maestro I"
+      description: "Días desde el inicio de sesión: 800"
+    _login900:
+      title: "Maestro II"
+      description: "Días desde el inicio de sesión: 900"
+    _login1000:
+      title: "Maestro III"
+      description: "Días desde el inicio de sesión: 1000"
+      flavor: "¡Gracias por usar Misskey!"
+    _noteClipped1:
+      title: "No puedo evitar clipearte..."
+      description: "Hacer un clip por primera vez"
+    _noteFavorited1:
+      title: "Contemplando las estrellas"
+      description: "Poner una nota como favorito por primera vez"
+    _myNoteFavorited1:
+      title: "¡Quiero una estrella!"
+      description: "Tu nota ha sido marcada como favorito por primera vez"
+    _profileFilled:
+      title: "¡Listo!"
+      description: "Perfil completado"
+    _markedAsCat:
+      title: "Soy un gato"
+      description: "Configurar la cuenta como cuenta de un gato"
+      flavor: "Aún no tengo nombre"
+    _following1:
+      title: "Primera vez siguiendo a alguien"
+      description: "Seguir a un usuario"
+    _following10:
+      title: "Ahí la llevas, ahí la llevas..."
+      description: "10 usuarios seguidos"
+    _following50:
+      title: "¡Un puñado de amigos!"
+      description: "50 cuentas seguidas"
+    _following100:
+      title: "100 amigos"
+      description: "100 cuentas seguidas"
+    _following300:
+      title: "¡Sobrecarga de amigos!"
+      description: "300 cuentas seguidas"
+    _followers1:
+      title: "¡Tu primer seguidor!"
+      description: "1 seguidor ganado"
+    _followers10:
+      title: "¡Sígueme!"
+      description: "10 seguidores ganados"
+    _followers50:
+      title: "Viniendo en manada"
+      description: "50 seguidores ganados"
+    _followers100:
+      title: "Popular"
+      description: "100 cuentas seguidas"
+    _followers300:
+      title: "Por favor, hagan una fila"
+      description: "300 seguidores ganados"
+    _followers500:
+      title: "¡Toda una torre de radio!"
+      description: "500 seguidores ganados"
+    _followers1000:
+      title: "\"Influyente\""
+      description: "1000 seguidores gandos"
+    _collectAchievements30:
+      title: "Coleccionista"
+      description: "30 logros ganados"
+    _viewAchievements3min:
+      title: "¡Te gustan los logros!"
+      description: "Mirando tus logros por 3 minutos"
+    _iLoveMisskey:
+      title: "¡AMO Misskey!"
+      description: "\"I ❤ #Misskey\" Publicado"
+      flavor: "El equipo de desarrollo de Misskey, en verdad, ¡aprecia tu apoyo!"
+    _foundTreasure:
+      title: "Búsqueda del tesoro"
+      description: "Encontraste un tesoro"
+    _client30min:
+      title: "Un descansito"
+      description: "30 minutos dedicados a Misskey"
+    _noteDeletedWithin1min:
+      title: "Ah... Mejor no..."
+      description: "Borrar una nota antes que de pase 1 minuto"
+    _postedAtLateNight:
+      title: "Nocturno"
+      description: "Una nota publicada por la noche"
+      flavor: "¡Ya casi es hora de dormir!"
+    _postedAt0min0sec:
+      title: "Reloj parlante"
+      description: "Publicar una nota a las 00:00 de la madrugada"
+      flavor: "Tic, tic, tic ¡TUUUUUN!"
+    _selfQuote:
+      title: "Autoreferencia"
+      description: "Citar tu propia nota"
+    _htl20npm:
+      title: "Línea de tiempo fluyendo"
+      description: "La velocidad de tu línea de tiempo excede las 20 npm (notas por minuto)"
+    _viewInstanceChart:
+      title: "Analista"
+      description: "Gráficas de la instancia mostradas"
+    _outputHelloWorldOnScratchpad:
+      title: "¡Hola mundo!"
+      description: "Escribir \"hello world\" en el compositor"
+    _open3windows:
+      title: "Multiventana"
+      description: "Tener más de 3 ventanas al mismo tiempo"
+    _driveFolderCircularReference:
+      title: "Referencia circular"
+      description: "Intento de crear carpetas recursivamente"
+    _reactWithoutRead:
+      title: "¡Sí lo leíste bien?"
+      description: "Reaccionar a los 3 segundos de publicación de una nota con más de 100 caracteres"
+    _clickedClickHere:
+      title: "Pícale aquí"
+      description: "Le picó ahí"
+    _justPlainLucky:
+      title: "Pura suerte"
+      description: "Obtenido con una probabilidad del 0.01% cada 10 segundos"
+    _setNameToSyuilo:
+      title: "Complejo de superioridad"
+      description: "Configurar el nombre como 'Syuilo'"
+    _passedSinceAccountCreated1:
+      title: "Primer aniversario"
+      description: "Pasó un año desde la creación de la cuenta"
+    _passedSinceAccountCreated2:
+      title: "Segundo aniversario"
+      description: "Pasaron dos años desde la creación de la cuenta"
+    _passedSinceAccountCreated3:
+      title: "Tercer aniversario"
+      description: "Pasaron tres años desde la creación de la cuenta"
+    _loggedInOnBirthday:
+      title: "¡Feliz cumpleaños!"
+      description: "En linea el día de tu cumpleaños"
+    _loggedInOnNewYearsDay:
+      title: "¡Feliz Año Nuevo!"
+      description: "En linea en año nuevo"
+      flavor: "¡Gracias por tu apoyo a la instancia durante todo este año!"
+    _cookieClicked:
+      title: "Un juego para picarle a una galleta"
+      description: "Picaste una galleta"
+      flavor: "¿Está mal este juego?"
+    _brainDiver:
+      title: "Brain Diver"
+      description: "Publicaste un vínculo a \"Brain Diver\""
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
+  new: "Crear rol"
+  edit: "Editar rol"
+  name: "Nombre del rol"
+  description: "Descripción del rol"
+  permission: "Permisos del rol"
+  descriptionOfPermission: "<b>Moderador</b> Te permite ejecutar acciones básicas de moderación.\n<b>Administradores</b> puede cambiar todas las configuraciones de la instancia."
+  assignTarget: "Asignar objetivo"
+  descriptionOfAssignTarget: "<b>Manual</b> Para cambiar manualmente lo que se incluye en este rol.\n<b>Condicional</b> configura una condición, y los usuarios que cumplan la condición serán incluídos automáticamente."
+  manual: "manual"
+  conditional: "condicional"
+  condition: "condición"
+  isConditionalRole: "Esto es un rol condicional"
+  isPublic: "Publicar rol"
+  descriptionOfIsPublic: "Cualquiera puede ver los usuarios asignados a este rol. También, el perfil del usuario mostrará este rol."
+  options: "Opción"
+  policies: "Política"
+  baseRole: "Rol base"
+  useBaseValue: "Usar los valores del rol base"
+  chooseRoleToAssign: "Selecciona el rol para asignar"
+  canEditMembersByModerator: "Permitir a los moderadores editar los miembros"
+  descriptionOfCanEditMembersByModerator: "Si se activa, los moderadores, al igual que los administradores, serán capaces de asignar/quitar usuarios a éste rol. Si se desactiva, sólo los administradores podrán hacerlo."
   priority: "Prioridad"
   _priority:
     low: "Baja"
     middle: "Mediano"
     high: "Alta"
+  _options:
+    gtlAvailable: "Explorar la línea de tiempo global"
+    ltlAvailable: "Explorar la línea de tiempo local"
+    canPublicNote: "Permitir la publicación"
+    canInvite: "Puede crear códigos de invitación"
+    canManageCustomEmojis: "Administrar emojis personalizados"
+    driveCapacity: "Capacidad de almacenamiento"
+    pinMax: "Máximo de notas fijadas"
+    antennaMax: "Máximo de antenas"
+    wordMuteMax: "Máximo de caracteres en palabras silenciadas"
+    webhookMax: "Máximo de Webhooks"
+    clipMax: "Máximo de clips"
+    noteEachClipsMax: "Máximo de notas con clip"
+    userListMax: "Máximo de listas de usuarios"
+    userEachUserListsMax: "Máximo de usuarios en una lista"
+    rateLimitFactor: "Limitador"
+    descriptionOfRateLimitFactor: "Límites más bajos son menos restrictivos, más altos menos restrictivos"
+    canHideAds: "Puede ocultar anuncios"
+  _condition:
+    isLocal: "Usuario local"
+    isRemote: "Usuario remoto"
+    createdLessThan: "Menos de X han pasado desde la creación de la cuenta"
+    createdMoreThan: "Más de X han pasado desde la creación de la cuenta"
+    followersLessThanOrEq: "Tiene X o menos seguidores"
+    followersMoreThanOrEq: "Tiene X o más seguidores"
+    followingLessThanOrEq: "Sigue X o menos cuentas"
+    followingMoreThanOrEq: "Sigue X o más cuentas"
+    and: "Condicional AND"
+    or: "Condicional OR"
+    not: "Condicional NOT"
 _sensitiveMediaDetection:
-  description: "Reduce el esfuerzo de la moderación el el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
-  sensitivity: "Sensibilidad de detección"
+  description: "Reduce el esfuerzo de la moderación en el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
+  sensitivity: "Sensibilidad de la detección"
   sensitivityDescription: "Reducir la sensibilidad puede acarrear a varios falsos positivos, mientras que incrementarla puede reducir las detecciones (falsos negativos)."
   setSensitiveFlagAutomatically: "Marcar como NSFW"
   setSensitiveFlagAutomaticallyDescription: "Los resultados de la detección interna pueden ser retenidos incluso si la opción está desactivada."
@@ -1328,10 +1634,12 @@ _widgets:
   jobQueue: "Cola de trabajos"
   serverMetric: "Estadísticas del servidor"
   aiscript: "Consola de AiScript"
+  aiscriptApp: "Aplicación AiScript"
   aichan: "indigo"
   userList: "Lista de usuarios"
   _userList:
     chooseList: "Seleccione una lista"
+  clicker: "Cliqueador"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
@@ -1434,7 +1742,16 @@ _timelines:
   social: "Social"
   global: "Global"
 _play:
+  new: "Crear guión"
+  edit: "Editar guión"
+  created: "Guión creado"
+  updated: "Guión editado"
+  deleted: "Guión eliminado"
+  pageSetting: "Configuración de guión"
+  editThisPage: "Editar este guión"
   viewSource: "Ver la fuente"
+  my: "Mis guiones"
+  liked: "Guiones que te gustaron"
   featured: "Popular"
   title: "Título"
   script: "Script"
@@ -1507,6 +1824,7 @@ _notification:
   pollEnded: "Estan disponibles los resultados de la encuesta"
   unreadAntennaNote: "Antena {name}"
   emptyPushNotificationMessage: "Se han actualizado las notificaciones push"
+  achievementEarned: "Logro desbloqueado"
   _types:
     all: "Todo"
     follow: "Siguiendo"

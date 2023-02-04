@@ -9,6 +9,39 @@
 You should also include the user name that made the change.
 -->
 
+## 13.3.3 (2023/02/04)
+
+### Bugfixes
+- Server: improve security
+
+## 13.3.2 (2023/02/04)
+
+### Improvements
+- 外部メディアプロキシへの対応を強化しました  
+  外部メディアプロキシのFastify実装を作りました  
+  https://github.com/misskey-dev/media-proxy
+- Server: improve performance
+
+### Bugfixes
+- Client: validate urls to improve security
+
+## 13.3.1 (2023/02/04)
+
+### Bugfixes
+- Client: カスタム絵文字にアニメーション画像を再生しない設定が適用されていない問題を修正
+- Client: オートコンプリートでUnicode絵文字がカスタム絵文字として表示されてしまうのを修正
+- Client: Fix Vue-plyr CORS issue
+- Client: validate urls to improve security
+
+## 13.3.0 (2023/02/03)
+### Changes
+- twitter/github/discord連携機能が削除されました
+- ハッシュタグごとのチャートが削除されました
+- syslogのサポートが削除されました
+
+### Improvements
+- ロールで広告の非表示が有効になっている場合は最初から広告を非表示にするように
+
 ## 13.2.6 (2023/02/01)
 ### Changes
 - docker-compose.ymlをdocker-compose.yml.exampleにしました。docker-compose.ymlとしてコピーしてから使用してください。

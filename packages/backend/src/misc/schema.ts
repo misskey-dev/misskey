@@ -132,11 +132,27 @@ type NullOrUndefined<p extends Schema, T> =
 // https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 // Get intersection from union 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+type PartialIntersection<T> = Partial<UnionToIntersection<T>>;
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
 // To get union, we use `Foo extends any ? Hoge<Foo> : never`
 type UnionSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? SchemaType<X> : never;
-type ArrayUnion<T> = T extends any ? Array<T> : never; 
+type UnionObjectSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? ObjectSchemaType<X> : never;
+type ArrayUnion<T> = T extends any ? Array<T> : never;
+
+type ObjectSchemaTypeDef<p extends Schema> =
+	p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
+	p['properties'] extends NonNullable<Obj> ?
+		p['anyOf'] extends ReadonlyArray<Schema> ?
+			ObjType<p['properties'], NonNullable<p['required']>[number]> & UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>>
+			:
+			ObjType<p['properties'], NonNullable<p['required']>[number]>
+	:
+	p['anyOf'] extends ReadonlyArray<Schema> ? UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>> :
+	p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
+	any
+
+type ObjectSchemaType<p extends Schema> = NullOrUndefined<p, ObjectSchemaTypeDef<p>>;
 
 export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'null' ? null :
@@ -149,13 +165,7 @@ export type SchemaTypeDef<p extends Schema> =
 		string
 	) :
 	p['type'] extends 'boolean' ? boolean :
-	p['type'] extends 'object' ? (
-		p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
-		p['properties'] extends NonNullable<Obj> ? ObjType<p['properties'], NonNullable<p['required']>[number]> :
-		p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & Partial<UnionToIntersection<UnionSchemaType<p['anyOf']>>> :
-		p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
-		any
-	) :
+	p['type'] extends 'object' ? ObjectSchemaTypeDef<p> :
 	p['type'] extends 'array' ? (
 		p['items'] extends OfSchema ? (
 			p['items']['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
@@ -166,6 +176,7 @@ export type SchemaTypeDef<p extends Schema> =
 		p['items'] extends NonNullable<Schema> ? SchemaTypeDef<p['items']>[] :
 		any[]
 	) :
+	p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
 	p['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['oneOf']> :
 	any;
 

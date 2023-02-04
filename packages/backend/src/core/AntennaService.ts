@@ -10,10 +10,9 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
-import { Cache } from '@/misc/cache.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, BlockingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { MutingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -23,7 +22,6 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 export class AntennaService implements OnApplicationShutdown {
 	private antennasFetched: boolean;
 	private antennas: Antenna[];
-	private blockingCache: Cache<User['id'][]>;
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -31,9 +29,6 @@ export class AntennaService implements OnApplicationShutdown {
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -52,14 +47,13 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private utilityService: UtilityService,
 		private idService: IdService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
 		private noteEntityService: NoteEntityService,
 		private antennaEntityService: AntennaEntityService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
-		this.blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
 
 		this.redisSubscriber.on('message', this.onRedisMessage);
 	}
@@ -109,7 +103,7 @@ export class AntennaService implements OnApplicationShutdown {
 			read: read,
 		});
 	
-		this.globalEventServie.publishAntennaStream(antenna.id, 'note', note);
+		this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 	
 		if (!read) {
 			const mutings = await this.mutingsRepository.find({
@@ -139,7 +133,7 @@ export class AntennaService implements OnApplicationShutdown {
 			setTimeout(async () => {
 				const unread = await this.antennaNotesRepository.findOneBy({ antennaId: antenna.id, read: false });
 				if (unread) {
-					this.globalEventServie.publishMainStream(antenna.userId, 'unreadAntenna', antenna);
+					this.globalEventService.publishMainStream(antenna.userId, 'unreadAntenna', antenna);
 					this.pushNotificationService.pushNotification(antenna.userId, 'unreadAntennaNote', {
 						antenna: { id: antenna.id, name: antenna.name },
 						note: await this.noteEntityService.pack(note),
@@ -155,10 +149,6 @@ export class AntennaService implements OnApplicationShutdown {
 	public async checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
-
-		// アンテナ作成者がノート作成者にブロックされていたらスキップ
-		const blockings = await this.blockingCache.fetch(noteUser.id, () => this.blockingsRepository.findBy({ blockerId: noteUser.id }).then(res => res.map(x => x.blockeeId)));
-		if (blockings.some(blocking => blocking === antenna.userId)) return false;
 	
 		if (!antenna.withReplies && note.replyId != null) return false;
 	

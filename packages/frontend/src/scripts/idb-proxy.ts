@@ -8,14 +8,15 @@ import {
 
 const fallbackName = (key: string) => `idbfallback::${key}`;
 
-let idbAvailable = typeof window !== 'undefined' ? !!window.indexedDB : true;
+let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && window.indexedDB.open) : true;
 
 if (idbAvailable) {
-	iset('idb-test', 'test').catch(err => {
-		console.error('idb error', err);
-		console.error('indexedDB is unavailable. It will use localStorage.');
-		idbAvailable = false;
-	});
+	await iset('idb-test', 'test')
+		.catch(err => {
+			console.error('idb error', err);
+			console.error('indexedDB is unavailable. It will use localStorage.');
+			idbAvailable = false;
+		});
 } else {
 	console.error('indexedDB is unavailable. It will use localStorage.');
 }
