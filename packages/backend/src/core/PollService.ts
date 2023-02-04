@@ -1,17 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import type { CacheableUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { bindThis } from '@/decorators.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 
 @Injectable()
 export class PollService {
@@ -28,14 +28,11 @@ export class PollService {
 		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: PollVotesRepository,
 
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private relayService: RelayService,
-		private globalEventServie: GlobalEventService,
-		private createNotificationService: CreateNotificationService,
+		private globalEventService: GlobalEventService,
+		private userBlockingService: UserBlockingService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 	) {
@@ -52,11 +49,8 @@ export class PollService {
 	
 		// Check blocking
 		if (note.userId !== user.id) {
-			const block = await this.blockingsRepository.findOneBy({
-				blockerId: note.userId,
-				blockeeId: user.id,
-			});
-			if (block) {
+			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
+			if (blocked) {
 				throw new Error('blocked');
 			}
 		}
@@ -88,7 +82,7 @@ export class PollService {
 		const index = choice + 1; // In SQL, array index is 1 based
 		await this.pollsRepository.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
 	
-		this.globalEventServie.publishNoteStream(note.id, 'pollVoted', {
+		this.globalEventService.publishNoteStream(note.id, 'pollVoted', {
 			choice: choice,
 			userId: user.id,
 		});

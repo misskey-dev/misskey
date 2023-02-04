@@ -9,6 +9,17 @@
 You should also include the user name that made the change.
 -->
 
+## 13.3.2 (2023/02/04)
+
+### Improvements
+- 外部メディアプロキシへの対応を強化しました  
+  外部メディアプロキシのFastify実装を作りました  
+  https://github.com/misskey-dev/media-proxy
+- Server: improve performance
+
+### Bugfixes
+- Client: validate urls to improve security
+
 ## 13.3.1 (2023/02/04)
 
 ### Bugfixes

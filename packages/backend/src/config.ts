@@ -87,6 +87,8 @@ export type Mixin = {
 	userAgent: string;
 	clientEntry: string;
 	clientManifestExists: boolean;
+	mediaProxy: string;
+	externalMediaProxyEnabled: boolean;
 };
 
 export type Config = Source & Mixin;
@@ -134,6 +136,13 @@ export function loadConfig() {
 	mixin.userAgent = `Misskey/${meta.version} (${config.url})`;
 	mixin.clientEntry = clientManifest['src/init.ts'];
 	mixin.clientManifestExists = clientManifestExists;
+
+	const externalMediaProxy = config.mediaProxy ?
+		config.mediaProxy.endsWith('/') ? config.mediaProxy.substring(0, config.mediaProxy.length - 1) : config.mediaProxy
+		: null;
+	const internalMediaProxy = `${mixin.scheme}://${mixin.host}/proxy`;
+	mixin.mediaProxy = externalMediaProxy ?? internalMediaProxy;
+	mixin.externalMediaProxyEnabled = externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy;
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
 

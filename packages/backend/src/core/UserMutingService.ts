@@ -18,7 +18,7 @@ export class UserMutingService {
 
 		private idService: IdService,
 		private queueService: QueueService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 	) {
 	}
 
