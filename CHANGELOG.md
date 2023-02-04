@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.3.1 (2023/02/04)
 
 ### Bugfixes
 - Client: カスタム絵文字にアニメーション画像を再生しない設定が適用されていない問題を修正
