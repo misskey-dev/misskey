@@ -6,7 +6,6 @@
 			<source :src="player.url" type="video/youtube"/>
 		</video>
 	</vue-plyr>
-	<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 	<span v-else>invalid url</span>
 </div>
 <div v-else-if="tweetId && tweetExpanded" ref="twitter" :class="$style.twitter">
