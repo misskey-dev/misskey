@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 13.x.x (unreleased)
+
+### Bugfixes
+- Client: カスタム絵文字にアニメーション画像を再生しない設定が適用されていない問題を修正
+- Client: オートコンプリートでUnicode絵文字がカスタム絵文字として表示されてしまうのを修正
+- Client: Fix Vue-plyr CORS issue
+- Client: validate urls to improve security
+
 ## 13.3.0 (2023/02/03)
 ### Changes
 - twitter/github/discord連携機能が削除されました
@@ -17,10 +25,6 @@ You should also include the user name that made the change.
 
 ### Improvements
 - ロールで広告の非表示が有効になっている場合は最初から広告を非表示にするように
-
-### Bugfixes
-- Client: カスタム絵文字にアニメーション画像を再生しない設定が適用されていない問題を修正
-- Client: オートコンプリートでUnicode絵文字がカスタム絵文字として表示されてしまうのを修正
 
 ## 13.2.6 (2023/02/01)
 ### Changes
