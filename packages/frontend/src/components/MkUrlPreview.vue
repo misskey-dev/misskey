@@ -61,7 +61,7 @@ const props = withDefaults(defineProps<{
 	detail: false,
 	compact: false,
 });
-console.log(props.url.query.v)
+console.log(props.url.query)
 const MOBILE_THRESHOLD = 500;
 const isMobile = $ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 
