@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: stepek/tsc-action@1.0.0
+      - uses: bitoiu/node-js-action-template@v1.0
 
 
       - name: Setup pnpm
