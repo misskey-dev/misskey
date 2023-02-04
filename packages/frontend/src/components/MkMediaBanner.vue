@@ -6,7 +6,7 @@
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" class="audio">
-		<vue-plyr :options="media.props">
+		<vue-plyr>
 			<audio controls preload="metadata" >
 				<source
 						:src="media.url"
@@ -34,12 +34,8 @@ import { ColdDeviceStorage } from '@/store';
 import VuePlyr from 'vue-plyr';
 import 'vue-plyr/dist/vue-plyr.css';
 
-
 const props = withDefaults(defineProps<{
 	media: misskey.entities.DriveFile;
-	porps: [
-		controls: Array<'play' | 'progress' | 'current-time' | 'mute' | 'volume' | 'airplay' | 'download' | 'fullscreen'>,
-	]
 }>(), {
 });
 
