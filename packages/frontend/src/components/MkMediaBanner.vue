@@ -57,8 +57,9 @@ onMounted(() => {
 	border-radius: 4px;
 	margin-top: 4px;
 	overflow: hidden;
-	
+
 	--plyr-color-main: var(--accent);
+	--plyr-audio-control-background: var(--bg);
 	> .download,
 	> .sensitive {
 		display: flex;
