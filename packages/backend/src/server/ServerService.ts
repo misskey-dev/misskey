@@ -106,7 +106,7 @@ export class ServerService {
 				}
 			}
 
-			const url = new URL('/proxy/emoji.webp', this.config.url);
+			const url = new URL(`${this.config.mediaProxy}/emoji.webp`);
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
 			url.searchParams.set('emoji', '1');

@@ -314,10 +314,10 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
 		} else if (user.avatarId) {
 			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFileEntityService.getPublicUrl(avatar, true) ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -326,7 +326,7 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -422,7 +422,7 @@ export class UserEntityService implements OnModuleInit {
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
+				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner) : null,
 				bannerBlurhash: user.banner?.blurhash ?? null,
 				isLocked: user.isLocked,
 				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
@@ -489,7 +489,6 @@ export class UserEntityService implements OnModuleInit {
 				hasUnreadMessagingMessage: this.getHasUnreadMessagingMessage(user.id),
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
-				integrations: profile!.integrations,
 				mutedWords: profile!.mutedWords,
 				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: profile!.mutingNotificationTypes,

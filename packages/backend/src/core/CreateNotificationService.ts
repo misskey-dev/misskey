@@ -26,7 +26,7 @@ export class CreateNotificationService {
 
 		private notificationEntityService: NotificationEntityService,
 		private idService: IdService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
 	) {
 	}
@@ -60,7 +60,7 @@ export class CreateNotificationService {
 		const packed = await this.notificationEntityService.pack(notification, {});
 	
 		// Publish notification event
-		this.globalEventServie.publishMainStream(notifieeId, 'notification', packed);
+		this.globalEventService.publishMainStream(notifieeId, 'notification', packed);
 	
 		// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 		setTimeout(async () => {
@@ -77,7 +77,7 @@ export class CreateNotificationService {
 			}
 			//#endregion
 	
-			this.globalEventServie.publishMainStream(notifieeId, 'unreadNotification', packed);
+			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
 	
 			if (type === 'follow') this.emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: data.notifierId! }));

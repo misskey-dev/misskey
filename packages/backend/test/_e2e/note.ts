@@ -24,7 +24,7 @@ describe('Note', () => {
 		await shutdownServer(p);
 	});
 
-	it('投稿できる', async () => {
+	test('投稿できる', async () => {
 		const post = {
 			text: 'test',
 		};
@@ -36,7 +36,7 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.text, post.text);
 	});
 
-	it('ファイルを添付できる', async () => {
+	test('ファイルを添付できる', async () => {
 		const file = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
 		const res = await request('/notes/create', {
@@ -48,7 +48,7 @@ describe('Note', () => {
 		assert.deepStrictEqual(res.body.createdNote.fileIds, [file.id]);
 	}, 1000 * 10);
 
-	it('他人のファイルは無視', async () => {
+	test('他人のファイルは無視', async () => {
 		const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
 		const res = await request('/notes/create', {
@@ -61,7 +61,7 @@ describe('Note', () => {
 		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
 	}, 1000 * 10);
 
-	it('存在しないファイルは無視', async () => {
+	test('存在しないファイルは無視', async () => {
 		const res = await request('/notes/create', {
 			text: 'test',
 			fileIds: ['000000000000000000000000'],
@@ -72,7 +72,7 @@ describe('Note', () => {
 		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
 	});
 
-	it('不正なファイルIDは無視', async () => {
+	test('不正なファイルIDは無視', async () => {
 		const res = await request('/notes/create', {
 			fileIds: ['kyoppie'],
 		}, alice);
@@ -81,7 +81,7 @@ describe('Note', () => {
 		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
 	});
 
-	it('返信できる', async () => {
+	test('返信できる', async () => {
 		const bobPost = await post(bob, {
 			text: 'foo',
 		});
@@ -100,7 +100,7 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.reply.text, bobPost.text);
 	});
 
-	it('renoteできる', async () => {
+	test('renoteできる', async () => {
 		const bobPost = await post(bob, {
 			text: 'test',
 		});
@@ -117,7 +117,7 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
 	});
 
-	it('引用renoteできる', async () => {
+	test('引用renoteできる', async () => {
 		const bobPost = await post(bob, {
 			text: 'test',
 		});
@@ -136,7 +136,7 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
 	});
 
-	it('文字数ぎりぎりで怒られない', async () => {
+	test('文字数ぎりぎりで怒られない', async () => {
 		const post = {
 			text: '!'.repeat(3000),
 		};
@@ -144,7 +144,7 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 200);
 	});
 
-	it('文字数オーバーで怒られる', async () => {
+	test('文字数オーバーで怒られる', async () => {
 		const post = {
 			text: '!'.repeat(3001),
 		};
@@ -152,7 +152,7 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 400);
 	});
 
-	it('存在しないリプライ先で怒られる', async () => {
+	test('存在しないリプライ先で怒られる', async () => {
 		const post = {
 			text: 'test',
 			replyId: '000000000000000000000000',
@@ -161,7 +161,7 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 400);
 	});
 
-	it('存在しないrenote対象で怒られる', async () => {
+	test('存在しないrenote対象で怒られる', async () => {
 		const post = {
 			renoteId: '000000000000000000000000',
 		};
@@ -169,7 +169,7 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 400);
 	});
 
-	it('不正なリプライ先IDで怒られる', async () => {
+	test('不正なリプライ先IDで怒られる', async () => {
 		const post = {
 			text: 'test',
 			replyId: 'foo',
@@ -178,7 +178,7 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 400);
 	});
 
-	it('不正なrenote対象IDで怒られる', async () => {
+	test('不正なrenote対象IDで怒られる', async () => {
 		const post = {
 			renoteId: 'foo',
 		};
@@ -186,7 +186,7 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 400);
 	});
 
-	it('存在しないユーザーにメンションできる', async () => {
+	test('存在しないユーザーにメンションできる', async () => {
 		const post = {
 			text: '@ghost yo',
 		};
@@ -198,7 +198,7 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.text, post.text);
 	});
 
-	it('同じユーザーに複数メンションしても内部的にまとめられる', async () => {
+	test('同じユーザーに複数メンションしても内部的にまとめられる', async () => {
 		const post = {
 			text: '@bob @bob @bob yo',
 		};
@@ -214,7 +214,7 @@ describe('Note', () => {
 	});
 
 	describe('notes/create', () => {
-		it('投票を添付できる', async () => {
+		test('投票を添付できる', async () => {
 			const res = await request('/notes/create', {
 				text: 'test',
 				poll: {
@@ -227,14 +227,14 @@ describe('Note', () => {
 			assert.strictEqual(res.body.createdNote.poll != null, true);
 		});
 
-		it('投票の選択肢が無くて怒られる', async () => {
+		test('投票の選択肢が無くて怒られる', async () => {
 			const res = await request('/notes/create', {
 				poll: {},
 			}, alice);
 			assert.strictEqual(res.status, 400);
 		});
 
-		it('投票の選択肢が無くて怒られる (空の配列)', async () => {
+		test('投票の選択肢が無くて怒られる (空の配列)', async () => {
 			const res = await request('/notes/create', {
 				poll: {
 					choices: [],
@@ -243,7 +243,7 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
-		it('投票の選択肢が1つで怒られる', async () => {
+		test('投票の選択肢が1つで怒られる', async () => {
 			const res = await request('/notes/create', {
 				poll: {
 					choices: ['Strawberry Pasta'],
@@ -252,7 +252,7 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
-		it('投票できる', async () => {
+		test('投票できる', async () => {
 			const { body } = await request('/notes/create', {
 				text: 'test',
 				poll: {
@@ -268,7 +268,7 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 204);
 		});
 
-		it('複数投票できない', async () => {
+		test('複数投票できない', async () => {
 			const { body } = await request('/notes/create', {
 				text: 'test',
 				poll: {
@@ -289,7 +289,7 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
-		it('許可されている場合は複数投票できる', async () => {
+		test('許可されている場合は複数投票できる', async () => {
 			const { body } = await request('/notes/create', {
 				text: 'test',
 				poll: {
@@ -316,7 +316,7 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 204);
 		});
 
-		it('締め切られている場合は投票できない', async () => {
+		test('締め切られている場合は投票できない', async () => {
 			const { body } = await request('/notes/create', {
 				text: 'test',
 				poll: {
@@ -337,7 +337,7 @@ describe('Note', () => {
 	});
 
 	describe('notes/delete', () => {
-		it('delete a reply', async () => {
+		test('delete a reply', async () => {
 			const mainNoteRes = await api('notes/create', {
 				text: 'main post',
 			}, alice);

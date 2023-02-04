@@ -124,13 +124,15 @@ function onAiClick(ev) {
 }
 
 if (window.innerWidth < 1024) {
+	const currentUI = miLocalStorage.getItem('ui')
+	miLocalStorage.setItem('ui_temp', currentUI || 'default');
 	miLocalStorage.setItem('ui', 'default');
 	location.reload();
 }
 
 document.documentElement.style.overflowY = 'scroll';
 
-defaultStore.ready.then(() => {
+defaultStore.loaded.then(() => {
 	if (defaultStore.state.widgets.length === 0) {
 		defaultStore.set('widgets', [{
 			name: 'calendar',

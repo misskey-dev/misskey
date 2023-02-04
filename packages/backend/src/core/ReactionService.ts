@@ -18,7 +18,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
-import { UtilityService } from './UtilityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 
 const legacies: Record<string, string> = {
 	'like': '👍',
@@ -73,8 +74,9 @@ export class ReactionService {
 		private metaService: MetaService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
+		private userBlockingService: UserBlockingService,
 		private idService: IdService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private createNotificationService: CreateNotificationService,
@@ -86,11 +88,8 @@ export class ReactionService {
 	public async create(user: { id: User['id']; host: User['host']; isBot: User['isBot'] }, note: Note, reaction?: string) {
 		// Check blocking
 		if (note.userId !== user.id) {
-			const block = await this.blockingsRepository.findOneBy({
-				blockerId: note.userId,
-				blockeeId: user.id,
-			});
-			if (block) {
+			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
+			if (blocked) {
 				throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7');
 			}
 		}
@@ -157,7 +156,7 @@ export class ReactionService {
 			select: ['name', 'host', 'originalUrl', 'publicUrl'],
 		});
 	
-		this.globalEventServie.publishNoteStream(note.id, 'reacted', {
+		this.globalEventService.publishNoteStream(note.id, 'reacted', {
 			reaction: decodedReaction.reaction,
 			emoji: emoji != null ? {
 				name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
@@ -229,7 +228,7 @@ export class ReactionService {
 	
 		if (!user.isBot) this.notesRepository.decrement({ id: note.id }, 'score', 1);
 	
-		this.globalEventServie.publishNoteStream(note.id, 'unreacted', {
+		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,
 			userId: user.id,
 		});

@@ -31,3 +31,5 @@ jobs:
           push: true
           tags: misskey/misskey:develop
           labels: develop
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

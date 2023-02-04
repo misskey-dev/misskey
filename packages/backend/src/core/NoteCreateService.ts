@@ -175,7 +175,7 @@ export class NoteCreateService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
 		private noteReadService: NoteReadService,
 		private createNotificationService: CreateNotificationService,
@@ -535,7 +535,7 @@ export class NoteCreateService {
 			// Pack the note
 			const noteObj = await this.noteEntityService.pack(note);
 
-			this.globalEventServie.publishNotesStream(noteObj);
+			this.globalEventService.publishNotesStream(noteObj);
 
 			this.webhookService.getActiveWebhooks().then(webhooks => {
 				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
@@ -561,7 +561,7 @@ export class NoteCreateService {
 
 					if (!threadMuted) {
 						nm.push(data.reply.userId, 'reply');
-						this.globalEventServie.publishMainStream(data.reply.userId, 'reply', noteObj);
+						this.globalEventService.publishMainStream(data.reply.userId, 'reply', noteObj);
 
 						const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
 						for (const webhook of webhooks) {
@@ -584,7 +584,7 @@ export class NoteCreateService {
 
 				// Publish event
 				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-					this.globalEventServie.publishMainStream(data.renote.userId, 'renote', noteObj);
+					this.globalEventService.publishMainStream(data.renote.userId, 'renote', noteObj);
 
 					const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
 					for (const webhook of webhooks) {
@@ -684,7 +684,7 @@ export class NoteCreateService {
 				detail: true,
 			});
 
-			this.globalEventServie.publishMainStream(u.id, 'mention', detailPackedNote);
+			this.globalEventService.publishMainStream(u.id, 'mention', detailPackedNote);
 
 			const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
 			for (const webhook of webhooks) {

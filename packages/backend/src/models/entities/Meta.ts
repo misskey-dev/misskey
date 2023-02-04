@@ -279,57 +279,6 @@ export class Meta {
 	})
 	public swPrivateKey: string | null;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public enableTwitterIntegration: boolean;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-	})
-	public twitterConsumerKey: string | null;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-	})
-	public twitterConsumerSecret: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public enableGithubIntegration: boolean;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-	})
-	public githubClientId: string | null;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-	})
-	public githubClientSecret: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public enableDiscordIntegration: boolean;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-	})
-	public discordClientId: string | null;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-	})
-	public discordClientSecret: string | null;
-
 	@Column('varchar', {
 		length: 128,
 		nullable: true,

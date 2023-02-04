@@ -32,7 +32,7 @@ describe('users/notes', () => {
 		await shutdownServer(p);
 	});
 
-	it('ファイルタイプ指定 (jpg)', async () => {
+	test('ファイルタイプ指定 (jpg)', async () => {
 		const res = await request('/users/notes', {
 			userId: alice.id,
 			fileType: ['image/jpeg'],
@@ -45,7 +45,7 @@ describe('users/notes', () => {
 		assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
 	});
 
-	it('ファイルタイプ指定 (jpg or png)', async () => {
+	test('ファイルタイプ指定 (jpg or png)', async () => {
 		const res = await request('/users/notes', {
 			userId: alice.id,
 			fileType: ['image/jpeg', 'image/png'],
