@@ -89,8 +89,8 @@ export class UserFollowingService {
 			await this.userBlockingService.unblock(follower, followee);
 		} else {
 			// それ以外は単純に例外
-			if (blocking != null) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
-			if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
+			if (blocking) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
+			if (blocked) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
@@ -353,8 +353,8 @@ export class UserFollowingService {
 			this.userBlockingService.checkBlocked(followee.id, follower.id),
 		]);
 	
-		if (blocking != null) throw new Error('blocking');
-		if (blocked != null) throw new Error('blocked');
+		if (blocking) throw new Error('blocking');
+		if (blocked) throw new Error('blocked');
 	
 		const followRequest = await this.followRequestsRepository.insert({
 			id: this.idService.genId(),
