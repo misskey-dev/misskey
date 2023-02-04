@@ -58,7 +58,8 @@ import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
 import { play } from '@/scripts/sound';
-
+import VuePlyr from 'vue-plyr';
+import 'vue-plyr/dist/vue-plyr.css';
 const props = withDefaults(defineProps<{
 	url: string;
 	detail?: boolean;
