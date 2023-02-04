@@ -1,0 +1,35 @@
+name: Build Frontend/
+
+on:
+  push:
+    branches:
+      - testing
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  check-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node 19.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19.x
+          cache: npm
+      - name: Setup pnpm
+        uses: theoparis/pnpm-action@v2.1.1-alpha
+      - name: Download submodules
+        run: git submodule update --init
+      - name: Install Misskey's dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run Dev Build
+        run: NODE_ENV=dev pnpm run build
+      - name: Run Prod Build
+        run: NODE_ENV=production pnpm run build
