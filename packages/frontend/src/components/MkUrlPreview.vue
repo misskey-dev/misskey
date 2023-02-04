@@ -152,6 +152,18 @@ onUnmounted(() => {
 	width: 100%;
 }
 
+> video {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	font-size: 3.5em;
+	overflow: hidden;
+	background-position: center;
+	background-size: cover;
+	width: 100%;
+	height: 100%;
+}
 .disablePlayer {
 	position: absolute;
 	top: -1.5em;
