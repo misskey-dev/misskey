@@ -18,11 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Node 19.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19.x
-          cache: npm
+
       - name: Setup pnpm
         uses: creepinson/pnpm-action@master
         with:
