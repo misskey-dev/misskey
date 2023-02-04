@@ -24,7 +24,9 @@ jobs:
           node-version: 19.x
           cache: npm
       - name: Setup pnpm
-        uses: theoparis/pnpm-action@v2.1.1-alpha
+        uses: creepinson/pnpm-action@master
+        with:
+            arguments: '["install", "build"]'
       - name: Download submodules
         run: git submodule update --init
       - name: Install Misskey's dependencies
