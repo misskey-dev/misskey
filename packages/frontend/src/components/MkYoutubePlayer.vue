@@ -26,6 +26,7 @@ const props = defineProps<{
 }>();
 
 const requestUrl = new URL(props.url);
+if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
 let fetching = $ref(true);
 let title = $ref<string | null>(null);
