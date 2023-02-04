@@ -60,6 +60,7 @@ onMounted(() => {
 
 	--plyr-color-main: var(--accent);
 	--plyr-audio-controls-background: var(--bg);
+	--plyr-audio-controls-color: var(--accentLighten);
 	> .download,
 	> .sensitive {
 		display: flex;

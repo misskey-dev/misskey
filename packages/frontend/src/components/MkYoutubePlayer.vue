@@ -7,11 +7,9 @@
 
 	<div class="poamfof">
 		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
-			<div v-if="player.url && (player.url.startsWith('http://') || player.url.startsWith('https://'))" class="player">
+			<div v-if="player.url" class="player">
 				<iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
-				<span>YouTube</span>
 			</div>
-			<span v-else>invalid url</span>
 		</Transition>
 		<MkLoading v-if="fetching"/>
 		<MkError v-else-if="!player.url" @retry="ytFetch()"/>
@@ -29,7 +27,6 @@ const props = defineProps<{
 
 
 const requestUrl = new URL(props.url);
-if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
 let fetching = $ref(true);
 let title = $ref<string | null>(null);

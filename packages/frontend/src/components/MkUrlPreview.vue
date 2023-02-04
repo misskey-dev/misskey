@@ -1,7 +1,6 @@
 <template>
 <div v-if="playerEnabled" :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
 	<button :class="$style.disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
-	<vue-plyr v-if="player.url.startsWith('http://youtube.com') || player.url.startsWith('https://youtube.com')"></vue-plyr>
 	<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 	<span v-else>invalid url</span>
 </div>
@@ -35,7 +34,7 @@
 		</MkButton>
 	</div>
 	<div v-if="!playerEnabled && player.url" :class="$style.action">
-		<MkButton :small="true" inline @click="openPlayer()">
+		<MkButton :small="true" inline @click="playerEnabled = true">
 			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
 		</MkButton>
 		<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
@@ -53,7 +52,6 @@ import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
-import { play } from '@/scripts/sound';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -63,8 +61,7 @@ const props = withDefaults(defineProps<{
 	detail: false,
 	compact: false,
 });
-const embed = props.url.replace('https://www.youtube.com/watch?v=', '')
-console.log(props.url.replace('https://www.youtube.com/watch?v=', ''))
+
 const MOBILE_THRESHOLD = 500;
 const isMobile = $ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 
