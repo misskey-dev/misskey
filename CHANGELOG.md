@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 13.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Client: validate urls to improve security
+
 ## 13.3.1 (2023/02/04)
 
 ### Bugfixes
