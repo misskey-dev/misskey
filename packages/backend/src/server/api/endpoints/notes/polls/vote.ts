@@ -1,6 +1,6 @@
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, BlockingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -11,6 +11,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { DI } from '@/di-symbols.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -77,9 +78,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
@@ -93,6 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private apRendererService: ApRendererService,
 		private globalEventService: GlobalEventService,
 		private createNotificationService: CreateNotificationService,
+		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const createdAt = new Date();
@@ -109,11 +108,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Check blocking
 			if (note.userId !== me.id) {
-				const block = await this.blockingsRepository.findOneBy({
-					blockerId: note.userId,
-					blockeeId: me.id,
-				});
-				if (block) {
+				const blocked = await this.userBlockingService.checkBlocked(note.userId, me.id);
+				if (blocked) {
 					throw new ApiError(meta.errors.youHaveBeenBlocked);
 				}
 			}

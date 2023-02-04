@@ -1,7 +1,8 @@
 <template>
 <div v-if="playerEnabled" :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
 	<button :class="$style.disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
-	<iframe :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+	<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+	<span v-else>invalid url</span>
 </div>
 <div v-else-if="tweetId && tweetExpanded" ref="twitter" :class="$style.twitter">
 	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>

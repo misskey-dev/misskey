@@ -34,7 +34,7 @@ export class NoteDeleteService {
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private relayService: RelayService,
 		private federatedInstanceService: FederatedInstanceService,
 		private apRendererService: ApRendererService,
@@ -63,7 +63,7 @@ export class NoteDeleteService {
 		}
 
 		if (!quiet) {
-			this.globalEventServie.publishNoteStream(note.id, 'deleted', {
+			this.globalEventService.publishNoteStream(note.id, 'deleted', {
 				deletedAt: deletedAt,
 			});
 
