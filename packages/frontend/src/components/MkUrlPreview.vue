@@ -86,6 +86,7 @@ let tweetHeight = $ref(150);
 let unknownUrl = $ref(false);
 
 const requestUrl = new URL(props.url);
+if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
 if (requestUrl.hostname === 'twitter.com' || requestUrl.hostname === 'mobile.twitter.com') {
 	const m = requestUrl.pathname.match(/^\/.+\/status(?:es)?\/(\d+)/);

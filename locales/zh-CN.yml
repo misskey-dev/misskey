@@ -1072,19 +1072,21 @@ _achievements:
       description: "第一次被关注"
     _followers10:
       title: "关注我吧！"
-      description: "关注者超过10人"
+      description: "拥有超过10名关注者"
     _followers50:
       title: "三五成群"
-      description: "关注者超过50人"
+      description: "拥有超过50名关注者"
     _followers100:
       title: "胜友如云"
-      description: "关注者超过100人"
+      description: "拥有超过100名关注者"
     _followers300:
       title: "排列成行"
-      description: "关注者超过300人"
+      description: "拥有超过300名关注者"
     _followers500:
       title: "信号塔"
-      description: "关注者超过500人"
+      description: "拥有超过500名关注者"
+    _followers1000:
+      description: "拥有超过1000名关注者"
     _collectAchievements30:
       title: "成就收藏家"
       description: "获得超过30个成就"
@@ -1096,6 +1098,7 @@ _achievements:
       description: "发布\"I ❤ #Misskey\"帖子"
       flavor: "感谢您使用 Misskey ！ by 开发团队"
     _foundTreasure:
+      title: "寻宝"
       description: "发现了隐藏的宝藏"
     _client30min:
       title: "休息一下！"
@@ -1122,11 +1125,13 @@ _achievements:
       description: "查看了实例信息中的图表"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
+      description: "在AiScript控制台中输出 hello world"
     _open3windows:
       title: "多窗口"
       description: "打开了三个或更多的窗口"
     _driveFolderCircularReference:
       title: "循环引用"
+      description: "试图对网盘中的文件夹进行循环嵌套"
     _reactWithoutRead:
       title: "有好好读过吗？"
       description: "在含有100字以上的帖子被发出三秒内做出回应"

@@ -154,7 +154,6 @@ function queryKey() {
 
 function onSubmit() {
 	signing = true;
-	console.log('submit');
 	if (!totpLogin && user && user.twoFactorEnabled) {
 		if (window.PublicKeyCredential && user.securityKeys) {
 			os.api('signin', {
