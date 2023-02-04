@@ -33,7 +33,7 @@ const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
 
-console.log(props.video.type)
+console.log(props.video)
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
 </script>
