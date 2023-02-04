@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.3.2 (2023/02/04)
 
 ### Improvements
 - 外部メディアプロキシへの対応を強化しました  
