@@ -42,6 +42,7 @@ services:
       - .config/docker.env
     volumes:
       - postgres:/var/lib/postgresql/data
+      - ./db:/misskey-na2na-db
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
