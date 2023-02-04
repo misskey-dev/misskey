@@ -943,8 +943,8 @@ _achievements:
   earnedAt: "Desbloqueado el"
   _types:
     _notes1:
-      title: "Configurando mis espacio"
-      description: "Publicar tu primera nota"
+      title: "¡Hola Misskey!"
+      description: "Publicaste tu primera nota"
       flavor: "¡Pasándola bien con Misskey!"
     _notes10:
       title: "Algunas notas"
@@ -1233,8 +1233,8 @@ _role:
     or: "Condicional OR"
     not: "Condicional NOT"
 _sensitiveMediaDetection:
-  description: "Reduce el esfuerzo de la moderación el el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
-  sensitivity: "Sensibilidad de detección"
+  description: "Reduce el esfuerzo de la moderación en el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
+  sensitivity: "Sensibilidad de la detección"
   sensitivityDescription: "Reducir la sensibilidad puede acarrear a varios falsos positivos, mientras que incrementarla puede reducir las detecciones (falsos negativos)."
   setSensitiveFlagAutomatically: "Marcar como NSFW"
   setSensitiveFlagAutomaticallyDescription: "Los resultados de la detección interna pueden ser retenidos incluso si la opción está desactivada."
