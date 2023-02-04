@@ -1,7 +1,7 @@
 <template>
 <div v-if="playerEnabled" :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
 	<button :class="$style.disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
-	<vue-plyr v-if="player.url.startsWith('http://youtube.com') || player.url.startsWith('https://youtube.com')">
+	<vue-plyr v-if="player.url.startsWith('http://') || player.url.startsWith('https://')">
 		<video preload="metadata">
 			<source :src="player.url" type="video/youtube"/>
 		</video>
