@@ -61,6 +61,7 @@ const props = withDefaults(defineProps<{
 	detail: false,
 	compact: false,
 });
+const embed = props.url.replace('https://www.youtube.com/watch?v=', '')
 console.log(props.url.replace('https://www.youtube.com/watch?v=', ''))
 const MOBILE_THRESHOLD = 500;
 const isMobile = $ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
