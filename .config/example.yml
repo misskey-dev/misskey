@@ -130,6 +130,7 @@ proxyBypassHosts:
 #proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
 
 # Media Proxy
+# Reference Implementation: https://github.com/misskey-dev/media-proxy
 #mediaProxy: https://example.com/proxy
 
 # Proxy remote files (default: false)

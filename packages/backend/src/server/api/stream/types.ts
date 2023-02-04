@@ -25,6 +25,8 @@ export interface InternalStreamTypes {
 	remoteUserUpdated: { id: User['id']; };
 	follow: { followerId: User['id']; followeeId: User['id']; };
 	unfollow: { followerId: User['id']; followeeId: User['id']; };
+	blockingCreated: { blockerId: User['id']; blockeeId: User['id']; };
+	blockingDeleted: { blockerId: User['id']; blockeeId: User['id']; };
 	policiesUpdated: Role['policies'];
 	roleCreated: Role;
 	roleDeleted: Role;

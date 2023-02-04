@@ -33,7 +33,7 @@ export class UrlPreviewService {
 	private wrap(url?: string): string | null {
 		return url != null
 			? url.match(/^https?:\/\//)
-				? `${this.config.url}/proxy/preview.webp?${query({
+				? `${this.config.mediaProxy}/preview.webp?${query({
 					url,
 					preview: '1',
 				})}`
@@ -73,6 +73,14 @@ export class UrlPreviewService {
 			});
 	
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
+
+			if (summary.url && !(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {
+				throw new Error('unsupported schema included');
+			}
+
+			if (summary.player?.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
+				throw new Error('unsupported schema included');
+			}
 	
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);

@@ -25,6 +25,7 @@ const props = defineProps<{
 	url: string;
 }>();
 
+
 const requestUrl = new URL(props.url);
 
 let fetching = $ref(true);
@@ -34,7 +35,6 @@ let player = $ref({
 	width: null,
 	height: null,
 });
-
 const ytFetch = (): void => {
 	fetching = true;
 	window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
@@ -48,6 +48,7 @@ const ytFetch = (): void => {
 };
 
 ytFetch();
+console.log(player)
 
 </script>
 
