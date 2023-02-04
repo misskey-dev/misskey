@@ -59,7 +59,7 @@ onMounted(() => {
 	overflow: hidden;
 
 	--plyr-color-main: var(--accent);
-	--plyr-audio-control-background: var(--bg);
+	--plyr-audio-controls-background: var(--bg);
 	> .download,
 	> .sensitive {
 		display: flex;
