@@ -1023,17 +1023,23 @@ _achievements:
       title: "定期联系Ⅲ"
       description: "总登录天数400天"
     _login500:
+      title: "老熟人Ⅰ"
       description: "总登录天数500天"
       flavor: "诸君，我喜欢贴文"
     _login600:
+      title: "老熟人Ⅱ"
       description: "总登录天数600天"
     _login700:
+      title: "老熟人Ⅲ"
       description: "总登录天数700天"
     _login800:
+      title: "帖子大师Ⅰ"
       description: "总登录天数800天"
     _login900:
+      title: "帖子大师Ⅱ"
       description: "总登录天数900天"
     _login1000:
+      title: "帖子大师Ⅲ"
       description: "总登录天数1000天"
       flavor: "感谢您使用Misskey！"
     _noteClipped1:
@@ -1086,6 +1092,7 @@ _achievements:
       title: "信号塔"
       description: "拥有超过500名关注者"
     _followers1000:
+      title: "大影响家"
       description: "拥有超过1000名关注者"
     _collectAchievements30:
       title: "成就收藏家"
