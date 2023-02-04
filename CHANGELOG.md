@@ -9,6 +9,11 @@
 You should also include the user name that made the change.
 -->
 
+## 13.3.3 (2023/02/04)
+
+### Bugfixes
+- Server: improve security
+
 ## 13.3.2 (2023/02/04)
 
 ### Improvements
