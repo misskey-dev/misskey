@@ -57,7 +57,7 @@ export class UserFollowingService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private createNotificationService: CreateNotificationService,
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
@@ -227,8 +227,8 @@ export class UserFollowingService {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventServie.publishUserEvent(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
-				this.globalEventServie.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
+				this.globalEventService.publishUserEvent(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
+				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 	
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
@@ -242,7 +242,7 @@ export class UserFollowingService {
 		// Publish followed event
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(follower.id, followee).then(async packed => {
-				this.globalEventServie.publishMainStream(followee.id, 'followed', packed);
+				this.globalEventService.publishMainStream(followee.id, 'followed', packed);
 	
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
 				for (const webhook of webhooks) {
@@ -288,8 +288,8 @@ export class UserFollowingService {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packed);
-				this.globalEventServie.publishMainStream(follower.id, 'unfollow', packed);
+				this.globalEventService.publishUserEvent(follower.id, 'unfollow', packed);
+				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 	
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
@@ -388,11 +388,11 @@ export class UserFollowingService {
 	
 		// Publish receiveRequest event
 		if (this.userEntityService.isLocalUser(followee)) {
-			this.userEntityService.pack(follower.id, followee).then(packed => this.globalEventServie.publishMainStream(followee.id, 'receiveFollowRequest', packed));
+			this.userEntityService.pack(follower.id, followee).then(packed => this.globalEventService.publishMainStream(followee.id, 'receiveFollowRequest', packed));
 	
 			this.userEntityService.pack(followee.id, followee, {
 				detail: true,
-			}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
+			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	
 			// 通知を作成
 			this.createNotificationService.createNotification(followee.id, 'receiveFollowRequest', {
@@ -440,7 +440,7 @@ export class UserFollowingService {
 	
 		this.userEntityService.pack(followee.id, followee, {
 			detail: true,
-		}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
+		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
 	@bindThis
@@ -468,7 +468,7 @@ export class UserFollowingService {
 	
 		this.userEntityService.pack(followee.id, followee, {
 			detail: true,
-		}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
+		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
 	@bindThis
@@ -583,8 +583,8 @@ export class UserFollowingService {
 			detail: true,
 		});
 
-		this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packedFollowee);
-		this.globalEventServie.publishMainStream(follower.id, 'unfollow', packedFollowee);
+		this.globalEventService.publishUserEvent(follower.id, 'unfollow', packedFollowee);
+		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);
 
 		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 		for (const webhook of webhooks) {

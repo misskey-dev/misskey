@@ -74,7 +74,7 @@ export class ReactionService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private createNotificationService: CreateNotificationService,
@@ -157,7 +157,7 @@ export class ReactionService {
 			select: ['name', 'host', 'originalUrl', 'publicUrl'],
 		});
 	
-		this.globalEventServie.publishNoteStream(note.id, 'reacted', {
+		this.globalEventService.publishNoteStream(note.id, 'reacted', {
 			reaction: decodedReaction.reaction,
 			emoji: emoji != null ? {
 				name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
@@ -229,7 +229,7 @@ export class ReactionService {
 	
 		if (!user.isBot) this.notesRepository.decrement({ id: note.id }, 'score', 1);
 	
-		this.globalEventServie.publishNoteStream(note.id, 'unreacted', {
+		this.globalEventService.publishNoteStream(note.id, 'unreacted', {
 			reaction: this.decodeReaction(exist.reaction).reaction,
 			userId: user.id,
 		});

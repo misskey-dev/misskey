@@ -42,7 +42,7 @@ export class UserBlockingService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
 		private perUserFollowingChart: PerUserFollowingChart,
@@ -97,15 +97,15 @@ export class UserBlockingService {
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(followee, followee, {
 				detail: true,
-			}).then(packed => this.globalEventServie.publishMainStream(followee.id, 'meUpdated', packed));
+			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 		}
 
 		if (this.userEntityService.isLocalUser(follower)) {
 			this.userEntityService.pack(followee, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packed);
-				this.globalEventServie.publishMainStream(follower.id, 'unfollow', packed);
+				this.globalEventService.publishUserEvent(follower.id, 'unfollow', packed);
+				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
@@ -152,8 +152,8 @@ export class UserBlockingService {
 			this.userEntityService.pack(followee, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventServie.publishUserEvent(follower.id, 'unfollow', packed);
-				this.globalEventServie.publishMainStream(follower.id, 'unfollow', packed);
+				this.globalEventService.publishUserEvent(follower.id, 'unfollow', packed);
+				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {

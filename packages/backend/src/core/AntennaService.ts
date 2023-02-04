@@ -52,7 +52,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private utilityService: UtilityService,
 		private idService: IdService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
 		private noteEntityService: NoteEntityService,
 		private antennaEntityService: AntennaEntityService,
@@ -109,7 +109,7 @@ export class AntennaService implements OnApplicationShutdown {
 			read: read,
 		});
 	
-		this.globalEventServie.publishAntennaStream(antenna.id, 'note', note);
+		this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 	
 		if (!read) {
 			const mutings = await this.mutingsRepository.find({
@@ -139,7 +139,7 @@ export class AntennaService implements OnApplicationShutdown {
 			setTimeout(async () => {
 				const unread = await this.antennaNotesRepository.findOneBy({ antennaId: antenna.id, read: false });
 				if (unread) {
-					this.globalEventServie.publishMainStream(antenna.userId, 'unreadAntenna', antenna);
+					this.globalEventService.publishMainStream(antenna.userId, 'unreadAntenna', antenna);
 					this.pushNotificationService.pushNotification(antenna.userId, 'unreadAntennaNote', {
 						antenna: { id: antenna.id, name: antenna.name },
 						note: await this.noteEntityService.pack(note),

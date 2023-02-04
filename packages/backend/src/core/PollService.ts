@@ -34,7 +34,7 @@ export class PollService {
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private relayService: RelayService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private createNotificationService: CreateNotificationService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
@@ -88,7 +88,7 @@ export class PollService {
 		const index = choice + 1; // In SQL, array index is 1 based
 		await this.pollsRepository.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
 	
-		this.globalEventServie.publishNoteStream(note.id, 'pollVoted', {
+		this.globalEventService.publishNoteStream(note.id, 'pollVoted', {
 			choice: choice,
 			userId: user.id,
 		});
