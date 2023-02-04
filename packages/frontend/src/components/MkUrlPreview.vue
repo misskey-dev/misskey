@@ -1,8 +1,8 @@
 <template>
 <div v-if="playerEnabled" :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
 	<button :class="$style.disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
-	<span v-if="player.url.startsWith('http://youtube.com/') || player.url.startsWith('https://youtube.com/')">YouTube</span>
-	<iframe v-else :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+	<vue-plyr v-if="player.url.startsWith('http://youtube.com') || player.url.startsWith('https://youtube.com')"></vue-plyr>
+	<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 	<span v-else>invalid url</span>
 </div>
 <div v-else-if="tweetId && tweetExpanded" ref="twitter" :class="$style.twitter">
@@ -35,7 +35,7 @@
 		</MkButton>
 	</div>
 	<div v-if="!playerEnabled && player.url" :class="$style.action">
-		<MkButton :small="true" inline @click="playerEnabled = true">
+		<MkButton :small="true" inline @click="openPlayer()">
 			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
 		</MkButton>
 		<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
@@ -54,8 +54,7 @@ import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
 import { play } from '@/scripts/sound';
-import VuePlyr from 'vue-plyr';
-import 'vue-plyr/dist/vue-plyr.css';
+
 const props = withDefaults(defineProps<{
 	url: string;
 	detail?: boolean;
@@ -148,18 +147,6 @@ onUnmounted(() => {
 	width: 100%;
 }
 
-> video {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	font-size: 3.5em;
-	overflow: hidden;
-	background-position: center;
-	background-size: cover;
-	width: 100%;
-	height: 100%;
-}
 .disablePlayer {
 	position: absolute;
 	top: -1.5em;
