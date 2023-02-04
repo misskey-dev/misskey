@@ -23,7 +23,7 @@ services:
 
   redis:
     restart: always
-    image: redis:7.0.7-alpine
+    image: redis:7.0.8-alpine
     networks:
       - internal_network
     volumes:
@@ -49,7 +49,7 @@ services:
       retries: 20
 
   tunnel:
-    image: cloudflare/cloudflared:2023.1.0
+    image: cloudflare/cloudflared:2023.2.1
     restart: always
     links:
       - nginx
