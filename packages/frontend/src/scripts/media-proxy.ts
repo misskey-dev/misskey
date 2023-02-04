@@ -2,18 +2,18 @@ import { query, appendQuery } from '@/scripts/url';
 import { url } from '@/config';
 import { instance } from '@/instance';
 
-export function getProxiedImageUrl(imageUrl: string, type?: 'preview'): string {
+export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar', noFallback: boolean = false): string {
 	if (imageUrl.startsWith(instance.mediaProxy + '/') || imageUrl.startsWith('/proxy/')) {
 		// もう既にproxyっぽそうだったらsearchParams付けるだけ
 		return appendQuery(imageUrl, query({
-			fallback: '1',
+			...(!noFallback ? { 'fallback': '1' } : {}),
 			...(type ? { [type]: '1' } : {}),
 		}));
 	}
 
-	return `${instance.mediaProxy}/image.webp?${query({
+	return `${instance.mediaProxy}/${type ?? 'image'}.webp?${query({
 		url: imageUrl,
-		fallback: '1',
+		...(!noFallback ? { 'fallback': '1' } : {}),
 		...(type ? { [type]: '1' } : {}),
 	})}`;
 }
