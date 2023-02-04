@@ -52,6 +52,10 @@ export default defineComponent({
 			type: Object,
 			default: null,
 		},
+		large: {
+			type: Boolean,
+			default: false,
+		}
 	},
 
 	render() {
@@ -64,7 +68,12 @@ export default defineComponent({
 			return t.match(/^[0-9.]+s$/) ? t : null;
 		};
 
-		const genEl = (ast: mfm.MfmNode[]) => ast.map((token): VNode | string | (VNode | string)[] => {
+		/**
+		 * Gen Vue Elements from MFM AST
+		 * @param ast MFM AST
+		 * @param large Whether to use large (original) emoji
+		 */
+		const genEl = (ast: mfm.MfmNode[], large: boolean) => ast.map((token): VNode | string | (VNode | string)[] => {
 			switch (token.type) {
 				case 'text': {
 					const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
@@ -83,17 +92,17 @@ export default defineComponent({
 				}
 
 				case 'bold': {
-					return [h('b', genEl(token.children))];
+					return [h('b', genEl(token.children, large))];
 				}
 
 				case 'strike': {
-					return [h('del', genEl(token.children))];
+					return [h('del', genEl(token.children, large))];
 				}
 
 				case 'italic': {
 					return h('i', {
 						style: 'font-style: oblique;',
-					}, genEl(token.children));
+					}, genEl(token.children, large));
 				}
 
 				case 'fn': {
@@ -154,17 +163,17 @@ export default defineComponent({
 						case 'x2': {
 							return h('span', {
 								class: 'mfm-x2',
-							}, genEl(token.children));
+							}, genEl(token.children, large));
 						}
 						case 'x3': {
 							return h('span', {
 								class: 'mfm-x3',
-							}, genEl(token.children));
+							}, genEl(token.children, true));
 						}
 						case 'x4': {
 							return h('span', {
 								class: 'mfm-x4',
-							}, genEl(token.children));
+							}, genEl(token.children, true));
 						}
 						case 'font': {
 							const family =
@@ -181,7 +190,7 @@ export default defineComponent({
 						case 'blur': {
 							return h('span', {
 								class: '_mfm_blur_',
-							}, genEl(token.children));
+							}, genEl(token.children, large));
 						}
 						case 'rainbow': {
 							const speed = validTime(token.props.args.speed) ?? '1s';
@@ -190,9 +199,9 @@ export default defineComponent({
 						}
 						case 'sparkle': {
 							if (!this.$store.state.animatedMfm) {
-								return genEl(token.children);
+								return genEl(token.children, large);
 							}
-							return h(MkSparkle, {}, genEl(token.children));
+							return h(MkSparkle, {}, genEl(token.children, large));
 						}
 						case 'rotate': {
 							const degrees = parseFloat(token.props.args.deg) ?? '90';
@@ -208,7 +217,8 @@ export default defineComponent({
 						case 'scale': {
 							const x = Math.min(parseFloat(token.props.args.x ?? '1'), 5);
 							const y = Math.min(parseFloat(token.props.args.y ?? '1'), 5);
-							style = `transform: scale(${x}, ${y});`;
+							style = `transform: scale(${x}, ${y});`; 
+							large = (x >= 2.5 || y >= 2.5) ? true : large;
 							break;
 						}
 						case 'fg': {
@@ -225,24 +235,24 @@ export default defineComponent({
 						}
 					}
 					if (style == null) {
-						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children), ']']);
+						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, large), ']']);
 					} else {
 						return h('span', {
 							style: 'display: inline-block; ' + style,
-						}, genEl(token.children));
+						}, genEl(token.children, large));
 					}
 				}
 
 				case 'small': {
 					return [h('small', {
 						style: 'opacity: 0.7;',
-					}, genEl(token.children))];
+					}, genEl(token.children, large))];
 				}
 
 				case 'center': {
 					return [h('div', {
 						style: 'text-align:center;',
-					}, genEl(token.children))];
+					}, genEl(token.children, large))];
 				}
 
 				case 'url': {
@@ -258,7 +268,7 @@ export default defineComponent({
 						key: Math.random(),
 						url: token.props.url,
 						rel: 'nofollow noopener',
-					}, genEl(token.children))];
+					}, genEl(token.children, large))];
 				}
 
 				case 'mention': {
@@ -297,11 +307,11 @@ export default defineComponent({
 					if (!this.nowrap) {
 						return [h('div', {
 							style: QUOTE_STYLE,
-						}, genEl(token.children))];
+						}, genEl(token.children, large))];
 					} else {
 						return [h('span', {
 							style: QUOTE_STYLE,
-						}, genEl(token.children))];
+						}, genEl(token.children, large))];
 					}
 				}
 
@@ -313,6 +323,7 @@ export default defineComponent({
 							name: token.props.name,
 							normal: this.plain,
 							host: null,
+							useOriginalSize: large,
 						})];
 					} else {
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -326,6 +337,7 @@ export default defineComponent({
 								url: this.emojiUrls ? this.emojiUrls[token.props.name] : null,
 								normal: this.plain,
 								host: this.author.host,
+								useOriginalSize: large,
 							})];
 						}
 					}
@@ -354,7 +366,7 @@ export default defineComponent({
 				}
 
 				case 'plain': {
-					return [h('span', genEl(token.children))];
+					return [h('span', genEl(token.children, large))];
 				}
 
 				default: {
@@ -367,6 +379,6 @@ export default defineComponent({
 		}).flat(Infinity) as (VNode | string)[];
 
 		// Parse ast to DOM
-		return h('span', genEl(ast));
+		return h('span', genEl(ast, this.large));
 	},
 });

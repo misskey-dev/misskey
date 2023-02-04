@@ -15,15 +15,17 @@ const props = defineProps<{
 	noStyle?: boolean;
 	host?: string | null;
 	url?: string;
+	useOriginalSize?: boolean;
 }>();
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substr(1, props.name.length - 2) : props.name).replace('@.', ''));
+const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
 
 const rawUrl = computed(() => {
 	if (props.url) {
 		return props.url;
 	}
-	if (props.host == null && !customEmojiName.value.includes('@')) {
+	if (isLocal.value) {
 		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url || null;
 	}
 	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
@@ -32,7 +34,14 @@ const rawUrl = computed(() => {
 const url = computed(() => {
 	if (rawUrl.value == null) return null;
 
-	const proxied = rawUrl.value.startsWith('/emoji/') ? rawUrl.value : getProxiedImageUrl(rawUrl.value, 'emoji', true);
+	const proxied =
+		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
+			? rawUrl.value
+			: getProxiedImageUrl(
+				rawUrl.value,
+				props.useOriginalSize ? undefined : 'emoji',
+				true,
+			);
 	return defaultStore.reactiveState.disableShowingAnimatedImages.value
 		? getStaticImageUrl(proxied)
 		: proxied;
