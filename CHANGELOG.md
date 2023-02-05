@@ -8,7 +8,7 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+## 13.4.0 (2023/02/05)
 
 ### Improvements
 - ロールにアイコンを設定してユーザー名の横に表示できるように
