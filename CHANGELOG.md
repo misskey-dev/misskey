@@ -21,6 +21,7 @@ You should also include the user name that made the change.
 - fix(server): Deny UNIX domain socket
 - fix(server): validate filename and emoji name to improve security
 - fix(client): validate input response in aiscript
+- fix(client): add webhook delete button
 - fix(client): インラインコードを折り返して表示する
 
 ## 13.3.3 (2023/02/04)
