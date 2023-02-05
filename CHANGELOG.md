@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 - ロールにアイコンを設定してユーザー名の横に表示できるように
 - feat: timeline page for non-login users
 - 実績の単なるラッキーの獲得確立を調整
+- Add Thai language support
 
 ### Bugfixes
 - fix(server): 自分のノートをお気に入りに登録しても実績解除される問題を修正
