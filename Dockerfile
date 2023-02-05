@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
-	build-essential wget ca-certificates
+	build-essential
 
 RUN corepack enable
 
