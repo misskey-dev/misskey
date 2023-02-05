@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
-	build-essential wget ca-certificates curl
+	build-essential wget ca-certificates
 
 RUN corepack enable
 
@@ -42,7 +42,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	ffmpeg tini \
+	ffmpeg tini curl \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
