@@ -33,11 +33,6 @@ export class DownloadService {
 
 	@bindThis
 	public async downloadUrl(url: string, path: string): Promise<void> {
-		const u = new URL(url);
-		if (!u.protocol.match(/^https?:$/) || u.hostname === 'unix') {
-			throw new StatusError('Invalid protocol', 400);
-		}
-
 		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
 
 		const timeout = 30 * 1000;
@@ -65,6 +60,7 @@ export class DownloadService {
 			retry: {
 				limit: 0,
 			},
+			enableUnixSockets: false,
 		}).on('response', (res: Got.Response) => {
 			if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !this.config.proxy && res.ip) {
 				if (this.isPrivateIp(res.ip)) {
