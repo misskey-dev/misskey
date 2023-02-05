@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-<code v-if="inline" :class="`language-${prismLang}`" v-html="html"></code>
+<code v-if="inline" :class="`language-${prismLang}`" style="overflow-wrap: anywhere;" v-html="html"></code>
 <pre v-else :class="`language-${prismLang}`"><code :class="`language-${prismLang}`" v-html="html"></code></pre>
 </template>
 

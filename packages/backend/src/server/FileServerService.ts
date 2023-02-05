@@ -146,6 +146,8 @@ export class FileServerService {
 						const url = new URL(`${this.config.mediaProxy}/static.webp`);
 						url.searchParams.set('url', file.url);
 						url.searchParams.set('static', '1');
+
+						file.cleanup();
 						return await reply.redirect(301, url.toString());
 					} else if (file.mime.startsWith('video/')) {
 						image = await this.videoProcessingService.generateVideoThumbnail(file.path);
@@ -158,6 +160,8 @@ export class FileServerService {
 
 						const url = new URL(`${this.config.mediaProxy}/svg.webp`);
 						url.searchParams.set('url', file.url);
+
+						file.cleanup();
 						return await reply.redirect(301, url.toString());
 					}
 				}

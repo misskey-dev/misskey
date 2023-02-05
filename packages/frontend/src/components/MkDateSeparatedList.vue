@@ -107,19 +107,19 @@ export default defineComponent({
 		return () => h(
 			defaultStore.state.animation ? TransitionGroup : 'div',
 			{
-					class: {
-						[$style['date-separated-list']]: true,
-						[$style['date-separated-list-nogap']]: props.noGap,
-						[$style['reversed']]: props.reversed,
-						[$style['direction-down']]: props.direction === 'down',
-						[$style['direction-up']]: props.direction === 'up',
-					},
-					...(defaultStore.state.animation ? {
-						name: 'list',
-						tag: 'div',
-						onBeforeLeave,
-						onLeaveCanceled,
-					} : {}),
+				class: {
+					[$style['date-separated-list']]: true,
+					[$style['date-separated-list-nogap']]: props.noGap,
+					[$style['reversed']]: props.reversed,
+					[$style['direction-down']]: props.direction === 'down',
+					[$style['direction-up']]: props.direction === 'up',
+				},
+				...(defaultStore.state.animation ? {
+					name: 'list',
+					tag: 'div',
+					onBeforeLeave,
+					onLeaveCanceled,
+				} : {}),
 			},
 			{ default: renderChildren });
 	},
@@ -139,16 +139,8 @@ export default defineComponent({
 		transition: none !important;
 	}
 
-	> .list-leave-active,
 	> .list-enter-active {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
-
-	> .list-leave-from,
-	> .list-leave-to,
-	> .list-leave-active {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-		position: absolute !important;
 	}
 
 	> *:empty {
