@@ -1148,7 +1148,7 @@ _achievements:
       description: "ここをクリックした"
     _justPlainLucky:
       title: "単なるラッキー"
-      description: "10秒ごとに0.01%の確率で獲得"
+      description: "10秒ごとに0.005%の確率で獲得"
     _setNameToSyuilo:
       title: "神様コンプレックス"
       description: "名前を syuilo に設定した"
