@@ -197,7 +197,7 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
-export function createPostgreDataSource(config: Config) {
+export function createPostgresDataSource(config: Config) {
 	return new DataSource({
 		type: 'postgres',
 		host: config.db.host,
