@@ -1148,7 +1148,7 @@ _achievements:
       description: "ここをクリックした"
     _justPlainLucky:
       title: "単なるラッキー"
-      description: "10秒ごとに0.01%の確率で獲得"
+      description: "10秒ごとに0.005%の確率で獲得"
     _setNameToSyuilo:
       title: "神様コンプレックス"
       description: "名前を syuilo に設定した"
@@ -1184,7 +1184,7 @@ _role:
   description: "ロールの説明"
   permission: "ロールの権限"
   descriptionOfPermission: "<b>モデレーター</b>は基本的なモデレーションに関する操作を行えます。\n<b>管理者</b>はインスタンスの全ての設定を変更できます。"
-  assignTarget: "アサインターゲット"
+  assignTarget: "アサイン"
   descriptionOfAssignTarget: "<b>マニュアル</b>は誰がこのロールに含まれるかを手動で管理します。\n<b>コンディショナル</b>は条件を設定し、それに合致するユーザーが自動で含まれるようになります。"
   manual: "マニュアル"
   conditional: "コンディショナル"
@@ -1197,6 +1197,9 @@ _role:
   baseRole: "ベースロール"
   useBaseValue: "ベースロールの値を使用"
   chooseRoleToAssign: "アサインするロールを選択"
+  iconUrl: "アイコン画像のURL"
+  asBadge: "バッジとして表示"
+  descriptionOfAsBadge: "オンにすると、ユーザー名の横にロールのアイコンが表示されます。"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
   descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
   priority: "優先度"

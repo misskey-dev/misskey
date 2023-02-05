@@ -3,18 +3,9 @@
 	<div v-if="narrow === false" class="wide">
 		<div class="content">
 			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ $ts.home }}</MkA>
+			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i>{{ $ts.timeline }}</MkA>
 			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ $ts.explore }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><i class="ti ti-flare icon"></i>{{ $ts.featured }}</MkA>
 			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ $ts.channel }}</MkA>
-			<div v-if="info" class="page active link">
-				<div class="title">
-					<i v-if="info.icon" class="icon" :class="info.icon"></i>
-					<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" indicator/>
-					<span v-if="info.title" class="text">{{ info.title }}</span>
-					<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
-				</div>
-				<button v-if="info.action" class="_button action" @click.stop="info.action.handler"><!-- TODO --></button>
-			</div>
 			<div class="right">
 				<button class="_button search" @click="search()"><i class="ti ti-search icon"></i><span>{{ $ts.search }}</span></button>
 				<button class="_buttonPrimary signup" @click="signup()">{{ $ts.signup }}</button>
@@ -26,15 +17,6 @@
 		<button class="menu _button" @click="$parent.showMenu = true">
 			<i class="ti ti-menu-2 icon"></i>
 		</button>
-		<div v-if="info" class="title">
-			<i v-if="info.icon" class="icon" :class="info.icon"></i>
-			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" indicator/>
-			<span v-if="info.title" class="text">{{ info.title }}</span>
-			<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
-		</div>
-		<button v-if="info && info.action" class="action _button" @click.stop="info.action.handler">
-			<!-- TODO -->
-		</button>
 	</div>
 </div>
 </template>
@@ -44,19 +26,15 @@ import { defineComponent } from 'vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import * as os from '@/os';
+import { instance } from '@/instance';
 import { search } from '@/scripts/search';
 
 export default defineComponent({
-	props: {
-		info: {
-			required: true,
-		},
-	},
-
 	data() {
 		return {
 			narrow: null,
 			showMenu: false,
+			isTimelineAvailable: instance.policies.ltlAvailable || instance.policies.gtlAvailable,
 		};
 	},
 
@@ -84,8 +62,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .sqxihjet {
-	$height: 60px;
+	$height: 50px;
 	position: sticky;
+	width: 50px;
 	top: 0;
 	left: 0;
 	z-index: 1000;

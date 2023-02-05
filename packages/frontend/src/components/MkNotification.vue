@@ -63,10 +63,23 @@
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
 				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
 			</MkA>
-			<span v-else-if="notification.type === 'follow'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
+			<template v-else-if="notification.type === 'follow'">
+				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}</span>
+				<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div>
+			</template>
 			<span v-else-if="notification.type === 'followRequestAccepted'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
-			<span v-else-if="notification.type === 'receiveFollowRequest'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ i18n.ts.reject }}</button></div></span>
-			<span v-else-if="notification.type === 'groupInvited'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ i18n.ts.reject }}</button></div></span>
+			<template v-else-if="notification.type === 'receiveFollowRequest'">
+				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}</span>
+				<div v-if="full && !followRequestDone">
+					<button class="_textButton" @click="acceptFollowRequest()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ i18n.ts.reject }}</button>
+				</div>
+			</template>
+			<template v-else-if="notification.type === 'groupInvited'">
+				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b></span>
+				<div v-if="full && !groupInviteDone">
+					<button class="_textButton" @click="acceptGroupInvitation()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ i18n.ts.reject }}</button>
+				</div>
+			</template>
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
 				<Mfm :text="notification.body" :nowrap="false"/>
 			</span>

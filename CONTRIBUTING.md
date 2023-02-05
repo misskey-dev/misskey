@@ -121,7 +121,7 @@ cp .github/misskey/test.yml .config/
 ```
 Prepare DB/Redis for testing.
 ```
-docker-compose -f packages/backend/test/docker-compose.yml up
+docker compose -f packages/backend/test/docker-compose.yml up
 ```
 Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
 
