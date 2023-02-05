@@ -60,6 +60,7 @@ export class DownloadService {
 			retry: {
 				limit: 0,
 			},
+			enableUnixSockets: false,
 		}).on('response', (res: Got.Response) => {
 			if ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') && !this.config.proxy && res.ip) {
 				if (this.isPrivateIp(res.ip)) {
