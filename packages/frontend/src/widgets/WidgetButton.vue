@@ -60,7 +60,11 @@ const run = async () => {
 				os.inputText({
 					title: q,
 				}).then(({ canceled, result: a }) => {
-					ok(a);
+					if (canceled) {
+						ok('');
+					} else {
+						ok(a);
+					}
 				});
 			});
 		},
