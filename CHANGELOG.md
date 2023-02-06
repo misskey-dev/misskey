@@ -8,6 +8,14 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Improvements
+- Client: disableShowingAnimatedImagesのデフォルト値をprefers-reduced-motionにする
+
+### Bugfixes
+- Client: MkEmojiPickerでもChromeで検索ダイアログで変換確定するとそのまま検索されてしまうのを修正
+
 ## 13.4.0 (2023/02/05)
 
 ### Improvements
