@@ -42,7 +42,7 @@ import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: string | number;
-	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search';
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | "datetime-local";
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -68,14 +68,7 @@ const emit = defineEmits<{
 }>();
 
 const { modelValue, type, autofocus } = toRefs(props);
-let v = ref<string | number>();
-if (props.type === "date") {
-	// 2023-02-24T00:00:00.000Z -> 2023-02-24
-	// あんまりよくない気もする
-	v.value = modelValue.value.split("T")[0]
-} else {
-	v.value = modelValue.value
-}
+let v = ref<string | number>(modelValue.value);
 const id = Math.random().toString(); // TODO: uuid?
 const focused = ref(false);
 const changed = ref(false);
