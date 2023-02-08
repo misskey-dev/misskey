@@ -20,6 +20,7 @@ type PackOptions = {
 	withUser?: boolean,
 };
 import { bindThis } from '@/decorators.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 
 @Injectable()
 export class DriveFileEntityService {
@@ -71,27 +72,42 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
+	public getPublicUrl(file: DriveFile, mode? : 'static' | 'avatar'): string | null { // static = thumbnail
+		const proxiedUrl = (url: string) => appendQuery(
+			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
+			query({
+				url,
+				...(mode ? { [mode]: '1' } : {}),
+			})
+		);
+
 		// リモートかつメディアプロキシ
-		if (file.uri != null && file.userHost != null && this.config.mediaProxy != null) {
-			return appendQuery(this.config.mediaProxy, query({
-				url: file.uri,
-				thumbnail: thumbnail ? '1' : undefined,
-			}));
+		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
+			if (!(mode === 'static' && file.type.startsWith('video'))) {
+				return proxiedUrl(file.uri);
+			}
 		}
 
 		// リモートかつ期限切れはローカルプロキシを試みる
 		if (file.uri != null && file.isLink && this.config.proxyRemoteFiles) {
-			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
+			const key = mode === 'static' ? file.thumbnailAccessKey : file.webpublicAccessKey;
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
-				return `${this.config.url}/files/${key}`;
+				const url = `${this.config.url}/files/${key}`;
+				if (mode === 'avatar') return proxiedUrl(file.uri);
+				return url;
 			}
 		}
 
-		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/avif', 'image/svg+xml'].includes(file.type);
+		const url = file.webpublicUrl ?? file.url;
 
-		return thumbnail ? (file.thumbnailUrl ?? (isImage ? (file.webpublicUrl ?? file.url) : null)) : (file.webpublicUrl ?? file.url);
+		if (mode === 'static') {
+			return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? proxiedUrl(url) : null);
+		}
+		if (mode === 'avatar') {
+			return proxiedUrl(url);
+		}
+		return url;
 	}
 
 	@bindThis
@@ -166,8 +182,8 @@ export class DriveFileEntityService {
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : this.getPublicUrl(file, false),
-			thumbnailUrl: this.getPublicUrl(file, true),
+			url: opts.self ? file.url : this.getPublicUrl(file),
+			thumbnailUrl: this.getPublicUrl(file, 'static'),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
@@ -201,8 +217,8 @@ export class DriveFileEntityService {
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : this.getPublicUrl(file, false),
-			thumbnailUrl: this.getPublicUrl(file, true),
+			url: opts.self ? file.url : this.getPublicUrl(file),
+			thumbnailUrl: this.getPublicUrl(file, 'static'),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {

@@ -44,16 +44,25 @@ export class WebhookService implements OnApplicationShutdown {
 			switch (type) {
 				case 'webhookCreated':
 					if (body.active) {
-						this.webhooks.push(body);
+						this.webhooks.push({
+							...body,
+							createdAt: new Date(body.createdAt),
+						});
 					}
 					break;
 				case 'webhookUpdated':
 					if (body.active) {
 						const i = this.webhooks.findIndex(a => a.id === body.id);
 						if (i > -1) {
-							this.webhooks[i] = body;
+							this.webhooks[i] = {
+								...body,
+								createdAt: new Date(body.createdAt),
+							};
 						} else {
-							this.webhooks.push(body);
+							this.webhooks.push({
+								...body,
+								createdAt: new Date(body.createdAt),
+							});
 						}
 					} else {
 						this.webhooks = this.webhooks.filter(a => a.id !== body.id);

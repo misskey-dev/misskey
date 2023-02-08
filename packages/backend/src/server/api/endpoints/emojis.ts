@@ -10,6 +10,8 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
+	allowGet: true,
+	cacheSec: 3600,
 
 	res: {
 		type: 'object',
@@ -83,6 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				emojis: await this.emojiEntityService.packMany(emojis, {
 					omitId: true,
 					omitHost: true,
+					withUrl: true,
 				}),
 			};
 		});

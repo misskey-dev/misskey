@@ -38,14 +38,11 @@ const init = async () => {
 	getAccounts().then(accounts => {
 		storedAccounts.value = accounts.filter(x => x.id !== $i!.id);
 
-		console.log(storedAccounts.value);
-
 		return os.api('users/show', {
 			userIds: storedAccounts.value.map(x => x.id),
 		});
 	}).then(response => {
 		accounts.value = response;
-		console.log(accounts.value);
 	});
 };
 

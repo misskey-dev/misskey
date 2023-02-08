@@ -114,11 +114,6 @@ id: 'aid'
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
 
-# Syslog option
-#syslog:
-#  host: localhost
-#  port: 514
-
 # Proxy for HTTP/HTTPS
 #proxy: http://127.0.0.1:3128
 
@@ -135,6 +130,7 @@ proxyBypassHosts:
 #proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
 
 # Media Proxy
+# Reference Implementation: https://github.com/misskey-dev/media-proxy
 #mediaProxy: https://example.com/proxy
 
 # Proxy remote files (default: false)

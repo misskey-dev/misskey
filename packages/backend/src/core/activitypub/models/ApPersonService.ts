@@ -29,6 +29,7 @@ import { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -42,37 +43,6 @@ import type { IActor, IObject, IApPropertyValue } from '../type.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
-
-const services: {
-	[x: string]: (id: string, username: string) => any
-} = {
-	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
-	'misskey:authentication:github': (id, login) => ({ id, login }),
-	'misskey:authentication:discord': (id, name) => $discord(id, name),
-};
-
-const $discord = (id: string, name: string) => {
-	if (typeof name !== 'string') {
-		name = 'unknown#0000';
-	}
-	const [username, discriminator] = name.split('#');
-	return { id, username, discriminator };
-};
-
-function addService(target: { [x: string]: any }, source: IApPropertyValue) {
-	const service = services[source.name];
-
-	if (typeof source.value !== 'string') {
-		source.value = 'unknown';
-	}
-
-	const [id, username] = source.value.split('@');
-
-	if (service) {
-		target[source.name.split(':')[2]] = service(id, username);
-	}
-}
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApPersonService implements OnModuleInit {
@@ -282,6 +252,12 @@ export class ApPersonService implements OnModuleInit {
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
+		const url = getOneApHrefNullable(person.url);
+
+		if (url && !url.startsWith('https://')) {
+			throw new Error('unexpected shcema of person url: ' + url);
+		}
+
 		// Create user
 		let user: IRemoteUser;
 		try {
@@ -313,7 +289,7 @@ export class ApPersonService implements OnModuleInit {
 				await transactionalEntityManager.save(new UserProfile({
 					userId: user.id,
 					description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
-					url: getOneApHrefNullable(person.url),
+					url: url,
 					fields,
 					birthday: bday ? bday[0] : null,
 					location: person['vcard:Address'] ?? null,
@@ -455,6 +431,12 @@ export class ApPersonService implements OnModuleInit {
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
+		const url = getOneApHrefNullable(person.url);
+
+		if (url && !url.startsWith('https://')) {
+			throw new Error('unexpected shcema of person url: ' + url);
+		}
+
 		const updates = {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
@@ -489,7 +471,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		await this.userProfilesRepository.update({ userId: exist.id }, {
-			url: getOneApHrefNullable(person.url),
+			url: url,
 			fields,
 			description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 			birthday: bday ? bday[0] : null,
@@ -540,22 +522,16 @@ export class ApPersonService implements OnModuleInit {
 		name: string,
 		value: string
 	}[] = [];
-		const services: { [x: string]: any } = {};
-
 		if (Array.isArray(attachments)) {
 			for (const attachment of attachments.filter(isPropertyValue)) {
-				if (isPropertyValue(attachment.identifier)) {
-					addService(services, attachment.identifier);
-				} else {
-					fields.push({
-						name: attachment.name,
-						value: this.mfmService.fromHtml(attachment.value),
-					});
-				}
+				fields.push({
+					name: attachment.name,
+					value: this.mfmService.fromHtml(attachment.value),
+				});
 			}
 		}
 
-		return { fields, services };
+		return { fields };
 	}
 
 	@bindThis
@@ -566,22 +542,22 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Updating the featured: ${user.uri}`);
 
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		const _resolver = resolver ?? this.apResolverService.createResolver();
 
 		// Resolve to (Ordered)Collection Object
-		const collection = await resolver.resolveCollection(user.featured);
+		const collection = await _resolver.resolveCollection(user.featured);
 		if (!isCollectionOrOrderedCollection(collection)) throw new Error('Object is not Collection or OrderedCollection');
 
 		// Resolve to Object(may be Note) arrays
 		const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
-		const items = await Promise.all(toArray(unresolvedItems).map(x => resolver.resolve(x)));
+		const items = await Promise.all(toArray(unresolvedItems).map(x => _resolver.resolve(x)));
 
 		// Resolve and regist Notes
 		const limit = promiseLimit<Note | null>(2);
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 			.slice(0, 5)
-			.map(item => limit(() => this.apNoteService.resolveNote(item, resolver))));
+			.map(item => limit(() => this.apNoteService.resolveNote(item, _resolver))));
 
 		await this.db.transaction(async transactionalEntityManager => {
 			await transactionalEntityManager.delete(UserNotePining, { userId: user.id });

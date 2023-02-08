@@ -13,6 +13,10 @@
 		<template #caption>#RRGGBB</template>
 	</MkInput>
 
+	<MkInput v-model="iconUrl">
+		<template #label>{{ i18n.ts._role.iconUrl }}</template>
+	</MkInput>
+
 	<MkSelect v-model="rolePermission" :readonly="readonly">
 		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
@@ -34,6 +38,21 @@
 			<RolesEditorFormula v-model="condFormula"/>
 		</div>
 	</MkFolder>
+
+	<MkSwitch v-model="canEditMembersByModerator" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.canEditMembersByModerator }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfCanEditMembersByModerator }}</template>
+	</MkSwitch>
+
+	<MkSwitch v-model="isPublic" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.isPublic }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfIsPublic }}</template>
+	</MkSwitch>
+
+	<MkSwitch v-model="asBadge" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.asBadge }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfAsBadge }}</template>
+	</MkSwitch>
 
 	<FormSlot>
 		<template #label><i class="ti ti-license"></i> {{ i18n.ts._role.policies }}</template>
@@ -358,16 +377,6 @@
 		</div>
 	</FormSlot>
 
-	<MkSwitch v-model="canEditMembersByModerator" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.canEditMembersByModerator }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfCanEditMembersByModerator }}</template>
-	</MkSwitch>
-
-	<MkSwitch v-model="isPublic" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.isPublic }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfIsPublic }}</template>
-	</MkSwitch>
-
 	<div v-if="!readonly" class="_buttons">
 		<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ role ? i18n.ts.save : i18n.ts.create }}</MkButton>
 	</div>
@@ -426,9 +435,11 @@ let name = $ref(role?.name ?? 'New Role');
 let description = $ref(role?.description ?? '');
 let rolePermission = $ref(role?.isAdministrator ? 'administrator' : role?.isModerator ? 'moderator' : 'normal');
 let color = $ref(role?.color ?? null);
+let iconUrl = $ref(role?.iconUrl ?? null);
 let target = $ref(role?.target ?? 'manual');
 let condFormula = $ref(role?.condFormula ?? { id: uuid(), type: 'isRemote' });
 let isPublic = $ref(role?.isPublic ?? false);
+let asBadge = $ref(role?.asBadge ?? false);
 let canEditMembersByModerator = $ref(role?.canEditMembersByModerator ?? false);
 
 const policies = reactive<Record<typeof ROLE_POLICIES[number], { useDefault: boolean; priority: number; value: any; }>>({});
@@ -466,11 +477,13 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
+			iconUrl: iconUrl === '' ? null : iconUrl,
 			target,
 			condFormula,
 			isAdministrator: rolePermission === 'administrator',
 			isModerator: rolePermission === 'moderator',
 			isPublic,
+			asBadge,
 			canEditMembersByModerator,
 			policies,
 		});
@@ -480,11 +493,13 @@ async function save() {
 			name,
 			description,
 			color: color === '' ? null : color,
+			iconUrl: iconUrl === '' ? null : iconUrl,
 			target,
 			condFormula,
 			isAdministrator: rolePermission === 'administrator',
 			isModerator: rolePermission === 'moderator',
 			isPublic,
+			asBadge,
 			canEditMembersByModerator,
 			policies,
 		});

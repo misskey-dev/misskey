@@ -10,7 +10,6 @@ import PerUserNotesChart from './charts/per-user-notes.js';
 import PerUserPvChart from './charts/per-user-pv.js';
 import DriveChart from './charts/drive.js';
 import PerUserReactionsChart from './charts/per-user-reactions.js';
-import HashtagChart from './charts/hashtag.js';
 import PerUserFollowingChart from './charts/per-user-following.js';
 import PerUserDriveChart from './charts/per-user-drive.js';
 import ApRequestChart from './charts/ap-request.js';
@@ -31,7 +30,6 @@ export class ChartManagementService implements OnApplicationShutdown {
 		private perUserPvChart: PerUserPvChart,
 		private driveChart: DriveChart,
 		private perUserReactionsChart: PerUserReactionsChart,
-		private hashtagChart: HashtagChart,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private apRequestChart: ApRequestChart,
@@ -46,7 +44,6 @@ export class ChartManagementService implements OnApplicationShutdown {
 			this.perUserPvChart,
 			this.driveChart,
 			this.perUserReactionsChart,
-			this.hashtagChart,
 			this.perUserFollowingChart,
 			this.perUserDriveChart,
 			this.apRequestChart,
@@ -54,7 +51,7 @@ export class ChartManagementService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async run() {
+	public async start() {
 		// 20分おきにメモリ情報をDBに書き込み
 		this.saveIntervalId = setInterval(() => {
 			for (const chart of this.charts) {

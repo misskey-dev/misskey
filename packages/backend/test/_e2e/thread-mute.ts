@@ -22,7 +22,7 @@ describe('Note thread mute', () => {
 		await shutdownServer(p);
 	});
 
-	it('notes/mentions にミュートしているスレッドの投稿が含まれない', async () => {
+	test('notes/mentions にミュートしているスレッドの投稿が含まれない', async () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 
@@ -40,7 +40,7 @@ describe('Note thread mute', () => {
 		assert.strictEqual(res.body.some((note: any) => note.id === carolReplyWithoutMention.id), false);
 	});
 
-	it('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async () => {
+	test('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async () => {
 		// 状態リセット
 		await request('/i/read-all-unread-notes', {}, alice);
 
@@ -56,7 +56,7 @@ describe('Note thread mute', () => {
 		assert.strictEqual(res.body.hasUnreadMentions, false);
 	});
 
-	it('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise(async done => {
+	test('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise(async done => {
 		// 状態リセット
 		await request('/i/read-all-unread-notes', {}, alice);
 
@@ -82,7 +82,7 @@ describe('Note thread mute', () => {
 		}, 5000);
 	}));
 
-	it('i/notifications にミュートしているスレッドの通知が含まれない', async () => {
+	test('i/notifications にミュートしているスレッドの通知が含まれない', async () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
 		const aliceReply = await post(alice, { replyId: bobNote.id, text: '@bob @carol child note' });
 

@@ -95,14 +95,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			try {
 				if (ps.tag) {
-					if (!safeForSql(ps.tag)) throw 'Injection';
+					if (!safeForSql(normalizeForSearch(ps.tag))) throw 'Injection';
 					query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
 				} else {
 					query.andWhere(new Brackets(qb => {
 						for (const tags of ps.query!) {
 							qb.orWhere(new Brackets(qb => {
 								for (const tag of tags) {
-									if (!safeForSql(tag)) throw 'Injection';
+									if (!safeForSql(normalizeForSearch(tag))) throw 'Injection';
 									qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
 								}
 							}));

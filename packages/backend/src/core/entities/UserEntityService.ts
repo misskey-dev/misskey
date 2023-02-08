@@ -12,7 +12,7 @@ import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository, UserProfile } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -314,10 +314,10 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
 		} else if (user.avatarId) {
 			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFileEntityService.getPublicUrl(avatar, true) ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -326,7 +326,7 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, true) ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
 		} else {
 			return this.getIdenticonUrl(user.id);
 		}
@@ -343,6 +343,7 @@ export class UserEntityService implements OnModuleInit {
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
+			userProfile?: UserProfile,
 		},
 	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
@@ -375,7 +376,7 @@ export class UserEntityService implements OnModuleInit {
 			.innerJoinAndSelect('pin.note', 'note')
 			.orderBy('pin.id', 'DESC')
 			.getMany() : [];
-		const profile = opts.detail ? await this.userProfilesRepository.findOneByOrFail({ userId: user.id }) : null;
+		const profile = opts.detail ? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id })) : null;
 
 		const followingCount = profile == null ? null :
 			(profile.ffVisibility === 'public') || isMe ? user.followingCount :
@@ -412,7 +413,13 @@ export class UserEntityService implements OnModuleInit {
 				faviconUrl: instance.faviconUrl,
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
+			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
+			// パフォーマンス上の理由でローカルユーザーのみ
+			badgeRoles: user.host == null ? this.roleService.getUserBadgeRoles(user.id).then(rs => rs.map(r => ({
+				name: r.name,
+				iconUrl: r.iconUrl,
+			}))) : undefined,
 
 			...(opts.detail ? {
 				url: profile!.url,
@@ -420,7 +427,7 @@ export class UserEntityService implements OnModuleInit {
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner, false) : null,
+				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner) : null,
 				bannerBlurhash: user.banner?.blurhash ?? null,
 				isLocked: user.isLocked,
 				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
@@ -452,6 +459,7 @@ export class UserEntityService implements OnModuleInit {
 					id: role.id,
 					name: role.name,
 					color: role.color,
+					iconUrl: role.iconUrl,
 					description: role.description,
 					isModerator: role.isModerator,
 					isAdministrator: role.isAdministrator,
@@ -487,16 +495,17 @@ export class UserEntityService implements OnModuleInit {
 				hasUnreadMessagingMessage: this.getHasUnreadMessagingMessage(user.id),
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
-				integrations: profile!.integrations,
 				mutedWords: profile!.mutedWords,
 				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
 				showTimelineReplies: user.showTimelineReplies ?? falsy,
+				achievements: profile!.achievements,
+				loggedInDays: profile!.loggedInDates.length,
+				policies: this.roleService.getUserPolicies(user.id),
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				policies: this.roleService.getUserPolicies(user.id),
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 				securityKeysList: profile!.twoFactorEnabled

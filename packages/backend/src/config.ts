@@ -65,11 +65,6 @@ export type Source = {
 	deliverJobMaxAttempts?: number;
 	inboxJobMaxAttempts?: number;
 
-	syslog: {
-		host: string;
-		port: number;
-	};
-
 	mediaProxy?: string;
 	proxyRemoteFiles?: boolean;
 
@@ -92,6 +87,8 @@ export type Mixin = {
 	userAgent: string;
 	clientEntry: string;
 	clientManifestExists: boolean;
+	mediaProxy: string;
+	externalMediaProxyEnabled: boolean;
 };
 
 export type Config = Source & Mixin;
@@ -113,7 +110,7 @@ const path = process.env.NODE_ENV === 'test'
 
 export function loadConfig() {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
-	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json')
+	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
 	const clientManifest = clientManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
 		: { 'src/init.ts': { file: 'src/init.ts' } };
@@ -139,6 +136,13 @@ export function loadConfig() {
 	mixin.userAgent = `Misskey/${meta.version} (${config.url})`;
 	mixin.clientEntry = clientManifest['src/init.ts'];
 	mixin.clientManifestExists = clientManifestExists;
+
+	const externalMediaProxy = config.mediaProxy ?
+		config.mediaProxy.endsWith('/') ? config.mediaProxy.substring(0, config.mediaProxy.length - 1) : config.mediaProxy
+		: null;
+	const internalMediaProxy = `${mixin.scheme}://${mixin.host}/proxy`;
+	mixin.mediaProxy = externalMediaProxy ?? internalMediaProxy;
+	mixin.externalMediaProxyEnabled = externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy;
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
 

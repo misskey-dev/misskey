@@ -23,7 +23,7 @@ describe('Block', () => {
 		await shutdownServer(p);
 	});
 
-	it('Block作成', async () => {
+	test('Block作成', async () => {
 		const res = await request('/blocking/create', {
 			userId: bob.id,
 		}, alice);
@@ -31,14 +31,14 @@ describe('Block', () => {
 		assert.strictEqual(res.status, 200);
 	});
 
-	it('ブロックされているユーザーをフォローできない', async () => {
+	test('ブロックされているユーザーをフォローできない', async () => {
 		const res = await request('/following/create', { userId: alice.id }, bob);
 
 		assert.strictEqual(res.status, 400);
 		assert.strictEqual(res.body.error.id, 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0');
 	});
 
-	it('ブロックされているユーザーにリアクションできない', async () => {
+	test('ブロックされているユーザーにリアクションできない', async () => {
 		const note = await post(alice, { text: 'hello' });
 
 		const res = await request('/notes/reactions/create', { noteId: note.id, reaction: '👍' }, bob);
@@ -47,7 +47,7 @@ describe('Block', () => {
 		assert.strictEqual(res.body.error.id, '20ef5475-9f38-4e4c-bd33-de6d979498ec');
 	});
 
-	it('ブロックされているユーザーに返信できない', async () => {
+	test('ブロックされているユーザーに返信できない', async () => {
 		const note = await post(alice, { text: 'hello' });
 
 		const res = await request('/notes/create', { replyId: note.id, text: 'yo' }, bob);
@@ -56,7 +56,7 @@ describe('Block', () => {
 		assert.strictEqual(res.body.error.id, 'b390d7e1-8a5e-46ed-b625-06271cafd3d3');
 	});
 
-	it('ブロックされているユーザーのノートをRenoteできない', async () => {
+	test('ブロックされているユーザーのノートをRenoteできない', async () => {
 		const note = await post(alice, { text: 'hello' });
 
 		const res = await request('/notes/create', { renoteId: note.id, text: 'yo' }, bob);
@@ -69,7 +69,7 @@ describe('Block', () => {
 
 	// TODO: ユーザーリストから除外されるテスト
 
-	it('タイムライン(LTL)にブロックされているユーザーの投稿が含まれない', async () => {
+	test('タイムライン(LTL)にブロックされているユーザーの投稿が含まれない', async () => {
 		const aliceNote = await post(alice);
 		const bobNote = await post(bob);
 		const carolNote = await post(carol);

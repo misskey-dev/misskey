@@ -21,11 +21,11 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
+import { bindThis } from '@/decorators.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IActivity, IObject } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApRendererService {
@@ -274,7 +274,7 @@ export class ApRendererService {
 		} as any;
 
 		if (reaction.startsWith(':')) {
-			const name = reaction.replace(/:/g, '');
+			const name = reaction.replaceAll(':', '');
 			const emoji = await this.emojisRepository.findOneBy({
 				name,
 				host: IsNull(),

@@ -97,7 +97,6 @@ import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
 import * as ep___charts_federation from './endpoints/charts/federation.js';
-import * as ep___charts_hashtag from './endpoints/charts/hashtag.js';
 import * as ep___charts_instance from './endpoints/charts/instance.js';
 import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
@@ -175,6 +174,7 @@ import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
 import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
+import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
 import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
@@ -329,6 +329,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
@@ -431,7 +432,6 @@ const $charts_activeUsers: Provider = { provide: 'ep:charts/active-users', useCl
 const $charts_apRequest: Provider = { provide: 'ep:charts/ap-request', useClass: ep___charts_apRequest.default };
 const $charts_drive: Provider = { provide: 'ep:charts/drive', useClass: ep___charts_drive.default };
 const $charts_federation: Provider = { provide: 'ep:charts/federation', useClass: ep___charts_federation.default };
-const $charts_hashtag: Provider = { provide: 'ep:charts/hashtag', useClass: ep___charts_hashtag.default };
 const $charts_instance: Provider = { provide: 'ep:charts/instance', useClass: ep___charts_instance.default };
 const $charts_notes: Provider = { provide: 'ep:charts/notes', useClass: ep___charts_notes.default };
 const $charts_user_drive: Provider = { provide: 'ep:charts/user/drive', useClass: ep___charts_user_drive.default };
@@ -509,6 +509,7 @@ const $i_2fa_removeKey: Provider = { provide: 'ep:i/2fa/remove-key', useClass: e
 const $i_2fa_unregister: Provider = { provide: 'ep:i/2fa/unregister', useClass: ep___i_2fa_unregister.default };
 const $i_apps: Provider = { provide: 'ep:i/apps', useClass: ep___i_apps.default };
 const $i_authorizedApps: Provider = { provide: 'ep:i/authorized-apps', useClass: ep___i_authorizedApps.default };
+const $i_claimAchievement: Provider = { provide: 'ep:i/claim-achievement', useClass: ep___i_claimAchievement.default };
 const $i_changePassword: Provider = { provide: 'ep:i/change-password', useClass: ep___i_changePassword.default };
 const $i_deleteAccount: Provider = { provide: 'ep:i/delete-account', useClass: ep___i_deleteAccount.default };
 const $i_exportBlocking: Provider = { provide: 'ep:i/export-blocking', useClass: ep___i_exportBlocking.default };
@@ -663,6 +664,7 @@ const $users_searchByUsernameAndHost: Provider = { provide: 'ep:users/search-by-
 const $users_search: Provider = { provide: 'ep:users/search', useClass: ep___users_search.default };
 const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_show.default };
 const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
+const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
@@ -769,7 +771,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$charts_apRequest,
 		$charts_drive,
 		$charts_federation,
-		$charts_hashtag,
 		$charts_instance,
 		$charts_notes,
 		$charts_user_drive,
@@ -847,6 +848,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
+		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
 		$i_exportBlocking,
@@ -1001,6 +1003,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_search,
 		$users_show,
 		$users_stats,
+		$users_achievements,
 		$fetchRss,
 		$retention,
 	],
@@ -1101,7 +1104,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$charts_apRequest,
 		$charts_drive,
 		$charts_federation,
-		$charts_hashtag,
 		$charts_instance,
 		$charts_notes,
 		$charts_user_drive,
@@ -1179,6 +1181,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
+		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
 		$i_exportBlocking,
@@ -1331,6 +1334,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_search,
 		$users_show,
 		$users_stats,
+		$users_achievements,
 		$fetchRss,
 		$retention,
 	],

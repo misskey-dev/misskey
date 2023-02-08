@@ -91,10 +91,12 @@ export class RoleService implements OnApplicationShutdown {
 				case 'roleCreated': {
 					const cached = this.rolesCache.get(null);
 					if (cached) {
-						body.createdAt = new Date(body.createdAt);
-						body.updatedAt = new Date(body.updatedAt);
-						body.lastUsedAt = new Date(body.lastUsedAt);
-						cached.push(body);
+						cached.push({
+							...body,
+							createdAt: new Date(body.createdAt),
+							updatedAt: new Date(body.updatedAt),
+							lastUsedAt: new Date(body.lastUsedAt),
+						});
 					}
 					break;
 				}
@@ -103,10 +105,12 @@ export class RoleService implements OnApplicationShutdown {
 					if (cached) {
 						const i = cached.findIndex(x => x.id === body.id);
 						if (i > -1) {
-							body.createdAt = new Date(body.createdAt);
-							body.updatedAt = new Date(body.updatedAt);
-							body.lastUsedAt = new Date(body.lastUsedAt);
-							cached[i] = body;
+							cached[i] = {
+								...body,
+								createdAt: new Date(body.createdAt),
+								updatedAt: new Date(body.updatedAt),
+								lastUsedAt: new Date(body.lastUsedAt),
+							};
 						}
 					}
 					break;
@@ -121,8 +125,10 @@ export class RoleService implements OnApplicationShutdown {
 				case 'userRoleAssigned': {
 					const cached = this.roleAssignmentByUserIdCache.get(body.userId);
 					if (cached) {
-						body.createdAt = new Date(body.createdAt);
-						cached.push(body);
+						cached.push({
+							...body,
+							createdAt: new Date(body.createdAt),
+						});
 					}
 					break;
 				}
@@ -194,6 +200,19 @@ export class RoleService implements OnApplicationShutdown {
 		const user = roles.some(r => r.target === 'conditional') ? await this.userCacheService.findById(userId) : null;
 		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, r.condFormula));
 		return [...assignedRoles, ...matchedCondRoles];
+	}
+
+	/**
+	 * 指定ユーザーのバッジロール一覧取得
+	 */
+	@bindThis
+	public async getUserBadgeRoles(userId: User['id']) {
+		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		const assignedRoleIds = assigns.map(x => x.roleId);
+		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
+		const assignedBadgeRoles = roles.filter(r => r.asBadge && assignedRoleIds.includes(r.id));
+		// コンディショナルロールも含めるのは負荷高そうだから一旦無し
+		return assignedBadgeRoles;
 	}
 
 	@bindThis

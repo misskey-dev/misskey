@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ServerModule } from '@/server/ServerModule.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { QueueProcessorModule } from '@/queue/QueueProcessorModule.js';
+import { DaemonModule } from '@/daemons/DaemonModule.js';
 
 @Module({
 	imports: [
 		GlobalModule,
 		ServerModule,
-		QueueProcessorModule,
+		DaemonModule,
 	],
 })
-export class RootModule {}
+export class MainModule {}
