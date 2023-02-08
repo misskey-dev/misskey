@@ -7,7 +7,7 @@
 				<div class="aeakzknw">
 					<MkAvatar class="avatar" :user="user" indicator link preview/>
 					<div class="body">
-						<span class="name"><MkUserName class="name" :user="user"/></span>
+						<span class="name _nowrap">{{ user.name ?? user.username }}</span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
 							<span v-if="suspended" class="suspended">Suspended</span>

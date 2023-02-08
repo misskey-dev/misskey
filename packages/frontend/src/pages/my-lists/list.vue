@@ -21,7 +21,7 @@
 							<div v-for="user in users" :key="user.id" class="user _panel">
 								<MkAvatar :user="user" class="avatar" indicator link preview/>
 								<div class="body">
-									<MkUserName :user="user" class="name"/>
+									<span class="name _nowrap">{{ user.name ?? user.username }}</span>
 									<MkAcct :user="user" class="acct"/>
 								</div>
 								<div class="action">

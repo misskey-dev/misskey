@@ -9,9 +9,7 @@
 					<MkAvatar :user="account" class="avatar"/>
 				</div>
 				<div class="body">
-					<div class="name">
-						<MkUserName :user="account"/>
-					</div>
+					<div class="name _nowrap">{{ account.name ?? account.username }}</div>
 					<div class="acct">
 						<MkAcct :user="account"/>
 					</div>

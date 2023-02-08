@@ -4,7 +4,7 @@
 		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`">
 			<MkAvatar class="avatar" :user="report.targetUser" indicator/>
 			<div class="names">
-				<MkUserName class="name" :user="report.targetUser"/>
+				<span class="name _nowrap">{{ report.targetUser.name ?? report.targetUser.username }}</span>
 				<MkAcct class="acct" :user="report.targetUser" style="display: block;"/>
 			</div>
 		</MkA>
