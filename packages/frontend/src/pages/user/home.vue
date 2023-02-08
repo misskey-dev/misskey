@@ -14,7 +14,7 @@
 						<div ref="bannerEl" class="banner" :style="style"></div>
 						<div class="fade"></div>
 						<div class="title">
-							<span class="name _nowrap">{{ user.name ?? user.username }}</span>
+							<MkUserName class="name" :user="user" :nowrap="true"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
@@ -30,7 +30,7 @@
 					</div>
 					<MkAvatar class="avatar" :user="user" indicator/>
 					<div class="title">
-						<span class="name _nowrap">{{ user.name ?? user.username }}</span>
+						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
 							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>

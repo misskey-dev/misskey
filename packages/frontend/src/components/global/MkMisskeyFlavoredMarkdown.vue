@@ -1,5 +1,5 @@
 <template>
-<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :is-note="isNote" :class="[$style.root, { '_nowrap': nowrap }]"/>
+<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :is-note="isNote" :class="[$style.root, { [$style.nowrap]: nowrap }]"/>
 </template>
 
 <script lang="ts" setup>
@@ -160,5 +160,12 @@ const props = withDefaults(defineProps<{
 <style lang="scss" module>
 .root {
 	white-space: pre-wrap;
+
+	&.nowrap {
+		white-space: pre;
+		word-wrap: normal; // https://codeday.me/jp/qa/20190424/690106.html
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 </style>

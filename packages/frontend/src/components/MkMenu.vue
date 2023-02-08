@@ -27,7 +27,7 @@
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</a>
 			<button v-else-if="item.type === 'user'" :tabindex="i" class="_button" :class="[$style.item, { [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkAvatar :user="item.user" :class="$style.avatar"/><span class="_nowrap">{{ item.user.name ?? item.user.username }}</span>
+				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 			<span v-else-if="item.type === 'switch'" :tabindex="i" :class="$style.item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">

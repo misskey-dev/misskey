@@ -8,7 +8,7 @@
 					<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 				</div>
 				<div class="user">
-					<MkAvatar :user="clip.user" class="avatar" indicator link preview/> <span class="_nowrap">{{ clip.user.name ?? clip.user.username }}</span>
+					<MkAvatar :user="clip.user" class="avatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
 				</div>
 			</div>
 

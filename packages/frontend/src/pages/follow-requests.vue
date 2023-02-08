@@ -15,7 +15,7 @@
 						<MkAvatar class="avatar" :user="req.follower" indicator link preview/>
 						<div class="body">
 							<div class="name">
-								<MkA v-user-preview="req.follower.id" class="name _nowrap" :to="userPage(req.follower)">{{ req.follower.name ?? req.follower.username }}</MkA>
+								<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
 								<p class="acct">@{{ acct(req.follower) }}</p>
 							</div>
 							<div v-if="req.follower.description" class="description" :title="req.follower.description">
