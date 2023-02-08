@@ -30,7 +30,7 @@
 						<div class="user">
 							<MkAvatar :user="post.user" class="avatar" link preview/>
 							<div class="name">
-								<MkUserName :user="post.user" style="display: block;"/>
+								<div class="_nowrap">{{ post.user.name ?? post.user.username }}</div>
 								<MkAcct :user="post.user"/>
 							</div>
 							<MkFollowButton v-if="!$i || $i.id != post.user.id" :user="post.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
