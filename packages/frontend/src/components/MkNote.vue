@@ -17,7 +17,7 @@
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
 				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
-					<span class="_nowrap">{{ note.user.name ?? note.user.username }}</span>
+					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
 		</I18n>
@@ -108,7 +108,7 @@
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-				<span class="_nowrap">{{ appearNote.user.name ?? appearNote.user.username }}</span>
+				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>

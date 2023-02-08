@@ -6,7 +6,9 @@
 		</div>
 		<div :class="$style.bodyContainer">
 			<div :class="$style.body">
-				<MkA :class="$style.name" :to="userPage($i)" class="_nowrap">{{ $i.name ?? $i.username }}</MkA>
+				<MkA :class="$style.name" :to="userPage($i)">
+					<MkUserName :user="$i"/>
+				</MkA>
 				<div :class="$style.username"><MkAcct :user="$i" detail/></div>
 			</div>
 		</div>

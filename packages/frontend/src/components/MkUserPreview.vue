@@ -7,7 +7,7 @@
 			</div>
 			<MkAvatar class="avatar" :user="user" indicator/>
 			<div class="title">
-				<MkA class="name _nowrap" :to="userPage(user)">{{ user.name ?? user.username }}</MkA>
+				<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 				<p class="username"><MkAcct :user="user"/></p>
 			</div>
 			<div class="description">

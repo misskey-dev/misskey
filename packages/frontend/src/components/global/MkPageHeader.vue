@@ -9,7 +9,7 @@
 			<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
 
 			<div :class="$style.title">
-				<span v-if="metadata.userName" class="_nowrap">{{ metadata.userName.name ?? metadata.userName.username }}</span>
+				<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true"/>
 				<div v-else-if="metadata.title">{{ metadata.title }}</div>
 				<div v-if="!narrow && metadata.subtitle" :class="$style.subtitle">
 					{{ metadata.subtitle }}
