@@ -8,9 +8,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
-	build-essential wget ca-certificates \
-	&& wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq \
-	&& chmod +x /usr/bin/yq
+	build-essential
 
 RUN corepack enable
 
@@ -44,7 +42,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	ffmpeg tini \
+	ffmpeg tini curl \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
@@ -54,7 +52,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 USER misskey
 WORKDIR /misskey
 
-COPY --from=builder /usr/bin/yq /usr/bin/yq
 COPY --chown=misskey:misskey --from=builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=builder /misskey/built ./built
 COPY --chown=misskey:misskey --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
