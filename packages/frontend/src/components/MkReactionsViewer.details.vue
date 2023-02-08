@@ -8,7 +8,7 @@
 		<div :class="$style.users">
 			<div v-for="u in users" :key="u.id" :class="$style.user">
 				<MkAvatar :class="$style.avatar" :user="u"/>
-				<MkUserName :user="u" :nowrap="true"/>
+				<span class="_nowrap">{{ u.name ?? u.username }}</span>
 			</div>
 			<div v-if="users.length > 10">+{{ count - 10 }}</div>
 		</div>

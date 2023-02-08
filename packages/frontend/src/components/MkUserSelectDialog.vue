@@ -27,7 +27,7 @@
 				<div v-for="user in users" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" :class="$style.avatar" indicator/>
 					<div :class="$style.userBody">
-						<MkUserName :user="user" :class="$style.userName"/>
+						<span :class="$style.userName" class="_nowrap">{{ user.name ?? user.username }}</span>
 						<MkAcct :user="user" :class="$style.userAcct"/>
 					</div>
 				</div>
@@ -41,7 +41,7 @@
 				<div v-for="user in recentUsers" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" :class="$style.avatar" indicator/>
 					<div :class="$style.userBody">
-						<MkUserName :user="user" :class="$style.userName"/>
+						<span :class="$style.userName" class="_nowrap">{{ user.name ?? user.username }}</span>
 						<MkAcct :user="user" :class="$style.userAcct"/>
 					</div>
 				</div>

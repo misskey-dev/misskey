@@ -3,7 +3,7 @@
 	<MkAvatar :class="$style.avatar" :user="$i" link preview/>
 	<div :class="$style.main">
 		<div :class="$style.header">
-			<MkUserName :user="$i"/>
+			<span class="_nowrap">{{ $i.name ?? $i.username }}</span>
 		</div>
 		<div>
 			<div :class="$style.content">

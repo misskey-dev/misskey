@@ -1,8 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { MessagingMessagesRepository, PollsRepository, EmojisRepository } from '@/models/index.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { MessagingMessagesRepository, PollsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { CacheableRemoteUser } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -18,6 +17,7 @@ import { PollService } from '@/core/PollService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { MessagingService } from '@/core/MessagingService.js';
+import { bindThis } from '@/decorators.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ApLoggerService } from '../ApLoggerService.js';
@@ -32,7 +32,6 @@ import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApNoteService {
@@ -133,6 +132,16 @@ export class ApNoteService {
 		const note: IPost = object;
 	
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
+
+		if (note.id && !note.id.startsWith('https://')) {
+			throw new Error('unexpected shcema of note.id: ' + note.id);
+		}
+
+		const url = getOneApHrefNullable(note.url);
+
+		if (url && !url.startsWith('https://')) {
+			throw new Error('unexpected shcema of note url: ' + url);
+		}
 	
 		this.logger.info(`Creating the Note: ${note.id}`);
 	
@@ -307,7 +316,7 @@ export class ApNoteService {
 			apEmojis,
 			poll,
 			uri: note.id,
-			url: getOneApHrefNullable(note.url),
+			url: url,
 		}, silent);
 	}
 	

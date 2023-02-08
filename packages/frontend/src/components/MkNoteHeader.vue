@@ -1,7 +1,7 @@
 <template>
 <header :class="$style.root">
 	<MkA v-once v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-		<MkUserName :user="note.user"/>
+		<span class="_nowrap">{{ note.user.name ?? note.user.username }}</span>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
 	<div :class="$style.username"><MkAcct :user="note.user"/></div>

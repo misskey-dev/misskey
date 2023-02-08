@@ -3,7 +3,7 @@
 	<div :class="$style.root">
 		<div v-for="u in users" :key="u.id" :class="$style.user">
 			<MkAvatar :class="$style.avatar" :user="u"/>
-			<MkUserName :class="$style.name" :user="u" :nowrap="true"/>
+			<span :class="$style.name" class="_nowrap">{{ u.name ?? u.username }}</span>
 		</div>
 		<div v-if="users.length < count" :class="$style.omitted">+{{ count - users.length }}</div>
 	</div>

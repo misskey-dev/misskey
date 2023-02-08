@@ -156,6 +156,13 @@ hr {
 	-webkit-touch-callout: none;
 }
 
+._nowrap {
+	white-space: pre;
+	word-wrap: normal; // https://codeday.me/jp/qa/20190424/690106.html
+	overflow: clip;
+	text-overflow: ellipsis;
+}
+
 ._ghost {
 	@extend ._noSelect;
 	pointer-events: none;

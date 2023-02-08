@@ -20,6 +20,7 @@ type PackOptions = {
 	withUser?: boolean,
 };
 import { bindThis } from '@/decorators.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 
 @Injectable()
 export class DriveFileEntityService {
@@ -82,7 +83,9 @@ export class DriveFileEntityService {
 
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
-			return proxiedUrl(file.uri);
+			if (!(mode === 'static' && file.type.startsWith('video'))) {
+				return proxiedUrl(file.uri);
+			}
 		}
 
 		// リモートかつ期限切れはローカルプロキシを試みる
@@ -91,20 +94,19 @@ export class DriveFileEntityService {
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
 				const url = `${this.config.url}/files/${key}`;
-				if (mode === 'avatar') return proxiedUrl(url);
+				if (mode === 'avatar') return proxiedUrl(file.uri);
 				return url;
 			}
 		}
 
-		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/avif', 'image/svg+xml'].includes(file.type);
-
-		if (mode === 'static') {
-			return file.thumbnailUrl ?? (isImage ? (file.webpublicUrl ?? file.url) : null);
-		}
-
 		const url = file.webpublicUrl ?? file.url;
 
-		if (mode === 'avatar') return proxiedUrl(url);
+		if (mode === 'static') {
+			return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? proxiedUrl(url) : null);
+		}
+		if (mode === 'avatar') {
+			return proxiedUrl(url);
+		}
 		return url;
 	}
 
