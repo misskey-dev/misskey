@@ -157,9 +157,9 @@ hr {
 }
 
 ._nowrap {
-	white-space: pre;
-	word-wrap: normal; // https://codeday.me/jp/qa/20190424/690106.html
-	overflow: clip;
+	white-space: pre !important;
+	word-wrap: normal !important; // https://codeday.me/jp/qa/20190424/690106.html
+	overflow: hidden;
 	text-overflow: ellipsis;
 }
 

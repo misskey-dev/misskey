@@ -8,6 +8,13 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Client: 通知のノート表示で_nowrapが効いていない問題を修正
+
 ## 13.5.0 (2023/02/08)
 
 ### Changes
