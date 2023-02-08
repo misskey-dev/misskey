@@ -150,9 +150,17 @@ export class CustomEmojiService {
 			if (note.renote) {
 				emojis = emojis.concat(note.renote.emojis
 					.map(e => this.parseEmojiStr(e, note.renote!.userHost)));
+				if (note.renote.user) {
+					emojis = emojis.concat(note.renote.user.emojis
+						.map(e => this.parseEmojiStr(e, note.renote!.userHost)));
+				}
 			}
 			const customReactions = Object.keys(note.reactions).map(x => this.reactionService.decodeReaction(x)).filter(x => x.name != null) as typeof emojis;
 			emojis = emojis.concat(customReactions);
+			if (note.user) {
+				emojis = emojis.concat(note.user.emojis
+					.map(e => this.parseEmojiStr(e, note.userHost)));
+			}
 		}
 		return emojis.filter(x => x.name != null && x.host != null) as { name: string; host: string; }[];
 	}

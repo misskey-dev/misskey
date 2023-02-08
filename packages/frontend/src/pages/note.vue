@@ -21,7 +21,7 @@
 								<b>{{ item.name }}</b>
 								<div v-if="item.description" class="description">{{ item.description }}</div>
 								<div class="user">
-									<MkAvatar :user="item.user" class="avatar" indicator link preview/> <span class="_nowrap">{{ item.user.name ?? item.user.username }}</span>
+									<MkAvatar :user="item.user" class="avatar" indicator link preview/> <MkUserName :user="item.user" :nowrap="false"/>
 								</div>
 							</MkA>
 						</div>
