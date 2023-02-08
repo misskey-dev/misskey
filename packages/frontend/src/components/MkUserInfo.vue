@@ -3,9 +3,8 @@
 	<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
 	<MkAvatar class="avatar" :user="user" indicator/>
 	<div class="title">
-		<MkA class="name _nowrap" :to="userPage(user)"{{ user.name ?? user.username }}</mk-a>
-			<p class="username"><MkAcct :user="user"/></p>
-		</mka>
+		<MkA class="name _nowrap" :to="userPage(user)">{{ user.name ?? user.username }}</MkA>
+		<p class="username"><MkAcct :user="user"/></p>
 	</div>
 	<span v-if="$i && $i.id !== user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
 	<div class="description">
