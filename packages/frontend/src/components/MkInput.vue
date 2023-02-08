@@ -42,7 +42,7 @@ import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: string | number;
-	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | "datetime-local";
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -68,7 +68,7 @@ const emit = defineEmits<{
 }>();
 
 const { modelValue, type, autofocus } = toRefs(props);
-let v = ref<string | number>(modelValue.value);
+const v = ref(modelValue.value);
 const id = Math.random().toString(); // TODO: uuid?
 const focused = ref(false);
 const changed = ref(false);
