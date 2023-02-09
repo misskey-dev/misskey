@@ -27,3 +27,6 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: nyaone/misskey:latest
+
+      - name: Send success webhook
+        run: curl ${{ secrets.DOCKER_BUILD_SUCCESS_WEBHOOK }}
