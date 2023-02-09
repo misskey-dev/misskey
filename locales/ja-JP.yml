@@ -1628,12 +1628,14 @@ _permissions:
   "write:gallery-likes": "ギャラリーのいいねを操作する"
 
 _auth:
+  shareAccessTitle: "アプリへのアクセス許可"
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"
   shareAccessAsk: "アカウントへのアクセスを許可しますか？"
   permissionAsk: "このアプリは次の権限を要求しています"
   pleaseGoBack: "アプリケーションに戻ってやっていってください"
   callback: "アプリケーションに戻っています"
   denied: "アクセスを拒否しました"
+  pleaseLogin: "アプリケーションにアクセス許可を与えるには、ログインが必要です。"
 
 _antennaSources:
   all: "全てのノート"
