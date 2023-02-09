@@ -1596,12 +1596,15 @@ _permissions:
   "read:gallery-likes": "View your list of liked gallery posts"
   "write:gallery-likes": "Edit your list of liked gallery posts"
 _auth:
+  shareAccessTitle: "Granting application permissions"
   shareAccess: "Would you like to authorize \"{name}\" to access this account?"
   shareAccessAsk: "Are you sure you want to authorize this application to access your account?"
+  permission: "{name} requests the following permissions"
   permissionAsk: "This application requests the following permissions"
   pleaseGoBack: "Please go back to the application"
   callback: "Returning to the application"
   denied: "Access denied"
+  pleaseLogin: "Please log in to authorize applications."
 _antennaSources:
   all: "All notes"
   homeTimeline: "Notes from followed users"
