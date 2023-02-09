@@ -50,9 +50,6 @@ jobs:
       run: cp .github/misskey/test.yml .config
     - name: Build
       run: pnpm build
-    - run: |
-        cd packages/backend
-        pnpm check_heap
     - name: Test
       run: pnpm jest-and-coverage
     - name: Upload Coverage

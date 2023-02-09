@@ -13,11 +13,10 @@
 		"watch": "node watch.mjs",
 		"lint": "tsc --noEmit && eslint --quiet \"src/**/*.ts\"",
 		"jest": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
-		"jest-and-coverage": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
+		"jest-and-coverage": "cross-env NODE_ENV=test node -e 'console.log(Math.floor(v8.getHeapStatistics().heap_size_limit/1024/1024))' && cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
 		"jest-clear": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --clearCache",
 		"test": "pnpm jest",
-		"test-and-coverage": "pnpm jest-and-coverage",
-		"check_heap": "cross-env NODE_ENV=test node -e 'console.log(Math.floor(v8.getHeapStatistics().heap_size_limit/1024/1024))'"
+		"test-and-coverage": "pnpm jest-and-coverage"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs": "4.2.0",
