@@ -1869,5 +1869,6 @@ _deck:
     tl: "Linea de tiempo"
     antenna: "Antenas"
     list: "Listas"
+    channel: "Canal"
     mentions: "Menciones"
     direct: "Mensaje directo"
