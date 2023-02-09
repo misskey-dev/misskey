@@ -108,6 +108,9 @@ import { $i } from '@/account';
 const patronsWithIcon = [{
 	name: 'カイヤン',
 	icon: 'https://misskey-hub.net/patrons/a2820716883e408cb87773e377ce7c8d.jpg',
+}, {
+	name: 'だれかさん',
+	icon: 'https://misskey-hub.net/patrons/f7409b5e5a88477a9b9d740c408de125.jpg',
 }];
 
 const patrons = [
@@ -189,7 +192,6 @@ const patrons = [
 	'蝉暮せせせ',
 	'ThatOneCalculator',
 	'pixeldesu',
-	'だれかさん',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));
