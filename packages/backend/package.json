@@ -17,7 +17,7 @@
 		"jest-clear": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --clearCache",
 		"test": "pnpm jest",
 		"test-and-coverage": "pnpm jest-and-coverage",
-		"check_heap": "cross-env NODE_ENV=test node node --max-old-space-size=1000 -e 'console.log(Math.floor(v8.getHeapStatistics().heap_size_limit/1024/1024))'"
+		"check_heap": "cross-env NODE_ENV=test node -e 'console.log(Math.floor(v8.getHeapStatistics().heap_size_limit/1024/1024))'"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs": "4.2.0",
