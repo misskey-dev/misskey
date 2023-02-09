@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Server: UIのHTML（ノートなどの特別なページを除く）のキャッシュ時間を15秒から30秒に
+- i/notificationsのレートリミットを緩和
 
 ### Bugfixes
 -
