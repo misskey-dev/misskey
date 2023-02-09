@@ -125,7 +125,8 @@
 		"web-push": "3.5.0",
 		"websocket": "1.0.34",
 		"ws": "8.12.0",
-		"xev": "3.0.2"
+		"xev": "3.0.2",
+		"yohira": "0.0.0-alpha.5"
 	},
 	"devDependencies": {
 		"@jest/globals": "29.4.2",

@@ -207,6 +207,7 @@ importers:
       websocket: 1.0.34
       ws: 8.12.0
       xev: 3.0.2
+      yohira: 0.0.0-alpha.5
     dependencies:
       '@bull-board/api': 4.11.1
       '@bull-board/fastify': 4.11.1
@@ -311,6 +312,7 @@ importers:
       websocket: 1.0.34
       ws: 8.12.0
       xev: 3.0.2
+      yohira: 0.0.0-alpha.5
     optionalDependencies:
       '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node': 4.2.0_seedrandom@3.0.5
@@ -3716,7 +3718,7 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -3724,7 +3726,7 @@ packages:
   /axios/0.27.2_debug@4.3.4:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -6592,7 +6594,7 @@ packages:
       readable-stream: 2.3.7
     dev: false
 
-  /follow-redirects/1.15.2:
+  /follow-redirects/1.15.2_debug@4.3.4:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -6600,6 +6602,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -13686,6 +13690,12 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /yohira/0.0.0-alpha.5:
+    resolution: {integrity: sha512-kl0h1M+SXyRWOZM3xJQtGdM0MMTsSu27/PeWSArIx45UjMdmZM4gybnCzoJNb4PbLHHsI+0hAAS/nN72lboUgQ==}
+    dependencies:
+      reflect-metadata: 0.1.13
+    dev: false
 
   /zip-stream/4.1.0:
     resolution: {integrity: sha512-zshzwQW7gG7hjpBlgeQP9RuyPGNxvJdzR8SUM3QhxCnLjWN2E7j3dOvpeDcQoETfHx0urRS7EtmVToql7YpU4A==}
