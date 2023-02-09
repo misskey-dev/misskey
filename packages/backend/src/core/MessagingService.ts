@@ -37,12 +37,25 @@ export class MessagingService {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.MessagingMessageEntityService)
 		private messagingMessageEntityService: MessagingMessageEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.PushNotificationService)
 		private pushNotificationService: PushNotificationService,
 	) {
 	}

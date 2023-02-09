@@ -17,7 +17,10 @@ export class ApMentionService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.ApResolverService)
 		private apResolverService: ApResolverService,
+
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
 	) {
 	}

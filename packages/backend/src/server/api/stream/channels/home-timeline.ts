@@ -6,6 +6,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import type { Packed } from '@/misc/schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 
 class HomeTimelineChannel extends Channel {
@@ -101,6 +102,7 @@ export class HomeTimelineChannelService {
 	public readonly requireCredential = HomeTimelineChannel.requireCredential;
 
 	constructor(
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
 	) {
 	}

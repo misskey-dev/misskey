@@ -17,7 +17,10 @@ export class HashtagService {
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
 	) {
 	}

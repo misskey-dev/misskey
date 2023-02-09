@@ -15,6 +15,7 @@ export class ClipEntityService {
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
 	) {
 	}

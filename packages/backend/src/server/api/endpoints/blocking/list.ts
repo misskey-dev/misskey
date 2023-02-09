@@ -40,7 +40,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
+		@Inject(DI.BlockingEntityService)
 		private blockingEntityService: BlockingEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

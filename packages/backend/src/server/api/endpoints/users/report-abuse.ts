@@ -58,11 +58,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.EmailService)
 		private emailService: EmailService,
+
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

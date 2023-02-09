@@ -11,6 +11,7 @@ export class ProxyAccountService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
 	) {
 	}

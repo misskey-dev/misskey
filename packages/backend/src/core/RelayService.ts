@@ -25,9 +25,16 @@ export class RelayService {
 		@Inject(DI.relaysRepository)
 		private relaysRepository: RelaysRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.CreateSystemUserService)
 		private createSystemUserService: CreateSystemUserService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
 	) {
 		this.relaysCache = new Cache<Relay[]>(1000 * 60 * 10);

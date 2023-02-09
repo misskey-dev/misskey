@@ -52,7 +52,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.passwordResetRequestsRepository)
 		private passwordResetRequestsRepository: PasswordResetRequestsRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.EmailService)
 		private emailService: EmailService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

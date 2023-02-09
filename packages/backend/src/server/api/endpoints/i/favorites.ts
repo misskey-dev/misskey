@@ -40,7 +40,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,
 
+		@Inject(DI.NoteFavoriteEntityService)
 		private noteFavoriteEntityService: NoteFavoriteEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -45,11 +45,22 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.PushNotificationService)
 		private pushNotificationService: PushNotificationService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.AntennaEntityService)
 		private antennaEntityService: AntennaEntityService,
 	) {
 		this.antennasFetched = false;

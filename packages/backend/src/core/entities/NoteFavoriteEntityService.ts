@@ -16,6 +16,7 @@ export class NoteFavoriteEntityService {
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,
 
+		@Inject(DI.db)
 		private noteEntityService: NoteEntityService,
 	) {
 	}

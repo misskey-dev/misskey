@@ -24,7 +24,10 @@ export class AggregateRetentionProcessorService {
 		@Inject(DI.retentionAggregationsRepository)
 		private retentionAggregationsRepository: RetentionAggregationsRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('aggregate-retention');

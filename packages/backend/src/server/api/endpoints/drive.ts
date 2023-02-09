@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['drive', 'account'],
@@ -37,8 +38,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.DriveFileEntityService)
 		private driveFileEntityService: DriveFileEntityService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

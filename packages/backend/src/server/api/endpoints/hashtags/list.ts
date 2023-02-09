@@ -39,6 +39,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
 
+		@Inject(DI.HashtagEntityService)
 		private hashtagEntityService: HashtagEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

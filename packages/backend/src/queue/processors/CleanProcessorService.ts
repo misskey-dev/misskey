@@ -29,7 +29,10 @@ export class CleanProcessorService {
 		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: AntennaNotesRepository,
 
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('clean');

@@ -146,11 +146,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.UserFollowingService)
 		private userFollowingService: UserFollowingService,
+
+		@Inject(DI.AccountUpdateService)
 		private accountUpdateService: AccountUpdateService,
+
+		@Inject(DI.HashtagService)
 		private hashtagService: HashtagService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {

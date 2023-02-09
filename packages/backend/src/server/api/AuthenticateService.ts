@@ -30,6 +30,7 @@ export class AuthenticateService {
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
 
+		@Inject(DI.UserCacheService)
 		private userCacheService: UserCacheService,
 	) {
 		this.appCache = new Cache<App>(Infinity);

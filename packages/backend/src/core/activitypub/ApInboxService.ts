@@ -60,27 +60,70 @@ export class ApInboxService {
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.UserFollowingService)
 		private userFollowingService: UserFollowingService,
+
+		@Inject(DI.ApAudienceService)
 		private apAudienceService: ApAudienceService,
+
+		@Inject(DI.ReactionService)
 		private reactionService: ReactionService,
+
+		@Inject(DI.RelayService)
 		private relayService: RelayService,
+
+		@Inject(DI.NotePiningService)
 		private notePiningService: NotePiningService,
+
+		@Inject(DI.UserBlockingService)
 		private userBlockingService: UserBlockingService,
+
+		@Inject(DI.NoteCreateService)
 		private noteCreateService: NoteCreateService,
+
+		@Inject(DI.NoteDeleteService)
 		private noteDeleteService: NoteDeleteService,
+
+		@Inject(DI.AppLockService)
 		private appLockService: AppLockService,
+
+		@Inject(DI.ApResolverService)
 		private apResolverService: ApResolverService,
+
+		@Inject(DI.ApDbResolverService)
 		private apDbResolverService: ApDbResolverService,
+
+		@Inject(DI.ApLoggerService)
 		private apLoggerService: ApLoggerService,
+
+		@Inject(DI.ApNoteService)
 		private apNoteService: ApNoteService,
+
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
+
+		@Inject(DI.ApQuestionService)
 		private apQuestionService: ApQuestionService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.MessagingService)
 		private messagingService: MessagingService,
 	) {
 		this.logger = this.apLoggerService.logger;

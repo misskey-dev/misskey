@@ -84,13 +84,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: PollVotesRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.PollService)
 		private pollService: PollService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.CreateNotificationService)
 		private createNotificationService: CreateNotificationService,
+
+		@Inject(DI.UserBlockingService)
 		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

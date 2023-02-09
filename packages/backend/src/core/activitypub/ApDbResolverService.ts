@@ -51,7 +51,10 @@ export class ApDbResolverService {
 		@Inject(DI.userPublickeysRepository)
 		private userPublickeysRepository: UserPublickeysRepository,
 
+		@Inject(DI.UserCacheService)
 		private userCacheService: UserCacheService,
+
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
 	) {
 		this.publicKeyCache = new Cache<UserPublickey | null>(Infinity);

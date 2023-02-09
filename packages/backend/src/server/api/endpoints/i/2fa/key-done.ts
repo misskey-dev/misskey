@@ -46,8 +46,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.attestationChallengesRepository)
 		private attestationChallengesRepository: AttestationChallengesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.TwoFactorAuthenticationService)
 		private twoFactorAuthenticationService: TwoFactorAuthenticationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

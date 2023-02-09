@@ -42,6 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
+		@Inject(DI.AntennaEntityService)
 		private antennaEntityService: AntennaEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -41,7 +41,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: DriveFoldersRepository,
 
+		@Inject(DI.DriveFolderEntityService)
 		private driveFolderEntityService: DriveFolderEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

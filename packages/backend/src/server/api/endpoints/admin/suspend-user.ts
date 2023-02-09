@@ -39,11 +39,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notificationsRepository)
 		private notificationsRepository: NotificationsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.UserFollowingService)
 		private userFollowingService: UserFollowingService,
+
+		@Inject(DI.UserSuspendService)
 		private userSuspendService: UserSuspendService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
+
+		@Inject(DI.ModerationLogService)
 		private moderationLogService: ModerationLogService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ReactionService } from '@/core/ReactionService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -45,7 +46,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
+
+		@Inject(DI.ReactionService)
 		private reactionService: ReactionService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

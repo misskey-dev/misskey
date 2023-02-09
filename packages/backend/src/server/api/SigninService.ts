@@ -18,8 +18,13 @@ export class SigninService {
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 
+		@Inject(DI.SigninEntityService)
 		private signinEntityService: SigninEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
 	) {
 	}

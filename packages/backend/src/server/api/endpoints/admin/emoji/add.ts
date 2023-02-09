@@ -40,8 +40,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.CustomEmojiService)
 		private customEmojiService: CustomEmojiService,
 
+		@Inject(DI.ModerationLogService)
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

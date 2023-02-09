@@ -107,7 +107,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.ModerationLogService)
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

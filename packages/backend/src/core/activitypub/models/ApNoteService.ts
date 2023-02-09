@@ -1,4 +1,3 @@
-import { forwardRef } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
 import type { MessagingMessagesRepository, PollsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
@@ -51,25 +50,53 @@ export class ApNoteService {
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.ApMfmService)
 		private apMfmService: ApMfmService,
+
+		@Inject(DI.ApResolverService)
 		private apResolverService: ApResolverService,
 
 		// 循環参照のため / for circular dependency
-		@Inject(forwardRef(() => ApPersonService))
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
 	
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.ApAudienceService)
 		private apAudienceService: ApAudienceService,
+
+		@Inject(DI.ApMentionService)
 		private apMentionService: ApMentionService,
+
+		@Inject(DI.ApImageService)
 		private apImageService: ApImageService,
+
+		@Inject(DI.ApQuestionService)
 		private apQuestionService: ApQuestionService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.MessagingService)
 		private messagingService: MessagingService,
+
+		@Inject(DI.AppLockService)
 		private appLockService: AppLockService,
+
+		@Inject(DI.PollService)
 		private pollService: PollService,
+
+		@Inject(DI.NoteCreateService)
 		private noteCreateService: NoteCreateService,
+
+		@Inject(DI.ApDbResolverService)
 		private apDbResolverService: ApDbResolverService,
+
+		@Inject(DI.ApLoggerService)
 		private apLoggerService: ApLoggerService,
 	) {
 		this.logger = this.apLoggerService.logger;

@@ -6,6 +6,7 @@ import type { Packed } from '@/misc/schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 import type { StreamMessages } from '../types.js';
 
@@ -111,7 +112,10 @@ export class ChannelChannelService {
 	public readonly requireCredential = ChannelChannel.requireCredential;
 
 	constructor(
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
 	) {
 	}

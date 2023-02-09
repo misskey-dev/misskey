@@ -51,6 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.pageLikesRepository)
 		private pageLikesRepository: PageLikesRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

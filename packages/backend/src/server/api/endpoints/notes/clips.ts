@@ -49,7 +49,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: ClipNotesRepository,
 
+		@Inject(DI.ClipEntityService)
 		private clipEntityService: ClipEntityService,
+
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

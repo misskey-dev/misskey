@@ -1,4 +1,3 @@
-import { forwardRef } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
@@ -39,10 +38,13 @@ export class DriveFileEntityService {
 		private driveFilesRepository: DriveFilesRepository,
 
 		// 循環参照のため / for circular dependency
-		@Inject(forwardRef(() => UserEntityService))
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.DriveFolderEntityService)
 		private driveFolderEntityService: DriveFolderEntityService,
 	) {
 	}

@@ -55,6 +55,7 @@ export class UserEntityService implements OnModuleInit {
 	private userInstanceCache: Cache<Instance | null>;
 
 	constructor(
+		@Inject(DI.ModuleRef)
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.config)

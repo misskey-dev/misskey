@@ -24,7 +24,10 @@ export class DeleteDriveFilesProcessorService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.DriveService)
 		private driveService: DriveService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('delete-drive-files');

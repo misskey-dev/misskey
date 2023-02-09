@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -21,7 +22,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
+
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
 	) {
 		super(meta, paramDef, async (ps) => {

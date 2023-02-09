@@ -19,7 +19,10 @@ export default class DriveChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.AppLockService)
 		private appLockService: AppLockService,
+
+		@Inject(DI.ChartLoggerService)
 		private chartLoggerService: ChartLoggerService,
 	) {
 		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema);

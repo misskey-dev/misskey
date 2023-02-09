@@ -25,7 +25,10 @@ export class ChannelEntityService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.DriveFileEntityService)
 		private driveFileEntityService: DriveFileEntityService,
 	) {
 	}

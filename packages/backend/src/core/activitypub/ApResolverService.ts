@@ -177,12 +177,25 @@ export class ApResolverService {
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.InstanceActorService)
 		private instanceActorService: InstanceActorService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.ApRequestService)
 		private apRequestService: ApRequestService,
+
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.ApDbResolverService)
 		private apDbResolverService: ApDbResolverService,
 	) {
 	}

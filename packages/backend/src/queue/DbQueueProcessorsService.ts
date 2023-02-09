@@ -25,19 +25,46 @@ export class DbQueueProcessorsService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.DeleteDriveFilesProcessorService)
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
+
+		@Inject(DI.ExportCustomEmojisProcessorService)
 		private exportCustomEmojisProcessorService: ExportCustomEmojisProcessorService,
+
+		@Inject(DI.ExportNotesProcessorService)
 		private exportNotesProcessorService: ExportNotesProcessorService,
+
+		@Inject(DI.ExportFavoritesProcessorService)
 		private exportFavoritesProcessorService: ExportFavoritesProcessorService,
+
+		@Inject(DI.ExportFollowingProcessorService)
 		private exportFollowingProcessorService: ExportFollowingProcessorService,
+
+		@Inject(DI.ExportMutingProcessorService)
 		private exportMutingProcessorService: ExportMutingProcessorService,
+
+		@Inject(DI.ExportBlockingProcessorService)
 		private exportBlockingProcessorService: ExportBlockingProcessorService,
+
+		@Inject(DI.ExportUserListsProcessorService)
 		private exportUserListsProcessorService: ExportUserListsProcessorService,
+
+		@Inject(DI.ImportFollowingProcessorService)
 		private importFollowingProcessorService: ImportFollowingProcessorService,
+
+		@Inject(DI.ImportMutingProcessorService)
 		private importMutingProcessorService: ImportMutingProcessorService,
+
+		@Inject(DI.ImportBlockingProcessorService)
 		private importBlockingProcessorService: ImportBlockingProcessorService,
+
+		@Inject(DI.ImportUserListsProcessorService)
 		private importUserListsProcessorService: ImportUserListsProcessorService,
+
+		@Inject(DI.ImportCustomEmojisProcessorService)
 		private importCustomEmojisProcessorService: ImportCustomEmojisProcessorService,
+
+		@Inject(DI.DeleteAccountProcessorService)
 		private deleteAccountProcessorService: DeleteAccountProcessorService,
 	) {
 	}

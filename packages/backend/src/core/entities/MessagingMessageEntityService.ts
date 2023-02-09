@@ -17,8 +17,13 @@ export class MessagingMessageEntityService {
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.UserGroupEntityService)
 		private userGroupEntityService: UserGroupEntityService,
+
+		@Inject(DI.DriveFileEntityService)
 		private driveFileEntityService: DriveFileEntityService,
 	) {
 	}

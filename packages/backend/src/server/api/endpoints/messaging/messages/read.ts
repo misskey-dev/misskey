@@ -36,6 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
 
+		@Inject(DI.MessagingService)
 		private messagingService: MessagingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

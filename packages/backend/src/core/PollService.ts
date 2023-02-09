@@ -28,12 +28,25 @@ export class PollService {
 		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: PollVotesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.RelayService)
 		private relayService: RelayService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.UserBlockingService)
 		private userBlockingService: UserBlockingService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.ApDeliverManagerService)
 		private apDeliverManagerService: ApDeliverManagerService,
 	) {
 	}

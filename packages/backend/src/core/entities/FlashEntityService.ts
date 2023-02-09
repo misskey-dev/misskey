@@ -18,6 +18,7 @@ export class FlashEntityService {
 		@Inject(DI.flashLikesRepository)
 		private flashLikesRepository: FlashLikesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
 	) {
 	}

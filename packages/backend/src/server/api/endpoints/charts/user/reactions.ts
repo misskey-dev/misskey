@@ -3,6 +3,7 @@ import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
 import { schema } from '@/core/chart/charts/entities/per-user-reactions.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'reactions'],
@@ -28,6 +29,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.PerUserReactionsChart)
 		private perUserReactionsChart: PerUserReactionsChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {

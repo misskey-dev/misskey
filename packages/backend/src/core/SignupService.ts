@@ -31,9 +31,16 @@ export class SignupService {
 		@Inject(DI.usedUsernamesRepository)
 		private usedUsernamesRepository: UsedUsernamesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.UsersChart)
 		private usersChart: UsersChart,
 	) {
 	}

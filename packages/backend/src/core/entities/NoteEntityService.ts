@@ -1,4 +1,3 @@
-import { forwardRef } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
@@ -27,6 +26,7 @@ export class NoteEntityService implements OnModuleInit {
 	private reactionService: ReactionService;
 	
 	constructor(
+		@Inject(DI.ModuleRef)
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.db)

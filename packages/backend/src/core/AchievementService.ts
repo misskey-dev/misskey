@@ -90,6 +90,7 @@ export class AchievementService {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		@Inject(DI.CreateNotificationService)
 		private createNotificationService: CreateNotificationService,
 	) {
 	}

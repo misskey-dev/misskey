@@ -29,6 +29,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.DeleteAccountService)
 		private deleteAccountService: DeleteAccountService,
 	) {
 		super(meta, paramDef, async (ps) => {

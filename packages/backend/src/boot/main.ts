@@ -204,7 +204,72 @@ import {
 	Webhook,
 } from '@/models/index.js';
 import { createPostgresDataSource } from '@/postgres.js';
+import { DbQueueProcessorsService } from '@/queue/DbQueueProcessorsService.js';
+import { ObjectStorageQueueProcessorsService } from '@/queue/ObjectStorageQueueProcessorsService.js';
+import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
+import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
+import { SystemQueueProcessorsService } from '@/queue/SystemQueueProcessorsService.js';
+import { AggregateRetentionProcessorService } from '@/queue/processors/AggregateRetentionProcessorService.js';
+import { CheckExpiredMutingsProcessorService } from '@/queue/processors/CheckExpiredMutingsProcessorService.js';
+import { CleanChartsProcessorService } from '@/queue/processors/CleanChartsProcessorService.js';
+import { CleanProcessorService } from '@/queue/processors/CleanProcessorService.js';
+import { CleanRemoteFilesProcessorService } from '@/queue/processors/CleanRemoteFilesProcessorService.js';
+import { DeleteAccountProcessorService } from '@/queue/processors/DeleteAccountProcessorService.js';
+import { DeleteDriveFilesProcessorService } from '@/queue/processors/DeleteDriveFilesProcessorService.js';
+import { DeleteFileProcessorService } from '@/queue/processors/DeleteFileProcessorService.js';
+import { DeliverProcessorService } from '@/queue/processors/DeliverProcessorService.js';
+import { EndedPollNotificationProcessorService } from '@/queue/processors/EndedPollNotificationProcessorService.js';
+import { ExportBlockingProcessorService } from '@/queue/processors/ExportBlockingProcessorService.js';
+import { ExportCustomEmojisProcessorService } from '@/queue/processors/ExportCustomEmojisProcessorService.js';
+import { ExportFavoritesProcessorService } from '@/queue/processors/ExportFavoritesProcessorService.js';
+import { ExportFollowingProcessorService } from '@/queue/processors/ExportFollowingProcessorService.js';
+import { ExportMutingProcessorService } from '@/queue/processors/ExportMutingProcessorService.js';
+import { ExportNotesProcessorService } from '@/queue/processors/ExportNotesProcessorService.js';
+import { ExportUserListsProcessorService } from '@/queue/processors/ExportUserListsProcessorService.js';
+import { ImportBlockingProcessorService } from '@/queue/processors/ImportBlockingProcessorService.js';
+import { ImportCustomEmojisProcessorService } from '@/queue/processors/ImportCustomEmojisProcessorService.js';
+import { ImportFollowingProcessorService } from '@/queue/processors/ImportFollowingProcessorService.js';
+import { ImportMutingProcessorService } from '@/queue/processors/ImportMutingProcessorService.js';
+import { ImportUserListsProcessorService } from '@/queue/processors/ImportUserListsProcessorService.js';
+import { InboxProcessorService } from '@/queue/processors/InboxProcessorService.js';
+import { ResyncChartsProcessorService } from '@/queue/processors/ResyncChartsProcessorService.js';
+import { TickChartsProcessorService } from '@/queue/processors/TickChartsProcessorService.js';
+import { WebhookDeliverProcessorService } from '@/queue/processors/WebhookDeliverProcessorService.js';
 import { createRedisConnection } from '@/redis.js';
+import { ActivityPubServerService } from '@/server/ActivityPubServerService.js';
+import { FileServerService } from '@/server/FileServerService.js';
+import { NodeinfoServerService } from '@/server/NodeinfoServerService.js';
+import { ServerService } from '@/server/ServerService.js';
+import { WellKnownServerService } from '@/server/WellKnownServerService.js';
+import { ApiCallService } from '@/server/api/ApiCallService.js';
+import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
+import { ApiServerService } from '@/server/api/ApiServerService.js';
+import { AuthenticateService } from '@/server/api/AuthenticateService.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { RateLimiterService } from '@/server/api/RateLimiterService.js';
+import { SigninApiService } from '@/server/api/SigninApiService.js';
+import { SigninService } from '@/server/api/SigninService.js';
+import { SignupApiService } from '@/server/api/SignupApiService.js';
+import { StreamingApiServerService } from '@/server/api/StreamingApiServerService.js';
+import { ChannelsService } from '@/server/api/stream/ChannelsService.js';
+import { AdminChannelService } from '@/server/api/stream/channels/admin.js';
+import { AntennaChannelService } from '@/server/api/stream/channels/antenna.js';
+import { ChannelChannelService } from '@/server/api/stream/channels/channel.js';
+import { DriveChannelService } from '@/server/api/stream/channels/drive.js';
+import { GlobalTimelineChannelService } from '@/server/api/stream/channels/global-timeline.js';
+import { HashtagChannelService } from '@/server/api/stream/channels/hashtag.js';
+import { HomeTimelineChannelService } from '@/server/api/stream/channels/home-timeline.js';
+import { HybridTimelineChannelService } from '@/server/api/stream/channels/hybrid-timeline.js';
+import { LocalTimelineChannelService } from '@/server/api/stream/channels/local-timeline.js';
+import { MainChannelService } from '@/server/api/stream/channels/main.js';
+import { MessagingIndexChannelService } from '@/server/api/stream/channels/messaging-index.js';
+import { MessagingChannelService } from '@/server/api/stream/channels/messaging.js';
+import { QueueStatsChannelService } from '@/server/api/stream/channels/queue-stats.js';
+import { ServerStatsChannelService } from '@/server/api/stream/channels/server-stats.js';
+import { UserListChannelService } from '@/server/api/stream/channels/user-list.js';
+import { ClientServerService } from '@/server/web/ClientServerService.js';
+import { FeedService } from '@/server/web/FeedService.js';
+import { UrlPreviewService } from '@/server/web/UrlPreviewService.js';
 
 // REVIEW
 async function addGlobalModule(services: IServiceCollection): Promise<void> {
@@ -477,6 +542,87 @@ function addCoreModule(services: IServiceCollection): void {
 	}
 }
 
+function addServerModule(services: IServiceCollection): void {
+	const serverModule: [symbol, Ctor<object>][] = [
+		[DI.ClientServerService, ClientServerService],
+		[DI.FeedService, FeedService],
+		[DI.UrlPreviewService, UrlPreviewService],
+		[DI.ActivityPubServerService, ActivityPubServerService],
+		[DI.FileServerService, FileServerService],
+		[DI.NodeinfoServerService, NodeinfoServerService],
+		[DI.ServerService, ServerService],
+		[DI.WellKnownServerService, WellKnownServerService],
+		[DI.GetterService, GetterService],
+		[DI.ChannelsService, ChannelsService],
+		[DI.ApiCallService, ApiCallService],
+		[DI.ApiLoggerService, ApiLoggerService],
+		[DI.ApiServerService, ApiServerService],
+		[DI.AuthenticateService, AuthenticateService],
+		[DI.RateLimiterService, RateLimiterService],
+		[DI.SigninApiService, SigninApiService],
+		[DI.SigninService, SigninService],
+		[DI.SignupApiService, SignupApiService],
+		[DI.StreamingApiServerService, StreamingApiServerService],
+		[DI.MainChannelService, MainChannelService],
+		[DI.AdminChannelService, AdminChannelService],
+		[DI.AntennaChannelService, AntennaChannelService],
+		[DI.ChannelChannelService, ChannelChannelService],
+		[DI.DriveChannelService, DriveChannelService],
+		[DI.GlobalTimelineChannelService, GlobalTimelineChannelService],
+		[DI.HashtagChannelService, HashtagChannelService],
+		[DI.HomeTimelineChannelService, HomeTimelineChannelService],
+		[DI.HybridTimelineChannelService, HybridTimelineChannelService],
+		[DI.LocalTimelineChannelService, LocalTimelineChannelService],
+		[DI.MessagingIndexChannelService, MessagingIndexChannelService],
+		[DI.MessagingChannelService, MessagingChannelService],
+		[DI.QueueStatsChannelService, QueueStatsChannelService],
+		[DI.ServerStatsChannelService, ServerStatsChannelService],
+		[DI.UserListChannelService, UserListChannelService],
+	];
+	for (const [serviceType, implCtor] of serverModule) {
+		addSingletonCtor(services, serviceType, implCtor);
+	}
+}
+
+function addQueueProcessorModule(services: IServiceCollection): void {
+	const queueProcessorModule: [symbol, Ctor<object>][] = [
+		[DI.QueueLoggerService, QueueLoggerService],
+		[DI.TickChartsProcessorService, TickChartsProcessorService],
+		[DI.ResyncChartsProcessorService, ResyncChartsProcessorService],
+		[DI.CleanChartsProcessorService, CleanChartsProcessorService],
+		[DI.CheckExpiredMutingsProcessorService, CheckExpiredMutingsProcessorService],
+		[DI.CleanProcessorService, CleanProcessorService],
+		[DI.DeleteDriveFilesProcessorService, DeleteDriveFilesProcessorService],
+		[DI.ExportCustomEmojisProcessorService, ExportCustomEmojisProcessorService],
+		[DI.ExportNotesProcessorService, ExportNotesProcessorService],
+		[DI.ExportFavoritesProcessorService, ExportFavoritesProcessorService],
+		[DI.ExportFollowingProcessorService, ExportFollowingProcessorService],
+		[DI.ExportMutingProcessorService, ExportMutingProcessorService],
+		[DI.ExportBlockingProcessorService, ExportBlockingProcessorService],
+		[DI.ExportUserListsProcessorService, ExportUserListsProcessorService],
+		[DI.ImportFollowingProcessorService, ImportFollowingProcessorService],
+		[DI.ImportMutingProcessorService, ImportMutingProcessorService],
+		[DI.ImportBlockingProcessorService, ImportBlockingProcessorService],
+		[DI.ImportUserListsProcessorService, ImportUserListsProcessorService],
+		[DI.ImportCustomEmojisProcessorService, ImportCustomEmojisProcessorService],
+		[DI.DeleteAccountProcessorService, DeleteAccountProcessorService],
+		[DI.DeleteFileProcessorService, DeleteFileProcessorService],
+		[DI.CleanRemoteFilesProcessorService, CleanRemoteFilesProcessorService],
+		[DI.SystemQueueProcessorsService, SystemQueueProcessorsService],
+		[DI.ObjectStorageQueueProcessorsService, ObjectStorageQueueProcessorsService],
+		[DI.DbQueueProcessorsService, DbQueueProcessorsService],
+		[DI.WebhookDeliverProcessorService, WebhookDeliverProcessorService],
+		[DI.EndedPollNotificationProcessorService, EndedPollNotificationProcessorService],
+		[DI.DeliverProcessorService, DeliverProcessorService],
+		[DI.InboxProcessorService, InboxProcessorService],
+		[DI.AggregateRetentionProcessorService, AggregateRetentionProcessorService],
+		[DI.QueueProcessorService, QueueProcessorService],
+	];
+	for (const [serviceType, implCtor] of queueProcessorModule) {
+		addSingletonCtor(services, serviceType, implCtor);
+	}
+}
+
 export async function main(): Promise<void> {
 	try {
 		const options = new WebAppOptions();
@@ -484,10 +630,16 @@ export async function main(): Promise<void> {
 		const builder = createWebAppBuilder(options);
 		const services = builder.services;
 
+		// TODO: remove
+		addSingletonInstance(services, DI.ModuleRef, {});
+		addSingletonInstance(services, DI.Logger, {});
+
 		await addGlobalModule(services);
 		addQueueModule(services);
 		addRepositoryModule(services);
 		addCoreModule(services);
+		addServerModule(services);
+		addQueueProcessorModule(services);
 
 		const app = builder.build();
 

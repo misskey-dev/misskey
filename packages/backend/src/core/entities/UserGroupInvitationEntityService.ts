@@ -16,6 +16,7 @@ export class UserGroupInvitationEntityService {
 		@Inject(DI.userGroupInvitationsRepository)
 		private userGroupInvitationsRepository: UserGroupInvitationsRepository,
 
+		@Inject(DI.UserGroupEntityService)
 		private userGroupEntityService: UserGroupEntityService,
 	) {
 	}

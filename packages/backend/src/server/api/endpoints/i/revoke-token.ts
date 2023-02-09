@@ -25,6 +25,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
 
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

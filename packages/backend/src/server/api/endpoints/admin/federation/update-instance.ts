@@ -27,6 +27,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

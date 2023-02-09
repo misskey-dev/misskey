@@ -30,8 +30,13 @@ export class ExportCustomEmojisProcessorService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.DriveService)
 		private driveService: DriveService,
+
+		@Inject(DI.DownloadService)
 		private downloadService: DownloadService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('export-custom-emojis');

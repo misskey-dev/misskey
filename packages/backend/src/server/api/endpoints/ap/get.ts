@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@/di-decorators.js';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -35,6 +36,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.ApResolverService)
 		private apResolverService: ApResolverService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

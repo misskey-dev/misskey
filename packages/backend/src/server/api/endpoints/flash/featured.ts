@@ -33,6 +33,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
 
+		@Inject(DI.FlashEntityService)
 		private flashEntityService: FlashEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

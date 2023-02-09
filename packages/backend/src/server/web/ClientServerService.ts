@@ -74,25 +74,46 @@ export class ClientServerService {
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
 
+		@Inject(DI.FlashEntityService)
 		private flashEntityService: FlashEntityService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.PageEntityService)
 		private pageEntityService: PageEntityService,
+
+		@Inject(DI.GalleryPostEntityService)
 		private galleryPostEntityService: GalleryPostEntityService,
+
+		@Inject(DI.ClipEntityService)
 		private clipEntityService: ClipEntityService,
+
+		@Inject(DI.ChannelEntityService)
 		private channelEntityService: ChannelEntityService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.UrlPreviewService)
 		private urlPreviewService: UrlPreviewService,
+
+		@Inject(DI.FeedService)
 		private feedService: FeedService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
 
-		@Inject('queue:system') public systemQueue: SystemQueue,
-		@Inject('queue:endedPollNotification') public endedPollNotificationQueue: EndedPollNotificationQueue,
-		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
-		@Inject('queue:inbox') public inboxQueue: InboxQueue,
-		@Inject('queue:db') public dbQueue: DbQueue,
-		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
-		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
+		@Inject(Symbol.for('queue:system')) public systemQueue: SystemQueue,
+		@Inject(Symbol.for('queue:endedPollNotification')) public endedPollNotificationQueue: EndedPollNotificationQueue,
+		@Inject(Symbol.for('queue:deliver')) public deliverQueue: DeliverQueue,
+		@Inject(Symbol.for('queue:inbox')) public inboxQueue: InboxQueue,
+		@Inject(Symbol.for('queue:db')) public dbQueue: DbQueue,
+		@Inject(Symbol.for('queue:objectStorage')) public objectStorageQueue: ObjectStorageQueue,
+		@Inject(Symbol.for('queue:webhookDeliver')) public webhookDeliverQueue: WebhookDeliverQueue,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}

@@ -16,11 +16,22 @@ export class SystemQueueProcessorsService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.TickChartsProcessorService)
 		private tickChartsProcessorService: TickChartsProcessorService,
+
+		@Inject(DI.ResyncChartsProcessorService)
 		private resyncChartsProcessorService: ResyncChartsProcessorService,
+
+		@Inject(DI.CleanChartsProcessorService)
 		private cleanChartsProcessorService: CleanChartsProcessorService,
+
+		@Inject(DI.AggregateRetentionProcessorService)
 		private aggregateRetentionProcessorService: AggregateRetentionProcessorService,
+
+		@Inject(DI.CheckExpiredMutingsProcessorService)
 		private checkExpiredMutingsProcessorService: CheckExpiredMutingsProcessorService,
+
+		@Inject(DI.CleanProcessorService)
 		private cleanProcessorService: CleanProcessorService,
 	) {
 	}

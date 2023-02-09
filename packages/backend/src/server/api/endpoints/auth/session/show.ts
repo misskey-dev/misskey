@@ -55,6 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.authSessionsRepository)
 		private authSessionsRepository: AuthSessionsRepository,
 
+		@Inject(DI.AuthSessionEntityService)
 		private authSessionEntityService: AuthSessionEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

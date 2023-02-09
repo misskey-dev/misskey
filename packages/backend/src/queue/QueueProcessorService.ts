@@ -23,14 +23,31 @@ export class QueueProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.SystemQueueProcessorsService)
 		private systemQueueProcessorsService: SystemQueueProcessorsService,
+
+		@Inject(DI.ObjectStorageQueueProcessorsService)
 		private objectStorageQueueProcessorsService: ObjectStorageQueueProcessorsService,
+
+		@Inject(DI.DbQueueProcessorsService)
 		private dbQueueProcessorsService: DbQueueProcessorsService,
+
+		@Inject(DI.WebhookDeliverProcessorService)
 		private webhookDeliverProcessorService: WebhookDeliverProcessorService,
+
+		@Inject(DI.EndedPollNotificationProcessorService)
 		private endedPollNotificationProcessorService: EndedPollNotificationProcessorService,
+
+		@Inject(DI.DeliverProcessorService)
 		private deliverProcessorService: DeliverProcessorService,
+
+		@Inject(DI.InboxProcessorService)
 		private inboxProcessorService: InboxProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;

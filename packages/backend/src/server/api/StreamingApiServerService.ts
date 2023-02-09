@@ -42,10 +42,19 @@ export class StreamingApiServerService {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 	
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.NoteReadService)
 		private noteReadService: NoteReadService,
+
+		@Inject(DI.AuthenticateService)
 		private authenticateService: AuthenticateService,
+
+		@Inject(DI.ChannelsService)
 		private channelsService: ChannelsService,
+
+		@Inject(DI.NotificationService)
 		private notificationService: NotificationService,
 	) {
 	}

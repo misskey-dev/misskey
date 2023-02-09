@@ -52,16 +52,37 @@ export class UserFollowingService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.UserBlockingService)
 		private userBlockingService: UserBlockingService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.CreateNotificationService)
 		private createNotificationService: CreateNotificationService,
+
+		@Inject(DI.FederatedInstanceService)
 		private federatedInstanceService: FederatedInstanceService,
+
+		@Inject(DI.WebhookService)
 		private webhookService: WebhookService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.PerUserFollowingChart)
 		private perUserFollowingChart: PerUserFollowingChart,
+
+		@Inject(DI.InstanceChart)
 		private instanceChart: InstanceChart,
 	) {
 	}

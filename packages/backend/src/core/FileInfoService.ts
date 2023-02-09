@@ -15,6 +15,7 @@ import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -47,6 +48,7 @@ const TYPE_SVG = {
 @Injectable()
 export class FileInfoService {
 	constructor(
+		@Inject(DI.AiService)
 		private aiService: AiService,
 	) {
 	}

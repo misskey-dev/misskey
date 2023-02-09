@@ -16,8 +16,10 @@ export class InstanceEntityService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
 	) {
 	}

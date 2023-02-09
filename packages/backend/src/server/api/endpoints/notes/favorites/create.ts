@@ -50,8 +50,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
+
+		@Inject(DI.AchievementService)
 		private achievementService: AchievementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

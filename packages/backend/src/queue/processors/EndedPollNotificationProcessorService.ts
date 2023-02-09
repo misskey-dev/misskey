@@ -24,7 +24,10 @@ export class EndedPollNotificationProcessorService {
 		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: PollVotesRepository,
 
+		@Inject(DI.CreateNotificationService)
 		private createNotificationService: CreateNotificationService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('ended-poll-notification');

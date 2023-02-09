@@ -18,7 +18,10 @@ export default class TestUniqueChart extends Chart<typeof schema> {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.AppLockService)
 		private appLockService: AppLockService,
+
+		@Inject(DI.Logger)
 		logger: Logger,
 	) {
 		super(db, (k) => appLockService.getChartInsertLock(k), logger, name, schema);

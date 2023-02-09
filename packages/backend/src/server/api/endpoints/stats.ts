@@ -69,7 +69,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
+		@Inject(DI.NotesChart)
 		private notesChart: NotesChart,
+
+		@Inject(DI.UsersChart)
 		private usersChart: UsersChart,
 	) {
 		super(meta, paramDef, async () => {

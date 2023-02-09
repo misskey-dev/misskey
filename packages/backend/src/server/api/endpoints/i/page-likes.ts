@@ -50,7 +50,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.pageLikesRepository)
 		private pageLikesRepository: PageLikesRepository,
 
+		@Inject(DI.PageLikeEntityService)
 		private pageLikeEntityService: PageLikeEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

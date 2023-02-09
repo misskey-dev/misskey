@@ -3,6 +3,7 @@ import type { NotesRepository } from '@/models/index.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 import type { StreamMessages } from '../types.js';
 
@@ -61,6 +62,7 @@ export class AntennaChannelService {
 	public readonly requireCredential = AntennaChannel.requireCredential;
 
 	constructor(
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
 	) {
 	}

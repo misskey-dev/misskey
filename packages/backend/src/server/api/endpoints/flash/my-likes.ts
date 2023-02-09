@@ -50,7 +50,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.flashLikesRepository)
 		private flashLikesRepository: FlashLikesRepository,
 
+		@Inject(DI.FlashLikeEntityService)
 		private flashLikeEntityService: FlashLikeEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

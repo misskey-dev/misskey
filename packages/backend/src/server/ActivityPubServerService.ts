@@ -52,11 +52,22 @@ export class ActivityPubServerService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.UserKeypairStoreService)
 		private userKeypairStoreService: UserKeypairStoreService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		//this.createServer = this.createServer.bind(this);

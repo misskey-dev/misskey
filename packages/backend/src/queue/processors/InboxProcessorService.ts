@@ -44,18 +44,43 @@ export class InboxProcessorService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.ApInboxService)
 		private apInboxService: ApInboxService,
+
+		@Inject(DI.FederatedInstanceService)
 		private federatedInstanceService: FederatedInstanceService,
+
+		@Inject(DI.FetchInstanceMetadataService)
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
+
+		@Inject(DI.LdSignatureService)
 		private ldSignatureService: LdSignatureService,
+
+		@Inject(DI.ApRequestService)
 		private apRequestService: ApRequestService,
+
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
+
+		@Inject(DI.ApDbResolverService)
 		private apDbResolverService: ApDbResolverService,
+
+		@Inject(DI.InstanceChart)
 		private instanceChart: InstanceChart,
+
+		@Inject(DI.ApRequestChart)
 		private apRequestChart: ApRequestChart,
+
+		@Inject(DI.FederationChart)
 		private federationChart: FederationChart,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('inbox');

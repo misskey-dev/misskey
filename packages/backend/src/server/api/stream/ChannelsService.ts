@@ -20,20 +20,49 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class ChannelsService {
 	constructor(
+		@Inject(DI.MainChannelService)
 		private mainChannelService: MainChannelService,
+
+		@Inject(DI.HomeTimelineChannelService)
 		private homeTimelineChannelService: HomeTimelineChannelService,
+
+		@Inject(DI.LocalTimelineChannelService)
 		private localTimelineChannelService: LocalTimelineChannelService,
+
+		@Inject(DI.HybridTimelineChannelService)
 		private hybridTimelineChannelService: HybridTimelineChannelService,
+
+		@Inject(DI.GlobalTimelineChannelService)
 		private globalTimelineChannelService: GlobalTimelineChannelService,
+
+		@Inject(DI.UserListChannelService)
 		private userListChannelService: UserListChannelService,
+
+		@Inject(DI.HashtagChannelService)
 		private hashtagChannelService: HashtagChannelService,
+
+		@Inject(DI.AntennaChannelService)
 		private antennaChannelService: AntennaChannelService,
+
+		@Inject(DI.ChannelChannelService)
 		private channelChannelService: ChannelChannelService,
+
+		@Inject(DI.MessagingChannelService)
 		private messagingChannelService: MessagingChannelService,
+
+		@Inject(DI.MessagingIndexChannelService)
 		private messagingIndexChannelService: MessagingIndexChannelService,
+
+		@Inject(DI.DriveChannelService)
 		private driveChannelService: DriveChannelService,
+
+		@Inject(DI.ServerStatsChannelService)
 		private serverStatsChannelService: ServerStatsChannelService,
+
+		@Inject(DI.QueueStatsChannelService)
 		private queueStatsChannelService: QueueStatsChannelService,
+
+		@Inject(DI.AdminChannelService)
 		private adminChannelService: AdminChannelService,
 	) {
 	}

@@ -3,6 +3,7 @@ import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import { schema } from '@/core/chart/charts/entities/federation.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['charts'],
@@ -27,6 +28,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.FederationChart)
 		private federationChart: FederationChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {

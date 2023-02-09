@@ -27,7 +27,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.FetchInstanceMetadataService)
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

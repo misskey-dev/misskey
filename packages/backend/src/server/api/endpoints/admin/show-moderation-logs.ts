@@ -68,7 +68,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.moderationLogsRepository)
 		private moderationLogsRepository: ModerationLogsRepository,
 
+		@Inject(DI.ModerationLogEntityService)
 		private moderationLogEntityService: ModerationLogEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

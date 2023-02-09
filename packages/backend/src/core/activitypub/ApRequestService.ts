@@ -36,8 +36,13 @@ export class ApRequestService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.UserKeypairStoreService)
 		private userKeypairStoreService: UserKeypairStoreService,
+
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
+
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

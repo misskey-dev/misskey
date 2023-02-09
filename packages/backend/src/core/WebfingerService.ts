@@ -22,6 +22,7 @@ export class WebfingerService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
 	) {
 	}

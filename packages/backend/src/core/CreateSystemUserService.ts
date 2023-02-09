@@ -18,6 +18,7 @@ export class CreateSystemUserService {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
 	) {
 	}

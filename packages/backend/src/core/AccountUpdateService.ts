@@ -18,9 +18,16 @@ export class AccountUpdateService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.ApDeliverManagerService)
 		private apDeliverManagerService: ApDeliverManagerService,
+
+		@Inject(DI.RelayService)
 		private relayService: RelayService,
 	) {
 	}

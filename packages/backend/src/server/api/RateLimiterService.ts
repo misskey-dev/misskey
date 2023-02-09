@@ -16,6 +16,7 @@ export class RateLimiterService {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('limiter');

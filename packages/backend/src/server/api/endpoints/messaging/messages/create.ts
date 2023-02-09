@@ -110,7 +110,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
+
+		@Inject(DI.MessagingService)
 		private messagingService: MessagingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -31,10 +31,19 @@ export class ImportBlockingProcessorService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.UserBlockingService)
 		private userBlockingService: UserBlockingService,
+
+		@Inject(DI.RemoteUserResolveService)
 		private remoteUserResolveService: RemoteUserResolveService,
+
+		@Inject(DI.DownloadService)
 		private downloadService: DownloadService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('import-blocking');

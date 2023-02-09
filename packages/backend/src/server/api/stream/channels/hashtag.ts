@@ -5,6 +5,7 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 
 class HashtagChannel extends Channel {
@@ -69,6 +70,7 @@ export class HashtagChannelService {
 	public readonly requireCredential = HashtagChannel.requireCredential;
 
 	constructor(
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
 	) {
 	}

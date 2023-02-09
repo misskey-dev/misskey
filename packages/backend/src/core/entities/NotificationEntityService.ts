@@ -23,6 +23,7 @@ export class NotificationEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 
 	constructor(
+		@Inject(DI.ModuleRef)
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.notificationsRepository)

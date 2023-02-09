@@ -28,10 +28,19 @@ export class ImportMutingProcessorService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.UserMutingService)
 		private userMutingService: UserMutingService,
+
+		@Inject(DI.RemoteUserResolveService)
 		private remoteUserResolveService: RemoteUserResolveService,
+
+		@Inject(DI.DownloadService)
 		private downloadService: DownloadService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('import-muting');

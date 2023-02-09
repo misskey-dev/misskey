@@ -47,8 +47,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
+
+		@Inject(DI.NoteReadService)
 		private noteReadService: NoteReadService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

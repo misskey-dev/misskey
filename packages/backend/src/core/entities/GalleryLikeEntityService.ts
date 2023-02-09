@@ -16,6 +16,7 @@ export class GalleryLikeEntityService {
 		@Inject(DI.galleryLikesRepository)
 		private galleryLikesRepository: GalleryLikesRepository,
 
+		@Inject(DI.GalleryPostEntityService)
 		private galleryPostEntityService: GalleryPostEntityService,
 	) {
 	}

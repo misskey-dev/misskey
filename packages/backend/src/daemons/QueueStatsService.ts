@@ -14,6 +14,7 @@ export class QueueStatsService implements OnApplicationShutdown {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
 	) {
 	}

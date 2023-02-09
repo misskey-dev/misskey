@@ -15,6 +15,7 @@ export class AuthSessionEntityService {
 		@Inject(DI.authSessionsRepository)
 		private authSessionsRepository: AuthSessionsRepository,
 
+		@Inject(DI.AppEntityService)
 		private appEntityService: AppEntityService,
 	) {
 	}

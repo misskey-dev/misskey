@@ -43,8 +43,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.ModerationLogService)
 		private moderationLogService: ModerationLogService,
+
+		@Inject(DI.EmojiEntityService)
 		private emojiEntityService: EmojiEntityService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -42,6 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.promoNotesRepository)
 		private promoNotesRepository: PromoNotesRepository,
 
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

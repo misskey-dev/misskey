@@ -40,8 +40,13 @@ export class FetchInstanceMetadataService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.AppLockService)
 		private appLockService: AppLockService,
+
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
+
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('metadata', 'cyan');

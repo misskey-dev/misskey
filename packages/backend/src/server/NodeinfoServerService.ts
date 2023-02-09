@@ -28,9 +28,16 @@ export class NodeinfoServerService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.NotesChart)
 		private notesChart: NotesChart,
+
+		@Inject(DI.UsersChart)
 		private usersChart: UsersChart,
 	) {
 		//this.createServer = this.createServer.bind(this);

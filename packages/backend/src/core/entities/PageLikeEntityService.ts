@@ -16,6 +16,7 @@ export class PageLikeEntityService {
 		@Inject(DI.pageLikesRepository)
 		private pageLikesRepository: PageLikesRepository,
 
+		@Inject(DI.PageEntityService)
 		private pageEntityService: PageEntityService,
 	) {
 	}

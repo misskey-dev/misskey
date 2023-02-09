@@ -59,8 +59,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: AntennaNotesRepository,
 
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
+
+		@Inject(DI.NoteReadService)
 		private noteReadService: NoteReadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

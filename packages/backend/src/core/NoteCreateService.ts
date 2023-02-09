@@ -172,25 +172,64 @@ export class NoteCreateService {
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.NoteReadService)
 		private noteReadService: NoteReadService,
+
+		@Inject(DI.CreateNotificationService)
 		private createNotificationService: CreateNotificationService,
+
+		@Inject(DI.RelayService)
 		private relayService: RelayService,
+
+		@Inject(DI.FederatedInstanceService)
 		private federatedInstanceService: FederatedInstanceService,
+
+		@Inject(DI.HashtagService)
 		private hashtagService: HashtagService,
+
+		@Inject(DI.AntennaService)
 		private antennaService: AntennaService,
+
+		@Inject(DI.WebhookService)
 		private webhookService: WebhookService,
+
+		@Inject(DI.RemoteUserResolveService)
 		private remoteUserResolveService: RemoteUserResolveService,
+
+		@Inject(DI.ApDeliverManagerService)
 		private apDeliverManagerService: ApDeliverManagerService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
+
+		@Inject(DI.NotesChart)
 		private notesChart: NotesChart,
+
+		@Inject(DI.PerUserNotesChart)
 		private perUserNotesChart: PerUserNotesChart,
+
+		@Inject(DI.ActiveUsersChart)
 		private activeUsersChart: ActiveUsersChart,
+
+		@Inject(DI.InstanceChart)
 		private instanceChart: InstanceChart,
 	) {}
 

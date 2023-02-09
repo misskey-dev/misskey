@@ -70,16 +70,37 @@ export class ReactionService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.UserBlockingService)
 		private userBlockingService: UserBlockingService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.ApDeliverManagerService)
 		private apDeliverManagerService: ApDeliverManagerService,
+
+		@Inject(DI.CreateNotificationService)
 		private createNotificationService: CreateNotificationService,
+
+		@Inject(DI.PerUserReactionsChart)
 		private perUserReactionsChart: PerUserReactionsChart,
 	) {
 	}

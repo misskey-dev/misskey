@@ -39,7 +39,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.SignupService)
 		private signupService: SignupService,
 	) {
 		super(meta, paramDef, async (ps, _me) => {

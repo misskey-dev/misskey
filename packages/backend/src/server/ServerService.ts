@@ -40,15 +40,34 @@ export class ServerService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.ApiServerService)
 		private apiServerService: ApiServerService,
+
+		@Inject(DI.StreamingApiServerService)
 		private streamingApiServerService: StreamingApiServerService,
+
+		@Inject(DI.ActivityPubServerService)
 		private activityPubServerService: ActivityPubServerService,
+
+		@Inject(DI.WellKnownServerService)
 		private wellKnownServerService: WellKnownServerService,
+
+		@Inject(DI.NodeinfoServerService)
 		private nodeinfoServerService: NodeinfoServerService,
+
+		@Inject(DI.FileServerService)
 		private fileServerService: FileServerService,
+
+		@Inject(DI.ClientServerService)
 		private clientServerService: ClientServerService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);

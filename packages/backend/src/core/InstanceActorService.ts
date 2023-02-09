@@ -17,6 +17,7 @@ export class InstanceActorService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.CreateSystemUserService)
 		private createSystemUserService: CreateSystemUserService,
 	) {
 		this.cache = new Cache<ILocalUser>(Infinity);

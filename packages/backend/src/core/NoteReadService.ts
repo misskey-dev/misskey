@@ -38,11 +38,22 @@ export class NoteReadService {
 		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: AntennaNotesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.NotificationService)
 		private notificationService: NotificationService,
+
+		@Inject(DI.AntennaService)
 		private antennaService: AntennaService,
+
+		@Inject(DI.PushNotificationService)
 		private pushNotificationService: PushNotificationService,
 	) {
 	}

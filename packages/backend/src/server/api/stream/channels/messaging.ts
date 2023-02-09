@@ -139,7 +139,10 @@ export class MessagingChannelService {
 		@Inject(DI.messagingMessagesRepository)
 		private messagingMessagesRepository: MessagingMessagesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.MessagingService)
 		private messagingService: MessagingService,
 	) {
 	}

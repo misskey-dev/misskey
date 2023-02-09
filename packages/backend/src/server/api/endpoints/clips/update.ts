@@ -45,6 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
+		@Inject(DI.ClipEntityService)
 		private clipEntityService: ClipEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

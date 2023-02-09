@@ -39,10 +39,19 @@ export class ApiCallService implements OnApplicationShutdown {
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.AuthenticateService)
 		private authenticateService: AuthenticateService,
+
+		@Inject(DI.RateLimiterService)
 		private rateLimiterService: RateLimiterService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
+
+		@Inject(DI.ApiLoggerService)
 		private apiLoggerService: ApiLoggerService,
 	) {
 		this.logger = this.apiLoggerService.logger;

@@ -20,7 +20,10 @@ export class EmailService {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('email');

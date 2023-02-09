@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@/di-decorators.js';
 
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import FederationChart from './charts/federation.js';
 import NotesChart from './charts/notes.js';
 import UsersChart from './charts/users.js';
@@ -21,17 +22,40 @@ export class ChartManagementService implements OnApplicationShutdown {
 	private saveIntervalId: NodeJS.Timer;
 
 	constructor(
+		@Inject(DI.FederationChart)
 		private federationChart: FederationChart,
+
+		@Inject(DI.NotesChart)
 		private notesChart: NotesChart,
+
+		@Inject(DI.UsersChart)
 		private usersChart: UsersChart,
+
+		@Inject(DI.ActiveUsersChart)
 		private activeUsersChart: ActiveUsersChart,
+
+		@Inject(DI.InstanceChart)
 		private instanceChart: InstanceChart,
+
+		@Inject(DI.PerUserNotesChart)
 		private perUserNotesChart: PerUserNotesChart,
+
+		@Inject(DI.PerUserPvChart)
 		private perUserPvChart: PerUserPvChart,
+
+		@Inject(DI.DriveChart)
 		private driveChart: DriveChart,
+
+		@Inject(DI.PerUserReactionsChart)
 		private perUserReactionsChart: PerUserReactionsChart,
+
+		@Inject(DI.PerUserFollowingChart)
 		private perUserFollowingChart: PerUserFollowingChart,
+
+		@Inject(DI.PerUserDriveChart)
 		private perUserDriveChart: PerUserDriveChart,
+
+		@Inject(DI.ApRequestChart)
 		private apRequestChart: ApRequestChart,
 	) {
 		this.charts = [

@@ -16,8 +16,13 @@ export class NotificationService {
 		@Inject(DI.notificationsRepository)
 		private notificationsRepository: NotificationsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.PushNotificationService)
 		private pushNotificationService: PushNotificationService,
 	) {
 	}

@@ -22,7 +22,10 @@ export class WebhookDeliverProcessorService {
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
 
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('webhook');

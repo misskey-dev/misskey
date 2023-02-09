@@ -51,7 +51,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userGroupInvitationsRepository)
 		private userGroupInvitationsRepository: UserGroupInvitationsRepository,
 
+		@Inject(DI.UserGroupInvitationEntityService)
 		private userGroupInvitationEntityService: UserGroupInvitationEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -39,7 +39,10 @@ export class ApDeliverManagerService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
 	) {
 	}

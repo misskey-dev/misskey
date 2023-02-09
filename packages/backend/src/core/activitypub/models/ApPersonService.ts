@@ -65,6 +65,7 @@ export class ApPersonService implements OnModuleInit {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.ModuleRef)
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.config)

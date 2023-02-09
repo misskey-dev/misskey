@@ -85,10 +85,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userGroupJoiningsRepository)
 		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
+		@Inject(DI.MessagingMessageEntityService)
 		private messagingMessageEntityService: MessagingMessageEntityService,
+
+		@Inject(DI.MessagingService)
 		private messagingService: MessagingService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
+
+		@Inject(DI.GetterService)
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

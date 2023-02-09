@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@/di-decorators.js';
 import jsonld from 'jsonld';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { CONTEXTS } from './misc/contexts.js';
 
 // RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
@@ -145,6 +146,7 @@ class LdSignature {
 @Injectable()
 export class LdSignatureService {
 	constructor(
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
 	) {
 	}

@@ -39,11 +39,22 @@ export class FileServerService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.FileInfoService)
 		private fileInfoService: FileInfoService,
+
+		@Inject(DI.DownloadService)
 		private downloadService: DownloadService,
+
+		@Inject(DI.ImageProcessingService)
 		private imageProcessingService: ImageProcessingService,
+
+		@Inject(DI.VideoProcessingService)
 		private videoProcessingService: VideoProcessingService,
+
+		@Inject(DI.InternalStorageService)
 		private internalStorageService: InternalStorageService,
+
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);

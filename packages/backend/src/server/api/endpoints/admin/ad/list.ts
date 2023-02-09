@@ -28,6 +28,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

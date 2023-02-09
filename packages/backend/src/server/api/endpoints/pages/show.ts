@@ -56,6 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
+		@Inject(DI.PageEntityService)
 		private pageEntityService: PageEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

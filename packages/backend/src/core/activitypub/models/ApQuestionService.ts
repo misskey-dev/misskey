@@ -25,7 +25,10 @@ export class ApQuestionService {
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
+		@Inject(DI.ApResolverService)
 		private apResolverService: ApResolverService,
+
+		@Inject(DI.ApLoggerService)
 		private apLoggerService: ApLoggerService,
 	) {
 		this.logger = this.apLoggerService.logger;

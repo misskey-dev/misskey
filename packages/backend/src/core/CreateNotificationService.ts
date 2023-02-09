@@ -24,9 +24,16 @@ export class CreateNotificationService {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
+		@Inject(DI.NotificationEntityService)
 		private notificationEntityService: NotificationEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.PushNotificationService)
 		private pushNotificationService: PushNotificationService,
 	) {
 	}

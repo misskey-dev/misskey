@@ -36,7 +36,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: GalleryPostsRepository,
 
+		@Inject(DI.GalleryPostEntityService)
 		private galleryPostEntityService: GalleryPostEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

@@ -55,6 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
+		@Inject(DI.NoteReactionEntityService)
 		private noteReactionEntityService: NoteReactionEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

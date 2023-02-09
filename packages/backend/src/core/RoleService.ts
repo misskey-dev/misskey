@@ -69,8 +69,13 @@ export class RoleService implements OnApplicationShutdown {
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.UserCacheService)
 		private userCacheService: UserCacheService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);

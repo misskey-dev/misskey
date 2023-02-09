@@ -34,12 +34,25 @@ export class SignupApiService {
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.CaptchaService)
 		private captchaService: CaptchaService,
+
+		@Inject(DI.SignupService)
 		private signupService: SignupService,
+
+		@Inject(DI.SigninService)
 		private signinService: SigninService,
+
+		@Inject(DI.EmailService)
 		private emailService: EmailService,
 	) {
 	}

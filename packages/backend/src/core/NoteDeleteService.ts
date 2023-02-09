@@ -32,15 +32,34 @@ export class NoteDeleteService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.RelayService)
 		private relayService: RelayService,
+
+		@Inject(DI.FederatedInstanceService)
 		private federatedInstanceService: FederatedInstanceService,
+
+		@Inject(DI.ApRendererService)
 		private apRendererService: ApRendererService,
+
+		@Inject(DI.ApDeliverManagerService)
 		private apDeliverManagerService: ApDeliverManagerService,
+
+		@Inject(DI.NotesChart)
 		private notesChart: NotesChart,
+
+		@Inject(DI.PerUserNotesChart)
 		private perUserNotesChart: PerUserNotesChart,
+
+		@Inject(DI.InstanceChart)
 		private instanceChart: InstanceChart,
 	) {}
 	

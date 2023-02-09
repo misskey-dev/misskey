@@ -24,9 +24,16 @@ export class ApImageService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.ApResolverService)
 		private apResolverService: ApResolverService,
+
+		@Inject(DI.DriveService)
 		private driveService: DriveService,
+
+		@Inject(DI.ApLoggerService)
 		private apLoggerService: ApLoggerService,
 	) {
 		this.logger = this.apLoggerService.logger;

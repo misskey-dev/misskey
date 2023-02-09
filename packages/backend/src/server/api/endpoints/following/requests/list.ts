@@ -56,7 +56,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
+		@Inject(DI.FollowRequestEntityService)
 		private followRequestEntityService: FollowRequestEntityService,
+
+		@Inject(DI.QueryService)
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

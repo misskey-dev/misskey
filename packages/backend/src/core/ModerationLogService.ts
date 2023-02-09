@@ -11,6 +11,7 @@ export class ModerationLogService {
 		@Inject(DI.moderationLogsRepository)
 		private moderationLogsRepository: ModerationLogsRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
 	) {
 	}

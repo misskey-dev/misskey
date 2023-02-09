@@ -15,7 +15,10 @@ export class FederatedInstanceService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
 	) {
 		this.cache = new Cache<Instance>(1000 * 60 * 60);

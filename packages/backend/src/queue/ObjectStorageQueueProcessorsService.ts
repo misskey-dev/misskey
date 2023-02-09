@@ -13,7 +13,10 @@ export class ObjectStorageQueueProcessorsService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.DeleteFileProcessorService)
 		private deleteFileProcessorService: DeleteFileProcessorService,
+
+		@Inject(DI.CleanRemoteFilesProcessorService)
 		private cleanRemoteFilesProcessorService: CleanRemoteFilesProcessorService,
 	) {
 	}

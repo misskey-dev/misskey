@@ -20,6 +20,7 @@ export class MetaService implements OnApplicationShutdown {
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);

@@ -91,13 +91,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.ApResolverService)
 		private apResolverService: ApResolverService,
+
+		@Inject(DI.ApDbResolverService)
 		private apDbResolverService: ApDbResolverService,
+
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
+
+		@Inject(DI.ApNoteService)
 		private apNoteService: ApNoteService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

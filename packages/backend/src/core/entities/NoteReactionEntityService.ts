@@ -20,6 +20,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	private reactionService: ReactionService;
 	
 	constructor(
+		@Inject(DI.db)
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.noteReactionsRepository)

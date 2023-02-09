@@ -1,6 +1,7 @@
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import { Injectable } from '@/di-decorators.js';
+import { Inject, Injectable } from '@/di-decorators.js';
+import { DI } from '@/di-symbols.js';
 
 type CaptchaResponse = {
 	success: boolean;
@@ -10,6 +11,7 @@ type CaptchaResponse = {
 @Injectable()
 export class CaptchaService {
 	constructor(
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
 	) {
 	}

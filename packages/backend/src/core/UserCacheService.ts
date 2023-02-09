@@ -23,6 +23,7 @@ export class UserCacheService implements OnApplicationShutdown {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);

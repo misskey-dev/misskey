@@ -43,7 +43,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject('queue:inbox') public inboxQueue: InboxQueue,
+		@Inject(Symbol.for('queue:inbox')) public inboxQueue: InboxQueue,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const jobs = await this.inboxQueue.getJobs(['delayed']);

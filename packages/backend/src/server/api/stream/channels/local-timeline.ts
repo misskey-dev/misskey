@@ -7,6 +7,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 
 class LocalTimelineChannel extends Channel {
@@ -91,8 +92,13 @@ export class LocalTimelineChannelService {
 	public readonly requireCredential = LocalTimelineChannel.requireCredential;
 
 	constructor(
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
 	) {
 	}

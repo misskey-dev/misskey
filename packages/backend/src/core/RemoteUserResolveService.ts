@@ -24,9 +24,16 @@ export class RemoteUserResolveService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.WebfingerService)
 		private webfingerService: WebfingerService,
+
+		@Inject(DI.RemoteLoggerService)
 		private remoteLoggerService: RemoteLoggerService,
+
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
 	) {
 		this.logger = this.remoteLoggerService.logger.createSubLogger('resolve-user');

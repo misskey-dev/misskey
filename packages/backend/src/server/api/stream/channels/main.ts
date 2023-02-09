@@ -3,6 +3,7 @@ import type { NotesRepository } from '@/models/index.js';
 import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import Channel from '../channel.js';
 
 class MainChannel extends Channel {
@@ -64,6 +65,7 @@ export class MainChannelService {
 	public readonly requireCredential = MainChannel.requireCredential;
 
 	constructor(
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
 	) {
 	}

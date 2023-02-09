@@ -22,6 +22,7 @@ export class WellKnownServerService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.NodeinfoServerService)
 		private nodeinfoServerService: NodeinfoServerService,
 	) {
 		//this.createServer = this.createServer.bind(this);

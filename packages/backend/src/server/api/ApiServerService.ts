@@ -17,6 +17,7 @@ import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 @Injectable()
 export class ApiServerService {
 	constructor(
+		@Inject(DI.ModuleRef)
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.config)
@@ -31,9 +32,16 @@ export class ApiServerService {
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.ApiCallService)
 		private apiCallService: ApiCallService,
+
+		@Inject(DI.SignupApiService)
 		private signupApiService: SignupApiService,
+
+		@Inject(DI.SigninApiService)
 		private signinApiService: SigninApiService,
 	) {
 		//this.createServer = this.createServer.bind(this);

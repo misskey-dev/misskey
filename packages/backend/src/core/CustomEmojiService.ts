@@ -28,10 +28,19 @@ export class CustomEmojiService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.EmojiEntityService)
 		private emojiEntityService: EmojiEntityService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.ReactionService)
 		private reactionService: ReactionService,
 	) {
 		this.cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);

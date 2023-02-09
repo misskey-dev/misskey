@@ -21,6 +21,7 @@ type AudienceInfo = {
 @Injectable()
 export class ApAudienceService {
 	constructor(
+		@Inject(DI.ApPersonService)
 		private apPersonService: ApPersonService,
 	) {
 	}

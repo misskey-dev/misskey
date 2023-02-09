@@ -14,6 +14,7 @@ export class ApMfmService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.MfmService)
 		private mfmService: MfmService,
 	) {
 	}

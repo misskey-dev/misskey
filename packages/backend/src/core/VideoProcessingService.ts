@@ -13,6 +13,7 @@ export class VideoProcessingService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.ImageProcessingService)
 		private imageProcessingService: ImageProcessingService,
 	) {
 	}

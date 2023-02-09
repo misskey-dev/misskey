@@ -25,7 +25,10 @@ export class DownloadService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.HttpRequestService)
 		private httpRequestService: HttpRequestService,
+
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('download');

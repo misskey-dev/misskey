@@ -16,7 +16,10 @@ export class DeleteFileProcessorService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.DriveService)
 		private driveService: DriveService,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('delete-file');

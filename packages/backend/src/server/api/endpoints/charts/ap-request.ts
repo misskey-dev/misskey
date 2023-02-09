@@ -3,6 +3,7 @@ import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import { schema } from '@/core/chart/charts/entities/ap-request.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['charts'],
@@ -27,6 +28,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.ApRequestChart)
 		private apRequestChart: ApRequestChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {

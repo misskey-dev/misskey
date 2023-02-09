@@ -95,21 +95,52 @@ export class DriveService {
 		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: DriveFoldersRepository,
 
+		@Inject(DI.FileInfoService)
 		private fileInfoService: FileInfoService,
+
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.DriveFileEntityService)
 		private driveFileEntityService: DriveFileEntityService,
+
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.DownloadService)
 		private downloadService: DownloadService,
+
+		@Inject(DI.InternalStorageService)
 		private internalStorageService: InternalStorageService,
+
+		@Inject(DI.S3Service)
 		private s3Service: S3Service,
+
+		@Inject(DI.ImageProcessingService)
 		private imageProcessingService: ImageProcessingService,
+
+		@Inject(DI.VideoProcessingService)
 		private videoProcessingService: VideoProcessingService,
+
+		@Inject(DI.GlobalEventService)
 		private globalEventService: GlobalEventService,
+
+		@Inject(DI.QueueService)
 		private queueService: QueueService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
+
+		@Inject(DI.DriveChart)
 		private driveChart: DriveChart,
+
+		@Inject(DI.PerUserDriveChart)
 		private perUserDriveChart: PerUserDriveChart,
+
+		@Inject(DI.InstanceChart)
 		private instanceChart: InstanceChart,
 	) {
 		const logger = new Logger('drive', 'blue');

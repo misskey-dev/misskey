@@ -59,7 +59,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
+		@Inject(DI.IdService)
 		private idService: IdService,
+
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

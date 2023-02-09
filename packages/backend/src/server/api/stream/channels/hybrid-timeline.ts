@@ -113,8 +113,13 @@ export class HybridTimelineChannelService {
 	public readonly requireCredential = HybridTimelineChannel.requireCredential;
 
 	constructor(
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.RoleService)
 		private roleService: RoleService,
+
+		@Inject(DI.NoteEntityService)
 		private noteEntityService: NoteEntityService,
 	) {
 	}

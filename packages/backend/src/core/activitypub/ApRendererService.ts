@@ -51,11 +51,22 @@ export class ApRendererService {
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.DriveFileEntityService)
 		private driveFileEntityService: DriveFileEntityService,
+
+		@Inject(DI.LdSignatureService)
 		private ldSignatureService: LdSignatureService,
+
+		@Inject(DI.UserKeypairStoreService)
 		private userKeypairStoreService: UserKeypairStoreService,
+
+		@Inject(DI.ApMfmService)
 		private apMfmService: ApMfmService,
+
+		@Inject(DI.MfmService)
 		private mfmService: MfmService,
 	) {
 	}

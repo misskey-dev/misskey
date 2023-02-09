@@ -3,6 +3,7 @@ import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { schema } from '@/core/chart/charts/entities/users.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['charts', 'users'],
@@ -27,6 +28,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.UsersChart)
 		private usersChart: UsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {

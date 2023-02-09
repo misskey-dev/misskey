@@ -36,14 +36,31 @@ export class DeliverProcessorService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.MetaService)
 		private metaService: MetaService,
+
+		@Inject(DI.UtilityService)
 		private utilityService: UtilityService,
+
+		@Inject(DI.FederatedInstanceService)
 		private federatedInstanceService: FederatedInstanceService,
+
+		@Inject(DI.FetchInstanceMetadataService)
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
+
+		@Inject(DI.ApRequestService)
 		private apRequestService: ApRequestService,
+
+		@Inject(DI.InstanceChart)
 		private instanceChart: InstanceChart,
+
+		@Inject(DI.ApRequestChart)
 		private apRequestChart: ApRequestChart,
+
+		@Inject(DI.FederationChart)
 		private federationChart: FederationChart,
+
+		@Inject(DI.QueueLoggerService)
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');

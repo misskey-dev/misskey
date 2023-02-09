@@ -15,6 +15,7 @@ export class SigninEntityService {
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 
+		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
 	) {
 	}
