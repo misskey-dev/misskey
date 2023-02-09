@@ -1869,5 +1869,6 @@ _deck:
     tl: "時間軸"
     antenna: "天線"
     list: "清單"
+    channel: "頻道"
     mentions: "提及"
     direct: "指定使用者"

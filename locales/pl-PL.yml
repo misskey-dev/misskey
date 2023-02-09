@@ -1438,5 +1438,6 @@ _deck:
     tl: "Oś czasu"
     antenna: "Anteny"
     list: "Listy"
+    channel: "Kanały"
     mentions: "Wspomnienia"
     direct: "Bezpośredni"

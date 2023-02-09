@@ -1673,5 +1673,6 @@ _deck:
     tl: "Linimasa"
     antenna: "Antena"
     list: "Daftar"
+    channel: "Kanal"
     mentions: "Sebutan"
     direct: "Langsung"

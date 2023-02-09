@@ -1520,5 +1520,6 @@ _deck:
     tl: "Bảng tin"
     antenna: "Trạm phát sóng"
     list: "Danh sách"
+    channel: "Kênh"
     mentions: "Lượt nhắc"
     direct: "Nhắn riêng"
