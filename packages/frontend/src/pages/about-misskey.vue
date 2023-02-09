@@ -73,7 +73,13 @@
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
-					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
+					<div :class="$style.patronsWithIcon">
+						<div v-for="patron in patronsWithIcon" :class="$style.patronWithIcon">
+							<img :src="patron.icon" :class="$style.patronIcon">
+							<span :class="$style.patronName">{{ patron.name }}</span>
+						</div>
+					</div>
+					<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
 						<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
@@ -98,6 +104,14 @@ import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
 import { $i } from '@/account';
+
+const patronsWithIcon = [{
+	name: 'カイヤン',
+	icon: 'https://misskey-hub.net/patrons/a2820716883e408cb87773e377ce7c8d.jpg',
+}, {
+	name: 'だれかさん',
+	icon: 'https://misskey-hub.net/patrons/f7409b5e5a88477a9b9d740c408de125.jpg',
+}];
 
 const patrons = [
 	'まっちゃとーにゅ',
@@ -350,6 +364,29 @@ definePageMetadata({
 }
 
 .contributorUsername {
+	margin-left: 12px;
+}
+
+.patronsWithIcon {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-gap: 12px;
+}
+
+.patronWithIcon {
+	display: flex;
+	align-items: center;
+	padding: 12px;
+	background: var(--buttonBg);
+	border-radius: 6px;
+}
+
+.patronIcon {
+	width: 24px;
+	border-radius: 100%;
+}
+
+.patronName {
 	margin-left: 12px;
 }
 </style>
