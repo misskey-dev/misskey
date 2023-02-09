@@ -1689,5 +1689,6 @@ _deck:
     tl: "Стрічка"
     antenna: "Антени"
     list: "Списки"
+    channel: "Канали"
     mentions: "Згадки"
     direct: "Особисте"
