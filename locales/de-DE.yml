@@ -940,6 +940,8 @@ cannotPerformTemporaryDescription: "Diese Aktion ist wegen des Überschreitenes 
 preset: "Vorlage"
 selectFromPresets: "Aus Vorlagen wählen"
 achievements: "Errungenschaften"
+gotInvalidResponseError: "Ungültige Antwort des Servers"
+gotInvalidResponseErrorDescription: "Eventuell ist der Server momentan nicht erreichbar oder untergeht Wartungsarbeiten. Bitte versuche es später noch einmal."
 _achievements:
   earnedAt: "Freigeschaltet am"
   _types:
