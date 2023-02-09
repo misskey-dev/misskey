@@ -100,7 +100,7 @@ export class DriveFileEntityService {
 		if (file.uri != null && file.isLink && this.config.proxyRemoteFiles) {
 			// リモートかつ期限切れはローカルプロキシを試みる
 			// 従来は/files/${thumbnailAccessKey}にアクセスしていたが、
-			// /filesはプロキシにリダイレクトするようにしたため直接プロキシを指定する
+			// /filesはメディアプロキシにリダイレクトするようにしたため直接メディアプロキシを指定する
 			return this.getProxiedUrl(file.uri, 'static');
 		}
 
