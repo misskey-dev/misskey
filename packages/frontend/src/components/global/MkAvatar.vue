@@ -130,9 +130,9 @@ watch(() => props.user.avatarBlurhash, () => {
 			contain: strict;
 			content: '';
 			display: block;
-			width: 75%;
-			height: 75%;
-			margin: 12.5%;
+			width: 60%;
+			height: 60%;
+			margin: 20%;
 			background: #df548f;
 		}
 	}
