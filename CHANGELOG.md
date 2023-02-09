@@ -8,7 +8,7 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+## 13.5.4 (2023/02/09)
 
 ### Improvements
 - Server: UIのHTML（ノートなどの特別なページを除く）のキャッシュ時間を15秒から30秒に
