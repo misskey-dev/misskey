@@ -162,7 +162,7 @@ export class SignupApiService {
 					token: secret,
 				};
 			} catch (err) {
-				throw new FastifyReplyError(400, err);
+				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
 	}
@@ -195,7 +195,7 @@ export class SignupApiService {
 
 			return this.signinService.signin(request, reply, account as ILocalUser);
 		} catch (err) {
-			throw new FastifyReplyError(400, err);
+			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}
 	}
 }

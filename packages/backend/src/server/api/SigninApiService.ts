@@ -10,9 +10,9 @@ import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { ILocalUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
+import { bindThis } from '@/decorators.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import { bindThis } from '@/decorators.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -131,7 +131,7 @@ export class SigninApiService {
 				createdAt: new Date(),
 				userId: user.id,
 				ip: request.ip,
-				headers: request.headers,
+				headers: request.headers as any,
 				success: false,
 			});
 

@@ -33,7 +33,7 @@ export class SigninService {
 				createdAt: new Date(),
 				userId: user.id,
 				ip: request.ip,
-				headers: request.headers,
+				headers: request.headers as any,
 				success: true,
 			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
 	
