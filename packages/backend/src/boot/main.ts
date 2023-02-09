@@ -9,7 +9,8 @@ import {
 	createWebAppBuilder,
 	getRequiredService,
 } from 'yohira';
-import { loadConfig } from '@/config.js';
+import { Config, loadConfig } from '@/config.js';
+import { q } from '@/core/QueueModule.js';
 import { DI } from '@/di-symbols.js';
 import {
 	AbuseUserReport,
@@ -100,6 +101,55 @@ async function addGlobalModule(services: IServiceCollection): Promise<void> {
 	addSingletonInstance(services, DI.redisSubscriber, redisSubscriber);
 }
 
+function addQueueModule(services: IServiceCollection): void {
+	addSingletonFactory(services, Symbol.for('queue:system'), (services) => {
+		const config = getRequiredService<Config>(services, DI.config);
+		return q(config, 'system');
+	});
+
+	addSingletonFactory(
+		services,
+		Symbol.for('queue:endedPollNotification'),
+		(services) => {
+			const config = getRequiredService<Config>(services, DI.config);
+			return q(config, 'endedPollNotification');
+		},
+	);
+
+	addSingletonFactory(services, Symbol.for('queue:deliver'), (services) => {
+		const config = getRequiredService<Config>(services, DI.config);
+		return q(config, 'deliver', config.deliverJobPerSec ?? 128);
+	});
+
+	addSingletonFactory(services, Symbol.for('queue:inbox'), (services) => {
+		const config = getRequiredService<Config>(services, DI.config);
+		return q(config, 'inbox', config.inboxJobPerSec ?? 16);
+	});
+
+	addSingletonFactory(services, Symbol.for('queue:db'), (services) => {
+		const config = getRequiredService<Config>(services, DI.config);
+		return q(config, 'db');
+	});
+
+	addSingletonFactory(
+		services,
+		Symbol.for('queue:objectStorage'),
+		(services) => {
+			const config = getRequiredService<Config>(services, DI.config);
+			return q(config, 'objectStorage');
+		},
+	);
+
+	addSingletonFactory(
+		services,
+		Symbol.for('queue:webhookDeliver'),
+		(services) => {
+			const config = getRequiredService<Config>(services, DI.config);
+			return q(config, 'webhookDeliver', 64);
+		},
+	);
+}
+
 function addRepositoryModule(services: IServiceCollection): void {
 	const repositoryModule: [symbol, EntityTarget<ObjectLiteral>][] = [
 		[DI.usersRepository, User],
@@ -187,6 +237,7 @@ export async function main(): Promise<void> {
 		const services = builder.services;
 
 		await addGlobalModule(services);
+		addQueueModule(services);
 		addRepositoryModule(services);
 
 		const app = builder.build();
