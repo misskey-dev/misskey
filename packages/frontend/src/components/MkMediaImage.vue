@@ -81,6 +81,9 @@ watch(() => props.image, () => {
 	position: relative;
 	//box-shadow: 0 0 0 1px var(--divider) inset;
 	background: var(--bg);
+	--c: rgb(0 0 0 / 2%);
+	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--bg) 16.67%, var(--bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--bg) 66.67%, var(--bg) 100%);
+	background-size: 16px 16px;
 
 	> .hide {
 		display: block;
