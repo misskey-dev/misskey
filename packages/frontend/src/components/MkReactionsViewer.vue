@@ -17,10 +17,12 @@ import * as misskey from 'misskey-js';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { watch } from 'vue';
 
-const props = defineProps<{
-	note: misskey.entities.Note;
-	maxNumber?: number;
-}>();
+const props = withDefaults(defineProps<{
+    note: misskey.entities.Note;
+    maxNumber?: number;
+}>(), {
+    maxNumber: Infinity,
+});
 
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
@@ -46,12 +48,10 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 		...newReactions,
 		...Object.entries(newSource)
 			.sort(([, a], [, b]) => b - a)
-			.filter(([y], i) => (maxNumber && i >= maxNumber) ? false : !newReactionsNames.includes(y)),
+			.filter(([y], i) => i < maxNumber && !newReactionsNames.includes(y)),
 	]
 
-	if (maxNumber) {
-		newReactions = newReactions.slice(0, props.maxNumber);
-	}
+	newReactions = newReactions.slice(0, props.maxNumber);
 
 	if (props.note.myReaction && !newReactions.map(([x]) => x).includes(props.note.myReaction)) {
 		newReactions.push([props.note.myReaction, newSource[props.note.myReaction]]);
