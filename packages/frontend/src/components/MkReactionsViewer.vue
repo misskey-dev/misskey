@@ -7,9 +7,7 @@
 	:move-class="$store.state.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
-	<template v-for="([reaction, count], i) in reactions">
-		<XReaction v-if="!maxNumber || i < maxNumber" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
-	</template>
+		<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
 	<slot name="extras" />
 </TransitionGroup>
 </template>
@@ -17,6 +15,7 @@
 <script lang="ts" setup>
 import * as misskey from 'misskey-js';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
+import { watch } from 'vue';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -25,9 +24,48 @@ const props = defineProps<{
 
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
-const reactions = $computed(() => {
-	return Object.entries(props.note.reactions).sort(([, countA], [, countB]) => countB - countA);
-});
+let reactions = $ref<[string, number][]>([]);
+
+if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReaction)) {
+	reactions[props.note.myReaction] = props.note.reactions[props.note.myReaction];
+}
+
+watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
+	console.log(newSource, maxNumber)
+	let newReactions: [string, number][] = [];
+
+	for (let i = 0; i < reactions.length; i++) {
+		const reaction = reactions[i][0];
+		console.log(reaction)
+		if (reaction in newSource && newSource[reaction] !== 0) {
+			reactions[i][1] = newSource[reaction];
+			newReactions.push(reactions[i]);
+		}
+	}
+
+	console.log(newReactions)
+
+	const newReactionsNames = newReactions.map(([x]) => x);
+	newReactions = [
+		...newReactions,
+		...Object.entries(newSource)
+			.sort(([, a], [, b]) => b - a)
+			.filter(([y], i) => {
+				if (maxNumber && i >= maxNumber) return false;
+				return !newReactionsNames.includes(y);
+			}),
+	]
+
+	if (maxNumber) {
+		newReactions = newReactions.slice(0, props.maxNumber);
+	}
+
+	if (props.note.myReaction && !newReactions.map(([x]) => x).includes(props.note.myReaction)) {
+		newReactions.push([props.note.myReaction, newSource[props.note.myReaction]]);
+	}
+
+	reactions = newReactions;
+}, { immediate: true, deep: true });
 </script>
 
 <style lang="scss" module>
