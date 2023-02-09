@@ -1869,5 +1869,6 @@ _deck:
     tl: "Chronik"
     antenna: "Antennen"
     list: "Listen"
+    channel: "Kanäle"
     mentions: "Erwähnungen"
     direct: "Direktnachrichten"
