@@ -631,7 +631,6 @@ export async function main(): Promise<void> {
 		const services = builder.services;
 
 		// TODO: remove
-		addSingletonInstance(services, DI.ModuleRef, {});
 		addSingletonInstance(services, DI.Logger, {});
 
 		await addGlobalModule(services);

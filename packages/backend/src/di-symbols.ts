@@ -80,7 +80,6 @@ export const DI = {
 	//#endregion
 
 	// TODO: remove
-	ModuleRef: s('ModuleRef'),
 	Logger: s('Logger'),
 
 	AccountUpdateService: s('AccountUpdateService'),

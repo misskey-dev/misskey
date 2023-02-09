@@ -3,39 +3,29 @@ import { DI } from '@/di-symbols.js';
 import type { NoteReactionsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
-import type { OnModuleInit } from '@nestjs/common';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
-import { ModuleRef } from '@nestjs/core';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class NoteReactionEntityService implements OnModuleInit {
-	private userEntityService: UserEntityService;
-	private noteEntityService: NoteEntityService;
-	private reactionService: ReactionService;
-	
+export class NoteReactionEntityService {
 	constructor(
-		@Inject(DI.db)
-		private moduleRef: ModuleRef,
-
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
-		//private userEntityService: UserEntityService,
-		//private noteEntityService: NoteEntityService,
-		//private reactionService: ReactionService,
-	) {
-	}
+		@Inject(DI.UserEntityService)
+		private userEntityService: UserEntityService,
 
-	onModuleInit() {
-		this.userEntityService = this.moduleRef.get('UserEntityService');
-		this.noteEntityService = this.moduleRef.get('NoteEntityService');
-		this.reactionService = this.moduleRef.get('ReactionService');
+		@Inject(DI.NoteEntityService)
+		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.ReactionService)
+		private reactionService: ReactionService,
+	) {
 	}
 
 	@bindThis

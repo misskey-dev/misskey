@@ -1,6 +1,5 @@
 import { In, Not } from 'typeorm';
 import Ajv from 'ajv';
-import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
@@ -15,7 +14,6 @@ import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository,
 import { bindThis } from '@/decorators.js';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
@@ -45,19 +43,10 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 }
 
 @Injectable()
-export class UserEntityService implements OnModuleInit {
-	private noteEntityService: NoteEntityService;
-	private driveFileEntityService: DriveFileEntityService;
-	private pageEntityService: PageEntityService;
-	private customEmojiService: CustomEmojiService;
-	private antennaService: AntennaService;
-	private roleService: RoleService;
+export class UserEntityService {
 	private userInstanceCache: Cache<Instance | null>;
 
 	constructor(
-		@Inject(DI.ModuleRef)
-		private moduleRef: ModuleRef,
-
 		@Inject(DI.config)
 		private config: Config,
 
@@ -118,23 +107,25 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
-		//private noteEntityService: NoteEntityService,
-		//private driveFileEntityService: DriveFileEntityService,
-		//private pageEntityService: PageEntityService,
-		//private customEmojiService: CustomEmojiService,
-		//private antennaService: AntennaService,
-		//private roleService: RoleService,
+		@Inject(DI.NoteEntityService)
+		private noteEntityService: NoteEntityService,
+
+		@Inject(DI.DriveFileEntityService)
+		private driveFileEntityService: DriveFileEntityService,
+
+		@Inject(DI.PageEntityService)
+		private pageEntityService: PageEntityService,
+
+		@Inject(DI.CustomEmojiService)
+		private customEmojiService: CustomEmojiService,
+
+		@Inject(DI.AntennaService)
+		private antennaService: AntennaService,
+
+		@Inject(DI.RoleService)
+		private roleService: RoleService,
 	) {
 		this.userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
-	}
-
-	onModuleInit() {
-		this.noteEntityService = this.moduleRef.get('NoteEntityService');
-		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
-		this.pageEntityService = this.moduleRef.get('PageEntityService');
-		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
-		this.antennaService = this.moduleRef.get('AntennaService');
-		this.roleService = this.moduleRef.get('RoleService');
 	}
 
 	//#region Validators

@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@/di-decorators.js';
-import { ModuleRef } from '@nestjs/core';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';

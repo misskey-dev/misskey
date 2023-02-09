@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@/di-decorators.js';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
-import { ModuleRef, repl } from '@nestjs/core';
 import type { Config } from '@/config.js';
 import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -17,9 +16,6 @@ import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 @Injectable()
 export class ApiServerService {
 	constructor(
-		@Inject(DI.ModuleRef)
-		private moduleRef: ModuleRef,
-
 		@Inject(DI.config)
 		private config: Config,
 

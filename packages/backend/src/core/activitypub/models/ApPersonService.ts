@@ -1,6 +1,5 @@
 import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
-import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -32,7 +31,6 @@ import { bindThis } from '@/decorators.js';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
-import type { OnModuleInit } from '@nestjs/common';
 import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { ApResolverService, Resolver } from '../ApResolverService.js';
@@ -45,29 +43,10 @@ const nameLength = 128;
 const summaryLength = 2048;
 
 @Injectable()
-export class ApPersonService implements OnModuleInit {
-	private utilityService: UtilityService;
-	private userEntityService: UserEntityService;
-	private idService: IdService;
-	private globalEventService: GlobalEventService;
-	private federatedInstanceService: FederatedInstanceService;
-	private fetchInstanceMetadataService: FetchInstanceMetadataService;
-	private userCacheService: UserCacheService;
-	private apResolverService: ApResolverService;
-	private apNoteService: ApNoteService;
-	private apImageService: ApImageService;
-	private apMfmService: ApMfmService;
-	private mfmService: MfmService;
-	private hashtagService: HashtagService;
-	private usersChart: UsersChart;
-	private instanceChart: InstanceChart;
-	private apLoggerService: ApLoggerService;
+export class ApPersonService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.ModuleRef)
-		private moduleRef: ModuleRef,
-
 		@Inject(DI.config)
 		private config: Config,
 
@@ -89,43 +68,54 @@ export class ApPersonService implements OnModuleInit {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		//private utilityService: UtilityService,
-		//private userEntityService: UserEntityService,
-		//private idService: IdService,
-		//private globalEventService: GlobalEventService,
-		//private federatedInstanceService: FederatedInstanceService,
-		//private fetchInstanceMetadataService: FetchInstanceMetadataService,
-		//private userCacheService: UserCacheService,
-		//private apResolverService: ApResolverService,
-		//private apNoteService: ApNoteService,
-		//private apImageService: ApImageService,
-		//private apMfmService: ApMfmService,
-		//private mfmService: MfmService,
-		//private hashtagService: HashtagService,
-		//private usersChart: UsersChart,
-		//private instanceChart: InstanceChart,
-		//private apLoggerService: ApLoggerService,
-	) {
-	}
+		@Inject(DI.UtilityService)
+		private utilityService: UtilityService,
 
-	onModuleInit() {
-		this.utilityService = this.moduleRef.get('UtilityService');
-		this.userEntityService = this.moduleRef.get('UserEntityService');
-		this.idService = this.moduleRef.get('IdService');
-		this.globalEventService = this.moduleRef.get('GlobalEventService');
-		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
-		this.fetchInstanceMetadataService = this.moduleRef.get('FetchInstanceMetadataService');
-		this.userCacheService = this.moduleRef.get('UserCacheService');
-		this.apResolverService = this.moduleRef.get('ApResolverService');
-		this.apNoteService = this.moduleRef.get('ApNoteService');
-		this.apImageService = this.moduleRef.get('ApImageService');
-		this.apMfmService = this.moduleRef.get('ApMfmService');
-		this.mfmService = this.moduleRef.get('MfmService');
-		this.hashtagService = this.moduleRef.get('HashtagService');
-		this.usersChart = this.moduleRef.get('UsersChart');
-		this.instanceChart = this.moduleRef.get('InstanceChart');
-		this.apLoggerService = this.moduleRef.get('ApLoggerService');
-		this.logger = this.apLoggerService.logger;
+		@Inject(DI.UserEntityService)
+		private userEntityService: UserEntityService,
+
+		@Inject(DI.IdService)
+		private idService: IdService,
+
+		@Inject(DI.GlobalEventService)
+		private globalEventService: GlobalEventService,
+
+		@Inject(DI.FederatedInstanceService)
+		private federatedInstanceService: FederatedInstanceService,
+
+		@Inject(DI.FetchInstanceMetadataService)
+		private fetchInstanceMetadataService: FetchInstanceMetadataService,
+
+		@Inject(DI.UserCacheService)
+		private userCacheService: UserCacheService,
+
+		@Inject(DI.ApResolverService)
+		private apResolverService: ApResolverService,
+
+		@Inject(DI.ApNoteService)
+		private apNoteService: ApNoteService,
+
+		@Inject(DI.ApImageService)
+		private apImageService: ApImageService,
+
+		@Inject(DI.ApMfmService)
+		private apMfmService: ApMfmService,
+
+		@Inject(DI.MfmService)
+		private mfmService: MfmService,
+
+		@Inject(DI.HashtagService)
+		private hashtagService: HashtagService,
+
+		@Inject(DI.UsersChart)
+		private usersChart: UsersChart,
+
+		@Inject(DI.InstanceChart)
+		private instanceChart: InstanceChart,
+
+		@Inject(DI.ApLoggerService)
+		private apLoggerService: ApLoggerService,
+	) {
 	}
 
 	/**

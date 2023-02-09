@@ -1,6 +1,5 @@
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
@@ -12,23 +11,14 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { Inject, Injectable } from '@/di-decorators.js';
-import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 
 @Injectable()
-export class NoteEntityService implements OnModuleInit {
-	private userEntityService: UserEntityService;
-	private driveFileEntityService: DriveFileEntityService;
-	private customEmojiService: CustomEmojiService;
-	private reactionService: ReactionService;
-	
+export class NoteEntityService {
 	constructor(
-		@Inject(DI.ModuleRef)
-		private moduleRef: ModuleRef,
-
 		@Inject(DI.db)
 		private db: DataSource,
 
@@ -56,20 +46,20 @@ export class NoteEntityService implements OnModuleInit {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		//private userEntityService: UserEntityService,
-		//private driveFileEntityService: DriveFileEntityService,
-		//private customEmojiService: CustomEmojiService,
-		//private reactionService: ReactionService,
+		@Inject(DI.UserEntityService)
+		private userEntityService: UserEntityService,
+
+		@Inject(DI.DriveFileEntityService)
+		private driveFileEntityService: DriveFileEntityService,
+
+		@Inject(DI.CustomEmojiService)
+		private customEmojiService: CustomEmojiService,
+
+		@Inject(DI.ReactionService)
+		private reactionService: ReactionService,
 	) {
 	}
 
-	onModuleInit() {
-		this.userEntityService = this.moduleRef.get('UserEntityService');
-		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
-		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
-		this.reactionService = this.moduleRef.get('ReactionService');
-	}
-	
 	@bindThis
 	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
