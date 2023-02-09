@@ -1,5 +1,5 @@
 import { IsNull } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository } from '@/models/index.js';
 import { DriveService } from '@/core/DriveService.js';

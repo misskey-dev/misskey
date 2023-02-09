@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { User } from '@/models/entities/User.js';

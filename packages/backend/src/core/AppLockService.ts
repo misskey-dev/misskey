@@ -1,5 +1,5 @@
 import { promisify } from 'node:util';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import redisLock from 'redis-lock';
 import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';

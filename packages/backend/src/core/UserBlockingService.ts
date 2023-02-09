@@ -1,5 +1,5 @@
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { OnApplicationShutdown } from '@nestjs/common';
 import Redis from 'ioredis';
 import { IdService } from '@/core/IdService.js';
 import type { CacheableUser, User } from '@/models/entities/User.js';
@@ -15,6 +15,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { bindThis } from '@/decorators.js';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Cache } from '@/misc/cache.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 

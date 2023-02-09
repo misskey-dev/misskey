@@ -1,5 +1,5 @@
 import { IsNull } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { UsersRepository, FlashsRepository } from '@/models/index.js';
 import type { Flash } from '@/models/entities/Flash.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

@@ -1,5 +1,5 @@
 import { Brackets, In } from 'typeorm';
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { Note, IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';

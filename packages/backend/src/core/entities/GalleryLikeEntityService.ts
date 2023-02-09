@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';

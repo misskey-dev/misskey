@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import rndstr from 'rndstr';
 import bcrypt from 'bcryptjs';
 import { DI } from '@/di-symbols.js';

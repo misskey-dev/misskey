@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { GetterService } from '@/server/api/GetterService.js';

@@ -1,5 +1,5 @@
 import { Not } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { IRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';

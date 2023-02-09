@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import Redis from 'ioredis';
 import type { WebhooksRepository } from '@/models/index.js';
 import type { Webhook } from '@/models/entities/Webhook.js';

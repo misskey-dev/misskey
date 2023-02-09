@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import fastifyStatic from '@fastify/static';
 import rename from 'rename';
 import type { Config } from '@/config.js';

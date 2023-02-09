@@ -1,4 +1,3 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
 import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
@@ -14,6 +13,7 @@ import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
 import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository, UserProfile } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';

@@ -1,5 +1,5 @@
 import Parser from 'rss-parser';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';

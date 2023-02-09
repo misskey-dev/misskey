@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AntennasRepository } from '@/models/index.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';

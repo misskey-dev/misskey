@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import Redis from 'ioredis';
 import * as websocket from 'websocket';
 import { DI } from '@/di-symbols.js';

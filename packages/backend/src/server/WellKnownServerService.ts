@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { IsNull, MoreThan } from 'typeorm';
 import vary from 'vary';
 import { DI } from '@/di-symbols.js';

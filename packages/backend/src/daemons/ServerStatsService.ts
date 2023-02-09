@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import si from 'systeminformation';
 import Xev from 'xev';
 import * as osUtils from 'os-utils';

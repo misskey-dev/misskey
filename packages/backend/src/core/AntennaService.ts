@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import Redis from 'ioredis';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';

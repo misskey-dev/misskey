@@ -1,5 +1,5 @@
 import { URL } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
 import fetch from 'node-fetch';

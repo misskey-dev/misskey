@@ -1,7 +1,7 @@
 import { promisify } from 'node:util';
 import * as crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository, AttestationChallengesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';

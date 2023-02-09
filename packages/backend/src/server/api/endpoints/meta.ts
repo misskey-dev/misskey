@@ -1,5 +1,5 @@
 import { IsNull, MoreThan } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
 import { MAX_NOTE_TEXT_LENGTH, DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

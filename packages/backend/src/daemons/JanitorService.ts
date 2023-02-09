@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { AttestationChallengesRepository } from '@/models/index.js';

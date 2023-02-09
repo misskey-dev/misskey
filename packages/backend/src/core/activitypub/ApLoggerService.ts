@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type Logger from '@/logger.js';
 import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
 import { bindThis } from '@/decorators.js';

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';

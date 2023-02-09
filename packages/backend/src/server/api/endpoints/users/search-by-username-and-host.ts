@@ -1,5 +1,5 @@
 import { Brackets } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
 import type { User } from '@/models/entities/User.js';

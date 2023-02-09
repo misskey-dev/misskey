@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Not, IsNull, DataSource } from 'typeorm';
 import type { User } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';

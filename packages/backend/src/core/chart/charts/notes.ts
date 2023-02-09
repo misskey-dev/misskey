@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Not, IsNull, DataSource } from 'typeorm';
 import type { NotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';

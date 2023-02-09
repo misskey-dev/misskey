@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DataSource, In, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';

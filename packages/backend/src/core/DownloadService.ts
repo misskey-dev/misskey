@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
 import chalk from 'chalk';

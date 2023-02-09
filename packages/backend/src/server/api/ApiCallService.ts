@@ -2,7 +2,7 @@ import { performance } from 'perf_hooks';
 import { pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { CacheableLocalUser, ILocalUser, User } from '@/models/entities/User.js';

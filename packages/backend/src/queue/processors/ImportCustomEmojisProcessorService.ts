@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { IsNull, MoreThan, DataSource } from 'typeorm';
 import unzipper from 'unzipper';
 import { DI } from '@/di-symbols.js';

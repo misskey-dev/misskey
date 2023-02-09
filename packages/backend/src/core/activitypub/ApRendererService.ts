@@ -1,5 +1,5 @@
 import { createPublicKey } from 'node:crypto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { In, IsNull } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';

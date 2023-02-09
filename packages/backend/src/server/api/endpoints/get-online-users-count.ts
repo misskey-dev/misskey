@@ -1,5 +1,5 @@
 import { MoreThan } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { USER_ONLINE_THRESHOLD } from '@/const.js';
 import type { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

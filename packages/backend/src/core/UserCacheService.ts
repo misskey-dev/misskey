@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';

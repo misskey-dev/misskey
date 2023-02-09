@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
@@ -10,6 +10,9 @@ import type { User } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
+import { bindThis } from '@/decorators.js';
+import { Inject, Injectable } from '@/di-decorators.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 import { UtilityService } from '../UtilityService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
@@ -19,8 +22,6 @@ type PackOptions = {
 	self?: boolean,
 	withUser?: boolean,
 };
-import { bindThis } from '@/decorators.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
 
 @Injectable()
 export class DriveFileEntityService {

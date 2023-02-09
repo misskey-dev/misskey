@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { v4 as uuid } from 'uuid';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';

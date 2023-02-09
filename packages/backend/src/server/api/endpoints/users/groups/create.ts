@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import ms from 'ms';
 import type { UserGroupsRepository, UserGroupJoiningsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';

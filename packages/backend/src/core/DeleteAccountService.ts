@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { UsersRepository } from '@/models/index.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';

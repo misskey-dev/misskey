@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { validate as validateEmail } from 'deep-email-validator';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';

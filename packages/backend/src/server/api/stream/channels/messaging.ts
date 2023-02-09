@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { UserGroupJoiningsRepository, UsersRepository, MessagingMessagesRepository } from '@/models/index.js';
 import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';

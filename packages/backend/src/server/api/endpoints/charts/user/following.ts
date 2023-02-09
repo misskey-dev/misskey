@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';

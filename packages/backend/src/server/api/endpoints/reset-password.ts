@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { UserProfilesRepository, PasswordResetRequestsRepository } from '@/models/index.js';
 import type { UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

@@ -1,7 +1,7 @@
 import { promisify } from 'node:util';
 import bcrypt from 'bcryptjs';
 import * as cbor from 'cbor';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { Config } from '@/config.js';

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
 import type { MessagingMessagesRepository, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';

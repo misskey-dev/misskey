@@ -1,5 +1,5 @@
 import { URL } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { MoreThan } from 'typeorm';
 import httpSignature from '@peertube/http-signature';
 import { DI } from '@/di-symbols.js';

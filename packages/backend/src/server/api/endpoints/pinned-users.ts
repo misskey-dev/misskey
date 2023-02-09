@@ -1,5 +1,5 @@
 import { IsNull } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { UsersRepository } from '@/models/index.js';
 import * as Acct from '@/misc/acct.js';
 import type { User } from '@/models/entities/User.js';

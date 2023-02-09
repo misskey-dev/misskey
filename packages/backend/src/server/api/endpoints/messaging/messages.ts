@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, UserGroupsRepository, MessagingMessagesRepository, UserGroupJoiningsRepository } from '@/models/index.js';

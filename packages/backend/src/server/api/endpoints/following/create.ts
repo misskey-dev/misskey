@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';

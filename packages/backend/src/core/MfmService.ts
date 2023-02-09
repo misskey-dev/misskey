@@ -1,5 +1,5 @@
 import { URL } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import * as parse5 from 'parse5';
 import { JSDOM } from 'jsdom';
 import { DI } from '@/di-symbols.js';

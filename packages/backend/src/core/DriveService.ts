@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { IsNull } from 'typeorm';

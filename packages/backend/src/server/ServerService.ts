@@ -1,6 +1,6 @@
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import Fastify from 'fastify';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';

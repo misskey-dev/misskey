@@ -1,6 +1,6 @@
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';

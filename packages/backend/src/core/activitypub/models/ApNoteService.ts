@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
 import type { MessagingMessagesRepository, PollsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
@@ -18,6 +18,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { MessagingService } from '@/core/MessagingService.js';
 import { bindThis } from '@/decorators.js';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ApLoggerService } from '../ApLoggerService.js';

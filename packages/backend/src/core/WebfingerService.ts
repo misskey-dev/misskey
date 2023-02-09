@@ -1,5 +1,5 @@
 import { URL } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { query as urlQuery } from '@/misc/prelude/url.js';

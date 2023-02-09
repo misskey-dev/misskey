@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AppsRepository, AuthSessionsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';

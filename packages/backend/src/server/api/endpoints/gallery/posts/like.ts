@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';

@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DataSource } from 'typeorm';
 import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';
 import { AppLockService } from '@/core/AppLockService.js';

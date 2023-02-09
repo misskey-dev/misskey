@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import { IsNull } from 'typeorm';

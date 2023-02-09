@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DataSource } from 'typeorm';
 import type { DriveFilesRepository, FollowingsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';

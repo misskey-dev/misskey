@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { NotesRepository } from '@/models/index.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';

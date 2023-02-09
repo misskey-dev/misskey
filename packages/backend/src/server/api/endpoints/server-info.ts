@@ -1,6 +1,6 @@
 import * as os from 'node:os';
 import si from 'systeminformation';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

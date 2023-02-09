@@ -1,5 +1,5 @@
 import { DeepPartial } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { NoteReactionsRepository } from '@/models/index.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

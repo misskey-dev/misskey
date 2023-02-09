@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
+import { Injectable } from '@/di-decorators.js';
 
 type CaptchaResponse = {
 	success: boolean;

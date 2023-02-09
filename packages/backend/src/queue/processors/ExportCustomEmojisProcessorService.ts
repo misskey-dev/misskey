@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { IsNull, MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { ulid } from 'ulid';

@@ -1,5 +1,5 @@
 import * as crypto from 'node:crypto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AuthSessionsRepository, AppsRepository, AccessTokensRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';

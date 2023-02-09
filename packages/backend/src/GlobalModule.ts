@@ -1,7 +1,8 @@
-import { Global, Inject, Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { createRedisConnection } from '@/redis.js';
+import { Inject } from '@/di-decorators.js';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
