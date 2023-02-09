@@ -46,10 +46,7 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 		...newReactions,
 		...Object.entries(newSource)
 			.sort(([, a], [, b]) => b - a)
-			.filter(([y], i) => {
-				if (maxNumber && i >= maxNumber) return false;
-				return !newReactionsNames.includes(y);
-			}),
+			.filter(([y], i) => (maxNumber && i >= maxNumber) ? false : !newReactionsNames.includes(y)),
 	]
 
 	if (maxNumber) {
