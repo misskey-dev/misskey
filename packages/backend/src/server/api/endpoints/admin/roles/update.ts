@@ -28,7 +28,7 @@ export const paramDef = {
 		description: { type: 'string' },
 		color: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
-		target: { type: 'string' },
+		target: { type: 'string', enum: ['manual', 'conditional'] },
 		condFormula: { type: 'object' },
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },

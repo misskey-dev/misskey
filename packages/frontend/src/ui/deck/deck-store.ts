@@ -14,7 +14,7 @@ type ColumnWidget = {
 
 export type Column = {
 	id: string;
-	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'list' | 'mentions' | 'direct';
+	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'channel' | 'list' | 'mentions' | 'direct';
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
@@ -22,6 +22,7 @@ export type Column = {
 	flexible?: boolean;
 	antennaId?: string;
 	listId?: string;
+	channelId?: string;
 	includingTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
 };

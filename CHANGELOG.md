@@ -8,6 +8,12 @@
 
 You should also include the user name that made the change.
 -->
+
+## 13.5.3 (2023/02/09)
+
+### Improvements
+- Client: デッキにチャンネルカラムを追加
+
 ## 13.5.2 (2023/02/08)
 
 ### Changes

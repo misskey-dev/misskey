@@ -25,7 +25,7 @@ export class SigninService {
 	}
 
 	@bindThis
-	public signin(request: FastifyRequest, reply: FastifyReply, user: ILocalUser, redirect = false) {
+	public signin(request: FastifyRequest, reply: FastifyReply, user: ILocalUser) {
 		setImmediate(async () => {
 			// Append signin history
 			const record = await this.signinsRepository.insert({
@@ -33,7 +33,7 @@ export class SigninService {
 				createdAt: new Date(),
 				userId: user.id,
 				ip: request.ip,
-				headers: request.headers,
+				headers: request.headers as any,
 				success: true,
 			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
 	
@@ -41,25 +41,11 @@ export class SigninService {
 			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
 		});
 
-		if (redirect) {
-			//#region Cookie
-			reply.setCookie('igi', user.token!, {
-				path: '/',
-				// SEE: https://github.com/koajs/koa/issues/974
-				// When using a SSL proxy it should be configured to add the "X-Forwarded-Proto: https" header
-				secure: this.config.url.startsWith('https'),
-				httpOnly: false,
-			});
-			//#endregion
-	
-			reply.redirect(this.config.url);
-		} else {
-			reply.code(200);
-			return {
-				id: user.id,
-				i: user.token,
-			};
-		}
+		reply.code(200);
+		return {
+			id: user.id,
+			i: user.token,
+		};
 	}
 }
 

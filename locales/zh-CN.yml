@@ -1869,5 +1869,6 @@ _deck:
     tl: "时间线"
     antenna: "天线"
     list: "列表"
+    channel: "频道"
     mentions: "提及"
     direct: "指定用户"
