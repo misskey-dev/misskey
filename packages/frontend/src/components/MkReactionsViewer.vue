@@ -7,23 +7,27 @@
 	:move-class="$store.state.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
-	<XReaction v-for="(count, reaction) in note.reactions" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
+	<template v-for="([reaction, count], i) in reactions">
+		<XReaction v-if="!maxNumber || i < maxNumber" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
+	</template>
+	<slot name="extras" />
 </TransitionGroup>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import * as misskey from 'misskey-js';
-import { $i } from '@/account';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
+	maxNumber?: number;
 }>();
 
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
-const isMe = computed(() => $i && $i.id === props.note.userId);
+const reactions = $computed(() => {
+	return Object.entries(props.note.reactions).sort(([, countA], [, countB]) => countB - countA);
+});
 </script>
 
 <style lang="scss" module>

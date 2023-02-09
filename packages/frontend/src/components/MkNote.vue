@@ -73,7 +73,13 @@
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer :class="$style.footer">
-				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
+				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16">
+					<template v-slot:extras>
+						<button v-if="Object.keys(appearNote.reactions).length > 0" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							<i class="ti ti-question-mark"></i>
+						</button>
+					</template>
+				</MkReactionsViewer>
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -116,7 +122,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -349,6 +355,12 @@ function readPromo() {
 		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
+}
+
+function showReactions(): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+		noteId: appearNote.id,
+	}, {}, 'closed');
 }
 </script>
 
@@ -651,5 +663,18 @@ function readPromo() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.reactionDetailsButton {
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border-radius: 4px;
+	background: rgba(0, 0, 0, 0.05);
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.1);
+	}
 }
 </style>
