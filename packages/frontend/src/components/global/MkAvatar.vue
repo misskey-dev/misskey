@@ -128,6 +128,8 @@ watch(() => props.user.avatarBlurhash, () => {
 
 		&::before {
 			contain: strict;
+			content: '';
+			display: block;
 			width: 75%;
 			height: 75%;
 			margin: 12.5%;
