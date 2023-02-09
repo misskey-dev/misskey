@@ -1345,5 +1345,6 @@ _deck:
     tl: "الخيط الزمني"
     antenna: "الهوائيات"
     list: "القوائم"
+    channel: "القنوات"
     mentions: "الإشارات"
     direct: "مباشرة"
