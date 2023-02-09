@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<div v-if="app.permission.length > 0">
-			<p>{{ i18n.ts._auth.permissionAsk }}</p>
+			<p>{{ $t('_auth.permission', { name }) }}</p>
 			<ul>
 				<li v-for="p in app.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 			</ul>

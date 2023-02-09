@@ -14,14 +14,15 @@
 				<p v-else>{{ i18n.ts._auth.pleaseGoBack }}</p>
 			</div>
 			<div v-else>
-				<div v-if="name">{{ $t('_auth.shareAccess', { name: name }) }}</div>
-				<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 				<div v-if="_permissions.length > 0">
-					<p>{{ i18n.ts._auth.permissionAsk }}</p>
+					<p v-if="name">{{ $t('_auth.permission', { name }) }}</p>
+					<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 					<ul>
 						<li v-for="p in _permissions" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 					</ul>
 				</div>
+				<div v-if="name">{{ $t('_auth.shareAccess', { name }) }}</div>
+				<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 				<div :class="$style.buttons">
 					<MkButton inline @click="deny">{{ i18n.ts.cancel }}</MkButton>
 					<MkButton inline primary @click="accept">{{ i18n.ts.accept }}</MkButton>
