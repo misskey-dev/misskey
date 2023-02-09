@@ -13,7 +13,7 @@ import { deepClone } from '@/misc/clone.js';
 import { UtilityService } from '../UtilityService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
-import { VideoProcessingService } from '@/core/VideoProcessingService.js';
+import { VideoProcessingService } from '../VideoProcessingService.js';
 
 type PackOptions = {
 	detail?: boolean,
