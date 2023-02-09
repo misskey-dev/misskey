@@ -77,6 +77,8 @@ export default defineComponent({
 		accepted() {
 			this.state = 'accepted';
 			if (this.session.app.callbackUrl) {
+				const url = new URL(this.session.app.callbackUrl);
+				if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(url.protocol)) throw new Error('invalid url');
 				location.href = `${this.session.app.callbackUrl}?token=${this.session.token}`;
 			}
 		}, onLogin(res) {
