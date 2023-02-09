@@ -97,13 +97,11 @@ export class DriveFileEntityService {
 			return this.getProxiedUrl(file.uri, 'static');
 		}
 
-		// リモートかつ期限切れはローカルプロキシを試みる
 		if (file.uri != null && file.isLink && this.config.proxyRemoteFiles) {
-			const key = file.thumbnailAccessKey;
-
-			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
-				return `${this.config.url}/files/${key}`;
-			}
+			// リモートかつ期限切れはローカルプロキシを試みる
+			// 従来は/files/${thumbnailAccessKey}にアクセスしていたが、
+			// /filesはプロキシにリダイレクトするようにしたため直接プロキシを指定する
+			return this.getProxiedUrl(file.uri, 'static');
 		}
 
 		const url = file.webpublicUrl ?? file.url;
