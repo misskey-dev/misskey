@@ -29,7 +29,7 @@ import { noteVisibilities } from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import XPostForm from '@/components/MkPostForm.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -69,14 +69,14 @@ async function init() {
 				...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : []),
 			]
 			// TypeScriptの指示通りに変換する
-			.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
-			.map(q => os.api('users/show', q)
-				.then(user => {
-					visibleUsers.push(user);
-				}, () => {
-					console.error(`Invalid user query: ${JSON.stringify(q)}`);
-				}),
-			),
+				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)
+				.map(q => os.api('users/show', q)
+					.then(user => {
+						visibleUsers.push(user);
+					}, () => {
+						console.error(`Invalid user query: ${JSON.stringify(q)}`);
+					}),
+				),
 		);
 	}
 
@@ -120,13 +120,13 @@ async function init() {
 		if (fileIds) {
 			await Promise.all(
 				fileIds.split(',')
-				.map(fileId => os.api('drive/files/show', { fileId })
-					.then(file => {
-						files.push(file);
-					}, () => {
-						console.error(`Failed to fetch a file ${fileId}`);
-					}),
-				),
+					.map(fileId => os.api('drive/files/show', { fileId })
+						.then(file => {
+							files.push(file);
+						}, () => {
+							console.error(`Failed to fetch a file ${fileId}`);
+						}),
+					),
 			);
 		}
 		//#endregion

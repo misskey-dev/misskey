@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="800">
 		<div ref="rootEl" v-hotkey.global="keymap">
 			<XTutorial v-if="$i && $store.reactiveState.tutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
-			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+			<MkPostForm v-if="$store.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div :class="$style.tl">
@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch } from 'vue';
 import XTimeline from '@/components/MkTimeline.vue';
-import XPostForm from '@/components/MkPostForm.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
