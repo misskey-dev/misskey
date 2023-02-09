@@ -142,7 +142,7 @@ proxyBypassHosts:
 # Movie Thumbnail Generation URL
 # There is no reference implementation.
 # For example, Misskey will point to the following URL:
-#   https://example.com/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fexample.com%2F%3Fthumbnail%3Dhttps%3A%2F%2Fstorage.example.com%2Fpath%2Fto%2Fvideo.mp4
+#   https://example.com/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage.example.com%2Fpath%2Fto%2Fvideo.mp4
 #videoThumbnailGenerator: https://example.com
 
 # Sign to ActivityPub GET request (default: true)
