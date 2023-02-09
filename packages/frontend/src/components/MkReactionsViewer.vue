@@ -31,19 +31,15 @@ if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReact
 }
 
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
-	console.log(newSource, maxNumber)
 	let newReactions: [string, number][] = [];
 
 	for (let i = 0; i < reactions.length; i++) {
 		const reaction = reactions[i][0];
-		console.log(reaction)
 		if (reaction in newSource && newSource[reaction] !== 0) {
 			reactions[i][1] = newSource[reaction];
 			newReactions.push(reactions[i]);
 		}
 	}
-
-	console.log(newReactions)
 
 	const newReactionsNames = newReactions.map(([x]) => x);
 	newReactions = [
