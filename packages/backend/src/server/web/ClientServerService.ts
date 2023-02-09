@@ -372,6 +372,7 @@ export class ClientServerService {
 				return feed.atom1();
 			} else {
 				reply.code(404);
+				return;
 			}
 		});
 
@@ -384,6 +385,7 @@ export class ClientServerService {
 				return feed.rss2();
 			} else {
 				reply.code(404);
+				return;
 			}
 		});
 
@@ -396,6 +398,7 @@ export class ClientServerService {
 				return feed.json1();
 			} else {
 				reply.code(404);
+				return;
 			}
 		});
 

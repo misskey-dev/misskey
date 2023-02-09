@@ -540,6 +540,7 @@ export class ActivityPubServerService {
 				return (this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair)));
 			} else {
 				reply.code(400);
+				return;
 			}
 		});
 
