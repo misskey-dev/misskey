@@ -177,10 +177,10 @@ definePageMetadata(computed(() => ({
 	top: calc(var(--stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
-	margin: -1.35em 0px -16px;
+	margin: calc(-0.675em - 8px - var(--margin)) 0;
 
 	&:first-child {
-		margin-top: calc(-1.35em - 16px);
+		margin-top: calc(-0.675em - 8px - var(--margin));
 	}
 
 	> button {
