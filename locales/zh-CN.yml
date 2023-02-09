@@ -940,6 +940,8 @@ cannotPerformTemporaryDescription: "因操作过于频繁，暂时不可用，�
 preset: "預設值"
 selectFromPresets: "從預設值中選擇"
 achievements: "成就"
+gotInvalidResponseError: "服务器无应答"
+gotInvalidResponseErrorDescription: "您的网络连接可能出现了问题, 或是远程服务器暂时不可用. 请稍后重试。"
 _achievements:
   earnedAt: "达成时间"
   _types:
