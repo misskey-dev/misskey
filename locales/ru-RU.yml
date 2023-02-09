@@ -1845,5 +1845,6 @@ _deck:
     tl: "Лента"
     antenna: "Антенны"
     list: "Списки"
+    channel: "Каналы"
     mentions: "Упоминания"
     direct: "Личное"
