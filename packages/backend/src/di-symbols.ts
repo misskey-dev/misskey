@@ -1,5 +1,5 @@
 function s(key: string): symbol {
-	return Symbol(key);
+	return Symbol.for(key);
 }
 
 export const DI = {
