@@ -940,6 +940,8 @@ cannotPerformTemporaryDescription: "This action cannot be performed temporarily 
 preset: "Preset"
 selectFromPresets: "Choose from presets"
 achievements: "Achievements"
+gotInvalidResponseError: "Invalid server response"
+gotInvalidResponseErrorDescription: "The server may be unreachable or undergoing maintenance. Please try again later."
 _achievements:
   earnedAt: "Unlocked at"
   _types:
