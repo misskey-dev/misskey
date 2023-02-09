@@ -1545,5 +1545,6 @@ _deck:
     tl: "Časová os"
     antenna: "Antény"
     list: "Zoznam"
+    channel: "Kanály"
     mentions: "Zmienky"
     direct: "Priame poznámky"
