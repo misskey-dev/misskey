@@ -73,13 +73,7 @@
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer :class="$style.footer">
-				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16">
-					<template v-slot:extras>
-						<button v-if="Object.keys(appearNote.reactions).length > 0" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
-							<i class="ti ti-info-circle"></i>
-						</button>
-					</template>
-				</MkReactionsViewer>
+				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16" />
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -100,8 +94,8 @@
 				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
 					<i class="ti ti-plus"></i>
 				</button>
-				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
-					<i class="ti ti-minus"></i>
+				<button v-else ref="reactButton" :class="$style.footerButton" class="_button" @click="showReactions">
+					<i class="ti ti-plus"></i>
 				</button>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
@@ -280,14 +274,6 @@ function react(viaKeyboard = false): void {
 		}
 	}, () => {
 		focus();
-	});
-}
-
-function undoReact(note): void {
-	const oldReaction = note.myReaction;
-	if (!oldReaction) return;
-	os.api('notes/reactions/delete', {
-		noteId: note.id,
 	});
 }
 
