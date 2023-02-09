@@ -1,3 +1,4 @@
+import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
 import httpSignature from '@peertube/http-signature';
@@ -19,6 +20,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { IActivity } from '@/core/activitypub/type.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
 
@@ -97,7 +99,8 @@ export class ActivityPubServerService {
 			return;
 		}
 
-		this.queueService.inbox(request.body, signature);
+		// TODO: request.bodyのバリデーション？
+		this.queueService.inbox(request.body as IActivity, signature);
 
 		reply.code(202);
 	}
@@ -413,20 +416,21 @@ export class ActivityPubServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.addConstraintStrategy({
+		// addConstraintStrategy の型定義がおかしいため
+		(fastify.addConstraintStrategy as any)({
 			name: 'apOrHtml',
 			storage() {
-				const store = {};
+				const store = {} as any;
 				return {
-					get(key) {
+					get(key: string) {
 						return store[key] ?? null;
 					},
-					set(key, value) {
+					set(key: string, value: any) {
 						store[key] = value;
 					},
 				};
 			},
-			deriveConstraint(request, ctx) {
+			deriveConstraint(request: IncomingMessage) {
 				const accepted = accepts(request).type(['html', ACTIVITY_JSON, LD_JSON]);
 				const isAp = typeof accepted === 'string' && !accepted.match(/html/);
 				return isAp ? 'ap' : 'html';
@@ -536,6 +540,7 @@ export class ActivityPubServerService {
 				return (this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair)));
 			} else {
 				reply.code(400);
+				return;
 			}
 		});
 

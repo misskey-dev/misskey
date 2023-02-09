@@ -18,7 +18,7 @@
 				</div>
 			</Transition>
 			<div class="container">
-				<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
+				<img ref="imgEl" :src="imgUrl" style="display: none;" crossorigin="anonymous" @load="onImageLoad">
 			</div>
 		</div>
 	</template>

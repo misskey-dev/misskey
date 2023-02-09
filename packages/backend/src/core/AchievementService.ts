@@ -5,7 +5,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 
-const ACHIEVEMENT_TYPES = [
+export const ACHIEVEMENT_TYPES = [
 	'notes1',
 	'notes10',
 	'notes100',

@@ -1541,5 +1541,6 @@ _deck:
     tl: "Fil"
     antenna: "Antennes"
     list: "Listes"
+    channel: "Canaux"
     mentions: "Mentions"
     direct: "Direct"
