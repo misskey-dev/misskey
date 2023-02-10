@@ -90,7 +90,14 @@
 						<MkTime :time="appearNote.createdAt" mode="detail"/>
 					</MkA>
 				</div>
-				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
+				<MkReactionsViewer ref="reactionsViewer" :note="appearNote">
+					<template v-slot:extras>
+						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							<i class="ti ti-info-circle"></i>
+							{{ number(Object.entries(appearNote.reactions).reduce((a, b) => a + b[1], 0)) }}/{{ number(Object.keys(appearNote.reactions).length) }}
+						</button>
+					</template>
+				</MkReactionsViewer>
 				<button class="button _button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
@@ -160,6 +167,7 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
+import number from '@/filters/number';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -681,5 +689,22 @@ if (appearNote.replyId) {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+</style>
+
+<style lang="scss" module>
+.reactionDetailsButton {
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border: solid 1px var(--divider);
+	border-radius: 4px;
+	background: transparent;
+	opacity: .8;
+
+	&:hover {
+		background: var(--X5);
+	}
 }
 </style>
