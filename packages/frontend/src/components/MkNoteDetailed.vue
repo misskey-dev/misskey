@@ -92,7 +92,7 @@
 				</div>
 				<MkReactionsViewer ref="reactionsViewer" :note="appearNote">
 					<template v-slot:extras>
-						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+						<button v-if="Object.keys(appearNote.reactions).length > 0" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
 							<i class="ti ti-info-circle"></i>
 							{{ number(Object.entries(appearNote.reactions).reduce((a, b) => a + b[1], 0)) }}/{{ number(Object.keys(appearNote.reactions).length) }}
 						</button>
