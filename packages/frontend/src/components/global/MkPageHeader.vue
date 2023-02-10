@@ -149,7 +149,6 @@ function renderTab() {
 }
 
 function onTabWheel(ev: WheelEvent) {
-	console.log(ev, 'wheel')
 	if (ev.deltaY !== 0) {
 		ev.preventDefault();
 		ev.stopPropagation();
