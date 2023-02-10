@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="(!narrow || hideTitle)" :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
+			<div v-if="!narrow || hideTitle" :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
 				<div :class="$style.tabsInner">
 					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -27,7 +27,7 @@
 				<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
 			</div>
 		</template>
-		<div v-if="actions && actions.length > 0" :class="$style.buttonsRight">
+		<div v-if="(narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
 			<template v-for="action in actions">
 				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
@@ -382,7 +382,7 @@ onUnmounted(() => {
 }
 
 .tabs {
-	display: block;
+	display: fix;
 	position: relative;
 	margin: 0;
 	height: var(--height);
