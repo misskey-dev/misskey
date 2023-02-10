@@ -337,7 +337,7 @@ export class ClientServerService {
 
 		const renderBase = async (reply: FastifyReply) => {
 			const meta = await this.metaService.fetch();
-			reply.header('Cache-Control', 'public, max-age=15');
+			reply.header('Cache-Control', 'public, max-age=30');
 			return await reply.view('base', {
 				img: meta.bannerUrl,
 				title: meta.name ?? 'Misskey',
