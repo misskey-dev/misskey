@@ -35,6 +35,9 @@ export const apiWithDialog = ((
 		} else if (err.code.startsWith('TOO_MANY')) {
 			title = i18n.ts.youCannotCreateAnymore;
 			text = `${i18n.ts.error}: ${err.id}`;
+		} else if (err.message.startsWith('Unexpected token')) {
+			title = i18n.ts.gotInvalidResponseError;
+			text = i18n.ts.gotInvalidResponseErrorDescription;
 		}
 		alert({
 			type: 'error',
@@ -168,6 +171,8 @@ export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	okText?: string;
+	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {

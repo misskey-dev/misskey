@@ -142,10 +142,10 @@ mainRouter.on('change', () => {
 document.documentElement.style.overflowY = 'scroll';
 
 if (window.innerWidth > 1024) {
-	const tempUI = miLocalStorage.getItem('ui_temp')
+	const tempUI = miLocalStorage.getItem('ui_temp');
 	if (tempUI) {
-		miLocalStorage.setItem('ui', tempUI)
-		miLocalStorage.removeItem('ui_temp')
+		miLocalStorage.setItem('ui', tempUI);
+		miLocalStorage.removeItem('ui_temp');
 		location.reload();
 	}
 }
