@@ -171,6 +171,8 @@ export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	okText?: string;
+	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
