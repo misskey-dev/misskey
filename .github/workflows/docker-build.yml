@@ -29,4 +29,4 @@ jobs:
           tags: nyaone/misskey:latest
 
       - name: Send success webhook
-        run: curl ${{ secrets.DOCKER_BUILD_SUCCESS_WEBHOOK }}
+        run: curl ${{ secrets.DOCKER_BUILD_SUCCESS_WEBHOOK }}?subject=喵窝%20Misskey%20镜像
