@@ -15,10 +15,6 @@ import { workerMain } from './worker.js';
 
 import 'reflect-metadata';
 
-// TODO: remove
-if (true) {
-	await main();
-} else {
 process.title = `Misskey (${cluster.isPrimary ? 'master' : 'worker'})`;
 
 Error.stackTraceLimit = Infinity;
@@ -84,5 +80,4 @@ if (cluster.isWorker || envOption.disableClustering) {
 // それ以外のときは process.send は使えないので弾く
 if (process.send) {
 	process.send('ok');
-}
 }

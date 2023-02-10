@@ -1,21 +1,28 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
+import { getRequiredService } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { Config } from '@/config.js';
 import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import endpoints, { IEndpoint } from './endpoints.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { Schema } from '@/misc/schema.js';
+import endpoints, { IEndpoint, IEndpointMeta } from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class ApiServerService {
 	constructor(
+		@Inject(Symbol.for('IServiceProvider'))
+		private serviceProvider: IServiceProvider,
+
 		@Inject(DI.config)
 		private config: Config,
 
@@ -69,7 +76,7 @@ export class ApiServerService {
 				name: endpoint.name,
 				meta: endpoint.meta,
 				params: endpoint.params,
-				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
+				exec: getRequiredService<Endpoint<IEndpointMeta, Schema>>(this.serviceProvider, Symbol.for('ep:' + endpoint.name)).exec,
 			};
 
 			if (endpoint.meta.requireFile) {

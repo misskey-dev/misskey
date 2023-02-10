@@ -268,4 +268,8 @@ export const DI = {
 	InboxProcessorService: s('InboxProcessorService'),
 	AggregateRetentionProcessorService: s('AggregateRetentionProcessorService'),
 	QueueProcessorService: s('QueueProcessorService'),
+
+	JanitorService: s('JanitorService'),
+	QueueStatsService: s('QueueStatsService'),
+	ServerStatsService: s('ServerStatsService'),
 };

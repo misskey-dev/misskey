@@ -1,15 +1,13 @@
 import { DataSource, EntityTarget, ObjectLiteral } from 'typeorm';
 import {
-	AggregateError,
 	Ctor,
-	Envs,
 	IServiceCollection,
-	WebAppOptions,
+	ServiceCollection,
 	addSingletonCtor,
 	addSingletonFactory,
 	addSingletonInstance,
-	createWebAppBuilder,
 	getRequiredService,
+	buildServiceProvider,
 } from 'yohira';
 import { Config, loadConfig } from '@/config.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
@@ -270,6 +268,10 @@ import { UserListChannelService } from '@/server/api/stream/channels/user-list.j
 import { ClientServerService } from '@/server/web/ClientServerService.js';
 import { FeedService } from '@/server/web/FeedService.js';
 import { UrlPreviewService } from '@/server/web/UrlPreviewService.js';
+import { JanitorService } from '@/daemons/JanitorService.js';
+import { QueueStatsService } from '@/daemons/QueueStatsService.js';
+import { ServerStatsService } from '@/daemons/ServerStatsService.js';
+import { NestLogger } from '@/NestLogger.js';
 
 // REVIEW
 async function addGlobalModule(services: IServiceCollection): Promise<void> {
@@ -623,40 +625,37 @@ function addQueueProcessorModule(services: IServiceCollection): void {
 	}
 }
 
-export async function main(): Promise<void> {
-	try {
-		const options = new WebAppOptions();
-		options.envName = Envs.Development;
-		const builder = createWebAppBuilder(options);
-		const services = builder.services;
-
-		// TODO: remove
-		addSingletonInstance(services, DI.Logger, {});
-
-		await addGlobalModule(services);
-		addQueueModule(services);
-		addRepositoryModule(services);
-		addCoreModule(services);
-		addServerModule(services);
-		addQueueProcessorModule(services);
-
-		const app = builder.build();
-
-		await app.run();
-	} catch (error) {
-		if (error instanceof AggregateError) {
-			const messages: string[] = [];
-			messages.push(error.message);
-			for (const innerError of error.errors) {
-				if (innerError instanceof Error) {
-					messages.push(innerError.message);
-				} else {
-					messages.push(innerError);
-				}
-			}
-			console.error(messages.join('\n'));
-		} else {
-			throw error;
-		}
+function addDaemonModule(services: IServiceCollection): void {
+	const daemonModule: [symbol, Ctor<object>][] = [
+		[DI.JanitorService, JanitorService],
+		[DI.QueueStatsService, QueueStatsService],
+		[DI.ServerStatsService, ServerStatsService],
+	];
+	for (const [serviceType, implCtor] of daemonModule) {
+		addSingletonCtor(services, serviceType, implCtor);
 	}
+}
+
+export async function main(): Promise<void> {
+	const services = new ServiceCollection();
+
+	addSingletonInstance(services, DI.Logger, new NestLogger());
+
+	await addGlobalModule(services);
+	addQueueModule(services);
+	addRepositoryModule(services);
+	addCoreModule(services);
+	addServerModule(services);
+	addQueueProcessorModule(services);
+	addDaemonModule(services);
+
+	const serviceProvider = buildServiceProvider(services);
+
+	const serverService = getRequiredService<ServerService>(serviceProvider, DI.ServerService);
+	serverService.launch();
+
+	getRequiredService<ChartManagementService>(serviceProvider, DI.ChartManagementService).start();
+	getRequiredService<JanitorService>(serviceProvider, DI.JanitorService).start();
+	getRequiredService<QueueStatsService>(serviceProvider, DI.QueueStatsService).start();
+	getRequiredService<ServerStatsService>(serviceProvider, DI.ServerStatsService).start();
 }
