@@ -1,11 +1,13 @@
 <template>
 <div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
 	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<div v-if="narrow && (props.displayMyAvatar || !hideTitle)" :class="$style.buttonsLeft">
-			<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :link="true" />
+		<div v-if="narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
+			<MkAvatar :class="$style.avatar" :user="$i" />
 		</div>
+		<div v-else-if="narrow && !hideTitle" :class="$style.buttonsLeft" />
+
 		<template v-if="metadata">
-			<div v-if="!hideTitle" :class="$style.titleContainer">
+			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
 				<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
 				<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
 
@@ -65,7 +67,7 @@ import tinycolor from 'tinycolor2';
 import { scrollToTop } from '@/scripts/scroll';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
 
 type Tab = {
 	key: string;
@@ -119,6 +121,12 @@ const top = () => {
 		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
 	}
 };
+
+function openAccountMenu(ev: MouseEvent) {
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
+}
 
 function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
@@ -330,7 +338,6 @@ onUnmounted(() => {
 	height: $size;
 	vertical-align: bottom;
 	margin: 0 8px;
-	pointer-events: none;
 }
 
 .button {
