@@ -75,11 +75,9 @@
 			<footer :class="$style.footer">
 				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16">
 					<template v-slot:extras>
-						<button v-if="Object.keys(appearNote.reactions).length > 2" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
-							{{ number(Object.entries(appearNote.reactions).reduce((a, b) => a + b[1], 0)) }}
-							<template v-if="Object.keys(appearNote.reactions).length > 11">
-								/{{ Object.keys(appearNote.reactions).length }}
-							</template>
+						<button v-if="Object.keys(appearNote.reactions).length > 7" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							<i class="ti ti-info-circle"></i>
+							{{ number(Object.entries(appearNote.reactions).reduce((a, b) => a + b[1], 0)) }}/{{ number(Object.keys(appearNote.reactions).length) }}
 						</button>
 					</template>
 				</MkReactionsViewer>
@@ -674,11 +672,12 @@ function showReactions(): void {
 	height: 32px;
 	margin: 2px;
 	padding: 0 6px;
+	border: solid 1px var(--divider);
 	border-radius: 4px;
-	background: rgba(0, 0, 0, 0.05);
+	background: transparent;
 
 	&:hover {
-		background: rgba(0, 0, 0, 0.1);
+		background: var(--X5);
 	}
 }
 </style>
