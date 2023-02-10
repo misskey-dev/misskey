@@ -1,8 +1,8 @@
 <template>
 <div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
-	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]" @click="onClick">
-		<div v-if="(narrow && !hideTitle)" :class="$style.buttonsLeft">
-			<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :link="true"/>
+	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
+		<div v-if="narrow && (props.displayMyAvatar || !hideTitle)" :class="$style.buttonsLeft">
+			<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :link="true" />
 		</div>
 		<template v-if="metadata">
 			<div v-if="!hideTitle" :class="$style.titleContainer">
@@ -17,11 +17,23 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="!narrow || hideTitle" :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
+			<div v-if="!narrow || hideTitle" :class="$style.tabs" @wheel="onTabWheel">
 				<div :class="$style.tabsInner">
-					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
-						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
-						<span v-if="!tab.iconOnly" :class="$style.tabTitle">{{ tab.title }}</span>
+					<button v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title" class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab }]" @mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)">
+						<div :class="$style.tabInner">
+							<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
+							<div v-if="!t.iconOnly" :class="$style.tabTitle">{{ t.title }}</div>
+							<Transition
+								v-else
+								@enter="enter"
+								@after-enter="afterEnter"
+								@leave="leave"
+								@after-leave="afterLeave"
+								mode="in-out"
+							>
+								<div v-if="t.key === tab" :class="$style.tabTitle">{{ t.title }}</div>
+							</Transition>
+						</div>
 					</button>
 				</div>
 				<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
@@ -34,7 +46,7 @@
 		</div>
 	</div>
 	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<div :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
+		<div :class="$style.tabs" @wheel="onTabWheel">
 			<div :class="$style.tabsInner">
 				<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 					<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -102,7 +114,7 @@ const preventDrag = (ev: TouchEvent) => {
 	ev.stopPropagation();
 };
 
-const onClick = () => {
+const top = () => {
 	if (el) {
 		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
 	}
@@ -115,14 +127,17 @@ function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 	}
 }
 
-function onTabClick(tab: Tab, ev: MouseEvent): void {
-	if (tab.onClick) {
+function onTabClick(t: Tab, ev: MouseEvent): void {
+	if (t.key === props.tab) {
+		top();
+	} else if (t.onClick) {
 		ev.preventDefault();
 		ev.stopPropagation();
-		tab.onClick(ev);
+		t.onClick(ev);
 	}
-	if (tab.key) {
-		emit('update:tab', tab.key);
+
+	if (t.key) {
+		emit('update:tab', t.key);
 	}
 }
 
@@ -158,6 +173,27 @@ function onTabWheel(ev: WheelEvent) {
 		});
 	}
 	return false;
+}
+
+function enter(el: HTMLElement) {
+	const elementWidth = el.getBoundingClientRect().width;
+	el.style.width = '0';
+	el.offsetWidth; // reflow
+	el.style.width = elementWidth + 'px';
+	setTimeout(renderTab, 70);
+}
+function afterEnter(el: HTMLElement) {
+	el.style.width = '';
+	nextTick(renderTab);
+}
+function leave(el: HTMLElement) {
+	const elementWidth = el.getBoundingClientRect().width;
+	el.style.width = elementWidth + 'px';
+	el.offsetWidth; // reflow
+	el.style.width = '0';
+}
+function afterLeave(el: HTMLElement) {
+	el.style.width = '';
 }
 
 onMounted(() => {
@@ -220,7 +256,8 @@ onUnmounted(() => {
 		margin-left: auto;
 	}
 	.tabs:not(:first-child) {
-		margin-left: 16px;
+		padding-left: 16px;
+		mask-image: linear-gradient(90deg, rgba(0,0,0,0), rgb(0,0,0) 16px, rgb(0,0,0) 100%);
 	}
 	.tabs:last-child {
 		margin-right: auto;
@@ -404,6 +441,7 @@ onUnmounted(() => {
 	height: 100%;
 	font-weight: normal;
 	opacity: 0.7;
+	transition: opacity 0.2s ease;
 
 	&:hover {
 		opacity: 1;
@@ -414,8 +452,18 @@ onUnmounted(() => {
 	}
 }
 
+.tabInner {
+	display: flex;
+	align-items: center;
+}
+
 .tabIcon + .tabTitle {
 	margin-left: 8px;
+} 
+
+.tabTitle {
+	overflow: hidden;
+	transition: width 0.15s ease-in-out;
 }
 
 .tabHighlight {
@@ -424,7 +472,7 @@ onUnmounted(() => {
 	height: 3px;
 	background: var(--accent);
 	border-radius: 999px;
-	transition: all 0.2s ease;
+	transition: width 0.15s ease, left 0.15s ease;
 	pointer-events: none;
 }
 </style>
