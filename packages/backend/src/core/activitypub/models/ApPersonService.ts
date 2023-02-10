@@ -1,5 +1,6 @@
 import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
+import { getRequiredService } from 'yohira';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -17,7 +18,7 @@ import type { Emoji } from '@/models/entities/Emoji.js';
 import { toArray } from '@/misc/prelude/array.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
 import { UserPublickey } from '@/models/entities/UserPublickey.js';
 import type UsersChart from '@/core/chart/charts/users.js';
@@ -38,6 +39,7 @@ import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, IObject, IApPropertyValue } from '../type.js';
+import type { IServiceProvider } from 'yohira';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -47,6 +49,9 @@ export class ApPersonService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(Symbol.for('IServiceProvider'))
+		private serviceProvider: IServiceProvider,
+
 		@Inject(DI.config)
 		private config: Config,
 
@@ -68,54 +73,104 @@ export class ApPersonService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		@Inject(DI.UtilityService)
-		private utilityService: UtilityService,
+		// @Inject(DI.UtilityService)
+		// private utilityService: UtilityService,
 
-		@Inject(DI.UserEntityService)
-		private userEntityService: UserEntityService,
+		// @Inject(DI.UserEntityService)
+		// private userEntityService: UserEntityService,
 
-		@Inject(DI.IdService)
-		private idService: IdService,
+		// @Inject(DI.IdService)
+		// private idService: IdService,
 
-		@Inject(DI.GlobalEventService)
-		private globalEventService: GlobalEventService,
+		// @Inject(DI.GlobalEventService)
+		// private globalEventService: GlobalEventService,
 
-		@Inject(DI.FederatedInstanceService)
-		private federatedInstanceService: FederatedInstanceService,
+		// @Inject(DI.FederatedInstanceService)
+		// private federatedInstanceService: FederatedInstanceService,
 
-		@Inject(DI.FetchInstanceMetadataService)
-		private fetchInstanceMetadataService: FetchInstanceMetadataService,
+		// @Inject(DI.FetchInstanceMetadataService)
+		// private fetchInstanceMetadataService: FetchInstanceMetadataService,
 
-		@Inject(DI.UserCacheService)
-		private userCacheService: UserCacheService,
+		// @Inject(DI.UserCacheService)
+		// private userCacheService: UserCacheService,
 
-		@Inject(DI.ApResolverService)
-		private apResolverService: ApResolverService,
+		// @Inject(DI.ApResolverService)
+		// private apResolverService: ApResolverService,
 
-		@Inject(DI.ApNoteService)
-		private apNoteService: ApNoteService,
+		// @Inject(DI.ApNoteService)
+		// private apNoteService: ApNoteService,
 
-		@Inject(DI.ApImageService)
-		private apImageService: ApImageService,
+		// @Inject(DI.ApImageService)
+		// private apImageService: ApImageService,
 
-		@Inject(DI.ApMfmService)
-		private apMfmService: ApMfmService,
+		// @Inject(DI.ApMfmService)
+		// private apMfmService: ApMfmService,
 
-		@Inject(DI.MfmService)
-		private mfmService: MfmService,
+		// @Inject(DI.MfmService)
+		// private mfmService: MfmService,
 
-		@Inject(DI.HashtagService)
-		private hashtagService: HashtagService,
+		// @Inject(DI.HashtagService)
+		// private hashtagService: HashtagService,
 
-		@Inject(DI.UsersChart)
-		private usersChart: UsersChart,
+		// @Inject(DI.UsersChart)
+		// private usersChart: UsersChart,
 
-		@Inject(DI.InstanceChart)
-		private instanceChart: InstanceChart,
+		// @Inject(DI.InstanceChart)
+		// private instanceChart: InstanceChart,
 
-		@Inject(DI.ApLoggerService)
-		private apLoggerService: ApLoggerService,
+		// @Inject(DI.ApLoggerService)
+		// private apLoggerService: ApLoggerService,
 	) {
+	}
+
+	// HACK: for circular dependency
+	private get utilityService(): UtilityService {
+		return getRequiredService(this.serviceProvider, DI.UtilityService);
+	}
+	private get userEntityService(): UserEntityService {
+		return getRequiredService(this.serviceProvider, DI.UserEntityService);
+	}
+	private get idService(): IdService {
+		return getRequiredService(this.serviceProvider, DI.IdService);
+	}
+	private get globalEventService(): GlobalEventService {
+		return getRequiredService(this.serviceProvider, DI.GlobalEventService);
+	}
+	private get federatedInstanceService(): FederatedInstanceService {
+		return getRequiredService(this.serviceProvider, DI.FederatedInstanceService);
+	}
+	private get fetchInstanceMetadataService(): FetchInstanceMetadataService {
+		return getRequiredService(this.serviceProvider, DI.FetchInstanceMetadataService);
+	}
+	private get userCacheService(): UserCacheService {
+		return getRequiredService(this.serviceProvider, DI.UserCacheService);
+	}
+	private get apResolverService(): ApResolverService {
+		return getRequiredService(this.serviceProvider, DI.ApResolverService);
+	}
+	private get apNoteService(): ApNoteService {
+		return getRequiredService(this.serviceProvider, DI.ApNoteService);
+	}
+	private get apImageService(): ApImageService {
+		return getRequiredService(this.serviceProvider, DI.ApImageService);
+	}
+	private get apMfmService(): ApMfmService {
+		return getRequiredService(this.serviceProvider, DI.ApMfmService);
+	}
+	private get mfmService(): MfmService {
+		return getRequiredService(this.serviceProvider, DI.MfmService);
+	}
+	private get hashtagService(): HashtagService {
+		return getRequiredService(this.serviceProvider, DI.HashtagService);
+	}
+	private get usersChart(): UsersChart {
+		return getRequiredService(this.serviceProvider, DI.UsersChart);
+	}
+	private get instanceChart(): InstanceChart {
+		return getRequiredService(this.serviceProvider, DI.InstanceChart);
+	}
+	private get apLoggerService(): ApLoggerService {
+		return getRequiredService(this.serviceProvider, DI.ApLoggerService);
 	}
 
 	/**

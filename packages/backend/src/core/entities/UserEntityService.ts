@@ -1,5 +1,6 @@
 import { In, Not } from 'typeorm';
 import Ajv from 'ajv';
+import { getRequiredService } from 'yohira';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
@@ -19,6 +20,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
+import type { IServiceProvider } from 'yohira';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
@@ -47,6 +49,9 @@ export class UserEntityService {
 	private userInstanceCache: Cache<Instance | null>;
 
 	constructor(
+		@Inject(Symbol.for('IServiceProvider'))
+		private serviceProvider: IServiceProvider,
+
 		@Inject(DI.config)
 		private config: Config,
 
@@ -107,25 +112,45 @@ export class UserEntityService {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
-		@Inject(DI.NoteEntityService)
-		private noteEntityService: NoteEntityService,
+		// @Inject(DI.NoteEntityService)
+		// private noteEntityService: NoteEntityService,
 
-		@Inject(DI.DriveFileEntityService)
-		private driveFileEntityService: DriveFileEntityService,
+		// @Inject(DI.DriveFileEntityService)
+		// private driveFileEntityService: DriveFileEntityService,
 
-		@Inject(DI.PageEntityService)
-		private pageEntityService: PageEntityService,
+		// @Inject(DI.PageEntityService)
+		// private pageEntityService: PageEntityService,
 
-		@Inject(DI.CustomEmojiService)
-		private customEmojiService: CustomEmojiService,
+		// @Inject(DI.CustomEmojiService)
+		// private customEmojiService: CustomEmojiService,
 
-		@Inject(DI.AntennaService)
-		private antennaService: AntennaService,
+		// @Inject(DI.AntennaService)
+		// private antennaService: AntennaService,
 
-		@Inject(DI.RoleService)
-		private roleService: RoleService,
+		// @Inject(DI.RoleService)
+		// private roleService: RoleService,
 	) {
 		this.userInstanceCache = new Cache<Instance | null>(1000 * 60 * 60 * 3);
+	}
+
+	// HACK: for circular dependency
+	private get noteEntityService(): NoteEntityService {
+		return getRequiredService(this.serviceProvider, DI.NoteEntityService);
+	}
+	private get driveFileEntityService(): DriveFileEntityService {
+		return getRequiredService(this.serviceProvider, DI.DriveFileEntityService);
+	}
+	private get pageEntityService(): PageEntityService {
+		return getRequiredService(this.serviceProvider, DI.PageEntityService);
+	}
+	private get customEmojiService(): CustomEmojiService {
+		return getRequiredService(this.serviceProvider, DI.CustomEmojiService);
+	}
+	private get antennaService(): AntennaService {
+		return getRequiredService(this.serviceProvider, DI.AntennaService);
+	}
+	private get roleService(): RoleService {
+		return getRequiredService(this.serviceProvider, DI.RoleService);
 	}
 
 	//#region Validators

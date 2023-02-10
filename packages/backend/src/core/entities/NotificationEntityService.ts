@@ -1,5 +1,6 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import { In } from 'typeorm';
+import { getRequiredService } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, NoteReactionsRepository, NotificationsRepository, User } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -12,10 +13,14 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { UserGroupInvitationEntityService } from './UserGroupInvitationEntityService.js';
+import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class NotificationEntityService {
 	constructor(
+		@Inject(Symbol.for('IServiceProvider'))
+		private serviceProvider: IServiceProvider,
+
 		@Inject(DI.notificationsRepository)
 		private notificationsRepository: NotificationsRepository,
 
@@ -25,18 +30,32 @@ export class NotificationEntityService {
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
 
-		@Inject(DI.UserEntityService)
-		private userEntityService: UserEntityService,
+		// @Inject(DI.UserEntityService)
+		// private userEntityService: UserEntityService,
 
-		@Inject(DI.NoteEntityService)
-		private noteEntityService: NoteEntityService,
+		// @Inject(DI.NoteEntityService)
+		// private noteEntityService: NoteEntityService,
 
-		@Inject(DI.UserGroupInvitationEntityService)
-		private userGroupInvitationEntityService: UserGroupInvitationEntityService,
+		// @Inject(DI.UserGroupInvitationEntityService)
+		// private userGroupInvitationEntityService: UserGroupInvitationEntityService,
 
-		@Inject(DI.CustomEmojiService)
-		private customEmojiService: CustomEmojiService,
+		// @Inject(DI.CustomEmojiService)
+		// private customEmojiService: CustomEmojiService,
 	) {
+	}
+
+	// HACK: for circular dependency
+	private get userEntityService(): UserEntityService {
+		return getRequiredService(this.serviceProvider, DI.UserEntityService);
+	}
+	private get noteEntityService(): NoteEntityService {
+		return getRequiredService(this.serviceProvider, DI.NoteEntityService);
+	}
+	private get userGroupInvitationEntityService(): UserGroupInvitationEntityService {
+		return getRequiredService(this.serviceProvider, DI.UserGroupInvitationEntityService);
+	}
+	private get customEmojiService(): CustomEmojiService {
+		return getRequiredService(this.serviceProvider, DI.CustomEmojiService);
 	}
 
 	@bindThis

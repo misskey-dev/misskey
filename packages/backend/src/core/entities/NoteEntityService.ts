@@ -1,5 +1,6 @@
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
+import { getRequiredService } from 'yohira';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
@@ -15,10 +16,14 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class NoteEntityService {
 	constructor(
+		@Inject(Symbol.for('IServiceProvider'))
+		private serviceProvider: IServiceProvider,
+
 		@Inject(DI.db)
 		private db: DataSource,
 
@@ -46,18 +51,32 @@ export class NoteEntityService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.UserEntityService)
-		private userEntityService: UserEntityService,
+		// @Inject(DI.UserEntityService)
+		// private userEntityService: UserEntityService,
 
-		@Inject(DI.DriveFileEntityService)
-		private driveFileEntityService: DriveFileEntityService,
+		// @Inject(DI.DriveFileEntityService)
+		// private driveFileEntityService: DriveFileEntityService,
 
-		@Inject(DI.CustomEmojiService)
-		private customEmojiService: CustomEmojiService,
+		// @Inject(DI.CustomEmojiService)
+		// private customEmojiService: CustomEmojiService,
 
-		@Inject(DI.ReactionService)
-		private reactionService: ReactionService,
+		// @Inject(DI.ReactionService)
+		// private reactionService: ReactionService,
 	) {
+	}
+
+	// HACK: for circular dependency
+	private get userEntityService(): UserEntityService {
+		return getRequiredService(this.serviceProvider, DI.UserEntityService);
+	}
+	private get driveFileEntityService(): DriveFileEntityService {
+		return getRequiredService(this.serviceProvider, DI.DriveFileEntityService);
+	}
+	private get customEmojiService(): CustomEmojiService {
+		return getRequiredService(this.serviceProvider, DI.CustomEmojiService);
+	}
+	private get reactionService(): ReactionService {
+		return getRequiredService(this.serviceProvider, DI.ReactionService);
 	}
 
 	@bindThis

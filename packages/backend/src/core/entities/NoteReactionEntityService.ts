@@ -1,3 +1,4 @@
+import { getRequiredService } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { NoteReactionsRepository } from '@/models/index.js';
@@ -6,26 +7,41 @@ import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
+import { bindThis } from '@/decorators.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
-import { bindThis } from '@/decorators.js';
+import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class NoteReactionEntityService {
 	constructor(
+		@Inject(Symbol.for('IServiceProvider'))
+		private serviceProvider: IServiceProvider,
+
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
-		@Inject(DI.UserEntityService)
-		private userEntityService: UserEntityService,
+		// @Inject(DI.UserEntityService)
+		// private userEntityService: UserEntityService,
 
-		@Inject(DI.NoteEntityService)
-		private noteEntityService: NoteEntityService,
+		// @Inject(DI.NoteEntityService)
+		// private noteEntityService: NoteEntityService,
 
-		@Inject(DI.ReactionService)
-		private reactionService: ReactionService,
+		// @Inject(DI.ReactionService)
+		// private reactionService: ReactionService,
 	) {
+	}
+
+	// HACK: for circular dependency
+	private get userEntityService(): UserEntityService {
+		return getRequiredService(this.serviceProvider, DI.UserEntityService);
+	}
+	private get noteEntityService(): NoteEntityService {
+		return getRequiredService(this.serviceProvider, DI.NoteEntityService);
+	}
+	private get reactionService(): ReactionService {
+		return getRequiredService(this.serviceProvider, DI.ReactionService);
 	}
 
 	@bindThis
