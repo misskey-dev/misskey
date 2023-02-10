@@ -149,7 +149,7 @@ function renderTab() {
 }
 
 function onTabWheel(ev: WheelEvent) {
-	if (ev.deltaY !== 0) {
+	if (ev.deltaY !== 0 && ev.deltaX === 0) {
 		ev.preventDefault();
 		ev.stopPropagation();
 		(ev.currentTarget as HTMLElement).scrollBy({
