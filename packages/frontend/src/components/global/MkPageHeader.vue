@@ -1,6 +1,6 @@
 <template>
 <div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
-	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]" @click="onClick">
+	<div v-if="!hideTitle" :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]" @click="onClick">
 		<div v-if="narrow" :class="$style.buttonsLeft">
 			<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :link="true"/>
 		</div>
@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="!narrow || hideTitle" :class="$style.tabs">
+			<div v-if="!narrow" :class="$style.tabs">
 				<div :class="$style.tabsInner">
 					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
