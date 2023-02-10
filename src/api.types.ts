@@ -317,15 +317,15 @@ export type Endpoints = {
 	'following/requests/reject': { req: { userId: User['id'] }; res: null; };
 
 	// gallery
-	'gallery/featured': { req: TODO; res: TODO; };
-	'gallery/popular': { req: TODO; res: TODO; };
-	'gallery/posts': { req: TODO; res: TODO; };
-	'gallery/posts/create': { req: TODO; res: TODO; };
+	'gallery/featured': { req: null; res: GalleryPost[]; };
+	'gallery/popular': { req: null; res: GalleryPost[]; };
+	'gallery/posts': { req: { limit?: number; sinceId?: GalleryPost['id']; untilId?: GalleryPost['id']; }; res: GalleryPost[]; };
+	'gallery/posts/create': { req: { title: GalleryPost['title']; description?: GalleryPost['description']; fileIds: GalleryPost['fileIds']; isSensitive?: GalleryPost['isSensitive'] }; res: GalleryPost; };
 	'gallery/posts/delete': { req: { postId: GalleryPost['id'] }; res: null; };
-	'gallery/posts/like': { req: TODO; res: TODO; };
-	'gallery/posts/show': { req: TODO; res: TODO; };
-	'gallery/posts/unlike': { req: TODO; res: TODO; };
-	'gallery/posts/update': { req: TODO; res: TODO; };
+	'gallery/posts/like': { req: { postId: GalleryPost['id'] }; res: null; };
+	'gallery/posts/show': { req: { postId: GalleryPost['id'] }; res: GalleryPost; };
+	'gallery/posts/unlike': { req: { postId: GalleryPost['id'] }; res: null; };
+	'gallery/posts/update': { req: { postId: GalleryPost['id']; title: GalleryPost['title']; description?: GalleryPost['description']; fileIds: GalleryPost['fileIds']; isSensitive?: GalleryPost['isSensitive'] }; res: GalleryPost; };
 
 	// games
 	'games/reversi/games': { req: TODO; res: TODO; };

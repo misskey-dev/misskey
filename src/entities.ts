@@ -123,7 +123,20 @@ export type DriveFile = {
 
 export type DriveFolder = TODO;
 
-export type GalleryPost = TODO;
+export type GalleryPost = {
+	id: ID;
+	createdAt: DateString;
+	updatedAt: DateString;
+	userId: User['id'];
+	user: User;
+	title: string;
+	description: string | null;
+	fileIds: DriveFile['id'][];
+	files: DriveFile[];
+	isSensitive: boolean;
+	likedCount: number;
+	isLiked?: boolean;
+};
 
 export type Note = {
 	id: ID;
