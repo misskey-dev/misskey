@@ -146,4 +146,4 @@ signToActivityPubGet: true
 #maxFileSize: 262144000
 
 # Value of Content-Security-Policy header
-#contentSecurityPolicy: "script-src 'self'; base-uri 'self'; object-src 'self';"
+#contentSecurityPolicy: "script-src 'self' 'unsafe-eval'; base-uri 'self'; object-src 'self';"
