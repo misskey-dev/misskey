@@ -1,7 +1,7 @@
 <template>
 <div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
-	<div v-if="!hideTitle" :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]" @click="onClick">
-		<div v-if="narrow" :class="$style.buttonsLeft">
+	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]" @click="onClick">
+		<div v-if="(narrow && !hideTitle)" :class="$style.buttonsLeft">
 			<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i" :link="true"/>
 		</div>
 		<template v-if="metadata">
@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="!narrow" :class="$style.tabs">
+			<div v-if="(!narrow || hideTitle)" :class="$style.tabs">
 				<div :class="$style.tabsInner">
 					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -27,13 +27,13 @@
 				<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
 			</div>
 		</template>
-		<div v-if="narrow || (actions && actions.length > 0)" :class="$style.buttonsRight">
+		<div v-if="actions && actions.length > 0" :class="$style.buttonsRight">
 			<template v-for="action in actions">
 				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</div>
 	</div>
-	<div v-if="narrow && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
+	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
 		<div :class="$style.tabs">
 			<div :class="$style.tabsInner">
 				<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
@@ -204,8 +204,17 @@ onUnmounted(() => {
 	display: flex;
 	height: var(--height);
 
-	.tabs {
+	.tabs:first-child {
+		margin-left: auto;
+	}
+	.tabs:not(:first-child) {
 		margin-left: 16px;
+	}
+	.tabs:last-child {
+		margin-right: auto;
+	}
+	.tabs:not(:last-child) {
+		margin-right: 0;
 	}
 
 	&.thin {
@@ -285,8 +294,8 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: calc(var(--height) - (var(--margin) * 2));
-	width: calc(var(--height) - (var(--margin) * 2));
+	height: var(--height);
+	width: calc(var(--height) - (var(--margin)));
 	box-sizing: border-box;
 	position: relative;
 	border-radius: 5px;
