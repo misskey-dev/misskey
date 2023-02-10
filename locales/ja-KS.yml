@@ -943,8 +943,23 @@ gotInvalidResponseError: "サーバー黙っとるわ、知らんけど"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
+    _notes1:
+      title: "まいど！"
+      description: "初めてノート投稿したった"
     _login3:
       flavor: "今日からワシはミスキストやで"
+    _iLoveMisskey:
+      title: "Misskey好きやねん"
+    _foundTreasure:
+      title: "なんでも鑑定団"
+    _client30min:
+      title: "ねんね"
+    _noteDeletedWithin1min:
+      title: "＊おおっと＊"
+    _open3windows:
+      title: "マド開けすぎ"
+    _driveFolderCircularReference:
+      title: "環状線"
 _role:
   new: "ロールの作成"
   edit: "ロールの編集"
@@ -1362,10 +1377,12 @@ _permissions:
 _auth:
   shareAccess: "「{name}」がアカウントにアクセスすることを許可してええか？"
   shareAccessAsk: "アカウントのアクセスを許可してもええか？"
+  permission: "{name}に次の権限つけたってやって"
   permissionAsk: "このアプリは次の権限を要求しとるで"
   pleaseGoBack: "アプリケーションに戻ってええよ"
   callback: "アプリケーションに戻っとるで"
   denied: "アクセスを拒否ったで"
+  pleaseLogin: "アプリにアクセスさせるんやったら、ログインしてや。"
 _antennaSources:
   all: "みんなのノート"
   homeTimeline: "フォローしとるユーザーのノート"
@@ -1594,6 +1611,7 @@ _notification:
   pollEnded: "アンケートの結果が出たみたいや"
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしといたで"
+  achievementEarned: "実績を獲得しとるで"
   _types:
     all: "すべて"
     follow: "フォロー"
