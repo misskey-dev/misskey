@@ -26,7 +26,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.notesRepository)
+		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.UserFollowingService)

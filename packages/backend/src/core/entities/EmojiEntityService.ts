@@ -7,16 +7,12 @@ import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { bindThis } from '@/decorators.js';
-import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class EmojiEntityService {
 	constructor(
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
-
-		@Inject(DI.UserEntityService)
-		private userEntityService: UserEntityService,
 	) {
 	}
 
