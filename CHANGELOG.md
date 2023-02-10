@@ -13,8 +13,9 @@ You should also include the user name that made the change.
 ### Improvements
 - MkPageHeaderをごっそり変えた
   * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
-  * iconOnlyのタブ項目がアクティブな場合にはタイトルを表示するように
+  * iconOnlyのタブ項目がアクティブな場合にはタブのタイトルを表示するように
   * メインタイムラインではタイトルを表示しない
+  * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
 - ユーザーページのノート一覧をタブとして分離
 
 ### Bugfixes
