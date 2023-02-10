@@ -48,6 +48,8 @@ export type Source = {
 
 	allowedPrivateNetworks?: string[];
 
+	contentSecurityPolicy?: string;
+
 	maxFileSize?: number;
 
 	accesslog?: string;

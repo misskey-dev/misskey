@@ -144,3 +144,6 @@ signToActivityPubGet: true
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
+
+# Value of Content-Security-Policy header
+#contentSecurityPolicy: "script-src 'self'; base-uri 'self'; object-src 'self';"
