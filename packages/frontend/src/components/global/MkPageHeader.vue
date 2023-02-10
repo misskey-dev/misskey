@@ -260,7 +260,7 @@ onUnmounted(() => {
 }
 
 .lower {
-	--height: 48px;
+	--height: 40px;
 	height: var(--height);
 
 	&.slim {
