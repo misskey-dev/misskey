@@ -28,8 +28,8 @@
 			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
-			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok">{{ (showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt }}</MkButton>
-			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ i18n.ts.cancel }}</MkButton>
+			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
+			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" :class="$style.buttons">
 			<MkButton v-for="action in actions" :key="action.text" inline :primary="action.primary" @click="() => { action.callback(); close(); }">{{ action.text }}</MkButton>
@@ -82,6 +82,8 @@ const props = withDefaults(defineProps<{
 	showOkButton?: boolean;
 	showCancelButton?: boolean;
 	cancelableByBgClick?: boolean;
+	okText?: string;
+	cancelText?: string;
 }>(), {
 	type: 'info',
 	showOkButton: true,
