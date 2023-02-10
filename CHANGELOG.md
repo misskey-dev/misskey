@@ -13,6 +13,8 @@ You should also include the user name that made the change.
 ### Improvements
 - 非ログイン時にMiAuthを踏んだ際にMiAuthであることを表示する
 - /auth/のUIをアップデート
+- Content-Security-Policyヘッダを送信するように
+  - If you use a custom JavaScript in your instance, you will probably need to adjust your configuration file and modify the `contentSecurityPolicy` setting to accept your script.
 
 ### Bugfixes
 -

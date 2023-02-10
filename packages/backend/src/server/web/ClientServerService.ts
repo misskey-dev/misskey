@@ -172,6 +172,12 @@ export class ClientServerService {
 		fastify.addHook('onRequest', (request, reply, done) => {
 			// クリックジャッキング防止のためiFrameの中に入れられないようにする
 			reply.header('X-Frame-Options', 'DENY');
+
+			// XSSが存在した場合に影響を軽減する
+			// (script-srcにunsafe-inline等を追加すると意味が無くなるので注意)
+			const csp = this.config.contentSecurityPolicy
+				?? 'script-src \'self\' \'unsafe-eval\'; base-uri \'self\'; object-src \'self\';';
+			reply.header('Content-Security-Policy', csp);
 			done();
 		});
 
