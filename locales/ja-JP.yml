@@ -257,6 +257,8 @@ noMoreHistory: "これより過去の履歴はありません"
 startMessaging: "チャットを開始"
 nUsersRead: "{n}人が読みました"
 agreeTo: "{0}に同意"
+agreeBelow: "下記に同意する"
+basicNotesBeforeCreateAccount: "基本的な注意事項"
 tos: "利用規約"
 start: "始める"
 home: "ホーム"
@@ -862,6 +864,8 @@ failedToFetchAccountInformation: "アカウント情報の取得に失敗しま�
 rateLimitExceeded: "レート制限を超えました"
 cropImage: "画像のクロップ"
 cropImageAsk: "画像をクロップしますか？"
+cropYes: "クロップする"
+cropNo: "そのまま使う"
 file: "ファイル"
 recentNHours: "直近{n}時間"
 recentNDays: "直近{n}日"
@@ -1628,12 +1632,15 @@ _permissions:
   "write:gallery-likes": "ギャラリーのいいねを操作する"
 
 _auth:
+  shareAccessTitle: "アプリへのアクセス許可"
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"
   shareAccessAsk: "アカウントへのアクセスを許可しますか？"
+  permission: "{name}は次の権限を要求しています"
   permissionAsk: "このアプリは次の権限を要求しています"
   pleaseGoBack: "アプリケーションに戻ってやっていってください"
   callback: "アプリケーションに戻っています"
   denied: "アクセスを拒否しました"
+  pleaseLogin: "アプリケーションにアクセス許可を与えるには、ログインが必要です。"
 
 _antennaSources:
   all: "全てのノート"

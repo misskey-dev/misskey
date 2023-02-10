@@ -8,6 +8,15 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Improvements
+- 非ログイン時にMiAuthを踏んだ際にMiAuthであることを表示する
+- /auth/のUIをアップデート
+
+### Bugfixes
+-
+
 ## 13.5.4 (2023/02/09)
 
 ### Improvements
