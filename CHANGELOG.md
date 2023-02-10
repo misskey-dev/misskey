@@ -8,6 +8,16 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Improvements
+- MkPageHeaderをごっそり変えた
+  * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
+- ユーザーページのノート一覧をタブとして分離
+
+### Bugfixes
+- Client: ユーザーページでタブがほとんど見れないことがないように
+
 ## 13.5.6 (2023/02/10)
 
 ### Improvements
