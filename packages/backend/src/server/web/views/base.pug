@@ -63,12 +63,7 @@ html
 		style
 			include ../style.css
 
-		script.
-			var VERSION = "#{version}";
-			var CLIENT_ENTRY = "#{clientEntry.file}";
-
-		script
-			include ../boot.js
+		script(src=`/assets/boot.js?v=${version}`)
 
 	body
 		noscript: p
