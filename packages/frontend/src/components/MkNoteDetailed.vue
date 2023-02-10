@@ -345,6 +345,12 @@ function showRenoteMenu(viaKeyboard = false): void {
 	});
 }
 
+function showReactions(): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+		noteId: appearNote.id,
+	}, {}, 'closed');
+}
+
 function focus() {
 	el.value.focus();
 }
