@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="(!narrow || hideTitle)" :class="$style.tabs">
+			<div v-if="(!narrow || hideTitle)" :class="$style.tabs" @wheel.passive="onTabWheel">
 				<div :class="$style.tabsInner">
 					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<div :class="$style.tabs">
+		<div :class="$style.tabs" @wheel.passive="onTabWheel">
 			<div :class="$style.tabsInner">
 				<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 					<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -87,9 +87,9 @@ const metadata = injectPageMetadata();
 const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = $shallowRef<HTMLElement | undefined>(undefined);
+let el = $shallowRef<HTMLElement | undefined>(undefined);
 const tabRefs: Record<string, HTMLElement | null> = {};
-const tabHighlightEl = $shallowRef<HTMLElement | null>(null);
+let tabHighlightEl = $shallowRef<HTMLElement | null>(null);
 const bg = ref<string | undefined>(undefined);
 let narrow = $ref(false);
 const hasTabs = $computed(() => props.tabs.length > 0);
@@ -138,13 +138,24 @@ let ro2: ResizeObserver | null;
 
 function renderTab() {
 	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-	if (tabEl && tabHighlightEl && tabHighlightEl.parentElement) {
+	if (tabEl && tabEl.parentElement && tabHighlightEl && tabHighlightEl.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
 		const parentRect = tabHighlightEl.parentElement.getBoundingClientRect();
 		const rect = tabEl.getBoundingClientRect();
 		tabHighlightEl.style.width = rect.width + 'px';
 		tabHighlightEl.style.left = (rect.left - parentRect.left + tabHighlightEl.parentElement.scrollLeft) + 'px';
+	}
+}
+
+function onTabWheel(ev: WheelEvent) {
+	if (ev.deltaX !== 0) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		(ev.currentTarget as HTMLElement).scrollBy({
+			left: ev.deltaX,
+			behavior: 'smooth',
+		});
 	}
 }
 
@@ -161,7 +172,7 @@ onMounted(() => {
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
 		ro1 = new ResizeObserver((entries, observer) => {
-			if (el.parentElement && document.body.contains(el as HTMLElement)) {
+			if (el && el.parentElement && document.body.contains(el as HTMLElement)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
@@ -377,7 +388,7 @@ onUnmounted(() => {
 	font-size: 0.8em;
 	overflow-x: auto;
 	overflow-y: hidden;
-	scrollbar-width: thin;
+	scrollbar-width: none;
 }
 
 .tabsInner {
