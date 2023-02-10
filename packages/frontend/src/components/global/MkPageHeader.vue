@@ -133,42 +133,55 @@ const calcBg = () => {
 	bg.value = tinyBg.toRgbString();
 };
 
-let ro: ResizeObserver | null;
+let ro1: ResizeObserver | null;
+let ro2: ResizeObserver | null;
+
+function renderTab() {
+	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
+	if (tabEl && tabHighlightEl && tabHighlightEl.parentElement) {
+		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
+		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
+		const parentRect = tabHighlightEl.parentElement.getBoundingClientRect();
+		const rect = tabEl.getBoundingClientRect();
+		tabHighlightEl.style.width = rect.width + 'px';
+		tabHighlightEl.style.left = (rect.left - parentRect.left + tabHighlightEl.parentElement.scrollLeft) + 'px';
+	}
+}
 
 onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
 
 	watch([() => props.tab, () => props.tabs], () => {
-		nextTick(() => {
-			const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-			if (tabEl && tabHighlightEl && tabHighlightEl.parentElement) {
-				// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
-				// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
-				const parentRect = tabHighlightEl.parentElement.getBoundingClientRect();
-				const rect = tabEl.getBoundingClientRect();
-				tabHighlightEl.style.width = rect.width + 'px';
-				tabHighlightEl.style.left = (rect.left - parentRect.left + tabHighlightEl.parentElement.scrollLeft) + 'px';
-			}
-		});
+		nextTick(() => renderTab());
 	}, {
 		immediate: true,
 	});
 
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
-		ro = new ResizeObserver((entries, observer) => {
+		ro1 = new ResizeObserver((entries, observer) => {
 			if (el.parentElement && document.body.contains(el as HTMLElement)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
-		ro.observe(el.parentElement as HTMLElement);
+		ro1.observe(el.parentElement as HTMLElement);
+	}
+
+	if (el) {
+		ro2 = new ResizeObserver((entries, observer) => {
+			if (document.body.contains(el as HTMLElement)) {
+				nextTick(() => renderTab());
+			}
+		});
+		ro2.observe(el);
 	}
 });
 
 onUnmounted(() => {
 	globalEvents.off('themeChanged', calcBg);
-	if (ro) ro.disconnect();
+	if (ro1) ro1.disconnect();
+	if (ro2) ro2.disconnect();
 });
 </script>
 
