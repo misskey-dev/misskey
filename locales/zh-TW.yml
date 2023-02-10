@@ -939,6 +939,8 @@ cannotPerformTemporaryDescription: "由於超過操作次數限制，暫時無�
 preset: "預設值"
 selectFromPresets: "從預設值中選擇"
 achievements: "成就"
+gotInvalidResponseError: "伺服器的回應無效"
+gotInvalidResponseErrorDescription: "伺服器可能已關閉或者在維護中，請稍後再試。"
 _achievements:
   earnedAt: "獲得日期"
   _types:
