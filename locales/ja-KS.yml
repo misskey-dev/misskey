@@ -129,6 +129,7 @@ unblockConfirm: "ブロックやめたるってほんまか？"
 suspendConfirm: "凍結してしもうてええか？"
 unsuspendConfirm: "解凍するけどええか？"
 selectList: "リストを選ぶ"
+selectChannel: "チャンネルを選ぶ"
 selectAntenna: "アンテナを選ぶ"
 selectWidget: "ウィジェットを選ぶ"
 editWidgets: "ウィジェットをいじる"
@@ -938,6 +939,12 @@ cannotPerformTemporary: "一時的に利用できへんで"
 cannotPerformTemporaryDescription: "操作回数が制限を超えたから一時的に利用できへんくなったで。ちょっと時間置いてからもう一回やってやー。"
 preset: "プリセット"
 selectFromPresets: "プリセットから選ぶ"
+gotInvalidResponseError: "サーバー黙っとるわ、知らんけど"
+_achievements:
+  earnedAt: "貰った日ぃ"
+  _types:
+    _login3:
+      flavor: "今日からワシはミスキストやで"
 _role:
   new: "ロールの作成"
   edit: "ロールの編集"
