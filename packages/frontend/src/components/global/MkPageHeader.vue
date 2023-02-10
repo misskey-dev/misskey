@@ -138,7 +138,7 @@ let ro2: ResizeObserver | null;
 
 function renderTab() {
 	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-	if (tabEl && tabEl.parentElement && tabHighlightEl && tabHighlightEl.parentElement) {
+	if (tabEl && tabHighlightEl && tabHighlightEl.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
 		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
 		const parentRect = tabHighlightEl.parentElement.getBoundingClientRect();
