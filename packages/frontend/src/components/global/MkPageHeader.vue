@@ -261,12 +261,6 @@ onUnmounted(() => {
 .lower {
 	--height: 40px;
 	height: var(--height);
-
-	&.slim {
-		.tabsInner {
-			margin: 0 auto;
-		}
-	}
 }
 
 .buttons {
@@ -382,11 +376,12 @@ onUnmounted(() => {
 }
 
 .tabs {
-	display: fix;
+	display: block;
 	position: relative;
 	margin: 0;
 	height: var(--height);
 	font-size: 0.8em;
+	text-align: center;
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: none;
@@ -397,7 +392,7 @@ onUnmounted(() => {
 }
 
 .tabsInner {
-	display: block;
+	display: inline-block;
 	height: var(--height);
 	white-space: nowrap;
 }
