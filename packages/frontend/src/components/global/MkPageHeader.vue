@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="(!narrow || hideTitle)" :class="$style.tabs" @wheel.passive="onTabWheel">
+			<div v-if="(!narrow || hideTitle)" :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
 				<div :class="$style.tabsInner">
 					<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 						<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<div :class="$style.tabs" @wheel.passive="onTabWheel">
+		<div :class="$style.tabs" @wheel="ev => onTabWheel(ev)">
 			<div :class="$style.tabsInner">
 				<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
 					<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
@@ -149,14 +149,16 @@ function renderTab() {
 }
 
 function onTabWheel(ev: WheelEvent) {
-	if (ev.deltaX !== 0) {
+	console.log(ev, 'wheel')
+	if (ev.deltaY !== 0) {
 		ev.preventDefault();
 		ev.stopPropagation();
 		(ev.currentTarget as HTMLElement).scrollBy({
-			left: ev.deltaX,
+			left: ev.deltaY,
 			behavior: 'smooth',
 		});
 	}
+	return false;
 }
 
 onMounted(() => {
@@ -381,7 +383,7 @@ onUnmounted(() => {
 }
 
 .tabs {
-	display: flex;
+	display: block;
 	position: relative;
 	margin: 0;
 	height: var(--height);
@@ -389,6 +391,10 @@ onUnmounted(() => {
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .tabsInner {
