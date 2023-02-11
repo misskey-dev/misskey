@@ -948,7 +948,7 @@ achievements: "도전 과제"
 gotInvalidResponseError: "서버의 응답이 올바르지 않습니다"
 gotInvalidResponseErrorDescription: " 서버가 다운되었거나 점검중일 가능성이 있습니다. 잠시후에 다시 시도해 주십시오."
 thisPostMayBeAnnoying: "이 게시물은 다른 유저에게 피해를 줄 가능성이 있습니다."
-thisPostMayBeAnnoyingHome: "홈으로 게시"
+thisPostMayBeAnnoyingHome: "홈에 게시"
 thisPostMayBeAnnoyingCancel: "그만두기"
 thisPostMayBeAnnoyingIgnore: "이대로 게시"
 _achievements:
