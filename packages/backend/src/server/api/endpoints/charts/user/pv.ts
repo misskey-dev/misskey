@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@/di-decorators.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
-import { schema } from '@/core/chart/charts/entities/per-user-notes.js';
+import { schema } from '@/core/chart/charts/entities/per-user-pv.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {

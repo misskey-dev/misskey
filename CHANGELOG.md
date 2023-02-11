@@ -8,14 +8,58 @@
 
 You should also include the user name that made the change.
 -->
-
 ## 13.x.x (unreleased)
 
 ### Improvements
-- Client: デッキにチャンネルカラムを追加
+- アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
 
 ### Bugfixes
--
+- Client: ユーザーページでアクティビティを見ることができない問題を修正
+
+## 13.6.0 (2023/02/11)
+
+### Improvements
+- MkPageHeaderをごっそり変えた
+  * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
+  * iconOnlyのタブ項目がアクティブな場合にはタブのタイトルを表示するように
+  * メインタイムラインではタイトルを表示しない
+  * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
+- ユーザーページのノート一覧をタブとして分離
+- コンディショナルロールもバッジとして表示可能に
+- enhance(client): ロールをより簡単に付与できるように
+- enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
+- リアクションの数が多い場合の表示を改善
+- 一部のMFM構文をopt-outに
+
+### Bugfixes
+- Client: ユーザーページでタブがほとんど見れないことがないように
+
+## 13.5.6 (2023/02/10)
+
+### Improvements
+- 非ログイン時にMiAuthを踏んだ際にMiAuthであることを表示する
+- /auth/のUIをアップデート
+- 利用規約同意UIの調整
+- クロップ時の質問を分かりやすく
+
+### Bugfixes
+- fix: prevent clipping audio plyr's tooltip
+
+## 13.5.4 (2023/02/09)
+
+### Improvements
+- Server: UIのHTML（ノートなどの特別なページを除く）のキャッシュ時間を15秒から30秒に
+- i/notificationsのレートリミットを緩和
+
+### Bugfixes
+- fix(client): validate url to improve security
+- fix(client): dateの初期値が正常に入らない時がある
+
+## 13.5.3 (2023/02/09)
+
+### Improvements
+- Client: デッキにチャンネルカラムを追加
 
 ## 13.5.2 (2023/02/08)
 

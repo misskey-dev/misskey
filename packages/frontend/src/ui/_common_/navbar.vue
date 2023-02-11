@@ -45,7 +45,7 @@
 				<i class="icon ti ti-pencil ti-fw"></i><span class="text">{{ i18n.ts.note }}</span>
 			</button>
 			<button v-click-anime v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="item _button account" @click="openAccountMenu">
-				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
+				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text _nowrap" :user="$i"/>
 			</button>
 		</div>
 	</div>
@@ -217,19 +217,24 @@ function more(ev: MouseEvent) {
 					display: flex;
 					align-items: center;
 					padding-left: 30px;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
 					width: 100%;
 					text-align: left;
 					box-sizing: border-box;
 					margin-top: 16px;
 
 					> .avatar {
+						display: block;
+						flex-shrink: 0;
 						position: relative;
 						width: 32px;
 						aspect-ratio: 1;
 						margin-right: 8px;
+					}
+
+					> .text {
+						display: block;
+						flex-shrink: 1;
+						padding-right: 8px;
 					}
 				}
 			}

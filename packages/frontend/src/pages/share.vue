@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<XPostForm
+		<MkPostForm
 			v-if="state === 'writing'"
 			fixed
 			:instant="true"
@@ -37,17 +37,17 @@ import { i18n } from '@/i18n';
 
 const urlParams = new URLSearchParams(window.location.search);
 const localOnlyQuery = urlParams.get('localOnly');
-const visibilityQuery = urlParams.get('visibility');
+const visibilityQuery = urlParams.get('visibility') as typeof noteVisibilities[number];
 
 let state = $ref('fetching' as 'fetching' | 'writing' | 'posted');
 let title = $ref(urlParams.get('title'));
 const text = urlParams.get('text');
 const url = urlParams.get('url');
-let initialText = $ref(null as string | null);
-let reply = $ref(null as Misskey.entities.Note | null);
-let renote = $ref(null as Misskey.entities.Note | null);
-let visibility = $ref(noteVisibilities.includes(visibilityQuery) ? visibilityQuery : null);
-let localOnly = $ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : null);
+let initialText = $ref<string | undefined>();
+let reply = $ref<Misskey.entities.Note | undefined>();
+let renote = $ref<Misskey.entities.Note | undefined>();
+let visibility = $ref(noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
+let localOnly = $ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : undefined);
 let files = $ref([] as Misskey.entities.DriveFile[]);
 let visibleUsers = $ref([] as Misskey.entities.User[]);
 
@@ -130,7 +130,7 @@ async function init() {
 			);
 		}
 		//#endregion
-	} catch (err) {
+	} catch (err: any) {
 		os.alert({
 			type: 'error',
 			title: err.message,

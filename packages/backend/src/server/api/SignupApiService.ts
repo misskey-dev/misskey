@@ -159,6 +159,7 @@ export class SignupApiService {
 				`To complete signup, please click this link: ${link}`);
 	
 			reply.code(204);
+			return;
 		} else {
 			try {
 				const { account, secret } = await this.signupService.signup({
@@ -175,7 +176,7 @@ export class SignupApiService {
 					token: secret,
 				};
 			} catch (err) {
-				throw new FastifyReplyError(400, err);
+				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
 	}
@@ -208,7 +209,7 @@ export class SignupApiService {
 
 			return this.signinService.signin(request, reply, account as ILocalUser);
 		} catch (err) {
-			throw new FastifyReplyError(400, err);
+			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}
 	}
 }

@@ -375,11 +375,6 @@ file: "Fitxers"
 _email:
   _follow:
     title: "t'ha seguit"
-_mfm:
-  mention: "Menció"
-  quote: "Citar"
-  emoji: "Emojis personalitzats"
-  search: "Cercar"
 _instanceMute:
   instanceMuteDescription: "Silencia tots els impulsos dels servidors seleccionats, també els usuaris que responen a altres d'un servidor silenciat."
 _theme:

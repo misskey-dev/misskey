@@ -24,6 +24,7 @@
 					<p>{{ $ts.followers }}</p><span>{{ user.followersCount }}</span>
 				</div>
 			</div>
+			<button class="menu _button" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<MkFollowButton v-if="$i && user.id != $i.id" class="koudoku-button" :user="user" mini/>
 		</div>
 		<div v-else>
@@ -40,6 +41,7 @@ import * as misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
+import { getUserMenu } from '@/scripts/get-user-menu';
 
 const props = defineProps<{
 	showing: boolean;
@@ -57,6 +59,10 @@ const zIndex = os.claimZIndex('middle');
 let user = $ref<misskey.entities.UserDetailed | null>(null);
 let top = $ref(0);
 let left = $ref(0);
+
+function showMenu(ev: MouseEvent) {
+	os.popupMenu(getUserMenu(user), ev.currentTarget ?? ev.target);
+}
 
 onMounted(() => {
 	if (typeof props.q === 'object') {
@@ -172,6 +178,13 @@ onMounted(() => {
 					color: var(--accent);
 				}
 			}
+		}
+
+		> .menu {
+			position: absolute;
+			top: 8px;
+			right: 42px;
+			padding: 8px;
 		}
 
 		> .koudoku-button {
