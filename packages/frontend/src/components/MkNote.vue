@@ -75,7 +75,7 @@
 			<footer :class="$style.footer">
 				<MkReactionsViewer ref="reactionsViewer" :note="appearNote" :max-number="16">
 					<template v-slot:more>
-						<button v-if="Object.keys(appearNote.reactions).length > 7" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
 							{{ i18n.ts.more }}
 						</button>
 					</template>
