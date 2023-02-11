@@ -78,7 +78,7 @@
 			</div>
 			<footer :class="$style.footer">
 				<MkReactionsViewer :note="appearNote" :max-number="16">
-					<template v-slot:more>
+					<template #more>
 						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
 							{{ i18n.ts.more }}
 						</button>
@@ -206,7 +206,7 @@ const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
-let renoteCollapsed = $ref(isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
+let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
 
 shownNoteIds.add(appearNote.id);
 

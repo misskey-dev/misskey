@@ -951,6 +951,7 @@ thisPostMayBeAnnoying: "この投稿は迷惑になる可能性があります�
 thisPostMayBeAnnoyingHome: "ホームに投稿"
 thisPostMayBeAnnoyingCancel: "やめる"
 thisPostMayBeAnnoyingIgnore: "このまま投稿"
+collapseRenotes: "見たことのあるRenoteを省略して表示"
 
 _achievements:
   earnedAt: "獲得日時"
