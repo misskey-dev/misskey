@@ -53,6 +53,7 @@ const props = withDefaults(defineProps<{
 	}[];
 	thin?: boolean;
 	displayMyAvatar?: boolean;
+	scrollToTop?: (x?: ScrollOptions) => void;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -80,7 +81,10 @@ const preventDrag = (ev: TouchEvent) => {
 };
 
 const top = () => {
-	if (el) {
+	console.log(props.scrollToTop)
+	if (props.scrollToTop) {
+		props.scrollToTop();
+	} else if (el) {
 		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
 	}
 };

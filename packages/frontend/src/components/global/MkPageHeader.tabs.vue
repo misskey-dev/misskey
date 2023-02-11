@@ -55,6 +55,8 @@ const tabRefs: Record<string, HTMLElement | null> = {};
 const tabHighlightEl = shallowRef<HTMLElement | null>(null);
 
 function onTabMousedown(tab: Tab, ev: MouseEvent): void {
+	emit('tabClick', tab.key);
+
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
 	if (tab.key) {
 		emit('update:tab', tab.key);

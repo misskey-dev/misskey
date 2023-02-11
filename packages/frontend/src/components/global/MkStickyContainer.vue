@@ -19,9 +19,11 @@ const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
 </script>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
+import { scroll } from '@/scripts/scroll';
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, nextTick } from 'vue';
 
 const rootEl = $shallowRef<HTMLElement>();
+const beforeEl = $shallowRef<HTMLElement>();
 const headerEl = $shallowRef<HTMLElement>();
 const bodyEl = $shallowRef<HTMLElement>();
 
@@ -35,6 +37,15 @@ const calc = () => {
 	childStickyTop = parentStickyTop.value + headerEl.offsetHeight;
 	headerHeight = headerEl.offsetHeight.toString();
 };
+
+const scrollToTop = (options: ScrollToOptions = {}) => {
+	if (!bodyEl || !beforeEl) return;
+	scroll($$(bodyEl).value, {
+		top: 0 + parentStickyTop.value + beforeEl.offsetHeight,
+		behavior: 'smooth',
+		...options,
+	});
+}
 
 const observer = new ResizeObserver(() => {
 	window.setTimeout(() => {
@@ -65,6 +76,11 @@ onMounted(() => {
 
 onUnmounted(() => {
 	observer.disconnect();
+});
+
+defineExpose({
+	scrollToTop,
+	stickyTop: $$(childStickyTop),
 });
 </script>
 

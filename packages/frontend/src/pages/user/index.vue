@@ -1,10 +1,10 @@
 <template>
-<MkStickyContainer>
+<MkStickyContainer ref="containerEl">
 	<template #beforeHeader>
-		<XHome v-if="user" :user="user"/>
+		<XHome v-if="user" :user="user" :class="$style.home"/>
 	</template>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<div>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :scroll-to-top="scrollToTop"/></template>
+	<div ref="contentEl" style="min-height: calc(100% - var(--stickyTop));">
 		<Transition name="fade" mode="out-in">
 			<div v-if="user">
 				<XTimeline v-if="tab === 'notes'" :user="user" />
@@ -23,15 +23,17 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch } from 'vue';
+import { defineAsyncComponent, computed, watch, watchEffect } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
 import * as misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
-import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import { getScrollContainer } from '@/scripts/scroll';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
@@ -53,6 +55,14 @@ let tab = $ref(props.page);
 let user = $ref<null | misskey.entities.UserDetailed>(null);
 let error = $ref(null);
 
+let containerEl = $shallowRef<InstanceType<typeof MkStickyContainer>>();
+let contentEl = $shallowRef<HTMLElement>();
+
+const scrollToTop = $computed(() => {
+	if (containerEl) return containerEl.scrollToTop;
+	return () => undefined;
+});
+
 function fetchUser(): void {
 	if (props.acct == null) return;
 	user = null;
@@ -65,6 +75,14 @@ function fetchUser(): void {
 
 watch(() => props.acct, fetchUser, {
 	immediate: true,
+});
+
+watchEffect(() => {
+	if (contentEl && containerEl) {
+		const scrollContainer = getScrollContainer(contentEl);
+		const scrollHeight = scrollContainer ? scrollContainer.clientHeight : window.innerHeight;
+		contentEl.style.minHeight = `calc(${scrollHeight - containerEl.stickyTop}px - var(--minBottomSpacing))`;
+	}
 });
 
 const headerActions = $computed(() => []);
@@ -97,7 +115,7 @@ const headerTabs = $computed(() => user ? [{
 	key: 'gallery',
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
-}] : []);
+}] as Tab[] : []);
 
 definePageMetadata(computed(() => user ? {
 	icon: 'ti ti-user',
@@ -120,5 +138,11 @@ definePageMetadata(computed(() => user ? {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+</style>
+
+<style lang="scss" module>
+.home {
+	border-bottom: solid 0.5px var(--divider)
 }
 </style>
