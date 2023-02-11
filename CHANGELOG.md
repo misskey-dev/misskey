@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
+- Backend: activitypub情報がcorsでブロックされないようヘッダーを追加
 
 ### Bugfixes
 - Client: ユーザーページでアクティビティを見ることができない問題を修正
