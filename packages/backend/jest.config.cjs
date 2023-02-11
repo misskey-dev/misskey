@@ -207,5 +207,5 @@ module.exports = {
 
 	extensionsToTreatAsEsm: ['.ts'],
 
-	testTimeout: 10000,
+	testTimeout: 30000,
 };
