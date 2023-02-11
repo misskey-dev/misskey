@@ -6,6 +6,7 @@
 			<div v-if="user">
 				<XHome v-if="tab === 'home'" :user="user"/>
 				<XTimeline v-else-if="tab === 'notes'" :user="user" />
+				<XActivity v-else-if="tab === 'activity'" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
 				<XClips v-else-if="tab === 'clips'" :user="user"/>
@@ -20,13 +21,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
-import calcAge from 's-age';
+import { defineAsyncComponent, computed, watch } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
 import * as misskey from 'misskey-js';
-import { getScrollPosition } from '@/scripts/scroll';
-import number from '@/filters/number';
-import { userPage, acct as getAcct } from '@/filters/user';
+import { acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -48,8 +46,6 @@ const props = withDefaults(defineProps<{
 }>(), {
 	page: 'home',
 });
-
-const router = useRouter();
 
 let tab = $ref(props.page);
 let user = $ref<null | misskey.entities.UserDetailed>(null);

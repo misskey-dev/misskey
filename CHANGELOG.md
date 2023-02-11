@@ -14,7 +14,7 @@ You should also include the user name that made the change.
 - アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
 
 ### Bugfixes
--
+- Client: ユーザーページでアクティビティを見ることができない問題を修正
 
 ## 13.6.0 (2023/02/11)
 
