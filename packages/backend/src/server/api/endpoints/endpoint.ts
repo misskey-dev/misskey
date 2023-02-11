@@ -1,6 +1,6 @@
+import { endpoints } from '@/boot/EndpointsModule.js';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import endpoints from '../endpoints.js';
 
 export const meta = {
 	requireCredential: false,
