@@ -1,6 +1,6 @@
 <template>
 <header :class="$style.root">
-	<MkA v-once v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
@@ -90,7 +90,7 @@ defineProps<{
 	vertical-align: -20%;
 
 	& + .badgeRole {
-		margin-left: .125em;
+		margin-left: 0.2em;
 	}
 }
 </style>

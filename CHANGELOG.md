@@ -8,14 +8,27 @@
 
 You should also include the user name that made the change.
 -->
+
 ## 13.x.x (unreleased)
+
+### Improvements
+- コンディショナルロールもバッジとして表示可能に
+- enhance(client): 一度見たノートのRenoteは省略して表示するように
+- 一部のMFM構文をopt-outに
+
+### Bugfixes
+-
+
+## 13.5.6 (2023/02/10)
 
 ### Improvements
 - 非ログイン時にMiAuthを踏んだ際にMiAuthであることを表示する
 - /auth/のUIをアップデート
+- 利用規約同意UIの調整
+- クロップ時の質問を分かりやすく
 
 ### Bugfixes
--
+- fix: prevent clipping audio plyr's tooltip
 
 ## 13.5.4 (2023/02/09)
 

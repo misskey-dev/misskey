@@ -109,7 +109,7 @@ const props = withDefaults(defineProps<{
 	mention?: misskey.entities.User;
 	specified?: misskey.entities.User;
 	initialText?: string;
-	initialVisibility?: typeof misskey.noteVisibilities;
+	initialVisibility?: (typeof misskey.noteVisibilities)[number];
 	initialFiles?: misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: misskey.entities.User[];
