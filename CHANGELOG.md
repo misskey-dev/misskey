@@ -13,6 +13,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - コンディショナルロールもバッジとして表示可能に
+- enhance(client): ロールをより簡単に付与できるように
 - enhance(client): 一度見たノートのRenoteは省略して表示するように
 - 一部のMFM構文をopt-outに
 
