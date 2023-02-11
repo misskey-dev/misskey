@@ -17,8 +17,10 @@
 		"jest": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
 		"jest-and-coverage": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --coverage --forceExit --runInBand",
 		"jest-clear": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --clearCache",
-		"test": "pnpm jest",
-		"test-and-coverage": "pnpm jest-and-coverage"
+		"vitest": "cross-env NODE_ENV=test vitest",
+		"coverage": "cross-env NODE_ENV=test vitest run --coverage",
+		"test": "pnpm vitest",
+		"test-and-coverage": "pnpm coverage"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs": "4.2.0",
@@ -178,12 +180,14 @@
 		"@types/ws": "8.5.4",
 		"@typescript-eslint/eslint-plugin": "5.52.0",
 		"@typescript-eslint/parser": "5.52.0",
+		"@vitest/coverage-c8": "^0.28.5",
 		"cross-env": "7.0.3",
 		"eslint": "8.34.0",
 		"eslint-plugin-import": "2.27.5",
 		"execa": "6.1.0",
 		"jest": "29.4.3",
 		"jest-mock": "29.4.3",
-		"pg-mem": "^2.6.4"
+		"pg-mem": "^2.6.4",
+		"vitest": "^0.28.4"
 	}
 }
