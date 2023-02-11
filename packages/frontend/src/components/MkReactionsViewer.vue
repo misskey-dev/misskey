@@ -7,8 +7,8 @@
 	:move-class="$store.state.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
-		<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
-	<slot name="extras" />
+	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
+	<slot v-if="hasMoreReactions" name="more" />
 </TransitionGroup>
 </template>
 
@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<{
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
 let reactions = $ref<[string, number][]>([]);
+let hasMoreReactions = $ref(false);
 
 if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReaction)) {
 	reactions[props.note.myReaction] = props.note.reactions[props.note.myReaction];
@@ -34,6 +35,7 @@ if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReact
 
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
+	hasMoreReactions = Object.keys(newSource).length > maxNumber;
 
 	for (let i = 0; i < reactions.length; i++) {
 		const reaction = reactions[i][0];
