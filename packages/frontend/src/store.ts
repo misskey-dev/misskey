@@ -158,6 +158,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	advancedMfm: {
+		where: 'device',
+		default: true,
+	},
 	loadRawImages: {
 		where: 'device',
 		default: false,
