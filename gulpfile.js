@@ -36,12 +36,18 @@ gulp.task('copy:frontend:locales', cb => {
 });
 
 gulp.task('build:backend:script', () => {
-	return gulp.src(['./packages/backend/src/server/web/boot.js', './packages/backend/src/server/web/bios.js', './packages/backend/src/server/web/cli.js'])
+	const clientManifestExists = fs.existsSync('./built/_vite_/manifest.json');
+	const clientEntry = clientManifestExists ?
+		JSON.parse(fs.readFileSync('./built/_vite_/manifest.json', 'utf-8'))['src/init.ts'].file
+		: 'src/init.ts'
+
+	return gulp.src(['./packages/backend/src/server/web/boot.js', './packages/backend/src/server/web/bios.js', './packages/backend/src/server/web/cli.js', './packages/backend/src/server/web/flush.js'])
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
+		.pipe(replace('CLIENT_ENTRY', JSON.stringify(clientEntry)))
 		.pipe(terser({
 			toplevel: true
 		}))
-		.pipe(gulp.dest('./packages/backend/built/server/web/'));
+		.pipe(gulp.dest('./built/_frontend_dist_/'));
 });
 
 gulp.task('build:backend:style', () => {
