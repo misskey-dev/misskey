@@ -9,7 +9,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.6.0 (2023/02/11)
 
 ### Improvements
 - MkPageHeaderをごっそり変えた
