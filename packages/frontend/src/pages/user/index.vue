@@ -44,9 +44,9 @@ const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 
 const props = withDefaults(defineProps<{
 	acct: string;
-	page?: string;
+	page?: 'notes' | 'activity' | 'achievements' | 'reactions' | 'clips' | 'pages' | 'gallery';
 }>(), {
-	page: 'home',
+	page: 'notes',
 });
 
 let tab = $ref(props.page);
