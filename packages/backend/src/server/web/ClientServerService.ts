@@ -176,7 +176,7 @@ export class ClientServerService {
 			// XSSが存在した場合に影響を軽減する
 			// (script-srcにunsafe-inline等を追加すると意味が無くなるので注意)
 			const csp = this.config.contentSecurityPolicy
-				?? 'script-src \'self\' \'unsafe-eval\' ' +
+				?? 'script-src \'self\' ' +
 				'https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/recaptcha/; ' +
 				'base-uri \'self\'; object-src \'self\'; report-uri /csp-error';
 			reply.header('Content-Security-Policy-Report-Only', csp);
