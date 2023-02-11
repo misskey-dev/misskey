@@ -31,8 +31,8 @@ export async function jobQueue(): Promise<void> {
 	addQueueProcessorServices(services);
 
 	const options = new ServiceProviderOptions();
-	options.validateOnBuild = true/* TODO: in development only */;
-	options.validateScopes = true/* TODO: in development only */;
+	options.validateOnBuild = process.env.NODE_ENV !== 'production';
+	options.validateScopes = process.env.NODE_ENV !== 'production';
 	const serviceProvider = buildServiceProvider(services, options);
 
 	// REVIEW
