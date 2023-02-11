@@ -455,7 +455,6 @@ youHaveNoGroups: "Nu ai niciun grup"
 joinOrCreateGroup: "Primește o invitație într-un grup sau creează unul nou."
 noHistory: "Nu există istoric"
 signinHistory: "Istoric autentificări"
-disableAnimatedMfm: "Dezactivează MFM cu animații"
 doing: "Se procesează..."
 category: "Categorie"
 tags: "Etichete"
@@ -655,11 +654,6 @@ _role:
 _email:
   _follow:
     title: "te-a urmărit"
-_mfm:
-  mention: "Mențiune"
-  quote: "Citează"
-  emoji: "Emoji personalizat"
-  search: "Caută"
 _theme:
   description: "Descriere"
   keys:
