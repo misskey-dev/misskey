@@ -186,6 +186,38 @@ export function confirm(props: {
 	});
 }
 
+// TODO: const T extends ... にしたい
+// https://zenn.dev/general_link/articles/813e47b7a0eef7#const-type-parameters
+export function actions<T extends {
+	value: string;
+	text: string;
+	primary?: boolean,
+}[]>(props: {
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
+	title?: string | null;
+	text?: string | null;
+	actions: T;
+}): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: T[number]['value'];
+}> {
+	return new Promise((resolve, reject) => {
+		popup(MkDialog, {
+			...props,
+			actions: props.actions.map(a => ({
+				text: a.text,
+				primary: a.primary,
+				callback: () => {
+					resolve({ canceled: false, result: a.value });
+				},
+			})),
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string | null;
@@ -540,3 +572,9 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		});
 	});
 }*/
+
+export const shownNoteIds = new Set();
+
+window.setInterval(() => {
+	shownNoteIds.clear();
+}, 1000 * 60 * 5);

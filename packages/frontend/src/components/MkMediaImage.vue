@@ -8,7 +8,7 @@
 		</div>
 	</div>
 </div>
-<div v-else :class="$style.visible">
+<div v-else :class="$style.visible" :style="defaultStore.state.darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'">
 	<a
 		:class="$style.imageContainer"
 		:href="image.url"
@@ -78,7 +78,6 @@ watch(() => props.image, () => {
 	position: relative;
 	//box-shadow: 0 0 0 1px var(--divider) inset;
 	background: var(--bg);
-	--c: rgb(0 0 0 / 2%);
 	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--bg) 16.67%, var(--bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--bg) 66.67%, var(--bg) 100%);
 	background-size: 16px 16px;
 }

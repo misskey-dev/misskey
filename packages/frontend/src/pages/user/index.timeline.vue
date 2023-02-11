@@ -1,14 +1,16 @@
 <template>
-<MkStickyContainer>
-	<template #header>
-		<MkTab v-model="include" :class="$style.tab">
-			<option :value="null">{{ i18n.ts.notes }}</option>
-			<option value="replies">{{ i18n.ts.notesAndReplies }}</option>
-			<option value="files">{{ i18n.ts.withFiles }}</option>
-		</MkTab>
-	</template>
-	<XNotes :no-gap="true" :pagination="pagination"/>
-</MkStickyContainer>
+<MkSpacer :content-max="800" style="padding-top: 0">
+	<MkStickyContainer>
+		<template #header>
+			<MkTab v-model="include" :class="$style.tab">
+				<option :value="null">{{ i18n.ts.notes }}</option>
+				<option value="replies">{{ i18n.ts.notesAndReplies }}</option>
+				<option value="files">{{ i18n.ts.withFiles }}</option>
+			</MkTab>
+		</template>
+		<XNotes :no-gap="true" :pagination="pagination" :class="$style.tl"/>
+	</MkStickyContainer>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
@@ -41,5 +43,11 @@ const pagination = {
 	margin: calc(var(--margin) / 2) 0;
 	padding: calc(var(--margin) / 2) 0;
 	background: var(--bg);
+}
+
+.tl {
+	background: var(--bg);
+    border-radius: var(--radius);
+    overflow: clip;
 }
 </style>

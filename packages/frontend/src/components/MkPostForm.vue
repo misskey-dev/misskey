@@ -109,7 +109,7 @@ const props = withDefaults(defineProps<{
 	mention?: misskey.entities.User;
 	specified?: misskey.entities.User;
 	initialText?: string;
-	initialVisibility?: typeof misskey.noteVisibilities;
+	initialVisibility?: (typeof misskey.noteVisibilities)[number];
 	initialFiles?: misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: misskey.entities.User[];
@@ -577,6 +577,36 @@ async function post(ev?: MouseEvent) {
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
 		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+	}
+
+	const annoying =
+		text.includes('$[x2') ||
+		text.includes('$[x3') ||
+		text.includes('$[x4') ||
+		text.includes('$[scale') ||
+		text.includes('$[position');
+	if (annoying) {
+		const { canceled, result } = await os.actions({
+			type: 'warning',
+			text: i18n.ts.thisPostMayBeAnnoying,
+			actions: [{
+				value: 'home',
+				text: i18n.ts.thisPostMayBeAnnoyingHome,
+				primary: true,
+			}, {
+				value: 'cancel',
+				text: i18n.ts.thisPostMayBeAnnoyingCancel,
+			}, {
+				value: 'ignore',
+				text: i18n.ts.thisPostMayBeAnnoyingIgnore,
+			}],
+		});
+
+		if (canceled) return;
+		if (result === 'cancel') return;
+		if (result === 'home') {
+			visibility = 'home';
+		}
 	}
 
 	let postData = {
