@@ -206,6 +206,4 @@ module.exports = {
 	// watchman: true,
 
 	extensionsToTreatAsEsm: ['.ts'],
-
-	testTimeout: 50000,
 };
