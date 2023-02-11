@@ -1,8 +1,5 @@
 <template>
 <div ref="rootEl">
-	<div ref="beforeEl">
-		<slot name="beforeHeader"></slot>
-	</div>
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>
@@ -20,10 +17,9 @@ const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
 
 <script lang="ts" setup>
 import { scroll } from '@/scripts/scroll';
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, nextTick } from 'vue';
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
 
 const rootEl = $shallowRef<HTMLElement>();
-const beforeEl = $shallowRef<HTMLElement>();
 const headerEl = $shallowRef<HTMLElement>();
 const bodyEl = $shallowRef<HTMLElement>();
 
@@ -39,9 +35,9 @@ const calc = () => {
 };
 
 const scrollToTop = (options: ScrollToOptions = {}) => {
-	if (!bodyEl || !beforeEl) return;
+	if (!bodyEl || !rootEl) return;
 	scroll($$(bodyEl).value, {
-		top: 0 + parentStickyTop.value + beforeEl.offsetHeight,
+		top: 0 + rootEl.offsetTop - parentStickyTop.value,
 		behavior: 'smooth',
 		...options,
 	});

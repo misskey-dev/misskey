@@ -81,7 +81,6 @@ const preventDrag = (ev: TouchEvent) => {
 };
 
 const top = () => {
-	console.log(props.scrollToTop)
 	if (props.scrollToTop) {
 		props.scrollToTop();
 	} else if (el) {
@@ -144,7 +143,7 @@ onUnmounted(() => {
 }
 
 .upper {
-	--height: 50px;
+	--height: var(--headerHeight, 50px);
 	display: flex;
 	gap: var(--margin);
 	height: var(--height);
