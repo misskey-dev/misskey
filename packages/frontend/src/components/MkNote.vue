@@ -188,7 +188,8 @@ const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const isLong = (appearNote.cw == null && appearNote.text != null && (
 	(appearNote.text.split('\n').length > 9) ||
-	(appearNote.text.length > 500)
+	(appearNote.text.length > 500) ||
+	(appearNote.files.length >= 5)
 ));
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
