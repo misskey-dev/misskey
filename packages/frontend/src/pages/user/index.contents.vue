@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer ref="containerEl">
-	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs" :scroll-to-top="scrollToTop" :actions="headerActions" :hide-title="true" style="--headerHeight: 40px"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs" :scroll-to-top="scrollToTop" :actions="headerActions" :hide-title="true" style="--headerHeight: 46px"/></template>
 	<div ref="contentEl">
 		<Transition name="fade" mode="out-in">
 			<div v-if="user">
