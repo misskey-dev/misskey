@@ -1,5 +1,8 @@
 <template>
 <div ref="rootEl">
+	<div ref="beforeEl">
+		<slot name="beforeHeader"></slot>
+	</div>
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>

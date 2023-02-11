@@ -1,11 +1,13 @@
 <template>
 <MkStickyContainer>
+	<template #beforeHeader>
+		<XHome v-if="user" :user="user"/>
+	</template>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<div>
 		<Transition name="fade" mode="out-in">
 			<div v-if="user">
-				<XHome v-if="tab === 'home'" :user="user"/>
-				<XTimeline v-else-if="tab === 'notes'" :user="user" />
+				<XTimeline v-if="tab === 'notes'" :user="user" />
 				<XActivity v-else-if="tab === 'activity'" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
@@ -68,10 +70,6 @@ watch(() => props.acct, fetchUser, {
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => user ? [{
-	key: 'home',
-	title: i18n.ts.overview,
-	icon: 'ti ti-home',
-}, {
 	key: 'notes',
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
