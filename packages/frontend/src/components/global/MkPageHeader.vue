@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, inject } from 'vue';
+import { onMounted, onUnmounted, ref, inject, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { scrollToTop } from '@/scripts/scroll';
 import { globalEvents } from '@/events';
@@ -81,11 +81,13 @@ const preventDrag = (ev: TouchEvent) => {
 };
 
 const top = () => {
-	if (props.scrollToTop) {
-		props.scrollToTop();
-	} else if (el) {
-		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
-	}
+	nextTick(() => {
+		if (props.scrollToTop) {
+			props.scrollToTop();
+		} else if (el) {
+			scrollToTop(el as HTMLElement, { behavior: 'smooth' });
+		}
+	});
 };
 
 function openAccountMenu(ev: MouseEvent) {
