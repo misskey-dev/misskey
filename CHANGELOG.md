@@ -8,6 +8,15 @@
 
 You should also include the user name that made the change.
 -->
+
+## 13.x.x (unreleased)
+
+### Improvements
+- コンディショナルロールもバッジとして表示可能に
+
+### Bugfixes
+-
+
 ## 13.5.6 (2023/02/10)
 
 ### Improvements
