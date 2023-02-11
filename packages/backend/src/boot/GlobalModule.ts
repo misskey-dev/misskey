@@ -21,22 +21,31 @@ export function addGlobalServices(services: IServiceCollection): void {
 	addSingletonFactory(services, DI.db, (services) => {
 		const config = getRequiredService<Config>(services, DI.config);
 		const db = createPostgresDataSource(config);
-		// TODO: await db.destroy();
-		return db;
+		return Object.assign(db, {
+			disposeAsync(): Promise<void> {
+				return db.destroy();
+			},
+		});
 	});
 
 	addSingletonFactory(services, DI.redis, (services) => {
 		const config = getRequiredService<Config>(services, DI.config);
 		const redisClient = createRedisConnection(config);
-		// TODO: redisClient.disconnect();
-		return redisClient;
+		return Object.assign(redisClient, {
+			dispose(): void {
+				return redisClient.disconnect();
+			},
+		});
 	});
 
 	addSingletonFactory(services, DI.redisSubscriber, (services) => {
 		const config = getRequiredService<Config>(services, DI.config);
 		const redisSubscriber = createRedisConnection(config);
-		// TODO: redisSubscriber.disconnect();
-		return redisSubscriber;
+		return Object.assign(redisSubscriber, {
+			dispose(): void {
+				return redisSubscriber.disconnect();
+			},
+		});
 	});
 }
 
