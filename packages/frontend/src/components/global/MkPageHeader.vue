@@ -24,7 +24,7 @@
 					<button v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title" class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab }]" @mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)">
 						<div :class="$style.tabInner">
 							<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
-							<div v-if="!t.iconOnly" :class="$style.tabTitle">{{ t.title }}</div>
+							<div v-if="!t.iconOnly || (!defaultStore.state.animation && t.key === tab)" :class="$style.tabTitle">{{ t.title }}</div>
 							<Transition
 								v-else
 								@enter="enter"
@@ -68,6 +68,7 @@ import { scrollToTop } from '@/scripts/scroll';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
+import { defaultStore } from '@/store';
 
 type Tab = {
 	key: string;
