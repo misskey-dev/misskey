@@ -90,7 +90,7 @@ defineProps<{
 	vertical-align: -20%;
 
 	& + .badgeRole {
-		margin-left: .125em;
+		margin-left: 0.2em;
 	}
 }
 </style>
