@@ -5,7 +5,7 @@
 	ref="el"
 	v-hotkey="keymap"
 	:class="$style.root"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!isDeleted ? '-1' : undefined"
 >
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
@@ -77,7 +77,13 @@
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer :class="$style.footer">
-				<MkReactionsViewer :note="appearNote"/>
+				<MkReactionsViewer :note="appearNote" :max-number="16">
+					<template v-slot:more>
+						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							{{ i18n.ts.more }}
+						</button>
+					</template>
+				</MkReactionsViewer>
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -120,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -196,7 +202,7 @@ const isLong = (appearNote.cw == null && appearNote.text != null && (
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
-const translation = ref(null);
+const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
@@ -360,6 +366,12 @@ function readPromo() {
 		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
+}
+
+function showReactions(): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+		noteId: appearNote.id,
+	}, {}, 'closed');
 }
 </script>
 
@@ -696,5 +708,20 @@ function readPromo() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.reactionDetailsButton {
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border: dashed 1px var(--divider);
+	border-radius: 4px;
+	background: transparent;
+	opacity: .8;
+
+	&:hover {
+		background: var(--X5);
+	}
 }
 </style>
