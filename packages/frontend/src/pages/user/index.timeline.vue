@@ -1,5 +1,5 @@
 <template>
-<MkSpacer :content-max="800" style="padding-top: 0">
+<MkSpacer :content-max="800">
 	<XNotes :no-gap="true" :pagination="pagination" :class="$style.tl"/>
 </MkSpacer>
 </template>
