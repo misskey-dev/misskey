@@ -1,4 +1,3 @@
-import { DataSource } from 'typeorm';
 import {
 	ServiceCollection,
 	ServiceProviderOptions,
@@ -8,7 +7,7 @@ import {
 } from 'yohira';
 import { NestLogger } from '@/NestLogger.js';
 import { addCoreServices } from '@/boot/CoreModule.js';
-import { addGlobalServices } from '@/boot/GlobalModule.js';
+import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
 import { addQueueServices } from '@/boot/QueueModule.js';
 import { addQueueProcessorServices } from '@/boot/QueueProcessorModule.js';
 import { addRepositoryServices } from '@/boot/RepositoryModule.js';
@@ -35,9 +34,7 @@ export async function jobQueue(): Promise<void> {
 	options.validateScopes = process.env.NODE_ENV !== 'production';
 	const serviceProvider = buildServiceProvider(services, options);
 
-	// REVIEW
-	const db = getRequiredService<DataSource>(serviceProvider, DI.db);
-	await db.initialize();
+	await initializeGlobalServices(serviceProvider);
 
 	getRequiredService<QueueProcessorService>(serviceProvider, DI.QueueProcessorService).start();
 	getRequiredService<ChartManagementService>(serviceProvider, DI.ChartManagementService).start();

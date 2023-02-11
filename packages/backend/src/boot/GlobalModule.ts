@@ -1,7 +1,10 @@
+import { Redis } from 'ioredis';
+import { DataSource } from 'typeorm';
 import {
 	IServiceCollection,
 	addSingletonFactory,
 	getRequiredService,
+	IServiceProvider,
 } from 'yohira';
 import { Config, loadConfig } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -32,8 +35,18 @@ export function addGlobalServices(services: IServiceCollection): void {
 	addSingletonFactory(services, DI.redisSubscriber, (services) => {
 		const config = getRequiredService<Config>(services, DI.config);
 		const redisSubscriber = createRedisConnection(config);
-		redisSubscriber.subscribe(config.host);
 		// TODO: redisSubscriber.disconnect();
 		return redisSubscriber;
 	});
+}
+
+export async function initializeGlobalServices(serviceProvider: IServiceProvider): Promise<void> {
+	// REVIEW
+	const db = getRequiredService<DataSource>(serviceProvider, DI.db);
+	await db.initialize();
+
+	// REVIEW
+	const config = getRequiredService<Config>(serviceProvider, DI.config);
+	const redisSubscriber = getRequiredService<Redis>(serviceProvider, DI.redisSubscriber);
+	await redisSubscriber.subscribe(config.host);
 }
