@@ -1,6 +1,6 @@
 <template>
 <div ref="elRef" :class="$style.root">
-	<div v-once :class="$style.head">
+	<div :class="$style.head">
 		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user" link preview/>
 		<MkAvatar v-else-if="notification.type === 'achievementEarned'" :class="$style.icon" :user="$i" link preview/>
 		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
@@ -35,7 +35,7 @@
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
-		<div v-once :class="$style.content">
+		<div :class="$style.content">
 			<MkA v-if="notification.type === 'reaction'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>

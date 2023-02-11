@@ -8,6 +8,7 @@
 
 You should also include the user name that made the change.
 -->
+
 ## 13.x.x (unreleased)
 
 ### Improvements
@@ -17,6 +18,9 @@ You should also include the user name that made the change.
   * メインタイムラインではタイトルを表示しない
   * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
 - ユーザーページのノート一覧をタブとして分離
+- コンディショナルロールもバッジとして表示可能に
+- enhance(client): 一度見たノートのRenoteは省略して表示するように
+- 一部のMFM構文をopt-outに
 
 ### Bugfixes
 - Client: ユーザーページでタブがほとんど見れないことがないように
