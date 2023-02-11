@@ -6,6 +6,7 @@ import {
 } from 'yohira';
 import { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData } from '../queue/types.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function apBackoff(attemptsMade: number/* , err: Error */): number {
@@ -38,6 +39,14 @@ function q<T>(config: Config, name: string, limitPerSec = -1): Bull.Queue {
 		},
 	});
 }
+
+export type SystemQueue = Bull.Queue<Record<string, unknown>>;
+export type EndedPollNotificationQueue = Bull.Queue<EndedPollNotificationJobData>;
+export type DeliverQueue = Bull.Queue<DeliverJobData>;
+export type InboxQueue = Bull.Queue<InboxJobData>;
+export type DbQueue = Bull.Queue<DbJobData>;
+export type ObjectStorageQueue = Bull.Queue<ObjectStorageJobData>;
+export type WebhookDeliverQueue = Bull.Queue<WebhookDeliverJobData>;
 
 export function addQueueServices(services: IServiceCollection): void {
 	addSingletonFactory(services, Symbol.for('queue:system'), (services) => {

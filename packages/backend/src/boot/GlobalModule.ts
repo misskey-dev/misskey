@@ -18,12 +18,14 @@ export function addGlobalServices(services: IServiceCollection): void {
 	addSingletonFactory(services, DI.db, (services) => {
 		const config = getRequiredService<Config>(services, DI.config);
 		const db = createPostgresDataSource(config);
+		// TODO: await db.destroy();
 		return db;
 	});
 
 	addSingletonFactory(services, DI.redis, (services) => {
 		const config = getRequiredService<Config>(services, DI.config);
 		const redisClient = createRedisConnection(config);
+		// TODO: redisClient.disconnect();
 		return redisClient;
 	});
 
@@ -31,6 +33,7 @@ export function addGlobalServices(services: IServiceCollection): void {
 		const config = getRequiredService<Config>(services, DI.config);
 		const redisSubscriber = createRedisConnection(config);
 		redisSubscriber.subscribe(config.host);
+		// TODO: redisSubscriber.disconnect();
 		return redisSubscriber;
 	});
 }
