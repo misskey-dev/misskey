@@ -298,11 +298,6 @@ cannotUploadBecauseNoFreeSpace: "Το ανέβασμα απέτυχε λόγω �
 _email:
   _follow:
     title: "Έχετε ένα νέο ακόλουθο"
-_mfm:
-  mention: "Επισήμανση"
-  quote: "Παράθεση"
-  emoji: "Επιπλέον emoji"
-  search: "Αναζήτηση"
 _channel:
   featured: "Δημοφιλή"
 _theme:

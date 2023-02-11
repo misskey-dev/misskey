@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch } from 'vue';
+import { defineAsyncComponent, computed, watch, provide } from 'vue';
 import XTimeline from '@/components/MkTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
@@ -32,6 +32,9 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+
+provide('shouldOmitHeaderTitle', true);
 
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
@@ -55,7 +58,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
-	scroll(rootEl, { top: 0 });
+	if (rootEl) scroll(rootEl, { top: 0 });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
@@ -148,7 +151,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
-}]);
+}] as Tab[]);
 
 const headerTabsWhenNotLogin = $computed(() => [
 	...(isLocalTimelineAvailable ? [{
@@ -163,7 +166,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 		icon: 'ti ti-whirl',
 		iconOnly: true,
 	}] : []),
-]);
+] as Tab[]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
@@ -177,6 +180,11 @@ definePageMetadata(computed(() => ({
 	top: calc(var(--stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
+	margin: calc(-0.675em - 8px) 0;
+
+	&:first-child {
+		margin-top: calc(-0.675em - 8px - var(--margin));
+	}
 
 	> button {
 		display: block;

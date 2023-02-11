@@ -35,6 +35,9 @@ export const apiWithDialog = ((
 		} else if (err.code.startsWith('TOO_MANY')) {
 			title = i18n.ts.youCannotCreateAnymore;
 			text = `${i18n.ts.error}: ${err.id}`;
+		} else if (err.message.startsWith('Unexpected token')) {
+			title = i18n.ts.gotInvalidResponseError;
+			text = i18n.ts.gotInvalidResponseErrorDescription;
 		}
 		alert({
 			type: 'error',
@@ -168,11 +171,45 @@ export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	okText?: string;
+	cancelText?: string;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			...props,
 			showCancelButton: true,
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+		}, 'closed');
+	});
+}
+
+// TODO: const T extends ... にしたい
+// https://zenn.dev/general_link/articles/813e47b7a0eef7#const-type-parameters
+export function actions<T extends {
+	value: string;
+	text: string;
+	primary?: boolean,
+}[]>(props: {
+	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
+	title?: string | null;
+	text?: string | null;
+	actions: T;
+}): Promise<{ canceled: true; result: undefined; } | {
+	canceled: false; result: T[number]['value'];
+}> {
+	return new Promise((resolve, reject) => {
+		popup(MkDialog, {
+			...props,
+			actions: props.actions.map(a => ({
+				text: a.text,
+				primary: a.primary,
+				callback: () => {
+					resolve({ canceled: false, result: a.value });
+				},
+			})),
 		}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
@@ -535,3 +572,9 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		});
 	});
 }*/
+
+export const shownNoteIds = new Set();
+
+window.setInterval(() => {
+	shownNoteIds.clear();
+}, 1000 * 60 * 5);

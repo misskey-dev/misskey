@@ -1,11 +1,19 @@
 <template>
-<span v-if="!link" v-user-preview="preview ? user.id : undefined" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" class="_noSelect" :style="{ color }" :title="acct(user)" @click="onClick">
+<span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
+	<template v-if="user.isCat">
+		<div :class="$style.earLeft"/>
+		<div :class="$style.earRight"/>
+	</template>
 </span>
-<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :to="userPage(user)" :title="acct(user)" :target="target">
+<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
+	<template v-if="user.isCat">
+		<div :class="$style.earLeft"/>
+		<div :class="$style.earRight"/>
+	</template>
 </MkA>
 </template>
 
@@ -110,32 +118,41 @@ watch(() => props.user.avatarBlurhash, () => {
 }
 
 .cat {
-	&:before, &:after {
-		background: #df548f;
-		border: solid 4px currentColor;
-		box-sizing: border-box;
-		content: '';
+	> .earLeft,
+	> .earRight {
+		contain: strict;
 		display: inline-block;
 		height: 50%;
 		width: 50%;
+		background: currentColor;
+
+		&::before {
+			contain: strict;
+			content: '';
+			display: block;
+			width: 60%;
+			height: 60%;
+			margin: 20%;
+			background: #df548f;
+		}
 	}
 
-	&:before {
+	> .earLeft {
 		border-radius: 0 75% 75%;
 		transform: rotate(37.5deg) skew(30deg);
 	}
 
-	&:after {
+	> .earRight {
 		border-radius: 75% 0 75% 75%;
 		transform: rotate(-37.5deg) skew(-30deg);
 	}
 
 	&:hover {
-		&:before {
+		> .earLeft {
 			animation: earwiggleleft 1s infinite;
 		}
 
-		&:after {
+		> .earRight {
 			animation: earwiggleright 1s infinite;
 		}
 	}
