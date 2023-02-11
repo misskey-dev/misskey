@@ -40,14 +40,6 @@ import { defaultStore } from '@/store';
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
 	tab?: string;
-	actions?: {
-		text: string;
-		icon: string;
-		highlighted?: boolean;
-		handler: (ev: MouseEvent) => void;
-	}[];
-	thin?: boolean;
-	displayMyAvatar?: boolean;
 	rootEl?: HTMLElement;
 }>(), {
 	tabs: () => ([] as Tab[]),
