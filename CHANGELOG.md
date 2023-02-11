@@ -21,6 +21,7 @@ You should also include the user name that made the change.
 - コンディショナルロールもバッジとして表示可能に
 - enhance(client): ロールをより簡単に付与できるように
 - enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
 - 一部のMFM構文をopt-outに
 
 ### Bugfixes
