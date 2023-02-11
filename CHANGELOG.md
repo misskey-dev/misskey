@@ -12,13 +12,19 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
+- MkPageHeaderをごっそり変えた
+  * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
+  * iconOnlyのタブ項目がアクティブな場合にはタブのタイトルを表示するように
+  * メインタイムラインではタイトルを表示しない
+  * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
+- ユーザーページのノート一覧をタブとして分離
 - コンディショナルロールもバッジとして表示可能に
 - enhance(client): ロールをより簡単に付与できるように
 - enhance(client): 一度見たノートのRenoteは省略して表示するように
 - 一部のMFM構文をopt-outに
 
 ### Bugfixes
--
+- Client: ユーザーページでタブがほとんど見れないことがないように
 
 ## 13.5.6 (2023/02/10)
 
