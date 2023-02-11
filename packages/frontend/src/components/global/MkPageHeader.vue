@@ -248,7 +248,7 @@ onUnmounted(() => {
 	white-space: nowrap;
 	text-align: left;
 	font-weight: bold;
-	flex-shrink: 0;
+	flex-shrink: 1;
 	margin-left: 24px;
 }
 
