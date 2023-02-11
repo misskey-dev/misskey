@@ -4,7 +4,7 @@
 	<div ref="contentEl">
 		<Transition name="fade" mode="out-in">
 			<div v-if="user">
-				<XTimeline v-if="tab === 'notes'" :user="user" />
+				<XTimeline v-if="tab === 'notes' || tab === 'files' || tab === 'replies'" :tab="tab" :user="user" />
 				<XActivity v-else-if="tab === 'activity'" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
@@ -21,7 +21,6 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, provide, watchEffect } from 'vue';
-import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
@@ -39,7 +38,7 @@ const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 const props = withDefaults(defineProps<{
 	acct: string;
 	user: any;
-	page?: 'notes' | 'activity' | 'achievements' | 'reactions' | 'clips' | 'pages' | 'gallery';
+	page?: 'notes' | 'replies' | 'files' | 'activity' | 'achievements' | 'reactions' | 'clips' | 'pages' | 'gallery';
 }>(), {
 	page: 'notes',
 });
@@ -75,6 +74,14 @@ const headerTabs = $computed(() => props.user ? [{
 	key: 'notes',
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
+}, {
+	key: 'replies',
+	title: i18n.ts.notesAndReplies,
+	icon: 'ti ti-arrow-back-up',
+}, {
+	key: 'files',
+	title: i18n.ts.withFiles,
+	icon: 'ti ti-photo',
 }, {
 	key: 'activity',
 	title: i18n.ts.activity,
