@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import Redis from 'ioredis';
+import { IDisposable } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { WebhooksRepository } from '@/models/index.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class WebhookService implements OnApplicationShutdown {
+export class WebhookService implements IDisposable {
 	private webhooksFetched = false;
 	private webhooks: Webhook[] = [];
 
@@ -78,7 +78,7 @@ export class WebhookService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		this.redisSubscriber.off('message', this.onMessage);
 	}
 }

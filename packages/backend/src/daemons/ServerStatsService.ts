@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import si from 'systeminformation';
 import Xev from 'xev';
+import { IDisposable } from 'yohira';
 import * as osUtils from 'os-utils';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
 
@@ -14,7 +14,7 @@ const roundCpu = (num: number) => Math.round(num * 1000) / 1000;
 const round = (num: number) => Math.round(num * 10) / 10;
 
 @Injectable()
-export class ServerStatsService implements OnApplicationShutdown {
+export class ServerStatsService implements IDisposable {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
@@ -64,7 +64,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		clearInterval(this.intervalId);
 	}
 }

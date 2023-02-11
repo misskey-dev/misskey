@@ -1,7 +1,7 @@
-import { performance } from 'perf_hooks';
 import { pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
+import { IDisposable } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
@@ -18,7 +18,6 @@ import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
 
 const pump = promisify(pipeline);
@@ -30,7 +29,7 @@ const accessDenied = {
 };
 
 @Injectable()
-export class ApiCallService implements OnApplicationShutdown {
+export class ApiCallService implements IDisposable {
 	private logger: Logger;
 	private userIpHistories: Map<User['id'], Set<string>>;
 	private userIpHistoriesClearIntervalId: NodeJS.Timer;
@@ -350,7 +349,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(signal?: string | undefined): void {
 		clearInterval(this.userIpHistoriesClearIntervalId);
 	}
 }

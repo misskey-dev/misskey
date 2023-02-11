@@ -207,7 +207,7 @@ importers:
       websocket: 1.0.34
       ws: 8.12.0
       xev: 3.0.2
-      yohira: 0.0.0-alpha.6
+      yohira: 0.0.0-alpha.7
     dependencies:
       '@bull-board/api': 4.11.1
       '@bull-board/fastify': 4.11.1
@@ -312,7 +312,7 @@ importers:
       websocket: 1.0.34
       ws: 8.12.0
       xev: 3.0.2
-      yohira: 0.0.0-alpha.6
+      yohira: 0.0.0-alpha.7
     optionalDependencies:
       '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node': 4.2.0_seedrandom@3.0.5
@@ -13691,8 +13691,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /yohira/0.0.0-alpha.6:
-    resolution: {integrity: sha512-qCZlFhDRINnfEY4Q1lzHQxBdRK9PK2xqxQzv8K/yj80EDegfNT6np6aK6VvoXIb+1HbRtFwxK32NnAnPKV7HMQ==}
+  /yohira/0.0.0-alpha.7:
+    resolution: {integrity: sha512-h53WQ+jTTtYDllx5L9UsGIBW78Gz4gl1jxBW4dtDPubeUygFMGj4gq42ZUIqpfJjY5xoq0gikog20ERBz1xk7A==}
     dependencies:
       reflect-metadata: 0.1.13
     dev: false

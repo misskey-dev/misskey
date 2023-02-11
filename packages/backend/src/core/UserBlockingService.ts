@@ -1,6 +1,5 @@
-
-import { OnApplicationShutdown } from '@nestjs/common';
 import Redis from 'ioredis';
+import { IDisposable } from 'yohira';
 import { IdService } from '@/core/IdService.js';
 import type { CacheableUser, User } from '@/models/entities/User.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
@@ -20,7 +19,7 @@ import { Cache } from '@/misc/cache.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 
 @Injectable()
-export class UserBlockingService implements OnApplicationShutdown {
+export class UserBlockingService implements IDisposable {
 	private logger: Logger;
 
 	// キーがユーザーIDで、値がそのユーザーがブロックしているユーザーのIDのリストなキャッシュ
@@ -294,7 +293,7 @@ export class UserBlockingService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		this.redisSubscriber.off('message', this.onMessage);
 	}
 }

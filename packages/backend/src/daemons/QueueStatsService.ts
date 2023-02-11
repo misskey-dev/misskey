@@ -1,16 +1,16 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import Xev from 'xev';
+import { IDisposable } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
 
 const interval = 10000;
 
 @Injectable()
-export class QueueStatsService implements OnApplicationShutdown {
+export class QueueStatsService implements IDisposable {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
@@ -75,7 +75,7 @@ export class QueueStatsService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		clearInterval(this.intervalId);
 	}
 }

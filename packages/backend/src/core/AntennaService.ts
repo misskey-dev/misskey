@@ -1,5 +1,6 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import Redis from 'ioredis';
+import { IDisposable } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
@@ -16,10 +17,9 @@ import type { MutingsRepository, NotesRepository, AntennaNotesRepository, Antenn
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class AntennaService implements OnApplicationShutdown {
+export class AntennaService implements IDisposable {
 	private antennasFetched: boolean;
 	private antennas: Antenna[];
 
@@ -70,7 +70,7 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		this.redisSubscriber.off('message', this.onRedisMessage);
 	}
 

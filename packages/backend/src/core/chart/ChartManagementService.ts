@@ -1,5 +1,5 @@
+import { IAsyncDisposable } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
-
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import FederationChart from './charts/federation.js';
@@ -14,10 +14,9 @@ import PerUserReactionsChart from './charts/per-user-reactions.js';
 import PerUserFollowingChart from './charts/per-user-following.js';
 import PerUserDriveChart from './charts/per-user-drive.js';
 import ApRequestChart from './charts/ap-request.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class ChartManagementService implements OnApplicationShutdown {
+export class ChartManagementService implements IAsyncDisposable {
 	private charts;
 	private saveIntervalId: NodeJS.Timer;
 
@@ -84,7 +83,7 @@ export class ChartManagementService implements OnApplicationShutdown {
 		}, 1000 * 60 * 20);
 	}
 
-	async onApplicationShutdown(signal: string): Promise<void> {
+	async disposeAsync(): Promise<void> {
 		clearInterval(this.saveIntervalId);
 		await Promise.all(
 			this.charts.map(chart => chart.save()),

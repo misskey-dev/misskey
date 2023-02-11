@@ -8,7 +8,6 @@ import { EventEmitter } from 'node:events';
 import chalk from 'chalk';
 import Xev from 'xev';
 import Logger from '@/logger.js';
-import { main } from '@/boot/main.js';
 import { envOption } from '../env.js';
 import { masterMain } from './master.js';
 import { workerMain } from './worker.js';

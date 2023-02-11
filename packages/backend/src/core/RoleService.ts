@@ -1,6 +1,7 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import Redis from 'ioredis';
 import { In } from 'typeorm';
+import { IDisposable } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
 import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
@@ -11,7 +12,6 @@ import { UserCacheService } from '@/core/UserCacheService.js';
 import type { RoleCondFormulaValue } from '@/models/entities/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
@@ -52,7 +52,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 };
 
 @Injectable()
-export class RoleService implements OnApplicationShutdown {
+export class RoleService implements IDisposable {
 	private rolesCache: Cache<Role[]>;
 	private roleAssignmentByUserIdCache: Cache<RoleAssignment[]>;
 
@@ -316,7 +316,7 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		this.redisSubscriber.off('message', this.onMessage);
 	}
 }

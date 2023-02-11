@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import { LessThan } from 'typeorm';
+import { IDisposable } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { AttestationChallengesRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 const interval = 30 * 60 * 1000;
 
 @Injectable()
-export class JanitorService implements OnApplicationShutdown {
+export class JanitorService implements IDisposable {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
@@ -34,7 +34,7 @@ export class JanitorService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		clearInterval(this.intervalId);
 	}
 }

@@ -1,15 +1,15 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import { DataSource } from 'typeorm';
+import { IDisposable } from 'yohira';
 import Redis from 'ioredis';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class MetaService implements OnApplicationShutdown {
+export class MetaService implements IDisposable {
 	private cache: Meta | undefined;
 	private intervalId: NodeJS.Timer;
 
@@ -121,7 +121,7 @@ export class MetaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		clearInterval(this.intervalId);
 		this.redisSubscriber.off('message', this.onMessage);
 	}
