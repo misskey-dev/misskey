@@ -34,7 +34,7 @@ export class RateLimiterService {
 			const min = (): void => {
 				const minIntervalLimiter = new Limiter({
 					id: `${actor}:${limitation.key}:min`,
-					duration: limitation.minInterval * factor,
+					duration: limitation.minInterval! * factor,
 					max: 1,
 					db: this.redisClient,
 				});
@@ -62,8 +62,8 @@ export class RateLimiterService {
 			const max = (): void => {
 				const limiter = new Limiter({
 					id: `${actor}:${limitation.key}`,
-					duration: limitation.duration * factor,
-					max: limitation.max / factor,
+					duration: limitation.duration! * factor,
+					max: limitation.max! / factor,
 					db: this.redisClient,
 				});
 		

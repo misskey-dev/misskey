@@ -29,6 +29,7 @@ ARG NODE_ENV=production
 
 RUN git submodule update --init
 RUN pnpm build
+RUN rm -rf .git/
 
 FROM node:${NODE_VERSION}-slim AS runner
 
@@ -41,10 +42,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	ffmpeg tini \
+	ffmpeg tini curl \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
-	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey
+	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
+	&& find / -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
+	&& find / -type f -perm /g+s -ignore_readdir_race -exec chmod g-s {} \;
 
 USER misskey
 WORKDIR /misskey
@@ -58,5 +61,6 @@ COPY --chown=misskey:misskey --from=builder /misskey/fluent-emojis /misskey/flue
 COPY --chown=misskey:misskey . ./
 
 ENV NODE_ENV=production
+HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["pnpm", "run", "migrateandstart"]

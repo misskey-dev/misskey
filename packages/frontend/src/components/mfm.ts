@@ -12,6 +12,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
+import { defaultStore } from '@/store';
 
 const QUOTE_STYLE = `
 display: block;
@@ -68,6 +69,8 @@ export default defineComponent({
 			return t.match(/^[0-9.]+s$/) ? t : null;
 		};
 
+		const useAnim = defaultStore.state.advancedMfm && defaultStore.state.animatedMfm;
+
 		/**
 		 * Gen Vue Elements from MFM AST
 		 * @param ast MFM AST
@@ -111,22 +114,22 @@ export default defineComponent({
 					switch (token.props.name) {
 						case 'tada': {
 							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = 'font-size: 150%;' + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
+							style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
 							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = (this.$store.state.animatedMfm ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
+							style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'twitch': {
 							const speed = validTime(token.props.args.speed) ?? '0.5s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-twitch ${speed} ease infinite;` : '';
+							style = useAnim ? `animation: mfm-twitch ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'shake': {
 							const speed = validTime(token.props.args.speed) ?? '0.5s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-shake ${speed} ease infinite;` : '';
+							style = useAnim ? `animation: mfm-shake ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'spin': {
@@ -139,17 +142,17 @@ export default defineComponent({
 								token.props.args.y ? 'mfm-spinY' :
 								'mfm-spin';
 							const speed = validTime(token.props.args.speed) ?? '1.5s';
-							style = this.$store.state.animatedMfm ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
+							style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
 							break;
 						}
 						case 'jump': {
 							const speed = validTime(token.props.args.speed) ?? '0.75s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-jump ${speed} linear infinite;` : '';
+							style = useAnim ? `animation: mfm-jump ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'bounce': {
 							const speed = validTime(token.props.args.speed) ?? '0.75s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
+							style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
 							break;
 						}
 						case 'flip': {
@@ -162,17 +165,17 @@ export default defineComponent({
 						}
 						case 'x2': {
 							return h('span', {
-								class: 'mfm-x2',
+								class: defaultStore.state.advancedMfm ? 'mfm-x2' : '',
 							}, genEl(token.children, large));
 						}
 						case 'x3': {
 							return h('span', {
-								class: 'mfm-x3',
+								class: defaultStore.state.advancedMfm ? 'mfm-x3' : '',
 							}, genEl(token.children, true));
 						}
 						case 'x4': {
 							return h('span', {
-								class: 'mfm-x4',
+								class: defaultStore.state.advancedMfm ? 'mfm-x4' : '',
 							}, genEl(token.children, true));
 						}
 						case 'font': {
@@ -194,27 +197,32 @@ export default defineComponent({
 						}
 						case 'rainbow': {
 							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
+							style = useAnim ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'sparkle': {
-							if (!this.$store.state.animatedMfm) {
+							if (!useAnim) {
 								return genEl(token.children, large);
 							}
 							return h(MkSparkle, {}, genEl(token.children, large));
 						}
 						case 'rotate': {
-							const degrees = parseFloat(token.props.args.deg) ?? '90';
+							const degrees = parseFloat(token.props.args.deg ?? '90');
 							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 							break;
 						}
 						case 'position': {
+							if (!defaultStore.state.advancedMfm) break;
 							const x = parseFloat(token.props.args.x ?? '0');
 							const y = parseFloat(token.props.args.y ?? '0');
 							style = `transform: translateX(${x}em) translateY(${y}em);`;
 							break;
 						}
 						case 'scale': {
+							if (!defaultStore.state.advancedMfm) {
+								style = '';
+								break;
+							}
 							const x = Math.min(parseFloat(token.props.args.x ?? '1'), 5);
 							const y = Math.min(parseFloat(token.props.args.y ?? '1'), 5);
 							style = `transform: scale(${x}, ${y});`; 

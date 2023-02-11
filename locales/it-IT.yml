@@ -1044,7 +1044,7 @@ _achievements:
       flavor: "Grazie per aver usato Misskey!"
     _noteClipped1:
       title: "Devo clippare!"
-      description: "Ho raccolto in Clip la prima Nota"
+      description: "Hai raccolto la tua prima Nota in una Clip"
     _noteFavorited1:
       title: "Guarda le stelle"
       description: "Aggiungi una Nota ai preferiti per la prima volta"
@@ -1080,7 +1080,7 @@ _achievements:
       title: "Follow me!"
       description: "Hai ottenuto 10 profili Follower"
     _followers50:
-      title: "Follower a frotte"
+      title: "Un gregge di Follower"
       description: "Hai ottenuto 50 Follower"
     _followers100:
       title: "Popolare"
@@ -1108,7 +1108,7 @@ _achievements:
       title: "Caccia al tesoro"
       description: "Hai trovato un tesoro nascosto"
     _client30min:
-      title: "Piccola pausa"
+      title: "Piccola grande pausa"
       description: "Hai passato più di 30 minuti su Misskey"
     _noteDeletedWithin1min:
       title: "Ooops!"
@@ -1134,7 +1134,7 @@ _achievements:
       title: "Hello, world!"
       description: "Hai scritto «Hello world» nel blocco appunti"
     _open3windows:
-      title: "Finestrato"
+      title: "Apri le finestre!"
       description: "Hai aperto almeno 3 finestre contemporaneamente"
     _driveFolderCircularReference:
       title: "Riferimento circolare"
@@ -1170,7 +1170,7 @@ _achievements:
     _cookieClicked:
       title: "Clicca il biscotto"
       description: "Hai giocato a cliccare il cookie"
-      flavor: "Hai autorizzato i cookie?"
+      flavor: "È il sito giusto?"
     _brainDiver:
       title: "Brain Diver"
       description: "Pubblica un link a Brain Diver"
@@ -1195,6 +1195,9 @@ _role:
   baseRole: "Ruolo di base"
   useBaseValue: "Eredita dal ruolo base"
   chooseRoleToAssign: "Seleziona il ruolo da assegnare"
+  iconUrl: "URL dell'icona"
+  asBadge: "Mostra come badge"
+  descriptionOfAsBadge: "Se indicato, accanto al nome utente viene visualizzata l'icona del ruolo."
   canEditMembersByModerator: "Anche i Moderatori assegnano profili a questo ruolo"
   descriptionOfCanEditMembersByModerator: "Se disattivo, potranno farlo solamente gli Amministratori."
   priority: "Priorità"
@@ -1866,5 +1869,6 @@ _deck:
     tl: "Timeline"
     antenna: "Antenne"
     list: "Liste"
+    channel: "Canale"
     mentions: "Menzioni"
     direct: "Diretta"

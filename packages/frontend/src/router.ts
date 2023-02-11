@@ -225,9 +225,6 @@ export const routes = [{
 	component: page(() => import('./pages/api-console.vue')),
 	loginRequired: true,
 }, {
-	path: '/mfm-cheat-sheet',
-	component: page(() => import('./pages/mfm-cheat-sheet.vue')),
-}, {
 	path: '/scratchpad',
 	component: page(() => import('./pages/scratchpad.vue')),
 }, {
@@ -484,6 +481,9 @@ export const routes = [{
 	path: '/clicker',
 	component: page(() => import('./pages/clicker.vue')),
 	loginRequired: true,
+}, {
+	path: '/timeline',
+	component: page(() => import('./pages/timeline.vue')),
 }, {
 	name: 'index',
 	path: '/',

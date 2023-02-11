@@ -15,8 +15,8 @@ export const meta = {
 	requireCredential: true,
 
 	limit: {
-		duration: 60000,
-		max: 15,
+		duration: 30000,
+		max: 30,
 	},
 
 	kind: 'read:notifications',

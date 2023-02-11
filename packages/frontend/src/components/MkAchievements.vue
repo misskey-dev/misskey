@@ -107,6 +107,7 @@ onMounted(() => {
 }
 
 .iconFrame {
+	position: relative;
 	width: 58px;
 	height: 58px;
 	padding: 6px;
