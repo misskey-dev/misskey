@@ -1,10 +1,10 @@
 <template>
 <div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
 	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<div v-if="narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
+		<div v-if="!thin_ && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
 			<MkAvatar :class="$style.avatar" :user="$i" />
 		</div>
-		<div v-else-if="narrow && !hideTitle" :class="$style.buttonsLeft" />
+		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft" />
 
 		<template v-if="metadata">
 			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
@@ -21,7 +21,7 @@
 			</div>
 			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" @update:tab="key => emit('update:tab', key)" :tabs="tabs" :root-el="el" @tab-click="onTabClick"/>
 		</template>
-		<div v-if="(narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
+		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
 			<template v-for="action in actions">
 				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
@@ -142,6 +142,7 @@ onUnmounted(() => {
 .upper {
 	--height: 50px;
 	display: flex;
+	gap: var(--margin);
 	height: var(--height);
 
 	.tabs:first-child {
@@ -151,11 +152,8 @@ onUnmounted(() => {
 		padding-left: 16px;
 		mask-image: linear-gradient(90deg, rgba(0,0,0,0), rgb(0,0,0) 16px, rgb(0,0,0) 100%);
 	}
-	.tabs:last-child {
+	.tabs {
 		margin-right: auto;
-	}
-	.tabs:not(:last-child) {
-		margin-right: 0;
 	}
 
 	&.thin {
@@ -170,19 +168,14 @@ onUnmounted(() => {
 
 	&.slim {
 		text-align: center;
+		gap: 0;
 
+		.tabs:first-child {
+			margin-left: 0;
+		}
 		> .titleContainer {
-			flex: 1;
 			margin: 0 auto;
 			max-width: 100%;
-
-			> *:first-child {
-				margin-left: auto;
-			}
-
-			> *:last-child {
-				margin-right: auto;
-			}
 		}
 	}
 }
@@ -198,8 +191,6 @@ onUnmounted(() => {
 	align-items: center;
 	min-width: var(--height);
 	height: var(--height);
-	margin: 0 var(--margin);
-
 	&:empty {
 		width: var(--height);
 	}
@@ -207,12 +198,12 @@ onUnmounted(() => {
 
 .buttonsLeft {
 	composes: buttons;
-	margin-right: auto;
+	margin: 0 var(--margin) 0 0;
 }
 
 .buttonsRight {
 	composes: buttons;
-	margin-left: auto;
+	margin: 0 0 0 var(--margin);
 }
 
 .avatar {
@@ -257,7 +248,7 @@ onUnmounted(() => {
 	white-space: nowrap;
 	text-align: left;
 	font-weight: bold;
-	flex-shrink: 0;
+	flex-shrink: 1;
 	margin-left: 24px;
 }
 
