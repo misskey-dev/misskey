@@ -100,6 +100,7 @@
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
+				<XNotes :no-gap="true" :pagination="pagination"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -132,6 +133,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
+import XNotes from '@/components/MkNotes.vue';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -147,6 +149,14 @@ let parallaxAnimationId = $ref<null | number>(null);
 let narrow = $ref<null | boolean>(null);
 let rootEl = $ref<null | HTMLElement>(null);
 let bannerEl = $ref<null | HTMLElement>(null);
+
+const pagination = {
+	endpoint: 'users/notes' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
 
 const style = $computed(() => {
 	if (props.user.bannerUrl == null) return {};
