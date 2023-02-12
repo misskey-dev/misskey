@@ -85,7 +85,8 @@ class LdSignature {
 	public async normalize(data: any) {
 		const customLoader = this.getLoader();
 		// XXX: Importing jsonld dynamically since Jest frequently fails to import it statically
-		return (await import("jsonld")).default.normalize(data, {
+		// https://github.com/misskey-dev/misskey/pull/9894#discussion_r1103753595
+		return (await import('jsonld')).default.normalize(data, {
 			documentLoader: customLoader,
 		});
 	}
