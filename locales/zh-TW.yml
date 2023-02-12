@@ -951,6 +951,7 @@ thisPostMayBeAnnoying: "這篇貼文可能會造成別人的困擾。"
 thisPostMayBeAnnoyingHome: "發布到首頁"
 thisPostMayBeAnnoyingCancel: "退出"
 thisPostMayBeAnnoyingIgnore: "直接發布貼文"
+collapseRenotes: "省略顯示已看過的轉發貼文"
 _achievements:
   earnedAt: "獲得日期"
   _types:
