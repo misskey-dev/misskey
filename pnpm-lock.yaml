@@ -294,7 +294,7 @@ importers:
       speakeasy: 2.0.0
       strict-event-emitter-types: 2.0.0
       stringz: 2.1.0
-      summaly: github.com/misskey-dev/summaly/f4a180907c6f827c635be748d35f35575de5d091
+      summaly: github.com/misskey-dev/summaly/709ca51b6ca289aecadc3e642447487b52c9d7d9
       systeminformation: 5.17.8
       tinycolor2: 1.6.0
       tmp: 0.2.1
@@ -13740,10 +13740,10 @@ packages:
     version: 2.2.1-misskey.3
     dev: false
 
-  github.com/misskey-dev/summaly/f4a180907c6f827c635be748d35f35575de5d091:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/f4a180907c6f827c635be748d35f35575de5d091}
+  github.com/misskey-dev/summaly/709ca51b6ca289aecadc3e642447487b52c9d7d9:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/709ca51b6ca289aecadc3e642447487b52c9d7d9}
     name: summaly
-    version: 3.0.1
+    version: 3.0.3
     dependencies:
       cheerio: 1.0.0-rc.12
       escape-regexp: 0.0.1
