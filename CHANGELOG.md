@@ -8,6 +8,16 @@
 
 You should also include the user name that made the change.
 -->
+## 13.6.1 (2023/02/12)
+
+### Improvements
+- アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
+- Backend: activitypub情報がcorsでブロックされないようヘッダーを追加
+- enhance: レートリミットを0%にできるように
+- チャンネル内Renoteを行えるように
+
+### Bugfixes
+- Client: ユーザーページでアクティビティを見ることができない問題を修正
 
 ## 13.6.0 (2023/02/11)
 

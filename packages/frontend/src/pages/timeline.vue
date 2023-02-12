@@ -32,6 +32,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -57,7 +58,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
-	scroll(rootEl, { top: 0 });
+	if (rootEl) scroll(rootEl, { top: 0 });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
@@ -150,7 +151,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
-}]);
+}] as Tab[]);
 
 const headerTabsWhenNotLogin = $computed(() => [
 	...(isLocalTimelineAvailable ? [{
@@ -165,7 +166,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 		icon: 'ti ti-whirl',
 		iconOnly: true,
 	}] : []),
-]);
+] as Tab[]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,

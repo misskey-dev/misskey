@@ -150,6 +150,12 @@ export class FileServerService {
 						file.cleanup();
 						return await reply.redirect(301, url.toString());
 					} else if (file.mime.startsWith('video/')) {
+						const externalThumbnail = this.videoProcessingService.getExternalVideoThumbnailUrl(file.url);
+						if (externalThumbnail) {
+							file.cleanup();
+							return await reply.redirect(301, externalThumbnail);
+						}
+
 						image = await this.videoProcessingService.generateVideoThumbnail(file.path);
 					}
 				}
