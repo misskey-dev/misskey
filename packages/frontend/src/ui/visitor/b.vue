@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, onMounted, provide } from 'vue';
+import { ComputedRef, onMounted, provide, $ref } from 'vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
@@ -83,7 +83,7 @@ const announcements = {
 	limit: 10,
 };
 
-const isTimelineAvailable = instance.policies.ltlAvailable || instance.policies.gtlAvailable;
+const isTimelineAvailable = $ref(instance.policies?.ltlAvailable || instance.policies?.gtlAvailable);
 
 let showMenu = $ref(false);
 let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
