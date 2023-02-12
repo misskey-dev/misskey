@@ -5,11 +5,11 @@ import { pushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
 
-self.addEventListener('install', ev => {
+globalThis.addEventListener('install', ev => {
 	ev.waitUntil(self.skipWaiting());
 });
 
-self.addEventListener('activate', ev => {
+globalThis.addEventListener('activate', ev => {
 	ev.waitUntil(
 		caches.keys()
 			.then(cacheNames => Promise.all(
@@ -21,7 +21,7 @@ self.addEventListener('activate', ev => {
 	);
 });
 
-self.addEventListener('fetch', ev => {
+globalThis.addEventListener('fetch', ev => {
 	let isHTMLRequest = false;
 	if (ev.request.headers.get('sec-fetch-dest') === 'document') {
 		isHTMLRequest = true;
@@ -38,13 +38,13 @@ self.addEventListener('fetch', ev => {
 	);
 });
 
-self.addEventListener('push', ev => {
+globalThis.addEventListener('push', ev => {
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true,
 		type: 'window'
-	}).then(async <K extends keyof pushNotificationDataMap>(clients: readonly WindowClient[]) => {
-		const data: pushNotificationDataMap[K] = ev.data?.json();
+	}).then(async (clients: readonly WindowClient[]) => {
+		const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.data?.json();
 
 		switch (data.type) {
 			// case 'driveFileCreated':
@@ -104,17 +104,17 @@ self.addEventListener('push', ev => {
 	}));
 });
 
-self.addEventListener('notificationclick', <K extends keyof pushNotificationDataMap>(ev: ServiceWorkerGlobalScopeEventMap['notificationclick']) => {
+globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEventMap['notificationclick']) => {
 	ev.waitUntil((async () => {
 		if (_DEV_) {
 			console.log('notificationclick', ev.action, ev.notification.data);
 		}
-	
+
 		const { action, notification } = ev;
-		const data: pushNotificationDataMap[K] = notification.data;
+		const data: pushNotificationDataMap[keyof pushNotificationDataMap] = notification.data;
 		const { userId: loginId } = data;
 		let client: WindowClient | null = null;
-	
+
 		switch (data.type) {
 			case 'notification':
 				switch (action) {
@@ -180,27 +180,27 @@ self.addEventListener('notificationclick', <K extends keyof pushNotificationData
 			case 'unreadAntennaNote':
 				client = await swos.openAntenna(data.body.antenna.id, loginId);
 		}
-	
+
 		if (client) {
 			client.focus();
 		}
 		if (data.type === 'notification') {
 			swNotificationRead.then(that => that.read(data));
 		}
-	
+
 		notification.close();
 	})());
 });
 
-self.addEventListener('notificationclose', <K extends keyof pushNotificationDataMap>(ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
-	const data: pushNotificationDataMap[K] = ev.notification.data;
+globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
+	const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.notification.data;
 
 	if (data.type === 'notification') {
 		swNotificationRead.then(that => that.read(data));
 	}
 });
 
-self.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['message']) => {
+globalThis.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['message']) => {
 	ev.waitUntil((async () => {
 		switch (ev.data) {
 			case 'clear':
@@ -211,11 +211,11 @@ self.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['message'
 					));
 				return; // TODO
 		}
-	
+
 		if (typeof ev.data === 'object') {
 			// E.g. '[object Array]' → 'array'
 			const otype = Object.prototype.toString.call(ev.data).slice(8, -1).toLowerCase();
-	
+
 			if (otype === 'object') {
 				if (ev.data.msg === 'initialize') {
 					swLang.setLang(ev.data.lang);
