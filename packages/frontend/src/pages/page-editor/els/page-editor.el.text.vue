@@ -24,6 +24,9 @@ const emit = defineEmits<{
 
 const text = $ref(props.modelValue.text ?? '');
 
+// 新規ページではテキストへの変数の挿入を無効化
+if (props.modelValue.text === undefined) props.modelValue.noInterpolate = true;
+
 watch($$(text), () => {
 	emit('update:modelValue', {
 		...props.modelValue,

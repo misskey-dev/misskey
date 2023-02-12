@@ -260,6 +260,7 @@ async function init() {
 			id,
 			type: 'text',
 			text: 'Hello World!',
+			noInterpolate: true,
 		}];
 	}
 }

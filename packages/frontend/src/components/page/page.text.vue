@@ -28,7 +28,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			text: this.hpml.interpolate(this.block.text),
+			text: this.block.noInterpolate ? this.block.text : this.hpml.interpolate(this.block.text),
 		};
 	},
 	computed: {
@@ -43,7 +43,7 @@ export default defineComponent({
 	watch: {
 		'hpml.vars': {
 			handler() {
-				this.text = this.hpml.interpolate(this.block.text);
+				this.text = this.block.noInterpolate ? this.block.text : this.hpml.interpolate(this.block.text);
 			},
 			deep: true,
 		},

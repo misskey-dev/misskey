@@ -8,6 +8,7 @@ export type BlockBase = {
 export type TextBlock = BlockBase & {
 	type: 'text';
 	text: string;
+	noInterpolate: boolean | undefined;
 };
 
 export type SectionBlock = BlockBase & {
