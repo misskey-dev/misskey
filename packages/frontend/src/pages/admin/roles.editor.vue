@@ -72,7 +72,7 @@
 					<MkSwitch v-model="policies.rateLimitFactor.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkRange :model-value="policies.rateLimitFactor.value * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => policies.rateLimitFactor.value = (v / 100)">
+					<MkRange :model-value="policies.rateLimitFactor.value * 100" :min="0" :max="400" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => policies.rateLimitFactor.value = (v / 100)">
 						<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
 						<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
 					</MkRange>

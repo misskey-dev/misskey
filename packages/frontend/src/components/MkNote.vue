@@ -78,7 +78,7 @@
 			</div>
 			<footer :class="$style.footer">
 				<MkReactionsViewer :note="appearNote" :max-number="16">
-					<template v-slot:more>
+					<template #more>
 						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
 							{{ i18n.ts.more }}
 						</button>
@@ -156,6 +156,7 @@ import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { shownNoteIds } from '@/os';
+import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -206,7 +207,7 @@ const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
-let renoteCollapsed = $ref(isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
+let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
 
 shownNoteIds.add(appearNote.id);
 
@@ -247,7 +248,32 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
-	os.popupMenu([{
+
+	let items = [] as MenuItem[];
+
+	if (appearNote.channel) {
+		items = items.concat([{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				});
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+					channel: appearNote.channel,
+				});
+			},
+		}, null]);
+	}
+
+	items = items.concat([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
@@ -263,7 +289,9 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
-	}], renoteButton.value, {
+	}]);
+
+	os.popupMenu(items, renoteButton.value, {
 		viaKeyboard,
 	});
 }
@@ -701,6 +729,12 @@ function showReactions(): void {
 		&:not(:last-child) {
 			margin-right: 12px;
 		}
+	}
+}
+
+@container (max-width: 250px) {
+	.quoteNote {
+		padding: 12px;
 	}
 }
 

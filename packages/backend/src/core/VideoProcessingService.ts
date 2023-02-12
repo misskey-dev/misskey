@@ -6,6 +6,7 @@ import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { createTempDir } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
+import { appendQuery, query } from '@/misc/prelude/url.js';
 
 @Injectable()
 export class VideoProcessingService {
@@ -40,6 +41,19 @@ export class VideoProcessingService {
 		} finally {
 			cleanup();
 		}
+	}
+
+	@bindThis
+	public getExternalVideoThumbnailUrl(url: string): string | null {
+		if (this.config.videoThumbnailGenerator == null) return null;
+
+		return appendQuery(
+			`${this.config.videoThumbnailGenerator}/thumbnail.webp`,
+			query({
+				thumbnail: '1',
+				url,
+			})
+		)
 	}
 }
 

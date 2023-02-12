@@ -60,11 +60,17 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 
 let ads: any[] = $ref([]);
 
+// ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
+const localTime = new Date();
+const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
+
 os.api('admin/ad/list').then(adsResponse => {
 	ads = adsResponse.map(r => {
+		const date = new Date(r.expiresAt);
+		date.setMilliseconds(date.getMilliseconds() - localTimeDiff);
 		return {
 			...r,
-			expiresAt: new Date(r.expiresAt).toISOString().slice(0, 16),
+			expiresAt: date.toISOString().slice(0, 16),
 		};
 	});
 });

@@ -441,6 +441,14 @@ export class ActivityPubServerService {
 		fastify.addContentTypeParser('application/activity+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 
+		fastify.addHook('onRequest', (request, reply, done) => {
+			reply.header('Access-Control-Allow-Headers', 'Accept');
+			reply.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+			reply.header('Access-Control-Allow-Origin', '*');
+			reply.header('Access-Control-Expose-Headers', 'Vary');
+			done();
+		});
+
 		//#region Routing
 		// inbox (limit: 64kb)
 		fastify.post('/inbox', { bodyLimit: 1024 * 64 }, async (request, reply) => await this.inbox(request, reply));

@@ -947,6 +947,8 @@ selectFromPresets: "プリセットから選ぶ"
 achievements: "実績"
 gotInvalidResponseError: "サーバー黙っとるわ、知らんけど"
 gotInvalidResponseErrorDescription: "サーバーいま日曜日。またきて月曜日。"
+thisPostMayBeAnnoying: "この投稿は迷惑かもしらんで。"
+collapseRenotes: "見たことあるRenoteは省略やで"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:

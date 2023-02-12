@@ -160,6 +160,7 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
+import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -241,7 +242,32 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
-	os.popupMenu([{
+
+	let items = [] as MenuItem[];
+
+	if (appearNote.channel) {
+		items = items.concat([{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				});
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+					channel: appearNote.channel,
+				});
+			},
+		}, null]);
+	}
+
+	items = items.concat([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
@@ -257,7 +283,9 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
-	}], renoteButton.value, {
+	}]);
+
+	os.popupMenu(items, renoteButton.value, {
 		viaKeyboard,
 	});
 }

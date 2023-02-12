@@ -111,6 +111,25 @@ command.
 - Vite HMR (just the `vite` command) is available. The behavior may be different from production.
 - Service Worker is watched by esbuild.
 
+### Dev Container
+Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
+To use Dev Container, open the project directory on VSCode with Dev Containers installed.
+
+It will run the following command automatically inside the container.
+``` bash
+git submodule update --init
+pnpm install --frozen-lockfile
+cp .devcontainer/devcontainer.yml .config/default.yml
+pnpm build
+pnpm migrate
+```
+
+After finishing the migration, run the `pnpm dev` command to start the development server.
+
+``` bash
+pnpm dev
+```
+
 ## Testing
 - Test codes are located in [`/packages/backend/test`](/packages/backend/test).
 
