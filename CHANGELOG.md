@@ -8,7 +8,7 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+## 13.6.1 (2023/02/12)
 
 ### Improvements
 - アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
