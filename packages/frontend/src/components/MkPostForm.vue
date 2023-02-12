@@ -228,7 +228,7 @@ const hashtags = $computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
 watch($$(text), () => {
 	checkMissingMention();
-});
+}, { immediate: true });
 
 watch($$(visibleUsers), () => {
 	checkMissingMention();

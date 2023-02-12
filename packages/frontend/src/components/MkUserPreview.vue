@@ -89,7 +89,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .popup-enter-active, .popup-leave-active {
-	transition: opacity 0.3s, transform 0.3s !important;
+	transition: opacity 0.15s, transform 0.15s !important;
 }
 .popup-enter-from, .popup-leave-to {
 	opacity: 0;
@@ -183,8 +183,10 @@ onMounted(() => {
 		> .menu {
 			position: absolute;
 			top: 8px;
-			right: 42px;
-			padding: 8px;
+			right: 44px;
+			padding: 6px;
+			background: var(--panel);
+			border-radius: 999px;
 		}
 
 		> .koudoku-button {
