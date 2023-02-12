@@ -183,8 +183,10 @@ onMounted(() => {
 		> .menu {
 			position: absolute;
 			top: 8px;
-			right: 42px;
-			padding: 8px;
+			right: 44px;
+			padding: 6px;
+			background: var(--panel);
+			border-radius: 999px;
 		}
 
 		> .koudoku-button {
