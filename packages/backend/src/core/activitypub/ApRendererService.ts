@@ -24,7 +24,7 @@ import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFil
 import { bindThis } from '@/decorators.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IQuestion, IRead, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IRead, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -293,7 +293,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IObject> {
+	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IPost> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
@@ -406,11 +406,11 @@ export class ApRendererService {
 					totalItems: poll!.votes[i],
 				},
 			})),
-		} : {};
+		} as const : {};
 	
 		const asTalk = isTalk ? {
 			_misskey_talk: true,
-		} : {};
+		} as const : {};
 	
 		return {
 			id: `${this.config.url}/notes/${note.id}`,
@@ -515,7 +515,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderQuestion(user: { id: User['id'] }, note: Note, poll: Poll): IQuestion {
+	public renderQuestion(user: { id: User['id'] }, note: Note, poll: Poll): IQuestion {
 		return {
 			type: 'Question',
 			id: `${this.config.url}/questions/${note.id}`,
