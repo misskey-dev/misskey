@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 - アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
 - Backend: activitypub情報がcorsでブロックされないようヘッダーを追加
 - enhance: レートリミットを0%にできるように
+- チャンネル内Renoteを行えるように
 
 ### Bugfixes
 - Client: ユーザーページでアクティビティを見ることができない問題を修正
