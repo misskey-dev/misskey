@@ -952,6 +952,9 @@ thisPostMayBeAnnoyingHome: "ホームに投稿"
 thisPostMayBeAnnoyingCancel: "やめる"
 thisPostMayBeAnnoyingIgnore: "このまま投稿"
 collapseRenotes: "見たことのあるRenoteを省略して表示"
+internalServerError: "サーバー内部エラー"
+internalServerErrorDescription: "サーバー内部で予期しないエラーが発生しました。"
+copyErrorInfo: "エラー情報をコピー"
 
 _achievements:
   earnedAt: "獲得日時"
