@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, onMounted, provide, $ref } from 'vue';
+import { ComputedRef, onMounted, provide } from 'vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
