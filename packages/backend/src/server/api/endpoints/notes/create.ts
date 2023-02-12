@@ -80,6 +80,12 @@ export const meta = {
 			code: 'YOU_HAVE_BEEN_BLOCKED',
 			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3',
 		},
+
+		fileNotFound: {
+			message: 'Some files are not found.',
+			code: 'FILE_NOT_FOUND',
+			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
+		},
 	},
 } as const;
 
@@ -208,6 +214,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
 					.setParameters({ fileIds })
 					.getMany();
+
+				if (files.length !== fileIds.length) {
+					throw new ApiError(meta.errors.fileNotFound);
+				}
 			}
 
 			let renote: Note | null = null;
