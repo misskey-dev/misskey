@@ -228,7 +228,7 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 
 				case 'app':
 					return [data.body.header ?? data.body.body, {
-						body: data.body.header ?? data.body.body,
+						body: data.body.header ? data.body.body : '',
 						icon: data.body.icon ?? undefined,
 						data,
 					}];
