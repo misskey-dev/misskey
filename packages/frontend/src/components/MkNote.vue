@@ -704,6 +704,12 @@ function showReactions(): void {
 	}
 }
 
+@container (max-width: 250px) {
+	.quoteNote {
+		padding: 12px;
+	}
+}
+
 .muted {
 	padding: 8px;
 	text-align: center;
