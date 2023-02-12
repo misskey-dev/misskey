@@ -156,6 +156,7 @@ import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { shownNoteIds } from '@/os';
+import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -248,7 +249,7 @@ useTooltip(renoteButton, async (showing) => {
 function renote(viaKeyboard = false) {
 	pleaseLogin();
 
-	let items = [];
+	let items = [] as MenuItem[];
 
 	if (appearNote.channel) {
 		items = items.concat([{
