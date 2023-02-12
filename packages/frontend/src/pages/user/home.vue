@@ -100,7 +100,7 @@
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<XNotes :no-gap="true" :pagination="pagination"/>
+				<XNotes :class="$style.tl" :no-gap="true" :pagination="pagination"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -520,5 +520,13 @@ onUnmounted(() => {
 			}
 		}
 	}
+}
+</style>
+
+<style lang="scss" module>
+.tl {
+	background: var(--bg);
+    border-radius: var(--radius);
+    overflow: clip;
 }
 </style>
