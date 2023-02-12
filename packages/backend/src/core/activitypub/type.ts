@@ -2,24 +2,24 @@ export type obj = { [x: string]: any };
 export type ApObject = IObject | string | (IObject | string)[];
 
 export interface IObject {
-	'@context': string | string[] | obj | obj[];
+	'@context'?: string | string[] | obj | obj[];
 	type: string | string[];
 	id?: string;
+	name?: string | null;
 	summary?: string;
 	published?: string;
 	cc?: ApObject;
 	to?: ApObject;
-	attributedTo: ApObject;
+	attributedTo?: ApObject;
 	attachment?: any[];
 	inReplyTo?: any;
 	replies?: ICollection;
 	content?: string;
-	name?: string;
 	startTime?: Date;
 	endTime?: Date;
 	icon?: any;
 	image?: any;
-	url?: ApObject;
+	url?: ApObject | string;
 	href?: string;
 	tag?: IObject | IObject[];
 	sensitive?: boolean;
@@ -118,6 +118,7 @@ export interface IPost extends IObject {
 
 export interface IQuestion extends IObject {
 	type: 'Note' | 'Question';
+	actor: string;
 	source?: {
 		content: string;
 		mediaType: string;
@@ -200,6 +201,7 @@ export const isPropertyValue = (object: IObject): object is IApPropertyValue =>
 export interface IApMention extends IObject {
 	type: 'Mention';
 	href: string;
+	name: string;
 }
 
 export const isMention = (object: IObject): object is IApMention =>
@@ -217,11 +219,29 @@ export const isHashtag = (object: IObject): object is IApHashtag =>
 
 export interface IApEmoji extends IObject {
 	type: 'Emoji';
-	updated: Date;
+	name: string;
+	updated: string;
 }
 
 export const isEmoji = (object: IObject): object is IApEmoji =>
 	getApType(object) === 'Emoji' && !Array.isArray(object.icon) && object.icon.url != null;
+
+export interface IKey extends IObject {
+	type: 'Key';
+	owner: string;
+	publicKeyPem: string | Buffer;
+}
+
+export interface IApDocument extends IObject {
+	type: 'Document';
+	name: string | null;
+	mediaType: string;
+}
+
+export interface IApImage extends IObject {
+	type: 'Image';
+	name: string | null;
+}
 
 export interface ICreate extends IActivity {
 	type: 'Create';

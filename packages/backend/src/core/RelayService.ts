@@ -56,7 +56,7 @@ export class RelayService {
 	
 		const relayActor = await this.getRelayActor();
 		const follow = await this.apRendererService.renderFollowRelay(relay, relayActor);
-		const activity = this.apRendererService.renderActivity(follow);
+		const activity = this.apRendererService.addContext(follow);
 		this.queueService.deliver(relayActor, activity, relay.inbox);
 	
 		return relay;
@@ -75,7 +75,7 @@ export class RelayService {
 		const relayActor = await this.getRelayActor();
 		const follow = this.apRendererService.renderFollowRelay(relay, relayActor);
 		const undo = this.apRendererService.renderUndo(follow, relayActor);
-		const activity = this.apRendererService.renderActivity(undo);
+		const activity = this.apRendererService.addContext(undo);
 		this.queueService.deliver(relayActor, activity, relay.inbox);
 	
 		await this.relaysRepository.delete(relay.id);

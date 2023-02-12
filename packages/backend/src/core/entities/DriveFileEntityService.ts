@@ -11,9 +11,9 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
 import { UtilityService } from '../UtilityService.js';
+import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
-import { VideoProcessingService } from '../VideoProcessingService.js';
 
 type PackOptions = {
 	detail?: boolean,
@@ -74,14 +74,14 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string | null {
+	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string {
 		return appendQuery(
 			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
 			query({
 				url,
 				...(mode ? { [mode]: '1' } : {}),
-			})
-		)
+			}),
+		);
 	}
 
 	@bindThis
@@ -110,7 +110,7 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public getPublicUrl(file: DriveFile, mode?: 'avatar'): string | null { // static = thumbnail
+	public getPublicUrl(file: DriveFile, mode?: 'avatar'): string { // static = thumbnail
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
 			return this.getProxiedUrl(file.uri, mode);

@@ -130,11 +130,11 @@ export class ApDbResolverService {
 
 			return await this.userCacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
 				id: parsed.id,
-			}).then(x => x ?? undefined)) ?? null;
+			}).then(x => (x as CacheableUser | null) ?? undefined)) ?? null;
 		} else {
 			return await this.userCacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
 				uri: parsed.uri,
-			}));
+			}) as Promise<CacheableUser | null>);
 		}
 	}
 

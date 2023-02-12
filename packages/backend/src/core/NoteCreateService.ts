@@ -711,7 +711,7 @@ export class NoteCreateService {
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
 			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 
-		return this.apRendererService.renderActivity(content);
+		return this.apRendererService.addContext(content);
 	}
 
 	@bindThis

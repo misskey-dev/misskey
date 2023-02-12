@@ -78,7 +78,7 @@ export class NoteDeleteService {
 					});
 				}
 
-				const content = this.apRendererService.renderActivity(renote
+				const content = this.apRendererService.addContext(renote
 					? this.apRendererService.renderUndo(this.apRendererService.renderAnnounce(renote.uri ?? `${this.config.url}/notes/${renote.id}`, note), user)
 					: this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${note.id}`), user));
 
@@ -90,7 +90,7 @@ export class NoteDeleteService {
 			for (const cascadingNote of cascadingNotes) {
 				if (!cascadingNote.user) continue;
 				if (!this.userEntityService.isLocalUser(cascadingNote.user)) continue;
-				const content = this.apRendererService.renderActivity(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
+				const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
 				this.deliverToConcerned(cascadingNote.user, cascadingNote, content);
 			}
 			//#endregion

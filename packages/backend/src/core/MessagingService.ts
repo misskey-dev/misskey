@@ -135,7 +135,7 @@ export class MessagingService {
 				}))),
 			} as Note;
 	
-			const activity = this.apRendererService.renderActivity(this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false, true), note));
+			const activity = this.apRendererService.addContext(this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false, true), note));
 	
 			this.queueService.deliver(user, activity, recipientUser.inbox);
 		}
@@ -158,7 +158,7 @@ export class MessagingService {
 			if (this.userEntityService.isLocalUser(recipient)) this.globalEventService.publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
 	
 			if (this.userEntityService.isLocalUser(user) && this.userEntityService.isRemoteUser(recipient)) {
-				const activity = this.apRendererService.renderActivity(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), user));
+				const activity = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), user));
 				this.queueService.deliver(user, activity, recipient.inbox);
 			}
 		} else if (message.groupId) {
@@ -297,10 +297,10 @@ export class MessagingService {
 
 		if (contents.length > 1) {
 			const collection = this.apRendererService.renderOrderedCollection(null, contents.length, undefined, undefined, contents);
-			this.queueService.deliver(user, this.apRendererService.renderActivity(collection), recipient.inbox);
+			this.queueService.deliver(user, this.apRendererService.addContext(collection), recipient.inbox);
 		} else {
 			for (const content of contents) {
-				this.queueService.deliver(user, this.apRendererService.renderActivity(content), recipient.inbox);
+				this.queueService.deliver(user, this.apRendererService.addContext(content), recipient.inbox);
 			}
 		}
 	}

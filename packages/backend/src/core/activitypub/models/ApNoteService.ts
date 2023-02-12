@@ -114,7 +114,7 @@ export class ApNoteService {
 	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 	
-		const object: any = await resolver.resolve(value);
+		const object = await resolver.resolve(value);
 	
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);
@@ -129,7 +129,7 @@ export class ApNoteService {
 			throw new Error('invalid note');
 		}
 	
-		const note: IPost = object;
+		const note: IPost = object as any;
 	
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
@@ -146,7 +146,7 @@ export class ApNoteService {
 		this.logger.info(`Creating the Note: ${note.id}`);
 	
 		// 投稿者をフェッチ
-		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as CacheableRemoteUser;
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo!), resolver) as CacheableRemoteUser;
 	
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
