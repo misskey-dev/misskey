@@ -1,6 +1,5 @@
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@/di-decorators.js';
-import jsonld from 'jsonld';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -86,7 +85,9 @@ class LdSignature {
 	@bindThis
 	public async normalize(data: any) {
 		const customLoader = this.getLoader();
-		return await jsonld.normalize(data, {
+		// XXX: Importing jsonld dynamically since Jest frequently fails to import it statically
+		// https://github.com/misskey-dev/misskey/pull/9894#discussion_r1103753595
+		return (await import('jsonld')).default.normalize(data, {
 			documentLoader: customLoader,
 		});
 	}

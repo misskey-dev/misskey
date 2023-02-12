@@ -252,13 +252,13 @@ export class ApPersonService {
 		// URIがこのサーバーを指しているならデータベースからフェッチ
 		if (uri.startsWith(this.config.url + '/')) {
 			const id = uri.split('/').pop();
-			const u = await this.usersRepository.findOneBy({ id });
+			const u = await this.usersRepository.findOneBy({ id }) as null | CacheableUser;
 			if (u) this.userCacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.usersRepository.findOneBy({ uri });
+		const exist = await this.usersRepository.findOneBy({ uri }) as null | CacheableUser;
 
 		if (exist) {
 			this.userCacheService.uriPersonCache.set(uri, exist);
@@ -559,7 +559,7 @@ export class ApPersonService {
 
 		// リモートサーバーからフェッチしてきて登録
 		if (resolver == null) resolver = this.apResolverService.createResolver();
-		return await this.createPerson(uri, resolver);
+		return await this.createPerson(uri, resolver) as CacheableUser;
 	}
 
 	@bindThis

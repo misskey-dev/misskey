@@ -194,13 +194,13 @@ export class ActivityPubServerService {
 			);
 
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(rendered));
+			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(rendered));
+			return (this.apRendererService.addContext(rendered));
 		}
 	}
 
@@ -282,13 +282,13 @@ export class ActivityPubServerService {
 			);
 	
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(rendered));
+			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`);
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(rendered));
+			return (this.apRendererService.addContext(rendered));
 		}
 	}
 
@@ -323,7 +323,7 @@ export class ActivityPubServerService {
 
 		reply.header('Cache-Control', 'public, max-age=180');
 		this.setResponseType(request, reply);
-		return (this.apRendererService.renderActivity(rendered));
+		return (this.apRendererService.addContext(rendered));
 	}
 
 	@bindThis
@@ -400,7 +400,7 @@ export class ActivityPubServerService {
 			);
 	
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(rendered));
+			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
 			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.notesCount,
@@ -409,7 +409,7 @@ export class ActivityPubServerService {
 			);
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(rendered));
+			return (this.apRendererService.addContext(rendered));
 		}
 	}
 
@@ -422,7 +422,7 @@ export class ActivityPubServerService {
 
 		reply.header('Cache-Control', 'public, max-age=180');
 		this.setResponseType(request, reply);
-		return (this.apRendererService.renderActivity(await this.apRendererService.renderPerson(user as ILocalUser)));
+		return (this.apRendererService.addContext(await this.apRendererService.renderPerson(user as ILocalUser)));
 	}
 
 	@bindThis
@@ -451,6 +451,14 @@ export class ActivityPubServerService {
 		fastify.register(fastifyAccepts);
 		fastify.addContentTypeParser('application/activity+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
+
+		fastify.addHook('onRequest', (request, reply, done) => {
+			reply.header('Access-Control-Allow-Headers', 'Accept');
+			reply.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+			reply.header('Access-Control-Allow-Origin', '*');
+			reply.header('Access-Control-Expose-Headers', 'Vary');
+			done();
+		});
 
 		//#region Routing
 		// inbox (limit: 64kb)
@@ -484,7 +492,7 @@ export class ActivityPubServerService {
 
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(await this.apRendererService.renderNote(note, false)));
+			return this.apRendererService.addContext(await this.apRendererService.renderNote(note, false));
 		});
 
 		// note activity
@@ -505,7 +513,7 @@ export class ActivityPubServerService {
 
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(await this.packActivity(note)));
+			return (this.apRendererService.addContext(await this.packActivity(note)));
 		});
 
 		// outbox
@@ -548,7 +556,7 @@ export class ActivityPubServerService {
 			if (this.userEntityService.isLocalUser(user)) {
 				reply.header('Cache-Control', 'public, max-age=180');
 				this.setResponseType(request, reply);
-				return (this.apRendererService.renderActivity(this.apRendererService.renderKey(user, keypair)));
+				return (this.apRendererService.addContext(this.apRendererService.renderKey(user, keypair)));
 			} else {
 				reply.code(400);
 				return;
@@ -592,7 +600,7 @@ export class ActivityPubServerService {
 
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(await this.apRendererService.renderEmoji(emoji)));
+			return (this.apRendererService.addContext(await this.apRendererService.renderEmoji(emoji)));
 		});
 
 		// like
@@ -613,7 +621,7 @@ export class ActivityPubServerService {
 
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(await this.apRendererService.renderLike(reaction, note)));
+			return (this.apRendererService.addContext(await this.apRendererService.renderLike(reaction, note)));
 		});
 
 		// follow
@@ -639,7 +647,7 @@ export class ActivityPubServerService {
 
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return (this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee)));
+			return (this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee)));
 		});
 
 		done();

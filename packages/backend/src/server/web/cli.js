@@ -11,6 +11,9 @@ window.onload = async () => {
 	
 			// Send request
 			fetch(endpoint.indexOf('://') > -1 ? endpoint : `/api/${endpoint}`, {
+				headers: {
+					'Content-Type': 'application/json'
+				},
 				method: 'POST',
 				body: JSON.stringify(data),
 				credentials: 'omit',

@@ -46,10 +46,10 @@ export class UserCacheService implements IDisposable {
 				case 'userChangeSuspendedState':
 				case 'remoteUserUpdated': {
 					const user = await this.usersRepository.findOneByOrFail({ id: body.id });
-					this.userByIdCache.set(user.id, user);
+					this.userByIdCache.set(user.id, user as CacheableUser);
 					for (const [k, v] of this.uriPersonCache.cache.entries()) {
 						if (v.value?.id === user.id) {
-							this.uriPersonCache.set(k, user);
+							this.uriPersonCache.set(k, user as CacheableUser);
 						}
 					}
 					if (this.userEntityService.isLocalUser(user)) {
@@ -79,7 +79,7 @@ export class UserCacheService implements IDisposable {
 
 	@bindThis
 	public findById(userId: User['id']) {
-		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }));
+		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }) as Promise<CacheableUser>);
 	}
 
 	@bindThis
