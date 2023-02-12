@@ -47,7 +47,7 @@
 						</MkPagination>
 					</MkContainer>
 				</div>
-				<MkError v-else-if="error" @retry="fetch()"/>
+				<MkError v-else-if="error" @retry="fetchPost()"/>
 				<MkLoading v-else/>
 			</Transition>
 		</div>
