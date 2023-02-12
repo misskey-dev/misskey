@@ -434,7 +434,7 @@ export class UserFollowingService {
 		followee: {
 			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
 		},
-		follower: CacheableUser,
+		follower: User | CacheableUser,
 	): Promise<void> {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,

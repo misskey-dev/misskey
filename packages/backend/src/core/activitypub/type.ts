@@ -14,7 +14,7 @@ export interface IObject {
 	attachment?: any[];
 	inReplyTo?: any;
 	replies?: ICollection;
-	content?: string;
+	content?: string | null;
 	startTime?: Date;
 	endTime?: Date;
 	icon?: any;
