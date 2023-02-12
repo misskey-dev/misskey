@@ -34,7 +34,6 @@
 	},
 	"compileOnSave": false,
 	"include": [
-		"./**/*.ts",
-		"../frontend/@types/global.d.ts"
+		"./**/*.ts"
 	]
 }
