@@ -42,7 +42,7 @@ import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: string | number;
-	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search';
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;

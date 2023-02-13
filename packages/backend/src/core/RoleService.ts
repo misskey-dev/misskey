@@ -202,6 +202,25 @@ export class RoleService implements OnApplicationShutdown {
 		return [...assignedRoles, ...matchedCondRoles];
 	}
 
+	/**
+	 * 指定ユーザーのバッジロール一覧取得
+	 */
+	@bindThis
+	public async getUserBadgeRoles(userId: User['id']) {
+		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		const assignedRoleIds = assigns.map(x => x.roleId);
+		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
+		const assignedBadgeRoles = roles.filter(r => r.asBadge && assignedRoleIds.includes(r.id));
+		const badgeCondRoles = roles.filter(r => r.asBadge && (r.target === 'conditional'));
+		if (badgeCondRoles.length > 0) {
+			const user = roles.some(r => r.target === 'conditional') ? await this.userCacheService.findById(userId) : null;
+			const matchedBadgeCondRoles = badgeCondRoles.filter(r => this.evalCond(user!, r.condFormula));
+			return [...assignedBadgeRoles, ...matchedBadgeCondRoles];
+		} else {
+			return assignedBadgeRoles;
+		}
+	}
+
 	@bindThis
 	public async getUserPolicies(userId: User['id'] | null): Promise<RolePolicies> {
 		const meta = await this.metaService.fetch();

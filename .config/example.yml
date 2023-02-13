@@ -131,10 +131,19 @@ proxyBypassHosts:
 
 # Media Proxy
 # Reference Implementation: https://github.com/misskey-dev/media-proxy
+# * Deliver a common cache between instances
+# * Perform image compression (on a different server resource than the main process)
 #mediaProxy: https://example.com/proxy
 
 # Proxy remote files (default: false)
+# Proxy remote files by this instance or mediaProxy to prevent remote files from running in remote domains.
 #proxyRemoteFiles: true
+
+# Movie Thumbnail Generation URL
+# There is no reference implementation.
+# For example, Misskey will point to the following URL:
+#   https://example.com/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage.example.com%2Fpath%2Fto%2Fvideo.mp4
+#videoThumbnailGenerator: https://example.com
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true

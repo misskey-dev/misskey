@@ -51,7 +51,7 @@ export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 	bg.addColorStop(0, bgColors[0]);
 	bg.addColorStop(1, bgColors[1]);
 
-	ctx.fillStyle = bg;
+	ctx.fillStyle = bg as any;
 	ctx.beginPath();
 	ctx.fillRect(0, 0, size, size);
 

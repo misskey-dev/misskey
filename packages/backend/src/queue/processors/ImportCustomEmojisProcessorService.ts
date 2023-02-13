@@ -81,6 +81,10 @@ export class ImportCustomEmojisProcessorService {
 
 			for (const record of meta.emojis) {
 				if (!record.downloaded) continue;
+				if (!/^[a-zA-Z0-9_]+?([a-zA-Z0-9\.]+)?$/.test(record.fileName)) {
+					this.logger.error(`invalid filename: ${record.fileName}`);
+					continue;
+				}
 				const emojiInfo = record.emoji;
 				const emojiPath = outputPath + '/' + record.fileName;
 				await this.emojisRepository.delete({

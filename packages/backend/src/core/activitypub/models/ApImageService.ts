@@ -48,6 +48,10 @@ export class ApImageService {
 			throw new Error('invalid image: url not privided');
 		}
 
+		if (!image.url.startsWith('https://')) {
+			throw new Error('invalid image: unexpected shcema of url: ' + image.url);
+		}
+
 		this.logger.info(`Creating the Image: ${image.url}`);
 
 		const instance = await this.metaService.fetch();
