@@ -225,9 +225,6 @@ export const routes = [{
 	component: page(() => import('./pages/api-console.vue')),
 	loginRequired: true,
 }, {
-	path: '/mfm-cheat-sheet',
-	component: page(() => import('./pages/mfm-cheat-sheet.vue')),
-}, {
 	path: '/scratchpad',
 	component: page(() => import('./pages/scratchpad.vue')),
 }, {

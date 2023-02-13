@@ -187,11 +187,6 @@ file: "ໄຟລ໌"
 _email:
   _follow:
     title: "ໄດ້ຕິດຕາມທ່ານ"
-_mfm:
-  mention: "ໄດ້ກ່າວມາ"
-  quote: "ລວມຂໍ້ຄວາມອ້າງອີງ"
-  emoji: "ອີໂມຈິແບບກຳນົດເອງ"
-  search: "ຄົ້ນຫາ"
 _theme:
   keys:
     mention: "ໄດ້ກ່າວມາ"

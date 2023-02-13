@@ -5,14 +5,14 @@
 	ref="el"
 	v-hotkey="keymap"
 	:class="$style.root"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!isDeleted ? '-1' : undefined"
 >
-	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
+	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
-		<MkAvatar v-once :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
@@ -34,8 +34,12 @@
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
 		</div>
 	</div>
-	<article :class="$style.article" @contextmenu.stop="onContextmenu">
-		<MkAvatar v-once :class="$style.avatar" :user="appearNote.user" link preview/>
+	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
+		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
+		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
+	</div>
+	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
+		<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview/>
 		<div :class="$style.main">
 			<MkNoteHeader :class="$style.header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :class="$style.ticker" :instance="appearNote.user.instance"/>
@@ -60,7 +64,7 @@
 					<div v-if="appearNote.files.length > 0" :class="$style.files">
 						<MkMediaList :media-list="appearNote.files"/>
 					</div>
-					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" :class="$style.poll"/>
+					<MkPoll v-if="appearNote.poll" :note="appearNote" :class="$style.poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
@@ -73,7 +77,13 @@
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer :class="$style.footer">
-				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
+				<MkReactionsViewer :note="appearNote" :max-number="16">
+					<template v-slot:more>
+						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							{{ i18n.ts.more }}
+						</button>
+					</template>
+				</MkReactionsViewer>
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -116,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -144,6 +154,8 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
+import { getNoteSummary } from '@/scripts/get-note-summary';
+import { shownNoteIds } from '@/os';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -180,18 +192,23 @@ const reactButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
+const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const isLong = (appearNote.cw == null && appearNote.text != null && (
 	(appearNote.text.split('\n').length > 9) ||
-	(appearNote.text.length > 500)
+	(appearNote.text.length > 500) ||
+	(appearNote.files.length >= 5) ||
+	(urls && urls.length >= 4)
 ));
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
-const translation = ref(null);
+const translation = ref<any>(null);
 const translating = ref(false);
-const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
+let renoteCollapsed = $ref(isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
+
+shownNoteIds.add(appearNote.id);
 
 const keymap = {
 	'r': () => reply(true),
@@ -350,6 +367,12 @@ function readPromo() {
 	});
 	isDeleted.value = true;
 }
+
+function showReactions(): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+		noteId: appearNote.id,
+	}, {}, 'closed');
+}
 </script>
 
 <style lang="scss" module>
@@ -433,7 +456,6 @@ function readPromo() {
 	width: 28px;
 	height: 28px;
 	margin: 0 8px 0 0;
-	border-radius: 6px;
 }
 
 .renoteText {
@@ -459,6 +481,36 @@ function readPromo() {
 
 .renoteMenu {
 	margin-right: 4px;
+}
+
+.collapsedRenoteTarget {
+	display: flex;
+	align-items: center;
+	line-height: 28px;
+	white-space: pre;
+	padding: 0 32px 18px;
+}
+
+.collapsedRenoteTargetAvatar {
+	flex-shrink: 0;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	margin: 0 8px 0 0;
+}
+
+.collapsedRenoteTargetText {
+	overflow: hidden;
+	flex-shrink: 1;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 90%;
+	opacity: 0.7;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .article {
@@ -614,6 +666,11 @@ function readPromo() {
 		padding: 8px 16px 0 16px;
 	}
 
+	.collapsedRenoteTarget {
+		padding: 0 16px 9px;
+		margin-top: 4px;
+	}
+
 	.article {
 		padding: 14px 16px 9px;
 	}
@@ -651,5 +708,20 @@ function readPromo() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.reactionDetailsButton {
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border: dashed 1px var(--divider);
+	border-radius: 4px;
+	background: transparent;
+	opacity: .8;
+
+	&:hover {
+		background: var(--X5);
+	}
 }
 </style>

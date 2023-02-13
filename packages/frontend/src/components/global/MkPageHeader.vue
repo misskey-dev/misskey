@@ -1,37 +1,62 @@
 <template>
-<div v-if="show" ref="el" :class="[$style.root, { [$style.slim]: narrow, [$style.thin]: thin_ }]" :style="{ background: bg }" @click="onClick">
-	<div v-if="narrow" :class="$style.buttonsLeft">
-		<MkAvatar v-if="props.displayMyAvatar && $i" :class="$style.avatar" :user="$i"/>
-	</div>
-	<template v-if="metadata">
-		<div v-if="!hideTitle" :class="$style.titleContainer" @click="showTabsPopup">
-			<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
-			<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
+<div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
+	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
+		<div v-if="narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
+			<MkAvatar :class="$style.avatar" :user="$i" />
+		</div>
+		<div v-else-if="narrow && !hideTitle" :class="$style.buttonsLeft" />
 
-			<div :class="$style.title">
-				<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true"/>
-				<div v-else-if="metadata.title">{{ metadata.title }}</div>
-				<div v-if="!narrow && metadata.subtitle" :class="$style.subtitle">
-					{{ metadata.subtitle }}
-				</div>
-				<div v-if="narrow && hasTabs" :class="[$style.subtitle, $style.activeTab]">
-					{{ tabs.find(tab => tab.key === props.tab)?.title }}
-					<i class="ti ti-chevron-down" :class="$style.chevron"></i>
+		<template v-if="metadata">
+			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
+				<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
+				<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
+
+				<div :class="$style.title">
+					<MkUserName v-if="metadata.userName" :user="metadata.userName" :nowrap="true"/>
+					<div v-else-if="metadata.title">{{ metadata.title }}</div>
+					<div v-if="metadata.subtitle" :class="$style.subtitle">
+						{{ metadata.subtitle }}
+					</div>
 				</div>
 			</div>
+			<div v-if="!narrow || hideTitle" :class="$style.tabs" @wheel="onTabWheel">
+				<div :class="$style.tabsInner">
+					<button v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title" class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab }]" @mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)">
+						<div :class="$style.tabInner">
+							<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
+							<div v-if="!t.iconOnly" :class="$style.tabTitle">{{ t.title }}</div>
+							<Transition
+								v-else
+								@enter="enter"
+								@after-enter="afterEnter"
+								@leave="leave"
+								@after-leave="afterLeave"
+								mode="in-out"
+							>
+								<div v-if="t.key === tab" :class="$style.tabTitle">{{ t.title }}</div>
+							</Transition>
+						</div>
+					</button>
+				</div>
+				<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
+			</div>
+		</template>
+		<div v-if="(narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
+			<template v-for="action in actions">
+				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+			</template>
 		</div>
-		<div v-if="!narrow || hideTitle" :class="$style.tabs">
-			<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
-				<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
-				<span v-if="!tab.iconOnly" :class="$style.tabTitle">{{ tab.title }}</span>
-			</button>
+	</div>
+	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
+		<div :class="$style.tabs" @wheel="onTabWheel">
+			<div :class="$style.tabsInner">
+				<button v-for="tab in tabs" :ref="(el) => tabRefs[tab.key] = (el as HTMLElement)" v-tooltip.noDelay="tab.title" class="_button" :class="[$style.tab, { [$style.active]: tab.key != null && tab.key === props.tab }]" @mousedown="(ev) => onTabMousedown(tab, ev)" @click="(ev) => onTabClick(tab, ev)">
+					<i v-if="tab.icon" :class="[$style.tabIcon, tab.icon]"></i>
+					<span v-if="!tab.iconOnly" :class="$style.tabTitle">{{ tab.title }}</span>
+				</button>
+			</div>
 			<div ref="tabHighlightEl" :class="$style.tabHighlight"></div>
 		</div>
-	</template>
-	<div :class="$style.buttonsRight">
-		<template v-for="action in actions">
-			<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
-		</template>
 	</div>
 </div>
 </template>
@@ -39,11 +64,10 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, inject, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
-import { popupMenu } from '@/os';
 import { scrollToTop } from '@/scripts/scroll';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
 
 type Tab = {
 	key: string;
@@ -77,9 +101,9 @@ const metadata = injectPageMetadata();
 const hideTitle = inject('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = $shallowRef<HTMLElement | undefined>(undefined);
+let el = $shallowRef<HTMLElement | undefined>(undefined);
 const tabRefs: Record<string, HTMLElement | null> = {};
-const tabHighlightEl = $shallowRef<HTMLElement | null>(null);
+let tabHighlightEl = $shallowRef<HTMLElement | null>(null);
 const bg = ref<string | undefined>(undefined);
 let narrow = $ref(false);
 const hasTabs = $computed(() => props.tabs.length > 0);
@@ -88,31 +112,21 @@ const show = $computed(() => {
 	return !hideTitle || hasTabs || hasActions;
 });
 
-const showTabsPopup = (ev: MouseEvent) => {
-	if (!hasTabs) return;
-	if (!narrow) return;
-	ev.preventDefault();
-	ev.stopPropagation();
-	const menu = props.tabs.map(tab => ({
-		text: tab.title,
-		icon: tab.icon,
-		active: tab.key != null && tab.key === props.tab,
-		action: (ev) => {
-			onTabClick(tab, ev);
-		},
-	}));
-	popupMenu(menu, (ev.currentTarget ?? ev.target) as HTMLElement);
-};
-
 const preventDrag = (ev: TouchEvent) => {
 	ev.stopPropagation();
 };
 
-const onClick = () => {
+const top = () => {
 	if (el) {
 		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
 	}
 };
+
+function openAccountMenu(ev: MouseEvent) {
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
+}
 
 function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
@@ -121,14 +135,17 @@ function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 	}
 }
 
-function onTabClick(tab: Tab, ev: MouseEvent): void {
-	if (tab.onClick) {
+function onTabClick(t: Tab, ev: MouseEvent): void {
+	if (t.key === props.tab) {
+		top();
+	} else if (t.onClick) {
 		ev.preventDefault();
 		ev.stopPropagation();
-		tab.onClick(ev);
+		t.onClick(ev);
 	}
-	if (tab.key) {
-		emit('update:tab', tab.key);
+
+	if (t.key) {
+		emit('update:tab', t.key);
 	}
 }
 
@@ -139,55 +156,123 @@ const calcBg = () => {
 	bg.value = tinyBg.toRgbString();
 };
 
-let ro: ResizeObserver | null;
+let ro1: ResizeObserver | null;
+let ro2: ResizeObserver | null;
+
+function renderTab() {
+	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
+	if (tabEl && tabHighlightEl && tabHighlightEl.parentElement) {
+		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
+		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
+		const parentRect = tabHighlightEl.parentElement.getBoundingClientRect();
+		const rect = tabEl.getBoundingClientRect();
+		tabHighlightEl.style.width = rect.width + 'px';
+		tabHighlightEl.style.left = (rect.left - parentRect.left + tabHighlightEl.parentElement.scrollLeft) + 'px';
+	}
+}
+
+function onTabWheel(ev: WheelEvent) {
+	if (ev.deltaY !== 0 && ev.deltaX === 0) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		(ev.currentTarget as HTMLElement).scrollBy({
+			left: ev.deltaY,
+			behavior: 'smooth',
+		});
+	}
+	return false;
+}
+
+function enter(el: HTMLElement) {
+	const elementWidth = el.getBoundingClientRect().width;
+	el.style.width = '0';
+	el.offsetWidth; // reflow
+	el.style.width = elementWidth + 'px';
+	setTimeout(renderTab, 70);
+}
+function afterEnter(el: HTMLElement) {
+	el.style.width = '';
+	nextTick(renderTab);
+}
+function leave(el: HTMLElement) {
+	const elementWidth = el.getBoundingClientRect().width;
+	el.style.width = elementWidth + 'px';
+	el.offsetWidth; // reflow
+	el.style.width = '0';
+}
+function afterLeave(el: HTMLElement) {
+	el.style.width = '';
+}
 
 onMounted(() => {
 	calcBg();
 	globalEvents.on('themeChanged', calcBg);
 
-	watch(() => [props.tab, props.tabs], () => {
-		nextTick(() => {
-			const tabEl = props.tab ? tabRefs[props.tab] : undefined;
-			if (tabEl && tabHighlightEl && tabEl.parentElement) {
-				// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
-				// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
-				const parentRect = tabEl.parentElement.getBoundingClientRect();
-				const rect = tabEl.getBoundingClientRect();
-				tabHighlightEl.style.width = rect.width + 'px';
-				tabHighlightEl.style.left = (rect.left - parentRect.left) + 'px';
-			}
-		});
+	watch([() => props.tab, () => props.tabs], () => {
+		nextTick(() => renderTab());
 	}, {
 		immediate: true,
 	});
 
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
-		ro = new ResizeObserver((entries, observer) => {
-			if (el.parentElement && document.body.contains(el as HTMLElement)) {
+		ro1 = new ResizeObserver((entries, observer) => {
+			if (el && el.parentElement && document.body.contains(el as HTMLElement)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
-		ro.observe(el.parentElement as HTMLElement);
+		ro1.observe(el.parentElement as HTMLElement);
+	}
+
+	if (el) {
+		ro2 = new ResizeObserver((entries, observer) => {
+			if (document.body.contains(el as HTMLElement)) {
+				nextTick(() => renderTab());
+			}
+		});
+		ro2.observe(el);
 	}
 });
 
 onUnmounted(() => {
 	globalEvents.off('themeChanged', calcBg);
-	if (ro) ro.disconnect();
+	if (ro1) ro1.disconnect();
+	if (ro2) ro2.disconnect();
 });
 </script>
 
 <style lang="scss" module>
 .root {
-	--height: 50px;
-	display: flex;
-	width: 100%;
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
 	border-bottom: solid 0.5px var(--divider);
-	contain: strict;
+	width: 100%;
+}
+
+.upper,
+.lower {
+	width: 100%;
+	background: transparent;
+}
+
+.upper {
+	--height: 50px;
+	display: flex;
 	height: var(--height);
+
+	.tabs:first-child {
+		margin-left: auto;
+	}
+	.tabs:not(:first-child) {
+		padding-left: 16px;
+		mask-image: linear-gradient(90deg, rgba(0,0,0,0), rgb(0,0,0) 16px, rgb(0,0,0) 100%);
+	}
+	.tabs:last-child {
+		margin-right: auto;
+	}
+	.tabs:not(:last-child) {
+		margin-right: 0;
+	}
 
 	&.thin {
 		--height: 42px;
@@ -205,6 +290,7 @@ onUnmounted(() => {
 		> .titleContainer {
 			flex: 1;
 			margin: 0 auto;
+			max-width: 100%;
 
 			> *:first-child {
 				margin-left: auto;
@@ -215,6 +301,11 @@ onUnmounted(() => {
 			}
 		}
 	}
+}
+
+.lower {
+	--height: 40px;
+	height: var(--height);
 }
 
 .buttons {
@@ -247,15 +338,14 @@ onUnmounted(() => {
 	height: $size;
 	vertical-align: bottom;
 	margin: 0 8px;
-	pointer-events: none;
 }
 
 .button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: calc(var(--height) - (var(--margin) * 2));
-	width: calc(var(--height) - (var(--margin) * 2));
+	height: var(--height);
+	width: calc(var(--height) - (var(--margin)));
 	box-sizing: border-box;
 	position: relative;
 	border-radius: 5px;
@@ -278,7 +368,7 @@ onUnmounted(() => {
 .titleContainer {
 	display: flex;
 	align-items: center;
-	max-width: 400px;
+	max-width: min(30vw, 400px);
 	overflow: auto;
 	white-space: nowrap;
 	text-align: left;
@@ -330,10 +420,24 @@ onUnmounted(() => {
 }
 
 .tabs {
+	display: block;
 	position: relative;
-	margin-left: 16px;
+	margin: 0;
+	height: var(--height);
 	font-size: 0.8em;
-	overflow: auto;
+	text-align: center;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+.tabsInner {
+	display: inline-block;
+	height: var(--height);
 	white-space: nowrap;
 }
 
@@ -344,6 +448,7 @@ onUnmounted(() => {
 	height: 100%;
 	font-weight: normal;
 	opacity: 0.7;
+	transition: opacity 0.2s ease;
 
 	&:hover {
 		opacity: 1;
@@ -354,8 +459,18 @@ onUnmounted(() => {
 	}
 }
 
+.tabInner {
+	display: flex;
+	align-items: center;
+}
+
 .tabIcon + .tabTitle {
 	margin-left: 8px;
+} 
+
+.tabTitle {
+	overflow: hidden;
+	transition: width 0.15s ease-in-out;
 }
 
 .tabHighlight {
@@ -364,7 +479,7 @@ onUnmounted(() => {
 	height: 3px;
 	background: var(--accent);
 	border-radius: 999px;
-	transition: all 0.2s ease;
+	transition: width 0.15s ease, left 0.15s ease;
 	pointer-events: none;
 }
 </style>
