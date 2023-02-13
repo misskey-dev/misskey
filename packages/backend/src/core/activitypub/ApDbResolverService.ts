@@ -9,7 +9,7 @@ import { UserCacheService } from '@/core/UserCacheService.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { bindThis } from '@/decorators.js';
-import { IRemoteUser, User } from '@/models/entities/User.js';
+import { RemoteUser, User } from '@/models/entities/User.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
@@ -143,7 +143,7 @@ export class ApDbResolverService {
 	 */
 	@bindThis
 	public async getAuthUserFromKeyId(keyId: string): Promise<{
-		user: IRemoteUser;
+		user: RemoteUser;
 		key: UserPublickey;
 	} | null> {
 		const key = await this.publicKeyCache.fetch(keyId, async () => {
@@ -159,7 +159,7 @@ export class ApDbResolverService {
 		if (key == null) return null;
 
 		return {
-			user: await this.userCacheService.findById(key.userId) as IRemoteUser,
+			user: await this.userCacheService.findById(key.userId) as RemoteUser,
 			key,
 		};
 	}
@@ -169,10 +169,10 @@ export class ApDbResolverService {
 	 */
 	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
-		user: IRemoteUser;
+		user: RemoteUser;
 		key: UserPublickey | null;
 	} | null> {
-		const user = await this.apPersonService.resolvePerson(uri) as IRemoteUser;
+		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
 
 		if (user == null) return null;
 

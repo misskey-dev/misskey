@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { SigninsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { IdService } from '@/core/IdService.js';
-import type { ILocalUser } from '@/models/entities/User.js';
+import type { LocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -25,7 +25,7 @@ export class SigninService {
 	}
 
 	@bindThis
-	public signin(request: FastifyRequest, reply: FastifyReply, user: ILocalUser) {
+	public signin(request: FastifyRequest, reply: FastifyReply, user: LocalUser) {
 		setImmediate(async () => {
 			// Append signin history
 			const record = await this.signinsRepository.insert({

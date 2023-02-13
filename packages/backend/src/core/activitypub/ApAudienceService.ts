@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { IRemoteUser, User } from '@/models/entities/User.js';
+import type { RemoteUser, User } from '@/models/entities/User.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
 import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
@@ -26,7 +26,7 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	public async parseAudience(actor: IRemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
+	public async parseAudience(actor: RemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
 		const toGroups = this.groupingAudience(getApIds(to), actor);
 		const ccGroups = this.groupingAudience(getApIds(cc), actor);
 	
@@ -69,7 +69,7 @@ export class ApAudienceService {
 	}
 	
 	@bindThis
-	private groupingAudience(ids: string[], actor: IRemoteUser) {
+	private groupingAudience(ids: string[], actor: RemoteUser) {
 		const groups = {
 			public: [] as string[],
 			followers: [] as string[],
@@ -101,7 +101,7 @@ export class ApAudienceService {
 	}
 	
 	@bindThis
-	private isFollowers(id: string, actor: IRemoteUser) {
+	private isFollowers(id: string, actor: RemoteUser) {
 		return (
 			id === (actor.followersUri ?? `${actor.uri}/followers`)
 		);

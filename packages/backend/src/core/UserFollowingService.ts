@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
@@ -21,16 +21,16 @@ import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
 
-type Local = ILocalUser | {
-	id: ILocalUser['id'];
-	host: ILocalUser['host'];
-	uri: ILocalUser['uri']
+type Local = LocalUser | {
+	id: LocalUser['id'];
+	host: LocalUser['host'];
+	uri: LocalUser['uri']
 };
-type Remote = IRemoteUser | {
-	id: IRemoteUser['id'];
-	host: IRemoteUser['host'];
-	uri: IRemoteUser['uri'];
-	inbox: IRemoteUser['inbox'];
+type Remote = RemoteUser | {
+	id: RemoteUser['id'];
+	host: RemoteUser['host'];
+	uri: RemoteUser['uri'];
+	inbox: RemoteUser['inbox'];
 };
 type Both = Local | Remote;
 

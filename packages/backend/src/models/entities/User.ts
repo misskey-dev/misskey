@@ -215,12 +215,12 @@ export class User {
 	}
 }
 
-export interface ILocalUser extends User {
+export type LocalUser = User & {
 	host: null;
 	uri: null;
 }
 
-export interface IRemoteUser extends User {
+export type RemoteUser = User & {
 	host: string;
 	uri: string;
 }

@@ -11,7 +11,7 @@ import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { ILocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
 import type { Following } from '@/models/entities/Following.js';
 import { countIf } from '@/misc/prelude/array.js';
@@ -411,7 +411,7 @@ export class ActivityPubServerService {
 
 		reply.header('Cache-Control', 'public, max-age=180');
 		this.setResponseType(request, reply);
-		return (this.apRendererService.addContext(await this.apRendererService.renderPerson(user as ILocalUser)));
+		return (this.apRendererService.addContext(await this.apRendererService.renderPerson(user as LocalUser)));
 	}
 
 	@bindThis

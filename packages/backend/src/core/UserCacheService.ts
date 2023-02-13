@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { ILocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -12,8 +12,8 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 @Injectable()
 export class UserCacheService implements OnApplicationShutdown {
 	public userByIdCache: Cache<User>;
-	public localUserByNativeTokenCache: Cache<ILocalUser | null>;
-	public localUserByIdCache: Cache<ILocalUser>;
+	public localUserByNativeTokenCache: Cache<LocalUser | null>;
+	public localUserByIdCache: Cache<LocalUser>;
 	public uriPersonCache: Cache<User | null>;
 
 	constructor(
@@ -28,8 +28,8 @@ export class UserCacheService implements OnApplicationShutdown {
 		//this.onMessage = this.onMessage.bind(this);
 
 		this.userByIdCache = new Cache<User>(Infinity);
-		this.localUserByNativeTokenCache = new Cache<ILocalUser | null>(Infinity);
-		this.localUserByIdCache = new Cache<ILocalUser>(Infinity);
+		this.localUserByNativeTokenCache = new Cache<LocalUser | null>(Infinity);
+		this.localUserByIdCache = new Cache<LocalUser>(Infinity);
 		this.uriPersonCache = new Cache<User | null>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
@@ -58,7 +58,7 @@ export class UserCacheService implements OnApplicationShutdown {
 					break;
 				}
 				case 'userTokenRegenerated': {
-					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as ILocalUser;
+					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as LocalUser;
 					this.localUserByNativeTokenCache.delete(body.oldToken);
 					this.localUserByNativeTokenCache.set(body.newToken, user);
 					break;
