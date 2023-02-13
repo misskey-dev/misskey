@@ -1,5 +1,5 @@
 <template>
-<button class="_button" :class="$style.root" @click="toggle">
+<button class="_button" :class="$style.root" @mousedown="toggle">
 	<b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b>
 	<span v-if="!modelValue" :class="$style.label">{{ label }}</span>
 </button>
