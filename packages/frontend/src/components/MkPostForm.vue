@@ -166,7 +166,7 @@ const draftKey = $computed((): string => {
 	} else if (props.reply) {
 		key += `reply:${props.reply.id}`;
 	} else {
-		key += 'note';
+		key += `note:${$i.id}`;
 	}
 
 	return key;
