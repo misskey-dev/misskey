@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
-import type { CacheableLocalUser, ILocalUser } from '@/models/entities/User.js';
+import type { ILocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { Cache } from '@/misc/cache.js';
 import type { App } from '@/models/entities/App.js';
@@ -36,7 +36,7 @@ export class AuthenticateService {
 	}
 
 	@bindThis
-	public async authenticate(token: string | null | undefined): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> {
+	public async authenticate(token: string | null | undefined): Promise<[ILocalUser | null | undefined, AccessToken | null | undefined]> {
 		if (token == null) {
 			return [null, null];
 		}

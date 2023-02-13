@@ -5,7 +5,7 @@ import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { CacheableLocalUser, ILocalUser, User } from '@/models/entities/User.js';
+import type { ILocalUser, User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
 import type { UserIpsRepository } from '@/models/index.js';
@@ -194,7 +194,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	@bindThis
 	private async call(
 		ep: IEndpoint & { exec: any },
-		user: CacheableLocalUser | null | undefined,
+		user: ILocalUser | null | undefined,
 		token: AccessToken | null | undefined,
 		data: any,
 		file: {
