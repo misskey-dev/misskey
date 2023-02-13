@@ -5,10 +5,10 @@
 	@drop.stop="onDrop"
 >
 	<textarea
-		:class="$style['textarea']"
-		class="_acrylic"
 		ref="textEl"
 		v-model="text"
+		:class="$style['textarea']"
+		class="_acrylic"
 		:placeholder="i18n.ts.inputMessageHere"
 		@keydown="onKeydown"
 		@compositionupdate="onCompositionUpdate"
@@ -24,7 +24,7 @@
 			</button>
 		</div>
 	</footer>
-	<input :class="$style['file-input']" ref="fileEl" type="file" @change="onChangeFile"/>
+	<input ref="fileEl" :class="$style['file-input']" type="file" @change="onChangeFile"/>
 </div>
 </template>
 
@@ -55,9 +55,6 @@ let fileEl = $shallowRef<HTMLInputElement>();
 let text = $ref<string>('');
 let file = $ref<Misskey.entities.DriveFile | null>(null);
 let sending = $ref(false);
-const typing = throttle(3000, () => {
-	stream.send('typingOnMessaging', props.user ? { partner: props.user.id } : { group: props.group?.id });
-});
 
 let draftKey = $computed(() => props.user ? 'user:' + props.user.id : 'group:' + props.group?.id);
 let canSend = $computed(() => (text != null && text !== '') || file != null);
@@ -142,14 +139,12 @@ function onDrop(ev: DragEvent): void {
 }
 
 function onKeydown(ev: KeyboardEvent) {
-	typing();
 	if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey) && canSend) {
 		send();
 	}
 }
 
 function onCompositionUpdate() {
-	typing();
 }
 
 function chooseFile(ev: MouseEvent) {

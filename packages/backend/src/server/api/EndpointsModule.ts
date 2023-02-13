@@ -195,7 +195,6 @@ import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
-import * as ep___i_readAllMessagingMessages from './endpoints/i/read-all-messaging-messages.js';
 import * as ep___i_readAllUnreadNotes from './endpoints/i/read-all-unread-notes.js';
 import * as ep___i_readAnnouncement from './endpoints/i/read-announcement.js';
 import * as ep___i_regenerateToken from './endpoints/i/regenerate-token.js';
@@ -218,11 +217,6 @@ import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
-import * as ep___messaging_history from './endpoints/messaging/history.js';
-import * as ep___messaging_messages from './endpoints/messaging/messages.js';
-import * as ep___messaging_messages_create from './endpoints/messaging/messages/create.js';
-import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
-import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
@@ -530,7 +524,6 @@ const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
 const $i_pin: Provider = { provide: 'ep:i/pin', useClass: ep___i_pin.default };
-const $i_readAllMessagingMessages: Provider = { provide: 'ep:i/read-all-messaging-messages', useClass: ep___i_readAllMessagingMessages.default };
 const $i_readAllUnreadNotes: Provider = { provide: 'ep:i/read-all-unread-notes', useClass: ep___i_readAllUnreadNotes.default };
 const $i_readAnnouncement: Provider = { provide: 'ep:i/read-announcement', useClass: ep___i_readAnnouncement.default };
 const $i_regenerateToken: Provider = { provide: 'ep:i/regenerate-token', useClass: ep___i_regenerateToken.default };
@@ -553,11 +546,6 @@ const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
 const $i_webhooks_update: Provider = { provide: 'ep:i/webhooks/update', useClass: ep___i_webhooks_update.default };
 const $i_webhooks_delete: Provider = { provide: 'ep:i/webhooks/delete', useClass: ep___i_webhooks_delete.default };
-const $messaging_history: Provider = { provide: 'ep:messaging/history', useClass: ep___messaging_history.default };
-const $messaging_messages: Provider = { provide: 'ep:messaging/messages', useClass: ep___messaging_messages.default };
-const $messaging_messages_create: Provider = { provide: 'ep:messaging/messages/create', useClass: ep___messaging_messages_create.default };
-const $messaging_messages_delete: Provider = { provide: 'ep:messaging/messages/delete', useClass: ep___messaging_messages_delete.default };
-const $messaging_messages_read: Provider = { provide: 'ep:messaging/messages/read', useClass: ep___messaging_messages_read.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
@@ -869,7 +857,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
-		$i_readAllMessagingMessages,
 		$i_readAllUnreadNotes,
 		$i_readAnnouncement,
 		$i_regenerateToken,
@@ -892,11 +879,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
-		$messaging_history,
-		$messaging_messages,
-		$messaging_messages_create,
-		$messaging_messages_delete,
-		$messaging_messages_read,
 		$meta,
 		$emojis,
 		$miauth_genToken,
@@ -1202,7 +1184,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
-		$i_readAllMessagingMessages,
 		$i_readAllUnreadNotes,
 		$i_readAnnouncement,
 		$i_regenerateToken,
@@ -1225,11 +1206,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
-		$messaging_history,
-		$messaging_messages,
-		$messaging_messages_create,
-		$messaging_messages_delete,
-		$messaging_messages_read,
 		$meta,
 		$emojis,
 		$miauth_genToken,

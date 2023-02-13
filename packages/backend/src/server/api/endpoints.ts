@@ -194,7 +194,6 @@ import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
-import * as ep___i_readAllMessagingMessages from './endpoints/i/read-all-messaging-messages.js';
 import * as ep___i_readAllUnreadNotes from './endpoints/i/read-all-unread-notes.js';
 import * as ep___i_readAnnouncement from './endpoints/i/read-announcement.js';
 import * as ep___i_regenerateToken from './endpoints/i/regenerate-token.js';
@@ -217,11 +216,6 @@ import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
-import * as ep___messaging_history from './endpoints/messaging/history.js';
-import * as ep___messaging_messages from './endpoints/messaging/messages.js';
-import * as ep___messaging_messages_create from './endpoints/messaging/messages/create.js';
-import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
-import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
@@ -527,7 +521,6 @@ const eps = [
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],
 	['i/pin', ep___i_pin],
-	['i/read-all-messaging-messages', ep___i_readAllMessagingMessages],
 	['i/read-all-unread-notes', ep___i_readAllUnreadNotes],
 	['i/read-announcement', ep___i_readAnnouncement],
 	['i/regenerate-token', ep___i_regenerateToken],
@@ -550,11 +543,6 @@ const eps = [
 	['i/webhooks/show', ep___i_webhooks_show],
 	['i/webhooks/update', ep___i_webhooks_update],
 	['i/webhooks/delete', ep___i_webhooks_delete],
-	['messaging/history', ep___messaging_history],
-	['messaging/messages', ep___messaging_messages],
-	['messaging/messages/create', ep___messaging_messages_create],
-	['messaging/messages/delete', ep___messaging_messages_delete],
-	['messaging/messages/read', ep___messaging_messages_read],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
 	['miauth/gen-token', ep___miauth_genToken],

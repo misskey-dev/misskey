@@ -30,7 +30,6 @@ import { GalleryLike } from '@/models/entities/GalleryLike.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { Hashtag } from '@/models/entities/Hashtag.js';
 import { Instance } from '@/models/entities/Instance.js';
-import { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { MutedNote } from '@/models/entities/MutedNote.js';
@@ -167,7 +166,6 @@ export const entities = [
 	SwSubscription,
 	AbuseUserReport,
 	RegistrationTicket,
-	MessagingMessage,
 	Signin,
 	ModerationLog,
 	Clip,
