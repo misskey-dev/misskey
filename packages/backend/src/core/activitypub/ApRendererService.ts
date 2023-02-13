@@ -181,7 +181,7 @@ export class ApRendererService {
 	// to anonymise reporters, the reporting actor must be a system user
 	// object has to be a uri or array of uris
 	@bindThis
-	public renderFlag(user: LocalUser, object: IObject, content: string): IFlag {
+	public renderFlag(user: LocalUser, object: IObject | string | string[], content: string): IFlag {
 		return {
 			type: 'Flag',
 			actor: `${this.config.url}/users/${user.id}`,
