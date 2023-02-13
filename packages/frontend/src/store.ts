@@ -46,6 +46,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	collapseRenotes: {
+		where: 'account',
+		default: true,
+	},
 	rememberNoteVisibility: {
 		where: 'account',
 		default: false,

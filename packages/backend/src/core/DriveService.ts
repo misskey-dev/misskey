@@ -250,6 +250,14 @@ export class DriveService {
 	@bindThis
 	public async generateAlts(path: string, type: string, generateWeb: boolean) {
 		if (type.startsWith('video/')) {
+			if (this.config.videoThumbnailGenerator != null) {
+				// videoThumbnailGeneratorが指定されていたら動画サムネイル生成はスキップ
+				return {
+					webpublic: null,
+					thumbnail: null,
+				}
+			}
+
 			try {
 				const thumbnail = await this.videoProcessingService.generateVideoThumbnail(path);
 				return {
