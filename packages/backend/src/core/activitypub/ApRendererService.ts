@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import type { IMentionedRemoteUsers, Note } from '@/models/entities/Note.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
 import type { Relay } from '@/models/entities/Relay.js';
@@ -70,7 +70,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAdd(user: ILocalUser, target: any, object: any): IAdd {
+	public renderAdd(user: LocalUser, target: any, object: any): IAdd {
 		return {
 			type: 'Add',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -181,7 +181,7 @@ export class ApRendererService {
 	// to anonymise reporters, the reporting actor must be a system user
 	// object has to be a uri or array of uris
 	@bindThis
-	public renderFlag(user: ILocalUser, object: IObject, content: string): IFlag {
+	public renderFlag(user: LocalUser, object: IObject | string | string[], content: string): IFlag {
 		return {
 			type: 'Flag',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -191,7 +191,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderFollowRelay(relay: Relay, relayActor: ILocalUser): IFollow {
+	public renderFollowRelay(relay: Relay, relayActor: LocalUser): IFollow {
 		return {
 			id: `${this.config.url}/activities/follow-relay/${relay.id}`,
 			type: 'Follow',
@@ -244,7 +244,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: ILocalUser, key: UserKeypair, postfix?: string): IKey {
+	public renderKey(user: LocalUser, key: UserKeypair, postfix?: string): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
@@ -287,8 +287,8 @@ export class ApRendererService {
 	public renderMention(mention: User): IApMention {
 		return {
 			type: 'Mention',
-			href: this.userEntityService.isRemoteUser(mention) ? mention.uri! : `${this.config.url}/users/${(mention as ILocalUser).id}`,
-			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as ILocalUser).username}`,
+			href: this.userEntityService.isRemoteUser(mention) ? mention.uri! : `${this.config.url}/users/${(mention as LocalUser).id}`,
+			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as LocalUser).username}`,
 		};
 	}
 
@@ -438,7 +438,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderPerson(user: ILocalUser) {
+	public async renderPerson(user: LocalUser) {
 		const id = `${this.config.url}/users/${user.id}`;
 		const isSystem = !!user.username.match(/\./);
 
@@ -594,7 +594,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderVote(user: { id: User['id'] }, vote: PollVote, note: Note, poll: Poll, pollOwner: IRemoteUser): ICreate {
+	public renderVote(user: { id: User['id'] }, vote: PollVote, note: Note, poll: Poll, pollOwner: RemoteUser): ICreate {
 		return {
 			id: `${this.config.url}/users/${user.id}#votes/${vote.id}/activity`,
 			actor: `${this.config.url}/users/${user.id}`,

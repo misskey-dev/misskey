@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import type { ILocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import type { RelaysRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Cache } from '@/misc/cache.js';
@@ -34,16 +34,16 @@ export class RelayService {
 	}
 
 	@bindThis
-	private async getRelayActor(): Promise<ILocalUser> {
+	private async getRelayActor(): Promise<LocalUser> {
 		const user = await this.usersRepository.findOneBy({
 			host: IsNull(),
 			username: ACTOR_USERNAME,
 		});
 	
-		if (user) return user as ILocalUser;
+		if (user) return user as LocalUser;
 	
 		const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME);
-		return created as ILocalUser;
+		return created as LocalUser;
 	}
 
 	@bindThis

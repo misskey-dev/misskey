@@ -5,7 +5,7 @@ import type { Config } from '@/config.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { User, CacheableUser, IRemoteUser } from '@/models/entities/User.js';
+import type { User, RemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { QueueService } from '@/core/QueueService.js';
 import { toArray } from '@/misc/prelude/array.js';
@@ -48,7 +48,7 @@ export class MessagingService {
 	}
 
 	@bindThis
-	public async createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: CacheableUser | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
+	public async createMessage(user: { id: User['id']; host: User['host']; }, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | null | undefined, file: DriveFile | null, uri?: string) {
 		const message = {
 			id: this.idService.genId(),
 			createdAt: new Date(),
@@ -291,7 +291,7 @@ export class MessagingService {
 	}
 
 	@bindThis
-	public async deliverReadActivity(user: { id: User['id']; host: null; }, recipient: IRemoteUser, messages: MessagingMessage | MessagingMessage[]) {
+	public async deliverReadActivity(user: { id: User['id']; host: null; }, recipient: RemoteUser, messages: MessagingMessage | MessagingMessage[]) {
 		messages = toArray(messages).filter(x => x.uri);
 		const contents = messages.map(x => this.apRendererService.renderRead(user, x));
 
