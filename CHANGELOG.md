@@ -8,6 +8,14 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Improvements
+- Server: URLプレビュー（summaly）はプロキシを通すように
+
+### Bugfixes
+-
+
 ## 13.6.1 (2023/02/12)
 
 ### Improvements
