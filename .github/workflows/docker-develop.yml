@@ -11,6 +11,9 @@ jobs:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     if: github.repository == 'misskey-dev/misskey'
+    strategy:
+      matrix:
+        arch: [linux/amd64, linux/arm64]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3.3.0
@@ -18,7 +21,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v2.3.0
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.arch }}
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -35,7 +38,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           push: true
-          platforms: ${{ steps.buildx.outputs.platforms }}
+          platforms: ${{ matrix.arch }}
           provenance: false
           tags: misskey/misskey:develop
           labels: develop
