@@ -19,7 +19,7 @@ services:
       - internal_network
       - external_network
     volumes:
-      - ./files:/misskey/files
+      - files:/misskey/files
       - ./.config:/misskey/.config:ro
 
   redis:
@@ -28,7 +28,7 @@ services:
     networks:
       - internal_network
     volumes:
-      - ./redis:/data
+      - redis:/data
     healthcheck:
       test: "redis-cli ping"
       interval: 5s
@@ -42,7 +42,7 @@ services:
     env_file:
       - .config/docker.env
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
@@ -63,3 +63,9 @@ networks:
   internal_network:
     internal: true
   external_network:
+
+volumes:
+  files:
+  redis:
+  db:
+  # elasticsearch:
