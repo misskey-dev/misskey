@@ -105,6 +105,7 @@ clickToShow: "Klikněte pro zobrazení"
 sensitive: "NSFW"
 add: "Přidat"
 reaction: "Reakce"
+reactions: "Reakce"
 reactionSettingDescription2: "Přetažením změníte pořadí, kliknutím smažete, zmáčkněte \"+\" k přidání"
 rememberNoteVisibility: "Zapamatovat nastavení zobrazení poznámky"
 attachCancel: "Odstranit přílohu"
@@ -641,19 +642,6 @@ _registry:
 _aboutMisskey:
   allContributors: "Všichni přispěvatelé"
   source: "Zdrojový kód"
-_mfm:
-  mention: "Zmínění"
-  hashtag: "Hashtag"
-  link: "Odkaz"
-  bold: "Tučně"
-  quote: "Citovat"
-  emoji: "Vlastní emoji"
-  search: "Vyhledávání"
-  flip: "Otočit"
-  tada: "Animace (tadá)"
-  blur: "Rozmazání"
-  font: "Font"
-  rainbow: "Duha"
 _channel:
   featured: "Trendy"
 _menuDisplay:
@@ -803,4 +791,5 @@ _deck:
     tl: "Časová osa"
     antenna: "Antény"
     list: "Seznamy"
+    channel: "Kanály"
     mentions: "Zmínění"

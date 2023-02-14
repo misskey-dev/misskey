@@ -96,7 +96,6 @@ import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
 import * as ep___charts_federation from './endpoints/charts/federation.js';
-import * as ep___charts_hashtag from './endpoints/charts/hashtag.js';
 import * as ep___charts_instance from './endpoints/charts/instance.js';
 import * as ep___charts_notes from './endpoints/charts/notes.js';
 import * as ep___charts_user_drive from './endpoints/charts/user/drive.js';
@@ -174,6 +173,7 @@ import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
 import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
+import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
 import * as ep___i_exportBlocking from './endpoints/i/export-blocking.js';
@@ -328,6 +328,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 
@@ -428,7 +429,6 @@ const eps = [
 	['charts/ap-request', ep___charts_apRequest],
 	['charts/drive', ep___charts_drive],
 	['charts/federation', ep___charts_federation],
-	['charts/hashtag', ep___charts_hashtag],
 	['charts/instance', ep___charts_instance],
 	['charts/notes', ep___charts_notes],
 	['charts/user/drive', ep___charts_user_drive],
@@ -506,6 +506,7 @@ const eps = [
 	['i/2fa/unregister', ep___i_2fa_unregister],
 	['i/apps', ep___i_apps],
 	['i/authorized-apps', ep___i_authorizedApps],
+	['i/claim-achievement', ep___i_claimAchievement],
 	['i/change-password', ep___i_changePassword],
 	['i/delete-account', ep___i_deleteAccount],
 	['i/export-blocking', ep___i_exportBlocking],
@@ -660,6 +661,7 @@ const eps = [
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
+	['users/achievements', ep___users_achievements],
 	['fetch-rss', ep___fetchRss],
 	['retention', ep___retention],
 ];

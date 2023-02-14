@@ -5,7 +5,7 @@ import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { CacheableLocalUser, ILocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
 import type { UserIpsRepository } from '@/models/index.js';
@@ -168,7 +168,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async logIp(request: FastifyRequest, user: ILocalUser) {
+	private async logIp(request: FastifyRequest, user: LocalUser) {
 		const meta = await this.metaService.fetch();
 		if (!meta.enableIpLogging) return;
 		const ip = request.ip;
@@ -194,7 +194,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	@bindThis
 	private async call(
 		ep: IEndpoint & { exec: any },
-		user: CacheableLocalUser | null | undefined,
+		user: LocalUser | null | undefined,
 		token: AccessToken | null | undefined,
 		data: any,
 		file: {
@@ -227,15 +227,17 @@ export class ApiCallService implements OnApplicationShutdown {
 			// TODO: 毎リクエスト計算するのもあれだしキャッシュしたい
 			const factor = user ? (await this.roleService.getUserPolicies(user.id)).rateLimitFactor : 1;
 
-			// Rate limit
-			await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
-				throw new ApiError({
-					message: 'Rate limit exceeded. Please try again later.',
-					code: 'RATE_LIMIT_EXCEEDED',
-					id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
-					httpStatusCode: 429,
+			if (factor > 0) {
+				// Rate limit
+				await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
+					throw new ApiError({
+						message: 'Rate limit exceeded. Please try again later.',
+						code: 'RATE_LIMIT_EXCEEDED',
+						id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
+						httpStatusCode: 429,
+					});
 				});
-			});
+			}
 		}
 
 		if (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin) {

@@ -54,6 +54,8 @@ export default defineConfig(({ command, mode }) => {
 				'@/': __dirname + '/src/',
 				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
+				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
+				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
 			},
 		},
 
@@ -97,6 +99,7 @@ export default defineConfig(({ command, mode }) => {
 				output: {
 					manualChunks: {
 						vue: ['vue'],
+						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
 					},
 				},
 			},

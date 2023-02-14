@@ -29,7 +29,7 @@
 					<MkInput v-model="ad.ratio" type="number">
 						<template #label>{{ i18n.ts.ratio }}</template>
 					</MkInput>
-					<MkInput v-model="ad.expiresAt" type="date">
+					<MkInput v-model="ad.expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
 				</FormSplit>
@@ -60,8 +60,19 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 
 let ads: any[] = $ref([]);
 
+// ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
+const localTime = new Date();
+const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
+
 os.api('admin/ad/list').then(adsResponse => {
-	ads = adsResponse;
+	ads = adsResponse.map(r => {
+		const date = new Date(r.expiresAt);
+		date.setMilliseconds(date.getMilliseconds() - localTimeDiff);
+		return {
+			...r,
+			expiresAt: date.toISOString().slice(0, 16),
+		};
+	});
 });
 
 function add() {

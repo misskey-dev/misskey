@@ -20,7 +20,7 @@ gulp.task('copy:frontend:fonts', () =>
 );
 
 gulp.task('copy:frontend:tabler-icons', () =>
-	gulp.src('./packages/frontend/node_modules/@tabler/icons/iconfont/**/*').pipe(gulp.dest('./built/_frontend_dist_/tabler-icons/'))
+	gulp.src('./packages/frontend/node_modules/@tabler/icons-webfont/**/*').pipe(gulp.dest('./built/_frontend_dist_/tabler-icons/'))
 );
 
 gulp.task('copy:frontend:locales', cb => {

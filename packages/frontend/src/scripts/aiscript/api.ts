@@ -10,7 +10,7 @@ export function createAiScriptEnv(opts) {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
-		CUSTOM_EMOJIS: utils.jsToVal(customEmojis),
+		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
 			await os.alert({
 				type: type ? type.value : 'info',
@@ -27,7 +27,11 @@ export function createAiScriptEnv(opts) {
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
-			if (token) utils.assertString(token);
+			if (token) {
+				utils.assertString(token);
+				// バグがあればundefinedもあり得るため念のため
+				if (typeof token.value !== 'string') throw new Error('invalid token');
+			}
 			apiRequests++;
 			if (apiRequests > 16) return values.NULL;
 			const res = await os.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token ?? null));

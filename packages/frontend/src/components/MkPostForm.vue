@@ -93,11 +93,12 @@ import { defaultStore, notePostInterruptors, postFormActions } from '@/store';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
-import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
+import { $i, notesCount, incNotesCount, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage';
+import { claimAchievement } from '@/scripts/achievements';
 
 const modal = inject('modal');
 
@@ -108,7 +109,7 @@ const props = withDefaults(defineProps<{
 	mention?: misskey.entities.User;
 	specified?: misskey.entities.User;
 	initialText?: string;
-	initialVisibility?: typeof misskey.noteVisibilities;
+	initialVisibility?: (typeof misskey.noteVisibilities)[number];
 	initialFiles?: misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: misskey.entities.User[];
@@ -227,7 +228,7 @@ const hashtags = $computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
 watch($$(text), () => {
 	checkMissingMention();
-});
+}, { immediate: true });
 
 watch($$(visibleUsers), () => {
 	checkMissingMention();
@@ -578,6 +579,36 @@ async function post(ev?: MouseEvent) {
 		os.popup(MkRippleEffect, { x, y }, {}, 'end');
 	}
 
+	const annoying =
+		text.includes('$[x2') ||
+		text.includes('$[x3') ||
+		text.includes('$[x4') ||
+		text.includes('$[scale') ||
+		text.includes('$[position');
+	if (annoying) {
+		const { canceled, result } = await os.actions({
+			type: 'warning',
+			text: i18n.ts.thisPostMayBeAnnoying,
+			actions: [{
+				value: 'home',
+				text: i18n.ts.thisPostMayBeAnnoyingHome,
+				primary: true,
+			}, {
+				value: 'cancel',
+				text: i18n.ts.thisPostMayBeAnnoyingCancel,
+			}, {
+				value: 'ignore',
+				text: i18n.ts.thisPostMayBeAnnoyingIgnore,
+			}],
+		});
+
+		if (canceled) return;
+		if (result === 'cancel') return;
+		if (result === 'home') {
+			visibility = 'home';
+		}
+	}
+
 	let postData = {
 		text: text === '' ? undefined : text,
 		fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
@@ -627,6 +658,34 @@ async function post(ev?: MouseEvent) {
 			}
 			posting = false;
 			postAccount = null;
+
+			incNotesCount();
+			if (notesCount === 1) {
+				claimAchievement('notes1');
+			}
+
+			const text = postData.text?.toLowerCase() ?? '';
+			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
+				claimAchievement('iLoveMisskey');
+			}
+			if (text.includes('Efrlqw8ytg4'.toLowerCase()) || text.includes('XVCwzwxdHuA'.toLowerCase())) {
+				claimAchievement('brainDiver');
+			}
+
+			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+				claimAchievement('selfQuote');
+			}
+
+			const date = new Date();
+			const h = date.getHours();
+			const m = date.getMinutes();
+			const s = date.getSeconds();
+			if (h >= 0 && h <= 3) {
+				claimAchievement('postedAtLateNight');
+			}
+			if (m === 0 && s === 0) {
+				claimAchievement('postedAt0min0sec');
+			}
 		});
 	}).catch(err => {
 		posting = false;

@@ -42,7 +42,7 @@ import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: string | number;
-	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search';
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -88,6 +88,8 @@ const onInput = (ev: KeyboardEvent) => {
 	emit('change', ev);
 };
 const onKeydown = (ev: KeyboardEvent) => {
+	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
+
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {

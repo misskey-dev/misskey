@@ -8,6 +8,243 @@
 
 You should also include the user name that made the change.
 -->
+## 13.6.1 (2023/02/12)
+
+### Improvements
+- アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
+- Backend: activitypub情報がcorsでブロックされないようヘッダーを追加
+- enhance: レートリミットを0%にできるように
+- チャンネル内Renoteを行えるように
+
+### Bugfixes
+- Client: ユーザーページでアクティビティを見ることができない問題を修正
+
+## 13.6.0 (2023/02/11)
+
+### Improvements
+- MkPageHeaderをごっそり変えた
+  * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
+  * iconOnlyのタブ項目がアクティブな場合にはタブのタイトルを表示するように
+  * メインタイムラインではタイトルを表示しない
+  * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
+- ユーザーページのノート一覧をタブとして分離
+- コンディショナルロールもバッジとして表示可能に
+- enhance(client): ロールをより簡単に付与できるように
+- enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
+- リアクションの数が多い場合の表示を改善
+- 一部のMFM構文をopt-outに
+
+### Bugfixes
+- Client: ユーザーページでタブがほとんど見れないことがないように
+
+## 13.5.6 (2023/02/10)
+
+### Improvements
+- 非ログイン時にMiAuthを踏んだ際にMiAuthであることを表示する
+- /auth/のUIをアップデート
+- 利用規約同意UIの調整
+- クロップ時の質問を分かりやすく
+
+### Bugfixes
+- fix: prevent clipping audio plyr's tooltip
+
+## 13.5.4 (2023/02/09)
+
+### Improvements
+- Server: UIのHTML（ノートなどの特別なページを除く）のキャッシュ時間を15秒から30秒に
+- i/notificationsのレートリミットを緩和
+
+### Bugfixes
+- fix(client): validate url to improve security
+- fix(client): dateの初期値が正常に入らない時がある
+
+## 13.5.3 (2023/02/09)
+
+### Improvements
+- Client: デッキにチャンネルカラムを追加
+
+## 13.5.2 (2023/02/08)
+
+### Changes
+- Revert: perf(client): do not render custom emojis in user names
+
+### Bugfixes
+- Client: register_note_view_interruptor not working
+- Client: ログイントークンの再生成が出来ない
+
+## 13.5.0 (2023/02/08)
+
+### Changes
+- perf(client): do not render custom emojis in user names
+
+### Improvements
+- Client: disableShowingAnimatedImagesのデフォルト値をprefers-reduced-motionにする
+- enhance(client): tweak medialist style
+
+### Bugfixes
+- fix docker health check
+- Client: MkEmojiPickerでもChromeで検索ダイアログで変換確定するとそのまま検索されてしまうのを修正
+- fix(mfm): default degree not used in rotate
+- fix(server): validate urls from ap to improve security
+
+## 13.4.0 (2023/02/05)
+
+### Improvements
+- ロールにアイコンを設定してユーザー名の横に表示できるように
+- feat: timeline page for non-login users
+- 実績の単なるラッキーの獲得確立を調整
+- Add Thai language support
+
+### Bugfixes
+- fix(server): 自分のノートをお気に入りに登録しても実績解除される問題を修正
+- fix(server): clean up file in FileServer
+- fix(server): Deny UNIX domain socket
+- fix(server): validate filename and emoji name to improve security
+- fix(client): validate input response in aiscript
+- fix(client): add webhook delete button
+- fix(client): tweak notification style
+- fix(client): インラインコードを折り返して表示する
+
+## 13.3.3 (2023/02/04)
+
+### Bugfixes
+- Server: improve security
+
+## 13.3.2 (2023/02/04)
+
+### Improvements
+- 外部メディアプロキシへの対応を強化しました  
+  外部メディアプロキシのFastify実装を作りました  
+  https://github.com/misskey-dev/media-proxy
+- Server: improve performance
+
+### Bugfixes
+- Client: validate urls to improve security
+
+## 13.3.1 (2023/02/04)
+
+### Bugfixes
+- Client: カスタム絵文字にアニメーション画像を再生しない設定が適用されていない問題を修正
+- Client: オートコンプリートでUnicode絵文字がカスタム絵文字として表示されてしまうのを修正
+- Client: Fix Vue-plyr CORS issue
+- Client: validate urls to improve security
+
+## 13.3.0 (2023/02/03)
+### Changes
+- twitter/github/discord連携機能が削除されました
+- ハッシュタグごとのチャートが削除されました
+- syslogのサポートが削除されました
+
+### Improvements
+- ロールで広告の非表示が有効になっている場合は最初から広告を非表示にするように
+
+## 13.2.6 (2023/02/01)
+### Changes
+- docker-compose.ymlをdocker-compose.yml.exampleにしました。docker-compose.ymlとしてコピーしてから使用してください。
+
+### Improvements
+- 絵文字ピッカーのパフォーマンスを改善
+- AiScriptを0.12.4に更新
+
+### Bugfixes
+- Server: リレーと通信できない問題を修正
+- Client: classicモード使用時にwindowサイズによってdefaultに変更された後に、windowサイズが元に戻ったらclassicに戻すように修正 #9669
+- Client: Chromeで検索ダイアログで変換確定するとそのまま検索されてしまう問題を修正
+
+## 13.2.4 (2023/01/27)
+### Improvements
+- リモートカスタム絵文字表示時のパフォーマンスを改善
+- Default to `animation: false` when prefers-reduced-motion is set
+- リアクション履歴が公開なら、ログインしていなくても表示できるように
+- tweak blur setting
+- tweak custom emoji cache
+
+### Bugfixes
+- fix aggregation of retention
+- ダッシュボードでオンラインユーザー数が表示されない問題を修正
+- フォロー申請・フォローのボタンが、通知から消えている問題を修正
+
+## 13.2.3 (2023/01/26)
+### Improvements
+- カスタム絵文字の更新をリアルタイムで反映するように
+
+### Bugfixes
+- turnstile-failed: missing-input-secret
+
+## 13.2.2 (2023/01/25)
+### Improvements
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- サインイン時に誤ったレートリミットがかかることがある問題を修正
+- MFMのposition、rotate、scaleで小数が使えない問題を修正
+
+## 13.2.1 (2023/01/24)
+### Improvements
+- デザインの調整
+- サーバーのパフォーマンスを改善
+
+## 13.2.0 (2023/01/23)
+
+### Improvements
+- onlyServer / onlyQueue オプションを復活
+- 他人の実績閲覧時は獲得条件を表示しないように
+- アニメーション減らすオプション有効時はリアクションのアニメーションを無効に
+- カスタム絵文字一覧のパフォーマンスを改善
+
+### Bugfixes
+- Aiscript: button is not defined
+
+## 13.1.7 (2023/01/22)
+
+### Improvements
+- 新たな実績を追加
+- MFMにscaleタグを追加
+
+## 13.1.4 (2023/01/22)
+
+### Improvements
+- 新たな実績を追加
+
+### Bugfixes
+- Client: ローカリゼーション更新時にリロードが繰り返されることがあるのを修正
+
+## 13.1.3 (2023/01/22)
+
+### Bugfixes
+- Client: リアクションのカスタム絵文字の表示の問題を修正
+
+## 13.1.2 (2023/01/22)
+
+### Bugfixes
+- Client: リアクションのカスタム絵文字の表示の問題を修正
+
+## 13.1.1 (2023/01/22)
+
+### Improvements
+- ローカルのカスタム絵文字を表示する際のパフォーマンスを改善
+- Client: 瞬間的に大量の実績を解除した際の挙動を改善
+
+### Bugfixes
+- Client: アップデート時にローカリゼーションデータが更新されないことがあるのを修正
+
+## 13.1.0 (2023/01/21)
+
+### Improvements
+- 実績機能
+- Playのプリセットを追加
+- Playのscriptの文字数制限を緩和
+- AiScript GUIの強化
+- リアクション一覧詳細ダイアログを表示できるように
+- 存在しないカスタム絵文字をテキストで表示するように
+- Alt text in image viewer
+- ジョブキューのプロセスとWebサーバーのプロセスを分離
+
+### Bugfixes
+- playを削除する手段がなかったのを修正
+- The … button on notes does nothing when not logged in
+- twitterと連携するときに autwh is not a function になるのを修正
 
 ## 13.0.0 (2023/01/16)
 
@@ -29,6 +266,7 @@ You should also include the user name that made the change.
 - Node.js 18.x or later is required
 - PostgreSQL 15.x is required
 	- Misskey not using 15 specific features at 13.0.0, but may do so in the future.
+	- Docker環境でPostgreSQLのアップデートを行う際のガイドはこちら: https://github.com/misskey-dev/misskey/pull/9641#issue-1536336620
 - Elasticsearchのサポートが削除されました
 	- 代わりに今後任意の検索プロバイダを設定できる仕組みを構想しています。その仕組みを使えば今まで通りElasticsearchも利用できます
 - Yarnからpnpmに移行されました

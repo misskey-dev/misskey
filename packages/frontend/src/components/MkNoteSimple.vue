@@ -5,7 +5,7 @@
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
 			<p v-if="note.cw != null" :class="$style.cw">
-				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i"/>
+				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :i="$i" :emoji-urls="note.emojis"/>
 				<MkCwButton v-model="showContent" :note="note"/>
 			</p>
 			<div v-show="note.cw == null || showContent">
@@ -44,8 +44,8 @@ const showContent = $ref(false);
 	flex-shrink: 0;
 	display: block;
 	margin: 0 10px 0 0;
-	width: 40px;
-	height: 40px;
+	width: 34px;
+	height: 34px;
 	border-radius: 8px;
 }
 
@@ -70,6 +70,14 @@ const showContent = $ref(false);
 	cursor: default;
 	margin: 0;
 	padding: 0;
+}
+
+@container (min-width: 250px) {
+	.avatar {
+		margin: 0 10px 0 0;
+		width: 40px;
+		height: 40px;
+	}
 }
 
 @container (min-width: 350px) {

@@ -11,7 +11,7 @@ const PREFER_AP = 'application/activity+json, */*';
 const PREFER_HTML = 'text/html, */*';
 const UNSPECIFIED = '*/*';
 
-// Response Contet-Type
+// Response Content-Type
 const AP = 'application/activity+json; charset=utf-8';
 const JSON = 'application/json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';
@@ -35,38 +35,38 @@ describe('Fetch resource', () => {
 	});
 
 	describe('Common', () => {
-		it('meta', async () => {
+		test('meta', async () => {
 			const res = await request('/meta', {
 			});
 
 			assert.strictEqual(res.status, 200);
 		});
 
-		it('GET root', async () => {
+		test('GET root', async () => {
 			const res = await simpleGet('/');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		});
 
-		it('GET docs', async () => {
+		test('GET docs', async () => {
 			const res = await simpleGet('/docs/ja-JP/about');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		});
 
-		it('GET api-doc', async () => {
+		test('GET api-doc', async () => {
 			const res = await simpleGet('/api-doc');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		});
 
-		it('GET api.json', async () => {
+		test('GET api.json', async () => {
 			const res = await simpleGet('/api.json');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, JSON);
 		});
 
-		it('Validate api.json', async () => {
+		test('Validate api.json', async () => {
 			const config = await openapi.loadConfig();
 			const result = await openapi.bundle({
 				config,
@@ -80,25 +80,25 @@ describe('Fetch resource', () => {
 			assert.strictEqual(result.problems.length, 0);
 		});
 
-		it('GET favicon.ico', async () => {
+		test('GET favicon.ico', async () => {
 			const res = await simpleGet('/favicon.ico');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/x-icon');
 		});
 
-		it('GET apple-touch-icon.png', async () => {
+		test('GET apple-touch-icon.png', async () => {
 			const res = await simpleGet('/apple-touch-icon.png');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/png');
 		});
 
-		it('GET twemoji svg', async () => {
+		test('GET twemoji svg', async () => {
 			const res = await simpleGet('/twemoji/2764.svg');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/svg+xml');
 		});
 
-		it('GET twemoji svg with hyphen', async () => {
+		test('GET twemoji svg with hyphen', async () => {
 			const res = await simpleGet('/twemoji/2764-fe0f-200d-1f525.svg');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/svg+xml');
@@ -106,25 +106,25 @@ describe('Fetch resource', () => {
 	});
 
 	describe('/@:username', () => {
-		it('Only AP => AP', async () => {
+		test('Only AP => AP', async () => {
 			const res = await simpleGet(`/@${alice.username}`, ONLY_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
 		});
 
-		it('Prefer AP => AP', async () => {
+		test('Prefer AP => AP', async () => {
 			const res = await simpleGet(`/@${alice.username}`, PREFER_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
 		});
 
-		it('Prefer HTML => HTML', async () => {
+		test('Prefer HTML => HTML', async () => {
 			const res = await simpleGet(`/@${alice.username}`, PREFER_HTML);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		});
 
-		it('Unspecified => HTML', async () => {
+		test('Unspecified => HTML', async () => {
 			const res = await simpleGet(`/@${alice.username}`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
@@ -132,25 +132,25 @@ describe('Fetch resource', () => {
 	});
 
 	describe('/users/:id', () => {
-		it('Only AP => AP', async () => {
+		test('Only AP => AP', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, ONLY_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
 		});
 
-		it('Prefer AP => AP', async () => {
+		test('Prefer AP => AP', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, PREFER_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
 		});
 
-		it('Prefer HTML => Redirect to /@:username', async () => {
+		test('Prefer HTML => Redirect to /@:username', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, PREFER_HTML);
 			assert.strictEqual(res.status, 302);
 			assert.strictEqual(res.location, `/@${alice.username}`);
 		});
 
-		it('Undecided => HTML', async () => {
+		test('Undecided => HTML', async () => {
 			const res = await simpleGet(`/users/${alice.id}`, UNSPECIFIED);
 			assert.strictEqual(res.status, 302);
 			assert.strictEqual(res.location, `/@${alice.username}`);
@@ -158,25 +158,25 @@ describe('Fetch resource', () => {
 	});
 
 	describe('/notes/:id', () => {
-		it('Only AP => AP', async () => {
+		test('Only AP => AP', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, ONLY_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
 		});
 
-		it('Prefer AP => AP', async () => {
+		test('Prefer AP => AP', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, PREFER_AP);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, AP);
 		});
 
-		it('Prefer HTML => HTML', async () => {
+		test('Prefer HTML => HTML', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, PREFER_HTML);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		});
 
-		it('Unspecified => HTML', async () => {
+		test('Unspecified => HTML', async () => {
 			const res = await simpleGet(`/notes/${alicesPost.id}`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
@@ -184,19 +184,19 @@ describe('Fetch resource', () => {
 	});
 
 	describe('Feeds', () => {
-		it('RSS', async () => {
+		test('RSS', async () => {
 			const res = await simpleGet(`/@${alice.username}.rss`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'application/rss+xml; charset=utf-8');
 		});
 
-		it('ATOM', async () => {
+		test('ATOM', async () => {
 			const res = await simpleGet(`/@${alice.username}.atom`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'application/atom+xml; charset=utf-8');
 		});
 
-		it('JSON', async () => {
+		test('JSON', async () => {
 			const res = await simpleGet(`/@${alice.username}.json`, UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'application/json; charset=utf-8');

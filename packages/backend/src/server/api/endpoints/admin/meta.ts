@@ -138,18 +138,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			enableTwitterIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableGithubIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableDiscordIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
 			enableServiceWorker: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -222,30 +210,6 @@ export const meta = {
 				type: 'string',
 				optional: true, nullable: true,
 				format: 'id',
-			},
-			twitterConsumerKey: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			twitterConsumerSecret: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			githubClientId: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			githubClientSecret: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			discordClientId: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			discordClientSecret: {
-				type: 'string',
-				optional: true, nullable: true,
 			},
 			summaryProxy: {
 				type: 'string',
@@ -389,9 +353,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				defaultLightTheme: instance.defaultLightTheme,
 				defaultDarkTheme: instance.defaultDarkTheme,
 				enableEmail: instance.enableEmail,
-				enableTwitterIntegration: instance.enableTwitterIntegration,
-				enableGithubIntegration: instance.enableGithubIntegration,
-				enableDiscordIntegration: instance.enableDiscordIntegration,
 				enableServiceWorker: instance.enableServiceWorker,
 				translatorAvailable: instance.deeplAuthKey != null,
 				pinnedPages: instance.pinnedPages,
@@ -409,12 +370,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
 				enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 				proxyAccountId: instance.proxyAccountId,
-				twitterConsumerKey: instance.twitterConsumerKey,
-				twitterConsumerSecret: instance.twitterConsumerSecret,
-				githubClientId: instance.githubClientId,
-				githubClientSecret: instance.githubClientSecret,
-				discordClientId: instance.discordClientId,
-				discordClientSecret: instance.discordClientSecret,
 				summalyProxy: instance.summalyProxy,
 				email: instance.email,
 				smtpSecure: instance.smtpSecure,

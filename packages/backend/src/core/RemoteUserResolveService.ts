@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
-import type { IRemoteUser, User } from '@/models/entities/User.js';
+import type { RemoteUser, User } from '@/models/entities/User.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -60,7 +60,7 @@ export class RemoteUserResolveService {
 			});
 		}
 	
-		const user = await this.usersRepository.findOneBy({ usernameLower, host }) as IRemoteUser | null;
+		const user = await this.usersRepository.findOneBy({ usernameLower, host }) as RemoteUser | null;
 	
 		const acctLower = `${usernameLower}@${host}`;
 	
@@ -82,7 +82,7 @@ export class RemoteUserResolveService {
 			const self = await this.resolveSelf(acctLower);
 	
 			if (user.uri !== self.href) {
-				// if uri mismatch, Fix (user@host <=> AP's Person id(IRemoteUser.uri)) mapping.
+				// if uri mismatch, Fix (user@host <=> AP's Person id(RemoteUser.uri)) mapping.
 				this.logger.info(`uri missmatch: ${acctLower}`);
 				this.logger.info(`recovery missmatch uri for (username=${username}, host=${host}) from ${user.uri} to ${self.href}`);
 	

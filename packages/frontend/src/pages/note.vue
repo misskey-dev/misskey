@@ -32,7 +32,7 @@
 						<XNotes class="" :pagination="prevPagination" :no-gap="true"/>
 					</div>
 				</div>
-				<MkError v-else-if="error" @retry="fetch()"/>
+				<MkError v-else-if="error" @retry="fetchNote()"/>
 				<MkLoading v-else/>
 			</Transition>
 		</div>

@@ -65,13 +65,13 @@
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i"/>
+						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :emoji-urls="appearNote.emojis"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
 						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else class="translated">
 								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :i="$i"/>
+								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :emoji-urls="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -159,6 +159,8 @@ import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
+import { claimAchievement } from '@/scripts/achievements';
+import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -240,7 +242,32 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
-	os.popupMenu([{
+
+	let items = [] as MenuItem[];
+
+	if (appearNote.channel) {
+		items = items.concat([{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				});
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+					channel: appearNote.channel,
+				});
+			},
+		}, null]);
+	}
+
+	items = items.concat([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
@@ -256,7 +283,9 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
-	}], renoteButton.value, {
+	}]);
+
+	os.popupMenu(items, renoteButton.value, {
 		viaKeyboard,
 	});
 }
@@ -279,6 +308,9 @@ function react(viaKeyboard = false): void {
 			noteId: appearNote.id,
 			reaction: reaction,
 		});
+		if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+			claimAchievement('reactWithoutRead');
+		}
 	}, () => {
 		focus();
 	});

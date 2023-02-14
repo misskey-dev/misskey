@@ -184,11 +184,6 @@ export class UserProfile {
 	@JoinColumn()
 	public pinnedPage: Page | null;
 
-	@Column('jsonb', {
-		default: {},
-	})
-	public integrations: Record<string, any>;
-
 	@Index()
 	@Column('boolean', {
 		default: false, select: false,
@@ -212,6 +207,19 @@ export class UserProfile {
 		default: [],
 	})
 	public mutingNotificationTypes: typeof notificationTypes[number][];
+
+	@Column('varchar', {
+		length: 32, array: true, default: '{}',
+	})
+	public loggedInDates: string[];
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public achievements: {
+		name: string;
+		unlockedAt: number;
+	}[];
 
 	//#region Denormalized fields
 	@Index()

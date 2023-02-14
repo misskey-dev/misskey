@@ -109,6 +109,7 @@ clickToShow: "Klik om te bekijken"
 sensitive: "NSFW"
 add: "Toevoegen"
 reaction: "Reacties"
+reactions: "Reacties"
 reactionSetting: "Reacties die in de reactie-selector worden getoond"
 reactionSettingDescription2: "Sleep om opnieuw te ordenen, Klik om te verwijderen, Druk op \"+\" om toe te voegen"
 rememberNoteVisibility: "Vergeet niet de notitie zichtbaarheidsinstellingen"
@@ -426,11 +427,6 @@ loggedInAsBot: "Momenteel als bot ingelogd"
 _email:
   _follow:
     title: "volgde jou"
-_mfm:
-  mention: "Vermelding"
-  quote: "Quote"
-  emoji: "Maatwerk emoji"
-  search: "Zoeken"
 _theme:
   keys:
     mention: "Vermelding"

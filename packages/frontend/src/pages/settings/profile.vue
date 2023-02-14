@@ -85,6 +85,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { langmap } from '@/scripts/langmap';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { claimAchievement } from '@/scripts/achievements';
 
 const profile = reactive({
 	name: $i.name,
@@ -133,6 +134,13 @@ function save() {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 	});
+	claimAchievement('profileFilled');
+	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
+		claimAchievement('setNameToSyuilo');
+	}
+	if (profile.isCat) {
+		claimAchievement('markedAsCat');
+	}
 }
 
 function changeAvatar(ev) {
@@ -142,6 +150,8 @@ function changeAvatar(ev) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.t('cropImageAsk'),
+			okText: i18n.ts.cropYes,
+			cancelText: i18n.ts.cropNo,
 		});
 
 		if (!canceled) {
@@ -155,6 +165,7 @@ function changeAvatar(ev) {
 		});
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
+		claimAchievement('profileFilled');
 	});
 }
 
@@ -165,6 +176,8 @@ function changeBanner(ev) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.t('cropImageAsk'),
+			okText: i18n.ts.cropYes,
+			cancelText: i18n.ts.cropNo,
 		});
 
 		if (!canceled) {

@@ -16,6 +16,7 @@
 			<div class="_buttons">
 				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
@@ -33,7 +34,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkInput from '@/components/MkInput.vue';
 import { useRouter } from '@/router';
 
-const PRESET_DEFAULT = `/// @ 0.12.2
+const PRESET_DEFAULT = `/// @ 0.12.4
 
 var name = ""
 
@@ -51,7 +52,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.12.2
+const PRESET_OMIKUJI = `/// @ 0.12.4
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -94,7 +95,86 @@ Ui:render([
 ])
 `;
 
-const PRESET_TIMELINE = `/// @ 0.12.2
+const PRESET_SHUFFLE = `/// @ 0.12.4
+// 巻き戻し可能な文字シャッフルのプリセット
+
+let string = "ペペロンチーノ"
+let length = string.len
+
+// 過去の結果を保存しておくやつ
+var results = []
+
+// どれだけ巻き戻しているか
+var cursor = 0
+
+@do() {
+	if (cursor != 0) {
+		results = results.slice(0 (cursor + 1))
+		cursor = 0
+	}
+
+	let chars = []
+	for (let i, length) {
+		let r = Math:rnd(0 (length - 1))
+		chars.push(string.pick(r))
+	}
+	let result = chars.join("")
+
+	results.push(result)
+
+	// UIを表示
+	render(result)
+}
+
+@back() {
+	cursor = cursor + 1
+	let result = results[results.len - (cursor + 1)]
+	render(result)
+}
+
+@forward() {
+	cursor = cursor - 1
+	let result = results[results.len - (cursor + 1)]
+	render(result)
+}
+
+@render(result) {
+	Ui:render([
+		Ui:C:container({
+			align: 'center'
+			children: [
+				Ui:C:mfm({ text: result })
+				Ui:C:buttons({
+					buttons: [{
+						text: "←"
+						disabled: !(results.len > 1 && (results.len - cursor) > 1)
+						onClick: back
+					} {
+						text: "→"
+						disabled: !(results.len > 1 && cursor > 0)
+						onClick: forward
+					} {
+						text: "引き直す"
+						onClick: do
+					}]
+				})
+				Ui:C:postFormButton({
+					text: "投稿する"
+					rounded: true
+					primary: true
+					form: {
+						text: \`{result}{Str:lf}{THIS_URL}\`
+					}
+				})
+			]
+		})
+	])
+}
+
+do()
+`;
+
+const PRESET_TIMELINE = `/// @ 0.12.4
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {
@@ -175,6 +255,11 @@ function selectPreset(ev: MouseEvent) {
 			script = PRESET_OMIKUJI;
 		},
 	}, {
+		text: 'Shuffle',
+		action: () => {
+			script = PRESET_SHUFFLE;
+		},
+	}, {
 		text: 'Timeline viewer',
 		action: () => {
 			script = PRESET_TIMELINE;
@@ -210,6 +295,19 @@ function show() {
 	} else {
 		os.pageWindow(`/play/${flash.id}`);
 	}
+}
+
+async function del() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('deleteAreYouSure', { x: flash.title }),
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('flash/delete', {
+		flashId: props.id,
+	});
+	router.push('/play');
 }
 
 const headerActions = $computed(() => []);

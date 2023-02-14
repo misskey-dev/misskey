@@ -119,6 +119,8 @@ export default defineComponent({
 			context.emit('change', ev);
 		};
 		const onKeydown = (ev: KeyboardEvent) => {
+			if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
+
 			context.emit('keydown', ev);
 
 			if (ev.code === 'Enter') {
