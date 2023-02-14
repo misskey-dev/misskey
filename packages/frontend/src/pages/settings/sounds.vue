@@ -43,7 +43,7 @@ const masterVolume = computed({
 	},
 });
 
-const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
+const volumeIcon = computed(() => masterVolume.value === 0 ? 'ti ti-volume-3' : 'ti ti-volume');
 
 const sounds = ref({
 	note: ColdDeviceStorage.get('sound_note'),
