@@ -421,19 +421,6 @@ export const routes = [{
 	component: page(() => import('./pages/achievements.vue')),
 	loginRequired: true,
 }, {
-	name: 'messaging',
-	path: '/my/messaging',
-	component: page(() => import('./pages/messaging/index.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/messaging/:userAcct',
-	component: page(() => import('./pages/messaging/messaging-room.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/messaging/group/:groupId',
-	component: page(() => import('./pages/messaging/messaging-room.vue')),
-	loginRequired: true,
-}, {
 	path: '/my/drive/folder/:folder',
 	component: page(() => import('./pages/drive.vue')),
 	loginRequired: true,
