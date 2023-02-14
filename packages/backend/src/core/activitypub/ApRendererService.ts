@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import type { IMentionedRemoteUsers, Note } from '@/models/entities/Note.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
 import type { Relay } from '@/models/entities/Relay.js';
@@ -24,7 +24,7 @@ import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFil
 import { bindThis } from '@/decorators.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IActivity, IObject } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IRead, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -61,7 +61,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAccept(object: any, user: { id: User['id']; host: null }) {
+	public renderAccept(object: any, user: { id: User['id']; host: null }): IAccept {
 		return {
 			type: 'Accept',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -70,7 +70,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAdd(user: ILocalUser, target: any, object: any) {
+	public renderAdd(user: LocalUser, target: any, object: any): IAdd {
 		return {
 			type: 'Add',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -80,7 +80,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAnnounce(object: any, note: Note) {
+	public renderAnnounce(object: any, note: Note): IAnnounce {
 		const attributedTo = `${this.config.url}/users/${note.userId}`;
 
 		let to: string[] = [];
@@ -93,7 +93,7 @@ export class ApRendererService {
 			to = [`${attributedTo}/followers`];
 			cc = ['https://www.w3.org/ns/activitystreams#Public'];
 		} else {
-			return null;
+			throw new Error('renderAnnounce: cannot render non-public note');
 		}
 
 		return {
@@ -113,7 +113,7 @@ export class ApRendererService {
 	 * @param block The block to be rendered. The blockee relation must be loaded.
 	 */
 	@bindThis
-	public renderBlock(block: Blocking) {
+	public renderBlock(block: Blocking): IBlock {
 		if (block.blockee?.uri == null) {
 			throw new Error('renderBlock: missing blockee uri');
 		}
@@ -127,14 +127,14 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderCreate(object: any, note: Note) {
+	public renderCreate(object: IObject, note: Note): ICreate {
 		const activity = {
 			id: `${this.config.url}/notes/${note.id}/activity`,
 			actor: `${this.config.url}/users/${note.userId}`,
 			type: 'Create',
 			published: note.createdAt.toISOString(),
 			object,
-		} as any;
+		} as ICreate;
 	
 		if (object.to) activity.to = object.to;
 		if (object.cc) activity.cc = object.cc;
@@ -143,7 +143,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderDelete(object: any, user: { id: User['id']; host: null }) {
+	public renderDelete(object: IObject | string, user: { id: User['id']; host: null }): IDelete {
 		return {
 			type: 'Delete',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -153,7 +153,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderDocument(file: DriveFile) {
+	public renderDocument(file: DriveFile): IApDocument {
 		return {
 			type: 'Document',
 			mediaType: file.type,
@@ -163,12 +163,12 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderEmoji(emoji: Emoji) {
+	public renderEmoji(emoji: Emoji): IApEmoji {
 		return {
 			id: `${this.config.url}/emojis/${emoji.name}`,
 			type: 'Emoji',
 			name: `:${emoji.name}:`,
-			updated: emoji.updatedAt != null ? emoji.updatedAt.toISOString() : new Date().toISOString,
+			updated: emoji.updatedAt != null ? emoji.updatedAt.toISOString() : new Date().toISOString(),
 			icon: {
 				type: 'Image',
 				mediaType: emoji.type ?? 'image/png',
@@ -181,7 +181,7 @@ export class ApRendererService {
 	// to anonymise reporters, the reporting actor must be a system user
 	// object has to be a uri or array of uris
 	@bindThis
-	public renderFlag(user: ILocalUser, object: [string], content: string) {
+	public renderFlag(user: LocalUser, object: IObject | string | string[], content: string): IFlag {
 		return {
 			type: 'Flag',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -191,15 +191,13 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderFollowRelay(relay: Relay, relayActor: ILocalUser) {
-		const follow = {
+	public renderFollowRelay(relay: Relay, relayActor: LocalUser): IFollow {
+		return {
 			id: `${this.config.url}/activities/follow-relay/${relay.id}`,
 			type: 'Follow',
 			actor: `${this.config.url}/users/${relayActor.id}`,
 			object: 'https://www.w3.org/ns/activitystreams#Public',
 		};
-	
-		return follow;
 	}
 
 	/**
@@ -217,19 +215,17 @@ export class ApRendererService {
 		follower: { id: User['id']; host: User['host']; uri: User['host'] },
 		followee: { id: User['id']; host: User['host']; uri: User['host'] },
 		requestId?: string,
-	) {
-		const follow = {
+	): IFollow {
+		return {
 			id: requestId ?? `${this.config.url}/follows/${follower.id}/${followee.id}`,
 			type: 'Follow',
-			actor: this.userEntityService.isLocalUser(follower) ? `${this.config.url}/users/${follower.id}` : follower.uri,
-			object: this.userEntityService.isLocalUser(followee) ? `${this.config.url}/users/${followee.id}` : followee.uri,
-		} as any;
-	
-		return follow;
+			actor: this.userEntityService.isLocalUser(follower) ? `${this.config.url}/users/${follower.id}` : follower.uri!,
+			object: this.userEntityService.isLocalUser(followee) ? `${this.config.url}/users/${followee.id}` : followee.uri!,
+		};
 	}
 
 	@bindThis
-	public renderHashtag(tag: string) {
+	public renderHashtag(tag: string): IApHashtag {
 		return {
 			type: 'Hashtag',
 			href: `${this.config.url}/tags/${encodeURIComponent(tag)}`,
@@ -238,7 +234,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderImage(file: DriveFile) {
+	public renderImage(file: DriveFile): IApImage {
 		return {
 			type: 'Image',
 			url: this.driveFileEntityService.getPublicUrl(file),
@@ -248,7 +244,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: ILocalUser, key: UserKeypair, postfix?: string) {
+	public renderKey(user: LocalUser, key: UserKeypair, postfix?: string): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
@@ -261,7 +257,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }) {
+	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }): Promise<ILike> {
 		const reaction = noteReaction.reaction;
 
 		const object = {
@@ -271,10 +267,11 @@ export class ApRendererService {
 			object: note.uri ? note.uri : `${this.config.url}/notes/${noteReaction.noteId}`,
 			content: reaction,
 			_misskey_reaction: reaction,
-		} as any;
+		} as ILike;
 
 		if (reaction.startsWith(':')) {
 			const name = reaction.replaceAll(':', '');
+			// TODO: cache
 			const emoji = await this.emojisRepository.findOneBy({
 				name,
 				host: IsNull(),
@@ -287,16 +284,16 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderMention(mention: User) {
+	public renderMention(mention: User): IApMention {
 		return {
 			type: 'Mention',
-			href: this.userEntityService.isRemoteUser(mention) ? mention.uri : `${this.config.url}/users/${(mention as ILocalUser).id}`,
-			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as ILocalUser).username}`,
+			href: this.userEntityService.isRemoteUser(mention) ? mention.uri! : `${this.config.url}/users/${(mention as LocalUser).id}`,
+			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as LocalUser).username}`,
 		};
 	}
 
 	@bindThis
-	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IObject> {
+	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IPost> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
@@ -409,11 +406,11 @@ export class ApRendererService {
 					totalItems: poll!.votes[i],
 				},
 			})),
-		} : {};
+		} as const : {};
 	
 		const asTalk = isTalk ? {
 			_misskey_talk: true,
-		} : {};
+		} as const : {};
 	
 		return {
 			id: `${this.config.url}/notes/${note.id}`,
@@ -441,7 +438,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderPerson(user: ILocalUser) {
+	public async renderPerson(user: LocalUser) {
 		const id = `${this.config.url}/users/${user.id}`;
 		const isSystem = !!user.username.match(/\./);
 
@@ -518,8 +515,8 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderQuestion(user: { id: User['id'] }, note: Note, poll: Poll) {
-		const question = {
+	public renderQuestion(user: { id: User['id'] }, note: Note, poll: Poll): IQuestion {
+		return {
 			type: 'Question',
 			id: `${this.config.url}/questions/${note.id}`,
 			actor: `${this.config.url}/users/${user.id}`,
@@ -533,21 +530,19 @@ export class ApRendererService {
 				},
 			})),
 		};
-	
-		return question;
 	}
 
 	@bindThis
-	public renderRead(user: { id: User['id'] }, message: MessagingMessage) {
+	public renderRead(user: { id: User['id'] }, message: MessagingMessage): IRead {
 		return {
 			type: 'Read',
 			actor: `${this.config.url}/users/${user.id}`,
-			object: message.uri,
+			object: message.uri!,
 		};
 	}
 
 	@bindThis
-	public renderReject(object: any, user: { id: User['id'] }) {
+	public renderReject(object: any, user: { id: User['id'] }): IReject {
 		return {
 			type: 'Reject',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -556,7 +551,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderRemove(user: { id: User['id'] }, target: any, object: any) {
+	public renderRemove(user: { id: User['id'] }, target: any, object: any): IRemove {
 		return {
 			type: 'Remove',
 			actor: `${this.config.url}/users/${user.id}`,
@@ -566,7 +561,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderTombstone(id: string) {
+	public renderTombstone(id: string): ITombstone {
 		return {
 			id,
 			type: 'Tombstone',
@@ -574,8 +569,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUndo(object: any, user: { id: User['id'] }) {
-		if (object == null) return null;
+	public renderUndo(object: any, user: { id: User['id'] }): IUndo {
 		const id = typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
 
 		return {
@@ -588,21 +582,19 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUpdate(object: any, user: { id: User['id'] }) {
-		const activity = {
+	public renderUpdate(object: any, user: { id: User['id'] }): IUpdate {
+		return {
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: `${this.config.url}/users/${user.id}`,
 			type: 'Update',
 			to: ['https://www.w3.org/ns/activitystreams#Public'],
 			object,
 			published: new Date().toISOString(),
-		} as any;
-	
-		return activity;
+		};
 	}
 
 	@bindThis
-	public renderVote(user: { id: User['id'] }, vote: PollVote, note: Note, poll: Poll, pollOwner: IRemoteUser) {
+	public renderVote(user: { id: User['id'] }, vote: PollVote, note: Note, poll: Poll, pollOwner: RemoteUser): ICreate {
 		return {
 			id: `${this.config.url}/users/${user.id}#votes/${vote.id}/activity`,
 			actor: `${this.config.url}/users/${user.id}`,
@@ -621,9 +613,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderActivity(x: any): IActivity | null {
-		if (x == null) return null;
-	
+	public addContext<T extends IObject>(x: T): T & { '@context': any; id: string; } {
 		if (typeof x === 'object' && x.id == null) {
 			x.id = `${this.config.url}/${uuid()}`;
 		}
@@ -659,7 +649,7 @@ export class ApRendererService {
 					vcard: 'http://www.w3.org/2006/vcard/ns#',
 				},
 			],
-		}, x);
+		}, x as T & { id: string; });
 	}
 	
 	@bindThis

@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, User } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import { RelayService } from '@/core/RelayService.js';
-import type { CacheableUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -39,7 +38,7 @@ export class PollService {
 	}
 
 	@bindThis
-	public async vote(user: CacheableUser, note: Note, choice: number) {
+	public async vote(user: User, note: Note, choice: number) {
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 	
 		if (poll == null) throw new Error('poll not found');
@@ -97,7 +96,7 @@ export class PollService {
 		if (user == null) throw new Error('note not found');
 	
 		if (this.userEntityService.isLocalUser(user)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUpdate(await this.apRendererService.renderNote(note, false), user));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUpdate(await this.apRendererService.renderNote(note, false), user));
 			this.apDeliverManagerService.deliverToFollowers(user, content);
 			this.relayService.deliverToRelays(user, content);
 		}

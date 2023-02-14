@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { ILocalUser } from '@/models/entities/User.js';
+import type { LocalUser } from '@/models/entities/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -18,7 +18,7 @@ import type { IObject, ICollection, IOrderedCollection } from './type.js';
 
 export class Resolver {
 	private history: Set<string>;
-	private user?: ILocalUser;
+	private user?: LocalUser;
 	private logger: Logger;
 
 	constructor(
@@ -38,8 +38,7 @@ export class Resolver {
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		this.logger = this.loggerService?.getLogger('ap-resolve'); // なぜか TypeError: Cannot read properties of undefined (reading 'getLogger') と言われる
+		this.logger = this.loggerService.getLogger('ap-resolve');
 	}
 
 	@bindThis
@@ -124,17 +123,17 @@ export class Resolver {
 		switch (parsed.type) {
 			case 'notes':
 				return this.notesRepository.findOneByOrFail({ id: parsed.id })
-					.then(note => {
+					.then(async note => {
 						if (parsed.rest === 'activity') {
 							// this refers to the create activity and not the note itself
-							return this.apRendererService.renderActivity(this.apRendererService.renderCreate(this.apRendererService.renderNote(note), note));
+							return this.apRendererService.addContext(this.apRendererService.renderCreate(await this.apRendererService.renderNote(note), note));
 						} else {
 							return this.apRendererService.renderNote(note);
 						}
 					});
 			case 'users':
 				return this.usersRepository.findOneByOrFail({ id: parsed.id })
-					.then(user => this.apRendererService.renderPerson(user as ILocalUser));
+					.then(user => this.apRendererService.renderPerson(user as LocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
 				return Promise.all([
@@ -143,8 +142,8 @@ export class Resolver {
 				])
 					.then(([note, poll]) => this.apRendererService.renderQuestion({ id: note.userId }, note, poll));
 			case 'likes':
-				return this.noteReactionsRepository.findOneByOrFail({ id: parsed.id }).then(reaction =>
-					this.apRendererService.renderActivity(this.apRendererService.renderLike(reaction, { uri: null }))!);
+				return this.noteReactionsRepository.findOneByOrFail({ id: parsed.id }).then(async reaction =>
+					this.apRendererService.addContext(await this.apRendererService.renderLike(reaction, { uri: null })));
 			case 'follows':
 				// rest should be <followee id>
 				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw new Error('resolveLocal: invalid follow URI');
@@ -152,7 +151,7 @@ export class Resolver {
 				return Promise.all(
 					[parsed.id, parsed.rest].map(id => this.usersRepository.findOneByOrFail({ id })),
 				)
-					.then(([follower, followee]) => this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee, url)));
+					.then(([follower, followee]) => this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, url)));
 			default:
 				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
 		}
@@ -184,6 +183,7 @@ export class ApResolverService {
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
+		private loggerService: LoggerService,
 	) {
 	}
 
@@ -202,6 +202,7 @@ export class ApResolverService {
 			this.httpRequestService,
 			this.apRendererService,
 			this.apDbResolverService,
+			this.loggerService,
 		);
 	}
 }

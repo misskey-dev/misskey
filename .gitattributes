@@ -5,3 +5,4 @@
 *.glb -diff -text
 *.blend -diff -text
 *.afdesign -diff -text
+* text=auto eol=lf

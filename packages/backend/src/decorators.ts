@@ -5,7 +5,7 @@
  * The getter will return a .bind version of the function
  * and memoize the result against a symbol on the instance
  */
-export function bindThis(target, key, descriptor) {
+export function bindThis(target: any, key: string, descriptor: any) {
 	let fn = descriptor.value;
 
 	if (typeof fn !== 'function') {
@@ -34,7 +34,7 @@ export function bindThis(target, key, descriptor) {
 			});
 			return boundFn;
 		},
-		set(value) {
+		set(value: any) {
 			fn = value;
 		},
 	};

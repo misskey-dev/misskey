@@ -11,6 +11,7 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
 import { UtilityService } from '../UtilityService.js';
+import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
 
@@ -43,6 +44,7 @@ export class DriveFileEntityService {
 
 		private utilityService: UtilityService,
 		private driveFolderEntityService: DriveFolderEntityService,
+		private videoProcessingService: VideoProcessingService,
 	) {
 	}
 	
@@ -72,40 +74,63 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public getPublicUrl(file: DriveFile, mode? : 'static' | 'avatar'): string | null { // static = thumbnail
-		const proxiedUrl = (url: string) => appendQuery(
+	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string {
+		return appendQuery(
 			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
 			query({
 				url,
 				...(mode ? { [mode]: '1' } : {}),
-			})
+			}),
 		);
+	}
 
+	@bindThis
+	public getThumbnailUrl(file: DriveFile): string | null {
+		if (file.type.startsWith('video')) {
+			if (file.thumbnailUrl) return file.thumbnailUrl;
+
+			if (this.config.videoThumbnailGenerator == null) {
+				return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url ?? file.uri);
+			}
+		} else if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
+			// 動画ではなくリモートかつメディアプロキシ
+			return this.getProxiedUrl(file.uri, 'static');
+		}
+
+		if (file.uri != null && file.isLink && this.config.proxyRemoteFiles) {
+			// リモートかつ期限切れはローカルプロキシを試みる
+			// 従来は/files/${thumbnailAccessKey}にアクセスしていたが、
+			// /filesはメディアプロキシにリダイレクトするようにしたため直接メディアプロキシを指定する
+			return this.getProxiedUrl(file.uri, 'static');
+		}
+
+		const url = file.webpublicUrl ?? file.url;
+
+		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? this.getProxiedUrl(url, 'static') : null);
+	}
+
+	@bindThis
+	public getPublicUrl(file: DriveFile, mode?: 'avatar'): string { // static = thumbnail
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
-			if (!(mode === 'static' && file.type.startsWith('video'))) {
-				return proxiedUrl(file.uri);
-			}
+			return this.getProxiedUrl(file.uri, mode);
 		}
 
 		// リモートかつ期限切れはローカルプロキシを試みる
 		if (file.uri != null && file.isLink && this.config.proxyRemoteFiles) {
-			const key = mode === 'static' ? file.thumbnailAccessKey : file.webpublicAccessKey;
+			const key = file.webpublicAccessKey;
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
 				const url = `${this.config.url}/files/${key}`;
-				if (mode === 'avatar') return proxiedUrl(file.uri);
+				if (mode === 'avatar') return this.getProxiedUrl(file.uri, 'avatar');
 				return url;
 			}
 		}
 
 		const url = file.webpublicUrl ?? file.url;
 
-		if (mode === 'static') {
-			return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? proxiedUrl(url) : null);
-		}
 		if (mode === 'avatar') {
-			return proxiedUrl(url);
+			return this.getProxiedUrl(url, 'avatar');
 		}
 		return url;
 	}
@@ -183,7 +208,7 @@ export class DriveFileEntityService {
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
 			url: opts.self ? file.url : this.getPublicUrl(file),
-			thumbnailUrl: this.getPublicUrl(file, 'static'),
+			thumbnailUrl: this.getThumbnailUrl(file),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
@@ -218,7 +243,7 @@ export class DriveFileEntityService {
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
 			url: opts.self ? file.url : this.getPublicUrl(file),
-			thumbnailUrl: this.getPublicUrl(file, 'static'),
+			thumbnailUrl: this.getThumbnailUrl(file),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {

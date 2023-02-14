@@ -56,7 +56,7 @@ onMounted(() => {
 	width: 100%;
 	border-radius: 4px;
 	margin-top: 4px;
-	overflow: clip;
+	// overflow: clip;
 
 	--plyr-color-main: var(--accent);
 	--plyr-audio-controls-background: var(--bg);
@@ -99,7 +99,7 @@ onMounted(() => {
 
 	> .audio {
 		border-radius: 8px;
-		overflow: clip;
+		// overflow: clip;
 	}
 }
 </style>

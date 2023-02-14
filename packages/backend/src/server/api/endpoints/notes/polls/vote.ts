@@ -1,7 +1,7 @@
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
-import type { IRemoteUser } from '@/models/entities/User.js';
+import type { RemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -160,9 +160,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// リモート投票の場合リプライ送信
 			if (note.userHost != null) {
-				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as IRemoteUser;
+				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as RemoteUser;
 
-				this.queueService.deliver(me, this.apRendererService.renderActivity(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
+				this.queueService.deliver(me, this.apRendererService.addContext(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
 			}
 
 			// リモートフォロワーにUpdate配信

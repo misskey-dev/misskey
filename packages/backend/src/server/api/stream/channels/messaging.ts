@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserGroupJoiningsRepository, UsersRepository, MessagingMessagesRepository } from '@/models/index.js';
-import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
+import type { User, LocalUser, RemoteUser } from '@/models/entities/User.js';
 import type { UserGroup } from '@/models/entities/UserGroup.js';
 import { MessagingService } from '@/core/MessagingService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -89,7 +89,7 @@ class MessagingChannel extends Channel {
 					// リモートユーザーからのメッセージだったら既読配信
 					if (this.userEntityService.isLocalUser(this.user!) && this.userEntityService.isRemoteUser(this.otherparty!)) {
 						this.messagingMessagesRepository.findOneBy({ id: body.id }).then(message => {
-							if (message) this.messagingService.deliverReadActivity(this.user as ILocalUser, this.otherparty as IRemoteUser, message);
+							if (message) this.messagingService.deliverReadActivity(this.user as LocalUser, this.otherparty as RemoteUser, message);
 						});
 					}
 				} else if (this.groupId) {

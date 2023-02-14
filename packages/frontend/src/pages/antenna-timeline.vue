@@ -72,7 +72,7 @@ watch(() => props.antennaId, async () => {
 }, { immediate: true });
 
 const headerActions = $computed(() => antenna ? [{
-	icon: 'fas fa-calendar-alt',
+	icon: 'ti ti-calendar-time',
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
@@ -98,6 +98,7 @@ definePageMetadata(computed(() => antenna ? {
 		top: calc(var(--stickyTop, 0px) + 16px);
 		z-index: 1000;
 		width: 100%;
+		margin: calc(-0.675em - 8px - var(--margin)) 0 calc(-0.675em - 8px);
 
 		> button {
 			display: block;

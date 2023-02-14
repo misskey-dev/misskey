@@ -5,7 +5,7 @@ import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { CacheableUser, IRemoteUser } from '@/models/entities/User.js';
+import type { RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { UserCacheService } from '@/core/UserCacheService.js';
@@ -197,7 +197,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Misskeyに対象のPersonが登録されていればそれを返します。
 	 */
 	@bindThis
-	public async fetchPerson(uri: string, resolver?: Resolver): Promise<CacheableUser | null> {
+	public async fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		const cached = this.userCacheService.uriPersonCache.get(uri);
@@ -259,7 +259,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Create user
-		let user: IRemoteUser;
+		let user: RemoteUser;
 		try {
 		// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
@@ -284,7 +284,7 @@ export class ApPersonService implements OnModuleInit {
 					isBot,
 					isCat: (person as any).isCat === true,
 					showTimelineReplies: false,
-				})) as IRemoteUser;
+				})) as RemoteUser;
 
 				await transactionalEntityManager.save(new UserProfile({
 					userId: user.id,
@@ -313,7 +313,7 @@ export class ApPersonService implements OnModuleInit {
 				});
 
 				if (u) {
-					user = u as IRemoteUser;
+					user = u as RemoteUser;
 				} else {
 					throw new Error('already registered');
 				}
@@ -392,7 +392,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.usersRepository.findOneBy({ uri }) as IRemoteUser;
+		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser;
 
 		if (exist == null) {
 			return;
@@ -500,7 +500,7 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<CacheableUser> {
+	public async resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		//#region このサーバーに既に登録されていたらそれを返す

@@ -11,7 +11,7 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { App } from '@/models/entities/App.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
-import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
+import type { User, LocalUser, RemoteUser } from '@/models/entities/User.js';
 import type { IPoll } from '@/models/entities/Poll.js';
 import { Poll } from '@/models/entities/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
@@ -52,7 +52,7 @@ class NotificationManager {
 	private notifier: { id: User['id']; };
 	private note: Note;
 	private queue: {
-		target: ILocalUser['id'];
+		target: LocalUser['id'];
 		reason: NotificationType;
 	}[];
 
@@ -68,7 +68,7 @@ class NotificationManager {
 	}
 
 	@bindThis
-	public push(notifiee: ILocalUser['id'], reason: NotificationType) {
+	public push(notifiee: LocalUser['id'], reason: NotificationType) {
 		// 自分自身へは通知しない
 		if (this.notifier.id === notifiee) return;
 
@@ -605,7 +605,7 @@ export class NoteCreateService {
 
 					// メンションされたリモートユーザーに配送
 					for (const u of mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u))) {
-						dm.addDirectRecipe(u as IRemoteUser);
+						dm.addDirectRecipe(u as RemoteUser);
 					}
 
 					// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
@@ -711,7 +711,7 @@ export class NoteCreateService {
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
 			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 
-		return this.apRendererService.renderActivity(content);
+		return this.apRendererService.addContext(content);
 	}
 
 	@bindThis

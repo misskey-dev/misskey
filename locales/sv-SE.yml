@@ -371,11 +371,6 @@ pushNotificationNotSupported: "Din webbläsare eller instans har inte stöd för
 _email:
   _follow:
     title: "följde dig"
-_mfm:
-  mention: "Nämn"
-  quote: "Citat"
-  emoji: "Anpassa emoji"
-  search: "Sök"
 _channel:
   setBanner: "Välj banner"
   removeBanner: "Ta bort banner"

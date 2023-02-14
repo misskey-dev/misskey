@@ -105,7 +105,7 @@ function onContextmenu(ev: MouseEvent) {
 		type: 'label',
 		text: path,
 	}, {
-		icon: fullView ? 'fas fa-compress' : 'fas fa-expand',
+		icon: fullView ? 'ti ti-minimize' : 'ti ti-maximize',
 		text: fullView ? i18n.ts.quitFullView : i18n.ts.fullView,
 		action: () => {
 			fullView = !fullView;
