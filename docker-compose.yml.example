@@ -57,7 +57,7 @@ services:
 #    networks:
 #      - internal_network
 #    volumes:
-#      - ./elasticsearch:/usr/share/elasticsearch/data
+#      - elasticsearch:/usr/share/elasticsearch/data
 
 networks:
   internal_network:
