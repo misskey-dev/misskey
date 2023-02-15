@@ -46,20 +46,20 @@ services:
       interval: 5s
       retries: 20
 
-  tunnel:
-    image: cloudflare/cloudflared:2023.2.1
-    restart: always
-    links:
-      - nginx
-    depends_on:
-      web:
-        condition: service_started
-    command: tunnel --no-autoupdate run
-    networks:
-      - internal_network
-      - external_network
-    env_file:
-      - ./infra/cloudflare/.env
+  # tunnel:
+  #   image: cloudflare/cloudflared:2023.2.1
+  #   restart: always
+  #   links:
+  #     - nginx
+  #   depends_on:
+  #     web:
+  #       condition: service_started
+  #   command: tunnel --no-autoupdate run
+  #   networks:
+  #     - internal_network
+  #     - external_network
+  #   env_file:
+  #     - ./infra/cloudflare/.env
 
   nginx:
     build: 
@@ -77,6 +77,8 @@ services:
     command: /bin/sh -c "envsubst '$$SERVER_NAME $$S3_PROXY_PASS'< /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     env_file:
       - ./infra/nginx/.env
+    ports:
+      - 10080:80
 
   # es:
   #   restart: always
