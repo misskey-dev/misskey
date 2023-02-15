@@ -1,4 +1,3 @@
-import tinycolor from 'tinycolor2';
 import seedrandom from 'seedrandom';
 import { Hpml } from './evaluator';
 import { Expr } from './expr';

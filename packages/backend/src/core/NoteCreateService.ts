@@ -1,5 +1,5 @@
 import * as mfm from 'mfm-js';
-import { Not, In, DataSource } from 'typeorm';
+import { In, DataSource } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';

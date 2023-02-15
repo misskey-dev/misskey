@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import number from '@/filters/number';
 
 export default defineComponent({

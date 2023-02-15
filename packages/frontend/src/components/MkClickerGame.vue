@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';

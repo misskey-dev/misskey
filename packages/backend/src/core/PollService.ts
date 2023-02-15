@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, User } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';

@@ -15,10 +15,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, watch } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os';
-import { deepClone } from '@/scripts/clone';
 import { i18n } from '@/i18n';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));

@@ -1,11 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { DI } from '@/di-symbols.js';
 import type { RemoteUser, User } from '@/models/entities/User.js';
-import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
+import { concat, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
-import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isPost, isRead, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import { getApIds } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { ApObject } from './type.js';
 import type { Resolver } from './ApResolverService.js';

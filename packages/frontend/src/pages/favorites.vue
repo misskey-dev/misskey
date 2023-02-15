@@ -21,7 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';

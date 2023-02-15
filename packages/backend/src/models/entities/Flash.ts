@@ -1,7 +1,6 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 import { User } from './User.js';
-import { DriveFile } from './DriveFile.js';
 
 @Entity()
 export class Flash {
