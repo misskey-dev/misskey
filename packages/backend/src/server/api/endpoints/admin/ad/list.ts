@@ -32,8 +32,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.adsRepository.createQueryBuilder('ad'), ps.sinceId, ps.untilId)
-				.andWhere('ad.expiresAt > :now', { now: new Date() });
-
 			const ads = await query.take(ps.limit).getMany();
 
 			return ads;
