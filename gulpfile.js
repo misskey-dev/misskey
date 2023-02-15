@@ -6,7 +6,8 @@ const fs = require('fs');
 const gulp = require('gulp');
 const replace = require('gulp-replace');
 const terser = require('gulp-terser');
-const cssnano = require('gulp-cssnano');
+const postcss = require('gulp-postcss');
+const cssnano = require('cssnano');
 
 const locales = require('./locales');
 const meta = require('./package.json');
@@ -46,9 +47,7 @@ gulp.task('build:backend:script', () => {
 
 gulp.task('build:backend:style', () => {
 	return gulp.src(['./packages/backend/src/server/web/style.css', './packages/backend/src/server/web/bios.css', './packages/backend/src/server/web/cli.css'])
-		.pipe(cssnano({
-			zindex: false
-		}))
+		.pipe(postcss([cssnano({ zindex: false })]))
 		.pipe(gulp.dest('./packages/backend/built/server/web/'));
 });
 
