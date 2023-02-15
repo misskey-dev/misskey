@@ -22,7 +22,6 @@ import { GalleryLike } from '@/models/entities/GalleryLike.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { Hashtag } from '@/models/entities/Hashtag.js';
 import { Instance } from '@/models/entities/Instance.js';
-import { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { MutedNote } from '@/models/entities/MutedNote.js';
@@ -93,7 +92,6 @@ export {
 	GalleryPost,
 	Hashtag,
 	Instance,
-	MessagingMessage,
 	Meta,
 	ModerationLog,
 	MutedNote,
@@ -163,7 +161,6 @@ export type GalleryLikesRepository = Repository<GalleryLike>;
 export type GalleryPostsRepository = Repository<GalleryPost>;
 export type HashtagsRepository = Repository<Hashtag>;
 export type InstancesRepository = Repository<Instance>;
-export type MessagingMessagesRepository = Repository<MessagingMessage>;
 export type MetasRepository = Repository<Meta>;
 export type ModerationLogsRepository = Repository<ModerationLog>;
 export type MutedNotesRepository = Repository<MutedNote>;

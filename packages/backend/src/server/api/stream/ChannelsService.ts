@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import { HybridTimelineChannelService } from './channels/hybrid-timeline.js';
 import { LocalTimelineChannelService } from './channels/local-timeline.js';
 import { HomeTimelineChannelService } from './channels/home-timeline.js';
@@ -11,11 +12,8 @@ import { ServerStatsChannelService } from './channels/server-stats.js';
 import { QueueStatsChannelService } from './channels/queue-stats.js';
 import { UserListChannelService } from './channels/user-list.js';
 import { AntennaChannelService } from './channels/antenna.js';
-import { MessagingChannelService } from './channels/messaging.js';
-import { MessagingIndexChannelService } from './channels/messaging-index.js';
 import { DriveChannelService } from './channels/drive.js';
 import { HashtagChannelService } from './channels/hashtag.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ChannelsService {
@@ -29,8 +27,6 @@ export class ChannelsService {
 		private hashtagChannelService: HashtagChannelService,
 		private antennaChannelService: AntennaChannelService,
 		private channelChannelService: ChannelChannelService,
-		private messagingChannelService: MessagingChannelService,
-		private messagingIndexChannelService: MessagingIndexChannelService,
 		private driveChannelService: DriveChannelService,
 		private serverStatsChannelService: ServerStatsChannelService,
 		private queueStatsChannelService: QueueStatsChannelService,
@@ -50,8 +46,6 @@ export class ChannelsService {
 			case 'hashtag': return this.hashtagChannelService;
 			case 'antenna': return this.antennaChannelService;
 			case 'channel': return this.channelChannelService;
-			case 'messaging': return this.messagingChannelService;
-			case 'messagingIndex': return this.messagingIndexChannelService;
 			case 'drive': return this.driveChannelService;
 			case 'serverStats': return this.serverStatsChannelService;
 			case 'queueStats': return this.queueStatsChannelService;
