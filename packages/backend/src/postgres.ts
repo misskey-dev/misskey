@@ -54,9 +54,6 @@ import { Signin } from '@/models/entities/Signin.js';
 import { SwSubscription } from '@/models/entities/SwSubscription.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { User } from '@/models/entities/User.js';
-import { UserGroup } from '@/models/entities/UserGroup.js';
-import { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.js';
-import { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
 import { UserIp } from '@/models/entities/UserIp.js';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UserList } from '@/models/entities/UserList.js';
@@ -136,9 +133,6 @@ export const entities = [
 	UserPublickey,
 	UserList,
 	UserListJoining,
-	UserGroup,
-	UserGroupJoining,
-	UserGroupInvitation,
 	UserNotePining,
 	UserSecurityKey,
 	UsedUsername,

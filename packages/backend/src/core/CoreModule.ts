@@ -91,8 +91,6 @@ import { PageEntityService } from './entities/PageEntityService.js';
 import { PageLikeEntityService } from './entities/PageLikeEntityService.js';
 import { SigninEntityService } from './entities/SigninEntityService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
-import { UserGroupEntityService } from './entities/UserGroupEntityService.js';
-import { UserGroupInvitationEntityService } from './entities/UserGroupInvitationEntityService.js';
 import { UserListEntityService } from './entities/UserListEntityService.js';
 import { FlashEntityService } from './entities/FlashEntityService.js';
 import { FlashLikeEntityService } from './entities/FlashLikeEntityService.js';
@@ -214,8 +212,6 @@ const $PageEntityService: Provider = { provide: 'PageEntityService', useExisting
 const $PageLikeEntityService: Provider = { provide: 'PageLikeEntityService', useExisting: PageLikeEntityService };
 const $SigninEntityService: Provider = { provide: 'SigninEntityService', useExisting: SigninEntityService };
 const $UserEntityService: Provider = { provide: 'UserEntityService', useExisting: UserEntityService };
-const $UserGroupEntityService: Provider = { provide: 'UserGroupEntityService', useExisting: UserGroupEntityService };
-const $UserGroupInvitationEntityService: Provider = { provide: 'UserGroupInvitationEntityService', useExisting: UserGroupInvitationEntityService };
 const $UserListEntityService: Provider = { provide: 'UserListEntityService', useExisting: UserListEntityService };
 const $FlashEntityService: Provider = { provide: 'FlashEntityService', useExisting: FlashEntityService };
 const $FlashLikeEntityService: Provider = { provide: 'FlashLikeEntityService', useExisting: FlashLikeEntityService };
@@ -338,8 +334,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageLikeEntityService,
 		SigninEntityService,
 		UserEntityService,
-		UserGroupEntityService,
-		UserGroupInvitationEntityService,
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
@@ -457,8 +451,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageLikeEntityService,
 		$SigninEntityService,
 		$UserEntityService,
-		$UserGroupEntityService,
-		$UserGroupInvitationEntityService,
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
@@ -576,8 +568,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageLikeEntityService,
 		SigninEntityService,
 		UserEntityService,
-		UserGroupEntityService,
-		UserGroupInvitationEntityService,
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
@@ -694,8 +684,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageLikeEntityService,
 		$SigninEntityService,
 		$UserEntityService,
-		$UserGroupEntityService,
-		$UserGroupInvitationEntityService,
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,

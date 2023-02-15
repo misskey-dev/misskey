@@ -118,18 +118,12 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 							case 'receiveFollowRequest':
 								await swos.api('following/requests/accept', loginId, { userId: data.body.userId });
 								break;
-							case 'groupInvited':
-								await swos.api('users/groups/invitations/accept', loginId, { invitationId: data.body.invitation.id });
-								break;
 						}
 						break;
 					case 'reject':
 						switch (data.body.type) {
 							case 'receiveFollowRequest':
 								await swos.api('following/requests/reject', loginId, { userId: data.body.userId });
-								break;
-							case 'groupInvited':
-								await swos.api('users/groups/invitations/reject', loginId, { invitationId: data.body.invitation.id });
 								break;
 						}
 						break;
@@ -140,9 +134,6 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						switch (data.body.type) {
 							case 'receiveFollowRequest':
 								client = await swos.openClient('push', '/my/follow-requests', loginId);
-								break;
-							case 'groupInvited':
-								client = await swos.openClient('push', '/my/groups', loginId);
 								break;
 							case 'reaction':
 								client = await swos.openNote(data.body.note.id, loginId);

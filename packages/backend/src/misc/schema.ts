@@ -19,7 +19,6 @@ import { packedBlockingSchema } from '@/models/schema/blocking.js';
 import { packedNoteReactionSchema } from '@/models/schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/schema/hashtag.js';
 import { packedPageSchema } from '@/models/schema/page.js';
-import { packedUserGroupSchema } from '@/models/schema/user-group.js';
 import { packedNoteFavoriteSchema } from '@/models/schema/note-favorite.js';
 import { packedChannelSchema } from '@/models/schema/channel.js';
 import { packedAntennaSchema } from '@/models/schema/antenna.js';
@@ -39,7 +38,6 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
-	UserGroup: packedUserGroupSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,

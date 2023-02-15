@@ -211,7 +211,6 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
-import * as ep___i_userGroupInvites from './endpoints/i/user-group-invites.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
@@ -294,18 +293,6 @@ import * as ep___users_followers from './endpoints/users/followers.js';
 import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
-import * as ep___users_groups_create from './endpoints/users/groups/create.js';
-import * as ep___users_groups_delete from './endpoints/users/groups/delete.js';
-import * as ep___users_groups_invitations_accept from './endpoints/users/groups/invitations/accept.js';
-import * as ep___users_groups_invitations_reject from './endpoints/users/groups/invitations/reject.js';
-import * as ep___users_groups_invite from './endpoints/users/groups/invite.js';
-import * as ep___users_groups_joined from './endpoints/users/groups/joined.js';
-import * as ep___users_groups_leave from './endpoints/users/groups/leave.js';
-import * as ep___users_groups_owned from './endpoints/users/groups/owned.js';
-import * as ep___users_groups_pull from './endpoints/users/groups/pull.js';
-import * as ep___users_groups_show from './endpoints/users/groups/show.js';
-import * as ep___users_groups_transfer from './endpoints/users/groups/transfer.js';
-import * as ep___users_groups_update from './endpoints/users/groups/update.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from './endpoints/users/lists/delete.js';
 import * as ep___users_lists_list from './endpoints/users/lists/list.js';
@@ -540,7 +527,6 @@ const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: e
 const $i_unpin: Provider = { provide: 'ep:i/unpin', useClass: ep___i_unpin.default };
 const $i_updateEmail: Provider = { provide: 'ep:i/update-email', useClass: ep___i_updateEmail.default };
 const $i_update: Provider = { provide: 'ep:i/update', useClass: ep___i_update.default };
-const $i_userGroupInvites: Provider = { provide: 'ep:i/user-group-invites', useClass: ep___i_userGroupInvites.default };
 const $i_webhooks_create: Provider = { provide: 'ep:i/webhooks/create', useClass: ep___i_webhooks_create.default };
 const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep___i_webhooks_list.default };
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
@@ -623,18 +609,6 @@ const $users_followers: Provider = { provide: 'ep:users/followers', useClass: ep
 const $users_following: Provider = { provide: 'ep:users/following', useClass: ep___users_following.default };
 const $users_gallery_posts: Provider = { provide: 'ep:users/gallery/posts', useClass: ep___users_gallery_posts.default };
 const $users_getFrequentlyRepliedUsers: Provider = { provide: 'ep:users/get-frequently-replied-users', useClass: ep___users_getFrequentlyRepliedUsers.default };
-const $users_groups_create: Provider = { provide: 'ep:users/groups/create', useClass: ep___users_groups_create.default };
-const $users_groups_delete: Provider = { provide: 'ep:users/groups/delete', useClass: ep___users_groups_delete.default };
-const $users_groups_invitations_accept: Provider = { provide: 'ep:users/groups/invitations/accept', useClass: ep___users_groups_invitations_accept.default };
-const $users_groups_invitations_reject: Provider = { provide: 'ep:users/groups/invitations/reject', useClass: ep___users_groups_invitations_reject.default };
-const $users_groups_invite: Provider = { provide: 'ep:users/groups/invite', useClass: ep___users_groups_invite.default };
-const $users_groups_joined: Provider = { provide: 'ep:users/groups/joined', useClass: ep___users_groups_joined.default };
-const $users_groups_leave: Provider = { provide: 'ep:users/groups/leave', useClass: ep___users_groups_leave.default };
-const $users_groups_owned: Provider = { provide: 'ep:users/groups/owned', useClass: ep___users_groups_owned.default };
-const $users_groups_pull: Provider = { provide: 'ep:users/groups/pull', useClass: ep___users_groups_pull.default };
-const $users_groups_show: Provider = { provide: 'ep:users/groups/show', useClass: ep___users_groups_show.default };
-const $users_groups_transfer: Provider = { provide: 'ep:users/groups/transfer', useClass: ep___users_groups_transfer.default };
-const $users_groups_update: Provider = { provide: 'ep:users/groups/update', useClass: ep___users_groups_update.default };
 const $users_lists_create: Provider = { provide: 'ep:users/lists/create', useClass: ep___users_lists_create.default };
 const $users_lists_delete: Provider = { provide: 'ep:users/lists/delete', useClass: ep___users_lists_delete.default };
 const $users_lists_list: Provider = { provide: 'ep:users/lists/list', useClass: ep___users_lists_list.default };
@@ -873,7 +847,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
-		$i_userGroupInvites,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
@@ -956,18 +929,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_following,
 		$users_gallery_posts,
 		$users_getFrequentlyRepliedUsers,
-		$users_groups_create,
-		$users_groups_delete,
-		$users_groups_invitations_accept,
-		$users_groups_invitations_reject,
-		$users_groups_invite,
-		$users_groups_joined,
-		$users_groups_leave,
-		$users_groups_owned,
-		$users_groups_pull,
-		$users_groups_show,
-		$users_groups_transfer,
-		$users_groups_update,
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,
@@ -1200,7 +1161,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
-		$i_userGroupInvites,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
@@ -1281,18 +1241,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_following,
 		$users_gallery_posts,
 		$users_getFrequentlyRepliedUsers,
-		$users_groups_create,
-		$users_groups_delete,
-		$users_groups_invitations_accept,
-		$users_groups_invitations_reject,
-		$users_groups_invite,
-		$users_groups_joined,
-		$users_groups_leave,
-		$users_groups_owned,
-		$users_groups_pull,
-		$users_groups_show,
-		$users_groups_transfer,
-		$users_groups_update,
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,
