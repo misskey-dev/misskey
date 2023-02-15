@@ -1,4 +1,4 @@
-import { Brackets, IsNull } from 'typeorm';
+import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
